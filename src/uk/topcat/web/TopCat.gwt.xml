@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6.4//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.4/distro-source/core/src/gwt-module.dtd">
+<module rename-to='bit'>
+	
+	
+	<inherits name='com.google.gwt.user.User' />
+	
+	
+	
+	
+	<inherits name="com.google.gwt.i18n.I18N"/> 	
+ 	<extend-property name="locale" values="en"/>
+ 	<extend-property name="locale" values="en_DI"/>
+ 	
+ 	<inherits name='com.google.gwt.user.theme.standard.Standard' />
+	<inherits name='com.google.gwt.inject.Inject' />
+ 	<inherits name='com.extjs.gxt.ui.GXT'/>
+ 	
+ 	<!-- 
+ 	Abandoned attempt to incorporate ICAT entities within GWT for client side compilation
+ 		- See excellent post by Dan Morrill on subject http://markmail.org/message/z2jndwcowsk55tv2
+ 		- First you have to ensure that src files are included within icat3-core.jar
+ 		- Then you must add GWTICATEntities.gwt.xml file to uk.icat3 package (in icat3-core project in NetBeans)
+ 		- Contents of GWTICATEntities.gwt.xml are:  <module><source path="entity" /></module>
+ 		- Need to add supproting libs that are used by icat3-core e.g. javaee.jar, log4j etc etc.
+ 	
+ 		- This successfully allows GWT to see src ICAT entities, however: 
+ 			1- these entities refer to other classes so you essentially need to give access to all packages within icat3-core
+ 			2- also the icat entities use reflection, java.math, BigInteger etc which are not supported in GWT 
+ 	
+ 	<inherits name="uk.icat3.GWTICATEntities"/>  -->
+ 	
+ 	
+ 	
+ 	<entry-point class='uk.topcat.web.client.TopCat' /> 
+ 	<source path='client'/>
+ 	
+ 	
+ 	
+ 		
+<!--	<entry-point class='uk.topcat.web.client.autocomplete.AutoComplete' />
+	-->
+</module>

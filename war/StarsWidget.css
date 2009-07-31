@@ -1,0 +1,31 @@
+.gwt-StarsWidget {
+	width: 90px;
+	_width: 92px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.gwt-StarsWidget ul {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+.gwt-StarsWidget ul li {
+	display: block;
+	width: 16px;
+	height: 16px;
+	margin: 0px 1px;
+	float: left;
+	background: url(img/bgr_lststars.png) no-repeat 0 0;
+}
+
+.gwt-StarsWidget ul li a {
+	display: block;
+	width: 16px;
+	height: 13px;
+	text-indent: -999999px;
+	font-size: 1px;
+	line-height: 1px;
+	overflow: hidden;
+}

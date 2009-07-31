@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	
+	<servlet>
+		<servlet-name>KeywordSearch</servlet-name>
+		<servlet-class>uk.topcat.web.server.KeywordSearchImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>KeywordSearch</servlet-name>
+		<url-pattern>/bit/KeywordSearch</url-pattern>
+	</servlet-mapping>
+	
+	<welcome-file-list>
+		<welcome-file>TopCat.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

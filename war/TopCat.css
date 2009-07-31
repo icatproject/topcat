@@ -1,0 +1,73 @@
+html,body,* {
+	margin: 0px;
+	padding: 0px;
+	font-family: Arial !important;
+	font-size: 12px !important;
+}
+
+.main {
+	width: 100%;
+}
+
+.menu {
+	border-bottom: 1px solid #CCC;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	margin-bottom: 10px;
+}
+
+.issue-display,.issue-edit {
+	margin-left: 20px;
+	margin-right: 20px;
+	min-width: 400px;
+}
+
+.issue-display-info,.issue-edit-info {
+	
+}
+
+.issue-display-info {
+	margin-right: 100px;
+}
+
+.issue-display-info-line,.issue-edit-info-line {
+	height: 25px;
+	min-width: 300px;
+}
+
+.issue-display-info-header,.issue-edit-info-header {
+	color: #333;
+	text-align: right;
+	width: 100px;
+	vertical-align: top;
+	float: left;
+}
+
+.issue-display-info-value,.issue-edit-info-value {
+	margin-left: 115px;
+	vertical-align: top;
+	color: #666;
+}
+
+.issue-edit-info-value input {
+	width: 100%;
+	border: 1px solid #CCC;
+}
+
+.issue-display-buttons {
+	float: right;
+	text-align: right;
+}
+
+.issue-display-buttons button {
+	margin-left: 5px;
+}
+
+.issue-edit-buttons {
+	text-align: right;
+}
+
+.issue-edit-buttons button {
+	margin-left: 5px;
+}
