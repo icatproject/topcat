@@ -11,6 +11,9 @@ public interface LanguageConstants extends Constants {
 	String passwordLabel();
 	String loginButton();
 	
+
+	
+	
 	//search
 	String keywordTabLabel();
 	String keywordSearchInstructions();
@@ -33,5 +36,46 @@ public interface LanguageConstants extends Constants {
 	String facilityColumnTitle();
 	String yearColumnTitle();
 	
+	//Horizontal Tabs labels : Accessing / Selecting the data. 
+	String htab_keywordLabel(); 
+	String htab_advancedLabel(); 
+	String htab_tagLabel(); 
+	String htab_browseLabel(); 
+	String htab_myDataLabel();
+	String htab_bookmarksLabel();
+	String htab_preferenceLabel();
+	String htab_keywordDescription(); 
+	String htab_advancedDescription(); 
+	String htab_tagDescription(); 
+	String htab_browseDescription(); 
+	String htab_myDataDescription();
+	String htab_bookmarksDescription();
+	String htab_preferenceDescription();
+	
+	//Vertical Tabs labels : Display or Action on the data 
+	String vtab_welcomeLabel();
+	String vtab_investigationLabel();
+	String vtab_sampleLabel();
+	String vtab_datasetLabel();
+	String vtab_datafileLabel ();
+	String vtab_downloadLabel();
+	String vtab_permissionLabel();
+	String vtab_applicationLabel();
+	
+	String vtab_welcomeDescription();
+	String vtab_investigationDescription();
+	String vtab_sampleDescription();
+	String vtab_datasetDescription();
+	String vtab_datafileDescription();
+	String vtab_downloadDescription();
+	String vtab_permissionDescription();
+	String vtab_applicationDescription();	 
+	//Common Button Labels
+	String cbtn_search();
+	String cbtn_reset();
+	String cbtn_keep();
+	String cbtn_remove();
+	String cbtn_reverse();
+		
 	
 }
