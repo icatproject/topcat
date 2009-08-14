@@ -11,9 +11,6 @@ public interface LanguageConstants extends Constants {
 	String passwordLabel();
 	String loginButton();
 	
-
-	
-	
 	//search
 	String keywordTabLabel();
 	String keywordSearchInstructions();
@@ -70,6 +67,7 @@ public interface LanguageConstants extends Constants {
 	String vtab_downloadDescription();
 	String vtab_permissionDescription();
 	String vtab_applicationDescription();	 
+
 	//Common Button Labels
 	String cbtn_search();
 	String cbtn_reset();
@@ -77,5 +75,15 @@ public interface LanguageConstants extends Constants {
 	String cbtn_remove();
 	String cbtn_reverse();
 		
-	
+	//Sample List View Information
+	String slst_sampleIdCol();
+	String slst_nameCol();
+	String slst_invIdCol();
+	String slst_invTitleCol();
+	String slst_invNumCol();
+	String slst_invVisitCol();
+	String slst_instanceCol();
+	String slst_chemFormCol();
+	String slst_propSampleIdCol();
+	String slst_safetyInfoCol();
 }

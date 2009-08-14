@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.topcat.web.client.autocomplete.AutoSuggestForm;
 import uk.topcat.web.client.language.LanguageConstants;
+import uk.topcat.web.client.ui.SampleView;
 import uk.topcat.web.client.ui.header.HeaderPanel;
 import uk.topcat.web.client.ui.results.PagingBeanModelGrid;
 import uk.topcat.web.client.ui.results.VerticalTabPanel;
@@ -276,11 +277,8 @@ public class TopCatWidget extends Composite implements TopCatPresenter.View {
 		vtp.add(investigationPanel,new HTML(lang.vtab_investigationLabel())); 
 
 		// Sample
-		VerticalPanel samplePanel = new VerticalPanel();
-		HTML sampleText = new HTML(lang.vtab_sampleDescription());
-		samplePanel.add(sampleText);
-		samplePanel.add(new PagingBeanModelGrid());	
-		vtp.add(samplePanel,new HTML(lang.vtab_sampleLabel()) );  
+		SampleView sampleV = SampleView.getView();			
+		vtp.add(sampleV,sampleV.toString() );  
 	
 		// Dataset
 		VerticalPanel datasetPanel = new VerticalPanel();
