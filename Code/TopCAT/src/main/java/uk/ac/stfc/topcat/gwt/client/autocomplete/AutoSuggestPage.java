@@ -251,7 +251,7 @@ public class AutoSuggestPage extends DialogBox {
         oracle.add("Kiran Karnati");
         oracle.add("Kalpana Nagireddy");
         oracle.add("Ramnivas Laddad");
-        oracle.add("Arjé Cahn");
+        oracle.add("Arjun Cahn");
         oracle.add("Amy Anne Rasberry");
         oracle.add("Vincent Stoessel");
         oracle.add("Steven Leija");
@@ -318,7 +318,7 @@ public class AutoSuggestPage extends DialogBox {
         oracle.add("Fabrizio Giustina");
         oracle.add("Todd Fredrich");
         oracle.add("Matt Stine");
-        oracle.add("João Vitor Lacerda Guimarães");
+        oracle.add("Jouo Vitor Lacerda Guimaries");
         oracle.add("Yassine Hinnach");
         oracle.add("Chris Huston");
         oracle.add("Jodi Behrens-Stark");
