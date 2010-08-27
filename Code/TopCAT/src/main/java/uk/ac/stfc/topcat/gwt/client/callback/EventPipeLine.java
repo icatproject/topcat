@@ -1,0 +1,625 @@
+/**
+ * 
+ * Copyright (c) 2009-2010
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the distribution.
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OF SUCH DAMAGE.
+ */
+package uk.ac.stfc.topcat.gwt.client.callback;
+/**
+ * Imports
+ */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.gwt.client.LoginInterface;
+import uk.ac.stfc.topcat.gwt.client.LoginService;
+import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.SearchService;
+import uk.ac.stfc.topcat.gwt.client.SearchServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.TOPCATOnline;
+import uk.ac.stfc.topcat.gwt.client.UtilityService;
+import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.exception.WindowsNotAvailableExcecption;
+import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
+import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
+import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
+import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.Facility;
+import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
+import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
+import uk.ac.stfc.topcat.gwt.client.model.Instrument;
+import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
+import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
+import uk.ac.stfc.topcat.gwt.client.widget.DatafileWindow;
+import uk.ac.stfc.topcat.gwt.client.widget.DatasetWindow;
+import uk.ac.stfc.topcat.gwt.client.widget.LoginInfoPanel;
+import uk.ac.stfc.topcat.gwt.client.widget.LoginPanel;
+import uk.ac.stfc.topcat.gwt.client.widget.LoginWidget;
+import uk.ac.stfc.topcat.gwt.client.widget.ParameterDownloadForm;
+import uk.ac.stfc.topcat.gwt.client.widget.ParameterWindow;
+import uk.ac.stfc.topcat.gwt.client.widget.WaitDialog;
+
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
+/**
+ * This is import class which holds all the events. currently doesn't directly inherit from handler manager but
+ * a begining to move in right direction.
+ * 
+ * This is a singleton and Most of the widget will call this instance to login, search, download, history etc.. 
+ * <p>
+ * @author Mr. Srikanth Nagella
+ * @version 1.0,  &nbsp; 30-APR-2010
+ * @since iCAT Version 3.3
+ */
+public class EventPipeLine implements LoginInterface {
+	private final LoginServiceAsync loginService = GWT.create(LoginService.class);	
+	private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);	
+	private final SearchServiceAsync searchService = GWT.create(SearchService.class);	
+	ArrayList<TFacility> facilityNames;
+	HashMap<String,ListStore<Instrument>> facilityInstrumentMap;
+	ParameterDownloadForm paramDownloadForm;
+	
+	LoginWidget loginWidget;
+	WaitDialog  waitDialog;
+	MessageBox		errorDialog;
+	
+	//Panels from Main Window
+	TOPCATOnline mainWindow=null;	
+	LoginPanel loginPanel=null;
+	TopcatWindowManager tcWindowManager = null;
+	HistoryManager historyManager=null;
+	
+	
+	private static EventPipeLine eventBus = new EventPipeLine();
+	/**
+	 * Private constructor to make a singleton
+	 */
+	private EventPipeLine() {
+		loginWidget = new LoginWidget();
+		tcWindowManager = new TopcatWindowManager();
+		historyManager = new HistoryManager(tcWindowManager);
+		waitDialog  = new WaitDialog();
+		errorDialog = new MessageBox();
+		facilityInstrumentMap = new HashMap<String,ListStore<Instrument>>();
+		//Initialise
+		loginWidget.setLoginHandler(this);		
+	}
+
+	public static EventPipeLine getInstance(){
+		return eventBus;
+	}
+	
+	public void setMainWindow(TOPCATOnline topcatOnline) {
+		mainWindow=topcatOnline;
+	}
+	
+	public void initDownloadParameter(){
+		paramDownloadForm = new ParameterDownloadForm();
+		RootPanel.get().add(paramDownloadForm);		
+	}
+	
+	/**
+	 * @return history manager
+	 */
+	public HistoryManager getHistoryManager(){
+		return historyManager;
+	}
+	
+	/**
+	 * @return the login panel
+	 */
+	public LoginPanel getLoginPanel() {
+		return loginPanel;
+	}
+
+	/**
+	 * Set the login info panel
+	 * @param loginPanel
+	 */
+	public void setLoginPanel(LoginPanel loginPanel) {
+		this.loginPanel = loginPanel;
+	}
+
+
+	/**
+	 * Callback on login dialog cancel button
+	 */
+	@Override
+	public void onLoginCancel() {
+		loginWidget.hide();		
+	}
+
+	/**
+	 * Callback on login dialog ok button.
+	 */
+	@Override
+	public void onLoginOk(String facilityName, String username,
+			String password) {
+		loginWidget.hide();
+		waitDialog.setMessage(" Logging In...");
+		waitDialog.show();
+		// login to the given facility using username and password
+		loginService.login(username, password, facilityName, new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				// Show the RPC error message to the user
+				waitDialog.hide();
+				failureLogin(loginWidget.getFacilityName());
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				 waitDialog.hide();
+				 successLogin(loginWidget.getFacilityName());
+			}
+		});			
+	}
+	
+	/**
+	 * This method shows login dialog box for a input facility
+	 * @param facilityName
+	 */
+	public void showLoginWidget(String facilityName) {
+		loginWidget.setFacilityName(facilityName);
+		loginWidget.show();		
+	}
+	
+	/**
+	 * This method is called after the success of logging into facility to update 
+	 * instrument and investigation type list for the facility
+	 * @param facilityName
+	 */
+	public void successLogin(String facilityName) {
+		LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);	
+		infoPanel.successLogin();
+		loadInstrumentNames(facilityName);
+		loadInvestigationTypes(facilityName);		
+	}
+	
+	/**
+	 * This method is called for the success of logging out facility
+	 * @param facilityName
+	 */
+	private void successLogout(String facilityName) {
+		LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);
+		infoPanel.successLogout();
+	}
+	
+	/**
+	 * This method is invoked for the failure to login to facility service, shows an
+	 * error dialog to check the login details.
+	 * @param facilityName
+	 */
+	public void failureLogin(String facilityName) {
+		//Show an error message.
+		showErrorDialog("Error logging ,  Please check username and password");	
+		//Process the failure of login
+		LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);	
+		infoPanel.successLogout();		
+	}
+
+	/**
+	 * This method logs out user from a input facility
+	 * @param facilityName
+	 */
+	public void facilityLogout(String facilityName) {
+		waitDialog.setMessage(" Logging Out...");
+		waitDialog.show();
+		loginWidget.setFacilityName(facilityName);
+		// login to the given facility using username and password
+		loginService.logout(facilityName, new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				// Show the RPC error message to the user
+				waitDialog.hide();
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				 waitDialog.hide();
+				 successLogout(loginWidget.getFacilityName());
+			}
+		});			
+	}
+	
+	/**
+	 * This method loads available facility from TopCAT service
+	 */
+	public void loadFacilityNames(){
+		utilityService.getFacilities(new AsyncCallback<ArrayList<TFacility>>(){
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				 
+			}
+			@Override
+			public void onSuccess(ArrayList<TFacility> result) {
+				facilityNames = result;		
+				//Update widgets
+				updateFacilityListWidgets();			
+				loadLoginPanel();
+				loadInstrumentNames();
+				loadInvestigationTypes();
+			}
+			
+		});
+	}
+	
+	/**
+	 * This method loads instrument names from TopCAT service
+	 */
+	private void loadInstrumentNames(){
+		for(TFacility facility : facilityNames) {
+			utilityService.getInstrumentNames(facility.getName(), new InstrumentCallback(facility.getName(),this));
+		}
+	}
+	
+	/**
+	 * This method loads investigation types from TopCAT service
+	 */
+	private void loadInvestigationTypes() {
+		for(TFacility facility : facilityNames) {
+			utilityService.getInvestigationTypes(facility.getName(), new InvestigationTypeCallback(facility.getName(),this));
+		}
+	}
+	
+	/**
+	 * This method loads instrument names for a facility from TopCAT service
+	 * @param facilityName
+	 */
+	private void loadInstrumentNames(String facilityName){
+		for(TFacility facility : facilityNames) {
+			if(facility.getName().compareToIgnoreCase(facilityName)==0)
+				utilityService.getInstrumentNames(facility.getName(), new InstrumentCallback(facility.getName(),this));
+		}
+	}
+	
+	/**
+	 * This method loads investigation types for a facility from TopCAT service
+	 * @param facilityName
+	 */
+	private void loadInvestigationTypes(String facilityName) {
+		for(TFacility facility : facilityNames) {
+			if(facility.getName().compareToIgnoreCase(facilityName)==0)			
+				utilityService.getInvestigationTypes(facility.getName(), new InvestigationTypeCallback(facility.getName(),this));
+		}
+	}	
+	
+	/**
+	 * Updates all the facility list widgets
+	 */
+	private void updateFacilityListWidgets() {
+		ComboBox<Facility> cf= mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().getComboBoxFacility();
+		ArrayList<Facility> facilitiesList = new ArrayList<Facility>();
+		for(TFacility facility: facilityNames) {
+			facilitiesList.add(new Facility(facility.getName(),facility.getPluginName()));
+		}
+		mainWindow.getMainPanel().getSearchPanel().getAdvancedSearchSubPanel().setFacilityList(facilitiesList);
+		cf.getStore().add(facilitiesList);		
+	}
+	/**
+	 * This method sets the instrument list for a facility
+	 * @param facility
+	 * @param instruments
+	 */
+	public void setInstrumentList(String facility,ArrayList<Instrument> instruments){
+		ListStore<Instrument> fInstruments = getFacilityInstruments(facility);
+		fInstruments.removeAll();
+		fInstruments.add(instruments);
+	}
+	
+	/**
+	 * This method gets all the instrument details for input facility
+	 * @param facility
+	 * @return
+	 */
+	public ListStore<Instrument> getFacilityInstruments(String facility){
+		ListStore<Instrument> fInstruments = facilityInstrumentMap.get(facility);
+		if(fInstruments==null){ //New Facility
+			fInstruments= new ListStore<Instrument>();		
+			facilityInstrumentMap.put(facility,fInstruments);
+		}
+		return fInstruments;
+	}
+	
+	/**
+	 * This method updates the facility instrument list for the input facility
+	 * @param facility
+	 * @param instruments
+	 */
+	public void updateFacilityInstrumentListWidgets(String facility,ArrayList<Instrument> instruments) {
+		mainWindow.getMainPanel().getSearchPanel().getAdvancedSearchSubPanel().setFacilityInstrumentList(facility, instruments);	
+		setInstrumentList(facility,instruments);
+	}
+	
+	/**
+	 * This method updates Investigation types list widgets
+	 * @param facility
+	 * @param investigationTypes
+	 */
+	public void updateFacilityInvestigationTypeListWidgets(String facility,ArrayList<InvestigationType> investigationTypes) {
+		mainWindow.getMainPanel().getSearchPanel().getAdvancedSearchSubPanel().setFacilityInvestigationTypeList(facility, investigationTypes);
+	}
+	
+	/**
+	 * This method creates the facility login information panels
+	 */
+	private void loadLoginPanel() {
+		mainWindow.getHeaderPanel().getLoginPanel().createICATLoginLinks(this,facilityNames);
+	}
+
+	/**
+	 * This method searches for all the investigations that matches given search details
+	 * @param searchDetails
+	 */
+	public void searchForInvestigation(TAdvancedSearchDetails searchDetails) {
+		waitDialog.setMessage("  Searching...");
+		waitDialog.show();
+		searchService.getAdvancedSearchResultsInvestigation(null, searchDetails, new AsyncCallback<List<TInvestigation>>() {
+            public void onFailure(Throwable caught) {
+            	waitDialog.hide();
+            }
+			@Override
+			public void onSuccess(List<TInvestigation> result) {
+				ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
+				for(TInvestigation inv: result)
+					invList.add(new TopcatInvestigation(inv.getServerName(),inv.getInvestigationId(), inv.getInvestigationName(),inv.getTitle(),inv.getStartDate(),inv.getEndDate()));
+				waitDialog.hide();				
+				mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);	
+			}
+        });			
+	}
+	
+	/**
+	 * This method searches for the user investigations that matches given search details
+	 * @param searchDetails
+	 */
+	public void searchForMyInvestigation(TAdvancedSearchDetails searchDetails) {
+		waitDialog.setMessage("  Searching...");
+		waitDialog.show();
+		searchService.getSearchResultsMyInvestigationFromKeywords(null, searchDetails.getKeywords(), new AsyncCallback<List<TInvestigation>>() {
+            public void onFailure(Throwable caught) {
+            	waitDialog.hide();
+            }
+			@Override
+			public void onSuccess(List<TInvestigation> result) {
+				ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
+				for(TInvestigation inv: result)
+					invList.add(new TopcatInvestigation(inv.getServerName(),inv.getInvestigationId(), inv.getInvestigationName(),inv.getTitle(),inv.getStartDate(),inv.getEndDate()));
+				waitDialog.hide();				
+				mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);	
+			}
+        });			
+	}
+	
+	/**
+	 * Show an Dialog box
+	 * @param msg message in the dialog box
+	 */
+	public void showErrorDialog(String msg){
+		MessageBox.alert("Error", msg, null);
+	}
+	
+	/**
+	 * This method downloads all the datafiles for the given input datafile models
+	 * @param datafileList
+	 */
+	public void downloadDatafiles(List<DatafileModel> datafileList){
+		//create a list of datafile ids
+		HashMap<String,ArrayList<Long>> dfMap = new HashMap<String,ArrayList<Long>>();
+		for(DatafileModel datafile:datafileList){
+			ArrayList<Long> idList = dfMap.get(datafile.getFacilityName());
+			if(idList==null){
+				idList = new ArrayList<Long>();
+				dfMap.put(datafile.getFacilityName(), idList);
+			}
+			idList.add(new Long(datafile.getId()));
+		}
+		//for each server get the URLS for downloading datafiles
+		for(String serverName:dfMap.keySet()){
+			utilityService.getDatafilesDownloadURL(serverName, dfMap.get(serverName), new AsyncCallback<String>() {
+	            public void onFailure(Throwable caught) {
+	            	showErrorDialog("Error while downloading files");
+	            }
+				@Override
+				public void onSuccess(String result) {
+					DOM.setElementAttribute(RootPanel.get("__download").getElement(), "src", result);
+				}
+	        });			
+		}
+	}
+
+	/**
+	 * This method download the datafiles for the given list of datafile ICAT Nodes
+	 * @param nodeList list of datafile ICAT Nodes
+	 */
+	public void downloadDatafilesICATNodes(List<ICATNode> nodeList) {
+		// TODO Auto-generated method stub
+		//create a list of datafile ids
+		HashMap<String,ArrayList<Long>> dfMap = new HashMap<String,ArrayList<Long>>();
+		for(ICATNode node:nodeList){
+			if(node.getNodeType()==ICATNodeType.DATAFILE){
+				ArrayList<Long> idList = dfMap.get(node.getFacility());
+				if(idList==null){
+					idList = new ArrayList<Long>();
+					dfMap.put(node.getFacility(), idList);
+				}				
+				idList.add(new Long(node.getDatafileId()));
+			}
+		}
+		//for each server get the URLS for downloading datafiles
+		for(String serverName:dfMap.keySet()){
+			utilityService.getDatafilesDownloadURL(serverName, dfMap.get(serverName), new AsyncCallback<String>() {
+	            public void onFailure(Throwable caught) {
+	            	showErrorDialog("Error while downloading files");
+	            }
+				@Override
+				public void onSuccess(String result) {
+					DOM.setElementAttribute(RootPanel.get("__download").getElement(), "src", result);
+				}
+	        });			
+		}		
+	}
+	
+	/**
+	 * AJAX call to search of datafiles for the input search details in the given facility
+	 * @param facilityName    facility name
+	 * @param searchDetails   search details
+	 */
+	public void searchForDatafiles(String facilityName,
+			TAdvancedSearchDetails searchDetails) {
+		waitDialog.setMessage("  Searching...");
+		waitDialog.show();		
+		searchService.getAdvancedSearchResultsDatafile(null, facilityName, searchDetails, new AsyncCallback<ArrayList<DatafileModel>>() {
+            public void onFailure(Throwable caught) {
+            	waitDialog.hide();
+            }
+			@Override
+			public void onSuccess(ArrayList<DatafileModel> result) { //On success opens a datafile window to show the results
+				waitDialog.hide();	
+				try {
+					DatafileWindow datafileWindow = tcWindowManager.createDatafileWindow();
+					datafileWindow.setDatafileList(result);
+					datafileWindow.show();			
+					datafileWindow.setHistoryVerified(true);
+				} catch (WindowsNotAvailableExcecption e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+        });					
+	}
+
+	/**
+	 * This method will show the dataset window for the given facility name, investigation id
+	 * @param facilityName     facility name
+	 * @param investigationId  investigation id
+	 * @param investigationName investigation name
+	 */
+	public void showDatasetWindow(String facilityName,String investigationId,String investigationName){
+		try {
+			DatasetWindow datasetWindow = tcWindowManager.createDatasetWindow();
+			datasetWindow.setInvestigationTitle(investigationName);
+			datasetWindow.setDataset(facilityName,investigationId);
+			datasetWindow.show();			
+			datasetWindow.setHistoryVerified(true);
+		} catch (WindowsNotAvailableExcecption e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}						
+	}
+	
+	/**
+	 * This method will show dataset window for the given input facility name, investigation id and also updates
+	 * the browser history
+	 * @param facilityName     facility name
+	 * @param investigationId  investigation id
+	 * @param investigationName investigation name
+	 */
+	public void showDatasetWindowWithHistory(String facilityName,String investigationId,String investigationName){
+		showDatasetWindow(facilityName,investigationId,investigationName);
+		historyManager.updateHistory();
+	}	
+	
+	/**
+	 * This method will show the datafile window for the given input dataset models.
+	 * @param datasetModel list of dataset models
+	 */
+	public void showDatafileWindow(ArrayList<DatasetModel> datasetModel){
+		try {
+			DatafileWindow datafileWindow = tcWindowManager.createDatafileWindow();
+			datafileWindow.setDatasets(datasetModel);
+			datafileWindow.show();	
+			datafileWindow.setHistoryVerified(true);			
+		} catch (WindowsNotAvailableExcecption e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}	
+	
+	/**
+	 * This method will show the datafile window and also update the browser history.
+	 * @param datasetModel list of dataset models
+	 */
+	public void showDatafileWindowWithHistory(ArrayList<DatasetModel> datasetModel){
+		showDatafileWindow(datasetModel);
+		historyManager.updateHistory();
+	}	
+	
+	/**
+	 * This method will show the parameter window for the given inputs of facility name, datafile id
+	 * @param facilityName facility name
+	 * @param datafileId   datafile id
+	 * @param datafileName datafile name
+	 */
+	public void showParameterWindow(String facilityName,String datafileId,String datafileName){
+		try {
+			ParameterWindow paramWindow = tcWindowManager.createParameterWindow();
+			paramWindow.setDatafileName(datafileName);
+			paramWindow.setDatafileInfo(facilityName,datafileId);
+			paramWindow.show();			
+			paramWindow.setHistoryVerified(true);
+		} catch (WindowsNotAvailableExcecption e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}						
+	}
+	
+	/**
+	 * This method will call show parameter window and also update the browser history.
+	 * @param facilityName facility name
+	 * @param datafileId   datafile id
+	 * @param datafileName datafile name
+	 */
+	public void showParameterWindowWithHistory(String facilityName,String datafileId,String datafileName){
+		showParameterWindow(facilityName,datafileId,datafileName);
+		historyManager.updateHistory();
+	}	
+
+	/**
+	 * This method will take the input facility name and datafile id and downloads the parameter files in
+	 * CSV format.
+	 * @param facilityName facility name
+	 * @param datafileId   datafile id
+	 */
+	public void downloadParametersData(String facilityName,String datafileId) {
+		//set the invisible form for parameter download
+		//RootPanel.get("__downloadParameterForm").add(paramDownloadForm);
+		//construct servlet request to call copydatatocsvfile servlet
+		paramDownloadForm.setFacilityName(facilityName);
+		paramDownloadForm.setDatafileId(datafileId);
+		paramDownloadForm.submit();
+		//RootPanel.get("__downloadParameterForm").remove(paramDownloadForm);		
+	}
+
+	/**
+	 * @return the main window
+	 */
+	public TOPCATOnline getMainWindow() {
+		return mainWindow;
+	}
+	
+}

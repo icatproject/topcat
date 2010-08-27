@@ -1,0 +1,2 @@
+To setup jdbc connection pool
+F_HOME/bin/asadmin add-resources /src/main/setup/sun-resources.xml
