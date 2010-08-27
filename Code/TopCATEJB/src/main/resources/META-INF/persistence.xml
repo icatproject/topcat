@@ -34,10 +34,10 @@
       <property name="eclipselink.cache.shared.default" value="false"/>
       <property name="eclipselink.cache.type.default" value="NONE"/>
       <property name="eclipselink.cache.size.default" value="0"/>
-      <property name="eclipselink.jdbc.password" value="lvpat4"/>
+      <property name="eclipselink.jdbc.password" value="password"/>
       <property name="eclipselink.jdbc.user" value="topcat"/>
       <property name="eclipselink.jdbc.driver" value="oracle.jdbc.driver.OracleDriver"/>
-      <property name="eclipselink.jdbc.url" value="jdbc:oracle:thin:@(DESCRIPTION=(FAILOVER=on)(LOAD_BALANCE=yes)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=vesper.esc.rl.ac.uk)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=mayday.esc.rl.ac.uk)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=onatopp.esc.rl.ac.uk)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=vida.esc.rl.ac.uk)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=zora.esc.rl.ac.uk)(PORT=1521)))(CONNECT_DATA=(FAILOVER_MODE=(TYPE=session)(METHOD=basic))(SERVICE_NAME= fburhythmyx.esc.rl.ac.uk)))"/>
+      <property name="eclipselink.jdbc.url" value="jdbc:oracle:thin:@//localhost:1521/XE"/>
     </properties>
   </persistence-unit>
 </persistence>
