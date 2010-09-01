@@ -1,0 +1,212 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<table xmlns="http://xmlns.oracle.com/jdeveloper/1111/offlinedb">
+  <ID class="oracle.javatools.db.IdentifierBasedID">
+    <name>TOPCAT_KEYWORDS</name>
+    <identifier class="java.lang.String">cf9378c0-6254-4472-b53f-b529084a3b1b</identifier>
+    <schemaName>TOPCAT</schemaName>
+    <type>TABLE</type>
+  </ID>
+  <name>TOPCAT_KEYWORDS</name>
+  <columns>
+    <column>
+      <ID class="oracle.javatools.db.IdentifierBasedID">
+        <name>KEYWORD</name>
+        <identifier class="java.lang.String">4a048966-579a-488d-851d-84b710357619</identifier>
+        <parent class="oracle.javatools.db.IdentifierBasedID">
+          <name>TOPCAT_KEYWORDS</name>
+          <identifier class="java.lang.String">cf9378c0-6254-4472-b53f-b529084a3b1b</identifier>
+          <schemaName>TOPCAT</schemaName>
+          <type>TABLE</type>
+        </parent>
+        <schemaName>TOPCAT</schemaName>
+        <type>COLUMN</type>
+      </ID>
+      <name>KEYWORD</name>
+      <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+        <ID class="oracle.javatools.db.IdentifierBasedID">
+          <identifier class="java.lang.String">4cc5fd9c-2d71-46ce-8f3a-69c9c4800531</identifier>
+          <parent class="oracle.javatools.db.IdentifierBasedID">
+            <name>KEYWORD</name>
+            <identifier class="java.lang.String">4a048966-579a-488d-851d-84b710357619</identifier>
+            <parent class="oracle.javatools.db.IdentifierBasedID">
+              <name>TOPCAT_KEYWORDS</name>
+              <identifier class="java.lang.String">cf9378c0-6254-4472-b53f-b529084a3b1b</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <schemaName>TOPCAT</schemaName>
+            <type>COLUMN</type>
+          </parent>
+          <schemaName>TOPCAT</schemaName>
+          <type>DataTypeUsage</type>
+        </ID>
+        <attributeValues>
+          <entry>
+            <key>size</key>
+            <value class="java.lang.Long">255</value>
+          </entry>
+          <entry>
+            <key>unit</key>
+            <value class="java.lang.String">BYTE</value>
+          </entry>
+        </attributeValues>
+        <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+          <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+          <typeName>VARCHAR2</typeName>
+        </dataTypeID>
+        <properties>
+          <entry>
+            <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+            <value class="oracle.javatools.db.ReferenceID">
+              <parent class="oracle.javatools.db.ReferenceID">
+                <name>KEYWORD</name>
+                <parent class="oracle.javatools.db.ReferenceID">
+                  <name>TOPCAT_KEYWORDS</name>
+                  <identifier class="java.math.BigDecimal">219886</identifier>
+                  <schemaName>TOPCAT</schemaName>
+                  <type>TABLE</type>
+                </parent>
+                <type>COLUMN</type>
+              </parent>
+              <type>DataTypeUsage</type>
+            </value>
+          </entry>
+        </properties>
+      </dataTypeUsage>
+      <notNull>true</notNull>
+      <properties>
+        <entry>
+          <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+          <value class="oracle.javatools.db.ReferenceID">
+            <name>KEYWORD</name>
+            <parent class="oracle.javatools.db.ReferenceID">
+              <name>TOPCAT_KEYWORDS</name>
+              <identifier class="java.math.BigDecimal">219886</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <type>COLUMN</type>
+          </value>
+        </entry>
+      </properties>
+    </column>
+  </columns>
+  <constraints>
+    <constraint class="oracle.javatools.db.UniqueConstraint">
+      <ID class="oracle.javatools.db.IdentifierBasedID">
+        <name>KEYWORD_UQ</name>
+        <identifier class="java.lang.String">e873a37c-f591-46ec-8b0d-8e39b1b4c509</identifier>
+        <parent class="oracle.javatools.db.IdentifierBasedID">
+          <name>TOPCAT_KEYWORDS</name>
+          <identifier class="java.lang.String">cf9378c0-6254-4472-b53f-b529084a3b1b</identifier>
+          <schemaName>TOPCAT</schemaName>
+          <type>TABLE</type>
+        </parent>
+        <schemaName>TOPCAT</schemaName>
+        <type>CONSTRAINT</type>
+      </ID>
+      <name>KEYWORD_UQ</name>
+      <columnIDs>
+        <columnID class="oracle.javatools.db.IdentifierBasedID">
+          <name>KEYWORD</name>
+          <identifier class="java.lang.String">4a048966-579a-488d-851d-84b710357619</identifier>
+          <parent class="oracle.javatools.db.IdentifierBasedID">
+            <name>TOPCAT_KEYWORDS</name>
+            <identifier class="java.lang.String">cf9378c0-6254-4472-b53f-b529084a3b1b</identifier>
+            <schemaName>TOPCAT</schemaName>
+            <type>TABLE</type>
+          </parent>
+          <schemaName>TOPCAT</schemaName>
+          <type>COLUMN</type>
+        </columnID>
+      </columnIDs>
+      <enabled>true</enabled>
+      <properties>
+        <entry>
+          <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+          <value class="oracle.javatools.db.ReferenceID">
+            <name>KEYWORD_UQ</name>
+            <childObjectNames>
+              <childObjectName>KEYWORD</childObjectName>
+            </childObjectNames>
+            <parent class="oracle.javatools.db.ReferenceID">
+              <name>TOPCAT_KEYWORDS</name>
+              <identifier class="java.math.BigDecimal">219886</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <subType>UniqueConstraint</subType>
+            <type>CONSTRAINT</type>
+          </value>
+        </entry>
+      </properties>
+    </constraint>
+  </constraints>
+  <properties>
+    <entry>
+      <key>OfflineDBConstants.IMPORT_SOURCE_CONNECTION</key>
+      <value class="java.lang.String">TopCAT-Test11g</value>
+    </entry>
+    <entry>
+      <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+      <value class="oracle.javatools.db.ReferenceID">
+        <name>TOPCAT_KEYWORDS</name>
+        <identifier class="java.math.BigDecimal">219886</identifier>
+        <schemaName>TOPCAT</schemaName>
+        <type>TABLE</type>
+      </value>
+    </entry>
+    <entry>
+      <key>OracleStorageProperties</key>
+      <value class="oracle.javatools.db.ora.OracleStorageProperties">
+        <ID class="oracle.javatools.db.IdentifierBasedID">
+          <identifier class="java.lang.String">b853875b-963d-40ba-8e58-8561fdc37855</identifier>
+          <parent class="oracle.javatools.db.IdentifierBasedID">
+            <name>TOPCAT_KEYWORDS</name>
+            <identifier class="java.lang.String">cf9378c0-6254-4472-b53f-b529084a3b1b</identifier>
+            <schemaName>TOPCAT</schemaName>
+            <type>TABLE</type>
+          </parent>
+          <schemaName>TOPCAT</schemaName>
+          <type>OracleStorageProperties</type>
+        </ID>
+        <bufferMode>DEFAULT</bufferMode>
+        <initialExtent>65536</initialExtent>
+        <initrans>1</initrans>
+        <logging>true</logging>
+        <maxExtent>2147483645</maxExtent>
+        <maxtrans>255</maxtrans>
+        <minExtent>1</minExtent>
+        <percentFree>10</percentFree>
+        <properties>
+          <entry>
+            <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+            <value class="oracle.javatools.db.ReferenceID">
+              <parent class="oracle.javatools.db.ReferenceID">
+                <name>TOPCAT_KEYWORDS</name>
+                <identifier class="java.math.BigDecimal">219886</identifier>
+                <schemaName>TOPCAT</schemaName>
+                <type>TABLE</type>
+              </parent>
+              <type>OracleStorageProperties</type>
+            </value>
+          </entry>
+        </properties>
+        <tablespace>TOPCAT_TS</tablespace>
+      </value>
+    </entry>
+    <entry>
+      <key>TableType</key>
+      <value class="oracle.javatools.db.Table$TableType">NORMAL</value>
+    </entry>
+  </properties>
+  <schema>
+    <ID class="oracle.javatools.db.IdentifierBasedID">
+      <name>TOPCAT</name>
+      <identifier class="java.lang.String">85623786-6607-4f0e-b2ab-4a079ee58967</identifier>
+      <schemaName>SCHEMA1</schemaName>
+      <type>SCHEMA</type>
+    </ID>
+    <name>TOPCAT</name>
+  </schema>
+</table>
