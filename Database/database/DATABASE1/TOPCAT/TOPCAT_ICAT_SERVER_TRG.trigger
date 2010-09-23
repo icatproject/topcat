@@ -1,10 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <trigger xmlns="http://xmlns.oracle.com/jdeveloper/1111/offlinedb">
   <ID class="oracle.javatools.db.IdentifierBasedID">
-    <name>TOPCAT_ICAT_SERVER_TRG</name>
     <identifier class="java.lang.String">50702501-7cf5-4e27-bc30-819f9925f1fa</identifier>
-    <schemaName>TOPCAT</schemaName>
-    <type>TRIGGER</type>
   </ID>
   <name>TOPCAT_ICAT_SERVER_TRG</name>
   <baseType>TABLE</baseType>
@@ -21,12 +18,6 @@ END;</code>
     <event>INSERT</event>
   </events>
   <schema>
-    <ID class="oracle.javatools.db.IdentifierBasedID">
-      <name>TOPCAT</name>
-      <identifier class="java.lang.String">85623786-6607-4f0e-b2ab-4a079ee58967</identifier>
-      <schemaName>SCHEMA1</schemaName>
-      <type>SCHEMA</type>
-    </ID>
     <name>TOPCAT</name>
   </schema>
   <source>CREATE TRIGGER TOPCAT_ICAT_SERVER_TRG

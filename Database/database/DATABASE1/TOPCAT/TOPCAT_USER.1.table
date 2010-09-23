@@ -1,44 +1,18 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <table xmlns="http://xmlns.oracle.com/jdeveloper/1111/offlinedb">
   <ID class="oracle.javatools.db.IdentifierBasedID">
-    <name>TOPCAT_USER</name>
     <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-    <schemaName>TOPCAT</schemaName>
-    <type>TABLE</type>
   </ID>
   <name>TOPCAT_USER</name>
   <columns>
     <column>
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>ID</name>
         <identifier class="java.lang.String">2c5a0b34-ed3b-47c4-9604-88b6828640e9</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>SCHEMA1</schemaName>
-        <type>COLUMN</type>
       </ID>
       <name>ID</name>
       <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
         <ID class="oracle.javatools.db.IdentifierBasedID">
           <identifier class="java.lang.String">aed9859c-fe59-410f-9b1d-fedd5b1574c0</identifier>
-          <parent class="oracle.javatools.db.IdentifierBasedID">
-            <name>ID</name>
-            <identifier class="java.lang.String">2c5a0b34-ed3b-47c4-9604-88b6828640e9</identifier>
-            <parent class="oracle.javatools.db.IdentifierBasedID">
-              <name>TOPCAT_USER</name>
-              <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-              <schemaName>TOPCAT</schemaName>
-              <type>TABLE</type>
-            </parent>
-            <schemaName>SCHEMA1</schemaName>
-            <type>COLUMN</type>
-          </parent>
-          <schemaName>SCHEMA1</schemaName>
-          <type>DataTypeUsage</type>
         </ID>
         <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
           <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
@@ -65,42 +39,16 @@
             <type>TRIGGER</type>
           </value>
         </entry>
-        <entry>
-          <key>ColumnSequenceExpander.TriggerNullCheck</key>
-        </entry>
       </properties>
     </column>
     <column>
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>TOPCAT_USER_ID</name>
         <identifier class="java.lang.String">d3800362-e04b-4d49-ac48-73a11aa41cd9</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>TOPCAT</schemaName>
-        <type>COLUMN</type>
       </ID>
       <name>TOPCAT_USER_ID</name>
       <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
         <ID class="oracle.javatools.db.IdentifierBasedID">
           <identifier class="java.lang.String">7bc67b92-f442-4fcb-94a2-eee4f8850ec4</identifier>
-          <parent class="oracle.javatools.db.IdentifierBasedID">
-            <name>TOPCAT_USER_ID</name>
-            <identifier class="java.lang.String">d3800362-e04b-4d49-ac48-73a11aa41cd9</identifier>
-            <parent class="oracle.javatools.db.IdentifierBasedID">
-              <name>TOPCAT_USER</name>
-              <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-              <schemaName>TOPCAT</schemaName>
-              <type>TABLE</type>
-            </parent>
-            <schemaName>TOPCAT</schemaName>
-            <type>COLUMN</type>
-          </parent>
-          <schemaName>TOPCAT</schemaName>
-          <type>DataTypeUsage</type>
         </ID>
         <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
           <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
@@ -111,35 +59,12 @@
     </column>
     <column>
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>SERVER_ID</name>
         <identifier class="java.lang.String">dc93b080-b497-45c9-9864-e9796ddbd757</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>TOPCAT</schemaName>
-        <type>COLUMN</type>
       </ID>
       <name>SERVER_ID</name>
       <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
         <ID class="oracle.javatools.db.IdentifierBasedID">
           <identifier class="java.lang.String">a4642467-d333-472b-b799-85b65d711e74</identifier>
-          <parent class="oracle.javatools.db.IdentifierBasedID">
-            <name>SERVER_ID</name>
-            <identifier class="java.lang.String">dc93b080-b497-45c9-9864-e9796ddbd757</identifier>
-            <parent class="oracle.javatools.db.IdentifierBasedID">
-              <name>TOPCAT_USER</name>
-              <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-              <schemaName>TOPCAT</schemaName>
-              <type>TABLE</type>
-            </parent>
-            <schemaName>TOPCAT</schemaName>
-            <type>COLUMN</type>
-          </parent>
-          <schemaName>TOPCAT</schemaName>
-          <type>DataTypeUsage</type>
         </ID>
         <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
           <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
@@ -150,35 +75,12 @@
     </column>
     <column>
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>NAME</name>
         <identifier class="java.lang.String">0ae96634-eeae-4f56-a1ec-5f822a721c94</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>SCHEMA1</schemaName>
-        <type>COLUMN</type>
       </ID>
       <name>NAME</name>
       <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
         <ID class="oracle.javatools.db.IdentifierBasedID">
           <identifier class="java.lang.String">6451f2db-4974-4279-8fe4-1eb20a0be913</identifier>
-          <parent class="oracle.javatools.db.IdentifierBasedID">
-            <name>NAME</name>
-            <identifier class="java.lang.String">0ae96634-eeae-4f56-a1ec-5f822a721c94</identifier>
-            <parent class="oracle.javatools.db.IdentifierBasedID">
-              <name>TOPCAT_USER</name>
-              <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-              <schemaName>TOPCAT</schemaName>
-              <type>TABLE</type>
-            </parent>
-            <schemaName>SCHEMA1</schemaName>
-            <type>COLUMN</type>
-          </parent>
-          <schemaName>SCHEMA1</schemaName>
-          <type>DataTypeUsage</type>
         </ID>
         <attributeValues>
           <entry>
@@ -195,35 +97,40 @@
     </column>
     <column>
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>DN</name>
+        <identifier class="java.lang.String">c41d3470-75fa-4f5b-ab57-7c10050e4efe</identifier>
+      </ID>
+      <name>USER_SURNAME</name>
+      <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+        <ID class="oracle.javatools.db.IdentifierBasedID">
+          <identifier class="java.lang.String">b32f1af1-d4ff-40cc-82b7-3f5cdb33dd6e</identifier>
+        </ID>
+        <attributeValues>
+          <entry>
+            <key>size</key>
+            <value class="java.lang.Long">255</value>
+          </entry>
+        </attributeValues>
+        <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+          <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+          <typeName>VARCHAR2</typeName>
+        </dataTypeID>
+      </dataTypeUsage>
+      <notNull>false</notNull>
+      <properties>
+        <entry>
+          <key>Comment</key>
+          <value class="java.lang.String">Surname of the user</value>
+        </entry>
+      </properties>
+    </column>
+    <column>
+      <ID class="oracle.javatools.db.IdentifierBasedID">
         <identifier class="java.lang.String">e683e49e-9bc4-4727-aa88-291d4033af36</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>SCHEMA1</schemaName>
-        <type>COLUMN</type>
       </ID>
       <name>DN</name>
       <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
         <ID class="oracle.javatools.db.IdentifierBasedID">
           <identifier class="java.lang.String">6c9a0ea8-0bbb-4f2d-b3ee-c3769eaffcdc</identifier>
-          <parent class="oracle.javatools.db.IdentifierBasedID">
-            <name>DN</name>
-            <identifier class="java.lang.String">e683e49e-9bc4-4727-aa88-291d4033af36</identifier>
-            <parent class="oracle.javatools.db.IdentifierBasedID">
-              <name>TOPCAT_USER</name>
-              <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-              <schemaName>TOPCAT</schemaName>
-              <type>TABLE</type>
-            </parent>
-            <schemaName>SCHEMA1</schemaName>
-            <type>COLUMN</type>
-          </parent>
-          <schemaName>SCHEMA1</schemaName>
-          <type>DataTypeUsage</type>
         </ID>
         <attributeValues>
           <entry>
@@ -242,16 +149,7 @@
   <constraints>
     <constraint class="oracle.javatools.db.FKConstraint">
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>ICAT_USER_TOPCAT_USER_INF_FK1</name>
         <identifier class="java.lang.String">cfa7cb9f-60d4-487f-9149-a89c5934391c</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>TOPCAT</schemaName>
-        <type>CONSTRAINT</type>
       </ID>
       <name>ICAT_USER_TOPCAT_USER_INF_FK1</name>
       <columnIDs>
@@ -285,16 +183,7 @@
     </constraint>
     <constraint class="oracle.javatools.db.FKConstraint">
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>TOPCAT_USER_TOPCAT_ICAT_S_FK1</name>
         <identifier class="java.lang.String">600b2e83-cd20-4ac0-a001-3f173f157279</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>TOPCAT</schemaName>
-        <type>CONSTRAINT</type>
       </ID>
       <name>TOPCAT_USER_TOPCAT_ICAT_S_FK1</name>
       <columnIDs>
@@ -328,16 +217,7 @@
     </constraint>
     <constraint class="oracle.javatools.db.PKConstraint">
       <ID class="oracle.javatools.db.IdentifierBasedID">
-        <name>TOPCAT_USER_PK</name>
         <identifier class="java.lang.String">6faaeaeb-691d-42a4-b10b-6f60a761d4c2</identifier>
-        <parent class="oracle.javatools.db.IdentifierBasedID">
-          <name>TOPCAT_USER</name>
-          <identifier class="java.lang.String">a93a3eda-5d62-4a4f-b600-d56b791b28cf</identifier>
-          <schemaName>TOPCAT</schemaName>
-          <type>TABLE</type>
-        </parent>
-        <schemaName>SCHEMA1</schemaName>
-        <type>CONSTRAINT</type>
       </ID>
       <name>TOPCAT_USER_PK</name>
       <columnIDs>
@@ -364,12 +244,6 @@
     </entry>
   </properties>
   <schema>
-    <ID class="oracle.javatools.db.IdentifierBasedID">
-      <name>TOPCAT</name>
-      <identifier class="java.lang.String">85623786-6607-4f0e-b2ab-4a079ee58967</identifier>
-      <schemaName>SCHEMA1</schemaName>
-      <type>SCHEMA</type>
-    </ID>
     <name>TOPCAT</name>
   </schema>
 </table>
