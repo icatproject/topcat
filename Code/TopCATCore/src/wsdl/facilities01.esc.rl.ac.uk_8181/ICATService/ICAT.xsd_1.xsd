@@ -8,6 +8,8 @@
 
 <xs:element name="NoSuchUserException" type="tns:NoSuchUserException"></xs:element>
 
+<xs:element name="ParameterSearchException" type="tns:ParameterSearchException"></xs:element>
+
 <xs:element name="SessionException" type="tns:SessionException"></xs:element>
 
 <xs:element name="ValidationException" type="tns:ValidationException"></xs:element>
@@ -224,6 +226,18 @@
 
 <xs:element name="getMyInvestigationsResponse" type="tns:getMyInvestigationsResponse"></xs:element>
 
+<xs:element name="getParameterByName" type="tns:getParameterByName"></xs:element>
+
+<xs:element name="getParameterByNameResponse" type="tns:getParameterByNameResponse"></xs:element>
+
+<xs:element name="getParameterByNameUnits" type="tns:getParameterByNameUnits"></xs:element>
+
+<xs:element name="getParameterByNameUnitsResponse" type="tns:getParameterByNameUnitsResponse"></xs:element>
+
+<xs:element name="getParameterByUnits" type="tns:getParameterByUnits"></xs:element>
+
+<xs:element name="getParameterByUnitsResponse" type="tns:getParameterByUnitsResponse"></xs:element>
+
 <xs:element name="getUserDetails" type="tns:getUserDetails"></xs:element>
 
 <xs:element name="getUserDetailsResponse" type="tns:getUserDetailsResponse"></xs:element>
@@ -235,6 +249,10 @@
 <xs:element name="investigation" type="tns:investigation"></xs:element>
 
 <xs:element name="investigator" type="tns:investigator"></xs:element>
+
+<xs:element name="isSessionValid" type="tns:isSessionValid"></xs:element>
+
+<xs:element name="isSessionValidResponse" type="tns:isSessionValidResponse"></xs:element>
 
 <xs:element name="listDatafileFormats" type="tns:listDatafileFormats"></xs:element>
 
@@ -376,6 +394,18 @@
 
 <xs:element name="searchByKeywordsResponse" type="tns:searchByKeywordsResponse"></xs:element>
 
+<xs:element name="searchByParameter" type="tns:searchByParameter"></xs:element>
+
+<xs:element name="searchByParameterComparison" type="tns:searchByParameterComparison"></xs:element>
+
+<xs:element name="searchByParameterComparisonResponse" type="tns:searchByParameterComparisonResponse"></xs:element>
+
+<xs:element name="searchByParameterCondition" type="tns:searchByParameterCondition"></xs:element>
+
+<xs:element name="searchByParameterConditionResponse" type="tns:searchByParameterConditionResponse"></xs:element>
+
+<xs:element name="searchByParameterResponse" type="tns:searchByParameterResponse"></xs:element>
+
 <xs:element name="searchByRunNumber" type="tns:searchByRunNumber"></xs:element>
 
 <xs:element name="searchByRunNumberPagination" type="tns:searchByRunNumberPagination"></xs:element>
@@ -400,9 +430,45 @@
 
 <xs:element name="searchByUserSurnameResponse" type="tns:searchByUserSurnameResponse"></xs:element>
 
+<xs:element name="searchDatafileByParameter" type="tns:searchDatafileByParameter"></xs:element>
+
+<xs:element name="searchDatafileByParameterComparison" type="tns:searchDatafileByParameterComparison"></xs:element>
+
+<xs:element name="searchDatafileByParameterComparisonResponse" type="tns:searchDatafileByParameterComparisonResponse"></xs:element>
+
+<xs:element name="searchDatafileByParameterCondition" type="tns:searchDatafileByParameterCondition"></xs:element>
+
+<xs:element name="searchDatafileByParameterConditionResponse" type="tns:searchDatafileByParameterConditionResponse"></xs:element>
+
+<xs:element name="searchDatafileByParameterResponse" type="tns:searchDatafileByParameterResponse"></xs:element>
+
+<xs:element name="searchDatasetByParameter" type="tns:searchDatasetByParameter"></xs:element>
+
+<xs:element name="searchDatasetByParameterComparison" type="tns:searchDatasetByParameterComparison"></xs:element>
+
+<xs:element name="searchDatasetByParameterComparisonResponse" type="tns:searchDatasetByParameterComparisonResponse"></xs:element>
+
+<xs:element name="searchDatasetByParameterCondition" type="tns:searchDatasetByParameterCondition"></xs:element>
+
+<xs:element name="searchDatasetByParameterConditionResponse" type="tns:searchDatasetByParameterConditionResponse"></xs:element>
+
+<xs:element name="searchDatasetByParameterResponse" type="tns:searchDatasetByParameterResponse"></xs:element>
+
 <xs:element name="searchDatasetsBySample" type="tns:searchDatasetsBySample"></xs:element>
 
 <xs:element name="searchDatasetsBySampleResponse" type="tns:searchDatasetsBySampleResponse"></xs:element>
+
+<xs:element name="searchSampleByParameter" type="tns:searchSampleByParameter"></xs:element>
+
+<xs:element name="searchSampleByParameterComparison" type="tns:searchSampleByParameterComparison"></xs:element>
+
+<xs:element name="searchSampleByParameterComparisonResponse" type="tns:searchSampleByParameterComparisonResponse"></xs:element>
+
+<xs:element name="searchSampleByParameterCondition" type="tns:searchSampleByParameterCondition"></xs:element>
+
+<xs:element name="searchSampleByParameterConditionResponse" type="tns:searchSampleByParameterConditionResponse"></xs:element>
+
+<xs:element name="searchSampleByParameterResponse" type="tns:searchSampleByParameterResponse"></xs:element>
 
 <xs:element name="searchSamplesBySampleName" type="tns:searchSamplesBySampleName"></xs:element>
 
@@ -478,14 +544,15 @@
 <xs:complexContent>
 <xs:extension base="tns:entityBaseBean">
 <xs:sequence>
+<xs:element name="dateTimeValue" type="xs:dateTime" minOccurs="0"></xs:element>
 <xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="error" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="numeric" type="xs:boolean"></xs:element>
 <xs:element name="numericValue" type="xs:double" minOccurs="0"></xs:element>
 <xs:element name="rangeBottom" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="rangeTop" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="sampleParameterPK" type="tns:sampleParameterPK" minOccurs="0"></xs:element>
 <xs:element name="stringValue" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="valueType" type="tns:parameterValueType" minOccurs="0"></xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -527,6 +594,18 @@
 </xs:complexContent>
 </xs:complexType>
 
+<xs:complexType name="listInstruments">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listInstrumentsResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="removeSample">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -551,18 +630,6 @@
 <xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="stackTraceAsString" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="uniqueId" type="xs:string" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="listInstruments">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="listInstrumentsResponse">
-<xs:sequence>
-<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
@@ -629,13 +696,14 @@
 <xs:extension base="tns:entityBaseBean">
 <xs:sequence>
 <xs:element name="datafileParameterPK" type="tns:datafileParameterPK" minOccurs="0"></xs:element>
+<xs:element name="dateTimeValue" type="xs:dateTime" minOccurs="0"></xs:element>
 <xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="error" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="numeric" type="xs:boolean"></xs:element>
 <xs:element name="numericValue" type="xs:double" minOccurs="0"></xs:element>
 <xs:element name="rangeBottom" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="rangeTop" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="stringValue" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="valueType" type="tns:parameterValueType" minOccurs="0"></xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -700,6 +768,50 @@
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="getParameterByNameUnits">
+<xs:sequence>
+<xs:element name="sesssionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="units" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getParameterByNameUnitsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:parameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameter">
+<xs:complexContent>
+<xs:extension base="tns:entityBaseBean">
+<xs:sequence>
+<xs:element name="datafileParameter" type="xs:boolean"></xs:element>
+<xs:element name="datasetParameter" type="xs:boolean"></xs:element>
+<xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="nonNumericValueFormat" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="parameterPK" type="tns:parameterPK" minOccurs="0"></xs:element>
+<xs:element name="sampleParameter" type="xs:boolean"></xs:element>
+<xs:element name="searchable" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="unitsLongVersion" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="valueType" type="tns:parameterValueType" minOccurs="0"></xs:element>
+<xs:element name="verified" type="xs:boolean"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="parameterPK">
+<xs:complexContent>
+<xs:extension base="tns:entityPrimaryKeyBaseBean">
+<xs:sequence>
+<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="units" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
 <xs:complexType name="removeDataFile">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -720,20 +832,6 @@
 
 <xs:complexType name="removeAuthorisationResponse">
 <xs:sequence></xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addDataFileParameters">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="dataFileParameters" type="tns:datafileParameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
-<xs:element name="datafileId" type="xs:long" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addDataFileParametersResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:datafileParameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
-</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="listFacilityCycles">
@@ -759,6 +857,20 @@
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="addDataFileParameters">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="dataFileParameters" type="tns:datafileParameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="datafileId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addDataFileParametersResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:datafileParameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="logout">
@@ -815,6 +927,17 @@
 </xs:complexContent>
 </xs:complexType>
 
+<xs:complexType name="removeInvestigation">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="investigationId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="removeInvestigationResponse">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="removeInvestigator">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -834,17 +957,6 @@
 </xs:complexType>
 
 <xs:complexType name="removeInvestigatorResponse">
-<xs:sequence></xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="removeInvestigation">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="investigationId" type="xs:long" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="removeInvestigationResponse">
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
@@ -913,14 +1025,15 @@
 <xs:extension base="tns:entityBaseBean">
 <xs:sequence>
 <xs:element name="datasetParameterPK" type="tns:datasetParameterPK" minOccurs="0"></xs:element>
+<xs:element name="dateTimeValue" type="xs:dateTime" minOccurs="0"></xs:element>
 <xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="error" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="numeric" type="xs:boolean"></xs:element>
 <xs:element name="numericValue" type="xs:double" minOccurs="0"></xs:element>
 <xs:element name="parameter" type="tns:parameter" minOccurs="0"></xs:element>
 <xs:element name="rangeBottom" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="rangeTop" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="stringValue" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="valueType" type="tns:parameterValueType" minOccurs="0"></xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -931,36 +1044,6 @@
 <xs:extension base="tns:entityPrimaryKeyBaseBean">
 <xs:sequence>
 <xs:element name="datasetId" type="xs:long" minOccurs="0"></xs:element>
-<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="units" type="xs:string" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="parameter">
-<xs:complexContent>
-<xs:extension base="tns:entityBaseBean">
-<xs:sequence>
-<xs:element name="datafileParameter" type="xs:boolean"></xs:element>
-<xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="nonNumericValueFormat" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="numeric" type="xs:boolean"></xs:element>
-<xs:element name="numericValue" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="parameterPK" type="tns:parameterPK" minOccurs="0"></xs:element>
-<xs:element name="sampleParameter" type="xs:boolean"></xs:element>
-<xs:element name="searchable" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="unitsLongVersion" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="verified" type="xs:boolean"></xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="parameterPK">
-<xs:complexContent>
-<xs:extension base="tns:entityPrimaryKeyBaseBean">
-<xs:sequence>
 <xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="units" type="xs:string" minOccurs="0"></xs:element>
 </xs:sequence>
@@ -1033,6 +1116,32 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="searchDatafileByParameter">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="comparisonList" type="tns:parameterSearch" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterSearch">
+<xs:sequence>
+<xs:element name="param" type="tns:parameter" minOccurs="0"></xs:element>
+<xs:element name="type" type="tns:parameterType" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatafileByParameterResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ParameterSearchException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="downloadDatafiles">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1043,6 +1152,34 @@
 <xs:complexType name="downloadDatafilesResponse">
 <xs:sequence>
 <xs:element name="URL" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatasetByParameterComparison">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="comparison" type="tns:parameterComparisonCondition" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterComparisonCondition" final="extension restriction">
+<xs:complexContent>
+<xs:extension base="tns:parameterCondition">
+<xs:sequence>
+<xs:element name="comparator" type="tns:comparisonOperator" minOccurs="0"></xs:element>
+<xs:element name="parameterValued" type="tns:parameterSearch" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="parameterCondition">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatasetByParameterComparisonResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:dataset" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
@@ -1117,14 +1254,16 @@
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByUserSurname">
+<xs:complexType name="searchByUserSurnamePagination">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="surname" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="startIndex" type="xs:int"></xs:element>
+<xs:element name="numberOfResults" type="xs:int"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByUserSurnameResponse">
+<xs:complexType name="searchByUserSurnamePaginationResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
@@ -1221,16 +1360,51 @@
 </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="searchByUserSurnamePagination">
+<xs:complexType name="searchByUserSurname">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="surname" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="startIndex" type="xs:int"></xs:element>
-<xs:element name="numberOfResults" type="xs:int"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByUserSurnamePaginationResponse">
+<xs:complexType name="searchByUserSurnameResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatafileByParameterCondition">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="logicalCondition" type="tns:parameterLogicalCondition" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterLogicalCondition" final="extension restriction">
+<xs:complexContent>
+<xs:extension base="tns:parameterCondition">
+<xs:sequence>
+<xs:element name="listComparable" type="tns:parameterCondition" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="operator" type="tns:logicalOperator" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="searchDatafileByParameterConditionResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchByParameterComparison">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="comparisionCondition" type="tns:parameterComparisonCondition" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchByParameterComparisonResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
@@ -1249,14 +1423,14 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByKeywords">
+<xs:complexType name="searchByParameterCondition">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="keywords" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="logicalCondition" type="tns:parameterLogicalCondition" minOccurs="0"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByKeywordsResponse">
+<xs:complexType name="searchByParameterConditionResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
@@ -1285,26 +1459,14 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="getMyInvestigations">
+<xs:complexType name="searchByKeywords">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="keywords" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="getMyInvestigationsResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="getMyInvestigationsIncludes">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="investigationInclude" type="tns:investigationInclude" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="getMyInvestigationsIncludesResponse">
+<xs:complexType name="searchByKeywordsResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
@@ -1325,6 +1487,31 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="getMyInvestigationsIncludes">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="investigationInclude" type="tns:investigationInclude" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getMyInvestigationsIncludesResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getMyInvestigations">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getMyInvestigationsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="removeDataSetParameter">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1336,6 +1523,19 @@
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="searchSampleByParameterCondition">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="logicalCondition" type="tns:parameterLogicalCondition" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchSampleByParameterConditionResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:sample" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="modifyPublication">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1345,19 +1545,6 @@
 
 <xs:complexType name="modifyPublicationResponse">
 <xs:sequence></xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="searchByUserID">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="userSearch" type="xs:string" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="searchByUserIDResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
-</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="searchByUserIDPagination">
@@ -1375,6 +1562,19 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="searchByUserID">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="userSearch" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchByUserIDResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="removeDataFileParameter">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1384,6 +1584,45 @@
 
 <xs:complexType name="removeDataFileParameterResponse">
 <xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatasetByParameterCondition">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="logicalCondition" type="tns:parameterLogicalCondition" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatasetByParameterConditionResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:dataset" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchSampleByParameter">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="comparisonList" type="tns:parameterSearch" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchSampleByParameterResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:sample" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchByParameter">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="parameterValued" type="tns:parameterSearch" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchByParameterResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="getInvestigationsIncludes">
@@ -1409,6 +1648,18 @@
 
 <xs:complexType name="deleteDataSetResponse">
 <xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="isSessionValid">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="isSessionValidResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"></xs:element>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="getDatafiles">
@@ -1522,6 +1773,19 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="getParameterByName">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getParameterByNameResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:parameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="getKeywordsForUser">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1608,6 +1872,20 @@
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="addKeyword">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="keyword" type="tns:keyword" minOccurs="0"></xs:element>
+<xs:element name="investigationId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addKeywordResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:keyword" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="getAuthorisations">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1628,26 +1906,13 @@
 <xs:sequence>
 <xs:element name="elementId" type="xs:long" minOccurs="0"></xs:element>
 <xs:element name="elementType" type="tns:elementType" minOccurs="0"></xs:element>
+<xs:element name="id" type="xs:long" minOccurs="0"></xs:element>
 <xs:element name="role" type="tns:icatRole" minOccurs="0"></xs:element>
 <xs:element name="userChildRecord" type="xs:long" minOccurs="0"></xs:element>
 <xs:element name="userId" type="xs:string" minOccurs="0"></xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="addKeyword">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="keyword" type="tns:keyword" minOccurs="0"></xs:element>
-<xs:element name="investigationId" type="xs:long" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addKeywordResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:keyword" minOccurs="0"></xs:element>
-</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="modifyInvestigation">
@@ -1684,6 +1949,19 @@
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="searchDatasetByParameter">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="comparisonList" type="tns:parameterSearch" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatasetByParameterResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:dataset" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="deleteKeyword">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1709,21 +1987,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByRunNumber">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="instruments" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
-<xs:element name="startRun" type="xs:float"></xs:element>
-<xs:element name="endRun" type="xs:float"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="searchByRunNumberResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="searchByRunNumberPagination">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1741,10 +2004,40 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByAdvanced">
+<xs:complexType name="searchByRunNumber">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="instruments" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="startRun" type="xs:float"></xs:element>
+<xs:element name="endRun" type="xs:float"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchByRunNumberResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatafileByParameterComparison">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="comparison" type="tns:parameterComparisonCondition" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatafileByParameterComparisonResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchByAdvancedPagination">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="advancedSearchDetails" type="tns:advancedSearchDetails" minOccurs="0"></xs:element>
+<xs:element name="startIndex" type="xs:int"></xs:element>
+<xs:element name="numberOfResults" type="xs:int"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
@@ -1771,22 +2064,20 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByAdvancedResponse">
+<xs:complexType name="searchByAdvancedPaginationResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByAdvancedPagination">
+<xs:complexType name="searchByAdvanced">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
 <xs:element name="advancedSearchDetails" type="tns:advancedSearchDetails" minOccurs="0"></xs:element>
-<xs:element name="startIndex" type="xs:int"></xs:element>
-<xs:element name="numberOfResults" type="xs:int"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="searchByAdvancedPaginationResponse">
+<xs:complexType name="searchByAdvancedResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:investigation" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
@@ -1826,20 +2117,6 @@
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="createDataFiles">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="dataFiles" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
-<xs:element name="datasetId" type="xs:long" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="createDataFilesResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="addDataSetParameter">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1851,6 +2128,20 @@
 <xs:complexType name="addDataSetParameterResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:datasetParameter" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createDataFiles">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="dataFiles" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="datasetId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createDataFilesResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:datafile" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
@@ -1884,15 +2175,17 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="deletePublication">
+<xs:complexType name="getParameterByUnits">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="publicationId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="units" type="xs:string" minOccurs="0"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="deletePublicationResponse">
-<xs:sequence></xs:sequence>
+<xs:complexType name="getParameterByUnitsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:parameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="loginLifetime">
@@ -1922,6 +2215,17 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="deletePublication">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="publicationId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="deletePublicationResponse">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="deleteAuthorisation">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -1930,18 +2234,6 @@
 </xs:complexType>
 
 <xs:complexType name="deleteAuthorisationResponse">
-<xs:sequence></xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="updateAuthorisation">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="toChangetoRole" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="authorisationId" type="xs:long" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="updateAuthorisationResponse">
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
@@ -1970,6 +2262,18 @@
 <xs:sequence>
 <xs:element name="return" type="tns:dataset" minOccurs="0"></xs:element>
 </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="updateAuthorisation">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="toChangetoRole" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="authorisationId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="updateAuthorisationResponse">
+<xs:sequence></xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="listRoles">
@@ -2080,6 +2384,19 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="searchDatasetsBySample">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="sample" type="tns:sample" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="searchDatasetsBySampleResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:dataset" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="addPublication">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
@@ -2091,19 +2408,6 @@
 <xs:complexType name="addPublicationResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:publication" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="searchDatasetsBySample">
-<xs:sequence>
-<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="sample" type="tns:sample" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="searchDatasetsBySampleResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:dataset" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
@@ -2132,15 +2436,17 @@
 <xs:sequence></xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="modifyDataFileParameter">
+<xs:complexType name="searchSampleByParameterComparison">
 <xs:sequence>
 <xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
-<xs:element name="dataFileParameter" type="tns:datafileParameter" minOccurs="0"></xs:element>
+<xs:element name="comparison" type="tns:parameterComparisonCondition" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="modifyDataFileParameterResponse">
-<xs:sequence></xs:sequence>
+<xs:complexType name="searchSampleByParameterComparisonResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:sample" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="listParameters">
@@ -2153,6 +2459,17 @@
 <xs:sequence>
 <xs:element name="return" type="tns:parameter" minOccurs="0" maxOccurs="unbounded"></xs:element>
 </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="modifyDataFileParameter">
+<xs:sequence>
+<xs:element name="sessionId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="dataFileParameter" type="tns:datafileParameter" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="modifyDataFileParameterResponse">
+<xs:sequence></xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="getDatasets">
@@ -2168,6 +2485,14 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:simpleType name="parameterValueType">
+<xs:restriction base="xs:string">
+<xs:enumeration value="NUMERIC"></xs:enumeration>
+<xs:enumeration value="STRING"></xs:enumeration>
+<xs:enumeration value="DATE_AND_TIME"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="datafileInclude">
 <xs:restriction base="xs:string">
 <xs:enumeration value="DATAFILE_PARAMETERS"></xs:enumeration>
@@ -2182,6 +2507,35 @@
 <xs:enumeration value="ALL"></xs:enumeration>
 <xs:enumeration value="ALPHA_NUMERIC"></xs:enumeration>
 <xs:enumeration value="ALPHA"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="parameterType">
+<xs:restriction base="xs:string">
+<xs:enumeration value="DATAFILE"></xs:enumeration>
+<xs:enumeration value="DATASET"></xs:enumeration>
+<xs:enumeration value="SAMPLE"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="comparisonOperator">
+<xs:restriction base="xs:string">
+<xs:enumeration value="GREATER_THAN"></xs:enumeration>
+<xs:enumeration value="LESS_THAN"></xs:enumeration>
+<xs:enumeration value="EQUAL"></xs:enumeration>
+<xs:enumeration value="GREATER_EQUAL"></xs:enumeration>
+<xs:enumeration value="LESS_EQUAL"></xs:enumeration>
+<xs:enumeration value="BETWEEN"></xs:enumeration>
+<xs:enumeration value="CONTAIN"></xs:enumeration>
+<xs:enumeration value="START_WITH"></xs:enumeration>
+<xs:enumeration value="END_WITH"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="logicalOperator">
+<xs:restriction base="xs:string">
+<xs:enumeration value="AND"></xs:enumeration>
+<xs:enumeration value="OR"></xs:enumeration>
 </xs:restriction>
 </xs:simpleType>
 

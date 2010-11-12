@@ -178,10 +178,12 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
             Datafile df = service.getDatafile(sessionId, Long.valueOf(datafileId));
             List<DatafileParameter> dfList = df.getDatafileParameterCollection();
             for (DatafileParameter dfParam : dfList) {
-                if (dfParam.isNumeric()) {
+                if(dfParam.getValueType()==ParameterValueType.NUMERIC) {
                     result.add(new TDatafileParameter(dfParam.getDatafileParameterPK().getName(), dfParam.getDatafileParameterPK().getUnits(), dfParam.getNumericValue().toString()));
-                } else {
+                } else if(dfParam.getValueType()==ParameterValueType.STRING){
                     result.add(new TDatafileParameter(dfParam.getDatafileParameterPK().getName(), dfParam.getDatafileParameterPK().getUnits(), dfParam.getStringValue()));
+                } else if(dfParam.getValueType()==ParameterValueType.DATE_AND_TIME){
+                    result.add(new TDatafileParameter(dfParam.getDatafileParameterPK().getName(), dfParam.getDatafileParameterPK().getUnits(), dfParam.getDateTimeValue().toString()));
                 }
             }
         } catch (SessionException_Exception ex) {
