@@ -36,6 +36,7 @@ import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 /**
  * This is interface for the Async calls to server for utility services such as getting the
  * number of facilities in TopCAT, their names, instrument names etc..
@@ -70,4 +71,5 @@ public interface UtilityService extends RemoteService {
 	public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName,String investigationId);
 	public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets);
 	public String getDatafilesDownloadURL(String facilityName,ArrayList<Long> datafileIds);
+        public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
 }

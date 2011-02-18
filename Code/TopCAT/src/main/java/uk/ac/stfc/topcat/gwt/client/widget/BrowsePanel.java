@@ -36,6 +36,7 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -158,7 +159,8 @@ public class BrowsePanel extends Composite {
 		VerticalPanel contentPanel_1 = new VerticalPanel();
 		contentPanel_1.setLayoutOnChange(true);
 		contentPanel_1.setAutoWidth(true);
-		contentPanel_1.setAutoHeight(true);
+		//contentPanel_1.setAutoHeight(true); // This will make use of the browser bar
+                contentPanel_1.setScrollMode(Scroll.AUTO); //This will set the Scroll bar
 		contentPanel_1.setLayout(new RowLayout(Orientation.HORIZONTAL));
 		contentPanel_1.setBorders(false);
 		treeGrid = new TreePanel<ICATNode>(store);

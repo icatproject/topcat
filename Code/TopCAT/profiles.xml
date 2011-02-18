@@ -11,7 +11,7 @@
                 </property>
             </activation>
             <properties>
-                <netbeans.deployment.server.id>[C:\Apps\JavaLibs\glassfishv3\glassfish]deployer:gfv3ee6:dart.esc.rl.ac.uk:4848</netbeans.deployment.server.id>
+                <netbeans.deployment.server.id>[/Apps/Glassfish/glassfish-3.0.1.dev/glassfish]deployer:gfv3ee6:localhost:4848</netbeans.deployment.server.id>
             </properties>
         </profile>
     </profiles>

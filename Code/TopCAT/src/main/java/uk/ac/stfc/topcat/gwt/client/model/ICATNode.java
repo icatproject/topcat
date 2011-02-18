@@ -36,7 +36,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @since iCAT Version 3.3   
  */
 @SuppressWarnings("serial")
-public class ICATNode extends BaseModelData implements Serializable {
+public class ICATNode extends BaseModelData implements Serializable, Comparable {
 	ICATNodeType type; // added just to let gwt compiler know that ICATNodeType is serializable
 	public ICATNode(){		
 	}
@@ -270,4 +270,11 @@ public class ICATNode extends BaseModelData implements Serializable {
 	public void setDescription(String cycleDescription){
 		set("cycleDescription",cycleDescription);
 	}
+
+    @Override
+    public int compareTo(Object t) {
+        //Name is used for comparision in sorting
+        ICATNode tmp = (ICATNode) t;
+        return ((String)get("name")).compareToIgnoreCase((String)tmp.get("name"));
+    }
 }

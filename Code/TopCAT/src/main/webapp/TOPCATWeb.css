@@ -32,3 +32,11 @@ h1 {
 #closeButton {
   margin: 15px 6px 6px;
 }
+
+.footer-links{margin-left: 110px; text-align: center; padding-top: 20px; background-color:#fcfcfc;}
+.footer-links a {font-family: arial, verdana, helvetica; font-weight: bolder; color: #453E3E; text-decoration: none;}
+.footer-links a:active {text-decoration: none; color: #fcfcfc; background-color: #093F7D;}
+.footer-links a:link {text-decoration: none; color: #453E3E;}
+.footer-links a:visited {text-decoration: none; color: #453E3E;}
+.footer-links a:visited:active {text-decoration: none; color: #fcfcfc; background-color: #093F7D;}
+.footer-links a:hover {text-decoration: underline;}

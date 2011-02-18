@@ -80,6 +80,7 @@ public class TOPCATOnline implements EntryPoint {
 		eventPipeLine.loadFacilityNames();
 		//Set Event pipeline
 		mainPanel.getSearchPanel().setEventBus(eventPipeLine);
+                mainPanel.getMyDataPanel().setEventBus(eventPipeLine);
 		resizeMainPanel(Window.getClientWidth());
 		Window.addResizeHandler(new ResizeHandler(){
 
@@ -100,7 +101,8 @@ public class TOPCATOnline implements EntryPoint {
 		int newWidth = width;
 		if(newWidth<800) newWidth=800;
 		mainPanel.setWidth(newWidth-5);
-		mainPanel.getSearchPanel().setGridWidth(newWidth-5);	
+		mainPanel.getSearchPanel().setGridWidth(newWidth-5);
+                mainPanel.getMyDataPanel().setGridWidth(newWidth-5);
 	}
 	
 	public RootPanel getRootPanel() {

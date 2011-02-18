@@ -157,7 +157,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements
 		}
 		return datafileModel;
 	}	
-	
+
 	/**
 	 * This method returns the session id from the Servlet SESSION variable
 	 * ***WARNING: only works if the user browser cookies are enable ***

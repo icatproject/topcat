@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
@@ -55,4 +56,5 @@ public interface UtilityServiceAsync {
 	public void getDatasetsInInvestigations(String facilityName,String investigationId, AsyncCallback<ArrayList<DatasetModel>> callback);
 	public void getDatafilesInDatasets(ArrayList<DatasetModel> datasets, AsyncCallback<ArrayList<DatafileModel>> callback);
 	public void getDatafilesDownloadURL(String facilityName,ArrayList<Long> datafileIds, AsyncCallback<String> callback);
+        public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
 }

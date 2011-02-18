@@ -64,6 +64,8 @@ public class MainPanel extends Composite {
 		TabItem tbtmMyData = new TabItem("My Data");
 		tbtmMyData.setItemId("MyData");
 		myDataPanel = new MyDataPanel();
+                myDataPanel.setAutoWidth(true);
+                myDataPanel.setAutoHeight(true);
 		tbtmMyData.add(myDataPanel);
 		tabPanel.add(tbtmMyData);
 		tbtmMyData.setAutoHeight(true);
@@ -95,7 +97,11 @@ public class MainPanel extends Composite {
 	public SearchPanel getSearchPanel() {
 		return searchPanel;
 	}
-	
+
+        public MyDataPanel getMyDataPanel(){
+            return myDataPanel;
+        }
+        
 	public void selectPanelWithoutHistory(String tabPanelId) {
 		historyEnabled=false;
 		TabItem item = tabPanel.getItemByItemId(tabPanelId);

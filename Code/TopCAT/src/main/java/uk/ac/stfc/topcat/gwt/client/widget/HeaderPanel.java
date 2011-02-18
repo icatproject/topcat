@@ -47,8 +47,8 @@ public class HeaderPanel extends Composite {
 		layoutContainer.setSize("100%", "100px");
 		layoutContainer.setLayout(new TableRowLayout());
 		
-		Image image = new Image("images/topcat_logo.JPG");
-		image.setSize("170px", "100px");
+		Image image = new Image("images/stfc.JPG");
+		image.setSize("263px", "58px");
 		layoutContainer.add(image);
 		
 		loginPanel = new LoginPanel();

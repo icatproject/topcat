@@ -53,6 +53,7 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.util.Collections;
 
 /**
  * This is servlet implementation of Utility methods such as getting information about instruments etc.
@@ -158,6 +159,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 		} else if(node.getNodeType()==ICATNodeType.DATASET) {
 			result.addAll(createDatafileNodesInDataset(node));
 		}
+                if(node.getNodeType()!=ICATNodeType.INSTRUMENT)
+                    Collections.sort(result);
 		return result;
 	}
 	
@@ -500,4 +503,11 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 		return false;		
 	}
 
+       /**
+         * This method returns all the investigations in a server belonging to a user.
+        * @return
+        */
+        public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName) {
+            return utilityManager.getMyInvestigationsInServer(getSessionId(), facilityName);
+        }
 }

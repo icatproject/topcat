@@ -25,38 +25,44 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 /**
  * Imports
  */
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
-import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.TreePanelEvent;
-import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import java.util.List;
+import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
+
 /**
  * This widget shows a tree to browse user data (User is the investigator). the hierarchy is
  *  -- Facility
@@ -71,153 +77,119 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  */
 public class MyDataPanel extends Composite {
 
-	private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-	private BaseTreeLoader<ICATNode> loader;
-	TreePanel<ICATNode> treeGrid;
-	HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
+    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private BaseTreeLoader<ICATNode> loader;
+    TreePanel<ICATNode> treeGrid;
+    HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
+    private ListStore<TopcatInvestigation> investigationList = null;
+    PagingModelMemoryProxy invPageProxy = null;
+    PagingToolBar toolBar = null;
+    Grid<TopcatInvestigation> grid;
+    private EventPipeLine eventBus;
 
-	public MyDataPanel() {
-		
-		LayoutContainer layoutContainer = new LayoutContainer();
-		layoutContainer.setLayout(new RowLayout(Orientation.VERTICAL));
-		
-		ContentPanel contentPanel = new ContentPanel();
-		contentPanel.setHeaderVisible(false);
-		contentPanel.setCollapsible(true);
-		contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
-		
-		ToolBar toolBar = new ToolBar();
-		contentPanel.add(toolBar);
-		
-				ButtonBar buttonBar = new ButtonBar();
-				
-						Button btnDownload = new Button("Download", AbstractImagePrototype
-								.create(Resource.ICONS.iconDownload()));
-						btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
-							public void componentSelected(ButtonEvent ce) {
-								// Collect list of Datafiles selected and download
-								EventPipeLine.getInstance().downloadDatafilesICATNodes(
-										treeGrid.getCheckedSelection());
-							}
-						});
-						buttonBar.add(btnDownload);
-						toolBar.add(buttonBar);
+    public MyDataPanel() {
+        VerticalPanel verticalPanel = new VerticalPanel();
+        verticalPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
+ //       verticalPanel.setLayoutOnChange(true);
+ //       verticalPanel.setAutoWidth(true);
+ //       verticalPanel.setAutoHeight(true);
+ //       verticalPanel.setSize("100%","100%");
+ //       verticalPanel.setLayout(new RowLayout(Orientation.HORIZONTAL));
+        verticalPanel.setBorders(true);
 
-		//Add Treepanel
-		//This is RPC proxy to get the information from the server using GWT-RPC AJAX calls
-		//each time the user expands the tree to browse.
-		RpcProxy<ArrayList<ICATNode>> proxy = new RpcProxy<ArrayList<ICATNode>>() {
+        ToolBar toolMenuBar = new ToolBar();
+        verticalPanel.add(toolMenuBar);
+        ButtonBar buttonBar = new ButtonBar();
 
-			//Get the nodes from the server using GWT-RPC. For the datafiles grouped under datafiles get 
-			//it from the cache.
-			@Override
-			protected void load(Object loadConfig,
-					final AsyncCallback<ArrayList<ICATNode>> callback) {
-				//Retrive the datafiles information from the cache instead of going to the GWT-RPC
-				//for datafiles grouped under datafiles (log files under RAW files)
-				if (loadConfig != null	&& ((ICATNode) loadConfig).getNodeType() == ICATNodeType.DATAFILE) {
-					String key = ((ICATNode) loadConfig).getFacility()	+ ((ICATNode) loadConfig).getDatafileId();
-					callback.onSuccess(logfilesMap.get(key));
-					return;
-				}
-				utilityService.getMyICATNodeDatafiles((ICATNode)loadConfig, new AsyncCallback<HashMap<String,ArrayList<ICATNode>>>(){
+        Button btnDownload = new Button("Get Investigations");
+        btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						callback.onFailure(caught);
-					}
+            public void componentSelected(ButtonEvent ce) {
+                // Collect list of investigations
+                EventPipeLine.getInstance().getMyInvestigationsInMyDataPanel();
+            }
+        });
+        buttonBar.add(btnDownload);
+        toolMenuBar.add(buttonBar);
 
-					@Override
-					public void onSuccess(
-							HashMap<String, ArrayList<ICATNode>> result) {
-						ArrayList<ICATNode> rawFiles=result.get("");
-						result.remove(""); //remove from the result list
-						for(String key:result.keySet()){
-							logfilesMap.put(key, result.get(key));
-						}
-						callback.onSuccess(rawFiles);
-					}
-					
-				});
 
-			}
-		};
 
-		loader = new BaseTreeLoader<ICATNode>(proxy) {
-			@Override
-			public boolean hasChildren(ICATNode parent) {
-				
-				return logfilesMap.get(parent.getFacility()+parent.getDatafileId())!=null//treeGrid.getStore().getChildCount(parent) != 0
-				|| parent.getNodeType() != ICATNodeType.DATAFILE
-				&& parent.getNodeType() != ICATNodeType.UNKNOWN;				
-			}
-		};
 
-		TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
-		
-		VerticalPanel contentPanel_1 = new VerticalPanel();
-		contentPanel_1.setLayoutOnChange(true);
-		contentPanel_1.setAutoWidth(true);
-		contentPanel_1.setAutoHeight(true);
-		contentPanel_1.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		contentPanel_1.setBorders(false);
-		treeGrid = new TreePanel<ICATNode>(store);
-		contentPanel_1.add(treeGrid);
-		treeGrid.setAutoHeight(true);
-		treeGrid.setAutoWidth(true);
-		//This handler calls the reloading of the tree if the children are none. useful
-		//when the session expires or user hasn't logged in.
-		treeGrid.addListener(Events.Expand, new Listener<TreePanelEvent<ICATNode>>(){
-			@SuppressWarnings("unchecked")
-			@Override
-			public void handleEvent(TreePanelEvent<ICATNode> be) {
-				// TODO Auto-generated method stub
-				TreePanel<ICATNode>.TreeNode node = be.getNode();
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-				if(!node.isLeaf()&&node.getItemCount()==0)
-					loader.loadChildren(be.getItem());
+        ColumnConfig clmncnfgServerName = new ColumnConfig("serverName", "Facility Name", 150);
+        configs.add(clmncnfgServerName);
 
-			}
+        ColumnConfig clmncnfgInvestigationNumber = new ColumnConfig("investigationName", "Investigation Number", 150);
+        clmncnfgInvestigationNumber.setToolTip("\"Double Click\" to show datasets");
+        configs.add(clmncnfgInvestigationNumber);
 
-		});
-		//This is to check the RAW Datafile checked and check all the children
-		treeGrid.addListener(Events.BeforeCheckChange, new Listener<TreePanelEvent<ICATNode>>(){
-			@Override
-			public void handleEvent(TreePanelEvent<ICATNode> be) {
-				ICATNode node = be.getItem(); // If children of raw datafiles are not loaded then load them.
-				if(node.getNodeType()==ICATNodeType.DATAFILE&&loader.hasChildren(node)&&treeGrid.getStore().getChildCount(node)==0){
-					loader.loadChildren(node);
-				}
-			}
-			
-		});
-		//On double click on datafile node show a parameter window
-		treeGrid.sinkEvents(Events.OnDoubleClick.getEventCode());
-		treeGrid.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<ICATNode>>(){
-			@SuppressWarnings("unchecked")
-			@Override
-			public void handleEvent(TreePanelEvent<ICATNode> be) {
-				// TODO Auto-generated method stub
-				TreePanel<ICATNode>.TreeNode node = be.getNode();
-				if(node.getModel().getNodeType()==ICATNodeType.DATAFILE){
-					ICATNode icatnode =node.getModel();
-					EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(), icatnode.getDatafileId(), icatnode.getDatafileName());
-				}
-			}
+        ColumnConfig clmncnfgTitle = new ColumnConfig("title", "Title", 150);
+        configs.add(clmncnfgTitle);
 
-		});
-		treeGrid.setCaching(true);
-		treeGrid.setDisplayProperty("name");
-		treeGrid.setCheckable(true);
-		treeGrid.setCheckStyle(CheckCascade.CHILDREN);
-		treeGrid.setSize("900px", "600px");
-		treeGrid.setBorders(false);
-		contentPanel.add(contentPanel_1);
-		contentPanel_1.setSize("900px", "600px");
-		layoutContainer.add(contentPanel);		
-		
-		initComponent(layoutContainer);
-		layoutContainer.setBorders(true);
-	}
+        ColumnConfig clmncnfgStartDate = new ColumnConfig("startDate", "Start Date", 150);
+        clmncnfgStartDate.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
+        configs.add(clmncnfgStartDate);
 
+        ColumnConfig clmncnfgEndDate = new ColumnConfig("endDate", "End Date", 150);
+        clmncnfgEndDate.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
+        configs.add(clmncnfgEndDate);
+
+        //Pagination
+        invPageProxy = new PagingModelMemoryProxy(investigationList);
+        PagingLoader loader = new BasePagingLoader(invPageProxy);
+        loader.setRemoteSort(true);
+        investigationList = new ListStore<TopcatInvestigation>(loader);
+
+        grid = new Grid<TopcatInvestigation>(investigationList, new ColumnModel(configs));
+        grid.setAutoExpandColumn("title");
+        grid.setAutoExpandMin(200);
+        grid.setMinColumnWidth(100);
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+
+            public void handleEvent(GridEvent e) {
+                TopcatInvestigation inv = (TopcatInvestigation) e.getModel();
+                eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(), inv.getInvestigationTitle());
+            }
+        });
+        grid.setSize("800px", "376px");
+        verticalPanel.add(grid);
+        grid.setBorders(true);
+//
+//        //Pagination Bar
+        toolBar = new PagingToolBar(15);
+        toolBar.bind(loader);
+        verticalPanel.add(toolBar);
+        verticalPanel.setAutoWidth(true);
+        setMonitorWindowResize(true);
+
+        initComponent(verticalPanel);
+    }
+
+
+    public void clearInvestigationList(){
+        investigationList.removeAll();
+        toolBar.refresh();
+    }
+    /**
+     * This method sets the result investigations that will be displayed in the results table.
+     * @param invList list of investigations
+     */
+    public void addInvestigations(ArrayList<TopcatInvestigation> invList){
+//        invPageProxy.setData(invList);
+//        invPageProxy.setData(((ArrayList<TopcatInvestigation>)invPageProxy.getData()).addAll(invList));
+        investigationList.add(invList);
+        toolBar.refresh();
+    }
+
+    public void setEventBus(EventPipeLine eventBus){
+        this.eventBus = eventBus;
+    }
+    /**
+     * This method sets the width of the search results table.
+     * @param width
+     */
+    public void setGridWidth(int width){
+        grid.setWidth(width);
+    }
 }

@@ -263,6 +263,7 @@ public class EventPipeLine implements LoginInterface {
 				loadLoginPanel();
 				loadInstrumentNames();
 				loadInvestigationTypes();
+                                showInitialLoginWindow();
 			}
 			
 		});
@@ -385,9 +386,11 @@ public class EventPipeLine implements LoginInterface {
 			@Override
 			public void onSuccess(List<TInvestigation> result) {
 				ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
+                                if(result!=null){
 				for(TInvestigation inv: result)
 					invList.add(new TopcatInvestigation(inv.getServerName(),inv.getInvestigationId(), inv.getInvestigationName(),inv.getTitle(),inv.getStartDate(),inv.getEndDate()));
-				waitDialog.hide();				
+                                }
+                                waitDialog.hide();
 				mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);	
 			}
         });			
@@ -407,14 +410,48 @@ public class EventPipeLine implements LoginInterface {
 			@Override
 			public void onSuccess(List<TInvestigation> result) {
 				ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
+                                if(result!=null){
 				for(TInvestigation inv: result)
 					invList.add(new TopcatInvestigation(inv.getServerName(),inv.getInvestigationId(), inv.getInvestigationName(),inv.getTitle(),inv.getStartDate(),inv.getEndDate()));
-				waitDialog.hide();				
+                                }
+                                waitDialog.hide();
 				mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);	
 			}
         });			
 	}
-	
+
+
+	/**
+	 * This method searches for the user investigations that belongs to user
+	 * @param searchDetails
+	 */
+	public void getMyInvestigationsInMyDataPanel() {
+		waitDialog.setMessage("Getting Investigations...");
+		waitDialog.show();
+                //NOTE: Working without this
+                mainWindow.getMainPanel().getMyDataPanel().clearInvestigationList();
+                for(TFacility facilityName:facilityNames){
+                    waitDialog.setMessage("Searching in "+facilityName+"...");
+                    utilityService.getMyInvestigationsInServer(facilityName.getName(), new AsyncCallback<ArrayList<TInvestigation>>(){
+                            public void onFailure(Throwable caught) {
+                                waitDialog.hide();
+                            }
+                            @Override
+                            public void onSuccess(ArrayList<TInvestigation> result) {
+				ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
+                                if(result!=null){
+				for(TInvestigation inv: result)
+					invList.add(new TopcatInvestigation(inv.getServerName(),inv.getInvestigationId(), inv.getInvestigationName(),inv.getTitle(),inv.getStartDate(),inv.getEndDate()));
+                                }
+                                waitDialog.hide();
+				mainWindow.getMainPanel().getMyDataPanel().addInvestigations(invList);
+                            }
+                    });
+            }
+
+	}
+
+
 	/**
 	 * Show an Dialog box
 	 * @param msg message in the dialog box
@@ -622,4 +659,11 @@ public class EventPipeLine implements LoginInterface {
 		return mainWindow;
 	}
 	
+        /**
+         * This method will show the login window when the application starts up.
+         */
+        private void showInitialLoginWindow(){
+            if(facilityNames.size()>0)
+                showLoginWidget(facilityNames.get(0).getName());
+        }
 }

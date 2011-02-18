@@ -22,6 +22,10 @@
     <!--                                           -->
     <title>TOPCAT web tool for multiple iCAT services</title>
       
+<style type="text/css"> 
+p.front {color: rgb(0,0,255);font-family: arial;padding: 5%;} 
+a.front {color: black; text-decoration: none;} 
+</style> 
   </head>
 
   <!--                                           -->
@@ -50,19 +54,16 @@
 		</td>
 	</tr>
 </table>
-<table>
-	<tr>
-		<td>
-			<img alt="STFC" src="images/stfc.JPG">
-		</td>
-		<td>
-			<img alt="Diamond" src="images/DiamondLogo.JPG">
-		</td>
-		<td>
-			<img alt="ILL" src="images/ill.JPG">
-		</td>
-	</tr>
-</table>
+<br>
+<br>
+<div class="footer-links">
+            <a href="http://www.stfc.ac.uk/About/Accessibility.aspx">Accessibility</a> |
+            <a href="http://www.stfc.ac.uk/privacy.aspx">Privacy Policy</a> |
+            <a href="http://www.isis.stfc.ac.uk/user-office/data-policy11204.html">Data Policy</a> |
+            <a href="http://www.stfc.ac.uk/disclaimer.aspx">Terms Of Use</a> |
+            <a href="http://www.isis.stfc.ac.uk/people/ombudsmen-and-complaints-procedure9430.html">Complaints Procedure</a> |
+            <a href="mailto:isisdata@stfc.ac.uk?subject=Feedback From TopCat">Feedback</a>
+</div>
 
 </body>
 </html>
