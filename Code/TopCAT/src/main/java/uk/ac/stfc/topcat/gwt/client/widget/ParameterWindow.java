@@ -229,4 +229,5 @@ public class ParameterWindow extends Window {
 	public void setHistoryVerified(boolean historyVerified) {
 		this.historyVerified = historyVerified;
 	}
+
 }

@@ -240,4 +240,5 @@ public class DatafileWindow extends Window {
 	public void setHistoryVerified(boolean historyVerified) {
 		this.historyVerified = historyVerified;
 	}
+
 }

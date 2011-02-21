@@ -5,6 +5,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.i18n.CldrLocales"/>
+  
   <extend-property name="locale" values="en_GB" />
   <extend-property name="locale" values="en_US" />
   <extend-property name="locale" values="en_FR" />

@@ -24,6 +24,8 @@ package uk.ac.stfc.topcat.gwt.client.manager;
 /**
  * Imports
  */
+import com.extjs.gxt.ui.client.util.Point;
+import com.google.gwt.user.client.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -62,13 +64,24 @@ public class TopcatWindowManager {
 	 * @throws WindowsNotAvailableExcecption
 	 */
 	public DatafileWindow createDatafileWindow() throws WindowsNotAvailableExcecption{
+                //Get the view port position
+                Point vp = getStartPointofViewport();
+                int i = 0;
 		//Check for any hidden windows and return that window.
 		for(DatafileWindow dfWin : datafileWindowList){
-			if(!dfWin.isVisible())
+                        i++;
+			if(!dfWin.isVisible()){
+                                dfWin.show();
+                                dfWin.setPosition(vp.x+30+i*10,vp.y+i*10);
+                                dfWin.hide();
 				return dfWin;
+                    }
 		}
 		if(datafileWindowList.size()<MAX_NUMBER_WINDOWS){
 			DatafileWindow dfWin = new DatafileWindow();
+                        dfWin.show();
+                        dfWin.setPosition(vp.x+30+i*10, vp.y+i*10);
+                        dfWin.hide();
 			datafileWindowList.add(dfWin);
 			return dfWin;
 		}
@@ -81,13 +94,24 @@ public class TopcatWindowManager {
 	 * @throws WindowsNotAvailableExcecption
 	 */
 	public DatasetWindow createDatasetWindow() throws WindowsNotAvailableExcecption{
+                //Get the view port position
+                Point vp = getStartPointofViewport();
+                int i = 0;
 		//Check for any hidden windows and return that window.
 		for(DatasetWindow dsWin : datasetWindowList){
-			if(!dsWin.isVisible())
+                        i++;
+			if(!dsWin.isVisible()){
+                                dsWin.show();
+                                dsWin.setPosition(vp.x+i*10,vp.y+i*10);
+                                dsWin.hide();
 				return dsWin;
+                        }
 		}
 		if(datasetWindowList.size()<MAX_NUMBER_WINDOWS){
 			DatasetWindow dsWin = new DatasetWindow();
+                        dsWin.show();
+                        dsWin.setPosition(vp.x+i*10, vp.y+i*10);
+                        dsWin.hide();
 			datasetWindowList.add(dsWin);
 			return dsWin;
 		}
@@ -100,13 +124,24 @@ public class TopcatWindowManager {
 	 * @throws WindowsNotAvailableExcecption
 	 */
 	public ParameterWindow createParameterWindow() throws WindowsNotAvailableExcecption{
+                //Get the view port position
+                Point vp = getStartPointofViewport();
+                int i = 0;
 		//Check for any hidden windows and return that window.
 		for(ParameterWindow paramWin : parameterWindowList){
-			if(!paramWin.isVisible())
+                    i++;
+			if(!paramWin.isVisible()){
+                                paramWin.show();
+                                paramWin.setPosition(vp.x+60+i*10,vp.y+i*10);
+                                paramWin.hide();
 				return paramWin;
+                    }
 		}
 		if(parameterWindowList.size()<MAX_NUMBER_WINDOWS){
 			ParameterWindow paramWin = new ParameterWindow();
+                        paramWin.show();
+                        paramWin.setPosition(vp.x+60+i*10,vp.y+i*10);
+                        paramWin.hide();
 			parameterWindowList.add(paramWin);
 			return paramWin;
 		}
@@ -288,4 +323,10 @@ public class TopcatWindowManager {
 		}
 		return null;
 	}
+
+        private Point getStartPointofViewport(){
+            int left = Window.getScrollLeft();
+            int top = Window.getScrollTop();
+            return new Point(left,top);
+        }
 }

@@ -43,7 +43,7 @@
     <welcome-file-list>
         <welcome-file>TOPCATWeb.html</welcome-file>
     </welcome-file-list>
- <!--   <security-constraint>
+    <security-constraint>
         <display-name>SSLTopcatSecurity</display-name>
         <web-resource-collection>
             <web-resource-name>ssl</web-resource-name>
@@ -55,5 +55,4 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
-    -->
 </web-app>
