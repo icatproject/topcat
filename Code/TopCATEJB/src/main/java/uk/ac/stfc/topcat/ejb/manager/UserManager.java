@@ -233,6 +233,37 @@ public class UserManager {
     }
 
     /**
+     * This method get the icat session corresponding the topcat session id and icat server
+     * and queries the icat server to check whether the session is valid.
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @return
+     */
+    public Boolean isSessionValid(EntityManager manager, String topcatSessionId, String serverName){
+        logger.finest("isSessionValid: topcat session Id" + topcatSessionId + " serverName:" + serverName);
+        if (topcatSessionId == null) {
+            return Boolean.FALSE;
+        }
+        List<TopcatUserSession> sessionList = manager.createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName").setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", serverName).getResultList();
+        if (sessionList == null) {
+            return Boolean.FALSE;
+        }
+        Iterator it = sessionList.iterator();
+        while (it.hasNext()) {
+            TopcatUserSession tus = (TopcatUserSession) it.next();
+            TopcatIcatServer icatServer = tus.getUserId().getServerId();
+            try {
+                ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(), icatServer.getVersion(), icatServer.getServerUrl());
+                return service.isSessionValid(tus.getIcatSessionId());
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return Boolean.FALSE;
+    }
+
+    /**
      * This method finds the user corresponding to the username used for loggging
      * to given ICAT Server.
      * @param manager

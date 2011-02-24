@@ -35,4 +35,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface LoginServiceAsync {
 	public void login(String username,String password,String facilityName, AsyncCallback<String> callback);
 	public void logout(String facilityName, AsyncCallback<Void> callback);
+
+    public void isUserLoggedIn(String facilityName, AsyncCallback<Boolean> asyncCallback);
 }

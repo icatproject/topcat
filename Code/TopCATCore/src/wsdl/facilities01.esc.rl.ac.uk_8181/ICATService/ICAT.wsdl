@@ -100,33 +100,6 @@
 <message name="addDataFileParameterResponse">
 <part name="parameters" element="tns:addDataFileParameterResponse"></part>
 </message>
-<message name="searchByParameterCondition">
-<part name="parameters" element="tns:searchByParameterCondition"></part>
-</message>
-<message name="searchByParameterConditionResponse">
-<part name="parameters" element="tns:searchByParameterConditionResponse"></part>
-</message>
-<message name="ParameterSearchException">
-<part name="fault" element="tns:ParameterSearchException"></part>
-</message>
-<message name="searchByParameterComparison">
-<part name="parameters" element="tns:searchByParameterComparison"></part>
-</message>
-<message name="searchByParameterComparisonResponse">
-<part name="parameters" element="tns:searchByParameterComparisonResponse"></part>
-</message>
-<message name="searchByParameter">
-<part name="parameters" element="tns:searchByParameter"></part>
-</message>
-<message name="searchByParameterResponse">
-<part name="parameters" element="tns:searchByParameterResponse"></part>
-</message>
-<message name="isSessionValid">
-<part name="parameters" element="tns:isSessionValid"></part>
-</message>
-<message name="isSessionValidResponse">
-<part name="parameters" element="tns:isSessionValidResponse"></part>
-</message>
 <message name="getUserDetails">
 <part name="parameters" element="tns:getUserDetails"></part>
 </message>
@@ -135,6 +108,12 @@
 </message>
 <message name="NoSuchUserException">
 <part name="fault" element="tns:NoSuchUserException"></part>
+</message>
+<message name="isSessionValid">
+<part name="parameters" element="tns:isSessionValid"></part>
+</message>
+<message name="isSessionValidResponse">
+<part name="parameters" element="tns:isSessionValidResponse"></part>
 </message>
 <message name="getKeywordsForUser">
 <part name="parameters" element="tns:getKeywordsForUser"></part>
@@ -238,6 +217,12 @@
 <message name="listInstrumentsResponse">
 <part name="parameters" element="tns:listInstrumentsResponse"></part>
 </message>
+<message name="getAllInstruments">
+<part name="parameters" element="tns:getAllInstruments"></part>
+</message>
+<message name="getAllInstrumentsResponse">
+<part name="parameters" element="tns:getAllInstrumentsResponse"></part>
+</message>
 <message name="listRoles">
 <part name="parameters" element="tns:listRoles"></part>
 </message>
@@ -255,6 +240,18 @@
 </message>
 <message name="listFacilityCyclesResponse">
 <part name="parameters" element="tns:listFacilityCyclesResponse"></part>
+</message>
+<message name="getFacilityCyclesWithDataForInstrument">
+<part name="parameters" element="tns:getFacilityCyclesWithDataForInstrument"></part>
+</message>
+<message name="getFacilityCyclesWithDataForInstrumentResponse">
+<part name="parameters" element="tns:getFacilityCyclesWithDataForInstrumentResponse"></part>
+</message>
+<message name="getInstrumentsWithData">
+<part name="parameters" element="tns:getInstrumentsWithData"></part>
+</message>
+<message name="getInstrumentsWithDataResponse">
+<part name="parameters" element="tns:getInstrumentsWithDataResponse"></part>
 </message>
 <message name="listInvestigationTypes">
 <part name="parameters" element="tns:listInvestigationTypes"></part>
@@ -637,23 +634,23 @@
 <message name="getFacilityUserByFederalIdResponse">
 <part name="parameters" element="tns:getFacilityUserByFederalIdResponse"></part>
 </message>
+<message name="searchInvestigationByParameterCondition">
+<part name="parameters" element="tns:searchInvestigationByParameterCondition"></part>
+</message>
+<message name="searchInvestigationByParameterConditionResponse">
+<part name="parameters" element="tns:searchInvestigationByParameterConditionResponse"></part>
+</message>
+<message name="ParameterSearchException">
+<part name="fault" element="tns:ParameterSearchException"></part>
+</message>
+<message name="RestrictionException">
+<part name="fault" element="tns:RestrictionException"></part>
+</message>
 <message name="searchDatafileByParameterCondition">
 <part name="parameters" element="tns:searchDatafileByParameterCondition"></part>
 </message>
 <message name="searchDatafileByParameterConditionResponse">
 <part name="parameters" element="tns:searchDatafileByParameterConditionResponse"></part>
-</message>
-<message name="searchDatafileByParameterComparison">
-<part name="parameters" element="tns:searchDatafileByParameterComparison"></part>
-</message>
-<message name="searchDatafileByParameterComparisonResponse">
-<part name="parameters" element="tns:searchDatafileByParameterComparisonResponse"></part>
-</message>
-<message name="searchDatafileByParameter">
-<part name="parameters" element="tns:searchDatafileByParameter"></part>
-</message>
-<message name="searchDatafileByParameterResponse">
-<part name="parameters" element="tns:searchDatafileByParameterResponse"></part>
 </message>
 <message name="searchDatasetByParameterCondition">
 <part name="parameters" element="tns:searchDatasetByParameterCondition"></part>
@@ -661,29 +658,53 @@
 <message name="searchDatasetByParameterConditionResponse">
 <part name="parameters" element="tns:searchDatasetByParameterConditionResponse"></part>
 </message>
-<message name="searchDatasetByParameterComparison">
-<part name="parameters" element="tns:searchDatasetByParameterComparison"></part>
-</message>
-<message name="searchDatasetByParameterComparisonResponse">
-<part name="parameters" element="tns:searchDatasetByParameterComparisonResponse"></part>
-</message>
-<message name="searchDatasetByParameter">
-<part name="parameters" element="tns:searchDatasetByParameter"></part>
-</message>
-<message name="searchDatasetByParameterResponse">
-<part name="parameters" element="tns:searchDatasetByParameterResponse"></part>
-</message>
 <message name="searchSampleByParameterCondition">
 <part name="parameters" element="tns:searchSampleByParameterCondition"></part>
 </message>
 <message name="searchSampleByParameterConditionResponse">
 <part name="parameters" element="tns:searchSampleByParameterConditionResponse"></part>
 </message>
+<message name="searchInvestigationByParameterComparison">
+<part name="parameters" element="tns:searchInvestigationByParameterComparison"></part>
+</message>
+<message name="searchInvestigationByParameterComparisonResponse">
+<part name="parameters" element="tns:searchInvestigationByParameterComparisonResponse"></part>
+</message>
+<message name="searchDatafileByParameterComparison">
+<part name="parameters" element="tns:searchDatafileByParameterComparison"></part>
+</message>
+<message name="searchDatafileByParameterComparisonResponse">
+<part name="parameters" element="tns:searchDatafileByParameterComparisonResponse"></part>
+</message>
+<message name="searchDatasetByParameterComparison">
+<part name="parameters" element="tns:searchDatasetByParameterComparison"></part>
+</message>
+<message name="searchDatasetByParameterComparisonResponse">
+<part name="parameters" element="tns:searchDatasetByParameterComparisonResponse"></part>
+</message>
 <message name="searchSampleByParameterComparison">
 <part name="parameters" element="tns:searchSampleByParameterComparison"></part>
 </message>
 <message name="searchSampleByParameterComparisonResponse">
 <part name="parameters" element="tns:searchSampleByParameterComparisonResponse"></part>
+</message>
+<message name="searchInvestigationByParameter">
+<part name="parameters" element="tns:searchInvestigationByParameter"></part>
+</message>
+<message name="searchInvestigationByParameterResponse">
+<part name="parameters" element="tns:searchInvestigationByParameterResponse"></part>
+</message>
+<message name="searchDatafileByParameter">
+<part name="parameters" element="tns:searchDatafileByParameter"></part>
+</message>
+<message name="searchDatafileByParameterResponse">
+<part name="parameters" element="tns:searchDatafileByParameterResponse"></part>
+</message>
+<message name="searchDatasetByParameter">
+<part name="parameters" element="tns:searchDatasetByParameter"></part>
+</message>
+<message name="searchDatasetByParameterResponse">
+<part name="parameters" element="tns:searchDatasetByParameterResponse"></part>
 </message>
 <message name="searchSampleByParameter">
 <part name="parameters" element="tns:searchSampleByParameter"></part>
@@ -703,11 +724,146 @@
 <message name="getParameterByNameResponse">
 <part name="parameters" element="tns:getParameterByNameResponse"></part>
 </message>
+<message name="getParameterByRestriction">
+<part name="parameters" element="tns:getParameterByRestriction"></part>
+</message>
+<message name="getParameterByRestrictionResponse">
+<part name="parameters" element="tns:getParameterByRestrictionResponse"></part>
+</message>
 <message name="getParameterByUnits">
 <part name="parameters" element="tns:getParameterByUnits"></part>
 </message>
 <message name="getParameterByUnitsResponse">
 <part name="parameters" element="tns:getParameterByUnitsResponse"></part>
+</message>
+<message name="searchDatasetByParameterRestriction">
+<part name="parameters" element="tns:searchDatasetByParameterRestriction"></part>
+</message>
+<message name="searchDatasetByParameterRestrictionResponse">
+<part name="parameters" element="tns:searchDatasetByParameterRestrictionResponse"></part>
+</message>
+<message name="searchSampleByParameterRestriction">
+<part name="parameters" element="tns:searchSampleByParameterRestriction"></part>
+</message>
+<message name="searchSampleByParameterRestrictionResponse">
+<part name="parameters" element="tns:searchSampleByParameterRestrictionResponse"></part>
+</message>
+<message name="searchDatafileByParameterRestriction">
+<part name="parameters" element="tns:searchDatafileByParameterRestriction"></part>
+</message>
+<message name="searchDatafileByParameterRestrictionResponse">
+<part name="parameters" element="tns:searchDatafileByParameterRestrictionResponse"></part>
+</message>
+<message name="searchInvestigationByParameterRestriction">
+<part name="parameters" element="tns:searchInvestigationByParameterRestriction"></part>
+</message>
+<message name="searchInvestigationByParameterRestrictionResponse">
+<part name="parameters" element="tns:searchInvestigationByParameterRestrictionResponse"></part>
+</message>
+<message name="searchInvestigationByRestriction">
+<part name="parameters" element="tns:searchInvestigationByRestriction"></part>
+</message>
+<message name="searchInvestigationByRestrictionResponse">
+<part name="parameters" element="tns:searchInvestigationByRestrictionResponse"></part>
+</message>
+<message name="DatevalueException">
+<part name="fault" element="tns:DatevalueException"></part>
+</message>
+<message name="searchDatasetByRestriction">
+<part name="parameters" element="tns:searchDatasetByRestriction"></part>
+</message>
+<message name="searchDatasetByRestrictionResponse">
+<part name="parameters" element="tns:searchDatasetByRestrictionResponse"></part>
+</message>
+<message name="searchDatafileByRestriction">
+<part name="parameters" element="tns:searchDatafileByRestriction"></part>
+</message>
+<message name="searchDatafileByRestrictionResponse">
+<part name="parameters" element="tns:searchDatafileByRestrictionResponse"></part>
+</message>
+<message name="searchSampleByRestriction">
+<part name="parameters" element="tns:searchSampleByRestriction"></part>
+</message>
+<message name="searchSampleByRestrictionResponse">
+<part name="parameters" element="tns:searchSampleByRestrictionResponse"></part>
+</message>
+<message name="searchInvestigationByRestrictionComparasion">
+<part name="parameters" element="tns:searchInvestigationByRestrictionComparasion"></part>
+</message>
+<message name="searchInvestigationByRestrictionComparasionResponse">
+<part name="parameters" element="tns:searchInvestigationByRestrictionComparasionResponse"></part>
+</message>
+<message name="searchDatasetByRestrictionComparison">
+<part name="parameters" element="tns:searchDatasetByRestrictionComparison"></part>
+</message>
+<message name="searchDatasetByRestrictionComparisonResponse">
+<part name="parameters" element="tns:searchDatasetByRestrictionComparisonResponse"></part>
+</message>
+<message name="searchDatafileByRestrictionComparison">
+<part name="parameters" element="tns:searchDatafileByRestrictionComparison"></part>
+</message>
+<message name="searchDatafileByRestrictionComparisonResponse">
+<part name="parameters" element="tns:searchDatafileByRestrictionComparisonResponse"></part>
+</message>
+<message name="searchSampleByRestrictionComparison">
+<part name="parameters" element="tns:searchSampleByRestrictionComparison"></part>
+</message>
+<message name="searchSampleByRestrictionComparisonResponse">
+<part name="parameters" element="tns:searchSampleByRestrictionComparisonResponse"></part>
+</message>
+<message name="searchSampleByRestrictionLogical">
+<part name="parameters" element="tns:searchSampleByRestrictionLogical"></part>
+</message>
+<message name="searchSampleByRestrictionLogicalResponse">
+<part name="parameters" element="tns:searchSampleByRestrictionLogicalResponse"></part>
+</message>
+<message name="searchDatasetByRestrictionLogical">
+<part name="parameters" element="tns:searchDatasetByRestrictionLogical"></part>
+</message>
+<message name="searchDatasetByRestrictionLogicalResponse">
+<part name="parameters" element="tns:searchDatasetByRestrictionLogicalResponse"></part>
+</message>
+<message name="searchInvestigationByRestrictionLogical">
+<part name="parameters" element="tns:searchInvestigationByRestrictionLogical"></part>
+</message>
+<message name="searchInvestigationByRestrictionLogicalResponse">
+<part name="parameters" element="tns:searchInvestigationByRestrictionLogicalResponse"></part>
+</message>
+<message name="searchDatafileByRestrictionLogical">
+<part name="parameters" element="tns:searchDatafileByRestrictionLogical"></part>
+</message>
+<message name="searchDatafileByRestrictionLogicalResponse">
+<part name="parameters" element="tns:searchDatafileByRestrictionLogicalResponse"></part>
+</message>
+<message name="searchInvestigationByParameterLogical">
+<part name="parameters" element="tns:searchInvestigationByParameterLogical"></part>
+</message>
+<message name="searchInvestigationByParameterLogicalResponse">
+<part name="parameters" element="tns:searchInvestigationByParameterLogicalResponse"></part>
+</message>
+<message name="searchDatafileByParameterLogical">
+<part name="parameters" element="tns:searchDatafileByParameterLogical"></part>
+</message>
+<message name="searchDatafileByParameterLogicalResponse">
+<part name="parameters" element="tns:searchDatafileByParameterLogicalResponse"></part>
+</message>
+<message name="searchDatasetByParameterLogical">
+<part name="parameters" element="tns:searchDatasetByParameterLogical"></part>
+</message>
+<message name="searchDatasetByParameterLogicalResponse">
+<part name="parameters" element="tns:searchDatasetByParameterLogicalResponse"></part>
+</message>
+<message name="searchSampleByParameterLogical">
+<part name="parameters" element="tns:searchSampleByParameterLogical"></part>
+</message>
+<message name="searchSampleByParameterLogicalResponse">
+<part name="parameters" element="tns:searchSampleByParameterLogicalResponse"></part>
+</message>
+<message name="searchFacilityUserByRestriction">
+<part name="parameters" element="tns:searchFacilityUserByRestriction"></part>
+</message>
+<message name="searchFacilityUserByRestrictionResponse">
+<part name="parameters" element="tns:searchFacilityUserByRestrictionResponse"></part>
 </message>
 <portType name="ICAT">
 <operation name="login">
@@ -807,33 +963,15 @@
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException"></fault>
 <fault message="tns:ValidationException" name="ValidationException"></fault>
 </operation>
-<operation name="searchByParameterCondition">
-<input message="tns:searchByParameterCondition"></input>
-<output message="tns:searchByParameterConditionResponse"></output>
-<fault message="tns:SessionException" name="SessionException"></fault>
-<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
-</operation>
-<operation name="searchByParameterComparison">
-<input message="tns:searchByParameterComparison"></input>
-<output message="tns:searchByParameterComparisonResponse"></output>
-<fault message="tns:SessionException" name="SessionException"></fault>
-<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
-</operation>
-<operation name="searchByParameter">
-<input message="tns:searchByParameter"></input>
-<output message="tns:searchByParameterResponse"></output>
-<fault message="tns:SessionException" name="SessionException"></fault>
-<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
-</operation>
-<operation name="isSessionValid">
-<input message="tns:isSessionValid"></input>
-<output message="tns:isSessionValidResponse"></output>
-</operation>
 <operation name="getUserDetails">
 <input message="tns:getUserDetails"></input>
 <output message="tns:getUserDetailsResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 <fault message="tns:NoSuchUserException" name="NoSuchUserException"></fault>
+</operation>
+<operation name="isSessionValid">
+<input message="tns:isSessionValid"></input>
+<output message="tns:isSessionValidResponse"></output>
 </operation>
 <operation name="getKeywordsForUser">
 <input message="tns:getKeywordsForUser"></input>
@@ -920,6 +1058,11 @@
 <output message="tns:listInstrumentsResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 </operation>
+<operation name="getAllInstruments">
+<input message="tns:getAllInstruments"></input>
+<output message="tns:getAllInstrumentsResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+</operation>
 <operation name="listRoles">
 <input message="tns:listRoles"></input>
 <output message="tns:listRolesResponse"></output>
@@ -933,6 +1076,16 @@
 <operation name="listFacilityCycles">
 <input message="tns:listFacilityCycles"></input>
 <output message="tns:listFacilityCyclesResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+</operation>
+<operation name="getFacilityCyclesWithDataForInstrument">
+<input message="tns:getFacilityCyclesWithDataForInstrument"></input>
+<output message="tns:getFacilityCyclesWithDataForInstrumentResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+</operation>
+<operation name="getInstrumentsWithData">
+<input message="tns:getInstrumentsWithData"></input>
+<output message="tns:getInstrumentsWithDataResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 </operation>
 <operation name="listInvestigationTypes">
@@ -1379,59 +1532,89 @@
 <fault message="tns:SessionException" name="SessionException"></fault>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException"></fault>
 </operation>
+<operation name="searchInvestigationByParameterCondition">
+<input message="tns:searchInvestigationByParameterCondition"></input>
+<output message="tns:searchInvestigationByParameterConditionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
 <operation name="searchDatafileByParameterCondition">
 <input message="tns:searchDatafileByParameterCondition"></input>
 <output message="tns:searchDatafileByParameterConditionResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 <fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
-</operation>
-<operation name="searchDatafileByParameterComparison">
-<input message="tns:searchDatafileByParameterComparison"></input>
-<output message="tns:searchDatafileByParameterComparisonResponse"></output>
-<fault message="tns:SessionException" name="SessionException"></fault>
-<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
-</operation>
-<operation name="searchDatafileByParameter">
-<input message="tns:searchDatafileByParameter"></input>
-<output message="tns:searchDatafileByParameterResponse"></output>
-<fault message="tns:SessionException" name="SessionException"></fault>
-<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
 </operation>
 <operation name="searchDatasetByParameterCondition">
 <input message="tns:searchDatasetByParameterCondition"></input>
 <output message="tns:searchDatasetByParameterConditionResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 <fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
-</operation>
-<operation name="searchDatasetByParameterComparison">
-<input message="tns:searchDatasetByParameterComparison"></input>
-<output message="tns:searchDatasetByParameterComparisonResponse"></output>
-<fault message="tns:SessionException" name="SessionException"></fault>
-<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
-</operation>
-<operation name="searchDatasetByParameter">
-<input message="tns:searchDatasetByParameter"></input>
-<output message="tns:searchDatasetByParameterResponse"></output>
-<fault message="tns:SessionException" name="SessionException"></fault>
-<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
 </operation>
 <operation name="searchSampleByParameterCondition">
 <input message="tns:searchSampleByParameterCondition"></input>
 <output message="tns:searchSampleByParameterConditionResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 <fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchInvestigationByParameterComparison">
+<input message="tns:searchInvestigationByParameterComparison"></input>
+<output message="tns:searchInvestigationByParameterComparisonResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchDatafileByParameterComparison">
+<input message="tns:searchDatafileByParameterComparison"></input>
+<output message="tns:searchDatafileByParameterComparisonResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchDatasetByParameterComparison">
+<input message="tns:searchDatasetByParameterComparison"></input>
+<output message="tns:searchDatasetByParameterComparisonResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
 </operation>
 <operation name="searchSampleByParameterComparison">
 <input message="tns:searchSampleByParameterComparison"></input>
 <output message="tns:searchSampleByParameterComparisonResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 <fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchInvestigationByParameter">
+<input message="tns:searchInvestigationByParameter"></input>
+<output message="tns:searchInvestigationByParameterResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchDatafileByParameter">
+<input message="tns:searchDatafileByParameter"></input>
+<output message="tns:searchDatafileByParameterResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchDatasetByParameter">
+<input message="tns:searchDatasetByParameter"></input>
+<output message="tns:searchDatasetByParameterResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
 </operation>
 <operation name="searchSampleByParameter">
 <input message="tns:searchSampleByParameter"></input>
 <output message="tns:searchSampleByParameterResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 <fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
 </operation>
 <operation name="getParameterByNameUnits">
 <input message="tns:getParameterByNameUnits"></input>
@@ -1443,10 +1626,163 @@
 <output message="tns:getParameterByNameResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
 </operation>
+<operation name="getParameterByRestriction">
+<input message="tns:getParameterByRestriction"></input>
+<output message="tns:getParameterByRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
 <operation name="getParameterByUnits">
 <input message="tns:getParameterByUnits"></input>
 <output message="tns:getParameterByUnitsResponse"></output>
 <fault message="tns:SessionException" name="SessionException"></fault>
+</operation>
+<operation name="searchDatasetByParameterRestriction">
+<input message="tns:searchDatasetByParameterRestriction"></input>
+<output message="tns:searchDatasetByParameterRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchSampleByParameterRestriction">
+<input message="tns:searchSampleByParameterRestriction"></input>
+<output message="tns:searchSampleByParameterRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchDatafileByParameterRestriction">
+<input message="tns:searchDatafileByParameterRestriction"></input>
+<output message="tns:searchDatafileByParameterRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchInvestigationByParameterRestriction">
+<input message="tns:searchInvestigationByParameterRestriction"></input>
+<output message="tns:searchInvestigationByParameterRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchInvestigationByRestriction">
+<input message="tns:searchInvestigationByRestriction"></input>
+<output message="tns:searchInvestigationByRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchDatasetByRestriction">
+<input message="tns:searchDatasetByRestriction"></input>
+<output message="tns:searchDatasetByRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchDatafileByRestriction">
+<input message="tns:searchDatafileByRestriction"></input>
+<output message="tns:searchDatafileByRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchSampleByRestriction">
+<input message="tns:searchSampleByRestriction"></input>
+<output message="tns:searchSampleByRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchInvestigationByRestrictionComparasion">
+<input message="tns:searchInvestigationByRestrictionComparasion"></input>
+<output message="tns:searchInvestigationByRestrictionComparasionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchDatasetByRestrictionComparison">
+<input message="tns:searchDatasetByRestrictionComparison"></input>
+<output message="tns:searchDatasetByRestrictionComparisonResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchDatafileByRestrictionComparison">
+<input message="tns:searchDatafileByRestrictionComparison"></input>
+<output message="tns:searchDatafileByRestrictionComparisonResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchSampleByRestrictionComparison">
+<input message="tns:searchSampleByRestrictionComparison"></input>
+<output message="tns:searchSampleByRestrictionComparisonResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchSampleByRestrictionLogical">
+<input message="tns:searchSampleByRestrictionLogical"></input>
+<output message="tns:searchSampleByRestrictionLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchDatasetByRestrictionLogical">
+<input message="tns:searchDatasetByRestrictionLogical"></input>
+<output message="tns:searchDatasetByRestrictionLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchInvestigationByRestrictionLogical">
+<input message="tns:searchInvestigationByRestrictionLogical"></input>
+<output message="tns:searchInvestigationByRestrictionLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchDatafileByRestrictionLogical">
+<input message="tns:searchDatafileByRestrictionLogical"></input>
+<output message="tns:searchDatafileByRestrictionLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
+</operation>
+<operation name="searchInvestigationByParameterLogical">
+<input message="tns:searchInvestigationByParameterLogical"></input>
+<output message="tns:searchInvestigationByParameterLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchDatafileByParameterLogical">
+<input message="tns:searchDatafileByParameterLogical"></input>
+<output message="tns:searchDatafileByParameterLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchDatasetByParameterLogical">
+<input message="tns:searchDatasetByParameterLogical"></input>
+<output message="tns:searchDatasetByParameterLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchSampleByParameterLogical">
+<input message="tns:searchSampleByParameterLogical"></input>
+<output message="tns:searchSampleByParameterLogicalResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:ParameterSearchException" name="ParameterSearchException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+</operation>
+<operation name="searchFacilityUserByRestriction">
+<input message="tns:searchFacilityUserByRestriction"></input>
+<output message="tns:searchFacilityUserByRestrictionResponse"></output>
+<fault message="tns:SessionException" name="SessionException"></fault>
+<fault message="tns:RestrictionException" name="RestrictionException"></fault>
+<fault message="tns:DatevalueException" name="DatevalueException"></fault>
 </operation>
 </portType>
 <binding name="ICATPortBinding" type="tns:ICAT">
@@ -1700,60 +2036,6 @@
 <soap:fault name="ValidationException" use="literal"></soap:fault>
 </fault>
 </operation>
-<operation name="searchByParameterCondition">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"></soap:fault>
-</fault>
-<fault name="ParameterSearchException">
-<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
-</fault>
-</operation>
-<operation name="searchByParameterComparison">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"></soap:fault>
-</fault>
-<fault name="ParameterSearchException">
-<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
-</fault>
-</operation>
-<operation name="searchByParameter">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"></soap:fault>
-</fault>
-<fault name="ParameterSearchException">
-<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
-</fault>
-</operation>
-<operation name="isSessionValid">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-</operation>
 <operation name="getUserDetails">
 <soap:operation soapAction=""></soap:operation>
 <input>
@@ -1768,6 +2050,15 @@
 <fault name="NoSuchUserException">
 <soap:fault name="NoSuchUserException" use="literal"></soap:fault>
 </fault>
+</operation>
+<operation name="isSessionValid">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
 </operation>
 <operation name="getKeywordsForUser">
 <soap:operation soapAction=""></soap:operation>
@@ -1973,6 +2264,18 @@
 <soap:fault name="SessionException" use="literal"></soap:fault>
 </fault>
 </operation>
+<operation name="getAllInstruments">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+</operation>
 <operation name="listRoles">
 <soap:operation soapAction=""></soap:operation>
 <input>
@@ -1998,6 +2301,30 @@
 </fault>
 </operation>
 <operation name="listFacilityCycles">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="getFacilityCyclesWithDataForInstrument">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="getInstrumentsWithData">
 <soap:operation soapAction=""></soap:operation>
 <input>
 <soap:body use="literal"></soap:body>
@@ -3152,6 +3479,24 @@
 <soap:fault name="NoSuchObjectFoundException" use="literal"></soap:fault>
 </fault>
 </operation>
+<operation name="searchInvestigationByParameterCondition">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
 <operation name="searchDatafileByParameterCondition">
 <soap:operation soapAction=""></soap:operation>
 <input>
@@ -3166,35 +3511,8 @@
 <fault name="ParameterSearchException">
 <soap:fault name="ParameterSearchException" use="literal"></soap:fault>
 </fault>
-</operation>
-<operation name="searchDatafileByParameterComparison">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"></soap:fault>
-</fault>
-<fault name="ParameterSearchException">
-<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
-</fault>
-</operation>
-<operation name="searchDatafileByParameter">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"></soap:fault>
-</fault>
-<fault name="ParameterSearchException">
-<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
 </fault>
 </operation>
 <operation name="searchDatasetByParameterCondition">
@@ -3211,35 +3529,8 @@
 <fault name="ParameterSearchException">
 <soap:fault name="ParameterSearchException" use="literal"></soap:fault>
 </fault>
-</operation>
-<operation name="searchDatasetByParameterComparison">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"></soap:fault>
-</fault>
-<fault name="ParameterSearchException">
-<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
-</fault>
-</operation>
-<operation name="searchDatasetByParameter">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"></soap:fault>
-</fault>
-<fault name="ParameterSearchException">
-<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
 </fault>
 </operation>
 <operation name="searchSampleByParameterCondition">
@@ -3256,6 +3547,63 @@
 <fault name="ParameterSearchException">
 <soap:fault name="ParameterSearchException" use="literal"></soap:fault>
 </fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchInvestigationByParameterComparison">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatafileByParameterComparison">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatasetByParameterComparison">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
 </operation>
 <operation name="searchSampleByParameterComparison">
 <soap:operation soapAction=""></soap:operation>
@@ -3271,6 +3619,63 @@
 <fault name="ParameterSearchException">
 <soap:fault name="ParameterSearchException" use="literal"></soap:fault>
 </fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchInvestigationByParameter">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatafileByParameter">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatasetByParameter">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
 </operation>
 <operation name="searchSampleByParameter">
 <soap:operation soapAction=""></soap:operation>
@@ -3285,6 +3690,9 @@
 </fault>
 <fault name="ParameterSearchException">
 <soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
 </fault>
 </operation>
 <operation name="getParameterByNameUnits">
@@ -3311,6 +3719,21 @@
 <soap:fault name="SessionException" use="literal"></soap:fault>
 </fault>
 </operation>
+<operation name="getParameterByRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
 <operation name="getParameterByUnits">
 <soap:operation soapAction=""></soap:operation>
 <input>
@@ -3321,6 +3744,384 @@
 </output>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatasetByParameterRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchSampleByParameterRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatafileByParameterRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchInvestigationByParameterRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchInvestigationByRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatasetByRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatafileByRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchSampleByRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchInvestigationByRestrictionComparasion">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatasetByRestrictionComparison">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatafileByRestrictionComparison">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchSampleByRestrictionComparison">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchSampleByRestrictionLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatasetByRestrictionLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchInvestigationByRestrictionLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatafileByRestrictionLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchInvestigationByParameterLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatafileByParameterLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchDatasetByParameterLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchSampleByParameterLogical">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="ParameterSearchException">
+<soap:fault name="ParameterSearchException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+</operation>
+<operation name="searchFacilityUserByRestriction">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"></soap:fault>
+</fault>
+<fault name="RestrictionException">
+<soap:fault name="RestrictionException" use="literal"></soap:fault>
+</fault>
+<fault name="DatevalueException">
+<soap:fault name="DatevalueException" use="literal"></soap:fault>
 </fault>
 </operation>
 </binding>

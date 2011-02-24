@@ -53,4 +53,6 @@ public interface LoginService extends RemoteService {
 	
 	public String login(String username,String password,String facilityName) throws LoginException;
 	public void logout(String facilityName) throws LoginException;
+        public Boolean isUserLoggedIn(String facilityName);
+
 }

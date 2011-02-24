@@ -159,7 +159,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 		} else if(node.getNodeType()==ICATNodeType.DATASET) {
 			result.addAll(createDatafileNodesInDataset(node));
 		}
-                if(node.getNodeType()!=ICATNodeType.INSTRUMENT)
+                if(node!=null && node.getNodeType()!=ICATNodeType.INSTRUMENT)
                     Collections.sort(result);
 		return result;
 	}
@@ -188,7 +188,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	private ArrayList<ICATNode> createCyclesInInstrument(ICATNode node,boolean isMyData){
 		ArrayList<ICATNode> result = new ArrayList<ICATNode>();		
 		try{
-		ArrayList<TFacilityCycle> facilityCycleList = utilityManager.getFacilityCycles(getSessionId(), node.getFacility());
+		ArrayList<TFacilityCycle> facilityCycleList = utilityManager.getFacilityCyclesWithInstrument(getSessionId(), node.getFacility(),node.getInstrumentName());
 		for(TFacilityCycle cycle : facilityCycleList) {
 			ICATNode tnode = new ICATNode();			
 			tnode.setNode(ICATNodeType.CYCLE, "", cycle.getName());

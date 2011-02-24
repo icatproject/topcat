@@ -101,6 +101,14 @@ public class UserManagementBean implements UserManagementBeanLocal {
     }
 
     /**
+     * This method checks whether the login session is valid 
+     * @param sessionId sessionId used to communicate with TopCAT
+     * @param serverName ICAT Server name to check with
+     */
+    public Boolean isSessionValid(String sessionId, String serverName){
+            return userManager.isSessionValid(manager, sessionId, serverName);
+    }
+    /**
      * This method is a timer service to automatically update the anonymous login
      * to icat servers.
      */

@@ -118,4 +118,8 @@ public class LoginInfoPanel extends Composite {
 		validLogin = false;
 		btnLogin.setText("Login");
 	}
+
+        public boolean isValidLogin(){
+            return validLogin;
+        }
 }

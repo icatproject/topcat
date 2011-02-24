@@ -26,6 +26,9 @@ public class ICATWebInterfaceBase {
     public void logout(String sessionId) throws AuthenticationException{
 
     }
+    public Boolean isSessionValid(String sessionId){
+        return new Boolean(false);
+    }
     public String getUserSurname(String sessionId,String userId){
         return userId; //If not implemented just return the userid
     }
@@ -38,6 +41,11 @@ public class ICATWebInterfaceBase {
     public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException{
         return new ArrayList<TFacilityCycle>();
     }
+
+    public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument) throws ICATMethodNotFoundException{
+        return new ArrayList<TFacilityCycle>();
+    }
+
     public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId,int start,int end){
         return new ArrayList<TInvestigation>();
     }

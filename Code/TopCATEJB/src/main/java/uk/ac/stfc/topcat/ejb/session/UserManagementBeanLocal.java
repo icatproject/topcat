@@ -39,4 +39,5 @@ public interface UserManagementBeanLocal {
     public void login(String sessionId, String serverName, String username, String password, long hours) throws AuthenticationException;
     public void logout(String sessionId) throws AuthenticationException;
     public void logout(String sessionId,String serverName) throws AuthenticationException;
+    public Boolean isSessionValid(String sessionId,String serverName);
 }

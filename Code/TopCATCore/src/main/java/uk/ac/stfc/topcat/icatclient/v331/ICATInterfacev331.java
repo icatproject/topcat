@@ -59,6 +59,19 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         }
     }
 
+    public Boolean isSessionValid(String sessionId){
+        Boolean result = new Boolean(false);
+        try{
+            //TODO: Hack here because the old icat didn't have a method to check
+            //session validity
+            service.getAllKeywords(sessionId, KeywordType.ALL);
+            result=Boolean.TRUE;
+        }catch(SessionException_Exception ex){
+        } catch (javax.xml.ws.WebServiceException ex) {
+        }
+        return result;
+    }
+    
     public ArrayList<String> listInstruments(String sessionId) {
         ArrayList<String> instruments = new ArrayList<String>();
         try {
@@ -83,6 +96,9 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
     }
 
+    public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument) throws ICATMethodNotFoundException {
+         throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
+    }
 
     public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();

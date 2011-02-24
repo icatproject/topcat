@@ -87,18 +87,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 			throws LoginException {
 		HttpServletRequest request = this.getThreadLocalRequest();
 		HttpSession session = request.getSession();
-		String sessionId = null;
-		if (session.getAttribute("SESSION_ID") == null) { // First time login
-			try {
-				sessionId = userManager.login();
-				session.setAttribute("SESSION_ID", sessionId);
-			} catch (AuthenticationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			sessionId = (String) session.getAttribute("SESSION_ID");
-		}
+		String sessionId = getSessionId();
 		// TODO: Remove hard coded hours
 
 		try {
@@ -134,7 +123,35 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 			throw new LoginException(e.getMessage());
 		}
 	}
-	
+
+    @Override
+    public Boolean isUserLoggedIn(String facilityName) {
+        String topcatSessionId = getSessionId();
+        return userManager.isSessionValid(topcatSessionId, facilityName);
+    }
+
+	/**
+	 * This method returns the session id from the Servlet SESSION variable
+	 * ***WARNING: only works if the user browser cookies are enable ***
+	 * @return
+	 */
+	private String getSessionId() {
+		HttpServletRequest request = this.getThreadLocalRequest();
+		HttpSession session = request.getSession();
+		String sessionId=null;
+		if(session.getAttribute("SESSION_ID") == null) { //First time login
+			try {
+				sessionId=userManager.login();
+				session.setAttribute("SESSION_ID",sessionId );
+			} catch (AuthenticationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			sessionId = (String) session.getAttribute("SESSION_ID");
+		}
+		return sessionId;
+	}
 	
 
 }

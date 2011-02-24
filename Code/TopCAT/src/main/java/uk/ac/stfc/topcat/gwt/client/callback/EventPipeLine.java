@@ -179,6 +179,15 @@ public class EventPipeLine implements LoginInterface {
 		});			
 	}
 	
+        /**
+         * This method checks whether the user has logged into servers or not.
+         */
+        public void checkLoginStatus(){
+            for(TFacility facilityName:facilityNames){
+                loginService.isUserLoggedIn(facilityName.getName(), new LoginValidCallback(facilityName.getName()));
+            }
+        }
+
 	/**
 	 * This method shows login dialog box for a input facility
 	 * @param facilityName
@@ -190,16 +199,33 @@ public class EventPipeLine implements LoginInterface {
 	
 	/**
 	 * This method is called after the success of logging into facility to update 
-	 * instrument and investigation type list for the facility
+	 * instrument and investigation type list for the facility and user investigations
+         * in the facility
 	 * @param facilityName
 	 */
 	public void successLogin(String facilityName) {
-		LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);	
-		infoPanel.successLogin();
+                updateLoginPanelStatus(facilityName,Boolean.TRUE);
 		loadInstrumentNames(facilityName);
-		loadInvestigationTypes(facilityName);		
+		loadInvestigationTypes(facilityName);
+                getMyInvestigationsInMyDataPanel(facilityName);
 	}
 	
+        /**
+         * This method will update the login button of facility name to show that
+         * its logged in or not.
+         * @param facilityName
+         */
+        public void updateLoginPanelStatus(String facilityName, Boolean status){
+		LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);
+                if(status.booleanValue()==true)
+                    infoPanel.successLogin();
+                else
+                    infoPanel.successLogout();
+                waitDialog.hide();
+                if(facilityNames.size()>0 && facilityNames.get(0).getName().compareToIgnoreCase(facilityName)==0)
+                    showInitialLoginWindow();
+        }
+
 	/**
 	 * This method is called for the success of logging out facility
 	 * @param facilityName
@@ -244,7 +270,8 @@ public class EventPipeLine implements LoginInterface {
 			}
 		});			
 	}
-	
+
+
 	/**
 	 * This method loads available facility from TopCAT service
 	 */
@@ -263,7 +290,9 @@ public class EventPipeLine implements LoginInterface {
 				loadLoginPanel();
 				loadInstrumentNames();
 				loadInvestigationTypes();
-                                showInitialLoginWindow();
+                                checkLoginStatus();
+                                waitDialog.setMessage("Loading...");
+                                waitDialog.show();
 			}
 			
 		});
@@ -423,7 +452,6 @@ public class EventPipeLine implements LoginInterface {
 
 	/**
 	 * This method searches for the user investigations that belongs to user
-	 * @param searchDetails
 	 */
 	public void getMyInvestigationsInMyDataPanel() {
 		waitDialog.setMessage("Getting Investigations...");
@@ -431,8 +459,19 @@ public class EventPipeLine implements LoginInterface {
                 //NOTE: Working without this
                 mainWindow.getMainPanel().getMyDataPanel().clearInvestigationList();
                 for(TFacility facilityName:facilityNames){
+                    getMyInvestigationsInMyDataPanel(facilityName.getName());
+                }
+
+	}
+
+	/**
+	 * This method searches for the user investigations that belongs to user in given
+         * facility
+	 * @param facilityName
+	 */
+	public void getMyInvestigationsInMyDataPanel(String facilityName) {
                     waitDialog.setMessage("Searching in "+facilityName+"...");
-                    utilityService.getMyInvestigationsInServer(facilityName.getName(), new AsyncCallback<ArrayList<TInvestigation>>(){
+                    utilityService.getMyInvestigationsInServer(facilityName, new AsyncCallback<ArrayList<TInvestigation>>(){
                             public void onFailure(Throwable caught) {
                                 waitDialog.hide();
                             }
@@ -447,10 +486,8 @@ public class EventPipeLine implements LoginInterface {
 				mainWindow.getMainPanel().getMyDataPanel().addInvestigations(invList);
                             }
                     });
-            }
 
 	}
-
 
 	/**
 	 * Show an Dialog box
@@ -663,7 +700,7 @@ public class EventPipeLine implements LoginInterface {
          * This method will show the login window when the application starts up.
          */
         private void showInitialLoginWindow(){
-            if(facilityNames.size()>0)
+            if(facilityNames.size()>0 && !loginPanel.getFacilityLoginInfoPanel(facilityNames.get(0).getName()).isValidLogin())
                 showLoginWidget(facilityNames.get(0).getName());
         }
 }

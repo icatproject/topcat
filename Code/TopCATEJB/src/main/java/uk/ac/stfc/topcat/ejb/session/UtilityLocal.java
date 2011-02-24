@@ -50,6 +50,7 @@ public interface UtilityLocal {
     ArrayList<String> getAllInvestigationTypes(String sessionId);
     ArrayList<String> getInvestigationTypes(String sessionId,String serverName);
     ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException;
+    ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId,String serverName, String instrument)throws ICATMethodNotFoundException;
     ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName);
     ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
     ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);

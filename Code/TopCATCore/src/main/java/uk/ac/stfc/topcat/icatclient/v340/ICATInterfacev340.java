@@ -60,6 +60,14 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         }
     }
 
+    public Boolean isSessionValid(String sessionId){
+        try{
+            return new Boolean(service.isSessionValid(sessionId));
+        } catch (javax.xml.ws.WebServiceException ex) {
+        }
+        return Boolean.FALSE;
+    }
+
     public String getUserSurname(String sessionId, String userId) {
         try {
             FacilityUser user = service.getFacilityUserByFederalId(sessionId, userId);
@@ -76,7 +84,9 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
     public ArrayList<String> listInstruments(String sessionId) {
         ArrayList<String> instruments = new ArrayList<String>();
         try {
-            instruments.addAll(service.listInstruments(sessionId));
+            List<Instrument> instrumentList = service.getInstrumentsWithData(sessionId);
+            for(Instrument instrument:instrumentList)
+                instruments.add(instrument.getName());
         } catch (java.lang.NullPointerException ex) {
         } catch (SessionException_Exception ex) {
         }
@@ -98,6 +108,28 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
        try {
             //Get the ICAT webservice client and call get investigation types
             List<FacilityCycle> fcList = service.listFacilityCycles(sessionId);
+            for(FacilityCycle fc : fcList){
+                Date start=new Date();
+                Date end = new Date();
+                if(fc.getStartDate()!=null)
+                    start=fc.getStartDate().toGregorianCalendar().getTime();
+                if(fc.getFinishDate()!=null)
+                    end = fc.getFinishDate().toGregorianCalendar().getTime();
+                facilityCycles.add(new TFacilityCycle(fc.getDescription(),fc.getName(),start,end));
+            }
+        } catch (SessionException_Exception ex) {
+        } catch (java.lang.NullPointerException ex) {
+        } catch (Exception ex){
+            throw new ICATMethodNotFoundException(ex.getMessage());
+        }
+        return facilityCycles;
+    }
+
+    public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument) throws ICATMethodNotFoundException {
+        ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
+       try {
+            //Get the ICAT webservice client and call get investigation types
+            List<FacilityCycle> fcList = service.getFacilityCyclesWithDataForInstrument(sessionId,instrument);
             for(FacilityCycle fc : fcList){
                 Date start=new Date();
                 Date end = new Date();

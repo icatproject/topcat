@@ -85,6 +85,12 @@ public class UtilityBean implements UtilityLocal {
     public ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException{
         return utilManager.getFacilityCycles(manager,sessionId,serverName);
     }
+    
+    @Override
+    public ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId,String serverName, String instrument)throws ICATMethodNotFoundException{
+        return utilManager.getFacilityCyclesWithInstrument(manager,sessionId,serverName,instrument);
+    }
+
 
     @Override
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName) {

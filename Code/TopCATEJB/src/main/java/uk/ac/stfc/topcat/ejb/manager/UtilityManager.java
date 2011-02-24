@@ -210,7 +210,7 @@ public class UtilityManager {
     }
 
     /**
-     * This method implements the return of all the investigation types from a given server
+     * This method implements the return of all the facility cycles from a given server
      * @param sessionId
      * @param server
      * @return
@@ -220,6 +220,48 @@ public class UtilityManager {
             //Get the ICAT webservice client and call get facility cycles
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(), server.getVersion(), server.getServerUrl());
             return service.listFacilityCycles(sessionId);
+        } catch (MalformedURLException ex) {
+            logger.warning("getInvestigationTypes: " + ex.getMessage());
+        } catch (java.lang.NullPointerException ex) {
+            logger.warning("getInvestigationTypes: " + ex.getMessage());
+        } catch (Exception ex){
+            throw new ICATMethodNotFoundException(ex.getMessage());
+        }
+        return new ArrayList<TFacilityCycle>();
+    }
+    /**
+     * This method returns all the investigation types from a given server
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @return
+     */
+    public ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(EntityManager manager, String sessionId, String serverName, String instrument) throws ICATMethodNotFoundException {
+        TopcatUserSession userSession = null;
+        try {
+            userSession = (TopcatUserSession) manager.createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName").setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName).getSingleResult();
+            return getFacilityCyclesWithInstrument(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),instrument);
+        } catch (javax.persistence.NoResultException ex) {
+            try {
+                userSession = (TopcatUserSession) manager.createNamedQuery("TopcatUserSession.findByAnonymousAndServerName").setParameter("serverName", serverName).getSingleResult();
+                return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
+            } catch (javax.persistence.NoResultException exinnex) {
+            }
+        }
+        return new ArrayList<TFacilityCycle>();
+    }
+
+    /**
+     * This method implements the return of all the facility cycles from a given server
+     * @param sessionId
+     * @param server
+     * @return
+     */
+    private ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, TopcatIcatServer server, String instrument) throws ICATMethodNotFoundException {
+        try {
+            //Get the ICAT webservice client and call get facility cycles
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(), server.getVersion(), server.getServerUrl());
+            return service.listFacilityCyclesForInstrument(sessionId,instrument);
         } catch (MalformedURLException ex) {
             logger.warning("getInvestigationTypes: " + ex.getMessage());
         } catch (java.lang.NullPointerException ex) {
