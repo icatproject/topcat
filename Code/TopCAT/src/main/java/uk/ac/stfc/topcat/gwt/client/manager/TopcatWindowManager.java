@@ -281,8 +281,6 @@ public class TopcatWindowManager {
 		hideNotVerifiedWindows();
                 //Update the Login info
                 EventPipeLine.getInstance().checkLoginStatus();
-//                EventPipeLine.getInstance().getMyInvestigationsInMyDataPanel();
-
 
 	}
 	

@@ -104,7 +104,8 @@
                 </executions>
                 <configuration>
                     <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-                    <style>OBFUSCATED</style>
+                    <style>OBFUSCATED</style> 
+                   <!--     <style>PRETTY</style> -->
                 </configuration>
             </plugin>
             <plugin>

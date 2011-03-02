@@ -183,8 +183,10 @@ public class EventPipeLine implements LoginInterface {
          * This method checks whether the user has logged into servers or not.
          */
         public void checkLoginStatus(){
-            for(TFacility facilityName:facilityNames){
-                loginService.isUserLoggedIn(facilityName.getName(), new LoginValidCallback(facilityName.getName()));
+            if(facilityNames!=null){
+                for(TFacility facilityName:facilityNames){
+                    loginService.isUserLoggedIn(facilityName.getName(), new LoginValidCallback(facilityName.getName()));
+             }
             }
         }
 
@@ -208,6 +210,7 @@ public class EventPipeLine implements LoginInterface {
 		loadInstrumentNames(facilityName);
 		loadInvestigationTypes(facilityName);
                 getMyInvestigationsInMyDataPanel(facilityName);
+                historyManager.updateHistory();
 	}
 	
         /**
@@ -221,7 +224,6 @@ public class EventPipeLine implements LoginInterface {
                     infoPanel.successLogin();
                 else
                     infoPanel.successLogout();
-                waitDialog.hide();
                 if(facilityNames.size()>0 && facilityNames.get(0).getName().compareToIgnoreCase(facilityName)==0)
                     showInitialLoginWindow();
         }
@@ -242,7 +244,7 @@ public class EventPipeLine implements LoginInterface {
 	 */
 	public void failureLogin(String facilityName) {
 		//Show an error message.
-		showErrorDialog("Error logging ,  Please check username and password");	
+		showErrorDialog("Error logging in,  Please check username and password");
 		//Process the failure of login
 		LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);	
 		infoPanel.successLogout();		
@@ -291,8 +293,6 @@ public class EventPipeLine implements LoginInterface {
 				loadInstrumentNames();
 				loadInvestigationTypes();
                                 checkLoginStatus();
-                                waitDialog.setMessage("Loading...");
-                                waitDialog.show();
 			}
 			
 		});
@@ -700,7 +700,16 @@ public class EventPipeLine implements LoginInterface {
          * This method will show the login window when the application starts up.
          */
         private void showInitialLoginWindow(){
-            if(facilityNames.size()>0 && !loginPanel.getFacilityLoginInfoPanel(facilityNames.get(0).getName()).isValidLogin())
+            //Check all login's whether atleast one of them is logged in
+            boolean loggedIn = false;
+            for(TFacility facility:facilityNames){
+                if(loginPanel.getFacilityLoginInfoPanel(facility.getName()).isValidLogin()){
+                    loggedIn=true;
+                    break;
+                }
+
+            }
+            if(facilityNames.size()>0 && !loggedIn)
                 showLoginWidget(facilityNames.get(0).getName());
         }
 }

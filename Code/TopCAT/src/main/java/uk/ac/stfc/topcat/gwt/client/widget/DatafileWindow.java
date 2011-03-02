@@ -78,6 +78,7 @@ public class DatafileWindow extends Window {
 	GroupingStore<DatafileModel> dfmStore;
 	ArrayList<DatasetModel> inputDatasetModels;
 	boolean historyVerified;
+        boolean hasData;
 	public DatafileWindow() {
 		addWindowListener(new WindowListener() {
 			public void windowHide(WindowEvent we) {
@@ -155,6 +156,7 @@ public class DatafileWindow extends Window {
 	    setLayout(new FitLayout());
 	    setSize(700,500);
 	    add(grid);
+            hasData=true;
 	}
 	
 	/**
@@ -168,13 +170,15 @@ public class DatafileWindow extends Window {
 		utilityService.getDatafilesInDatasets(datasetList, new AsyncCallback<ArrayList<DatafileModel>>() {
 			@Override
 			public void onSuccess(ArrayList<DatafileModel> result) {
-				setDatafileList(result);				
+				setDatafileList(result);
+                                hasData=true;
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				dfmStore.removeAll();
+                                hasData=false;
 			}
 		});
 	}
@@ -241,4 +245,11 @@ public class DatafileWindow extends Window {
 		this.historyVerified = historyVerified;
 	}
 
+        @Override
+        public void show(){
+            if(!hasData){
+                setDatasets(inputDatasetModels);
+            }
+            super.show();
+        }
 }

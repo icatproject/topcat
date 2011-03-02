@@ -71,6 +71,7 @@ public class DatasetWindow extends Window {
 	String investigationId;
 	String investigationName;
 	boolean historyVerified;
+        boolean hasData;
 	public DatasetWindow() {
 		//Update the history upon closing of this window.
 		addWindowListener(new WindowListener() {
@@ -118,7 +119,8 @@ public class DatasetWindow extends Window {
 	    });
 	    toolBar.add(btnView);
 	    toolBar.add(new SeparatorToolItem());
-	    setTopComponent(toolBar);	    
+	    setTopComponent(toolBar);
+            hasData=true;
 	}
 
 	/**
@@ -133,13 +135,15 @@ public class DatasetWindow extends Window {
 		utilityService.getDatasetsInInvestigations(facilityName, investigationId, new AsyncCallback<ArrayList<DatasetModel>>() {
 			@Override
 			public void onSuccess(ArrayList<DatasetModel> result) {
-				setDatasetList(result);				
+				setDatasetList(result);
+                                hasData=true;
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				datasetList.removeAll();
+                                hasData=false;
 			}
 		});
 	}	
@@ -233,4 +237,12 @@ public class DatasetWindow extends Window {
 	public void setHistoryVerified(boolean historyVerified) {
 		this.historyVerified = historyVerified;
 	}
+
+        @Override
+        public void show(){
+            if(!hasData){
+                setDataset(facilityName,investigationId);
+            }
+            super.show();
+        }
 }
