@@ -31,7 +31,7 @@
                 <version>2.1</version>
                 <configuration>
                     <user>admin</user>
-                    <adminPassword>${glassfish.adminPassword}</adminPassword>
+                    <passwordFile>passFile</passwordFile>
                     <domain>
                         <name>TOPCAT</name>
                         <adminPort>4848</adminPort>
