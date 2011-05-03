@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client;
+
 /**
  * Imports
  */
@@ -29,30 +30,66 @@ import uk.ac.stfc.topcat.gwt.client.exception.LoginException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
 /**
- * This is interface for the Async calls to server for login services such as login and logout.
- * <p>
+ * The <code>LoginService</code> interface is used to perform login and logout
+ * of iCat servers.
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @RemoteServiceRelativePath("LoginService")
 public interface LoginService extends RemoteService {
-	/**
-	 * Utility class for simplifying access to the instance of async service.
-	 */
-	public static class Util {
-		private static LoginServiceAsync instance;
-		public static LoginServiceAsync getInstance(){
-			if (instance == null) {
-				instance = GWT.create(LoginService.class);
-			}
-			return instance;
-		}
-	}
-	
-	public String login(String username,String password,String facilityName) throws LoginException;
-	public void logout(String facilityName) throws LoginException;
-        public Boolean isUserLoggedIn(String facilityName);
+    /**
+     * Utility class for simplifying access to the instance of async service.
+     */
+    public static class Util {
+        private static LoginServiceAsync instance;
+
+        /**
+         * Returns the instance value.
+         * 
+         * @return the <code>LoginServiceAsync</code> instance
+         */
+        public static LoginServiceAsync getInstance() {
+            if (instance == null) {
+                instance = GWT.create(LoginService.class);
+            }
+            return instance;
+        }
+    }
+
+    /**
+     * Login to an iCat server using the given username and password.
+     * 
+     * @param username
+     *            a string containing the user name for logging into iCat
+     * @param password
+     *            a string containing the password for logging into iCat
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a string containing the session id
+     * @throws LoginException
+     */
+    public String login(String username, String password, String facilityName) throws LoginException;
+
+    /**
+     * Logout of an iCat server.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @throws LoginException
+     */
+    public void logout(String facilityName) throws LoginException;
+
+    /**
+     * Check if a user is logged in to a iCat server.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return <code>true</code> if the user is logged in
+     */
+    public Boolean isUserLoggedIn(String facilityName);
 
 }

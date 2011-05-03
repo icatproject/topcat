@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client;
+
 /**
  * Imports
  */
@@ -34,17 +35,92 @@ import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * This is interface for the Async calls to server for search services such as searching using keywords,
- * advanced search etc.
- * <p>
+ * The <code>SearchServiceAsync</code> interface is used to perform asynchronous
+ * searches to retrieve lists of keywords, investigations or data files.
+ * Searches are done using keywords and advanced search details.
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public interface SearchServiceAsync { 
-	void getKeywordsFromServer(String sessionId,String ServerName,String partialKey,int numberOfKeywords, AsyncCallback<List<String>> callback);
-	void getSearchResultsInvestigationFromKeywords(String sessionId,ArrayList<String> keywords, AsyncCallback<List<TInvestigation>> callback);
-	void getSearchResultsMyInvestigationFromKeywords(String sessionId,ArrayList<String> keywords, AsyncCallback<List<TInvestigation>> callback);
-	void getAdvancedSearchResultsInvestigation(String sessionId,TAdvancedSearchDetails searchDetails, AsyncCallback<List<TInvestigation>> callback);
-	void   getAdvancedSearchResultsDatafile(String sessionId,String serverName,TAdvancedSearchDetails searchDetails, AsyncCallback<ArrayList<DatafileModel>> callback);
+public interface SearchServiceAsync {
+    /**
+     * Get a list of *public* keywords that match the partial key. Limit the
+     * number of keywords returned to the given maximum number of keywords.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param serverName
+     *            a string containing the server name
+     * @param partialKey
+     *            a string containing the partial key to search on
+     * @param numberOfKeywords
+     *            the maximum number of keywords to return
+     * @param callback
+     *            object to be called on completion
+     */
+    void getKeywordsFromServer(String sessionId, String serverName, String partialKey, int numberOfKeywords,
+            AsyncCallback<List<String>> callback);
+
+    /**
+     * Get a list of investigations that have the given keywords. Search all the
+     * iCat servers. <b>NB</b>: the search is case sensitive and return maximum
+     * of 200 results.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param keywords
+     *            a list of strings containing keywords to search on
+     * @param callback
+     *            object to be called on completion
+     */
+    void getSearchResultsInvestigationFromKeywords(String sessionId, ArrayList<String> keywords,
+            AsyncCallback<List<TInvestigation>> callback);
+
+    /**
+     * Get a list of investigations that have the given input keywords and are
+     * the user's investigations. Search all the iCat servers. <b>NB</b>: the
+     * search is case sensitive and return maximum of 200 results.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param keywords
+     *            a list of strings containing keywords to search on
+     * @param callback
+     *            object to be called on completion
+     */
+    void getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords,
+            AsyncCallback<List<TInvestigation>> callback);
+
+    /**
+     * Get a list of investigations matching the criteria given in the search
+     * details. Search all the iCat servers.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param searchDetails
+     *            a <code>TAdvancedSearchDetails</code> containing the search
+     *            details
+     * @param callback
+     *            object to be called on completion
+     */
+    void getAdvancedSearchResultsInvestigation(String sessionId, TAdvancedSearchDetails searchDetails,
+            AsyncCallback<List<TInvestigation>> callback);
+
+    /**
+     * Get a list of data files matching the criteria given in the search
+     * details. <b>NB</b>: only instruments and run number start and end used.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param serverName
+     *            a string containing the server name
+     * @param searchDetails
+     *            a <code>TAdvancedSearchDetails</code> containing the search
+     *            details
+     * @param callback
+     *            object to be called on completion
+     */
+    void getAdvancedSearchResultsDatafile(String sessionId, String serverName, TAdvancedSearchDetails searchDetails,
+            AsyncCallback<ArrayList<DatafileModel>> callback);
 }

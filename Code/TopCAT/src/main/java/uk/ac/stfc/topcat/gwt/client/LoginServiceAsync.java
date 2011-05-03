@@ -21,20 +21,53 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client;
+
 /**
  * Imports
  */
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
- * This is interface for the Async calls to server for login services such as login and logout.
- * <p>
+ * The <code>LoginServiceAsync</code> interface is used to perform asynchronous
+ * login and logout of iCat servers.
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public interface LoginServiceAsync {
-	public void login(String username,String password,String facilityName, AsyncCallback<String> callback);
-	public void logout(String facilityName, AsyncCallback<Void> callback);
 
-    public void isUserLoggedIn(String facilityName, AsyncCallback<Boolean> asyncCallback);
+    /**
+     * Login to an iCat server using the given username and password.
+     * 
+     * @param username
+     *            a string containing the user name for logging into iCat
+     * @param password
+     *            a string containing the password for logging into iCat
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void login(String username, String password, String facilityName, AsyncCallback<String> callback);
+
+    /**
+     * Logout of an iCat server.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void logout(String facilityName, AsyncCallback<Void> callback);
+
+    /**
+     * Check if a user is logged in to a iCat server.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void isUserLoggedIn(String facilityName, AsyncCallback<Boolean> callback);
 }
