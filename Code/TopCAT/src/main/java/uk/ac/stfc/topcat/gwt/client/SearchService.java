@@ -114,7 +114,7 @@ public interface SearchService extends RemoteService {
      * @param searchDetails
      *            a <code>TAdvancedSearchDetails</code> containing the search
      *            details
-     * @return a list of <code>TInvestigation</code> containing investigations
+     * @return a list of <code>DatafileModel</code> containing data files
      */
     ArrayList<DatafileModel> getAdvancedSearchResultsDatafile(String sessionId, String serverName,
             TAdvancedSearchDetails searchDetails);
