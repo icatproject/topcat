@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
+
 /**
  * Imports
  */
@@ -32,81 +33,87 @@ import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
+
 /**
- * This class is a widget. this holds tab panels that has mydatapanel,searchpanel,browsepanel.
+ * This class is a widget. this holds tab panels that has
+ * mydatapanel,searchpanel,browsepanel.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class MainPanel extends Composite {
-	MyDataPanel myDataPanel;
-	SearchPanel searchPanel;
-	BrowsePanel browsePanel;
-	TabPanel tabPanel;
-	boolean historyEnabled;
-	
-	public MainPanel() {
-		
-		tabPanel = new TabPanel();
-		tabPanel.setMinTabWidth(60);
+    MyDataPanel myDataPanel;
+    SearchPanel searchPanel;
+    BrowsePanel browsePanel;
+    TabPanel tabPanel;
+    boolean historyEnabled;
 
-		TabItem tbtmSearch = new TabItem("Search");
-		tbtmSearch.setItemId("Search");		
-		searchPanel = new SearchPanel();
-		searchPanel.setAutoWidth(true);
-		searchPanel.setAutoHeight(true);
-		tbtmSearch.add(searchPanel);
-		tabPanel.add(tbtmSearch);
-		tbtmSearch.setAutoHeight(true);
-		tbtmSearch.setAutoWidth(true);
-		
-		TabItem tbtmMyData = new TabItem("My Data");
-		tbtmMyData.setItemId("MyData");
-		myDataPanel = new MyDataPanel();
-                myDataPanel.setAutoWidth(true);
-                myDataPanel.setAutoHeight(true);
-		tbtmMyData.add(myDataPanel);
-		tabPanel.add(tbtmMyData);
-		tbtmMyData.setAutoHeight(true);
-		tbtmMyData.setAutoWidth(true);
-		
-		TabItem tbtmBrowse = new TabItem("Browse All Data");	
-		tbtmBrowse.setItemId("AllData");			
-		browsePanel = new BrowsePanel();
-		tbtmBrowse.add(browsePanel);
-		tabPanel.add(tbtmBrowse);
-		tbtmBrowse.setAutoHeight(true);
-		tbtmBrowse.setAutoWidth(true);
-		initComponent(tabPanel);
-		//When the tab is changed update the history with the new tab info
-		tabPanel.addListener(Events.Select, new Listener<TabPanelEvent>(){
-			@Override
-			public void handleEvent(TabPanelEvent event) {
-				EventPipeLine.getInstance().getHistoryManager().setTabSelected(event.getItem().getItemId());
-				if(historyEnabled){
-					EventPipeLine.getInstance().getHistoryManager().updateHistory();
-				}
-				historyEnabled=true;
-				
-			}});		
-	
-		historyEnabled=false;
-	}
-	
-	public SearchPanel getSearchPanel() {
-		return searchPanel;
-	}
+    public MainPanel() {
 
-        public MyDataPanel getMyDataPanel(){
-            return myDataPanel;
-        }
-        
-	public void selectPanelWithoutHistory(String tabPanelId) {
-		historyEnabled=false;
-		TabItem item = tabPanel.getItemByItemId(tabPanelId);
-		if(item==null) item = tabPanel.getItem(0);
-		tabPanel.setSelection(item);
-		historyEnabled=true;
-	}
+        tabPanel = new TabPanel();
+        tabPanel.setMinTabWidth(60);
+
+        TabItem tbtmMyData = new TabItem("My Data");
+        tbtmMyData.setItemId("MyData");
+        myDataPanel = new MyDataPanel();
+        myDataPanel.setAutoWidth(true);
+        myDataPanel.setAutoHeight(true);
+        tbtmMyData.add(myDataPanel);
+        tabPanel.add(tbtmMyData);
+        tbtmMyData.setAutoHeight(true);
+        tbtmMyData.setAutoWidth(true);
+
+        TabItem tbtmSearch = new TabItem("Search");
+        tbtmSearch.setItemId("Search");
+        searchPanel = new SearchPanel();
+        searchPanel.setAutoWidth(true);
+        searchPanel.setAutoHeight(true);
+        tbtmSearch.add(searchPanel);
+        tabPanel.add(tbtmSearch);
+        tbtmSearch.setAutoHeight(true);
+        tbtmSearch.setAutoWidth(true);
+
+        TabItem tbtmBrowse = new TabItem("Browse All Data");
+        tbtmBrowse.setItemId("AllData");
+        browsePanel = new BrowsePanel();
+        tbtmBrowse.add(browsePanel);
+        tabPanel.add(tbtmBrowse);
+        tbtmBrowse.setAutoHeight(true);
+        tbtmBrowse.setAutoWidth(true);
+
+        initComponent(tabPanel);
+
+        // When the tab is changed update the history with the new tab info
+        tabPanel.addListener(Events.Select, new Listener<TabPanelEvent>() {
+            @Override
+            public void handleEvent(TabPanelEvent event) {
+                EventPipeLine.getInstance().getHistoryManager().setTabSelected(event.getItem().getItemId());
+                if (historyEnabled) {
+                    EventPipeLine.getInstance().getHistoryManager().updateHistory();
+                }
+                historyEnabled = true;
+            }
+        });
+
+        historyEnabled = false;
+    }
+
+    public SearchPanel getSearchPanel() {
+        return searchPanel;
+    }
+
+    public MyDataPanel getMyDataPanel() {
+        return myDataPanel;
+    }
+
+    public void selectPanelWithoutHistory(String tabPanelId) {
+        historyEnabled = false;
+        TabItem item = tabPanel.getItemByItemId(tabPanelId);
+        if (item == null)
+            item = tabPanel.getItem(0);
+        tabPanel.setSelection(item);
+        historyEnabled = true;
+    }
 }
