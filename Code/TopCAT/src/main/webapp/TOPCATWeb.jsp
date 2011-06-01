@@ -44,7 +44,20 @@ a.front {color: black; text-decoration: none;}
  <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" style="position:absolute;width:0;height:0;border:0"></iframe>
 	<iframe src="" id="__download" style="position:absolute;width:0;height:0;border:0"></iframe>
-	<iframe src="" id="__downloadParameterForm" style="position:absolute;width:0;height:0;border:0"></iframe>    
+    <iframe src="" id="__downloadParameterForm" style="position:absolute;width:0;height:0;border:0"></iframe>    
+
+    <!-- multiple __download frames introduced as a work around to the current issues with icat when down loading more than 15,000 files -->
+    <!-- the number of frames relates to MAX_DOWNLOAD_FRAMES in EventPipeLine.java -->
+    <iframe src="" id="__download0" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download1" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download2" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download3" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download4" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download5" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download6" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download7" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download8" style="position:absolute;width:0;height:0;border:0"></iframe>
+    <iframe src="" id="__download9" style="position:absolute;width:0;height:0;border:0"></iframe>
 
 <table>
 	<tr>
