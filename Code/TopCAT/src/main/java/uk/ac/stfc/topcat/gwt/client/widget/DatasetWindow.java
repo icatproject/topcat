@@ -37,6 +37,9 @@ import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
@@ -102,8 +105,15 @@ public class DatasetWindow extends Window {
 		
 		Grid<DatasetModel> grid = new Grid<DatasetModel>(datasetList, new ColumnModel(configs));
 		add(grid);
-		grid.setBorders(true);
-		grid.addPlugin(datasetSelectModel);
+        grid.setBorders(true);
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<DatasetModel>>() {
+            public void handleEvent(GridEvent<DatasetModel> e) {
+                ArrayList<DatasetModel> dsmList = new ArrayList<DatasetModel>();
+                dsmList.add(e.getModel());
+                EventPipeLine.getInstance().showDatafileWindowWithHistory(dsmList);
+            }
+        });
+        grid.addPlugin(datasetSelectModel);
 		grid.setSelectionModel(datasetSelectModel);
 	    BufferView view = new BufferView();  
 	    view.setRowHeight(32);
