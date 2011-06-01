@@ -4,14 +4,19 @@
  */
 package uk.ac.stfc.topcat.icatclient.v331;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
@@ -177,11 +182,56 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
 
     public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
         String result = "";
+        Pattern pattern = Pattern.compile("<input type=\"hidden\" name=\"requestID\" value=\"");
+        Matcher matcher;
         try {
-            result = service.downloadDatafiles(sessionId, datafileIds);
+            String url = service.downloadDatafiles(sessionId, datafileIds);
+            URL srb = new URL(url);
+            URLConnection srbc = srb.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(srbc.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                matcher = pattern.matcher(inputLine);
+                if (matcher.lookingAt()) {
+                    String delimiter = "\"";
+                    String[] temp = inputLine.split(delimiter);
+                    result = srb.getProtocol() + "://" + srb.getHost() + "/dp/download/?requestID=" + temp[5];
+                    break;
+                }
+            }
+            in.close();
         } catch (InsufficientPrivilegesException_Exception ex) {
         } catch (NoSuchObjectFoundException_Exception ex) {
         } catch (SessionException_Exception ex) {
+        } catch (IOException ex) {
+        }
+        return result;
+    }
+
+    public String downloadDataset(String sessionId, Long datasetId) {
+        String result = "";
+        Pattern pattern = Pattern.compile("<input type=\"hidden\" name=\"requestID\" value=\"");
+        Matcher matcher;
+        try {
+            String url = service.downloadDataset(sessionId, datasetId);
+            URL srb = new URL(url);
+            URLConnection srbc = srb.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(srbc.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                matcher = pattern.matcher(inputLine);
+                if (matcher.lookingAt()) {
+                    String delimiter = "\"";
+                    String[] temp = inputLine.split(delimiter);
+                    result = srb.getProtocol() + "://" + srb.getHost() + "/dp/download/?requestID=" + temp[5];
+                    break;
+                }
+            }
+            in.close();
+        } catch (InsufficientPrivilegesException_Exception ex) {
+        } catch (NoSuchObjectFoundException_Exception ex) {
+        } catch (SessionException_Exception ex) {
+        } catch (IOException ex) {
         }
         return result;
     }
@@ -299,7 +349,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         if (inv.getInvEndDate() != null) {
             invEndDate = inv.getInvEndDate().toGregorianCalendar().getTime();
         }
-        return new TInvestigation(id, inv.getInvNumber(), serverName, inv.getTitle(), invStartDate, invEndDate);
+        return new TInvestigation(id, inv.getVisitId(), serverName, inv.getTitle(), invStartDate, invEndDate);
     }
 
      private TDatafile copyDatafileToTDatafile(String serverName, Datafile datafile) {
