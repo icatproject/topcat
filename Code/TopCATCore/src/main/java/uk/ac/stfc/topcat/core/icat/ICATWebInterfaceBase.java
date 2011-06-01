@@ -64,6 +64,9 @@ public class ICATWebInterfaceBase {
     public String downloadDatafiles(String sessionId,ArrayList<Long> datafileIds){
         return null;
     }
+    public String downloadDataset(String sessionId,Long datasetIds){
+        return null;
+    }
     public ArrayList<String> getKeywordsForUser(String sessionId){
         return new ArrayList<String>();
     }

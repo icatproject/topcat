@@ -136,4 +136,8 @@ public class UtilityBean implements UtilityLocal {
     public String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds) {
         return utilManager.getDatafilesDownloadURL(manager, sessionId, serverName, datafileIds);
     }
+    @Override
+    public String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) {
+        return utilManager.getDatasetDownloadURL(manager, sessionId, serverName, datasetId);
+    }
 }

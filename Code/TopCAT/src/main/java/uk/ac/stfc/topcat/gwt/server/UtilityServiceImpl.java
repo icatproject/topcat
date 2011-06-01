@@ -88,6 +88,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	/**
 	 * This method returns list of facilities registered in TopCAT
 	 */
+    @Override
 	public ArrayList<String> getFacilityNames() {
 		return utilityManager.getFacilityNames();
 	}
@@ -95,6 +96,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	/**
 	 * This method returns all facility(iCAT instances) objects.
 	 */
+    @Override
 	public ArrayList<TFacility> getFacilities(){
 		return utilityManager.getFacilities();
 	}
@@ -110,6 +112,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	 * This method returns list of all instrument names in a given facility
 	 * @param faciltiyName iCAT instance name
 	 */
+    @Override
 	public ArrayList<String> getInstrumentNames(String facilityName) {
 		return utilityManager.getInstrumentNames(getSessionId(),facilityName);
 	}	
@@ -118,6 +121,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	 * This method returns list of investigation types in a given facility
 	 * @param facilityName iCAT instance name
 	 */
+    @Override
 	public ArrayList<String> getInvestigationTypes(String facilityName) {
 		return utilityManager.getInvestigationTypes(getSessionId(), facilityName);
 	}
@@ -128,7 +132,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	 * @param isMyData
 	 * @return list of ICATNode's children
 	 */
-	public ArrayList<ICATNode> getICATNodeChildren(ICATNode node,boolean isMyData) {
+	private ArrayList<ICATNode> getICATNodeChildren(ICATNode node,boolean isMyData) {
 		//Check the node type
 		ArrayList<ICATNode> result = new ArrayList<ICATNode>();		
 		//if the node is null then its root, load the facilities
@@ -287,6 +291,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	 * @param facilityName iCAT instance name
 	 * @param datafileId input datafile Id 
 	 */
+    @Override
 	public ArrayList<ParameterModel> getDatafileParameters(String facilityName,
 			String datafileId) {
 		return getDatafileParameters(getSessionId(),facilityName,datafileId);
@@ -300,7 +305,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 	 * @param datafileId input datafile id.
 	 * @return list of parameters corresponding to datafile
 	 */
-	public ArrayList<ParameterModel> getDatafileParameters(String sessionId,String facilityName,
+	private ArrayList<ParameterModel> getDatafileParameters(String sessionId,String facilityName,
 			String datafileId) {
 		ArrayList<ParameterModel> result = new ArrayList<ParameterModel>();
 		ArrayList<TDatafileParameter> df = utilityManager.getDatafileInfoInServer(sessionId,facilityName,datafileId);
@@ -404,6 +409,17 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 		return utilityManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
 	}
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * uk.ac.stfc.topcat.gwt.client.UtilityService#getDatasetDownloadURL(java
+     * .lang.String, java.lang.Long)
+     */
+    @Override
+    public String getDatasetDownloadURL(String facilityName, Long datasetId) {
+        return utilityManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
+    }
 
 	@Override
 	public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(
@@ -507,6 +523,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
          * This method returns all the investigations in a server belonging to a user.
         * @return
         */
+        @Override
         public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName) {
             return utilityManager.getMyInvestigationsInServer(getSessionId(), facilityName);
         }

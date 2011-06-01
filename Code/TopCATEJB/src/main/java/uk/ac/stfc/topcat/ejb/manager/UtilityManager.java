@@ -596,4 +596,32 @@ public class UtilityManager {
         }
         return result;
     }
+    
+    /**
+     * Get the URL of a file that contains the requested data set for the given
+     * facility.
+     * 
+     * @param manager
+     * @param sessionId
+     *            a string containing the session id
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            the data set id
+     * @return a string containing a URL
+     */
+    public String getDatasetDownloadURL(EntityManager manager, String sessionId, String facilityName, Long datasetId) {
+        String result = "";
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, facilityName);
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
+                    userSession.getUserId().getServerId().getVersion(),
+                    userSession.getUserId().getServerId().getServerUrl());
+            return service.downloadDataset(userSession.getIcatSessionId(), datasetId);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(UtilityManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 }

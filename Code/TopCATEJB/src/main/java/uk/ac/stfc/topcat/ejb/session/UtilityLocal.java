@@ -60,4 +60,5 @@ public interface UtilityLocal {
     ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);
     String getDatafilesDownloadURL(String sessionId,String serverName,ArrayList<Long> datafileIds);
+    String getDatasetDownloadURL(String sessionId,String serverName, Long datasetId);
 }
