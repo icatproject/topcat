@@ -235,6 +235,18 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         return result;
     }
 
+    public String downloadDataset(String sessionId, Long datasetId) {
+        System.out.println("downloadDatafiles: sessionId: " + sessionId + " datasetId: " + datasetId);
+        String result = "";
+        try {
+            result = service.downloadDataset(sessionId, datasetId);
+        } catch (InsufficientPrivilegesException_Exception ex) {
+        } catch (NoSuchObjectFoundException_Exception ex) {
+        } catch (SessionException_Exception ex) {
+        }
+        return result;
+    }
+
     public ArrayList<String> getKeywordsForUser(String sessionId) {
         ArrayList<String> resultKeywords = new ArrayList<String>();
         try {
