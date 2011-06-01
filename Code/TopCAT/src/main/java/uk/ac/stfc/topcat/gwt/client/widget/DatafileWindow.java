@@ -27,6 +27,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -146,7 +147,7 @@ public class DatafileWindow extends Window {
 	    Button  btnView = new Button(" Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload())); 
 	    btnView.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	    	public void componentSelected(ButtonEvent ce) {
-	    		EventPipeLine.getInstance().downloadDatafiles(datafileSelectModel.getSelectedItems());
+	    	    download();
 	    	}
 	    });
 	    toolBar.add(btnView);
@@ -252,4 +253,35 @@ public class DatafileWindow extends Window {
             }
             super.show();
         }
+
+    /**
+     * Download selected datafiles.
+     */
+    private void download() {
+        List<DatafileModel> selectedItems = datafileSelectModel.getSelectedItems();
+        // check that we will be able to download all the files in the available
+        // number of download frames
+        if (selectedItems.size() > (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES)) {
+            EventPipeLine.getInstance().showErrorDialog(
+                    "Download request for " + selectedItems.size() + " files exceeds maximum of "
+                            + (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES) + " files");
+            return;
+        }
+        int batchCount = 0;
+        // get a download frame for each batch of data files
+        while (selectedItems.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
+            EventPipeLine.getInstance().downloadDatafiles(
+                    selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH));
+            selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
+            batchCount = batchCount + 1;
+        }
+        EventPipeLine.getInstance().downloadDatafiles(selectedItems);
+        batchCount = batchCount + 1;
+        if (batchCount > 1) {
+            EventPipeLine.getInstance().showMessageDialog(
+                    "Download request sent to remote server. Files will be returned in " + batchCount + " batches.");
+        } else {
+            EventPipeLine.getInstance().showMessageDialog("Download request sent to remote server");
+        }
+    }
 }

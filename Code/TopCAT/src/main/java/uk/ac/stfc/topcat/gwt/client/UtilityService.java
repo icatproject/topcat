@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client;
+
 /**
  * Imports
  */
@@ -37,39 +38,166 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+
 /**
- * This is interface for the Async calls to server for utility services such as getting the
- * number of facilities in TopCAT, their names, instrument names etc..
- * <p>
+ * The <code>UtilityService</code> interface is used to perform searches to get
+ * the number of facilities in TopCAT, their names, instrument names etc..
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @RemoteServiceRelativePath("UtilityService")
 public interface UtilityService extends RemoteService {
-	/**
-	 * Utility class for simplifying access to the instance of async service.
-	 */
-	public static class Util {
-		private static UtilityServiceAsync instance;
-		public static UtilityServiceAsync getInstance(){
-			if (instance == null) {
-				instance = GWT.create(UtilityService.class);
-			}
-			return instance;
-		}
-	}
-	public ArrayList<TFacility> getFacilities();
-	public ArrayList<String> getFacilityNames();	
-	public ArrayList<String> getInstrumentNames(String facilityName);
-	public ArrayList<String> getInvestigationTypes(String facilityName);
-	public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node);
-	public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node);
-	public HashMap<String,ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node);
-	public HashMap<String,ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node);	
-	public ArrayList<ParameterModel> getDatafileParameters(String facilityName,String datafileId);
-	public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName,String investigationId);
-	public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets);
-	public String getDatafilesDownloadURL(String facilityName,ArrayList<Long> datafileIds);
-        public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
+    /**
+     * Utility class for simplifying access to the instance of async service.
+     */
+    public static class Util {
+        private static UtilityServiceAsync instance;
+
+        public static UtilityServiceAsync getInstance() {
+            if (instance == null) {
+                instance = GWT.create(UtilityService.class);
+            }
+            return instance;
+        }
+    }
+
+    /**
+     * Get all facility(iCAT instances) objects.
+     * 
+     * @return a list of facilities
+     */
+    public ArrayList<TFacility> getFacilities();
+
+    /**
+     * Get a list of facilities registered in TopCAT.
+     * 
+     * @return a list of strings containing facility names
+     */
+    public ArrayList<String> getFacilityNames();
+
+    /**
+     * Get a list of instrument names for the given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of strings containing instrument names
+     */
+    public ArrayList<String> getInstrumentNames(String facilityName);
+
+    /**
+     * Get a list of investigation types for the given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of strings containing investigation types
+     */
+    public ArrayList<String> getInvestigationTypes(String facilityName);
+
+    /**
+     * Get a list of all children for the given ICAT node for which the user has
+     * investigation rights.
+     * 
+     * @param node
+     *            a <code>ICATNode</code> containing the parent information
+     * @return a list of child <code>ICATNode</code>
+     */
+    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node);
+
+    /**
+     * Get a list of all children for the given ICAT node.
+     * 
+     * @param node
+     *            a <code>ICATNode</code> containing the parent information
+     * @return a list of child <code>ICATNode</code>
+     */
+    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node);
+
+    /**
+     * TODO
+     * 
+     * @param node
+     * @return a map with the key as a string containing TODO and the value as a
+     *         list of <code>ICATNode</code>
+     */
+    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node);
+
+    /**
+     * TODO
+     * 
+     * @param node
+     * @return a map with the key as a string containing TODO and the value as a
+     *         list of <code>ICATNode</code>
+     */
+    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node);
+
+    /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data file id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datafileId
+     *            a string containing the data file id
+     * @return a list of <code>ParameterModel</code> which contain parameter
+     *         names and corresponding values
+     */
+    public ArrayList<ParameterModel> getDatafileParameters(String facilityName, String datafileId);
+
+    /**
+     * Get a list of data sets for the given facility and investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            a string containing the investigation id
+     * @return a list of <code>DatasetModel</code> containing data set
+     *         information
+     */
+    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId);
+
+    /**
+     * Get a list of data files information corresponding to the given list of
+     * data sets.
+     * 
+     * @param datasets
+     *            a list of <code>DatasetModel</code>
+     * @return a list of <code>DatafileModel</code> containing data files
+     */
+    public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets);
+
+    /**
+     * Get the URL of a file that contains all the requested data files for the
+     * given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datafileIds
+     *            a list containing data file ids
+     * @return a string containing a URL
+     */
+    public String getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds);
+    
+    /**
+     * Get the URL of a file that contains the requested data set for the
+     * given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            the data set id
+     * @return a string containing a URL
+     */
+    public String getDatasetDownloadURL(String facilityName, Long datasetId);
+    
+    /**
+     * Get a list of investigations for the given facility that belong to the
+     * user.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of <code>TInvestigation</code> containing investigations
+     */
+    public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
 }

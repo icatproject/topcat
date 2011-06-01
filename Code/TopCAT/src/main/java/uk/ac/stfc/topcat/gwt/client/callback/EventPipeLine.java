@@ -31,6 +31,7 @@ import java.util.List;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
@@ -45,8 +46,6 @@ import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
-import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
-import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
@@ -87,6 +86,8 @@ public class EventPipeLine implements LoginInterface {
 	LoginWidget loginWidget;
 	WaitDialog  waitDialog;
 	MessageBox		errorDialog;
+	MessageBox messageDialog;
+	int downloadCount = 0;
 	
 	//Panels from Main Window
 	TOPCATOnline mainWindow=null;	
@@ -105,6 +106,7 @@ public class EventPipeLine implements LoginInterface {
 		historyManager = new HistoryManager(tcWindowManager);
 		waitDialog  = new WaitDialog();
 		errorDialog = new MessageBox();
+		messageDialog = new MessageBox();
 		facilityInstrumentMap = new HashMap<String,ListStore<Instrument>>();
 		//Initialise
 		loginWidget.setLoginHandler(this);		
@@ -490,74 +492,101 @@ public class EventPipeLine implements LoginInterface {
 	}
 
 	/**
-	 * Show an Dialog box
-	 * @param msg message in the dialog box
+	 * Show an alert Dialog box
+	 * 
+	 * @param msg
+	 *            message in the dialog box
 	 */
-	public void showErrorDialog(String msg){
-		MessageBox.alert("Error", msg, null);
-	}
-	
-	/**
-	 * This method downloads all the datafiles for the given input datafile models
-	 * @param datafileList
-	 */
-	public void downloadDatafiles(List<DatafileModel> datafileList){
-		//create a list of datafile ids
-		HashMap<String,ArrayList<Long>> dfMap = new HashMap<String,ArrayList<Long>>();
-		for(DatafileModel datafile:datafileList){
-			ArrayList<Long> idList = dfMap.get(datafile.getFacilityName());
-			if(idList==null){
-				idList = new ArrayList<Long>();
-				dfMap.put(datafile.getFacilityName(), idList);
-			}
-			idList.add(new Long(datafile.getId()));
-		}
-		//for each server get the URLS for downloading datafiles
-		for(String serverName:dfMap.keySet()){
-			utilityService.getDatafilesDownloadURL(serverName, dfMap.get(serverName), new AsyncCallback<String>() {
-	            public void onFailure(Throwable caught) {
-	            	showErrorDialog("Error while downloading files");
-	            }
-				@Override
-				public void onSuccess(String result) {
-					DOM.setElementAttribute(RootPanel.get("__download").getElement(), "src", result);
-				}
-	        });			
-		}
+	public void showErrorDialog(String msg) {
+	    MessageBox.alert("Error", msg, null);
 	}
 
 	/**
-	 * This method download the datafiles for the given list of datafile ICAT Nodes
-	 * @param nodeList list of datafile ICAT Nodes
+	 * Show an info Dialog box
+	 * 
+	 * @param msg
+	 *            message in the dialog box
 	 */
-	public void downloadDatafilesICATNodes(List<ICATNode> nodeList) {
-		// TODO Auto-generated method stub
-		//create a list of datafile ids
-		HashMap<String,ArrayList<Long>> dfMap = new HashMap<String,ArrayList<Long>>();
-		for(ICATNode node:nodeList){
-			if(node.getNodeType()==ICATNodeType.DATAFILE){
-				ArrayList<Long> idList = dfMap.get(node.getFacility());
-				if(idList==null){
-					idList = new ArrayList<Long>();
-					dfMap.put(node.getFacility(), idList);
-				}				
-				idList.add(new Long(node.getDatafileId()));
-			}
-		}
-		//for each server get the URLS for downloading datafiles
-		for(String serverName:dfMap.keySet()){
-			utilityService.getDatafilesDownloadURL(serverName, dfMap.get(serverName), new AsyncCallback<String>() {
-	            public void onFailure(Throwable caught) {
-	            	showErrorDialog("Error while downloading files");
-	            }
-				@Override
-				public void onSuccess(String result) {
-					DOM.setElementAttribute(RootPanel.get("__download").getElement(), "src", result);
-				}
-	        });			
-		}		
+	public void showMessageDialog(String msg) {
+	    MessageBox.info("Information", msg, null);
 	}
-	
+
+	/**
+	 * Download all the datafiles for the given datafile models.
+	 * 
+	 * @param datafileList
+	 *            a list of <code>DatafileModel</code>
+	 */
+	public void downloadDatafiles(List<DatafileModel> datafileList) {
+	    // create a list of datafile ids
+	    HashMap<String, ArrayList<Long>> dfMap = new HashMap<String, ArrayList<Long>>();
+	    for (DatafileModel datafile : datafileList) {
+	        ArrayList<Long> idList = dfMap.get(datafile.getFacilityName());
+	        if (idList == null) {
+	            idList = new ArrayList<Long>();
+	            dfMap.put(datafile.getFacilityName(), idList);
+	        }
+	        idList.add(new Long(datafile.getId()));
+	    }
+	    // for each server get the URLS for downloading datafiles
+	    for (String facilityName : dfMap.keySet()) {
+	        getDatafilesDownloadFrame(facilityName, dfMap.get(facilityName));
+	    }
+	}
+
+	/**
+	 * Download all the datafiles from the facility for the given ids.
+	 * 
+	 * @param facilityName
+	 *            a string containing the facility name
+	 * @param datafileList
+	 *            a list containing data file ids
+	 */
+	public void getDatafilesDownloadFrame(String facilityName, List<Long> datafileList) {
+	    utilityService.getDatafilesDownloadURL(facilityName, (ArrayList<Long>) datafileList,
+	            new AsyncCallback<String>() {
+	        @Override
+	        public void onFailure(Throwable caught) {
+	            showErrorDialog("Error while downloading files");
+	        }
+
+	        @Override
+	        public void onSuccess(String result) {
+	            DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", result);
+	            downloadCount = downloadCount + 1;
+	            if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES + 1)) {
+	                downloadCount = 0;
+	            }
+	        }
+	    });
+	}
+
+	/**
+	 * Download all the dataset from the facility.
+	 * 
+	 * @param facilityName
+	 *            a string containing the facility name
+	 * @param datasetId
+	 *            the data set id
+	 */
+	public void getDatasetDownloadFrame(String facilityName, Long datasetId) {
+	    utilityService.getDatasetDownloadURL(facilityName, datasetId, new AsyncCallback<String>() {
+	        @Override
+	        public void onFailure(Throwable caught) {
+	            showErrorDialog("Error while downloading files");
+	        }
+
+	        @Override
+	        public void onSuccess(String result) {
+	            DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", result);
+	            downloadCount = downloadCount + 1;
+	            if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES + 1)) {
+	                downloadCount = 0;
+	            }
+	        }
+	    });
+	}
+
 	/**
 	 * AJAX call to search of datafiles for the input search details in the given facility
 	 * @param facilityName    facility name

@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client;
+
 /**
  * Imports
  */
@@ -35,26 +36,166 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
- * This is interface for the Async calls to server for utility services such as getting the
- * number of facilities in TopCAT, their names, instrument names etc..
- * <p>
+ * The <code>UtilityServiceAsync</code> interface is used to perform
+ * asynchronous searches to get the number of facilities in TopCAT, their names,
+ * instrument names etc..
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public interface UtilityServiceAsync {
-	public void getFacilities(AsyncCallback<ArrayList<TFacility>> callback);
-	public void getFacilityNames(AsyncCallback<ArrayList<String>> callback);	
-	public void getInstrumentNames(String facilityName, AsyncCallback<ArrayList<String>> callback);
-	public void getInvestigationTypes(String facilityName, AsyncCallback<ArrayList<String>> callback);
-	public void getMyICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);
-	public void getAllICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);	
-	public void getMyICATNodeDatafiles(ICATNode node, AsyncCallback<HashMap<String,ArrayList<ICATNode>>> callback);
-	public void getAllICATNodeDatafiles(ICATNode node, AsyncCallback<HashMap<String,ArrayList<ICATNode>>> callback);		
-	public void getDatafileParameters(String facilityName,String datafileId, AsyncCallback<ArrayList<ParameterModel>> callback);
-	public void getDatasetsInInvestigations(String facilityName,String investigationId, AsyncCallback<ArrayList<DatasetModel>> callback);
-	public void getDatafilesInDatasets(ArrayList<DatasetModel> datasets, AsyncCallback<ArrayList<DatafileModel>> callback);
-	public void getDatafilesDownloadURL(String facilityName,ArrayList<Long> datafileIds, AsyncCallback<String> callback);
-        public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
+
+    /**
+     * Get all facility(iCAT instances) objects.
+     * 
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getFacilities(AsyncCallback<ArrayList<TFacility>> callback);
+
+    /**
+     * Get a list of facilities registered in TopCAT.
+     * 
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getFacilityNames(AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get a list of instrument names for the given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getInstrumentNames(String facilityName, AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get a list of investigation types for the given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getInvestigationTypes(String facilityName, AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get a list of all children for the given ICAT node for which the user has
+     * investigation rights.
+     * 
+     * @param node
+     *            a <code>ICATNode</code> containing the parent information
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getMyICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);
+
+    /**
+     * Get a list of all children for the given ICAT node.
+     * 
+     * @param node
+     *            a <code>ICATNode</code> containing the parent information
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getAllICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);
+
+    /**
+     * TODO
+     * 
+     * @param node
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getMyICATNodeDatafiles(ICATNode node, AsyncCallback<HashMap<String, ArrayList<ICATNode>>> callback);
+
+    /**
+     * TODO
+     * 
+     * @param node
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getAllICATNodeDatafiles(ICATNode node, AsyncCallback<HashMap<String, ArrayList<ICATNode>>> callback);
+
+    /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data file id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datafileId
+     *            a string containing the data file id
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatafileParameters(String facilityName, String datafileId,
+            AsyncCallback<ArrayList<ParameterModel>> callback);
+
+    /**
+     * Get a list of data sets for the given facility and investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            a string containing the investigation id
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatasetsInInvestigations(String facilityName, String investigationId,
+            AsyncCallback<ArrayList<DatasetModel>> callback);
+
+    /**
+     * Get a list of data files information corresponding to the given list of
+     * data sets.
+     * 
+     * @param datasets
+     *            a list of <code>DatasetModel</code>
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatafilesInDatasets(ArrayList<DatasetModel> datasets,
+            AsyncCallback<ArrayList<DatafileModel>> callback);
+
+    /**
+     * Get the URL of a file that contains all the requested data files for the
+     * given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datafileIds
+     *            a list containing data file ids
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, AsyncCallback<String> callback);
+
+    /**
+     * Get the URL of a file that contains the requested data set for the given
+     * facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            the data set id
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatasetDownloadURL(String facilityName, Long datasetId, AsyncCallback<String> callback);
+
+    /**
+     * Get a list of investigations for the given facility that belong to the
+     * user.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
 }

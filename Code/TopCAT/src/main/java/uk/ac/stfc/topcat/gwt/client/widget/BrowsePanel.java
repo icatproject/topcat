@@ -27,7 +27,9 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -87,25 +89,22 @@ public class BrowsePanel extends Composite {
 		contentPanel.setCollapsible(true);
 		contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
 		
-		ToolBar toolBar = new ToolBar();
-		contentPanel.add(toolBar);
-		
-				ButtonBar buttonBar = new ButtonBar();
-				
-						Button btnDownload = new Button("Download", AbstractImagePrototype
-								.create(Resource.ICONS.iconDownload()));
-						btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
-							public void componentSelected(ButtonEvent ce) {
-								// Collect list of Datafiles selected and download
-								EventPipeLine.getInstance().downloadDatafilesICATNodes(
-										treeGrid.getCheckedSelection());
-							}
-						});
-						buttonBar.add(btnDownload);
-						toolBar.add(buttonBar);
+        ToolBar toolBar = new ToolBar();
+        contentPanel.add(toolBar);
 
-		//Add Treepanel
-		//This is RPC proxy to get the information from the server using GWT-RPC AJAX calls
+        ButtonBar buttonBar = new ButtonBar();
+
+        Button btnDownload = new Button("Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
+        btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                download();
+            }
+        });
+        buttonBar.add(btnDownload);
+        toolBar.add(buttonBar);
+
+        // Add Treepanel
+        //This is RPC proxy to get the information from the server using GWT-RPC AJAX calls
 		//each time the user expands the tree to browse.
 		RpcProxy<ArrayList<ICATNode>> proxy = new RpcProxy<ArrayList<ICATNode>>() {
 
@@ -221,5 +220,111 @@ public class BrowsePanel extends Composite {
 		initComponent(layoutContainer);
 		layoutContainer.setBorders(true);
 	}
+
+    /**
+     * Download selected datasets and datafiles.
+     */
+    private void download() {
+        List<ICATNode> selectedItems = treeGrid.getCheckedSelection();
+
+        // Create map of selected datasets
+        // map: key = facility name, value = list of dataset ids
+        HashMap<String, ArrayList<Long>> dsMap = new HashMap<String, ArrayList<Long>>();
+        for (ICATNode node : selectedItems) {
+            if (node.getNodeType() == ICATNodeType.DATASET) {
+                ArrayList<Long> idList = dsMap.get(node.getFacility());
+                if (idList == null) {
+                    idList = new ArrayList<Long>();
+                    dsMap.put(node.getFacility(), idList);
+                }
+                idList.add(new Long(node.getDatasetId()));
+            }
+        }
+
+        // Create map of selected datafiles
+        // map: key = facility name, value = list of datafile ids
+        HashMap<String, ArrayList<Long>> dfMap = new HashMap<String, ArrayList<Long>>();
+        for (ICATNode node : selectedItems) {
+            if (node.getNodeType() == ICATNodeType.DATAFILE) {
+                ArrayList<Long> dsList = dsMap.get(node.getFacility());
+                if (dsList.contains(new Long(treeGrid.getStore().getParent(node).getDatasetId()))) {
+                    // we have already selected the whole datset so ignore the
+                    // file
+                    continue;
+                }
+                ArrayList<Long> idList = dfMap.get(node.getFacility());
+                if (idList == null) {
+                    idList = new ArrayList<Long>();
+                    dfMap.put(node.getFacility(), idList);
+                }
+                idList.add(new Long(node.getDatafileId()));
+            }
+        }
+
+        // Calculate how many batches the data will need to be split into.
+        // Different batches are required for each dataset and for each
+        // facility. Datafiles from the same facility can be grouped together.
+        int requiredBatches = 0;
+        for (String facility : dsMap.keySet()) {
+            requiredBatches = requiredBatches + dsMap.get(facility).size();
+        }
+        for (String facility : dfMap.keySet()) {
+            requiredBatches = requiredBatches + batchCount(dfMap.get(facility).size());
+        }
+
+        // check that we will be able to download all the files in the available
+        // number of download frames
+        if (requiredBatches > (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES)) {
+            EventPipeLine.getInstance().showErrorDialog(
+                    "Download request for " + requiredBatches + " files/sets exceeds maximum of "
+                            + (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES) + " files/sets");
+            return;
+        }
+
+        int batchCount = 0;
+        // get a download frame for each data set
+        for (String facility : dsMap.keySet()) {
+            List<Long> idList = dsMap.get(facility);
+            for (Long id : idList) {
+                EventPipeLine.getInstance().getDatasetDownloadFrame(facility, id);
+                batchCount = batchCount + 1;
+            }
+        }
+
+        // get a download frame for each batch of data files
+        for (String facility : dfMap.keySet()) {
+            List<Long> idList = dfMap.get(facility);
+            while (idList.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
+                EventPipeLine.getInstance().getDatafilesDownloadFrame(facility,
+                        idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH));
+                idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
+                batchCount = batchCount + 1;
+            }
+            EventPipeLine.getInstance().getDatafilesDownloadFrame(facility, idList);
+            batchCount = batchCount + 1;
+        }
+
+        if (batchCount > 1) {
+            EventPipeLine.getInstance().showMessageDialog(
+                    "Download request sent to remote server. Files will be returned in " + batchCount + " batches.");
+        } else {
+            EventPipeLine.getInstance().showMessageDialog("Download request sent to remote server");
+        }
+    }
+
+    /**
+     * Calculate how many batches the data files will be split into.
+     * 
+     * @param datafileCount
+     *            the number of datafiles
+     * @return the number batches the data files will be split into
+     */
+    private int batchCount(int datafileCount) {
+        if (datafileCount % Constants.MAX_FILE_DOWNLOAD_PER_BATCH == 0) {
+            return (datafileCount / Constants.MAX_FILE_DOWNLOAD_PER_BATCH);
+        } else {
+            return (datafileCount / Constants.MAX_FILE_DOWNLOAD_PER_BATCH) + 1;
+        }
+    }
 
 }
