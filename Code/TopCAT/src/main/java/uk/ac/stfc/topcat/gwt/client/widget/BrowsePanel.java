@@ -60,35 +60,39 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+
 /**
- * This widget shows a tree to browse All data. the hierarchy is
- *  -- Facility
- *  	-- Instrument
- *  		-- Investigation
- *  			-- Dataset or Datafile
- *  				-- Datafile 
+ * This widget shows a tree to browse All data. The hierarchy is:
+ * <dl>
+ * <dd>-- Facility</dd>
+ * <dd>&nbsp;&nbsp;-- Instrument</dd>
+ * <dd>&nbsp;&nbsp;&nbsp;&nbsp;-- Investigation</dd>
+ * <dd>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Dataset or Datafile</dd>
+ * <dd>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Datafile</dd>
+ * </dl>
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class BrowsePanel extends Composite {
 
-	private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-	private BaseTreeLoader<ICATNode> loader;
-	TreePanel<ICATNode> treeGrid;
-	HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
+    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private BaseTreeLoader<ICATNode> loader;
+    TreePanel<ICATNode> treeGrid;
+    HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
 
-	public BrowsePanel() {
-		
-		LayoutContainer layoutContainer = new LayoutContainer();
-		layoutContainer.setLayout(new RowLayout(Orientation.VERTICAL));
-		
-		ContentPanel contentPanel = new ContentPanel();
-		contentPanel.setHeaderVisible(false);
-		contentPanel.setCollapsible(true);
-		contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
-		
+    public BrowsePanel() {
+
+        LayoutContainer layoutContainer = new LayoutContainer();
+        layoutContainer.setLayout(new RowLayout(Orientation.VERTICAL));
+
+        ContentPanel contentPanel = new ContentPanel();
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setCollapsible(true);
+        contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
+
         ToolBar toolBar = new ToolBar();
         contentPanel.add(toolBar);
 
@@ -96,6 +100,7 @@ public class BrowsePanel extends Composite {
 
         Button btnDownload = new Button("Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 download();
             }
@@ -104,122 +109,134 @@ public class BrowsePanel extends Composite {
         toolBar.add(buttonBar);
 
         // Add Treepanel
-        //This is RPC proxy to get the information from the server using GWT-RPC AJAX calls
-		//each time the user expands the tree to browse.
-		RpcProxy<ArrayList<ICATNode>> proxy = new RpcProxy<ArrayList<ICATNode>>() {
+        // This is RPC proxy to get the information from the server using
+        // GWT-RPC AJAX calls
+        // each time the user expands the tree to browse.
+        RpcProxy<ArrayList<ICATNode>> proxy = new RpcProxy<ArrayList<ICATNode>>() {
 
-			//Get the nodes from the server using GWT-RPC. For the datafiles grouped under datafiles get 
-			//it from the cache.
-			@Override
-			protected void load(Object loadConfig,
-					final AsyncCallback<ArrayList<ICATNode>> callback) {
-				//Retrive the datafiles information from the cache instead of going to the GWT-RPC
-				//for datafiles grouped under datafiles (log files under RAW files)
-				if (loadConfig != null	&& ((ICATNode) loadConfig).getNodeType() == ICATNodeType.DATAFILE) {
-					String key = ((ICATNode) loadConfig).getFacility()	+ ((ICATNode) loadConfig).getDatafileId();
-					callback.onSuccess(logfilesMap.get(key));
-					return;
-				}
-				utilityService.getAllICATNodeDatafiles((ICATNode)loadConfig, new AsyncCallback<HashMap<String,ArrayList<ICATNode>>>(){
+            // Get the nodes from the server using GWT-RPC. For the datafiles
+            // grouped under datafiles get
+            // it from the cache.
+            @Override
+            protected void load(Object loadConfig, final AsyncCallback<ArrayList<ICATNode>> callback) {
+                // Retrive the datafiles information from the cache instead of
+                // going to the GWT-RPC
+                // for datafiles grouped under datafiles (log files under RAW
+                // files)
+                if (loadConfig != null && ((ICATNode) loadConfig).getNodeType() == ICATNodeType.DATAFILE) {
+                    String key = ((ICATNode) loadConfig).getFacility() + ((ICATNode) loadConfig).getDatafileId();
+                    callback.onSuccess(logfilesMap.get(key));
+                    return;
+                }
+                utilityService.getAllICATNodeDatafiles((ICATNode) loadConfig,
+                        new AsyncCallback<HashMap<String, ArrayList<ICATNode>>>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						callback.onFailure(caught);
-					}
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                callback.onFailure(caught);
+                            }
 
-					@Override
-					public void onSuccess(
-							HashMap<String, ArrayList<ICATNode>> result) {
-						ArrayList<ICATNode> rawFiles=result.get("");
-						result.remove(""); //remove from the result list
-						for(String key:result.keySet()){
-							logfilesMap.put(key, result.get(key));
-						}
-						callback.onSuccess(rawFiles);
-					}
-					
-				});
+                            @Override
+                            public void onSuccess(HashMap<String, ArrayList<ICATNode>> result) {
+                                ArrayList<ICATNode> rawFiles = result.get("");
+                                result.remove(""); // remove from the result
+                                                   // list
+                                for (String key : result.keySet()) {
+                                    logfilesMap.put(key, result.get(key));
+                                }
+                                callback.onSuccess(rawFiles);
+                            }
 
-			}
-		};
+                        });
 
-		loader = new BaseTreeLoader<ICATNode>(proxy) {
-			@Override
-			public boolean hasChildren(ICATNode parent) {
-				
-				return logfilesMap.get(parent.getFacility()+parent.getDatafileId())!=null//treeGrid.getStore().getChildCount(parent) != 0
-				|| parent.getNodeType() != ICATNodeType.DATAFILE
-				&& parent.getNodeType() != ICATNodeType.UNKNOWN;				
-			}
-		};
+            }
+        };
 
-		TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
-		
-		VerticalPanel contentPanel_1 = new VerticalPanel();
-		contentPanel_1.setLayoutOnChange(true);
-		contentPanel_1.setAutoWidth(true);
-		//contentPanel_1.setAutoHeight(true); // This will make use of the browser bar
-                contentPanel_1.setScrollMode(Scroll.AUTO); //This will set the Scroll bar
-		contentPanel_1.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		contentPanel_1.setBorders(false);
-		treeGrid = new TreePanel<ICATNode>(store);
-		contentPanel_1.add(treeGrid);
-		treeGrid.setAutoHeight(true);
-		treeGrid.setAutoWidth(true);
-		//This handler calls the reloading of the tree if the children are none. useful
-		//when the session expires or user hasn't logged in.
-		treeGrid.addListener(Events.Expand, new Listener<TreePanelEvent<ICATNode>>(){
-			@SuppressWarnings("unchecked")
-			@Override
-			public void handleEvent(TreePanelEvent<ICATNode> be) {
-				// TODO Auto-generated method stub
-				TreePanel<ICATNode>.TreeNode node = be.getNode();
+        loader = new BaseTreeLoader<ICATNode>(proxy) {
+            @Override
+            public boolean hasChildren(ICATNode parent) {
 
-				if(!node.isLeaf()&&node.getItemCount()==0)
-					loader.loadChildren(be.getItem());
+                return logfilesMap.get(parent.getFacility() + parent.getDatafileId()) != null// treeGrid.getStore().getChildCount(parent)
+                                                                                             // !=
+                                                                                             // 0
+                        || parent.getNodeType() != ICATNodeType.DATAFILE
+                        && parent.getNodeType() != ICATNodeType.UNKNOWN;
+            }
+        };
 
-			}
+        TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
 
-		});
-		//This is to check the RAW Datafile checked and check all the children
-		treeGrid.addListener(Events.BeforeCheckChange, new Listener<TreePanelEvent<ICATNode>>(){
-			@Override
-			public void handleEvent(TreePanelEvent<ICATNode> be) {
-				ICATNode node = be.getItem(); // If children of raw datafiles are not loaded then load them.
-				if(node.getNodeType()==ICATNodeType.DATAFILE&&loader.hasChildren(node)&&treeGrid.getStore().getChildCount(node)==0){
-					loader.loadChildren(node);
-				}
-			}
-			
-		});
-		//On double click on datafile node show a parameter window
-		treeGrid.sinkEvents(Events.OnDoubleClick.getEventCode());
-		treeGrid.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<ICATNode>>(){
-			@SuppressWarnings("unchecked")
-			@Override
-			public void handleEvent(TreePanelEvent<ICATNode> be) {
-				// TODO Auto-generated method stub
-				TreePanel<ICATNode>.TreeNode node = be.getNode();
-				if(node.getModel().getNodeType()==ICATNodeType.DATAFILE){
-					ICATNode icatnode =node.getModel();
-					EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(), icatnode.getDatafileId(), icatnode.getDatafileName());
-				}
-			}
+        VerticalPanel contentPanel_1 = new VerticalPanel();
+        contentPanel_1.setLayoutOnChange(true);
+        contentPanel_1.setAutoWidth(true);
+        // contentPanel_1.setAutoHeight(true); // This will make use of the
+        // browser bar
+        contentPanel_1.setScrollMode(Scroll.AUTO); // This will set the Scroll
+                                                   // bar
+        contentPanel_1.setLayout(new RowLayout(Orientation.HORIZONTAL));
+        contentPanel_1.setBorders(false);
+        treeGrid = new TreePanel<ICATNode>(store);
+        contentPanel_1.add(treeGrid);
+        treeGrid.setAutoHeight(true);
+        treeGrid.setAutoWidth(true);
+        // This handler calls the reloading of the tree if the children are
+        // none. useful
+        // when the session expires or user hasn't logged in.
+        treeGrid.addListener(Events.Expand, new Listener<TreePanelEvent<ICATNode>>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                // TODO Auto-generated method stub
+                TreePanel<ICATNode>.TreeNode node = be.getNode();
 
-		});
-		treeGrid.setCaching(true);
-		treeGrid.setDisplayProperty("name");
-		treeGrid.setCheckable(true);
-		treeGrid.setCheckStyle(CheckCascade.CHILDREN);
-		treeGrid.setSize("900px", "600px");
-		treeGrid.setBorders(false);
-		contentPanel.add(contentPanel_1);
-		contentPanel_1.setSize("900px", "600px");
-		layoutContainer.add(contentPanel);		
-		
-		initComponent(layoutContainer);
-		layoutContainer.setBorders(true);
-	}
+                if (!node.isLeaf() && node.getItemCount() == 0)
+                    loader.loadChildren(be.getItem());
+
+            }
+
+        });
+        // This is to check the RAW Datafile checked and check all the children
+        treeGrid.addListener(Events.BeforeCheckChange, new Listener<TreePanelEvent<ICATNode>>() {
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                ICATNode node = be.getItem(); // If children of raw datafiles
+                                              // are not loaded then load them.
+                if (node.getNodeType() == ICATNodeType.DATAFILE && loader.hasChildren(node)
+                        && treeGrid.getStore().getChildCount(node) == 0) {
+                    loader.loadChildren(node);
+                }
+            }
+
+        });
+        // On double click on datafile node show a parameter window
+        treeGrid.sinkEvents(Events.OnDoubleClick.getEventCode());
+        treeGrid.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<ICATNode>>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                // TODO Auto-generated method stub
+                TreePanel<ICATNode>.TreeNode node = be.getNode();
+                if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {
+                    ICATNode icatnode = node.getModel();
+                    EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(),
+                            icatnode.getDatafileId(), icatnode.getDatafileName());
+                }
+            }
+
+        });
+        treeGrid.setCaching(true);
+        treeGrid.setDisplayProperty("name");
+        treeGrid.setCheckable(true);
+        treeGrid.setCheckStyle(CheckCascade.CHILDREN);
+        treeGrid.setSize("900px", "600px");
+        treeGrid.setBorders(false);
+        contentPanel.add(contentPanel_1);
+        contentPanel_1.setSize("900px", "600px");
+        layoutContainer.add(contentPanel);
+
+        initComponent(layoutContainer);
+        layoutContainer.setBorders(true);
+    }
 
     /**
      * Download selected datasets and datafiles.
