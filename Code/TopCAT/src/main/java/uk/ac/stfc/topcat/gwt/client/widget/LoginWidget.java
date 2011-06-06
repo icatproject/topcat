@@ -50,12 +50,11 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
  * @version 1.0,  &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-@SuppressWarnings("unchecked")
 public class LoginWidget extends Window {
 
 	private LoginInterface loginHandler = null;
-	private TextField txtFldPassword;
-	private TextField txtFldUsername;
+	private TextField<String> txtFldPassword;
+	private TextField<String> txtFldUsername;
 	private Button btnLogin;
 	private String facilityName;
 	public LoginWidget() {
@@ -78,14 +77,14 @@ public class LoginWidget extends Window {
 		LabelField lblfldUsername = new LabelField("Username");
 		flexTable.setWidget(0, 0, lblfldUsername);
 		
-		txtFldUsername = new TextField();
+		txtFldUsername = new TextField<String>();
 		flexTable.setWidget(0, 1, txtFldUsername);
 		txtFldUsername.setFieldLabel("New TextField");
 		
 		LabelField lblfldPassword = new LabelField("Password");
 		flexTable.setWidget(1, 0, lblfldPassword);
 		
-		txtFldPassword = new TextField();
+		txtFldPassword = new TextField<String>();
 		//On enter key in password box. fire click on login button.
 		txtFldPassword.addListener(Events.SpecialKey, new Listener<FieldEvent>() {
 			public void handleEvent(FieldEvent e) {
@@ -136,8 +135,19 @@ public class LoginWidget extends Window {
 	public String getFacilityName() {
 		return this.facilityName;
 	}
-	public void show() {
-		setFocusWidget(txtFldUsername);
-		super.show();
-	}
+	
+    /**
+     * Show Login Widget. First clear out password. If user name exists focus on
+     * password.
+     */
+    @Override
+    public void show() {
+        txtFldPassword.clear();
+        if (txtFldUsername.isDirty()) {
+            setFocusWidget(txtFldPassword);
+        } else {
+            setFocusWidget(txtFldUsername);
+        }
+        super.show();
+    }
 }
