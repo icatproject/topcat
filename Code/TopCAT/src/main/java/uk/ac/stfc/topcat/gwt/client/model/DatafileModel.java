@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.model;
+
 /**
  * Imports
  */
@@ -28,169 +29,209 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+
 /**
- * This class is a datamodel to hold datafile information
- * TODO: change it from datamodel to beanmodel
+ * This class is a datamodel to hold datafile information TODO: change it from
+ * datamodel to beanmodel
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
- * @since iCAT Version 3.3   
+ * @version 1.0, &nbsp; 30-APR-2010
+ * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
 public class DatafileModel extends BaseModelData implements Serializable {
-	
-	public DatafileModel() {
-		
-	}
-	/**
-	 * Constructor to set the datafile information.
-	 * @param facilityName facility Name
-	 * @param datasetName  dataset name
-	 * @param datafileId   datafile id
-	 * @param name		   datafile name
-	 * @param fileSize     datafile size
-	 * @param format	   datafile format
-	 * @param formatVersion datafile format version
-	 * @param formatType    datafile format type
-	 * @param createTime    datafile creation time
-	 */
-	public DatafileModel(String facilityName,String datasetName,String datafileId,String name,String fileSize,String format,String formatVersion,String formatType,Date createTime){
-		setFacilityName(facilityName);
-		setDatasetName(datasetName);
-		setId(datafileId);		
-		setName(name);
-		setFileSize(fileSize);
-		setFormat(format);
-		setFormatVersion(formatVersion);
-		setFormatType(formatType);
-		setCreateTime(createTime);
-	}
 
-	/**
-	 * Set the facility name
-	 * @param facilityName
-	 */
-	public void setFacilityName(String facilityName) {
-		set("facilityName",facilityName);
-	}
-	
-	/**
-	 * Set the dataset name 
-	 * @param datasetName
-	 */
-	public void setDatasetName(String datasetName) {
-		set("datasetName",datasetName);
-	}
-	
-	/**
-	 * Set the datafile id
-	 * @param datafileId
-	 */
-	public void setId(String datafileId) {
-		set("datafileId",datafileId);
-	}
-	
-	/**
-	 * Set the datafile creation time
-	 * @param createTime
-	 */
-	public void setCreateTime(Date createTime) {
-		set("datafileCreateTime",createTime);
-	}
+    public DatafileModel() {
 
-	/**
-	 * Set the dataile format type
-	 * @param formatType
-	 */
-	public void setFormatType(String formatType) {
-		set("datafileFormatType",formatType);
-	}
+    }
 
-	/**
-	 * Set the datafile format version
-	 * @param formatVersion
-	 */
-	public void setFormatVersion(String formatVersion) {
-		set("datafileFormatVersion",formatVersion);
-	}
+    /**
+     * Constructor to set the datafile information.
+     * 
+     * @param facilityName
+     *            facility Name
+     * @param datasetName
+     *            dataset name
+     * @param datafileId
+     *            datafile id
+     * @param name
+     *            datafile name
+     * @param fileSize
+     *            datafile size
+     * @param format
+     *            datafile format
+     * @param formatVersion
+     *            datafile format version
+     * @param formatType
+     *            datafile format type
+     * @param createTime
+     *            datafile creation time
+     */
+    public DatafileModel(String facilityName, String datasetName, String datafileId, String name, String fileSize,
+            String format, String formatVersion, String formatType, Date createTime) {
+        setFacilityName(facilityName);
+        setDatasetName(datasetName);
+        setId(datafileId);
+        setName(name);
+        setFileSize(fileSize);
+        setFormat(format);
+        setFormatVersion(formatVersion);
+        setFormatType(formatType);
+        setCreateTime(createTime);
+        setSelected(false);
+    }
 
-	/**
-	 * Set the datafile format
-	 * @param format
-	 */
-	public void setFormat(String format) {
-		set("datafileFormat",format);
-	}
+    /**
+     * Set the facility name
+     * 
+     * @param facilityName
+     */
+    public void setFacilityName(String facilityName) {
+        set("facilityName", facilityName);
+    }
 
-	/**
-	 * Set the datafile size
-	 * @param fileSize
-	 */
-	public void setFileSize(String fileSize) {
-		set("datafileSize",fileSize);
-	}
+    /**
+     * Set the dataset name
+     * 
+     * @param datasetName
+     */
+    public void setDatasetName(String datasetName) {
+        set("datasetName", datasetName);
+    }
 
-	/**
-	 * Set the datafile name
-	 * @param name
-	 */
-	public void setName(String name) {
-		set("datafileName",name);		
-	}
+    /**
+     * Set the datafile id
+     * 
+     * @param datafileId
+     */
+    public void setId(String datafileId) {
+        set("datafileId", datafileId);
+    }
 
-	/**
-	 * @return facility name
-	 */
-	public String getFacilityName() {
-		return get("facilityName");
-	}
-	
-	/**
-	 * @return datafile creation time
-	 */
-	public String getCreateTime() {
-		return get("datafileCreateTime");
-	}
+    /**
+     * Set the datafile creation time
+     * 
+     * @param createTime
+     */
+    public void setCreateTime(Date createTime) {
+        set("datafileCreateTime", createTime);
+    }
 
-	/**
-	 * @return datafile format type
-	 */
-	public String getFormatType() {
-		return get("datafileFormatType");
-	}
+    /**
+     * Set the dataile format type
+     * 
+     * @param formatType
+     */
+    public void setFormatType(String formatType) {
+        set("datafileFormatType", formatType);
+    }
 
-	/**
-	 * @return datafile format version
-	 */
-	public String getFormatVersion() {
-		return get("datafileFormatVersion");
-	}
+    /**
+     * Set the datafile format version
+     * 
+     * @param formatVersion
+     */
+    public void setFormatVersion(String formatVersion) {
+        set("datafileFormatVersion", formatVersion);
+    }
 
-	/**
-	 * @return datafile format
-	 */
-	public String getFormat() {
-		return get("datafileFormat");
-	}
+    /**
+     * Set the datafile format
+     * 
+     * @param format
+     */
+    public void setFormat(String format) {
+        set("datafileFormat", format);
+    }
 
-	/**
-	 * @return datafile size
-	 */
-	public String getFileSize() {
-		return get("datafileSize");
-	}
+    /**
+     * Set the datafile size
+     * 
+     * @param fileSize
+     */
+    public void setFileSize(String fileSize) {
+        set("datafileSize", fileSize);
+    }
 
-	/**
-	 * @return datafile name
-	 */
-	public String getName() {
-		return get("datafileName");		
-	}	
-	
-	/**
-	 * @return datafile id
-	 */
-	public String getId() {
-		return get("datafileId");
-	}	
+    /**
+     * Set the datafile name
+     * 
+     * @param name
+     */
+    public void setName(String name) {
+        set("datafileName", name);
+    }
+
+    /**
+     * Set the datafile selected flag
+     * 
+     * @param selected
+     */
+    public void setSelected(boolean selected) {
+        set("datafileSelected", new Boolean(selected));
+    }
+
+    /**
+     * @return facility name
+     */
+    public String getFacilityName() {
+        return get("facilityName");
+    }
+
+    /**
+     * @return datafile creation time
+     */
+    public String getCreateTime() {
+        return get("datafileCreateTime");
+    }
+
+    /**
+     * @return datafile format type
+     */
+    public String getFormatType() {
+        return get("datafileFormatType");
+    }
+
+    /**
+     * @return datafile format version
+     */
+    public String getFormatVersion() {
+        return get("datafileFormatVersion");
+    }
+
+    /**
+     * @return datafile format
+     */
+    public String getFormat() {
+        return get("datafileFormat");
+    }
+
+    /**
+     * @return datafile size
+     */
+    public String getFileSize() {
+        return get("datafileSize");
+    }
+
+    /**
+     * @return datafile name
+     */
+    public String getName() {
+        return get("datafileName");
+    }
+
+    /**
+     * @return datafile id
+     */
+    public String getId() {
+        return get("datafileId");
+    }
+
+    /**
+     * @return datafile selected flag
+     */
+    public Boolean getSelected() {
+        return get("datafileSelected");
+    }
 }

@@ -27,69 +27,91 @@ import java.util.Date;
 import com.extjs.gxt.ui.client.data.BaseModel;
 
 /**
- * This class is a datamodel to hold Investigation information
- * TODO: change it from datamodel to beanmodel
+ * This class is a datamodel to hold Investigation information TODO: change it
+ * from datamodel to beanmodel
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
- * @since iCAT Version 3.3   
+ * @version 1.0, &nbsp; 30-APR-2010
+ * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
 public class TopcatInvestigation extends BaseModel {
 
-	/**
-	 * Constructor
-	 * @param serverName facility name
-	 * @param investigationName Investigation name
-	 */
-	public TopcatInvestigation(String serverName,String investigationName) {
-		set("serverName",serverName);
-		set("investigationName",investigationName);		
-	}
-	
-	/**
-	 * Constructor
-	 * @param serverName facility name
-	 * @param investigationId investigation id
-	 * @param investigationName Investigation name
-	 * @param title Investigation title
-	 * @param startDate Investigation start date
-	 * @param endDate Investigation end date
-	 */
-	public TopcatInvestigation(String serverName,String investigationId, String investigationName,String title,Date startDate,Date endDate) {
-		set("serverName",serverName);
-		set("investigationName",investigationName);	
-		set("investigationId",investigationId);
-		set("title",title);
-		set("startDate",startDate);
-		set("endDate",endDate);
-	}	
-	
-	/**
-	 * @return facility name
-	 */
-	public String getFacilityName() {
-		return get("serverName");
-	}
-	
-	/**
-	 * @return investigation name
-	 */
-	public String getInvestigationName() {
-		return get("investigationName");
-	}
-	
-	/**
-	 * @return investigation id
-	 */
-	public String getInvestigationId() {
-		return get("investigationId");
-	}
-	
-	/**
-	 * @return investigation title
-	 */
-	public String getInvestigationTitle(){
-		return get("title");
-	}
+    /**
+     * Constructor
+     * 
+     * @param serverName
+     *            facility name
+     * @param investigationName
+     *            Investigation name
+     */
+    public TopcatInvestigation(String serverName, String investigationName) {
+        set("serverName", serverName);
+        set("investigationName", investigationName);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param serverName
+     *            facility name
+     * @param investigationId
+     *            investigation id
+     * @param investigationName
+     *            Investigation name
+     * @param title
+     *            Investigation title
+     * @param visitId
+     *            Visit id
+     * @param startDate
+     *            Investigation start date
+     * @param endDate
+     *            Investigation end date
+     */
+    public TopcatInvestigation(String serverName, String investigationId, String investigationName, String title,
+            String visitId, Date startDate, Date endDate) {
+        set("serverName", serverName);
+        set("investigationName", investigationName);
+        set("investigationId", investigationId);
+        set("title", title);
+        set("visitId", visitId);
+        set("startDate", startDate);
+        set("endDate", endDate);
+    }
+
+    /**
+     * @return facility name
+     */
+    public String getFacilityName() {
+        return get("serverName");
+    }
+
+    /**
+     * @return investigation name
+     */
+    public String getInvestigationName() {
+        return get("investigationName");
+    }
+
+    /**
+     * @return investigation id
+     */
+    public String getInvestigationId() {
+        return get("investigationId");
+    }
+
+    /**
+     * @return investigation title
+     */
+    public String getInvestigationTitle() {
+        return get("title");
+    }
+
+    /**
+     * @return visit id
+     */
+    public String getVisitId() {
+        return get("visitId");
+    }
 }

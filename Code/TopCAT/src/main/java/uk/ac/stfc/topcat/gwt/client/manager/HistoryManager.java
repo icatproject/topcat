@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.manager;
+
 /**
  * Imports
  */
@@ -29,136 +30,151 @@ import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
+
 /**
- * This class is a History manager that can process the history string and build a history string
- * upon interactions by the user.
+ * This class is a History manager that can process the history string and build
+ * a history string upon interactions by the user.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class HistoryManager implements ValueChangeHandler<String>{
-	TopcatWindowManager tcWindowManager;
-	private String tabSelected="";
-	public static final String seperatorModel="//"; 
-	public static final String seperatorToken="&";
-	public static final String seperatorKeyValues="=";
-	
-	public HistoryManager(){	
-		//Add history handler
-		History.addValueChangeHandler(this);			
-	}
-	/**
-	 * Constructor 
-	 * @param tcWindowManager Floating Window Manager
-	 */
-	public HistoryManager(TopcatWindowManager tcWindowManager){
-		this.tcWindowManager=tcWindowManager;
-		//Add history handler
-		History.addValueChangeHandler(this);		
-	}
-	
-	/**
-	 * @return the full current history string 
-	 */
-	public String getHistoryString(){
-		String history="view";
-		history+=seperatorModel+seperatorToken+"tab"+seperatorKeyValues+tabSelected;
-		if(tcWindowManager!=null){
-			history+=tcWindowManager.getWindowHistoryString();
-		}
-		return history;
-	}
-	
-	/**
-	 * Set the current selected tab
-	 * @param tab
-	 */
-	public void setTabSelected(String tab){
-		tabSelected=tab;
-	}
-	
-	/*
-	 * This is History method, The format of the history is
-	 *  /view//model=investigation&Name=xyz&Id=123&ServerName=ISIS//model=dataset&Name=default&Id=234&ServerName=ISIS
-	 * (non-Javadoc)
-	 * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-	 */
-	public void onValueChange(ValueChangeEvent<String> event) {
-		String historyToken = event.getValue();
-		processHistory(historyToken);
-	}
-	
-	/**
-	 * Process the input history string 
-	 * @param history
-	 */
-	public void processHistory(String history){
-		//First token will be special token or panel
-		if(history.startsWith("download")){ //download
-			
-		} else if (history.startsWith("view")){
-			processHistoryString(history);			
-			tcWindowManager.processHistoryString(history);
-		} else {
-//			if(EventPipeLine.getInstance().getMainWindow()!=null)
-//				EventPipeLine.getInstance().getMainWindow().getMainPanel().selectPanelWithoutHistory("");
-//			tcWindowManager.closeAllWindows();
-		}	
-	}
-	
-	/**
-	 * Process the input string to check for selected tab and floating window history
-	 * @param history
-	 */
-	private void processHistoryString(String history){
-		String[] historyTokenList = history.split(HistoryManager.seperatorModel);
-		//tab string
-		String tabString = HistoryManager.seperatorToken+"tab";
-		//split the models
-		for (String hToken : historyTokenList) {
-			if(hToken.startsWith(tabString)){
-				// split the hToken to model params
-				String[] paramList = hToken.split(HistoryManager.seperatorToken);
-				for (String param : paramList) {
-					String[] keyvalues = param.split(HistoryManager.seperatorKeyValues);
-					try {
-						String key = keyvalues[0];
-						String value = keyvalues[1];
-						if(key.compareToIgnoreCase("tab")==0){
-							if(EventPipeLine.getInstance().getMainWindow()!=null){
-								EventPipeLine.getInstance().getMainWindow().getMainPanel().selectPanelWithoutHistory(value);
-							}
-						}
-					} catch (IndexOutOfBoundsException ex) {
-					}
-				}				
-			}
-		}
-	}
-	
-	/**
-	 * Removes the history string from the current history
-	 * @param history
-	 */
-	public void removeWindowHistory(String history){
-		if(history!=null&&history.compareToIgnoreCase("")!=0){
-			String currHistory=com.google.gwt.http.client.URL.decode(History.getToken());
-			int index=currHistory.indexOf(history);
-			String newHistory="";
-			if(index!=-1){
-				newHistory = currHistory.substring(0, index);
-				newHistory += currHistory.substring(index+history.length());
-				History.newItem(newHistory);
-			}		
-		}
-	}
-		
-	/**
-	 * Creates a new history string
-	 */
-	public void updateHistory(){
-		History.newItem(getHistoryString());
-	}
+public class HistoryManager implements ValueChangeHandler<String> {
+    TopcatWindowManager tcWindowManager;
+    private String tabSelected = "";
+    public static final String seperatorModel = "///";
+    public static final String seperatorToken = "&";
+    public static final String seperatorKeyValues = "=";
+
+    public HistoryManager() {
+        // Add history handler
+        History.addValueChangeHandler(this);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param tcWindowManager
+     *            Floating Window Manager
+     */
+    public HistoryManager(TopcatWindowManager tcWindowManager) {
+        this.tcWindowManager = tcWindowManager;
+        // Add history handler
+        History.addValueChangeHandler(this);
+    }
+
+    /**
+     * @return the full current history string
+     */
+    public String getHistoryString() {
+        String history = "view";
+        history += seperatorModel + seperatorToken + "tab" + seperatorKeyValues + tabSelected;
+        if (tcWindowManager != null) {
+            history += tcWindowManager.getWindowHistoryString();
+        }
+        return history;
+    }
+
+    /**
+     * Set the current selected tab
+     * 
+     * @param tab
+     */
+    public void setTabSelected(String tab) {
+        tabSelected = tab;
+    }
+
+    /*
+     * This is History method, The format of the history is
+     * /view//model=investigation
+     * &Name=xyz&Id=123&ServerName=ISIS//model=dataset&
+     * Name=default&Id=234&ServerName=ISIS (non-Javadoc)
+     * 
+     * @see
+     * com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(
+     * com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+        String historyToken = event.getValue();
+        processHistory(historyToken);
+    }
+
+    /**
+     * Process the input history string
+     * 
+     * @param history
+     */
+    public void processHistory(String history) {
+        // First token will be special token or panel
+        if (history.startsWith("download")) { // download
+
+        } else if (history.startsWith("view")) {
+            processHistoryString(history);
+            tcWindowManager.processHistoryString(history);
+        } else {
+            // if(EventPipeLine.getInstance().getMainWindow()!=null)
+            // EventPipeLine.getInstance().getMainWindow().getMainPanel().selectPanelWithoutHistory("");
+            // tcWindowManager.closeAllWindows();
+        }
+    }
+
+    /**
+     * Process the input string to check for selected tab and floating window
+     * history
+     * 
+     * @param history
+     */
+    private void processHistoryString(String history) {
+        String[] historyTokenList = history.split(HistoryManager.seperatorModel);
+        // tab string
+        String tabString = HistoryManager.seperatorToken + "tab";
+        // split the models
+        for (String hToken : historyTokenList) {
+            if (hToken.startsWith(tabString)) {
+                // split the hToken to model params
+                String[] paramList = hToken.split(HistoryManager.seperatorToken);
+                for (String param : paramList) {
+                    String[] keyvalues = param.split(HistoryManager.seperatorKeyValues);
+                    try {
+                        String key = keyvalues[0];
+                        String value = keyvalues[1];
+                        if (key.compareToIgnoreCase("tab") == 0) {
+                            if (EventPipeLine.getInstance().getMainWindow() != null) {
+                                EventPipeLine.getInstance().getMainWindow().getMainPanel()
+                                        .selectPanelWithoutHistory(value);
+                            }
+                        }
+                    } catch (IndexOutOfBoundsException ex) {
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes the history string from the current history
+     * 
+     * @param history
+     */
+    public void removeWindowHistory(String history) {
+        if (history != null && history.compareToIgnoreCase("") != 0) {
+            String currHistory = com.google.gwt.http.client.URL.decode(History.getToken());
+            int index = currHistory.indexOf(history);
+            String newHistory = "";
+            if (index != -1) {
+                newHistory = currHistory.substring(0, index);
+                newHistory += currHistory.substring(index + history.length());
+                History.newItem(newHistory);
+            }
+        }
+    }
+
+    /**
+     * Creates a new history string
+     */
+    public void updateHistory() {
+        History.newItem(getHistoryString());
+    }
 
 }

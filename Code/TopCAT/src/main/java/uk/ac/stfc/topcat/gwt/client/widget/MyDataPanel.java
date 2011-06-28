@@ -25,18 +25,16 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 /**
  * Imports
  */
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import uk.ac.stfc.topcat.gwt.client.UtilityService;
-import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -46,39 +44,31 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Composite;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import java.util.List;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
 /**
- * This widget shows a tree to browse user data (User is the investigator). the hierarchy is
- *  -- Facility
- *  	-- Instrument
- *  		-- Investigation
- *  			-- Dataset or Datafile
- *  				-- Datafile 
+ * This widget shows a tree to browse user data (User is the investigator). the
+ * hierarchy is -- Facility -- Instrument -- Investigation -- Dataset or
+ * Datafile -- Datafile
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class MyDataPanel extends Composite {
 
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-    private BaseTreeLoader<ICATNode> loader;
     TreePanel<ICATNode> treeGrid;
     HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
     private ListStore<TopcatInvestigation> investigationList = null;
@@ -90,11 +80,11 @@ public class MyDataPanel extends Composite {
     public MyDataPanel() {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
- //       verticalPanel.setLayoutOnChange(true);
- //       verticalPanel.setAutoWidth(true);
- //       verticalPanel.setAutoHeight(true);
- //       verticalPanel.setSize("100%","100%");
- //       verticalPanel.setLayout(new RowLayout(Orientation.HORIZONTAL));
+        // verticalPanel.setLayoutOnChange(true);
+        // verticalPanel.setAutoWidth(true);
+        // verticalPanel.setAutoHeight(true);
+        // verticalPanel.setSize("100%","100%");
+        // verticalPanel.setLayout(new RowLayout(Orientation.HORIZONTAL));
         verticalPanel.setBorders(true);
 
         ToolBar toolMenuBar = new ToolBar();
@@ -112,9 +102,6 @@ public class MyDataPanel extends Composite {
         buttonBar.add(btnDownload);
         toolMenuBar.add(buttonBar);
 
-
-
-
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig clmncnfgServerName = new ColumnConfig("serverName", "Facility Name", 150);
@@ -124,39 +111,47 @@ public class MyDataPanel extends Composite {
         clmncnfgInvestigationNumber.setToolTip("\"Double Click\" to show datasets");
         configs.add(clmncnfgInvestigationNumber);
 
+        ColumnConfig clmncnfgVisitId = new ColumnConfig("visitId", "Visit Id", 150);
+        clmncnfgVisitId.setToolTip("\"Double Click\" to show datasets");
+        configs.add(clmncnfgVisitId);
+
         ColumnConfig clmncnfgTitle = new ColumnConfig("title", "Title", 150);
         configs.add(clmncnfgTitle);
 
         ColumnConfig clmncnfgStartDate = new ColumnConfig("startDate", "Start Date", 150);
-        clmncnfgStartDate.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
+        clmncnfgStartDate.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
         configs.add(clmncnfgStartDate);
 
         ColumnConfig clmncnfgEndDate = new ColumnConfig("endDate", "End Date", 150);
-        clmncnfgEndDate.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
+        clmncnfgEndDate.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
+
         configs.add(clmncnfgEndDate);
 
-        //Pagination
+        // Pagination
         invPageProxy = new PagingModelMemoryProxy(investigationList);
-        PagingLoader loader = new BasePagingLoader(invPageProxy);
+        PagingLoader<PagingLoadResult<ICATNode>> loader = new BasePagingLoader<PagingLoadResult<ICATNode>>(invPageProxy);
         loader.setRemoteSort(true);
         investigationList = new ListStore<TopcatInvestigation>(loader);
-
+        // WARN: Don't remove this line otherwise the button images don't work
+        // on page toolbar
+        GXT.isHighContrastMode = false;
         grid = new Grid<TopcatInvestigation>(investigationList, new ColumnModel(configs));
         grid.setAutoExpandColumn("title");
         grid.setAutoExpandMin(200);
         grid.setMinColumnWidth(100);
-        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
 
-            public void handleEvent(GridEvent e) {
+            public void handleEvent(GridEvent<TopcatInvestigation> e) {
                 TopcatInvestigation inv = (TopcatInvestigation) e.getModel();
-                eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(), inv.getInvestigationTitle());
+                eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
+                        inv.getInvestigationTitle());
             }
         });
         grid.setSize("800px", "376px");
         verticalPanel.add(grid);
         grid.setBorders(true);
-//
-//        //Pagination Bar
+
+        // Pagination Bar
         toolBar = new PagingToolBar(15);
         toolBar.bind(loader);
         verticalPanel.add(toolBar);
@@ -166,30 +161,41 @@ public class MyDataPanel extends Composite {
         initComponent(verticalPanel);
     }
 
-
-    public void clearInvestigationList(){
+    public void clearInvestigationList() {
         investigationList.removeAll();
         toolBar.refresh();
     }
+
     /**
-     * This method sets the result investigations that will be displayed in the results table.
-     * @param invList list of investigations
+     * This method sets the result investigations that will be displayed in the
+     * results table.
+     * 
+     * @param invList
+     *            list of investigations
      */
-    public void addInvestigations(ArrayList<TopcatInvestigation> invList){
-//        invPageProxy.setData(invList);
-//        invPageProxy.setData(((ArrayList<TopcatInvestigation>)invPageProxy.getData()).addAll(invList));
-        investigationList.add(invList);
+    public void addInvestigations(ArrayList<TopcatInvestigation> invList) {
+        @SuppressWarnings("unchecked")
+        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
+        if (investList != null) {
+            investList.addAll(invList);
+        } else {
+            investList = new ArrayList<TopcatInvestigation>();
+            investList.addAll(invList);
+        }
+        invPageProxy.setData(investList);
         toolBar.refresh();
     }
 
-    public void setEventBus(EventPipeLine eventBus){
+    public void setEventBus(EventPipeLine eventBus) {
         this.eventBus = eventBus;
     }
+
     /**
      * This method sets the width of the search results table.
+     * 
      * @param width
      */
-    public void setGridWidth(int width){
+    public void setGridWidth(int width) {
         grid.setWidth(width);
     }
 }

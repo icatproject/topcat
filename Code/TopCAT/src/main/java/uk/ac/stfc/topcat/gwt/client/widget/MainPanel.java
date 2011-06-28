@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
  */
 public class MainPanel extends Composite {
     MyDataPanel myDataPanel;
+    MyDownloadPanel myDownloadPanel;
     SearchPanel searchPanel;
     BrowsePanel browsePanel;
     TabPanel tabPanel;
@@ -64,6 +65,16 @@ public class MainPanel extends Composite {
         tabPanel.add(tbtmMyData);
         tbtmMyData.setAutoHeight(true);
         tbtmMyData.setAutoWidth(true);
+
+        TabItem tbtmMyDownload = new TabItem("My Downloads");
+        tbtmMyDownload.setItemId("MyDownloads");
+        myDownloadPanel = new MyDownloadPanel();
+        myDownloadPanel.setAutoWidth(true);
+        myDownloadPanel.setAutoHeight(true);
+        tbtmMyDownload.add(myDownloadPanel);
+        tabPanel.add(tbtmMyDownload);
+        tbtmMyDownload.setAutoHeight(true);
+        tbtmMyDownload.setAutoWidth(true);
 
         TabItem tbtmSearch = new TabItem("Search");
         tbtmSearch.setItemId("Search");
@@ -106,6 +117,10 @@ public class MainPanel extends Composite {
 
     public MyDataPanel getMyDataPanel() {
         return myDataPanel;
+    }
+
+    public MyDownloadPanel getMyDownloadPanel() {
+        return myDownloadPanel;
     }
 
     public void selectPanelWithoutHistory(String tabPanelId) {

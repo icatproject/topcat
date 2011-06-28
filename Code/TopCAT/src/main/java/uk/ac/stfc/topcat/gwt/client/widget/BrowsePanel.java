@@ -110,19 +110,16 @@ public class BrowsePanel extends Composite {
 
         // Add Treepanel
         // This is RPC proxy to get the information from the server using
-        // GWT-RPC AJAX calls
-        // each time the user expands the tree to browse.
+        // GWT-RPC AJAX calls each time the user expands the tree to browse.
         RpcProxy<ArrayList<ICATNode>> proxy = new RpcProxy<ArrayList<ICATNode>>() {
 
             // Get the nodes from the server using GWT-RPC. For the datafiles
-            // grouped under datafiles get
-            // it from the cache.
+            // grouped under datafiles get it from the cache.
             @Override
             protected void load(Object loadConfig, final AsyncCallback<ArrayList<ICATNode>> callback) {
-                // Retrive the datafiles information from the cache instead of
-                // going to the GWT-RPC
-                // for datafiles grouped under datafiles (log files under RAW
-                // files)
+                // Retrieve the datafiles information from the cache instead of
+                // going to the GWT-RPC for datafiles grouped under datafiles
+                // (log files under RAW files)
                 if (loadConfig != null && ((ICATNode) loadConfig).getNodeType() == ICATNodeType.DATAFILE) {
                     String key = ((ICATNode) loadConfig).getFacility() + ((ICATNode) loadConfig).getDatafileId();
                     callback.onSuccess(logfilesMap.get(key));
@@ -139,8 +136,8 @@ public class BrowsePanel extends Composite {
                             @Override
                             public void onSuccess(HashMap<String, ArrayList<ICATNode>> result) {
                                 ArrayList<ICATNode> rawFiles = result.get("");
-                                result.remove(""); // remove from the result
-                                                   // list
+                                // remove from the result list
+                                result.remove("");
                                 for (String key : result.keySet()) {
                                     logfilesMap.put(key, result.get(key));
                                 }
@@ -148,17 +145,14 @@ public class BrowsePanel extends Composite {
                             }
 
                         });
-
             }
         };
 
         loader = new BaseTreeLoader<ICATNode>(proxy) {
             @Override
             public boolean hasChildren(ICATNode parent) {
-
-                return logfilesMap.get(parent.getFacility() + parent.getDatafileId()) != null// treeGrid.getStore().getChildCount(parent)
-                                                                                             // !=
-                                                                                             // 0
+                // treeGrid.getStore().getChildCount(parent) !=0
+                return logfilesMap.get(parent.getFacility() + parent.getDatafileId()) != null
                         || parent.getNodeType() != ICATNodeType.DATAFILE
                         && parent.getNodeType() != ICATNodeType.UNKNOWN;
             }
@@ -169,19 +163,19 @@ public class BrowsePanel extends Composite {
         VerticalPanel contentPanel_1 = new VerticalPanel();
         contentPanel_1.setLayoutOnChange(true);
         contentPanel_1.setAutoWidth(true);
-        // contentPanel_1.setAutoHeight(true); // This will make use of the
-        // browser bar
-        contentPanel_1.setScrollMode(Scroll.AUTO); // This will set the Scroll
-                                                   // bar
+        // This will make use of the browser bar
+        // contentPanel_1.setAutoHeight(true);
+        // This will set the Scroll bar
+        contentPanel_1.setScrollMode(Scroll.AUTO);
         contentPanel_1.setLayout(new RowLayout(Orientation.HORIZONTAL));
         contentPanel_1.setBorders(false);
         treeGrid = new TreePanel<ICATNode>(store);
         contentPanel_1.add(treeGrid);
         treeGrid.setAutoHeight(true);
         treeGrid.setAutoWidth(true);
+
         // This handler calls the reloading of the tree if the children are
-        // none. useful
-        // when the session expires or user hasn't logged in.
+        // none. Useful when the session expires or user hasn't logged in.
         treeGrid.addListener(Events.Expand, new Listener<TreePanelEvent<ICATNode>>() {
             @SuppressWarnings("unchecked")
             @Override
@@ -191,23 +185,29 @@ public class BrowsePanel extends Composite {
 
                 if (!node.isLeaf() && node.getItemCount() == 0)
                     loader.loadChildren(be.getItem());
-
             }
-
         });
+
         // This is to check the RAW Datafile checked and check all the children
         treeGrid.addListener(Events.BeforeCheckChange, new Listener<TreePanelEvent<ICATNode>>() {
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
-                ICATNode node = be.getItem(); // If children of raw datafiles
-                                              // are not loaded then load them.
-                if (node.getNodeType() == ICATNodeType.DATAFILE && loader.hasChildren(node)
-                        && treeGrid.getStore().getChildCount(node) == 0) {
+                // If children of raw datafiles are not loaded then load them.
+                ICATNode node = be.getItem();
+                if ((node.getNodeType() == ICATNodeType.DATAFILE || node.getNodeType() == ICATNodeType.INVESTIGATION)
+                        && loader.hasChildren(node) && treeGrid.getStore().getChildCount(node) == 0) {
                     loader.loadChildren(node);
                 }
+                // Only allow selection of datafiles, datasets and
+                // investigations
+                if (node.getNodeType() != ICATNodeType.DATAFILE && node.getNodeType() != ICATNodeType.DATASET
+                        && node.getNodeType() != ICATNodeType.INVESTIGATION) {
+                    be.setCancelled(true);
+                    return;
+                }
             }
-
         });
+
         // On double click on datafile node show a parameter window
         treeGrid.sinkEvents(Events.OnDoubleClick.getEventCode());
         treeGrid.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<ICATNode>>() {
@@ -222,8 +222,8 @@ public class BrowsePanel extends Composite {
                             icatnode.getDatafileId(), icatnode.getDatafileName());
                 }
             }
-
         });
+
         treeGrid.setCaching(true);
         treeGrid.setDisplayProperty("name");
         treeGrid.setCheckable(true);
@@ -264,10 +264,12 @@ public class BrowsePanel extends Composite {
         for (ICATNode node : selectedItems) {
             if (node.getNodeType() == ICATNodeType.DATAFILE) {
                 ArrayList<Long> dsList = dsMap.get(node.getFacility());
-                if (dsList.contains(new Long(treeGrid.getStore().getParent(node).getDatasetId()))) {
-                    // we have already selected the whole datset so ignore the
-                    // file
-                    continue;
+                if (dsList != null) {
+                    if (dsList.contains(new Long(treeGrid.getStore().getParent(node).getDatasetId()))) {
+                        // we have already selected the whole datset so ignore
+                        // the file
+                        continue;
+                    }
                 }
                 ArrayList<Long> idList = dfMap.get(node.getFacility());
                 if (idList == null) {
@@ -291,10 +293,10 @@ public class BrowsePanel extends Composite {
 
         // check that we will be able to download all the files in the available
         // number of download frames
-        if (requiredBatches > (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES)) {
+        if (requiredBatches > (Constants.MAX_DOWNLOAD_FRAMES)) {
             EventPipeLine.getInstance().showErrorDialog(
-                    "Download request for " + requiredBatches + " files/sets exceeds maximum of "
-                            + (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES) + " files/sets");
+                    "Download request exceeds maximum of " + (Constants.MAX_DOWNLOAD_FRAMES) + " data sets or "
+                            + (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES) + " files");
             return;
         }
 
@@ -303,7 +305,7 @@ public class BrowsePanel extends Composite {
         for (String facility : dsMap.keySet()) {
             List<Long> idList = dsMap.get(facility);
             for (Long id : idList) {
-                EventPipeLine.getInstance().getDatasetDownloadFrame(facility, id);
+                EventPipeLine.getInstance().downloadDatasets(facility, id);
                 batchCount = batchCount + 1;
             }
         }
@@ -312,20 +314,22 @@ public class BrowsePanel extends Composite {
         for (String facility : dfMap.keySet()) {
             List<Long> idList = dfMap.get(facility);
             while (idList.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
-                EventPipeLine.getInstance().getDatafilesDownloadFrame(facility,
+                EventPipeLine.getInstance().downloadDatafiles(facility,
                         idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH));
                 idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
                 batchCount = batchCount + 1;
             }
-            EventPipeLine.getInstance().getDatafilesDownloadFrame(facility, idList);
+            EventPipeLine.getInstance().downloadDatafiles(facility, idList);
             batchCount = batchCount + 1;
         }
 
-        if (batchCount > 1) {
+        if (batchCount == 0) {
+            EventPipeLine.getInstance().showMessageDialog("Nothing selected for download");
+        } else if (batchCount == 1) {
+            EventPipeLine.getInstance().showMessageDialog("Download request sent to remote server");
+        } else {
             EventPipeLine.getInstance().showMessageDialog(
                     "Download request sent to remote server. Files will be returned in " + batchCount + " batches.");
-        } else {
-            EventPipeLine.getInstance().showMessageDialog("Download request sent to remote server");
         }
     }
 

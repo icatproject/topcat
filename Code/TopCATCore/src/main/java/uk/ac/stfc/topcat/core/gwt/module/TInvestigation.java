@@ -27,37 +27,41 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * This is shared with GWT for dataset information.
- * This Class holds the icat investigation and the server to which it is associated
+ * This is shared with GWT for dataset information. This Class holds the icat
+ * investigation and the server to which it is associated
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class TInvestigation implements Serializable{
+public class TInvestigation implements Serializable {
     String investigationId = null;
-    String investigationName=null;
-    String serverName=null;
-    Date  startDate=null;
-    Date   endDate=null;
-    String title=null;
-    
+    String investigationName = null;
+    String serverName = null;
+    Date startDate = null;
+    Date endDate = null;
+    String title = null;
+    String visitId = null;
 
     public TInvestigation() {
     }
-    public TInvestigation(String invId,String inv,String server) {
+
+    public TInvestigation(String invId, String inv, String server) {
         investigationId = invId;
         investigationName = inv;
         serverName = server;
     }
 
-    public TInvestigation(String invId,String invName,String server,String title,Date startDate,Date endDate) {
-        investigationId =invId;
+    public TInvestigation(String invId, String invName, String server, String title, Date startDate, Date endDate,
+            String visitId) {
+        investigationId = invId;
         investigationName = invName;
         serverName = server;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.visitId = visitId;
     }
 
     public String getInvestigationId() {
@@ -67,7 +71,6 @@ public class TInvestigation implements Serializable{
     public void setInvestigationId(String investigationId) {
         this.investigationId = investigationId;
     }
-
 
     public String getInvestigationName() {
         return investigationName;
@@ -107,6 +110,14 @@ public class TInvestigation implements Serializable{
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+    }
+
+    public String getVisitId() {
+        return visitId;
+    }
+
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
     }
 
 }

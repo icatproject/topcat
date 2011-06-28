@@ -26,7 +26,9 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.Resource;
@@ -38,6 +40,11 @@ import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -57,6 +64,7 @@ import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -81,19 +89,110 @@ public class DatafileWindow extends Window {
     CheckBoxSelectionModel<DatafileModel> datafileSelectModel;
     GroupingStore<DatafileModel> dfmStore;
     ArrayList<DatasetModel> inputDatasetModels;
+    private PagingModelMemoryProxy pageProxy = null;
+    private PagingLoader<PagingLoadResult<DatafileModel>> loader = null;
+    private PagingToolBar pageBar = null;
+    private GroupingView view;
+    private Map<Long, Boolean> selectedFiles = new HashMap<Long, Boolean>();
     boolean historyVerified;
     boolean hasData;
+    Grid<DatafileModel> grid;
+
+    /** Number of rows of data. */
+    private static final int PAGE_SIZE = 20;
 
     public DatafileWindow() {
         addWindowListener(new WindowListener() {
+            @Override
             public void windowHide(WindowEvent we) {
-                // EventPipeLine.getInstance().removeWindowHistory(getHistoryString());
                 EventPipeLine.getInstance().getHistoryManager().updateHistory();
             }
         });
-        dfmStore = new GroupingStore<DatafileModel>();
-        datafileSelectModel = new CheckBoxSelectionModel<DatafileModel>();
-        dfmStore.groupBy("datasetName");
+
+        datafileSelectModel = new CheckBoxSelectionModel<DatafileModel>() {
+            private boolean allSelected = false;
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void deselectAll() {
+                super.deselectAll();
+                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
+                    m.setSelected(false);
+                }
+                selectedFiles.clear();
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void selectAll() {
+                super.selectAll();
+                if (allSelected) {
+                    // no need to loop through every item again
+                    return;
+                }
+                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
+                    m.setSelected(true);
+                    selectedFiles.put(new Long(m.getId()), true);
+                }
+                allSelected = true;
+                setChecked(allSelected);
+            }
+
+            @Override
+            protected void doDeselect(List<DatafileModel> models, boolean supressEvent) {
+                super.doDeselect(models, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatafileModel m : models) {
+                    m.setSelected(false);
+                    selectedFiles.remove(new Long(m.getId()));
+                }
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void doSelect(List<DatafileModel> models, boolean keepExisting, boolean supressEvent) {
+                super.doSelect(models, keepExisting, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatafileModel m : models) {
+                    m.setSelected(true);
+                    selectedFiles.put(new Long(m.getId()), true);
+                }
+                if (!allSelected && selectedFiles.size() == ((List<DatafileModel>) pageProxy.getData()).size()) {
+                    allSelected = true;
+                }
+                setChecked(allSelected);
+            }
+
+            @Override
+            public void refresh() {
+                super.refresh();
+                List<DatafileModel> previouslySelected = new ArrayList<DatafileModel>();
+                for (DatafileModel m : listStore.getModels()) {
+                    if (m.getSelected()) {
+                        previouslySelected.add(m);
+                    }
+                }
+                if (previouslySelected.size() > 0) {
+                    doSelect(previouslySelected, true, false);
+                }
+            }
+
+            private void setChecked(boolean checked) {
+                if (grid.isViewReady()) {
+                    El hd = El.fly(grid.getView().getHeader().getElement()).selectNode("div.x-grid3-hd-checker");
+                    if (hd != null) {
+                        hd.getParent().setStyleName("x-grid3-hd-checker-on", checked);
+                    }
+                }
+            }
+        };
+
         datafileInfoWindow = new ParameterWindow();
         setHeading("Datafile Window");
         setLayout(new RowLayout(Orientation.VERTICAL));
@@ -120,11 +219,11 @@ public class DatafileWindow extends Window {
         configs.add(clmncnfgFormatType);
 
         ColumnConfig clmncnfgCreateTime = new ColumnConfig("datafileCreateTime", "Create Time", 150);
-        clmncnfgCreateTime.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
+        clmncnfgCreateTime.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
         configs.add(clmncnfgCreateTime);
 
         final ColumnModel cm = new ColumnModel(configs);
-        GroupingView view = new GroupingView();
+        view = new GroupingView();
         view.setShowGroupedColumn(false);
         view.setForceFit(true);
         view.setGroupRenderer(new GridGroupRenderer() {
@@ -135,22 +234,34 @@ public class DatafileWindow extends Window {
                 return f + ": " + data.group + " (" + data.models.size() + " " + l + ")";
             }
         });
+
+        // Pagination
+        pageProxy = new PagingModelMemoryProxy(dfmStore);
+        loader = new BasePagingLoader<PagingLoadResult<DatafileModel>>(pageProxy);
+        loader.setRemoteSort(true);
+        dfmStore = new GroupingStore<DatafileModel>(loader);
+        dfmStore.groupBy("datasetName");
+
+        // Grid
         Grid<DatafileModel> grid = new Grid<DatafileModel>(dfmStore, cm);
-        grid.setHeight("398px");
+        grid.setHeight("420px");
         grid.setView(view);
         grid.setBorders(true);
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<DatafileModel>>() {
+            @Override
             public void handleEvent(GridEvent<DatafileModel> e) {
-                DatafileModel datafile = (DatafileModel) e.getModel();
+                DatafileModel datafile = e.getModel();
                 EventPipeLine.getInstance().showParameterWindowWithHistory(datafile.getFacilityName(),
                         datafile.getId(), datafile.getName());
             }
         });
+
         grid.addPlugin(datafileSelectModel);
         grid.setSelectionModel(datafileSelectModel);
         ToolBar toolBar = new ToolBar();
         Button btnView = new Button(" Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
         btnView.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 download();
             }
@@ -160,9 +271,15 @@ public class DatafileWindow extends Window {
         setTopComponent(toolBar);
 
         setLayout(new FitLayout());
-        setSize(700, 500);
+        setSize(700, 560);
+
+        // Pagination Bar
+        pageBar = new PagingToolBar(PAGE_SIZE);
+        pageBar.bind(loader);
+        setBottomComponent(pageBar);
+
         add(grid);
-        hasData = true;
+        hasData = true; // ?? but no data is passed in in the constructor
     }
 
     /**
@@ -175,17 +292,23 @@ public class DatafileWindow extends Window {
     public void setDatasets(ArrayList<DatasetModel> datasetList) {
         inputDatasetModels = datasetList;
         // This is the list of datasets selected to be viewed for datafiles.
+        EventPipeLine.getInstance().setDialogBox("  Retieveing data...");
+        EventPipeLine.getInstance().showDialogBox();
         utilityService.getDatafilesInDatasets(datasetList, new AsyncCallback<ArrayList<DatafileModel>>() {
             @Override
             public void onSuccess(ArrayList<DatafileModel> result) {
+                EventPipeLine.getInstance().hideDialogBox();
                 setDatafileList(result);
                 hasData = true;
+                show();
             }
 
             @Override
             public void onFailure(Throwable caught) {
+                EventPipeLine.getInstance().hideDialogBox();
                 // TODO Auto-generated method stub
                 dfmStore.removeAll();
+                selectedFiles.clear();
                 hasData = false;
             }
         });
@@ -199,6 +322,7 @@ public class DatafileWindow extends Window {
      */
     public void setDatafileList(ArrayList<DatafileModel> datafileList) {
         dfmStore.removeAll();
+        selectedFiles.clear();
         NumberFormat format = NumberFormat.getDecimalFormat();
         // convert Bytes to MegaBytes
         for (DatafileModel dfm : datafileList) {
@@ -206,7 +330,9 @@ public class DatafileWindow extends Window {
             size = size / 1048576.0f;
             dfm.setFileSize(format.format(size.doubleValue()) + " MB");
         }
-        dfmStore.add(datafileList);
+        pageProxy.setData(datafileList);
+        loader.load(0, PAGE_SIZE);
+        pageBar.refresh();
     }
 
     /**
@@ -282,24 +408,31 @@ public class DatafileWindow extends Window {
      * Download selected datafiles.
      */
     private void download() {
-        List<DatafileModel> selectedItems = datafileSelectModel.getSelectedItems();
+        if (selectedFiles.size() == 0) {
+            EventPipeLine.getInstance().showMessageDialog("No files selected for download");
+            return;
+        }
         // check that we will be able to download all the files in the available
         // number of download frames
-        if (selectedItems.size() > (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES)) {
+        if (selectedFiles.size() > (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES)) {
             EventPipeLine.getInstance().showErrorDialog(
-                    "Download request for " + selectedItems.size() + " files exceeds maximum of "
+                    "Download request for " + selectedFiles.size() + " files exceeds maximum of "
                             + (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES) + " files");
             return;
         }
+
+        List<Long> selectedItems = new ArrayList<Long>(selectedFiles.keySet());
+        @SuppressWarnings("unchecked")
+        String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
         int batchCount = 0;
         // get a download frame for each batch of data files
         while (selectedItems.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
-            EventPipeLine.getInstance().downloadDatafiles(
+            EventPipeLine.getInstance().downloadDatafiles(facility,
                     selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH));
             selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
             batchCount = batchCount + 1;
         }
-        EventPipeLine.getInstance().downloadDatafiles(selectedItems);
+        EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems);
         batchCount = batchCount + 1;
         if (batchCount > 1) {
             EventPipeLine.getInstance().showMessageDialog(
