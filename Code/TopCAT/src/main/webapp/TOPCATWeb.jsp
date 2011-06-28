@@ -15,6 +15,7 @@
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="ExtGWT/css/gxt-all.css">
+    <link rel="stylesheet" type="text/css" href="gxt/themes/access/css/xtheme-access.css" />    
     <link type="text/css" rel="stylesheet" href="TOPCATWeb.css">
 
     <!--                                           -->
