@@ -655,6 +655,7 @@ public class EventPipeLine implements LoginInterface {
             DatasetWindow datasetWindow = tcWindowManager.createDatasetWindow();
             datasetWindow.setInvestigationTitle(investigationName);
             datasetWindow.setDataset(facilityName, investigationId);
+            datasetWindow.show();
             datasetWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
             // TODO Auto-generated catch block
@@ -689,6 +690,7 @@ public class EventPipeLine implements LoginInterface {
         try {
             DatafileWindow datafileWindow = tcWindowManager.createDatafileWindow();
             datafileWindow.setDatasets(datasetModel);
+            datafileWindow.show();
             datafileWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
             // TODO Auto-generated catch block

@@ -300,7 +300,6 @@ public class DatafileWindow extends Window {
                 EventPipeLine.getInstance().hideDialogBox();
                 setDatafileList(result);
                 hasData = true;
-                show();
             }
 
             @Override
@@ -333,6 +332,7 @@ public class DatafileWindow extends Window {
         pageProxy.setData(datafileList);
         loader.load(0, PAGE_SIZE);
         pageBar.refresh();
+        pageBar.show();
     }
 
     /**
@@ -402,6 +402,13 @@ public class DatafileWindow extends Window {
             setDatasets(inputDatasetModels);
         }
         super.show();
+    }
+
+    public void reset() {
+        inputDatasetModels.clear();
+        dfmStore.removeAll();
+        selectedFiles.clear();
+        pageBar.hide();
     }
 
     /**

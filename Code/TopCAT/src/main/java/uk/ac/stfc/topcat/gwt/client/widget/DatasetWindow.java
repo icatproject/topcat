@@ -157,7 +157,6 @@ public class DatasetWindow extends Window {
                         EventPipeLine.getInstance().hideDialogBox();
                         setDatasetList(result);
                         hasData = true;
-                        show();
                     }
 
                     @Override
@@ -276,5 +275,11 @@ public class DatasetWindow extends Window {
             setDataset(facilityName, investigationId);
         }
         super.show();
+    }
+
+    public void reset() {
+        facilityName = "";
+        investigationId = "";
+        datasetList.removeAll();
     }
 }

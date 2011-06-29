@@ -81,6 +81,7 @@ public class TopcatWindowManager {
                 dfWin.show();
                 dfWin.setPosition(vp.x + 30 + i * 10, vp.y + i * 10);
                 dfWin.hide();
+                dfWin.reset();
                 return dfWin;
             }
         }
@@ -113,6 +114,7 @@ public class TopcatWindowManager {
                 dsWin.show();
                 dsWin.setPosition(vp.x + i * 10, vp.y + i * 10);
                 dsWin.hide();
+                dsWin.reset();
                 return dsWin;
             }
         }
