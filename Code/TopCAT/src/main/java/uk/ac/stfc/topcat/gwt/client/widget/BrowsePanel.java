@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -54,6 +55,8 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
@@ -162,17 +165,16 @@ public class BrowsePanel extends Composite {
 
         VerticalPanel contentPanel_1 = new VerticalPanel();
         contentPanel_1.setLayoutOnChange(true);
-        contentPanel_1.setAutoWidth(true);
-        // This will make use of the browser bar
-        // contentPanel_1.setAutoHeight(true);
         // This will set the Scroll bar
         contentPanel_1.setScrollMode(Scroll.AUTO);
-        contentPanel_1.setLayout(new RowLayout(Orientation.HORIZONTAL));
+        VBoxLayout layout = new VBoxLayout();
+        layout.setPadding(new Padding(5));
+        layout.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
+        contentPanel_1.setLayout(layout);
         contentPanel_1.setBorders(false);
         treeGrid = new TreePanel<ICATNode>(store);
         contentPanel_1.add(treeGrid);
         treeGrid.setAutoHeight(true);
-        treeGrid.setAutoWidth(true);
 
         // This handler calls the reloading of the tree if the children are
         // none. Useful when the session expires or user hasn't logged in.
