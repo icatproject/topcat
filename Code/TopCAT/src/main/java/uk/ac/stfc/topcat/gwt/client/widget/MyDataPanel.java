@@ -29,6 +29,7 @@ import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
@@ -162,7 +163,24 @@ public class MyDataPanel extends Composite {
     }
 
     public void clearInvestigationList() {
-        investigationList.removeAll();
+        invPageProxy.setData(new ArrayList<TopcatInvestigation>());
+        toolBar.refresh();
+    }
+
+    /**
+     * Remove all investigations for the given facility.
+     * 
+     * @param facilityName
+     */
+    public void clearInvestigationList(String facilityName) {
+        @SuppressWarnings("unchecked")
+        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
+        for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
+            if (it.next().getFacilityName().equals(facilityName)) {
+                it.remove();
+            }
+        }
+        invPageProxy.setData(investList);
         toolBar.refresh();
     }
 

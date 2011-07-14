@@ -27,6 +27,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  */
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -44,6 +45,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import java.util.List;
 
 /**
+ * This widget displays the download requests.
+ * 
  */
 public class MyDownloadPanel extends Composite {
 
@@ -88,6 +91,13 @@ public class MyDownloadPanel extends Composite {
         show();
     }
 
+    /**
+     * Add details of a download.
+     * 
+     * @param facility
+     * @param id
+     * @param url
+     */
     public void addDownload(String facility, Long id, String url) {
         // TODO nasty hack for Diamond
         if (facility.equalsIgnoreCase("DIAMOND")) {
@@ -95,6 +105,23 @@ public class MyDownloadPanel extends Composite {
         }
 
         downloadStore.add(new DownloadModel(facility, id, url));
+    }
+
+    /**
+     * Remove all downloads for the given facility.
+     * 
+     * @param facilityName
+     */
+    public void clearDownloadList(String facilityName) {
+        List<DownloadModel> downloadList = downloadStore.getModels();
+
+        for (Iterator<DownloadModel> it = downloadList.iterator(); it.hasNext();) {
+            if (it.next().getFacilityName().equals(facilityName)) {
+                it.remove();
+            }
+        }
+        downloadStore.removeAll();
+        downloadStore.add(downloadList);
     }
 
     public void setEventBus(EventPipeLine eventBus) {
