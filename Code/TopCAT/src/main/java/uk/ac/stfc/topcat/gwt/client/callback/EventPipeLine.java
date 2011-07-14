@@ -253,12 +253,13 @@ public class EventPipeLine implements LoginInterface {
      * 
      * @param facilityName
      */
-    public void failureLogin(String facilityName) {
-        // Show an error message.
-        showErrorDialog("Error logging in,  Please check username and password");
+    public void failureLogin(String facilityName) {       
         // Process the failure of login
         LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);
         infoPanel.successLogout();
+        loginWidget.show();        
+        // Show an error message.
+        showErrorDialog("Error logging in,  Please check username and password");
     }
 
     /**
