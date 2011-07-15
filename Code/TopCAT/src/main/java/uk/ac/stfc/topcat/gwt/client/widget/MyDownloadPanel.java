@@ -114,14 +114,15 @@ public class MyDownloadPanel extends Composite {
      */
     public void clearDownloadList(String facilityName) {
         List<DownloadModel> downloadList = downloadStore.getModels();
-
-        for (Iterator<DownloadModel> it = downloadList.iterator(); it.hasNext();) {
-            if (it.next().getFacilityName().equals(facilityName)) {
-                it.remove();
+        if (downloadList != null) {
+            for (Iterator<DownloadModel> it = downloadList.iterator(); it.hasNext();) {
+                if (it.next().getFacilityName().equals(facilityName)) {
+                    it.remove();
+                }
             }
+            downloadStore.removeAll();
+            downloadStore.add(downloadList);
         }
-        downloadStore.removeAll();
-        downloadStore.add(downloadList);
     }
 
     public void setEventBus(EventPipeLine eventBus) {

@@ -495,7 +495,6 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.setMessage("Getting Investigations...");
         waitDialog.show();
         // NOTE: Working without this
-        mainWindow.getMainPanel().getMyDataPanel().clearInvestigationList();
         for (TFacility facilityName : facilityNames) {
             getMyInvestigationsInMyDataPanel(facilityName.getName());
         }
@@ -508,7 +507,7 @@ public class EventPipeLine implements LoginInterface {
      * 
      * @param facilityName
      */
-    public void getMyInvestigationsInMyDataPanel(String facilityName) {
+    public void getMyInvestigationsInMyDataPanel(final String facilityName) {
         waitDialog.setMessage("Searching in " + facilityName + "...");
         utilityService.getMyInvestigationsInServer(facilityName, new AsyncCallback<ArrayList<TInvestigation>>() {
             public void onFailure(Throwable caught) {
@@ -525,7 +524,7 @@ public class EventPipeLine implements LoginInterface {
                                 .getEndDate()));
                 }
                 waitDialog.hide();
-                mainWindow.getMainPanel().getMyDataPanel().addInvestigations(invList);
+                mainWindow.getMainPanel().getMyDataPanel().addInvestigations(facilityName, invList);
             }
         });
 

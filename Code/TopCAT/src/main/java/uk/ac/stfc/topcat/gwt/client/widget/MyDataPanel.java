@@ -162,11 +162,6 @@ public class MyDataPanel extends Composite {
         initComponent(verticalPanel);
     }
 
-    public void clearInvestigationList() {
-        invPageProxy.setData(new ArrayList<TopcatInvestigation>());
-        toolBar.refresh();
-    }
-
     /**
      * Remove all investigations for the given facility.
      * 
@@ -175,23 +170,27 @@ public class MyDataPanel extends Composite {
     public void clearInvestigationList(String facilityName) {
         @SuppressWarnings("unchecked")
         List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
-        for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
-            if (it.next().getFacilityName().equals(facilityName)) {
-                it.remove();
+        if (investList != null) {
+            for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
+                if (it.next().getFacilityName().equals(facilityName)) {
+                    it.remove();
+                }
             }
+            invPageProxy.setData(investList);
+            toolBar.refresh();
         }
-        invPageProxy.setData(investList);
-        toolBar.refresh();
     }
 
     /**
      * This method sets the result investigations that will be displayed in the
      * results table.
      * 
+     * @param facilityName
      * @param invList
      *            list of investigations
      */
-    public void addInvestigations(ArrayList<TopcatInvestigation> invList) {
+    public void addInvestigations(String facilityName, ArrayList<TopcatInvestigation> invList) {
+        clearInvestigationList(facilityName);
         @SuppressWarnings("unchecked")
         List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
         if (investList != null) {
