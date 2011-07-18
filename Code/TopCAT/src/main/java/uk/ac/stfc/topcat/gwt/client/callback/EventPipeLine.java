@@ -849,4 +849,8 @@ public class EventPipeLine implements LoginInterface {
     public void hideDialogBox() {
         waitDialog.hide();
     }
+
+    public ArrayList<TFacility> getFacilityNames(){
+        return facilityNames;
+    }
 }

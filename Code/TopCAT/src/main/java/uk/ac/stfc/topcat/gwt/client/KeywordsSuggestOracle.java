@@ -30,6 +30,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle.MultiWordSuggestion;
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 
 /**
  * @author sn65
@@ -40,19 +42,7 @@ public class KeywordsSuggestOracle extends SuggestOracle {
 	 * Topcat Session Id
 	 */
 	private String sessionId;
-
-	/**
-	 * Server to get the keywords from
-	 */
-	private String serverName;
-
-	public String getServerName() {
-		return serverName;
-	}
-
-	public void setServerName(String serverName) {
-		this.serverName = serverName;
-	}
+        int     requestCount;
 
 	public String getSessionId() {
 		return sessionId;
@@ -159,6 +149,9 @@ public class KeywordsSuggestOracle extends SuggestOracle {
 	private final SearchServiceAsync searchServce = GWT
 			.create(SearchService.class);
 
+	ArrayList<Suggestion> suggestionList = new ArrayList<Suggestion>();
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -224,17 +217,28 @@ public class KeywordsSuggestOracle extends SuggestOracle {
 	 */
 	private void makeRequest(final Request request, final Callback callback) {
 		requestInProgress = true;
-		searchServce.getKeywordsFromServer(this.sessionId, serverName, request
+                suggestionList.clear();
+
+                ArrayList<TFacility> serverNames = EventPipeLine.getInstance().getFacilityNames();
+                //Make multiple requests to each server to get the keywords
+                for(TFacility serverName:serverNames){
+                    searchServce.getKeywordsFromServer(this.sessionId, serverName.getName(), request
 				.getQuery(), 500, new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable caught) {
-				requestInProgress = false;
+                                requestCount++;
+                                if(requestCount==EventPipeLine.getInstance().getFacilityNames().size()){
+                                    requestInProgress = false;
+                                    requestCount=0;
+                                }
 			}
 
 			@Override
 			public void onSuccess(List<String> result) {
-				// TODO Auto-generated method stub
-				requestInProgress = false;
-				ArrayList<Suggestion> suggestionList = new ArrayList<Suggestion>();
+                                requestCount++;
+                                if(requestCount==EventPipeLine.getInstance().getFacilityNames().size()){
+                                    requestInProgress = false;
+                                    requestCount=0;
+                                }
 				for (int i = 0; i < result.size(); i++)
 					suggestionList.add(new MultiWordSuggestion(result.get(i),
 							result.get(i)));
@@ -243,5 +247,6 @@ public class KeywordsSuggestOracle extends SuggestOracle {
 				KeywordsSuggestOracle.this.returnSuggestions(callback);
 			}
 		});
+            }
 	}
 }
