@@ -38,6 +38,7 @@ public interface KeywordManagementLocal {
 
     void updateAllKeywords();
 
-    ArrayList<String> getKeywordsWithPrefix(String prefix);
+    ArrayList<String> getKeywordsWithPrefix(String sessionId,
+            String serverName, String partialKey, int numberOfKeywords);
     
 }

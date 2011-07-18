@@ -34,7 +34,8 @@ From within the "Installation" directory
 5) mvn glassfish:create-domain -Dglassfish.home=$GLASSFISH_HOME --non-recursive
 6) openssl s_client -no_tls1 -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
 7) keytool -import -noprompt -alias <alias> -file $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert -keystore $GLASSFISH_HOME/domains/TOPCAT/config/cacerts.jks --storepass changeit 
-8) mvn glassfish:deploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive
+8) mvn resources:copy-resources -Dglassfish.home=$GLASSFISH_HOME --non-recursive
+9) mvn glassfish:deploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive
 
 
 UNDEPLOY

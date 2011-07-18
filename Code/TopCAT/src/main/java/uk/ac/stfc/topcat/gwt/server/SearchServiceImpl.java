@@ -90,7 +90,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<String> getKeywordsFromServer(String sessionId,
 			String ServerName, String partialKey, int numberOfKeywords) {
-		List<String> results=keywordManager.getKeywordsWithPrefix(partialKey);
+		List<String> results=keywordManager.getKeywordsWithPrefix(sessionId, ServerName, partialKey, numberOfKeywords);
 		return results;
 	}
 

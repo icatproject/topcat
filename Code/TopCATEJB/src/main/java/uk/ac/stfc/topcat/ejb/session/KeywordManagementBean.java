@@ -56,7 +56,8 @@ public class KeywordManagementBean implements KeywordManagementLocal {
         keywordManager.UpdateKeywordsFromAll(manager);
     }
 
-    public ArrayList<String> getKeywordsWithPrefix(String prefix) {
-        return keywordManager.getKeywordsWithPrefix(manager, prefix);
+    public ArrayList<String> getKeywordsWithPrefix(String sessionId,
+            String serverName, String partialKey, int numberOfKeywords) {
+        return keywordManager.getKeywordsWithPrefix(manager, sessionId, serverName, partialKey, numberOfKeywords);
     }
 }
