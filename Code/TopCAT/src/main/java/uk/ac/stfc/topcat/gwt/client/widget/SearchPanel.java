@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -150,7 +151,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         advancedSearchSubPanel = new AdvancedSearchSubPanel();
         advancedSearchSubPanel.setInvSearchCallback(this);
         cntntpnlAdvancedSearch.add(advancedSearchSubPanel);
-        advancedSearchSubPanel.setSize("100%", "100%");
+        advancedSearchSubPanel.setSize("99%", "100%");
         TableData td_cntntpnlAdvancedSearch = new TableData();
         td_cntntpnlAdvancedSearch.setHeight("100%");
         verticalPanel.add(cntntpnlAdvancedSearch, td_cntntpnlAdvancedSearch);
@@ -166,11 +167,12 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
         facilitiesSearchSubPanel = new FacilitiesSearchSubPanel();
         cntntpnlFacilitiesSearch.add(facilitiesSearchSubPanel);
-        facilitiesSearchSubPanel.setSize("100%", "100%");
+        facilitiesSearchSubPanel.setSize("99%", "100%");
         TableData td_cntntpnlFacilitiesSearch = new TableData();
         td_cntntpnlFacilitiesSearch.setHeight("100%");
         verticalPanel.add(cntntpnlFacilitiesSearch, td_cntntpnlFacilitiesSearch);
         cntntpnlFacilitiesSearch.setSize("705px", "100%");
+        verticalPanel.add(new Text(""));
 
         ColumnConfig clmncnfgServerName = new ColumnConfig("serverName", "Facility Name", 150);
         configs.add(clmncnfgServerName);

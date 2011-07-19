@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.facility;
+
 /**
  * Imports
  */
@@ -46,99 +47,98 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 /**
  * This is a widget, Customized for Diamond Facility
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class DiamondSearchWidget extends Composite {
 
-	EventPipeLine eventBus;
-	private DateField startDate;
-	private DateField endDate;
-	private ListField<Instrument> beamLine;
-	private String facilityName;
-	@SuppressWarnings("unchecked")
-	private TextField visitId;
-	@SuppressWarnings("unchecked")
-	public DiamondSearchWidget(EventPipeLine eventBusPipeLine) {
-		this.eventBus = eventBusPipeLine;
-		
-		LayoutContainer layoutContainer = new LayoutContainer();
-		TableLayout tl_layoutContainer = new TableLayout(2);
-		tl_layoutContainer.setCellSpacing(3);
-		layoutContainer.setLayout(tl_layoutContainer);
-		
-		LabelField lblfldInvestigationSearch = new LabelField("Investigation Search");
-		layoutContainer.add(lblfldInvestigationSearch);
-		layoutContainer.add(new Text());
-		
-		LabelField lblfldStartDate = new LabelField("Start Date");
-		layoutContainer.add(lblfldStartDate);
-		
-		startDate = new DateField();
-		layoutContainer.add(startDate);
-		startDate.setFieldLabel("New DateField");
-		
-		LabelField lblfldEndDate = new LabelField("End Date");
-		layoutContainer.add(lblfldEndDate);
-		
-		endDate = new DateField();
-		layoutContainer.add(endDate);
-		endDate.setFieldLabel("New DateField");
-		
-		LabelField lblfldVisitId = new LabelField("Visit Id");
-		layoutContainer.add(lblfldVisitId);
-		
-		visitId = new TextField();
-		layoutContainer.add(visitId);
-		visitId.setFieldLabel("New TextField");
-		
-		LabelField lblfldBeamline = new LabelField("BeamLine");
-		layoutContainer.add(lblfldBeamline);
-		
-		beamLine = new ListField<Instrument>();
-		layoutContainer.add(beamLine);
-		beamLine.setFieldLabel("New ListField");
-		beamLine.setDisplayField("name");
-		layoutContainer.add(new Text());
-		layoutContainer.add(new Text());
-		Button btnSearch = new Button("Search");
-		btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			public void componentSelected(ButtonEvent ce) {
-				TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-				searchDetails.setStartDate(startDate.getValue());
-				searchDetails.setEndDate(endDate.getValue());
-				searchDetails.getFacilityList().add(facilityName);
-				List<Instrument> selectedIns = beamLine.getSelection();
-				for(Instrument ins : selectedIns) {
-					searchDetails.getInstrumentList().add(ins.getName());
-				}		
-				eventBus.searchForInvestigation(searchDetails);				
-			}
-		});
-		layoutContainer.add(btnSearch);
-		
-		Button btnReset = new Button("Reset");
-		btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			public void componentSelected(ButtonEvent ce) {
-				startDate.clear();
-				endDate.clear();
-				beamLine.getListView().getSelectionModel().deselectAll();
-				visitId.clear();
-			}
-		});
-		layoutContainer.add(btnReset);
-		initComponent(layoutContainer);
-		layoutContainer.setSize("389px", "274px");
-		layoutContainer.setBorders(true);
-		setBorders(true);
-		setAutoHeight(true);
-	}
-	
-	public void setFacilityName(String facilityName){
-		this.facilityName=facilityName;
-		ListStore<Instrument> instruments = eventBus.getFacilityInstruments(facilityName);
-		beamLine.setStore(instruments);
-	}	
+    EventPipeLine eventBus;
+    private DateField startDate;
+    private DateField endDate;
+    private ListField<Instrument> beamLine;
+    private String facilityName;
+    private TextField visitId;
+
+    public DiamondSearchWidget(EventPipeLine eventBusPipeLine) {
+        this.eventBus = eventBusPipeLine;
+
+        LayoutContainer layoutContainer = new LayoutContainer();
+        TableLayout tl_layoutContainer = new TableLayout(2);
+        tl_layoutContainer.setCellSpacing(3);
+        layoutContainer.setLayout(tl_layoutContainer);
+
+        LabelField lblfldInvestigationSearch = new LabelField("Investigation Search");
+        layoutContainer.add(lblfldInvestigationSearch);
+        layoutContainer.add(new Text());
+
+        LabelField lblfldStartDate = new LabelField("Start Date");
+        layoutContainer.add(lblfldStartDate);
+
+        startDate = new DateField();
+        layoutContainer.add(startDate);
+        startDate.setFieldLabel("New DateField");
+
+        LabelField lblfldEndDate = new LabelField("End Date");
+        layoutContainer.add(lblfldEndDate);
+
+        endDate = new DateField();
+        layoutContainer.add(endDate);
+        endDate.setFieldLabel("New DateField");
+
+        LabelField lblfldVisitId = new LabelField("Visit Id");
+        layoutContainer.add(lblfldVisitId);
+
+        visitId = new TextField();
+        layoutContainer.add(visitId);
+        visitId.setFieldLabel("New TextField");
+
+        LabelField lblfldBeamline = new LabelField("BeamLine");
+        layoutContainer.add(lblfldBeamline);
+
+        beamLine = new ListField<Instrument>();
+        layoutContainer.add(beamLine);
+        beamLine.setFieldLabel("New ListField");
+        beamLine.setDisplayField("name");
+        layoutContainer.add(new Text());
+        layoutContainer.add(new Text());
+        Button btnSearch = new Button("Search");
+        btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
+                searchDetails.setStartDate(startDate.getValue());
+                searchDetails.setEndDate(endDate.getValue());
+                searchDetails.getFacilityList().add(facilityName);
+                List<Instrument> selectedIns = beamLine.getSelection();
+                for (Instrument ins : selectedIns) {
+                    searchDetails.getInstrumentList().add(ins.getName());
+                }
+                eventBus.searchForInvestigation(searchDetails);
+            }
+        });
+        layoutContainer.add(btnSearch);
+
+        Button btnReset = new Button("Reset");
+        btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                startDate.clear();
+                endDate.clear();
+                beamLine.getListView().getSelectionModel().deselectAll();
+                visitId.clear();
+            }
+        });
+        layoutContainer.add(btnReset);
+        initComponent(layoutContainer);
+        layoutContainer.setSize("100%", "274px");
+        setBorders(true);
+        setAutoHeight(true);
+    }
+
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
+        ListStore<Instrument> instruments = eventBus.getFacilityInstruments(facilityName);
+        beamLine.setStore(instruments);
+    }
 
 }

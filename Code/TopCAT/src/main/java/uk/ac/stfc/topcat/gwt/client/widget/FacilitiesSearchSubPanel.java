@@ -21,9 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
-/**
- * Imports
- */
+
 import uk.ac.stfc.topcat.gwt.client.facility.FacilityPlugin;
 import uk.ac.stfc.topcat.gwt.client.facility.FacilityPluginFactory;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
@@ -39,66 +37,80 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+
 /**
- * This is a widget, A sub panel in the SearchPanel. This provides custom facility based search
- * option. it has a combobox with the list of facilities and upon selection of a facility in the list
- * a custom search widget appears in this panel. These search widgets are in 
+ * This is a widget, A sub panel in the SearchPanel. This provides custom
+ * facility based search option. it has a combobox with the list of facilities
+ * and upon selection of a facility in the list a custom search widget appears
+ * in this panel. These search widgets are in
  * uk.ac.stfc.topcat.gwt.client.facility package.
  * 
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
- * @since iCAT Version 3.3   
+ * @version 1.0, &nbsp; 30-APR-2010
+ * @since iCAT Version 3.3
  */
 public class FacilitiesSearchSubPanel extends Composite {
-	private ComboBox<Facility> comboBoxFacility;
-	private LayoutContainer facilityWidget;
-	
-	public FacilitiesSearchSubPanel() {
-		
-		LayoutContainer layoutContainer = new LayoutContainer();
-		layoutContainer.setLayout(new RowLayout(Orientation.VERTICAL));
-		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		layoutContainer.add(horizontalPanel);
-		horizontalPanel.setSize("624px", "30px");
-		
-		LabelField lblfldFacility = new LabelField("Facility");
-		horizontalPanel.add(lblfldFacility);
-		
-		comboBoxFacility = new ComboBox<Facility>();
-		comboBoxFacility.addSelectionChangedListener(new SelectionChangedListener<Facility>() {
-			public void selectionChanged(SelectionChangedEvent<Facility> se) {
-					facilityWidget.removeAll();
-					FacilityPlugin plugin=FacilityPluginFactory.getInstance().getPlugin(se.getSelectedItem().getFacilityPluginName());
-					plugin.setFacilityName(se.getSelectedItem().getFacilityName());
-					facilityWidget.add(plugin.getGUI());
-					facilityWidget.layout(true);
-			}
-		});
-		comboBoxFacility.setStore(new ListStore<Facility>());
-		comboBoxFacility.setDisplayField("name");
-		comboBoxFacility.setTypeAhead(true);
-		comboBoxFacility.setTriggerAction(TriggerAction.ALL);		
-		horizontalPanel.add(comboBoxFacility);
-		
-		facilityWidget = new LayoutContainer();
-		layoutContainer.add(facilityWidget);
-		facilityWidget.setHeight("0px");
-		facilityWidget.setLayout(new FitLayout());
-		facilityWidget.setAutoHeight(true);
-		initComponent(layoutContainer);
-		layoutContainer.setSize("629px", "558px");
-		layoutContainer.setBorders(true);
-		setBorders(true);
-		setAutoHeight(true);
-	}
+    private ComboBox<Facility> comboBoxFacility;
+    private LayoutContainer facilityWidget;
 
-	public ComboBox<Facility> getComboBoxFacility() {
-		return comboBoxFacility;
-	}
-	public LayoutContainer getFacilityWidget() {
-		return facilityWidget;
-	}
+    public FacilitiesSearchSubPanel() {
+
+        LayoutContainer layoutContainer = new LayoutContainer();
+        layoutContainer.setLayout(new RowLayout(Orientation.VERTICAL));
+
+        HorizontalPanel horizontalPanel = new HorizontalPanel();
+        layoutContainer.add(horizontalPanel);
+        horizontalPanel.setSize("30%", "30px");
+        horizontalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
+        LabelField lblfldFacility = new LabelField("Facility");
+        horizontalPanel.add(lblfldFacility);
+
+        comboBoxFacility = new ComboBox<Facility>();
+        comboBoxFacility.addSelectionChangedListener(new SelectionChangedListener<Facility>() {
+            public void selectionChanged(SelectionChangedEvent<Facility> se) {
+                facilityWidget.removeAll();
+                FacilityPlugin plugin = FacilityPluginFactory.getInstance().getPlugin(
+                        se.getSelectedItem().getFacilityPluginName());
+                plugin.setFacilityName(se.getSelectedItem().getFacilityName());
+                facilityWidget.add(plugin.getGUI());
+                facilityWidget.layout(true);
+            }
+        });
+        comboBoxFacility.setStore(new ListStore<Facility>());
+        comboBoxFacility.setDisplayField("name");
+        comboBoxFacility.setTypeAhead(true);
+        comboBoxFacility.setTriggerAction(TriggerAction.ALL);
+        horizontalPanel.add(comboBoxFacility);
+
+        facilityWidget = new LayoutContainer();
+        layoutContainer.add(facilityWidget);
+        facilityWidget.setHeight("0px");
+        facilityWidget.setLayout(new FitLayout());
+        facilityWidget.setAutoHeight(true);
+        initComponent(layoutContainer);
+        setBorders(true);
+        setAutoHeight(true);
+    }
+
+    public ComboBox<Facility> getComboBoxFacility() {
+        return comboBoxFacility;
+    }
+
+    public void setFacilitySearch(String facilityName) {
+        Facility facility = comboBoxFacility.getStore().findModel("name", facilityName);
+        if (facility != null) {
+            comboBoxFacility.setValue(facility);
+        }
+    }
+
+    public LayoutContainer getFacilityWidget() {
+        return facilityWidget;
+    }
 }

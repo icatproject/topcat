@@ -21,37 +21,45 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.facility;
+
 /**
  * Imports
  */
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 
 import com.extjs.gxt.ui.client.widget.Composite;
+import com.google.gwt.core.client.GWT;
+
 /**
  * This is ISIS Facility Plugin
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class ISISFacilityPlugin extends FacilityPlugin {
-	private static ISISFacilityPlugin isisFacility = new ISISFacilityPlugin();
-	ISISSearchWidget widget=null;
-	private ISISFacilityPlugin(){
-		super();
-		widget = new ISISSearchWidget(EventPipeLine.getInstance());			
-	}
-	@Override
-	public Composite getGUI() {
-		// TODO Auto-generated method stub
-		return widget;
-	}
+    private static ISISFacilityPlugin isisFacility = GWT.create(ISISFacilityPlugin.class);
 
-	public static ISISFacilityPlugin getInstance(){
-		return isisFacility;
-	}
-	@Override
-	public void setFacilityName(String facilityName) {		
-		widget.setFacilityName(facilityName);
-	}
+    ISISSearchWidget widget;
+
+    private ISISFacilityPlugin() {
+        super();
+        widget = new ISISSearchWidget(EventPipeLine.getInstance());
+    }
+
+    @Override
+    public Composite getGUI() {
+        // TODO Auto-generated method stub
+        return widget;
+    }
+
+    public static ISISFacilityPlugin getInstance() {
+        return isisFacility;
+    }
+
+    @Override
+    public void setFacilityName(String facilityName) {
+        widget.setFacilityName(facilityName);
+    }
 }

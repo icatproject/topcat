@@ -219,6 +219,10 @@ public class EventPipeLine implements LoginInterface {
         loadInvestigationTypes(facilityName);
         getMyInvestigationsInMyDataPanel(facilityName);
         historyManager.updateHistory();
+        // if the facility search has not been set, set it
+        if (mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().getFacilityWidget().getItemCount() == 0) {
+            mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().setFacilitySearch(facilityName);
+        }
     }
 
     /**
@@ -850,7 +854,7 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.hide();
     }
 
-    public ArrayList<TFacility> getFacilityNames(){
+    public ArrayList<TFacility> getFacilityNames() {
         return facilityNames;
     }
 }
