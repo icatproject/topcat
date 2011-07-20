@@ -71,7 +71,7 @@ a.front {color: black; text-decoration: none;}
 <br>
 <br>
 <div class="footer-links">
-            <a href="http://www.stfc.ac.uk/About/Accessibility.aspx">Accessibility</a> |
+            <a href="http://www.stfc.ac.uk/About+STFC/5809.aspx">Accessibility</a> |
             <a href="http://www.stfc.ac.uk/privacy.aspx">Privacy Policy</a> |
             <a href="http://www.isis.stfc.ac.uk/user-office/data-policy11204.html">Data Policy</a> |
             <a href="http://www.stfc.ac.uk/disclaimer.aspx">Terms Of Use</a> |
