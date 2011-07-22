@@ -23,7 +23,6 @@
 package uk.ac.stfc.topcat.ejb.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -48,7 +47,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @since iCAT Version 3.3
  */
 @Entity
-@Table(name = "TOPCAT_USER_SESSION", catalog = "", schema = "TOPCAT")
+@Table(name = "TOPCAT_USER_SESSION")
 @NamedQueries({
     @NamedQuery(name = "TopcatUserSession.findAll", query = "SELECT t FROM TopcatUserSession t"),
     @NamedQuery(name = "TopcatUserSession.findById", query = "SELECT t FROM TopcatUserSession t WHERE t.id = :id"),
