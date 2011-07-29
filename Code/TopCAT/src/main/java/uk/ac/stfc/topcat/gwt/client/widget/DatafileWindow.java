@@ -206,7 +206,10 @@ public class DatafileWindow extends Window {
         ColumnConfig clmncnfgFileName = new ColumnConfig("datafileName", "File Name", 150);
         configs.add(clmncnfgFileName);
 
-        ColumnConfig clmncnfgFileSizeb = new ColumnConfig("datafileSize", "File Size (MBytes)", 150);
+        ColumnConfig clmncnfgFileLocation = new ColumnConfig("datafileLocation", "File Location", 150);
+        configs.add(clmncnfgFileLocation);
+
+        ColumnConfig clmncnfgFileSizeb = new ColumnConfig("datafileSize", "File Size", 150);
         configs.add(clmncnfgFileSizeb);
 
         ColumnConfig clmncnfgFormat = new ColumnConfig("datafileFormat", "Format", 150);
@@ -443,9 +446,11 @@ public class DatafileWindow extends Window {
         batchCount = batchCount + 1;
         if (batchCount > 1) {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Download request sent to remote server. Files will be returned in " + batchCount + " batches.");
+                    "Download request sent to remote server. Files will be returned in " + batchCount
+                            + " batches. See My Downloads tab.");
         } else {
-            EventPipeLine.getInstance().showMessageDialog("Download request sent to remote server");
+            EventPipeLine.getInstance().showMessageDialog(
+                    "Download request sent to remote server. See My Downloads tab.");
         }
     }
 }

@@ -328,10 +328,12 @@ public class BrowsePanel extends Composite {
         if (batchCount == 0) {
             EventPipeLine.getInstance().showMessageDialog("Nothing selected for download");
         } else if (batchCount == 1) {
-            EventPipeLine.getInstance().showMessageDialog("Download request sent to remote server");
+            EventPipeLine.getInstance().showMessageDialog(
+                    "Download request sent to remote server. See My Downloads tab.");
         } else {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Download request sent to remote server. Files will be returned in " + batchCount + " batches.");
+                    "Download request sent to remote server. Files will be returned in " + batchCount
+                            + " batches. See My Downloads tab.");
         }
     }
 

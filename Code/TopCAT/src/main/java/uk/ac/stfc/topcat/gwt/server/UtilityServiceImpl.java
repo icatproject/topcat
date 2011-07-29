@@ -387,11 +387,11 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 if (df.getCreateTime() != null)
                     result.add(new DatafileModel(dataset.getFacilityName(), dataset.getName(), df.getId(),
                             df.getName(), df.getSize().toString(), df.getFormat(), df.getFormatVersion(), df
-                                    .getFormatType(), df.getCreateTime()));
+                                    .getFormatType(), df.getCreateTime(), df.getLocation()));
                 else
                     result.add(new DatafileModel(dataset.getFacilityName(), dataset.getName(), df.getId(),
                             df.getName(), df.getSize().toString(), df.getFormat(), df.getFormatVersion(), df
-                                    .getFormatType(), null));
+                                    .getFormatType(), null, df.getLocation()));
             }
         }
         return result;

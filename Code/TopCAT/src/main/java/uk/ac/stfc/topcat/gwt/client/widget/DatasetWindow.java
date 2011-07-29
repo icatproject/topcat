@@ -94,7 +94,7 @@ public class DatasetWindow extends Window {
 
         configs.add(datasetSelectModel.getColumn());
 
-        ColumnConfig clmncnfgName = new ColumnConfig("datasetName", "Name", 150);
+        ColumnConfig clmncnfgName = new ColumnConfig("datasetName", "Dataset Name", 150);
         clmncnfgName.setAlignment(HorizontalAlignment.LEFT);
         configs.add(clmncnfgName);
 

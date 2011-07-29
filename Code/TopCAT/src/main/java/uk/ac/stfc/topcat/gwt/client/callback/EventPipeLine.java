@@ -28,6 +28,7 @@ package uk.ac.stfc.topcat.gwt.client.callback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
@@ -87,6 +88,7 @@ public class EventPipeLine implements LoginInterface {
     ArrayList<TFacility> facilityNames;
     HashMap<String, ListStore<Instrument>> facilityInstrumentMap;
     ParameterDownloadForm paramDownloadForm;
+    Map<String, Boolean> loadedFacilities = new HashMap<String, Boolean>();
 
     LoginWidget loginWidget;
     WaitDialog waitDialog;
@@ -214,6 +216,9 @@ public class EventPipeLine implements LoginInterface {
      * @param facilityName
      */
     public void successLogin(String facilityName) {
+        if (loadedFacilities.containsKey(facilityName)) {
+            return;
+        }
         updateLoginPanelStatus(facilityName, Boolean.TRUE);
         loadInstrumentNames(facilityName);
         loadInvestigationTypes(facilityName);
@@ -223,6 +228,7 @@ public class EventPipeLine implements LoginInterface {
         if (mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().getFacilityWidget().getItemCount() == 0) {
             mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().setFacilitySearch(facilityName);
         }
+        loadedFacilities.put(facilityName, true);
     }
 
     /**

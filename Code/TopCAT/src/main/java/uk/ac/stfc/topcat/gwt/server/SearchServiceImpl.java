@@ -155,7 +155,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements
 		//Convert TDatafiles to DatafileModel
 		ArrayList<DatafileModel> datafileModel = new ArrayList<DatafileModel>();
 		for(TDatafile datafile : datafileList){
-			datafileModel.add(new DatafileModel(serverName,null,datafile.getId(),datafile.getName(),datafile.getSize().toString(),datafile.getFormat(),datafile.getFormatVersion(),datafile.getFormatType(),datafile.getCreateTime()));
+			datafileModel.add(new DatafileModel(serverName,null,datafile.getId(),datafile.getName(),datafile.getSize().toString(),datafile.getFormat(),datafile.getFormatVersion(),datafile.getFormatType(),datafile.getCreateTime(), datafile.getLocation()));
 		}
 		return datafileModel;
 	}	

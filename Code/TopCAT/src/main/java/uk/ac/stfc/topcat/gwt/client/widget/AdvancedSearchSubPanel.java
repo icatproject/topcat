@@ -109,6 +109,7 @@ public class AdvancedSearchSubPanel extends Composite {
 		txtFldSampleName.setFieldLabel("New TextField");
 		
 		LabelField lblfldInvestigatorName = new LabelField("Investigator Name");
+        lblfldInvestigatorName.setToolTip("Surname");
 		flexTable.setWidget(3, 0, lblfldInvestigatorName);
 		
 		txtFldInvestigatorName = new TextField();

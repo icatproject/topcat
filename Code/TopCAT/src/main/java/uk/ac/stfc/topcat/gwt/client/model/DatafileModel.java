@@ -67,9 +67,12 @@ public class DatafileModel extends BaseModelData implements Serializable {
      *            datafile format type
      * @param createTime
      *            datafile creation time
+     * @param location
+     *            datafile location
+     * 
      */
     public DatafileModel(String facilityName, String datasetName, String datafileId, String name, String fileSize,
-            String format, String formatVersion, String formatType, Date createTime) {
+            String format, String formatVersion, String formatType, Date createTime, String location) {
         setFacilityName(facilityName);
         setDatasetName(datasetName);
         setId(datafileId);
@@ -79,6 +82,7 @@ public class DatafileModel extends BaseModelData implements Serializable {
         setFormatVersion(formatVersion);
         setFormatType(formatType);
         setCreateTime(createTime);
+        setLocation(location);
         setSelected(false);
     }
 
@@ -164,6 +168,15 @@ public class DatafileModel extends BaseModelData implements Serializable {
     }
 
     /**
+     * Set the datafile location
+     * 
+     * @param location
+     */
+    public void setLocation(String location) {
+        set("datafileLocation", location);
+    }
+
+    /**
      * Set the datafile selected flag
      * 
      * @param selected
@@ -226,6 +239,13 @@ public class DatafileModel extends BaseModelData implements Serializable {
      */
     public String getId() {
         return get("datafileId");
+    }
+
+    /**
+     * @return datafile location
+     */
+    public String getLocation() {
+        return get("datafileLocation");
     }
 
     /**

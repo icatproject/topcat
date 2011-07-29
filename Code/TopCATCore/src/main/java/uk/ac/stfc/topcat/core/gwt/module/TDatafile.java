@@ -29,39 +29,44 @@ import java.util.Date;
 /**
  * This is shared with GWT for data file information.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class TDatafile implements Serializable{
+public class TDatafile implements Serializable {
 
     String serverName;
     String id;
     String name;
-    Integer   size;
+    Integer size;
     String format;
     String formatVersion;
     String formatType;
     Date createTime;
+    String location;
 
     public TDatafile() {
-        
-    }
-    public TDatafile(String serverName,String id,String name) {
-        this.serverName = serverName;
-        this.id=id;
-        this.name=name;
+
     }
 
-    public TDatafile(String serverName,String id,String name,Integer size,String format,String formatVersion,String formatType,Date createTime) {
+    public TDatafile(String serverName, String id, String name) {
         this.serverName = serverName;
-        this.id=id;
-        this.name=name;
+        this.id = id;
+        this.name = name;
+    }
+
+    public TDatafile(String serverName, String id, String name, Integer size, String format, String formatVersion,
+            String formatType, Date createTime, String location) {
+        this.serverName = serverName;
+        this.id = id;
+        this.name = name;
         this.size = size;
         this.format = format;
         this.formatVersion = formatVersion;
         this.formatType = formatType;
         this.createTime = createTime;
+        this.location = location;
     }
 
     public String getServerName() {
@@ -125,11 +130,20 @@ public class TDatafile implements Serializable{
     }
 
     public Integer getSize() {
-        if(size==null) return new Integer(0);
+        if (size == null)
+            return new Integer(0);
         return size;
     }
 
     public void setSize(Integer size) {
         this.size = size;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

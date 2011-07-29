@@ -393,7 +393,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
         return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
-                format, formatVersion, formatType, createDate);
+                format, formatVersion, formatType, createDate, datafile.getLocation());
     }
 
 }
