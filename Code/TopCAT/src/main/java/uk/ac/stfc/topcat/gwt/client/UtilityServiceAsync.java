@@ -198,4 +198,10 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
+
+    /**
+     * Get the server logo URL 
+     * @param asyncCallback
+     */
+    public void getLogoURL(AsyncCallback<String> asyncCallback);
 }

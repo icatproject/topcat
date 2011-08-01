@@ -199,6 +199,23 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
+     * This method invokes the AJAX call to get the server logo
+     */
+    public void getLogoURL(){
+        utilityService.getLogoURL(new AsyncCallback<String>(){
+
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                mainWindow.getHeaderPanel().setLogoURL(result);
+            }
+        });
+    }
+    /**
      * This method shows login dialog box for a input facility
      * 
      * @param facilityName

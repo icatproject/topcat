@@ -55,6 +55,7 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import uk.ac.stfc.topcat.ejb.utils.Configuration;
 
 /**
  * This is servlet implementation of Utility methods such as getting information
@@ -231,7 +232,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         for (TInvestigation inv : invList) {
             ICATNode tnode = new ICATNode();
             tnode.setNode(ICATNodeType.INVESTIGATION, inv.getInvestigationId(),
-                    inv.getTitle() + "(Id:" + inv.getInvestigationName() + ")");
+                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:"+ inv.getVisitId()+")");
             tnode.setFacility(node.getFacility());
             tnode.setTitle(inv.getTitle());
             result.add(tnode);
@@ -596,6 +597,11 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName) {
         return utilityManager.getMyInvestigationsInServer(getSessionId(), facilityName);
+    }
+
+    @Override
+    public String getLogoURL() {
+        return Configuration.INSTANCE.getLogoURL();
     }
     
 }

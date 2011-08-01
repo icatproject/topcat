@@ -29,13 +29,14 @@ INSTALLATION INSTRUCTIONS
 From within the "Installation" directory
 1) Modify resources.xml database password and connection string
 2) Modify passFile with a password to use for the TOPCAT domain
-3) mvn install:install-file -Dfile=<oracle_lib>/ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0 -Dpackaging=jar
-4) mvn install
-5) mvn glassfish:create-domain -Dglassfish.home=$GLASSFISH_HOME --non-recursive
-6) openssl s_client -no_tls1 -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
-7) keytool -import -noprompt -alias <alias> -file $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert -keystore $GLASSFISH_HOME/domains/TOPCAT/config/cacerts.jks --storepass changeit 
-8) mvn resources:copy-resources -Dglassfish.home=$GLASSFISH_HOME --non-recursive
-9) mvn glassfish:deploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive
+3) Modify the topcat.properties file to select the caching and LOGO URL location
+4) mvn install:install-file -Dfile=<oracle_lib>/ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0 -Dpackaging=jar
+5) mvn install
+6) mvn glassfish:create-domain -Dglassfish.home=$GLASSFISH_HOME --non-recursive
+7) openssl s_client -no_tls1 -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
+8) keytool -import -noprompt -alias <alias> -file $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert -keystore $GLASSFISH_HOME/domains/TOPCAT/config/cacerts.jks --storepass changeit 
+9) mvn resources:copy-resources -Dglassfish.home=$GLASSFISH_HOME --non-recursive
+10) mvn glassfish:deploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive
 
 
 UNDEPLOY

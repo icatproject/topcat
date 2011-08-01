@@ -200,4 +200,10 @@ public interface UtilityService extends RemoteService {
      * @return a list of <code>TInvestigation</code> containing investigations
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
+
+    /**
+     * This method returns the server logo URL
+     * @return
+     */
+    public String getLogoURL();
 }

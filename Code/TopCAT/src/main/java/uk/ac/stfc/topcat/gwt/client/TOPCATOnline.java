@@ -81,6 +81,7 @@ public class TOPCATOnline implements EntryPoint {
         eventPipeLine.setLoginPanel(headerPanel.getLoginPanel());
         eventPipeLine.setMainWindow(this);
         // Initialise
+        eventPipeLine.getLogoURL();
         eventPipeLine.loadFacilityNames();
         // Set Event pipeline
         mainPanel.getSearchPanel().setEventBus(eventPipeLine);

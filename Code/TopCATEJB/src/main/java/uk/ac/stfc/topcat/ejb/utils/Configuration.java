@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 public enum Configuration {
     INSTANCE;
     boolean keywordsCached;
+    String  logoURL;
     private Configuration(){
         try {
             Properties prop = new Properties();
@@ -29,6 +30,7 @@ public enum Configuration {
 
     private void loadProperties(Properties prop){
         keywordsCached = Boolean.parseBoolean(prop.getProperty("KEYWORDS_CACHED"));
+        logoURL        = prop.getProperty("LOGO_URL","images/logo.jpg"); //defaults to logo.jpg
     }
     /**
      * This method returns whether the keywords should be read from local cache in database
@@ -38,5 +40,9 @@ public enum Configuration {
      */
     public boolean isKeywordsCached(){
         return keywordsCached;
+    }
+
+    public String getLogoURL(){
+        return logoURL;
     }
 }

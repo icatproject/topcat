@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableRowLayout;
 import com.google.gwt.user.client.ui.Image;
+import uk.ac.stfc.topcat.ejb.utils.Configuration;
 
 /**
  * This is a widget, A Header panel to the TopCAT. It holds Logo and LoginPanels.
@@ -40,14 +41,14 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class HeaderPanel extends Composite {
 	private LoginPanel loginPanel;
-
+        Image image;
 	public HeaderPanel() {
 		
 		LayoutContainer layoutContainer = new LayoutContainer();
 		layoutContainer.setSize("100%", "100px");
 		layoutContainer.setLayout(new TableRowLayout());
 		
-		Image image = new Image("images/stfc.JPG");
+		image = new Image();
 		image.setSize("263px", "58px");
 		layoutContainer.add(image);
 		
@@ -67,4 +68,8 @@ public class HeaderPanel extends Composite {
 	public LoginPanel getLoginPanel() {
 		return loginPanel;
 	}
+
+        public void setLogoURL(String url) {
+            image.setUrl(url);
+        }
 }
