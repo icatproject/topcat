@@ -295,7 +295,7 @@ public class DatafileWindow extends Window {
     public void setDatasets(ArrayList<DatasetModel> datasetList) {
         inputDatasetModels = datasetList;
         // This is the list of datasets selected to be viewed for datafiles.
-        EventPipeLine.getInstance().setDialogBox("  Retieveing data...");
+        EventPipeLine.getInstance().setDialogBox("  Retrieving data...");
         EventPipeLine.getInstance().showDialogBox();
         utilityService.getDatafilesInDatasets(datasetList, new AsyncCallback<ArrayList<DatafileModel>>() {
             @Override

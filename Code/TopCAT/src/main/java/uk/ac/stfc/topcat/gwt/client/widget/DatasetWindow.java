@@ -148,7 +148,7 @@ public class DatasetWindow extends Window {
     public void setDataset(String facilityName, String investigationId) {
         this.facilityName = facilityName;
         this.investigationId = investigationId;
-        EventPipeLine.getInstance().setDialogBox("  Retieveing data...");
+        EventPipeLine.getInstance().setDialogBox("  Retrieving data...");
         EventPipeLine.getInstance().showDialogBox();
         utilityService.getDatasetsInInvestigations(facilityName, investigationId,
                 new AsyncCallback<ArrayList<DatasetModel>>() {
