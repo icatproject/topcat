@@ -301,8 +301,13 @@ public class DatafileWindow extends Window {
             @Override
             public void onSuccess(ArrayList<DatafileModel> result) {
                 EventPipeLine.getInstance().hideDialogBox();
-                setDatafileList(result);
-                hasData = true;
+                if (result.size() > 0) {
+                    setDatafileList(result);
+                    hasData = true;
+                } else {
+                    EventPipeLine.getInstance().showErrorDialog("No files returned");
+                    hide();
+                }
             }
 
             @Override

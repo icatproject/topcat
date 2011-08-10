@@ -155,8 +155,13 @@ public class DatasetWindow extends Window {
                     @Override
                     public void onSuccess(ArrayList<DatasetModel> result) {
                         EventPipeLine.getInstance().hideDialogBox();
-                        setDatasetList(result);
-                        hasData = true;
+                        if (result.size() > 0) {
+                            setDatasetList(result);
+                            hasData = true;
+                        } else {
+                            EventPipeLine.getInstance().showErrorDialog("No datasets returned");
+                            hide();
+                        }
                     }
 
                     @Override
