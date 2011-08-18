@@ -35,6 +35,7 @@ import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -93,8 +94,9 @@ public class DatasetWindow extends Window {
         setLayout(new FillLayout(Orientation.HORIZONTAL));
 
         configs.add(datasetSelectModel.getColumn());
-
+        datasetList.sort("datasetName", Style.SortDir.ASC);
         ColumnConfig clmncnfgName = new ColumnConfig("datasetName", "Dataset Name", 150);
+
         clmncnfgName.setAlignment(HorizontalAlignment.LEFT);
         configs.add(clmncnfgName);
 
