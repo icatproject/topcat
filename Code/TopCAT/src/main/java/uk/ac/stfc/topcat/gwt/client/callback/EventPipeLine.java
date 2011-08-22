@@ -595,11 +595,7 @@ public class EventPipeLine implements LoginInterface {
 
                     @Override
                     public void onSuccess(String result) {
-                        DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", result);
-                        downloadCount = downloadCount + 1;
-                        if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES + 1)) {
-                            downloadCount = 0;
-                        }
+                        download(result);
                         mainWindow.getMainPanel().getMyDownloadPanel()
                                 .addDownload(facilityName, datafileList.get(0), result);
                     }
@@ -623,14 +619,23 @@ public class EventPipeLine implements LoginInterface {
 
             @Override
             public void onSuccess(String result) {
-                DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", result);
-                downloadCount = downloadCount + 1;
-                if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES + 1)) {
-                    downloadCount = 0;
-                }
+                download(result);
                 mainWindow.getMainPanel().getMyDownloadPanel().addDownload(facilityName, datasetId, result);
             }
         });
+    }
+    
+    /**
+     * Download the url in a seperate window.
+     * 
+     * @param url
+     */
+    public void download(final String url) {
+        DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", url);
+        downloadCount = downloadCount + 1;
+        if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES - 1)) {
+            downloadCount = 0;
+        }
     }
 
     /**
