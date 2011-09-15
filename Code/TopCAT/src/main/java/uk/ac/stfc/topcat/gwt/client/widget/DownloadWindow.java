@@ -32,6 +32,7 @@ import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 /**
  * This class implements the gxt floating window which shows the list of
@@ -60,6 +61,7 @@ public class DownloadWindow extends Window {
         panel.setBorders(false);
         panel.setBodyBorder(false);
         setHeading("Download Window");
+        setLayout(new FitLayout());
         setSize("670px", "430px");
         add(panel);
     }
