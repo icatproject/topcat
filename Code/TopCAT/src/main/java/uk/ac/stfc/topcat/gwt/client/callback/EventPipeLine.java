@@ -596,7 +596,7 @@ public class EventPipeLine implements LoginInterface {
                     @Override
                     public void onSuccess(String result) {
                         DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", result);
-                        downloadCount = downloadCount + 1;
+                        downloadCount = downloadCount - 1;
                         if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES + 1)) {
                             downloadCount = 0;
                         }
@@ -625,7 +625,7 @@ public class EventPipeLine implements LoginInterface {
             public void onSuccess(String result) {
                 DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", result);
                 downloadCount = downloadCount + 1;
-                if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES + 1)) {
+                if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES - 1)) {
                     downloadCount = 0;
                 }
                 mainWindow.getMainPanel().getMyDownloadPanel().addDownload(facilityName, datasetId, result);

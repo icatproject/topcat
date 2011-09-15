@@ -35,7 +35,7 @@ import java.util.Date;
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class TInvestigation implements Serializable {
+public class TInvestigation implements Serializable, Comparable<TInvestigation> {
     String investigationId = null;
     String investigationName = null;
     String serverName = null;
@@ -118,6 +118,28 @@ public class TInvestigation implements Serializable {
 
     public void setVisitId(String visitId) {
         this.visitId = visitId;
+    }
+
+    public int compareTo(TInvestigation inv) {
+        // compare investigationName and then visitId
+        int nameCmp = 0;
+        try {
+            Integer a = Integer.parseInt(investigationName);
+            Integer b = Integer.parseInt(inv.investigationName);
+            nameCmp = a.compareTo(b);
+        } catch (NumberFormatException e) {
+            nameCmp = investigationName.compareTo(inv.investigationName);
+        }
+        if (nameCmp == 0) {
+            try {
+                Integer a = Integer.parseInt(visitId);
+                Integer b = Integer.parseInt(inv.visitId);
+                return a.compareTo(b);
+            } catch (NumberFormatException e) {
+                return visitId.compareTo(inv.visitId);
+            }
+        }
+        return nameCmp;
     }
 
 }

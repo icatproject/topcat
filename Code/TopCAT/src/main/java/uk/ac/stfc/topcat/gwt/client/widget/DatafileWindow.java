@@ -295,14 +295,19 @@ public class DatafileWindow extends Window {
     public void setDatasets(ArrayList<DatasetModel> datasetList) {
         inputDatasetModels = datasetList;
         // This is the list of datasets selected to be viewed for datafiles.
-        EventPipeLine.getInstance().setDialogBox("  Retieveing data...");
+        EventPipeLine.getInstance().setDialogBox("  Retrieving data...");
         EventPipeLine.getInstance().showDialogBox();
         utilityService.getDatafilesInDatasets(datasetList, new AsyncCallback<ArrayList<DatafileModel>>() {
             @Override
             public void onSuccess(ArrayList<DatafileModel> result) {
                 EventPipeLine.getInstance().hideDialogBox();
-                setDatafileList(result);
-                hasData = true;
+                if (result.size() > 0) {
+                    setDatafileList(result);
+                    hasData = true;
+                } else {
+                    EventPipeLine.getInstance().showErrorDialog("No files returned");
+                    hide();
+                }
             }
 
             @Override
@@ -445,12 +450,23 @@ public class DatafileWindow extends Window {
         EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems);
         batchCount = batchCount + 1;
         if (batchCount > 1) {
-            EventPipeLine.getInstance().showMessageDialog(
-                    "Download request sent to remote server. Files will be returned in " + batchCount
-                            + " batches. See My Downloads tab.");
+            EventPipeLine
+                    .getInstance()
+                    .showMessageDialog(
+                            "Your data is being retrieved from tape and will automatically start downloading shortly " +
+                            "as " + batchCount + " files. The status of your download can be seen from the ‘My Downloads Tab’ " +
+                            "(you may need to select ‘Show Previous Downloads’), or directly from " +
+                            "https://srb.esc.rl.ac.uk/dataportal.");
+            // "Download request sent to remote server. Files will be returned in "
+            // + batchCount
+            // + " batches. See My Downloads tab.");
         } else {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Download request sent to remote server. See My Downloads tab.");
+                    "Your data is being retrieved from tape and will automatically start downloading shortly " +
+                    "as a single file. The status of your download can be seen from the ‘My Downloads Tab’ " +
+                    "(you may need to select ‘Show Previous Downloads’), or directly from " +
+                    "https://srb.esc.rl.ac.uk/dataportal.");
+//            "Download request sent to remote server. See My Downloads tab.");
         }
     }
 }

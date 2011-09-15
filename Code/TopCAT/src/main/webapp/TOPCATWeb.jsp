@@ -71,12 +71,21 @@ a.front {color: black; text-decoration: none;}
 <br>
 <br>
 <div class="footer-links">
+          <!-- 
             <a href="http://www.stfc.ac.uk/About+STFC/5809.aspx">Accessibility</a> |
             <a href="http://www.stfc.ac.uk/privacy.aspx">Privacy Policy</a> |
             <a href="http://www.isis.stfc.ac.uk/user-office/data-policy11204.html">Data Policy</a> |
             <a href="http://www.stfc.ac.uk/disclaimer.aspx">Terms Of Use</a> |
             <a href="http://www.isis.stfc.ac.uk/people/ombudsmen-and-complaints-procedure9430.html">Complaints Procedure</a> |
             <a href="mailto:isisdata@stfc.ac.uk?subject=Feedback From TopCat">Feedback</a>
+          --> 
+            <a href="http://www.diamond.ac.uk/">Accessibility</a> |
+            <a href="http://www.diamond.ac.uk/Home/Legal.html">Privacy Policy</a> |
+            <a href="http://www.diamond.ac.uk/">Data Policy</a> |
+            <a href="http://www.diamond.ac.uk/">Terms Of Use</a> |
+            <a href="http://www.diamond.ac.uk/">Complaints Procedure</a> |
+            <a href="mailto:scientificsoftware@diamond.ac.uk?subject=Feedback From TopCat">Feedback</a>
+          
 </div>
 
 </body>

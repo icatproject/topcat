@@ -329,11 +329,19 @@ public class BrowsePanel extends Composite {
             EventPipeLine.getInstance().showMessageDialog("Nothing selected for download");
         } else if (batchCount == 1) {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Download request sent to remote server. See My Downloads tab.");
+                    "Your data is being retrieved from tape and will automatically start downloading shortly " +
+                    "as a single file. The status of your download can be seen from the ‘My Downloads Tab’ " +
+                    "(you may need to select ‘Show Previous Downloads’), or directly from " +
+                    "https://srb.esc.rl.ac.uk/dataportal.");
+//                    "Download request sent to remote server. See My Downloads tab.");
         } else {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Download request sent to remote server. Files will be returned in " + batchCount
-                            + " batches. See My Downloads tab.");
+                    "Your data is being retrieved from tape and will automatically start downloading shortly " +
+                    "as " + batchCount + " files. The status of your download can be seen from the ‘My Downloads Tab’ " +
+                    "(you may need to select ‘Show Previous Downloads’), or directly from " +
+                    "https://srb.esc.rl.ac.uk/dataportal.");
+//                    "Download request sent to remote server. Files will be returned in " + batchCount
+//                            + " batches. See My Downloads tab.");
         }
     }
 

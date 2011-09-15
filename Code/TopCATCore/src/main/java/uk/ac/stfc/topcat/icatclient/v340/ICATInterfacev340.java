@@ -8,6 +8,7 @@ package uk.ac.stfc.topcat.icatclient.v340;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -156,6 +157,7 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
             }
         } catch (SessionException_Exception ex) {
         }
+        Collections.sort(investigationList);
         return investigationList;
     }
 
@@ -171,6 +173,7 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
             }
         } catch (SessionException_Exception ex) {
         }
+        Collections.sort(investigationList);
         return investigationList;
     }
 
@@ -296,6 +299,7 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
                 returnTInvestigations.add(copyInvestigationToTInvestigation(serverName, inv));
             }
         }
+        Collections.sort(returnTInvestigations);
         return returnTInvestigations;
     }
 

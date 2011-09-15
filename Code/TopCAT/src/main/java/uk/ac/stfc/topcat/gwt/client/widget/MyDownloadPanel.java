@@ -32,15 +32,20 @@ import java.util.Iterator;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 import java.util.List;
 
@@ -58,6 +63,24 @@ public class MyDownloadPanel extends Composite {
         VerticalPanel verticalPanel = new VerticalPanel();
         verticalPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
         verticalPanel.setBorders(true);
+
+        ToolBar toolMenuBar = new ToolBar();
+        verticalPanel.add(toolMenuBar);
+        ButtonBar buttonBar = new ButtonBar();
+        // TODO DIAMOND stuff
+        Button dBtnDownload = new Button("Show Previous Downloads");
+        dBtnDownload.setBorders(true);
+        dBtnDownload
+                .setToolTip("The status information and list of previous downloads can be seen on the 'Data Portal'. "
+                        + "Press this button to open a 'Data Portal' window.");
+        dBtnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                eventBus.showDownloadWindowWithHistory("https://srb.esc.rl.ac.uk/dataportal");
+            }
+        });
+        buttonBar.add(dBtnDownload);
+        // TODO END DIAMOND stuff
+        toolMenuBar.add(buttonBar);
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
