@@ -23,6 +23,9 @@
 package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,6 +37,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 
 /**
  * This is Utiltiy bean implementation which has methods that utility functions
@@ -140,4 +144,17 @@ public class UtilityBean implements UtilityLocal {
     public String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) {
         return utilManager.getDatasetDownloadURL(manager, sessionId, serverName, datasetId);
     }
+    
+    @Override
+    public List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName) {
+        return utilManager.getMyDownloadList(manager, sessionId, serverName);
+    }
+
+    @Override
+    public void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName,
+            String status, long validPeriod, String url) {
+        utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName,
+                status, validPeriod, url);
+    }
+
 }

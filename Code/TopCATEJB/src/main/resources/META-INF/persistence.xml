@@ -5,6 +5,7 @@
     <jta-data-source>jdbc/TopCATDB</jta-data-source>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatUser</class>
+ 	<class>uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatUserSession</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatKeywords</class>
@@ -23,6 +24,7 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatUser</class>
+    <class>uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatUserSession</class>
     <class>uk.ac.stfc.topcat.ejb.entity.TopcatKeywords</class>

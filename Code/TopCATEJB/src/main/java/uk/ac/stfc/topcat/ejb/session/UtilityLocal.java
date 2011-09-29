@@ -23,6 +23,9 @@
 package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.Local;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
@@ -31,6 +34,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 
 /**
  * This is local interface to utility bean
@@ -61,4 +65,6 @@ public interface UtilityLocal {
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);
     String getDatafilesDownloadURL(String sessionId,String serverName,ArrayList<Long> datafileIds);
     String getDatasetDownloadURL(String sessionId,String serverName, Long datasetId);
+    List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName);
+    void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status, long validPeriod, String url);
 }
