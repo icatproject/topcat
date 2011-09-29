@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
+
 /**
  * Imports
  */
@@ -30,46 +31,53 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableRowLayout;
 import com.google.gwt.user.client.ui.Image;
-import uk.ac.stfc.topcat.ejb.utils.Configuration;
 
 /**
- * This is a widget, A Header panel to the TopCAT. It holds Logo and LoginPanels.
+ * This is a widget, A Header panel to the TopCAT. It holds Logo and
+ * LoginPanels.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
- * @since iCAT Version 3.3  
+ * @version 1.0, &nbsp; 30-APR-2010
+ * @since iCAT Version 3.3
  */
 public class HeaderPanel extends Composite {
-	private LoginPanel loginPanel;
-        Image image;
-	public HeaderPanel() {
-		
-		LayoutContainer layoutContainer = new LayoutContainer();
-		layoutContainer.setSize("100%", "100px");
-		layoutContainer.setLayout(new TableRowLayout());
-		
-		image = new Image();
-		image.setSize("263px", "58px");
-		layoutContainer.add(image);
-		
-		loginPanel = new LoginPanel();
-		loginPanel.getVerticalPanel().setSize("100%", "100%");
-		TableData td_loginPanel = new TableData();
-		td_loginPanel.setHorizontalAlign(HorizontalAlignment.RIGHT);
-		td_loginPanel.setWidth("100%");
-		layoutContainer.add(loginPanel, td_loginPanel);
-		loginPanel.setSize("100%", "100%");
-		loginPanel.setAutoHeight(true);
-		layoutContainer.setAutoHeight(true);
-		initComponent(layoutContainer);
-		layoutContainer.setBorders(true);
-	}
 
-	public LoginPanel getLoginPanel() {
-		return loginPanel;
-	}
+    private LoginPanel loginPanel;
+    private Image image;
 
-        public void setLogoURL(String url) {
-            image.setUrl(url);
-        }
+    public HeaderPanel() {
+
+        LayoutContainer layoutContainer = new LayoutContainer();
+        layoutContainer.setSize("100%", "100px");
+        layoutContainer.setLayout(new TableRowLayout());
+
+        image = new Image();
+        image.setSize("263px", "58px");
+        TableData td_image = new TableData();
+        td_image.setPadding(2);
+        layoutContainer.add(image, td_image);
+
+        loginPanel = new LoginPanel();
+        loginPanel.getVerticalPanel().setSize("100%", "100%");
+        loginPanel.setSize("100%", "100%");
+        loginPanel.setAutoHeight(true);
+        TableData td_loginPanel = new TableData();
+        td_loginPanel.setPadding(2);
+        td_loginPanel.setHorizontalAlign(HorizontalAlignment.RIGHT);
+        td_loginPanel.setWidth("100%");
+        layoutContainer.add(loginPanel, td_loginPanel);
+
+        layoutContainer.setAutoHeight(true);
+        layoutContainer.setBorders(true);
+        initComponent(layoutContainer);
+    }
+
+    public LoginPanel getLoginPanel() {
+        return loginPanel;
+    }
+
+    public void setLogoURL(String url) {
+        image.setUrl(url);
+    }
 }

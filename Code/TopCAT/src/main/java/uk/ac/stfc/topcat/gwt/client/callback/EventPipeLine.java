@@ -27,8 +27,10 @@ package uk.ac.stfc.topcat.gwt.client.callback;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
@@ -47,6 +49,7 @@ import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
@@ -88,12 +91,11 @@ public class EventPipeLine implements LoginInterface {
     ArrayList<TFacility> facilityNames;
     HashMap<String, ListStore<Instrument>> facilityInstrumentMap;
     ParameterDownloadForm paramDownloadForm;
-    Map<String, Boolean> loadedFacilities = new HashMap<String, Boolean>();
+    private Set<String> loadedFacilities = new HashSet<String>();
+    private TopcatEvents tcEvents;
 
     LoginWidget loginWidget;
-    WaitDialog waitDialog;
-    MessageBox errorDialog;
-    MessageBox messageDialog;
+    private WaitDialog waitDialog;
     int downloadCount = 0;
 
     // Panels from Main Window
@@ -112,9 +114,8 @@ public class EventPipeLine implements LoginInterface {
         tcWindowManager = new TopcatWindowManager();
         historyManager = new HistoryManager(tcWindowManager);
         waitDialog = new WaitDialog();
-        errorDialog = new MessageBox();
-        messageDialog = new MessageBox();
         facilityInstrumentMap = new HashMap<String, ListStore<Instrument>>();
+        tcEvents = new TopcatEvents();
         // Initialise
         loginWidget.setLoginHandler(this);
     }
@@ -173,6 +174,7 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.show();
         // login to the given facility using username and password
         loginService.login(username, password, facilityName, new AsyncCallback<String>() {
+            @Override
             public void onFailure(Throwable caught) {
                 // Show the RPC error message to the user
                 waitDialog.hide();
@@ -201,8 +203,8 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method invokes the AJAX call to get the server logo
      */
-    public void getLogoURL(){
-        utilityService.getLogoURL(new AsyncCallback<String>(){
+    public void getLogoURL() {
+        utilityService.getLogoURL(new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -215,6 +217,25 @@ public class EventPipeLine implements LoginInterface {
             }
         });
     }
+
+    /**
+     * This method invokes the AJAX call to get the links for the footer
+     */
+    public void getLinks() {
+        utilityService.getLinks(new AsyncCallback<Map<String, String>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void onSuccess(Map<String, String> result) {
+                mainWindow.getFooterPanel().setLinks(result);
+            }
+        });
+    }
+
     /**
      * This method shows login dialog box for a input facility
      * 
@@ -228,40 +249,49 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method is called after the success of logging into facility to
      * update instrument and investigation type list for the facility and user
-     * investigations in the facility
+     * investigations and downloads in the facility
      * 
      * @param facilityName
      */
     public void successLogin(String facilityName) {
-        if (loadedFacilities.containsKey(facilityName)) {
-            return;
-        }
         updateLoginPanelStatus(facilityName, Boolean.TRUE);
-        loadInstrumentNames(facilityName);
-        loadInvestigationTypes(facilityName);
-        getMyInvestigationsInMyDataPanel(facilityName);
-        historyManager.updateHistory();
-        // if the facility search has not been set, set it
-        if (mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().getFacilityWidget().getItemCount() == 0) {
-            mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().setFacilitySearch(facilityName);
-        }
-        loadedFacilities.put(facilityName, true);
     }
 
     /**
      * This method will update the login button of facility name to show that
-     * its logged in or not.
+     * its logged in or not. In the case of the browser refresh button having
+     * been pressed facility data will be reloaded.
      * 
      * @param facilityName
      */
     public void updateLoginPanelStatus(String facilityName, Boolean status) {
         LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);
-        if (status.booleanValue() == true)
+        if (status.booleanValue() == true) {
             infoPanel.successLogin();
-        else
+            // Handle case when browser refresh button is pressed.
+            // Without this check the data will be reloaded every time you click
+            // on a tab in the main panel.
+            if (!loadedFacilities.contains(facilityName)) {
+                loadedFacilities.add(facilityName);
+                loadFacilityData(facilityName);
+            }
+        } else {
             infoPanel.successLogout();
+        }
         if (facilityNames.size() > 0 && facilityNames.get(0).getName().compareToIgnoreCase(facilityName) == 0)
             showInitialLoginWindow();
+    }
+
+    private void loadFacilityData(String facilityName) {
+        loadInstrumentNames(facilityName);
+        loadInvestigationTypes(facilityName);
+        getMyInvestigationsInMyDataPanel(facilityName);
+        getMyDownloadsInMyDownloadsPanel(facilityName);
+        historyManager.updateHistory();
+        // if the facility search has not been set, set it
+        if (mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().getFacilityWidget().getItemCount() == 0) {
+            mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().setFacilitySearch(facilityName);
+        }
     }
 
     /**
@@ -273,7 +303,7 @@ public class EventPipeLine implements LoginInterface {
         LoginInfoPanel infoPanel = loginPanel.getFacilityLoginInfoPanel(facilityName);
         infoPanel.successLogout();
         mainWindow.getMainPanel().getMyDataPanel().clearInvestigationList(facilityName);
-        mainWindow.getMainPanel().getMyDownloadPanel().clearDownloadList(facilityName);
+        mainWindow.getMainPanel().getMyDownloadPanel().clearDownloads(facilityName);
     }
 
     /**
@@ -302,6 +332,7 @@ public class EventPipeLine implements LoginInterface {
         loginWidget.setFacilityName(facilityName);
         // login to the given facility using username and password
         loginService.logout(facilityName, new AsyncCallback<Void>() {
+            @Override
             public void onFailure(Throwable caught) {
                 // Show the RPC error message to the user
                 waitDialog.hide();
@@ -322,7 +353,7 @@ public class EventPipeLine implements LoginInterface {
         utilityService.getFacilities(new AsyncCallback<ArrayList<TFacility>>() {
             @Override
             public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
+                showErrorDialog("Error while downloading facility names");
             }
 
             @Override
@@ -466,8 +497,10 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.show();
         searchService.getAdvancedSearchResultsInvestigation(null, searchDetails,
                 new AsyncCallback<List<TInvestigation>>() {
+                    @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
+                        showErrorDialog("Error retrieving data from server");
                     }
 
                     @Override
@@ -496,8 +529,10 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.show();
         searchService.getSearchResultsMyInvestigationFromKeywords(null, searchDetails.getKeywords(),
                 new AsyncCallback<List<TInvestigation>>() {
+                    @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
+                        showErrorDialog("Error retrieving data from server");
                     }
 
                     @Override
@@ -536,9 +571,12 @@ public class EventPipeLine implements LoginInterface {
      */
     public void getMyInvestigationsInMyDataPanel(final String facilityName) {
         waitDialog.setMessage("Searching in " + facilityName + "...");
+        waitDialog.show();
         utilityService.getMyInvestigationsInServer(facilityName, new AsyncCallback<ArrayList<TInvestigation>>() {
+            @Override
             public void onFailure(Throwable caught) {
                 waitDialog.hide();
+                showErrorDialog("Error retrieving data from server");
             }
 
             @Override
@@ -555,6 +593,28 @@ public class EventPipeLine implements LoginInterface {
             }
         });
 
+    }
+
+    /**
+     * This method loads download data for a facility from TopCAT service
+     * 
+     * @param facilityName
+     */
+    private void getMyDownloadsInMyDownloadsPanel(String facilityName) {
+        final Set<String> facilities = new HashSet<String>(1);
+        facilities.add(facilityName);
+        utilityService.getMyDownloadList(facilities, new AsyncCallback<ArrayList<DownloadModel>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                showMessageDialog("Error retrieving download history from server");
+            }
+
+            @Override
+            public void onSuccess(ArrayList<DownloadModel> result) {
+                mainWindow.getMainPanel().getMyDownloadPanel().addDownloads(result);
+            }
+
+        });
     }
 
     /**
@@ -585,19 +645,18 @@ public class EventPipeLine implements LoginInterface {
      * @param datafileList
      *            a list containing data file ids
      */
-    public void downloadDatafiles(final String facilityName, final List<Long> datafileList) {
-        utilityService.getDatafilesDownloadURL(facilityName, (ArrayList<Long>) datafileList,
-                new AsyncCallback<String>() {
+    public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName) {
+        utilityService.getDatafilesDownloadURL(facilityName, (ArrayList<Long>) datafileList, downloadName,
+                new AsyncCallback<DownloadModel>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        showErrorDialog("Error while downloading files");
+                        showErrorDialog("Error retrieving data from server");
                     }
 
                     @Override
-                    public void onSuccess(String result) {
-                        download(result);
-                        mainWindow.getMainPanel().getMyDownloadPanel()
-                                .addDownload(facilityName, datafileList.get(0), result);
+                    public void onSuccess(DownloadModel result) {
+                        download(result.getUrl());
+                        mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
                     }
                 });
     }
@@ -609,24 +668,26 @@ public class EventPipeLine implements LoginInterface {
      *            a string containing the facility name
      * @param datasetId
      *            the data set id
+     * @param downloadName
+     *            a string containing a user defined name
      */
-    public void downloadDatasets(final String facilityName, final Long datasetId) {
-        utilityService.getDatasetDownloadURL(facilityName, datasetId, new AsyncCallback<String>() {
+    public void downloadDatasets(final String facilityName, final Long datasetId, final String downloadName) {
+        utilityService.getDatasetDownloadURL(facilityName, datasetId, downloadName, new AsyncCallback<DownloadModel>() {
             @Override
             public void onFailure(Throwable caught) {
-                showErrorDialog("Error while downloading files");
+                showErrorDialog("Error retrieving data from server");
             }
 
             @Override
-            public void onSuccess(String result) {
-                download(result);
-                mainWindow.getMainPanel().getMyDownloadPanel().addDownload(facilityName, datasetId, result);
+            public void onSuccess(DownloadModel result) {
+                download(result.getUrl());
+                mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
             }
         });
     }
-    
+
     /**
-     * Download the url in a seperate window.
+     * Download the url in a separate window.
      * 
      * @param url
      */
@@ -652,8 +713,10 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.show();
         searchService.getAdvancedSearchResultsDatafile(null, facilityName, searchDetails,
                 new AsyncCallback<ArrayList<DatafileModel>>() {
+                    @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
+                        showErrorDialog("Error retrieving data from server");
                     }
 
                     @Override
@@ -885,4 +948,14 @@ public class EventPipeLine implements LoginInterface {
     public ArrayList<TFacility> getFacilityNames() {
         return facilityNames;
     }
+
+    /**
+     * Get the topcat events object. Use this to listen for and fire events.
+     * 
+     * @return the topcat events object
+     */
+    public TopcatEvents getTcEvents() {
+        return tcEvents;
+    }
+
 }

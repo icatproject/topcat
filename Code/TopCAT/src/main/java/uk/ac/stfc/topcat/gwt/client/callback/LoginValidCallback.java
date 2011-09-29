@@ -26,11 +26,7 @@ public class LoginValidCallback implements AsyncCallback<Boolean> {
 
     @Override
     public void onSuccess(Boolean result) {
-        if (result) {
-            EventPipeLine.getInstance().successLogin(serverName);
-        } else {
-            EventPipeLine.getInstance().updateLoginPanelStatus(serverName, result);
-        }
+        EventPipeLine.getInstance().updateLoginPanelStatus(serverName, result);
     }
 
 }

@@ -27,6 +27,8 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  */
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Orientation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,12 +47,14 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Composite;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
@@ -79,22 +83,20 @@ public class MyDataPanel extends Composite {
     private EventPipeLine eventBus;
 
     public MyDataPanel() {
-        VerticalPanel verticalPanel = new VerticalPanel();
-        verticalPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
-        // verticalPanel.setLayoutOnChange(true);
-        // verticalPanel.setAutoWidth(true);
-        // verticalPanel.setAutoHeight(true);
-        // verticalPanel.setSize("100%","100%");
-        // verticalPanel.setLayout(new RowLayout(Orientation.HORIZONTAL));
-        verticalPanel.setBorders(true);
+        ContentPanel contentPanel = new ContentPanel();
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setCollapsible(true);
+        contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
+
+        VerticalPanel bodyPanel = new VerticalPanel();
+        bodyPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
 
         ToolBar toolMenuBar = new ToolBar();
-        verticalPanel.add(toolMenuBar);
         ButtonBar buttonBar = new ButtonBar();
 
         Button btnDownload = new Button("Get Investigations");
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 // Collect list of investigations
                 EventPipeLine.getInstance().getMyInvestigationsInMyDataPanel();
@@ -102,6 +104,7 @@ public class MyDataPanel extends Composite {
         });
         buttonBar.add(btnDownload);
         toolMenuBar.add(buttonBar);
+        contentPanel.setTopComponent(toolMenuBar);
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -125,7 +128,6 @@ public class MyDataPanel extends Composite {
 
         ColumnConfig clmncnfgEndDate = new ColumnConfig("endDate", "End Date", 150);
         clmncnfgEndDate.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
-
         configs.add(clmncnfgEndDate);
 
         // Pagination
@@ -141,25 +143,24 @@ public class MyDataPanel extends Composite {
         grid.setAutoExpandMin(200);
         grid.setMinColumnWidth(100);
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
-
+            @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
                 TopcatInvestigation inv = (TopcatInvestigation) e.getModel();
                 eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
                         inv.getInvestigationTitle());
             }
         });
-        grid.setSize("800px", "376px");
-        verticalPanel.add(grid);
-        grid.setBorders(true);
+        grid.setHeight("376px");
+        bodyPanel.add(grid);
+        contentPanel.add(bodyPanel);
 
         // Pagination Bar
         toolBar = new PagingToolBar(15);
         toolBar.bind(loader);
-        verticalPanel.add(toolBar);
-        verticalPanel.setAutoWidth(true);
-        setMonitorWindowResize(true);
+        contentPanel.setBottomComponent(toolBar);
 
-        initComponent(verticalPanel);
+        setMonitorWindowResize(true);
+        initComponent(contentPanel);
     }
 
     /**

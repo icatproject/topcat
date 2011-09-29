@@ -28,9 +28,13 @@ package uk.ac.stfc.topcat.gwt.client;
 import java.util.List;
 
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.widget.FooterPanel;
 import uk.ac.stfc.topcat.gwt.client.widget.HeaderPanel;
 import uk.ac.stfc.topcat.gwt.client.widget.MainPanel;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -56,6 +60,7 @@ public class TOPCATOnline implements EntryPoint {
     private Panel rootPanel;
     private MainPanel mainPanel;
     private HeaderPanel headerPanel;
+    private FooterPanel footerPanel;
     private EventPipeLine eventPipeLine;
 
     public void onModuleLoad() {
@@ -74,7 +79,14 @@ public class TOPCATOnline implements EntryPoint {
         verticalPanel.add(mainPanel);
         verticalPanel.setCellHorizontalAlignment(mainPanel, HasHorizontalAlignment.ALIGN_CENTER);
         mainPanel.setAutoHeight(true);
+        mainPanel.setAutoWidth(true);
         mainPanel.setWidth("1260px");
+
+        footerPanel = new FooterPanel();
+        verticalPanel.add(footerPanel);
+        verticalPanel.setCellHorizontalAlignment(footerPanel, HasHorizontalAlignment.ALIGN_CENTER);
+        footerPanel.setAutoHeight(true);
+        footerPanel.setAutoWidth(true);
 
         // Initialize event pipeline
         eventPipeLine = EventPipeLine.getInstance();
@@ -82,33 +94,43 @@ public class TOPCATOnline implements EntryPoint {
         eventPipeLine.setMainWindow(this);
         // Initialise
         eventPipeLine.getLogoURL();
+        eventPipeLine.getLinks();
         eventPipeLine.loadFacilityNames();
         // Set Event pipeline
-        mainPanel.getSearchPanel().setEventBus(eventPipeLine);
+        mainPanel.getSearchPanel().setEventBus(eventPipeLine); 
         mainPanel.getMyDataPanel().setEventBus(eventPipeLine);
         mainPanel.getMyDownloadPanel().setEventBus(eventPipeLine);
-        resizeMainPanel(Window.getClientWidth());
-        Window.addResizeHandler(new ResizeHandler() {
 
+        eventPipeLine.getTcEvents().addListener(Events.Resize, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent tpe) {
+                resizePanels(Window.getClientWidth());
+            }
+        });
+
+        resizePanels(Window.getClientWidth());
+        Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
-                // TODO Auto-generated method stub
-                resizeMainPanel(event.getWidth());
+                resizePanels(event.getWidth());
             }
-
         });
         // process url
         eventPipeLine.getHistoryManager().processHistory(History.getToken());
         eventPipeLine.initDownloadParameter();
     }
 
-    public void resizeMainPanel(int width) {
+    public void resizePanels(int width) {
         int newWidth = width;
         if (newWidth < 800)
             newWidth = 800;
+        headerPanel.setWidth(newWidth - 5);
         mainPanel.setWidth(newWidth - 5);
-        mainPanel.getSearchPanel().setGridWidth(newWidth - 5);
-        mainPanel.getMyDataPanel().setGridWidth(newWidth - 5);
+        mainPanel.getSearchPanel().setGridWidth(newWidth - 7);
+        mainPanel.getMyDataPanel().setGridWidth(newWidth - 7);
+        mainPanel.getMyDownloadPanel().setGridWidth(newWidth - 7);
+        mainPanel.getBrowserPanel().setTreeWidth(newWidth - 30);
+//        footerPanel.setWidth(newWidth - 5);TODO
     }
 
     public RootPanel getRootPanel() {
@@ -122,4 +144,9 @@ public class TOPCATOnline implements EntryPoint {
     public HeaderPanel getHeaderPanel() {
         return headerPanel;
     }
+
+    public FooterPanel getFooterPanel() {
+        return footerPanel;
+    }
+
 }

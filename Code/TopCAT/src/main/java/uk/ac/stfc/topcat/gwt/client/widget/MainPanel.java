@@ -94,12 +94,15 @@ public class MainPanel extends Composite {
         tbtmBrowse.setAutoHeight(true);
         tbtmBrowse.setAutoWidth(true);
 
+        tabPanel.setWidth("100%");
+
         initComponent(tabPanel);
 
         // When the tab is changed update the history with the new tab info
         tabPanel.addListener(Events.Select, new Listener<TabPanelEvent>() {
             @Override
             public void handleEvent(TabPanelEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
                 EventPipeLine.getInstance().getHistoryManager().setTabSelected(event.getItem().getItemId());
                 if (historyEnabled) {
                     EventPipeLine.getInstance().getHistoryManager().updateHistory();
@@ -109,6 +112,10 @@ public class MainPanel extends Composite {
         });
 
         historyEnabled = false;
+    }
+
+    public BrowsePanel getBrowserPanel() {
+        return browsePanel;
     }
 
     public SearchPanel getSearchPanel() {

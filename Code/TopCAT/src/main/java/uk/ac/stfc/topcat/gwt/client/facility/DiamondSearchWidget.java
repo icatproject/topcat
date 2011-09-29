@@ -59,7 +59,7 @@ public class DiamondSearchWidget extends Composite {
     private DateField endDate;
     private ListField<Instrument> beamLine;
     private String facilityName;
-    private TextField visitId;
+    private TextField<String> visitId;
 
     public DiamondSearchWidget(EventPipeLine eventBusPipeLine) {
         this.eventBus = eventBusPipeLine;
@@ -90,7 +90,7 @@ public class DiamondSearchWidget extends Composite {
         LabelField lblfldVisitId = new LabelField("Visit Id");
         layoutContainer.add(lblfldVisitId);
 
-        visitId = new TextField();
+        visitId = new TextField<String>();
         layoutContainer.add(visitId);
         visitId.setFieldLabel("New TextField");
 
@@ -101,8 +101,10 @@ public class DiamondSearchWidget extends Composite {
         layoutContainer.add(beamLine);
         beamLine.setFieldLabel("New ListField");
         beamLine.setDisplayField("name");
+
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
+
         Button btnSearch = new Button("Search");
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -129,8 +131,11 @@ public class DiamondSearchWidget extends Composite {
             }
         });
         layoutContainer.add(btnReset);
+
+        layoutContainer.add(new Text());
+
         initComponent(layoutContainer);
-        layoutContainer.setSize("100%", "274px");
+        layoutContainer.setHeight("275px");
         setBorders(true);
         setAutoHeight(true);
     }

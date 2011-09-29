@@ -121,6 +121,7 @@ public class ISISSearchWidget extends Composite {
 
         Button btnSearch = new Button("Search Experiments");
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 errorMessage.setText("");
                 TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
@@ -174,6 +175,7 @@ public class ISISSearchWidget extends Composite {
 
         Button btnSearchFile = new Button("Search Datafiles");
         btnSearchFile.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 errorMessage.setText("");
                 TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
@@ -212,6 +214,7 @@ public class ISISSearchWidget extends Composite {
 
         Button btnReset = new Button("Reset");
         btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 errorMessage.setText("");
                 startDate.clear();
@@ -228,7 +231,7 @@ public class ISISSearchWidget extends Composite {
         errorMessage = new Text();
         errorMessage.setText("");
         topContainer.add(errorMessage);
-        topContainer.setSize("100%", "274px");
+        topContainer.setHeight("275px");
         initComponent(topContainer);
         setBorders(true);
         setAutoHeight(true);

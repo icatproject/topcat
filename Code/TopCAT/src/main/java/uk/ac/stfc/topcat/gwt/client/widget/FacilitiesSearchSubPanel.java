@@ -22,11 +22,15 @@
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
 
+import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.facility.FacilityPlugin;
 import uk.ac.stfc.topcat.gwt.client.facility.FacilityPluginFactory;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -88,6 +92,19 @@ public class FacilitiesSearchSubPanel extends Composite {
         comboBoxFacility.setTypeAhead(true);
         comboBoxFacility.setTriggerAction(TriggerAction.ALL);
         horizontalPanel.add(comboBoxFacility);
+
+        comboBoxFacility.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        comboBoxFacility.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
 
         facilityWidget = new LayoutContainer();
         layoutContainer.add(facilityWidget);

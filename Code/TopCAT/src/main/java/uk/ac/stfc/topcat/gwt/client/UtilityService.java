@@ -27,10 +27,13 @@ package uk.ac.stfc.topcat.gwt.client;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
@@ -175,22 +178,26 @@ public interface UtilityService extends RemoteService {
      *            a string containing the facility name
      * @param datafileIds
      *            a list containing data file ids
-     * @return a string containing a URL
+     * @param downloadName
+     *            a string containing a user defined name
+     * @return a DownloadModel
      */
-    public String getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds);
-    
+    public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName);
+
     /**
-     * Get the URL of a file that contains the requested data set for the
-     * given facility.
+     * Get the URL of a file that contains the requested data set for the given
+     * facility.
      * 
      * @param facilityName
      *            a string containing the facility name
      * @param datasetId
      *            the data set id
-     * @return a string containing a URL
+     * @param downloadName
+     *            a string containing a user defined name
+     * @return a DownloadModel
      */
-    public String getDatasetDownloadURL(String facilityName, Long datasetId);
-    
+    public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName);
+
     /**
      * Get a list of investigations for the given facility that belong to the
      * user.
@@ -203,7 +210,26 @@ public interface UtilityService extends RemoteService {
 
     /**
      * This method returns the server logo URL
+     * 
      * @return
      */
     public String getLogoURL();
+
+    /**
+     * This method returns the links to be used at the bottom of the page.
+     * 
+     * @return a map of link name, link
+     */
+    public Map<String, String> getLinks();
+
+    /**
+     * Get a list of downloads for the user.
+     * 
+     * @param facilities
+     *            a set containing the facility names
+     * 
+     * @return a list of <code>DownloadModel</code>
+     */
+    public ArrayList<DownloadModel> getMyDownloadList(Set<String> facilities);
+
 }

@@ -15,7 +15,6 @@
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="ExtGWT/css/gxt-all.css">
-    <link rel="stylesheet" type="text/css" href="gxt/themes/access/css/xtheme-access.css" />    
     <link type="text/css" rel="stylesheet" href="TOPCATWeb.css">
 
     <!--                                           -->
@@ -70,14 +69,6 @@ a.front {color: black; text-decoration: none;}
 </table>
 <br>
 <br>
-<div class="footer-links">
-            <a href="http://www.stfc.ac.uk/About+STFC/5809.aspx">Accessibility</a> |
-            <a href="http://www.stfc.ac.uk/privacy.aspx">Privacy Policy</a> |
-            <a href="http://www.isis.stfc.ac.uk/user-office/data-policy11204.html">Data Policy</a> |
-            <a href="http://www.stfc.ac.uk/disclaimer.aspx">Terms Of Use</a> |
-            <a href="http://www.isis.stfc.ac.uk/people/ombudsmen-and-complaints-procedure9430.html">Complaints Procedure</a> |
-            <a href="mailto:isisdata@stfc.ac.uk?subject=Feedback From TopCat">Feedback</a>
-</div>
 
 </body>
 </html>

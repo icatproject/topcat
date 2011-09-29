@@ -36,11 +36,13 @@ import uk.ac.stfc.topcat.gwt.client.callback.InvestigationSearchCallback;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -55,6 +57,7 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -73,8 +76,9 @@ import com.google.gwt.user.client.ui.SuggestBox;
  */
 public class SearchPanel extends Composite implements InvestigationSearchCallback {
 
-    KeywordsSuggestOracle oracle;
-    SuggestBox keywords;
+    private VerticalPanel topPanel = new VerticalPanel();
+    private KeywordsSuggestOracle oracle;
+    private SuggestBox keywords;
     private MultipleTextBox multipleTextBox;
     private AdvancedSearchSubPanel advancedSearchSubPanel;
     private FacilitiesSearchSubPanel facilitiesSearchSubPanel;
@@ -91,19 +95,28 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     private EventPipeLine eventBus;
 
     public SearchPanel() {
+        ContentPanel contentPanel = new ContentPanel();
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setCollapsible(true);
+        contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
+
+        VerticalPanel bodyPanel = new VerticalPanel();
+        bodyPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
+
         waitDialog = new WaitDialog();
         waitDialog.setMessage(" Searching...");
         waitDialog.hide();
         oracle = new KeywordsSuggestOracle();
-        // investigationList = new ListStore<TopcatInvestigation>();
-        VerticalPanel verticalPanel = new VerticalPanel();
-        verticalPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
+
+        topPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
+        topPanel.setBorders(true);
+        contentPanel.setTopComponent(topPanel);
 
         FlexTable flexTable = new FlexTable();
         flexTable.setCellSpacing(8);
         flexTable.setCellPadding(2);
-        verticalPanel.add(flexTable);
-        flexTable.setSize("800px", "20%");
+        topPanel.add(flexTable);
+        flexTable.setHeight("20%");
 
         LabelField lblfldEywords = new LabelField("Keywords");
         flexTable.setWidget(0, 0, lblfldEywords);
@@ -118,10 +131,11 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
             public void componentSelected(ButtonEvent ce) {
                 // waitDialog.show();
                 // Check whether to do searching my data or all data
-                if (rdbtnSearchAllData.getValue()) { // Search all data
+                if (rdbtnSearchAllData.getValue()) {
+                    // Search all data
                     doSearchAllData();
-                } else if (rdbtnSearchJustMy.getValue()) { // Search just my
-                                                           // data
+                } else if (rdbtnSearchJustMy.getValue()) {
+                    // Search just my data
                     doSearchJustMyData();
                 }
             }
@@ -147,15 +161,26 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         cntntpnlAdvancedSearch.setExpanded(false);
         cntntpnlAdvancedSearch.setHeading("Advanced Search");
         cntntpnlAdvancedSearch.setCollapsible(true);
+        cntntpnlAdvancedSearch.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        cntntpnlAdvancedSearch.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
 
         advancedSearchSubPanel = new AdvancedSearchSubPanel();
         advancedSearchSubPanel.setInvSearchCallback(this);
         cntntpnlAdvancedSearch.add(advancedSearchSubPanel);
-        advancedSearchSubPanel.setSize("99%", "100%");
         TableData td_cntntpnlAdvancedSearch = new TableData();
         td_cntntpnlAdvancedSearch.setHeight("100%");
-        verticalPanel.add(cntntpnlAdvancedSearch, td_cntntpnlAdvancedSearch);
-        cntntpnlAdvancedSearch.setSize("705px", "100%");
+        td_cntntpnlAdvancedSearch.setWidth("705px");
+        topPanel.add(cntntpnlAdvancedSearch, td_cntntpnlAdvancedSearch);
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ContentPanel cntntpnlFacilitiesSearch = new ContentPanel();
@@ -164,15 +189,25 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         cntntpnlFacilitiesSearch.setFrame(true);
         cntntpnlFacilitiesSearch.setHeading("Facilities Search");
         cntntpnlFacilitiesSearch.setCollapsible(true);
-
+        cntntpnlFacilitiesSearch.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        cntntpnlFacilitiesSearch.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
         facilitiesSearchSubPanel = new FacilitiesSearchSubPanel();
         cntntpnlFacilitiesSearch.add(facilitiesSearchSubPanel);
-        facilitiesSearchSubPanel.setSize("99%", "100%");
         TableData td_cntntpnlFacilitiesSearch = new TableData();
         td_cntntpnlFacilitiesSearch.setHeight("100%");
-        verticalPanel.add(cntntpnlFacilitiesSearch, td_cntntpnlFacilitiesSearch);
-        cntntpnlFacilitiesSearch.setSize("705px", "100%");
-        verticalPanel.add(new Text(""));
+        td_cntntpnlFacilitiesSearch.setWidth("705px");
+        topPanel.add(cntntpnlFacilitiesSearch, td_cntntpnlFacilitiesSearch);
+        topPanel.add(new Text(""));
 
         ColumnConfig clmncnfgServerName = new ColumnConfig("serverName", "Facility Name", 150);
         configs.add(clmncnfgServerName);
@@ -208,23 +243,23 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         grid.setAutoExpandMin(200);
         grid.setMinColumnWidth(100);
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
+            @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
                 TopcatInvestigation inv = (TopcatInvestigation) e.getModel();
                 eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
                         inv.getInvestigationTitle());
             }
         });
-        grid.setSize("750px", "376px");
-        verticalPanel.add(grid);
-        grid.setBorders(true);
+        grid.setHeight("376px");
+        bodyPanel.add(grid);
+        contentPanel.add(bodyPanel);
 
         // Pagination Bar
         toolBar = new PagingToolBar(15);
         toolBar.bind(loader);
-        verticalPanel.add(toolBar);
-        verticalPanel.setAutoWidth(true);
-        initComponent(verticalPanel);
-        verticalPanel.setSize("100%", "100%");
+        contentPanel.setBottomComponent(toolBar);
+
+        initComponent(contentPanel);
         setMonitorWindowResize(true);
     }
 

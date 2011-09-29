@@ -30,9 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import uk.ac.stfc.topcat.gwt.client.Constants;
-import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
@@ -52,7 +52,6 @@ import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -62,7 +61,6 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * This widget shows a tree to browse All data. The hierarchy is:
@@ -83,7 +81,7 @@ public class BrowsePanel extends Composite {
 
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private BaseTreeLoader<ICATNode> loader;
-    TreePanel<ICATNode> treeGrid;
+    TreePanel<ICATNode> tree;
     HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
 
     public BrowsePanel() {
@@ -96,20 +94,19 @@ public class BrowsePanel extends Composite {
         contentPanel.setCollapsible(true);
         contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
 
+        // ToolBar with ButtonBar with download button
         ToolBar toolBar = new ToolBar();
-        contentPanel.add(toolBar);
-
         ButtonBar buttonBar = new ButtonBar();
-
-        Button btnDownload = new Button("Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
+        DownloadButton btnDownload = new DownloadButton();
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                download();
+                download(((DownloadButtonEvent) ce).getDownloadName());
             }
         });
         buttonBar.add(btnDownload);
         toolBar.add(buttonBar);
+        contentPanel.setTopComponent(toolBar);
 
         // Add Treepanel
         // This is RPC proxy to get the information from the server using
@@ -163,26 +160,14 @@ public class BrowsePanel extends Composite {
 
         TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
 
-        VerticalPanel contentPanel_1 = new VerticalPanel();
-        contentPanel_1.setLayoutOnChange(true);
-        // This will set the Scroll bar
-        contentPanel_1.setScrollMode(Scroll.AUTO);
-        VBoxLayout layout = new VBoxLayout();
-        layout.setPadding(new Padding(5));
-        layout.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
-        contentPanel_1.setLayout(layout);
-        contentPanel_1.setBorders(false);
-        treeGrid = new TreePanel<ICATNode>(store);
-        contentPanel_1.add(treeGrid);
-        treeGrid.setAutoHeight(true);
+        tree = new TreePanel<ICATNode>(store);
 
         // This handler calls the reloading of the tree if the children are
         // none. Useful when the session expires or user hasn't logged in.
-        treeGrid.addListener(Events.Expand, new Listener<TreePanelEvent<ICATNode>>() {
+        tree.addListener(Events.Expand, new Listener<TreePanelEvent<ICATNode>>() {
             @SuppressWarnings("unchecked")
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
-                // TODO Auto-generated method stub
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
 
                 if (!node.isLeaf() && node.getItemCount() == 0)
@@ -191,13 +176,13 @@ public class BrowsePanel extends Composite {
         });
 
         // This is to check the RAW Datafile checked and check all the children
-        treeGrid.addListener(Events.BeforeCheckChange, new Listener<TreePanelEvent<ICATNode>>() {
+        tree.addListener(Events.BeforeCheckChange, new Listener<TreePanelEvent<ICATNode>>() {
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
                 // If children of raw datafiles are not loaded then load them.
                 ICATNode node = be.getItem();
                 if ((node.getNodeType() == ICATNodeType.DATAFILE || node.getNodeType() == ICATNodeType.INVESTIGATION)
-                        && loader.hasChildren(node) && treeGrid.getStore().getChildCount(node) == 0) {
+                        && loader.hasChildren(node) && tree.getStore().getChildCount(node) == 0) {
                     loader.loadChildren(node);
                 }
                 // Only allow selection of datafiles, datasets and
@@ -211,12 +196,11 @@ public class BrowsePanel extends Composite {
         });
 
         // On double click on datafile node show a parameter window
-        treeGrid.sinkEvents(Events.OnDoubleClick.getEventCode());
-        treeGrid.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<ICATNode>>() {
+        tree.sinkEvents(Events.OnDoubleClick.getEventCode());
+        tree.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<ICATNode>>() {
             @SuppressWarnings("unchecked")
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
-                // TODO Auto-generated method stub
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
                 if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {
                     ICATNode icatnode = node.getModel();
@@ -226,25 +210,32 @@ public class BrowsePanel extends Composite {
             }
         });
 
-        treeGrid.setCaching(true);
-        treeGrid.setDisplayProperty("name");
-        treeGrid.setCheckable(true);
-        treeGrid.setCheckStyle(CheckCascade.CHILDREN);
-        treeGrid.setSize("900px", "600px");
-        treeGrid.setBorders(false);
-        contentPanel.add(contentPanel_1);
-        contentPanel_1.setSize("900px", "600px");
-        layoutContainer.add(contentPanel);
+        tree.setCaching(true);
+        tree.setDisplayProperty("name");
+        tree.setCheckable(true);
+        tree.setCheckStyle(CheckCascade.CHILDREN);
+        tree.setAutoHeight(true);
 
+        VerticalPanel bodyPanel = new VerticalPanel();
+        bodyPanel.add(tree);
+        bodyPanel.setLayoutOnChange(true);
+        bodyPanel.setScrollMode(Scroll.AUTO);
+        bodyPanel.setHeight("600px");
+        VBoxLayout layout = new VBoxLayout();
+        layout.setPadding(new Padding(10));
+        layout.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
+        bodyPanel.setLayout(layout);
+        contentPanel.add(bodyPanel);
+
+        layoutContainer.add(contentPanel);
         initComponent(layoutContainer);
-        layoutContainer.setBorders(true);
     }
 
     /**
      * Download selected datasets and datafiles.
      */
-    private void download() {
-        List<ICATNode> selectedItems = treeGrid.getCheckedSelection();
+    private void download(String downloadName) {
+        List<ICATNode> selectedItems = tree.getCheckedSelection();
 
         // Create map of selected datasets
         // map: key = facility name, value = list of dataset ids
@@ -267,7 +258,7 @@ public class BrowsePanel extends Composite {
             if (node.getNodeType() == ICATNodeType.DATAFILE) {
                 ArrayList<Long> dsList = dsMap.get(node.getFacility());
                 if (dsList != null) {
-                    if (dsList.contains(new Long(treeGrid.getStore().getParent(node).getDatasetId()))) {
+                    if (dsList.contains(new Long(tree.getStore().getParent(node).getDatasetId()))) {
                         // we have already selected the whole datset so ignore
                         // the file
                         continue;
@@ -307,8 +298,8 @@ public class BrowsePanel extends Composite {
         for (String facility : dsMap.keySet()) {
             List<Long> idList = dsMap.get(facility);
             for (Long id : idList) {
-                EventPipeLine.getInstance().downloadDatasets(facility, id);
                 batchCount = batchCount + 1;
+                EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-" + batchCount);
             }
         }
 
@@ -316,32 +307,26 @@ public class BrowsePanel extends Composite {
         for (String facility : dfMap.keySet()) {
             List<Long> idList = dfMap.get(facility);
             while (idList.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
-                EventPipeLine.getInstance().downloadDatafiles(facility,
-                        idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH));
-                idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
                 batchCount = batchCount + 1;
+                EventPipeLine.getInstance().downloadDatafiles(facility,
+                        idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH), downloadName + "-" + batchCount);
+                idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
             }
-            EventPipeLine.getInstance().downloadDatafiles(facility, idList);
             batchCount = batchCount + 1;
+            EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
         }
 
         if (batchCount == 0) {
             EventPipeLine.getInstance().showMessageDialog("Nothing selected for download");
         } else if (batchCount == 1) {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Your data is being retrieved from tape and will automatically start downloading shortly " +
-                    "as a single file. The status of your download can be seen from the ‘My Downloads Tab’ " +
-                    "(you may need to select ‘Show Previous Downloads’), or directly from " +
-                    "https://srb.esc.rl.ac.uk/dataportal.");
-//                    "Download request sent to remote server. See My Downloads tab.");
+                    "Your data is being retrieved from tape and will automatically start downloading shortly "
+                            + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
         } else {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Your data is being retrieved from tape and will automatically start downloading shortly " +
-                    "as " + batchCount + " files. The status of your download can be seen from the ‘My Downloads Tab’ " +
-                    "(you may need to select ‘Show Previous Downloads’), or directly from " +
-                    "https://srb.esc.rl.ac.uk/dataportal.");
-//                    "Download request sent to remote server. Files will be returned in " + batchCount
-//                            + " batches. See My Downloads tab.");
+                    "Your data is being retrieved from tape and will automatically start downloading shortly " + "as "
+                            + batchCount
+                            + " files. The status of your download can be seen from the ‘My Downloads’ tab.");
         }
     }
 
@@ -358,6 +343,15 @@ public class BrowsePanel extends Composite {
         } else {
             return (datafileCount / Constants.MAX_FILE_DOWNLOAD_PER_BATCH) + 1;
         }
+    }
+
+    /**
+     * This method sets the width of the tree.
+     * 
+     * @param width
+     */
+    public void setTreeWidth(int width) {
+        tree.setWidth(width);
     }
 
 }

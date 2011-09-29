@@ -27,11 +27,14 @@ package uk.ac.stfc.topcat.gwt.client;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
@@ -170,10 +173,13 @@ public interface UtilityServiceAsync {
      *            a string containing the facility name
      * @param datafileIds
      *            a list containing data file ids
+     * @param downloadName
+     *            a string containing a user defined name
      * @param callback
      *            object to be called on completion
      */
-    public void getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, AsyncCallback<String> callback);
+    public void getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName,
+            AsyncCallback<DownloadModel> callback);
 
     /**
      * Get the URL of a file that contains the requested data set for the given
@@ -183,10 +189,13 @@ public interface UtilityServiceAsync {
      *            a string containing the facility name
      * @param datasetId
      *            the data set id
+     * @param downloadName
+     *            a string containing a user defined name
      * @param callback
      *            object to be called on completion
      */
-    public void getDatasetDownloadURL(String facilityName, Long datasetId, AsyncCallback<String> callback);
+    public void getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName,
+            AsyncCallback<DownloadModel> callback);
 
     /**
      * Get a list of investigations for the given facility that belong to the
@@ -200,8 +209,25 @@ public interface UtilityServiceAsync {
     public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
 
     /**
-     * Get the server logo URL 
+     * Get the server logo URL
+     * 
      * @param asyncCallback
      */
     public void getLogoURL(AsyncCallback<String> asyncCallback);
+
+    /**
+     * This method returns the links to be used at the bottom of the page.
+     * 
+     * @param asyncCallback
+     */
+    public void getLinks(AsyncCallback<Map<String, String>> asyncCallback);
+
+    /**
+     * Get a list of downloads for the user.
+     * 
+     * @param facilities
+     *            a set containing the facility names
+     * @return asyncCallback
+     */
+    public void getMyDownloadList(Set<String> facilities, AsyncCallback<ArrayList<DownloadModel>> asyncCallback);
 }

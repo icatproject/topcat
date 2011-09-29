@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 import uk.ac.stfc.topcat.gwt.client.Constants;
-import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
@@ -54,7 +54,6 @@ import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -71,7 +70,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * This is a floating window widget, It shows list of datafiles for a given
@@ -261,15 +259,17 @@ public class DatafileWindow extends Window {
 
         grid.addPlugin(datafileSelectModel);
         grid.setSelectionModel(datafileSelectModel);
+
+        // ToolBar with download button
         ToolBar toolBar = new ToolBar();
-        Button btnView = new Button(" Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
-        btnView.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        DownloadButton btnDownload = new DownloadButton();
+        btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                download();
+                download(((DownloadButtonEvent) ce).getDownloadName());
             }
         });
-        toolBar.add(btnView);
+        toolBar.add(btnDownload);
         toolBar.add(new SeparatorToolItem());
         setTopComponent(toolBar);
 
@@ -313,7 +313,6 @@ public class DatafileWindow extends Window {
             @Override
             public void onFailure(Throwable caught) {
                 EventPipeLine.getInstance().hideDialogBox();
-                // TODO Auto-generated method stub
                 dfmStore.removeAll();
                 selectedFiles.clear();
                 hasData = false;
@@ -421,8 +420,11 @@ public class DatafileWindow extends Window {
 
     /**
      * Download selected datafiles.
+     * 
+     * @param downloadName
+     *            the display name for the download
      */
-    private void download() {
+    private void download(String downloadName) {
         if (selectedFiles.size() == 0) {
             EventPipeLine.getInstance().showMessageDialog("No files selected for download");
             return;
@@ -442,31 +444,30 @@ public class DatafileWindow extends Window {
         int batchCount = 0;
         // get a download frame for each batch of data files
         while (selectedItems.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
-            EventPipeLine.getInstance().downloadDatafiles(facility,
-                    selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH));
-            selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
             batchCount = batchCount + 1;
+            EventPipeLine.getInstance().downloadDatafiles(facility,
+                    selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH), downloadName + "-" + batchCount);
+            selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
         }
-        EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems);
-        batchCount = batchCount + 1;
+        // download the remainder
+        if (selectedItems.size() > 0) {
+            batchCount = batchCount + 1;
+            if (batchCount > 1) {
+                EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName + "-" + batchCount);
+            } else {
+                EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
+            }
+        }
         if (batchCount > 1) {
-            EventPipeLine
-                    .getInstance()
-                    .showMessageDialog(
-                            "Your data is being retrieved from tape and will automatically start downloading shortly " +
-                            "as " + batchCount + " files. The status of your download can be seen from the ‘My Downloads Tab’ " +
-                            "(you may need to select ‘Show Previous Downloads’), or directly from " +
-                            "https://srb.esc.rl.ac.uk/dataportal.");
-            // "Download request sent to remote server. Files will be returned in "
-            // + batchCount
-            // + " batches. See My Downloads tab.");
+            EventPipeLine.getInstance().showMessageDialog(
+                    "Your data is being retrieved from tape and will automatically start downloading shortly " + "as "
+                            + batchCount
+                            + " files. The status of your download can be seen from the ’My Downloads’ tab.");
         } else {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Your data is being retrieved from tape and will automatically start downloading shortly " +
-                    "as a single file. The status of your download can be seen from the ‘My Downloads Tab’ " +
-                    "(you may need to select ‘Show Previous Downloads’), or directly from " +
-                    "https://srb.esc.rl.ac.uk/dataportal.");
-//            "Download request sent to remote server. See My Downloads tab.");
+                    "Your data is being retrieved from tape and will automatically start downloading shortly "
+                            + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
         }
     }
+
 }

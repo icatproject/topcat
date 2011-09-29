@@ -27,7 +27,11 @@ package uk.ac.stfc.topcat.gwt.server;
  */
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -45,11 +49,13 @@ import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
@@ -232,7 +238,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         for (TInvestigation inv : invList) {
             ICATNode tnode = new ICATNode();
             tnode.setNode(ICATNodeType.INVESTIGATION, inv.getInvestigationId(),
-                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:"+ inv.getVisitId()+")");
+                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:" + inv.getVisitId() + ")");
             tnode.setFacility(node.getFacility());
             tnode.setTitle(inv.getTitle());
             result.add(tnode);
@@ -446,19 +452,23 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         return getICATNodeChildren(node, true);
     }
 
-    /**
-     * This method returns URL string corresponding to a file that contains all
-     * the requested datafiles.
+    /*
+     * (non-Javadoc)
      * 
-     * @param facilityName
-     *            iCAT Instance name
-     * @param datafileIds
-     *            Array list of datafile ids
+     * @see
+     * uk.ac.stfc.topcat.gwt.client.UtilityService#getDatafilesDownloadURL(java
+     * .lang.String, java.util.ArrayList, java.lang.String)
      */
     @Override
-    public String getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds) {
-        // TODO Auto-generated method stub
-        return utilityManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
+    public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName) {
+        String status = "in progress";
+        // TODO get from download manager
+        Date submitTime = new Date(System.currentTimeMillis());
+        // TODO get from download manager
+        long validPeriod = 864000000;
+        String url = utilityManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
+        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, validPeriod, url);
+        return new DownloadModel(facilityName, submitTime, downloadName, status, validPeriod, url);
     }
 
     /*
@@ -466,11 +476,18 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * 
      * @see
      * uk.ac.stfc.topcat.gwt.client.UtilityService#getDatasetDownloadURL(java
-     * .lang.String, java.lang.Long)
+     * .lang.String, java.lang.Long, java.lang.String)
      */
     @Override
-    public String getDatasetDownloadURL(String facilityName, Long datasetId) {
-        return utilityManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
+    public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName) {
+        String status = "in progress";
+        // TODO get from download manager
+        Date submitTime = new Date(System.currentTimeMillis());
+        // TODO get from download manager
+        long validPeriod = 864000000;
+        String url = utilityManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
+        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, validPeriod, url);
+        return new DownloadModel(facilityName, submitTime, downloadName, status, validPeriod, url);
     }
 
     /*
@@ -603,5 +620,24 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     public String getLogoURL() {
         return Configuration.INSTANCE.getLogoURL();
     }
-    
+
+    @Override
+    public Map<String, String> getLinks() {
+        return Configuration.INSTANCE.getLinks();
+    }
+
+    @Override
+    public ArrayList<DownloadModel> getMyDownloadList(Set<String> facilities) {
+        ArrayList<DownloadModel> result = new ArrayList<DownloadModel>();
+        for (String facilityName : facilities) {
+            List<TopcatUserDownload> dlList = utilityManager.getMyDownloadList(getSessionId(), facilityName);
+            if (dlList == null)
+                continue;
+            for (TopcatUserDownload dl : dlList) {
+                result.add(new DownloadModel(facilityName, dl.getSubmitTime(), dl.getName(), dl.getStatus(), dl
+                        .getValidPeriod(), dl.getUrl()));
+            }
+        }
+        return result;
+    }
 }
