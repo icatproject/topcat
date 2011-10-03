@@ -760,14 +760,15 @@ public class UtilityManager {
     public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String sessionId, String facilityName) {
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
                 facilityName);
-        // TODO refresh table from download server
+        // TODO put into cleanup thread ?
+        manager.createNamedQuery("TopcatUserDownload.cleanup").executeUpdate();
         List<TopcatUserDownload> userDownloads = manager.createNamedQuery("TopcatUserDownload.findByUserId")
                 .setParameter("userId", userSession.getUserId()).getResultList();
         return userDownloads;
     }
 
     public void addMyDownload(EntityManager manager, String sessionId, String facilityName, Date submitTime,
-            String downloadName, String status, long validPeriod, String url) {
+            String downloadName, String status, Date expiryTime, String url) {
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
                 facilityName);
         TopcatUserDownload download = new TopcatUserDownload();
@@ -776,7 +777,7 @@ public class UtilityManager {
         download.setSubmitTime(submitTime);
         download.setUrl(url);
         download.setUserId(userSession.getUserId());
-        download.setValidPeriod(validPeriod);
+        download.setExpiryTime(expiryTime);
         manager.persist(download);
     }
 }

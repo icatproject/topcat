@@ -152,9 +152,9 @@ public class UtilityBean implements UtilityLocal {
 
     @Override
     public void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName,
-            String status, long validPeriod, String url) {
+            String status, Date expiryTime, String url) {
         utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName,
-                status, validPeriod, url);
+                status, expiryTime, url);
     }
 
 }

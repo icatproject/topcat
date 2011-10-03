@@ -66,5 +66,5 @@ public interface UtilityLocal {
     String getDatafilesDownloadURL(String sessionId,String serverName,ArrayList<Long> datafileIds);
     String getDatasetDownloadURL(String sessionId,String serverName, Long datasetId);
     List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName);
-    void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status, long validPeriod, String url);
+    void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status, Date expiryTime, String url);
 }

@@ -15,16 +15,20 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(name = "TopcatUserDownload.findAll", query = "SELECT t FROM TopcatUserDownload t"),
         @NamedQuery(name = "TopcatUserDownload.findById", query = "SELECT t FROM TopcatUserDownload t WHERE t.id = :id"),
-        @NamedQuery(name = "TopcatUserDownload.findByUserId", query = "SELECT t FROM TopcatUserDownload t WHERE t.userId = :userId") })
+        @NamedQuery(name = "TopcatUserDownload.findByUserId", query = "SELECT t FROM TopcatUserDownload t WHERE t.userId = :userId"),
+        @NamedQuery(name = "TopcatUserDownload.cleanup", query = "DELETE from TopcatUserDownload t where CURRENT_TIMESTAMP > t.expiryTime") })
 @XmlRootElement
 public class TopcatUserDownload implements Serializable {
     private static final long serialVersionUID = 1L;
-
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
+
+    @Column(name = "EXPIRY_TIME")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiryTime;
 
     @Column(name = "NAME")
     private String name;
@@ -43,10 +47,15 @@ public class TopcatUserDownload implements Serializable {
     @ManyToOne(optional = true)
     private TopcatUser userId;
 
-    @Column(name = "VALID_PERIOD")
-    private long validPeriod;
-
     public TopcatUserDownload() {
+    }
+
+    public Date getExpiryTime() {
+        return this.expiryTime;
+    }
+
+    public void setExpiryTime(Date expiryTime) {
+        this.expiryTime = expiryTime;
     }
 
     public Long getId() {
@@ -95,14 +104,6 @@ public class TopcatUserDownload implements Serializable {
 
     public void setUserId(TopcatUser userId) {
         this.userId = userId;
-    }
-
-    public Long getValidPeriod() {
-        return this.validPeriod;
-    }
-
-    public void setValidPeriod(Long validPeriod) {
-        this.validPeriod = validPeriod;
     }
 
     @Override
