@@ -78,6 +78,9 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     private UtilityLocal utilityManager = null;
     private UserManagementBeanLocal userManager = null;
 
+    // TODO get from download manager
+    private static long validPeriod = 864000000;
+
     /**
      * Servlet Init method.
      */
@@ -462,13 +465,12 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName) {
         String status = "in progress";
-        // TODO get from download manager
+        // TODO get from download manager ?
         Date submitTime = new Date(System.currentTimeMillis());
-        // TODO get from download manager
-        long validPeriod = 864000000;
+        Date expiryTime = new Date(submitTime.getTime() + validPeriod);
         String url = utilityManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
-        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, validPeriod, url);
-        return new DownloadModel(facilityName, submitTime, downloadName, status, validPeriod, url);
+        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url);
+        return new DownloadModel(facilityName, submitTime, downloadName, status, expiryTime, url);
     }
 
     /*
@@ -481,13 +483,12 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName) {
         String status = "in progress";
-        // TODO get from download manager
+        // TODO get from download manager ?
         Date submitTime = new Date(System.currentTimeMillis());
-        // TODO get from download manager
-        long validPeriod = 864000000;
+        Date expiryTime = new Date(submitTime.getTime() + validPeriod);
         String url = utilityManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
-        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, validPeriod, url);
-        return new DownloadModel(facilityName, submitTime, downloadName, status, validPeriod, url);
+        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url);
+        return new DownloadModel(facilityName, submitTime, downloadName, status, expiryTime, url);
     }
 
     /*
@@ -635,9 +636,10 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 continue;
             for (TopcatUserDownload dl : dlList) {
                 result.add(new DownloadModel(facilityName, dl.getSubmitTime(), dl.getName(), dl.getStatus(), dl
-                        .getValidPeriod(), dl.getUrl()));
+                        .getExpiryTime(), dl.getUrl()));
             }
         }
         return result;
     }
+
 }

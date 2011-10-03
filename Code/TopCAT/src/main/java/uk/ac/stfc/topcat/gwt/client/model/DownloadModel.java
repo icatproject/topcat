@@ -48,15 +48,15 @@ public class DownloadModel extends BaseModelData implements Serializable {
      * @param url
      *            url
      */
-    public DownloadModel(String facilityName, Date submitTime, String downloadName, String status, long validPeriod,
+    public DownloadModel(String facilityName, Date submitTime, String downloadName, String status, Date expiryTime,
             String url) {
         setFacilityName(facilityName);
         setSubmitTime(submitTime);
         setDownloadName(downloadName);
         setStatus(status);
-        setValidPeriod(validPeriod);
+        setExpiryTime(expiryTime);
         setUrl(url);
-        setTimeRemaining(validPeriod);
+        setTimeRemaining(expiryTime);
     }
 
     /**
@@ -96,12 +96,12 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * Set validPeriod
+     * Set expiryTime
      * 
-     * @param validPeriod
+     * @param expiryTime
      */
-    public void setValidPeriod(Long validPeriod) {
-        set("validPeriod", validPeriod);
+    public void setExpiryTime(Date expiryTime) {
+        set("expiryTime", expiryTime);
     }
 
     /**
@@ -116,18 +116,17 @@ public class DownloadModel extends BaseModelData implements Serializable {
     /**
      * Set timeRemaining
      */
-    public void setTimeRemaining(long validPeriod) {
-        long elapsedTime = System.currentTimeMillis() - getSubmitTime().getTime();
-        long diffInSeconds = (validPeriod - elapsedTime) / 1000;
-        if (diffInSeconds < 0) {
+    public void setTimeRemaining(Date expiryTime) {
+        long reminingInSeconds = (expiryTime.getTime() - System.currentTimeMillis()) / 1000;
+        if (reminingInSeconds < 0) {
             set("timeRemaining", "expired");
             setStatus("expired");
             return;
         }
         long diff[] = new long[] { 0, 0, 0 };
-        /* min */diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
-        /* hours */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
-        /* days */diff[0] = (diffInSeconds = (diffInSeconds / 24));
+        /* min */diff[2] = (reminingInSeconds = (reminingInSeconds / 60)) >= 60 ? reminingInSeconds % 60 : reminingInSeconds;
+        /* hours */diff[1] = (reminingInSeconds = (reminingInSeconds / 60)) >= 24 ? reminingInSeconds % 24 : reminingInSeconds;
+        /* days */diff[0] = (reminingInSeconds = (reminingInSeconds / 24));
         StringBuilder result = new StringBuilder();
         result.append(diff[0]).append(" day");
         if (diff[0] > 1) {
@@ -173,10 +172,10 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * @return validPeriod
+     * @return expiryTime
      */
-    public long getValidPeriod() {
-        return get("validPeriod");
+    public Date getExpiryTime() {
+        return get("expiryTime");
     }
 
     /**
@@ -197,7 +196,7 @@ public class DownloadModel extends BaseModelData implements Serializable {
      * Refresh the time remaining.
      */
     public void refresh() {
-        setTimeRemaining(getValidPeriod());
+        setTimeRemaining(getExpiryTime());
     }
 
 }
