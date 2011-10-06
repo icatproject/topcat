@@ -27,7 +27,7 @@ From within the "Installation" directory
 INSTALLATION INSTRUCTIONS
 ========================================
 From within the "Installation" directory
-1) Modify database password and connection string
+1) Modify resources.xml database password and connection string
 2) Modify passFile with a password to use for the TOPCAT domain
 3) Modify the topcat.properties file to select the caching and LOGO URL location and the values that will be used in the links in the footer
 4) mvn install:install-file -Dfile=<oracle_lib>/ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0 -Dpackaging=jar
