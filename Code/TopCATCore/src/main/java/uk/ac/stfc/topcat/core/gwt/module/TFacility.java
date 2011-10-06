@@ -27,11 +27,13 @@ import java.io.Serializable;
 /**
  * This is shared with GWT for facility information.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class TFacility implements Serializable{
+public class TFacility implements Serializable {
+    private String downloadPluginName;
     private String name;
     private String pluginName;
     private String url;
@@ -39,11 +41,20 @@ public class TFacility implements Serializable{
     public TFacility() {
 
     }
-    
-    public TFacility(String name, String url, String pluginName) {
+
+    public TFacility(String name, String url, String pluginName, String downloadPluginName) {
+        this.downloadPluginName = downloadPluginName;
         this.name = name;
         this.pluginName = pluginName;
         this.url = url;
+    }
+
+    public String getDownloadPluginName() {
+        return downloadPluginName;
+    }
+
+    public void setDownloadPluginName(String downloadPluginName) {
+        this.downloadPluginName = downloadPluginName;
     }
 
     public String getName() {

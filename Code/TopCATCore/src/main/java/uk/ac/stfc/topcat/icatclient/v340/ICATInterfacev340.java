@@ -247,7 +247,6 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
     }
 
     public String downloadDataset(String sessionId, Long datasetId) {
-        System.out.println("downloadDatafiles: sessionId: " + sessionId + " datasetId: " + datasetId);
         String result = "";
         try {
             result = service.downloadDataset(sessionId, datasetId);
