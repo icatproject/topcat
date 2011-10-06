@@ -28,6 +28,8 @@ package uk.ac.stfc.topcat.gwt.client.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -60,87 +62,17 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * Set the facility name
-     * 
-     * @param facilityName
+     * @return downloadName
      */
-    public void setFacilityName(String facilityName) {
-        set("facilityName", facilityName);
+    public String getDownloadName() {
+        return get("downloadName");
     }
 
     /**
-     * Set the submitTime
-     * 
-     * @param submitTime
+     * @return expiryTime
      */
-    public void setSubmitTime(Date submitTime) {
-        set("submitTime", submitTime);
-    }
-
-    /**
-     * Set the downloadName
-     * 
-     * @param downloadName
-     */
-    public void setDownloadName(String downloadName) {
-        set("downloadName", downloadName);
-    }
-
-    /**
-     * Set status
-     * 
-     * @param status
-     */
-    public void setStatus(String status) {
-        set("status", status);
-    }
-
-    /**
-     * Set expiryTime
-     * 
-     * @param expiryTime
-     */
-    public void setExpiryTime(Date expiryTime) {
-        set("expiryTime", expiryTime);
-    }
-
-    /**
-     * Set url
-     * 
-     * @param url
-     */
-    public void setUrl(String url) {
-        set("url", url);
-    }
-
-    /**
-     * Set timeRemaining
-     */
-    public void setTimeRemaining(Date expiryTime) {
-        long reminingInSeconds = (expiryTime.getTime() - System.currentTimeMillis()) / 1000;
-        if (reminingInSeconds < 0) {
-            set("timeRemaining", "expired");
-            setStatus("expired");
-            return;
-        }
-        long diff[] = new long[] { 0, 0, 0 };
-        /* min */diff[2] = (reminingInSeconds = (reminingInSeconds / 60)) >= 60 ? reminingInSeconds % 60 : reminingInSeconds;
-        /* hours */diff[1] = (reminingInSeconds = (reminingInSeconds / 60)) >= 24 ? reminingInSeconds % 24 : reminingInSeconds;
-        /* days */diff[0] = (reminingInSeconds = (reminingInSeconds / 24));
-        StringBuilder result = new StringBuilder();
-        result.append(diff[0]).append(" day");
-        if (diff[0] > 1) {
-            result.append("s");
-        }
-        result.append(", ").append(diff[1]).append(" hour");
-        if (diff[1] > 1) {
-            result.append("s");
-        }
-        result.append(", ").append(diff[2]).append(" minute");
-        if (diff[2] > 1) {
-            result.append("s");
-        }
-        set("timeRemaining", result.toString());
+    public Date getExpiryTime() {
+        return get("expiryTime");
     }
 
     /**
@@ -151,20 +83,6 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * @return submitTime
-     */
-    public Date getSubmitTime() {
-        return get("submitTime");
-    }
-
-    /**
-     * @return downloadName
-     */
-    public String getDownloadName() {
-        return get("downloadName");
-    }
-
-    /**
      * @return status
      */
     public String getStatus() {
@@ -172,10 +90,10 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * @return expiryTime
+     * @return submitTime
      */
-    public Date getExpiryTime() {
-        return get("expiryTime");
+    public Date getSubmitTime() {
+        return get("submitTime");
     }
 
     /**
@@ -197,6 +115,94 @@ public class DownloadModel extends BaseModelData implements Serializable {
      */
     public void refresh() {
         setTimeRemaining(getExpiryTime());
+    }
+
+    /**
+     * Set the download name
+     * 
+     * @param downloadName
+     */
+    public void setDownloadName(String downloadName) {
+        set("downloadName", downloadName);
+    }
+
+    /**
+     * Set expiryTime
+     * 
+     * @param expiryTime
+     */
+    public void setExpiryTime(Date expiryTime) {
+        set("expiryTime", expiryTime);
+    }
+
+    /**
+     * Set the facility name
+     * 
+     * @param facilityName
+     */
+    public void setFacilityName(String facilityName) {
+        set("facilityName", facilityName);
+    }
+
+    /**
+     * Set status
+     * 
+     * @param status
+     */
+    public void setStatus(String status) {
+        set("status", status);
+    }
+
+    /**
+     * Set the submitTime
+     * 
+     * @param submitTime
+     */
+    public void setSubmitTime(Date submitTime) {
+        set("submitTime", submitTime);
+    }
+
+    /**
+     * Set timeRemaining
+     */
+    public void setTimeRemaining(Date expiryTime) {
+        StringBuilder result = new StringBuilder();
+        if (expiryTime != null) {
+            long reminingInSeconds = (expiryTime.getTime() - System.currentTimeMillis()) / 1000;
+            if (reminingInSeconds < 0) {
+                set("timeRemaining", Constants.STATUS_EXPIRED);
+                setStatus(Constants.STATUS_EXPIRED);
+                return;
+            }
+            long diff[] = new long[] { 0, 0, 0 };
+            /* min */diff[2] = (reminingInSeconds = (reminingInSeconds / 60)) >= 60 ? reminingInSeconds % 60
+                    : reminingInSeconds;
+            /* hours */diff[1] = (reminingInSeconds = (reminingInSeconds / 60)) >= 24 ? reminingInSeconds % 24
+                    : reminingInSeconds;
+            /* days */diff[0] = (reminingInSeconds = (reminingInSeconds / 24));
+            result.append(diff[0]).append(" day");
+            if (diff[0] > 1) {
+                result.append("s");
+            }
+            result.append(", ").append(diff[1]).append(" hour");
+            if (diff[1] > 1) {
+                result.append("s");
+            }
+            result.append(", ").append(diff[2]).append(" minute");
+            if (diff[2] > 1) {
+                result.append("s");
+            }
+        }
+        set("timeRemaining", result.toString());
+    }
+
+    /**
+     * Set the url
+     * 
+     * @param url
+     */
+    public void setUrl(String url) {
+        set("url", url);
     }
 
 }

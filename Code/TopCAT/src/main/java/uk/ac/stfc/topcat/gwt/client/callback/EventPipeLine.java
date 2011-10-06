@@ -28,6 +28,7 @@ package uk.ac.stfc.topcat.gwt.client.callback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,7 +75,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * This is import class which holds all the events. currently doesn't directly
- * inherit from handler manager but a begining to move in right direction.
+ * inherit from handler manager but a beginning to move in right direction.
  * 
  * This is a singleton and Most of the widget will call this instance to login,
  * search, download, history etc..
@@ -95,8 +96,10 @@ public class EventPipeLine implements LoginInterface {
     private TopcatEvents tcEvents;
 
     LoginWidget loginWidget;
+    private WaitDialog retrievingDataDialog;
     private WaitDialog waitDialog;
-    int downloadCount = 0;
+    private int downloadCount = 0;
+    private int retrievingDataDialogCount = 0;
 
     // Panels from Main Window
     TOPCATOnline mainWindow = null;
@@ -113,6 +116,8 @@ public class EventPipeLine implements LoginInterface {
         loginWidget = new LoginWidget();
         tcWindowManager = new TopcatWindowManager();
         historyManager = new HistoryManager(tcWindowManager);
+        retrievingDataDialog = new WaitDialog();
+        retrievingDataDialog.setMessage("  Retrieving data...");
         waitDialog = new WaitDialog();
         facilityInstrumentMap = new HashMap<String, ListStore<Instrument>>();
         tcEvents = new TopcatEvents();
@@ -276,13 +281,14 @@ public class EventPipeLine implements LoginInterface {
                 loadFacilityData(facilityName);
             }
         } else {
-            infoPanel.successLogout();
+            successLogout(facilityName);
         }
         if (facilityNames.size() > 0 && facilityNames.get(0).getName().compareToIgnoreCase(facilityName) == 0)
             showInitialLoginWindow();
     }
 
     private void loadFacilityData(String facilityName) {
+        showRetrievingData();
         loadInstrumentNames(facilityName);
         loadInvestigationTypes(facilityName);
         getMyInvestigationsInMyDataPanel(facilityName);
@@ -292,6 +298,7 @@ public class EventPipeLine implements LoginInterface {
         if (mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().getFacilityWidget().getItemCount() == 0) {
             mainWindow.getMainPanel().getSearchPanel().getFacilitiesSearchSubPanel().setFacilitySearch(facilityName);
         }
+        hideRetrievingData();
     }
 
     /**
@@ -304,6 +311,7 @@ public class EventPipeLine implements LoginInterface {
         infoPanel.successLogout();
         mainWindow.getMainPanel().getMyDataPanel().clearInvestigationList(facilityName);
         mainWindow.getMainPanel().getMyDownloadPanel().clearDownloads(facilityName);
+        loadedFacilities.remove(facilityName);
     }
 
     /**
@@ -318,7 +326,7 @@ public class EventPipeLine implements LoginInterface {
         infoPanel.successLogout();
         loginWidget.show();
         // Show an error message.
-        showErrorDialog("Error logging in,  Please check username and password");
+        showErrorDialog("Error logging in.  Please check username and password");
     }
 
     /**
@@ -330,7 +338,8 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.setMessage(" Logging Out...");
         waitDialog.show();
         loginWidget.setFacilityName(facilityName);
-        // login to the given facility using username and password
+
+        // logout of the given facility
         loginService.logout(facilityName, new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -570,12 +579,11 @@ public class EventPipeLine implements LoginInterface {
      * @param facilityName
      */
     public void getMyInvestigationsInMyDataPanel(final String facilityName) {
-        waitDialog.setMessage("Searching in " + facilityName + "...");
-        waitDialog.show();
+        showRetrievingData();
         utilityService.getMyInvestigationsInServer(facilityName, new AsyncCallback<ArrayList<TInvestigation>>() {
             @Override
             public void onFailure(Throwable caught) {
-                waitDialog.hide();
+                hideRetrievingData();
                 showErrorDialog("Error retrieving data from server");
             }
 
@@ -588,7 +596,7 @@ public class EventPipeLine implements LoginInterface {
                                 .getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv
                                 .getEndDate()));
                 }
-                waitDialog.hide();
+                hideRetrievingData();
                 mainWindow.getMainPanel().getMyDataPanel().addInvestigations(facilityName, invList);
             }
         });
@@ -603,17 +611,27 @@ public class EventPipeLine implements LoginInterface {
     private void getMyDownloadsInMyDownloadsPanel(String facilityName) {
         final Set<String> facilities = new HashSet<String>(1);
         facilities.add(facilityName);
+        showRetrievingData();
         utilityService.getMyDownloadList(facilities, new AsyncCallback<ArrayList<DownloadModel>>() {
             @Override
             public void onFailure(Throwable caught) {
+                hideRetrievingData();
                 showMessageDialog("Error retrieving download history from server");
             }
 
             @Override
             public void onSuccess(ArrayList<DownloadModel> result) {
                 mainWindow.getMainPanel().getMyDownloadPanel().addDownloads(result);
+                hideRetrievingData();
+                for (Iterator<DownloadModel> it = result.iterator(); it.hasNext();) {
+                    if (!it.next().getStatus().equals(Constants.STATUS_IN_PROGRESS)) {
+                        it.remove();
+                    }
+                }
+                if (result.size() > 0) {
+                    waitForDownloads(result);
+                }
             }
-
         });
     }
 
@@ -655,8 +673,12 @@ public class EventPipeLine implements LoginInterface {
 
                     @Override
                     public void onSuccess(DownloadModel result) {
-                        download(result.getUrl());
                         mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
+                        if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
+                            waitForDownload(result);
+                        } else {
+                            download(facilityName, result.getUrl());
+                        }
                     }
                 });
     }
@@ -680,8 +702,46 @@ public class EventPipeLine implements LoginInterface {
 
             @Override
             public void onSuccess(DownloadModel result) {
-                download(result.getUrl());
                 mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
+                if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
+                    waitForDownload(result);
+                } else {
+                    download(facilityName, result.getUrl());
+                }
+            }
+        });
+    }
+
+    private void waitForDownload(DownloadModel downloadModel) {
+        utilityService.waitForFinalDownloadStatus(downloadModel, new AsyncCallback<DownloadModel>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                showErrorDialog("Error retrieving data from server");
+            }
+
+            @Override
+            public void onSuccess(DownloadModel result) {
+                if (result.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
+                    download(result.getFacilityName(), result.getUrl());
+                }
+                mainWindow.getMainPanel().getMyDownloadPanel().refresh();
+            }
+        });
+    }
+
+    private void waitForDownloads(List<DownloadModel> downloadModels) {
+        utilityService.waitForFinalDownloadStati(downloadModels, new AsyncCallback<List<DownloadModel>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                showErrorDialog("Error retrieving data from server");
+            }
+
+            @Override
+            public void onSuccess(List<DownloadModel> result) {
+                mainWindow.getMainPanel().getMyDownloadPanel().refresh();
+                if (result.size() > 0) {
+                    waitForDownloads(result);
+                }
             }
         });
     }
@@ -691,7 +751,11 @@ public class EventPipeLine implements LoginInterface {
      * 
      * @param url
      */
-    public void download(final String url) {
+    public void download(String facilityName, final String url) {
+        if (!loadedFacilities.contains(facilityName)) {
+            // session logged out so do not download
+            return;
+        }
         DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", url);
         downloadCount = downloadCount + 1;
         if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES - 1)) {
@@ -909,7 +973,7 @@ public class EventPipeLine implements LoginInterface {
      * This method will show the login window when the application starts up.
      */
     private void showInitialLoginWindow() {
-        // Check all login's whether atleast one of them is logged in
+        // Check all login's whether at least one of them is logged in
         boolean loggedIn = false;
         for (TFacility facility : facilityNames) {
             if (loginPanel.getFacilityLoginInfoPanel(facility.getName()).isValidLogin()) {
@@ -923,26 +987,24 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Set the message in the dialog box.
-     * 
-     * @param message
-     */
-    public void setDialogBox(String message) {
-        waitDialog.setMessage(message);
-    }
-
-    /**
      * Show the dialog box.
      */
-    public void showDialogBox() {
-        waitDialog.show();
+    public void showRetrievingData() {
+        if (retrievingDataDialogCount == 0) {
+            retrievingDataDialog.show();
+        }
+        retrievingDataDialogCount = retrievingDataDialogCount + 1;
     }
 
     /**
      * Hide the dialog box.
      */
-    public void hideDialogBox() {
-        waitDialog.hide();
+    public void hideRetrievingData() {
+        retrievingDataDialogCount = retrievingDataDialogCount - 1;
+        if (retrievingDataDialogCount < 1) {
+            retrievingDataDialog.hide();
+            retrievingDataDialogCount = 0;
+        }
     }
 
     public ArrayList<TFacility> getFacilityNames() {

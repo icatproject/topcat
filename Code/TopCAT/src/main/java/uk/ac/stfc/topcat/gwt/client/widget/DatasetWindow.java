@@ -150,13 +150,12 @@ public class DatasetWindow extends Window {
     public void setDataset(String facilityName, String investigationId) {
         this.facilityName = facilityName;
         this.investigationId = investigationId;
-        EventPipeLine.getInstance().setDialogBox("  Retrieving data...");
-        EventPipeLine.getInstance().showDialogBox();
+        EventPipeLine.getInstance().showRetrievingData();
         utilityService.getDatasetsInInvestigations(facilityName, investigationId,
                 new AsyncCallback<ArrayList<DatasetModel>>() {
                     @Override
                     public void onSuccess(ArrayList<DatasetModel> result) {
-                        EventPipeLine.getInstance().hideDialogBox();
+                        EventPipeLine.getInstance().hideRetrievingData();
                         if (result.size() > 0) {
                             setDatasetList(result);
                             hasData = true;
@@ -168,8 +167,7 @@ public class DatasetWindow extends Window {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        EventPipeLine.getInstance().hideDialogBox();
-                        // TODO Auto-generated method stub
+                        EventPipeLine.getInstance().hideRetrievingData();
                         datasetList.removeAll();
                         hasData = false;
                     }

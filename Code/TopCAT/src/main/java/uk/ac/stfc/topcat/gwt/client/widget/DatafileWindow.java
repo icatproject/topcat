@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
@@ -295,12 +294,11 @@ public class DatafileWindow extends Window {
     public void setDatasets(ArrayList<DatasetModel> datasetList) {
         inputDatasetModels = datasetList;
         // This is the list of datasets selected to be viewed for datafiles.
-        EventPipeLine.getInstance().setDialogBox("  Retrieving data...");
-        EventPipeLine.getInstance().showDialogBox();
+        EventPipeLine.getInstance().showRetrievingData();
         utilityService.getDatafilesInDatasets(datasetList, new AsyncCallback<ArrayList<DatafileModel>>() {
             @Override
             public void onSuccess(ArrayList<DatafileModel> result) {
-                EventPipeLine.getInstance().hideDialogBox();
+                EventPipeLine.getInstance().hideRetrievingData();
                 if (result.size() > 0) {
                     setDatafileList(result);
                     hasData = true;
@@ -312,7 +310,7 @@ public class DatafileWindow extends Window {
 
             @Override
             public void onFailure(Throwable caught) {
-                EventPipeLine.getInstance().hideDialogBox();
+                EventPipeLine.getInstance().hideRetrievingData();
                 dfmStore.removeAll();
                 selectedFiles.clear();
                 hasData = false;
@@ -429,45 +427,14 @@ public class DatafileWindow extends Window {
             EventPipeLine.getInstance().showMessageDialog("No files selected for download");
             return;
         }
-        // check that we will be able to download all the files in the available
-        // number of download frames
-        if (selectedFiles.size() > (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES)) {
-            EventPipeLine.getInstance().showErrorDialog(
-                    "Download request for " + selectedFiles.size() + " files exceeds maximum of "
-                            + (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES) + " files");
-            return;
-        }
 
         List<Long> selectedItems = new ArrayList<Long>(selectedFiles.keySet());
         @SuppressWarnings("unchecked")
         String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
-        int batchCount = 0;
-        // get a download frame for each batch of data files
-        while (selectedItems.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
-            batchCount = batchCount + 1;
-            EventPipeLine.getInstance().downloadDatafiles(facility,
-                    selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH), downloadName + "-" + batchCount);
-            selectedItems.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
-        }
-        // download the remainder
-        if (selectedItems.size() > 0) {
-            batchCount = batchCount + 1;
-            if (batchCount > 1) {
-                EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName + "-" + batchCount);
-            } else {
-                EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
-            }
-        }
-        if (batchCount > 1) {
-            EventPipeLine.getInstance().showMessageDialog(
-                    "Your data is being retrieved from tape and will automatically start downloading shortly " + "as "
-                            + batchCount
-                            + " files. The status of your download can be seen from the ’My Downloads’ tab.");
-        } else {
-            EventPipeLine.getInstance().showMessageDialog(
-                    "Your data is being retrieved from tape and will automatically start downloading shortly "
-                            + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
-        }
+        EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
+        EventPipeLine.getInstance().showMessageDialog(
+                "Your data is being retrieved from tape and will automatically start downloading shortly "
+                        + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
     }
 
 }

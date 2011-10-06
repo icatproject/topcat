@@ -25,19 +25,21 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 /**
  * Imports
  */
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.Orientation;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
@@ -64,8 +66,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import java.util.List;
-
 /**
  * This widget displays the download requests.
  * 
@@ -77,6 +77,7 @@ public class MyDownloadPanel extends Composite {
     private PagingToolBar toolBar = null;
     private EventPipeLine eventBus;
     private WaitDialog waitDialog;
+    private PagingLoader<PagingLoadResult<DownloadModel>> loader;
 
     public MyDownloadPanel() {
 
@@ -105,17 +106,20 @@ public class MyDownloadPanel extends Composite {
                 Button b = new Button((String) model.get(property), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent ce) {
-                        if (model.getStatus().equalsIgnoreCase("success")) {
-                            eventBus.download(model.getUrl());
+                        if (model.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
+                            eventBus.download(model.getFacilityName(), model.getUrl());
                         }
                     }
                 });
-                if (model.getStatus().equalsIgnoreCase("success")) {
+                if (model.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
                     b.setEnabled(true);
                     b.setText("re-download");
-                } else if (model.getStatus().equalsIgnoreCase("expired")) {
+                } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED)) {
                     b.setEnabled(false);
-                    b.setText("expired");
+                    b.setText(Constants.STATUS_EXPIRED);
+                } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
+                    b.setEnabled(false);
+                    b.setText(Constants.STATUS_ERROR);
                 } else {
                     b.setEnabled(false);
                     b.setText("waiting");
@@ -160,10 +164,10 @@ public class MyDownloadPanel extends Composite {
         configs.add(column);
 
         // Pagination
-        PagingLoader<PagingLoadResult<DownloadModel>> loader = new BasePagingLoader<PagingLoadResult<DownloadModel>>(
-                proxy);
+        loader = new BasePagingLoader<PagingLoadResult<DownloadModel>>(proxy);
         loader.setRemoteSort(true);
         ListStore<DownloadModel> store = new ListStore<DownloadModel>(loader);
+        store.sort("submitTime", Style.SortDir.DESC);
 
         grid = new Grid<DownloadModel>(store, new ColumnModel(configs));
         grid.setAutoExpandColumn("downloadName");
@@ -226,6 +230,14 @@ public class MyDownloadPanel extends Composite {
         toolBar.refresh();
     }
 
+    /**
+     * Refresh.
+     * 
+     */
+    public void refresh() {
+        toolBar.refresh();
+    }
+
     public void setEventBus(EventPipeLine eventBus) {
         this.eventBus = eventBus;
     }
@@ -257,6 +269,12 @@ public class MyDownloadPanel extends Composite {
         }
     }
 
+    /**
+     * Add the list of download models to the store.
+     * 
+     * @param dlms
+     *            the list of download models to add
+     */
     private void loadDownloads(List<DownloadModel> dlms) {
         @SuppressWarnings("unchecked")
         List<DownloadModel> downloadList = (List<DownloadModel>) proxy.getData();
@@ -265,12 +283,12 @@ public class MyDownloadPanel extends Composite {
         }
         downloadList.addAll(dlms);
         proxy.setData(downloadList);
+        loader.load();
     }
 
     /**
-     * Only call out to check status if any of the model's status are not
-     * 'downloaded'. If all the status are 'downloaded' then update the ttl
-     * locally.
+     * Only call out to check status if any of the model's status are 'in
+     * progress'. If all the status are 'available' then update the ttl locally.
      */
     private void refreshDownloadData() {
         @SuppressWarnings("unchecked")
@@ -279,10 +297,13 @@ public class MyDownloadPanel extends Composite {
             Set<String> facilities = new HashSet<String>();
             for (Iterator<DownloadModel> it = downloadList.iterator(); it.hasNext();) {
                 DownloadModel model = it.next();
-                if (model.getStatus().equals("in progress")) {
+                model.refresh();
+                if (model.getStatus().equals(Constants.STATUS_EXPIRED)) {
+                    it.remove();
+                }
+                if (model.getStatus().equals(Constants.STATUS_IN_PROGRESS)) {
                     facilities.add(model.getFacilityName());
                 }
-                model.refresh();
             }
             if (facilities.isEmpty()) {
                 proxy.setData(downloadList);
@@ -298,7 +319,7 @@ public class MyDownloadPanel extends Composite {
      * @param facilities
      */
     private void remoteRefresh(final Set<String> facilities) {
-        waitDialog.setMessage("  Refreshing data...");
+        waitDialog.setMessage("  Retrieving data...");
         waitDialog.show();
         utilityService.getMyDownloadList(facilities, new AsyncCallback<ArrayList<DownloadModel>>() {
             @Override

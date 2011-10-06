@@ -27,6 +27,7 @@ package uk.ac.stfc.topcat.gwt.client;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -218,7 +219,8 @@ public interface UtilityServiceAsync {
     /**
      * This method returns the links to be used at the bottom of the page.
      * 
-     * @param asyncCallback
+     * @param callback
+     *            object to be called on completion
      */
     public void getLinks(AsyncCallback<Map<String, String>> asyncCallback);
 
@@ -227,7 +229,35 @@ public interface UtilityServiceAsync {
      * 
      * @param facilities
      *            a set containing the facility names
-     * @return asyncCallback
+     * @param callback
+     *            object to be called on completion
      */
     public void getMyDownloadList(Set<String> facilities, AsyncCallback<ArrayList<DownloadModel>> asyncCallback);
+
+    /**
+     * Wait for a final status, 'available' or 'ERROR', from the download
+     * service.
+     * 
+     * @param downloadModel
+     *            the model of the items that have already been requested from
+     *            the download service
+     * @param callback
+     *            object to be called on completion
+     */
+    public void waitForFinalDownloadStatus(DownloadModel downloadModel, AsyncCallback<DownloadModel> asyncCallback);
+
+    /**
+     * Check all of the models at least once for a final status, 'available' or
+     * 'ERROR', from the download service. Continue to wait until at least one
+     * of the models has reached a final status.
+     * 
+     * @param downloadModels
+     *            a list of models of the items that have already been requested
+     *            from the download service
+     * @param callback
+     *            object to be called on completion
+     */
+    public void waitForFinalDownloadStati(List<DownloadModel> downloadModels,
+            AsyncCallback<List<DownloadModel>> asyncCallback);
+
 }

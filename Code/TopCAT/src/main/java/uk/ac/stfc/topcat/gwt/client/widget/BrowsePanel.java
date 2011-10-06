@@ -280,16 +280,13 @@ public class BrowsePanel extends Composite {
         for (String facility : dsMap.keySet()) {
             requiredBatches = requiredBatches + dsMap.get(facility).size();
         }
-        for (String facility : dfMap.keySet()) {
-            requiredBatches = requiredBatches + batchCount(dfMap.get(facility).size());
-        }
+        requiredBatches = requiredBatches + dfMap.size();
 
         // check that we will be able to download all the files in the available
         // number of download frames
         if (requiredBatches > (Constants.MAX_DOWNLOAD_FRAMES)) {
             EventPipeLine.getInstance().showErrorDialog(
-                    "Download request exceeds maximum of " + (Constants.MAX_DOWNLOAD_FRAMES) + " data sets or "
-                            + (Constants.MAX_FILE_DOWNLOAD_PER_BATCH * Constants.MAX_DOWNLOAD_FRAMES) + " files");
+                    "Download request exceeds maximum of " + (Constants.MAX_DOWNLOAD_FRAMES) + " data sets");
             return;
         }
 
@@ -299,21 +296,24 @@ public class BrowsePanel extends Composite {
             List<Long> idList = dsMap.get(facility);
             for (Long id : idList) {
                 batchCount = batchCount + 1;
-                EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-" + batchCount);
+                if (requiredBatches == 1) {
+                    EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName);
+                } else {
+                    EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-" + batchCount);
+                }
             }
         }
 
-        // get a download frame for each batch of data files
+        // get a download frame for each batch of data files, one batch per
+        // facility
         for (String facility : dfMap.keySet()) {
-            List<Long> idList = dfMap.get(facility);
-            while (idList.size() > Constants.MAX_FILE_DOWNLOAD_PER_BATCH) {
-                batchCount = batchCount + 1;
-                EventPipeLine.getInstance().downloadDatafiles(facility,
-                        idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH), downloadName + "-" + batchCount);
-                idList.subList(0, Constants.MAX_FILE_DOWNLOAD_PER_BATCH).clear();
-            }
             batchCount = batchCount + 1;
-            EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
+            List<Long> idList = dfMap.get(facility);
+            if (requiredBatches == 1) {
+                EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName);
+            } else {
+                EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
+            }
         }
 
         if (batchCount == 0) {
@@ -327,21 +327,6 @@ public class BrowsePanel extends Composite {
                     "Your data is being retrieved from tape and will automatically start downloading shortly " + "as "
                             + batchCount
                             + " files. The status of your download can be seen from the ‘My Downloads’ tab.");
-        }
-    }
-
-    /**
-     * Calculate how many batches the data files will be split into.
-     * 
-     * @param datafileCount
-     *            the number of datafiles
-     * @return the number batches the data files will be split into
-     */
-    private int batchCount(int datafileCount) {
-        if (datafileCount % Constants.MAX_FILE_DOWNLOAD_PER_BATCH == 0) {
-            return (datafileCount / Constants.MAX_FILE_DOWNLOAD_PER_BATCH);
-        } else {
-            return (datafileCount / Constants.MAX_FILE_DOWNLOAD_PER_BATCH) + 1;
         }
     }
 

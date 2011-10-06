@@ -25,10 +25,17 @@ package uk.ac.stfc.topcat.gwt.server;
 /**
  * Imports
  */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +59,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
@@ -77,9 +85,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 
     private UtilityLocal utilityManager = null;
     private UserManagementBeanLocal userManager = null;
-
-    // TODO get from download manager
-    private static long validPeriod = 864000000;
+    private Map<String, String> downloadPlugins = new HashMap<String, String>();
+    private static String RESTFULL_DOWNLOAD_SERVICE = "restfullDownload";
 
     /**
      * Servlet Init method.
@@ -97,6 +104,11 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                     .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
         } catch (NamingException ex) {
             ex.printStackTrace();
+        }
+
+        ArrayList<TFacility> facilities = utilityManager.getFacilities();
+        for (TFacility facility : facilities) {
+            downloadPlugins.put(facility.getName(), facility.getDownloadPluginName());
         }
     }
 
@@ -438,7 +450,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      */
     @Override
     public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) {
-        // TODO Auto-generated method stub
         return getICATNodeChildren(node, false);
     }
 
@@ -451,7 +462,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      */
     @Override
     public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) {
-        // TODO Auto-generated method stub
         return getICATNodeChildren(node, true);
     }
 
@@ -464,12 +474,19 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      */
     @Override
     public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName) {
-        String status = "in progress";
-        // TODO get from download manager ?
+        String status;
         Date submitTime = new Date(System.currentTimeMillis());
-        Date expiryTime = new Date(submitTime.getTime() + validPeriod);
+        Date expiryTime = null;
         String url = utilityManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
-        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url);
+        String downloadPlugin = downloadPlugins.get(facilityName);
+        if (downloadPlugin != null && downloadPlugin.equalsIgnoreCase(RESTFULL_DOWNLOAD_SERVICE)) {
+            status = Constants.STATUS_IN_PROGRESS;
+            expiryTime = getExpiryTime(url);
+            utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime,
+                    url);
+        } else {
+            status = Constants.STATUS_AVAILABLE;
+        }
         return new DownloadModel(facilityName, submitTime, downloadName, status, expiryTime, url);
     }
 
@@ -482,13 +499,35 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      */
     @Override
     public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName) {
-        String status = "in progress";
-        // TODO get from download manager ?
+        String status;
         Date submitTime = new Date(System.currentTimeMillis());
-        Date expiryTime = new Date(submitTime.getTime() + validPeriod);
+        Date expiryTime = null;
         String url = utilityManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
-        utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url);
+        if (downloadPlugins.get(facilityName).equalsIgnoreCase(RESTFULL_DOWNLOAD_SERVICE)) {
+            status = Constants.STATUS_IN_PROGRESS;
+            expiryTime = getExpiryTime(url);
+            utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime,
+                    url);
+        } else {
+            status = Constants.STATUS_AVAILABLE;
+        }
         return new DownloadModel(facilityName, submitTime, downloadName, status, expiryTime, url);
+    }
+
+    private Date getExpiryTime(String url) {
+        Date expiryTime = null;
+        try {
+            URL statusUrl = new URL(url + "/ExpiryTime");
+            BufferedReader in = new BufferedReader(new InputStreamReader(statusUrl.openStream()));
+            SimpleDateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+            expiryTime = df.parse(in.readLine());
+            in.close();
+        } catch (IOException e) {
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return expiryTime;
     }
 
     /*
@@ -640,6 +679,103 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             }
         }
         return result;
+    }
+
+    @Override
+    public DownloadModel waitForFinalDownloadStatus(DownloadModel downloadModel) {
+        String requestUrl = downloadModel.getUrl();
+        String downloadUrl = requestUrl + "/Download";
+        try {
+            URL statusUrl = new URL(requestUrl + "/Status");
+            BufferedReader in;
+            String inputLine;
+            // loop until download is complete
+            while (true) {
+                // get the status from the download service
+                in = new BufferedReader(new InputStreamReader(statusUrl.openStream()));
+                inputLine = in.readLine();
+                if (inputLine.equalsIgnoreCase("COMPLETED")) {
+                    // download finished
+                    downloadModel.setStatus(Constants.STATUS_AVAILABLE);
+                    downloadModel.setUrl(downloadUrl);
+                    in.close();
+                    utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
+                            downloadUrl, Constants.STATUS_AVAILABLE);
+                    return downloadModel;
+                } else if (inputLine.equalsIgnoreCase("ERROR")) {
+                    // download finished
+                    downloadModel.setStatus(Constants.STATUS_ERROR);
+                    in.close();
+                    utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
+                            downloadUrl, Constants.STATUS_ERROR);
+                    return downloadModel;
+                }
+                in.close();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                }
+            }
+        } catch (IOException e) {
+            // assume download is finished, possibly expired
+            utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
+                    downloadUrl, Constants.STATUS_ERROR);
+            downloadModel.setStatus(Constants.STATUS_ERROR);
+            return downloadModel;
+        }
+    }
+
+    @Override
+    public List<DownloadModel> waitForFinalDownloadStati(List<DownloadModel> downloadModels) {
+        String requestUrl = null;
+        BufferedReader in = null;
+        boolean foundOne = false;
+        // loop until at least one download is complete
+        while (true) {
+            // loop through everything at least once before returning
+            for (Iterator<DownloadModel> it = downloadModels.iterator(); it.hasNext();) {
+                DownloadModel downloadModel = it.next();
+                try {
+                    // get the status from the download service
+                    requestUrl = downloadModel.getUrl();
+                    URL statusUrl = new URL(requestUrl + "/Status");
+                    in = new BufferedReader(new InputStreamReader(statusUrl.openStream()));
+                    String inputLine = in.readLine();
+                    if (inputLine.equalsIgnoreCase("COMPLETED")) {
+                        // this one is finished
+                        utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
+                                requestUrl, requestUrl + "/Download", Constants.STATUS_AVAILABLE);
+                        foundOne = true;
+                        it.remove();
+                    } else if (inputLine.equalsIgnoreCase("ERROR")) {
+                        // this one is finished
+                        utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
+                                requestUrl, requestUrl + "/Download", Constants.STATUS_ERROR);
+                        foundOne = true;
+                        it.remove();
+                    }
+                    in.close();
+                } catch (IOException e) {
+                    // assume this one is finished, possibly expired
+                    utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
+                            requestUrl + "/Download", Constants.STATUS_ERROR);
+                    foundOne = true;
+                    it.remove();
+                    try {
+                        in.close();
+                    } catch (IOException e1) {
+                    } catch (NullPointerException e1) {
+                    }
+                }
+            }
+            if (foundOne) {
+                return downloadModels;
+            }
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+            }
+        }
     }
 
 }
