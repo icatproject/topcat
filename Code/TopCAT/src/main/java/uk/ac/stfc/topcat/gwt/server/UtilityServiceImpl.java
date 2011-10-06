@@ -86,7 +86,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     private UtilityLocal utilityManager = null;
     private UserManagementBeanLocal userManager = null;
     private Map<String, String> downloadPlugins = new HashMap<String, String>();
-    private static String RESTFULL_DOWNLOAD_SERVICE = "restfullDownload";
+    private static String RESTFUL_DOWNLOAD_SERVICE = "restfulDownload";
 
     /**
      * Servlet Init method.
@@ -479,7 +479,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         Date expiryTime = null;
         String url = utilityManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
         String downloadPlugin = downloadPlugins.get(facilityName);
-        if (downloadPlugin != null && downloadPlugin.equalsIgnoreCase(RESTFULL_DOWNLOAD_SERVICE)) {
+        if (downloadPlugin != null && downloadPlugin.equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
             status = Constants.STATUS_IN_PROGRESS;
             expiryTime = getExpiryTime(url);
             utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime,
@@ -503,7 +503,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         Date submitTime = new Date(System.currentTimeMillis());
         Date expiryTime = null;
         String url = utilityManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
-        if (downloadPlugins.get(facilityName).equalsIgnoreCase(RESTFULL_DOWNLOAD_SERVICE)) {
+        if (downloadPlugins.get(facilityName).equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
             status = Constants.STATUS_IN_PROGRESS;
             expiryTime = getExpiryTime(url);
             utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime,
