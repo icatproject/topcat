@@ -156,5 +156,12 @@ public class UtilityBean implements UtilityLocal {
         utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName,
                 status, expiryTime, url);
     }
-
+    
+    @Override
+    public void updateDownloadStatus(String sessionId, String facilityName, String url,
+            String updatedUrl, String status) {
+        utilManager.updateDownloadStatus(manager, sessionId, facilityName, url,
+                updatedUrl, status);        
+    }
+    
 }

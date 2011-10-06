@@ -76,8 +76,8 @@ public class UtilityManager {
         ArrayList<TFacility> facilityNames = new ArrayList<TFacility>();
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
         for (TopcatIcatServer icatServer : servers) {
-            facilityNames
-                    .add(new TFacility(icatServer.getName(), icatServer.getServerUrl(), icatServer.getPluginName()));
+            facilityNames.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(),
+                    icatServer.getPluginName(), icatServer.getDownloadPluginName()));
         }
         return facilityNames;
     }
@@ -760,7 +760,6 @@ public class UtilityManager {
     public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String sessionId, String facilityName) {
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
                 facilityName);
-        // TODO put into cleanup thread ?
         manager.createNamedQuery("TopcatUserDownload.cleanup").executeUpdate();
         List<TopcatUserDownload> userDownloads = manager.createNamedQuery("TopcatUserDownload.findByUserId")
                 .setParameter("userId", userSession.getUserId()).getResultList();
@@ -773,11 +772,19 @@ public class UtilityManager {
                 facilityName);
         TopcatUserDownload download = new TopcatUserDownload();
         download.setName(downloadName);
+        download.setUrl(url);
         download.setStatus(status);
         download.setSubmitTime(submitTime);
-        download.setUrl(url);
         download.setUserId(userSession.getUserId());
         download.setExpiryTime(expiryTime);
         manager.persist(download);
     }
+
+    public void updateDownloadStatus(EntityManager manager, String sessionId, String facilityName, String url,
+            String updatedUrl, String status) {
+        manager.createNamedQuery("TopcatUserDownload.updateStatus").setParameter("url", url)
+                .setParameter("updatedUrl", updatedUrl).setParameter("status", status).executeUpdate();
+        manager.flush();
+    }
+
 }

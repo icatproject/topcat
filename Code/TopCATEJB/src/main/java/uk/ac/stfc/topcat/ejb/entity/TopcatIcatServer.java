@@ -41,24 +41,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * This is ICAT Server (Facility) entity.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @Entity
 @Table(name = "TOPCAT_ICAT_SERVER")
-@NamedQueries({@NamedQuery(name = "TopcatIcatServer.findAll", query = "SELECT t FROM TopcatIcatServer t"), 
-               @NamedQuery(name = "TopcatIcatServer.findById", query = "SELECT t FROM TopcatIcatServer t WHERE t.id = :id"),
-               @NamedQuery(name = "TopcatIcatServer.findByName", query = "SELECT t FROM TopcatIcatServer t WHERE t.name = :name"),
-               @NamedQuery(name = "TopcatIcatServer.findByServerUrl", query = "SELECT t FROM TopcatIcatServer t WHERE t.serverUrl = :serverUrl"),
-               @NamedQuery(name = "TopcatIcatServer.findByDefaultUser", query = "SELECT t FROM TopcatIcatServer t WHERE t.defaultUser = :defaultUser"),
-               @NamedQuery(name = "TopcatIcatServer.findByDefaultPassword", query = "SELECT t FROM TopcatIcatServer t WHERE t.defaultPassword = :defaultPassword")
-})
+@NamedQueries({
+        @NamedQuery(name = "TopcatIcatServer.findAll", query = "SELECT t FROM TopcatIcatServer t"),
+        @NamedQuery(name = "TopcatIcatServer.findById", query = "SELECT t FROM TopcatIcatServer t WHERE t.id = :id"),
+        @NamedQuery(name = "TopcatIcatServer.findByName", query = "SELECT t FROM TopcatIcatServer t WHERE t.name = :name"),
+        @NamedQuery(name = "TopcatIcatServer.findByServerUrl", query = "SELECT t FROM TopcatIcatServer t WHERE t.serverUrl = :serverUrl"),
+        @NamedQuery(name = "TopcatIcatServer.findByDefaultUser", query = "SELECT t FROM TopcatIcatServer t WHERE t.defaultUser = :defaultUser"),
+        @NamedQuery(name = "TopcatIcatServer.findByDefaultPassword", query = "SELECT t FROM TopcatIcatServer t WHERE t.defaultPassword = :defaultPassword") })
 @XmlRootElement
 public class TopcatIcatServer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
@@ -72,6 +73,8 @@ public class TopcatIcatServer implements Serializable {
     private String defaultUser;
     @Column(name = "DEFAULT_PASSWORD")
     private String defaultPassword;
+    @Column(name = "DOWNLOAD_PLUGIN_NAME")
+    private String downloadPluginName;
     @Column(name = "PLUGIN_NAME")
     private String pluginName;
     @Column(name = "VERSION")
@@ -131,6 +134,14 @@ public class TopcatIcatServer implements Serializable {
         this.defaultPassword = defaultPassword;
     }
 
+    public String getDownloadPluginName() {
+        return downloadPluginName;
+    }
+
+    public void setDownloadPluginName(String downloadPluginName) {
+        this.downloadPluginName = downloadPluginName;
+    }
+
     public String getPluginName() {
         return pluginName;
     }
@@ -154,7 +165,7 @@ public class TopcatIcatServer implements Serializable {
     public void setVersion(String version) {
         this.version = version;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -164,7 +175,8 @@ public class TopcatIcatServer implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the id fields are
+        // not set
         if (!(object instanceof TopcatIcatServer)) {
             return false;
         }

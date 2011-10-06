@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Local;
+
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -67,4 +68,5 @@ public interface UtilityLocal {
     String getDatasetDownloadURL(String sessionId,String serverName, Long datasetId);
     List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName);
     void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status, Date expiryTime, String url);
+    void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 }
