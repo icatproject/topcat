@@ -1,0 +1,8 @@
+6/10/11
+NB There have been additions to the database. The column TOPCAT_ICAT_SERVER has been add to the table TOPCAT_ICAT_SERVER
+and the table TOPCAT_USER_DOWNLOAD is a new table.
+
+This version contains updates for the new download service. You can now specify the download service that the
+facility uses. This is done via an entry in the TOPCAT_ICAT_SERVER table which is set via the initialise_topcat_db.sql
+script. If the DOWNLOAD_PLUGIN_NAME field is left blank the existing download mechanism is used. A value of 
+'restfulDownload' indicates that the new restful download service should be used.
