@@ -4,19 +4,13 @@
  */
 package uk.ac.stfc.topcat.icatclient.v331;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -197,31 +191,9 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         String result = "";
         try {
             result = service.downloadDatafiles(sessionId, datafileIds);
-
-            // TODO nasty hack for DIAMOND
-            if (serverName.equalsIgnoreCase("Diamond")) {
-                URL srb = new URL(result);
-                URLConnection srbc = srb.openConnection();
-                BufferedReader in = new BufferedReader(new InputStreamReader(srbc.getInputStream()));
-                Pattern pattern = Pattern.compile("<input type=\"hidden\" name=\"requestID\" value=\"");
-                Matcher matcher;
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    matcher = pattern.matcher(inputLine);
-                    if (matcher.lookingAt()) {
-                        String delimiter = "\"";
-                        String[] temp = inputLine.split(delimiter);
-                        result = srb.getProtocol() + "://" + srb.getHost() + "/dp/download/?requestID=" + temp[5];
-                        break;
-                    }
-                }
-                in.close();
-            }
-
         } catch (InsufficientPrivilegesException_Exception ex) {
         } catch (NoSuchObjectFoundException_Exception ex) {
         } catch (SessionException_Exception ex) {
-        } catch (IOException ex) {
         }
         return result;
     }
@@ -230,31 +202,9 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         String result = "";
         try {
             result = service.downloadDataset(sessionId, datasetId);
-
-            // TODO nasty hack for DIAMOND
-            if (serverName.equalsIgnoreCase("Diamond")) {
-                URL srb = new URL(result);
-                URLConnection srbc = srb.openConnection();
-                BufferedReader in = new BufferedReader(new InputStreamReader(srbc.getInputStream()));
-                Pattern pattern = Pattern.compile("<input type=\"hidden\" name=\"requestID\" value=\"");
-                Matcher matcher;
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    matcher = pattern.matcher(inputLine);
-                    if (matcher.lookingAt()) {
-                        String delimiter = "\"";
-                        String[] temp = inputLine.split(delimiter);
-                        result = srb.getProtocol() + "://" + srb.getHost() + "/dp/download/?requestID=" + temp[5];
-                        break;
-                    }
-                }
-                in.close();
-            }
-
         } catch (InsufficientPrivilegesException_Exception ex) {
         } catch (NoSuchObjectFoundException_Exception ex) {
         } catch (SessionException_Exception ex) {
-        } catch (IOException ex) {
         }
         return result;
     }
