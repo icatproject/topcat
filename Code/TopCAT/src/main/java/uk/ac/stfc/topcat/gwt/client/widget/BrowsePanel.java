@@ -299,7 +299,11 @@ public class BrowsePanel extends Composite {
                 if (requiredBatches == 1) {
                     EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName);
                 } else {
-                    EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-" + batchCount);
+                    if (batchCount < 10) {
+                        EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-0" + batchCount);
+                    } else {
+                        EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-" + batchCount);
+                    }
                 }
             }
         }
@@ -312,7 +316,11 @@ public class BrowsePanel extends Composite {
             if (requiredBatches == 1) {
                 EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName);
             } else {
-                EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
+                if (batchCount < 10) {
+                    EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-0" + batchCount);
+                } else {
+                    EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
+                }
             }
         }
 
