@@ -684,7 +684,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public DownloadModel waitForFinalDownloadStatus(DownloadModel downloadModel) {
         String requestUrl = downloadModel.getUrl();
-        String downloadUrl = requestUrl + "/Download";
+        String downloadUrl = requestUrl + "/Download?Filename="+downloadModel.getDownloadName();
         try {
             URL statusUrl = new URL(requestUrl + "/Status");
             BufferedReader in;
