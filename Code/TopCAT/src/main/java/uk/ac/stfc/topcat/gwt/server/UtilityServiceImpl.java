@@ -744,13 +744,13 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                     if (inputLine.equalsIgnoreCase("COMPLETED")) {
                         // this one is finished
                         utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                                requestUrl, requestUrl + "/Download", Constants.STATUS_AVAILABLE);
+                                requestUrl, requestUrl + "/Download?Filename="+downloadModel.getDownloadName(), Constants.STATUS_AVAILABLE);
                         foundOne = true;
                         it.remove();
                     } else if (inputLine.equalsIgnoreCase("ERROR")) {
                         // this one is finished
                         utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                                requestUrl, requestUrl + "/Download", Constants.STATUS_ERROR);
+                                requestUrl, requestUrl + "/Download?Filename="+downloadModel.getDownloadName(), Constants.STATUS_ERROR);
                         foundOne = true;
                         it.remove();
                     }
@@ -758,7 +758,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 } catch (IOException e) {
                     // assume this one is finished, possibly expired
                     utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
-                            requestUrl + "/Download", Constants.STATUS_ERROR);
+                            requestUrl + "/Download?Filename="+downloadModel.getDownloadName(), Constants.STATUS_ERROR);
                     foundOne = true;
                     it.remove();
                     try {
