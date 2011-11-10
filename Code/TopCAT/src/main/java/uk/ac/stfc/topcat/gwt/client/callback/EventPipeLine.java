@@ -71,6 +71,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -712,33 +713,82 @@ public class EventPipeLine implements LoginInterface {
         });
     }
 
-    private void waitForDownload(DownloadModel downloadModel) {
+    /**
+     * Call the server which will poll the download service until a status of
+     * 'available' or 'error' is received.
+     * 
+     * @param downloadModel
+     */
+    private void waitForDownload(final DownloadModel downloadModel) {
         utilityService.waitForFinalDownloadStatus(downloadModel, new AsyncCallback<DownloadModel>() {
             @Override
             public void onFailure(Throwable caught) {
-                showErrorDialog("Error retrieving data from server");
+                if (!loadedFacilities.contains(downloadModel.getFacilityName())) {
+                    // session logged out so do not continue
+                    return;
+                }
+                if (caught instanceof InvocationException) {
+                    // query timed out? resubmit
+                    showErrorDialog("caught InvocationException");
+                    showErrorDialog(caught.getCause().toString());
+                    showErrorDialog(caught.toString());
+                    waitForDownload(downloadModel);
+                } else {
+                    showErrorDialog("Error retrieving data from server for download " + downloadModel.getDownloadName());
+                    showErrorDialog(caught.toString());
+                }
             }
 
             @Override
             public void onSuccess(DownloadModel result) {
                 if (result.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
                     download(result.getFacilityName(), result.getUrl());
+                } else if (result.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
+                    showErrorDialog("Error retrieving data from server for download " + result.getDownloadName());
                 }
                 mainWindow.getMainPanel().getMyDownloadPanel().refresh();
             }
         });
     }
 
-    private void waitForDownloads(List<DownloadModel> downloadModels) {
+    /**
+     * Call the server which will poll the download service until a status of
+     * 'available' or 'error' is received for one or more of the downloads. At
+     * which point the server will return a list of downloads that have not
+     * finished. This allows the client to upload the status of those that have
+     * finished, a new waitForDownloads has to called with the outstanding
+     * downloads.
+     * 
+     * @param downloadModel
+     */
+    private void waitForDownloads(final List<DownloadModel> downloadModels) {
         utilityService.waitForFinalDownloadStati(downloadModels, new AsyncCallback<List<DownloadModel>>() {
             @Override
             public void onFailure(Throwable caught) {
-                showErrorDialog("Error retrieving data from server");
+                if (caught instanceof InvocationException) {
+                    // remove items if we have logged out of the facility
+                    for (Iterator<DownloadModel> it = downloadModels.iterator(); it.hasNext();) {
+                        if (!loadedFacilities.contains(it.next().getFacilityName())) {
+                            it.remove();
+                        }
+                    }
+                    // query timed out? resubmit
+                    waitForDownloads(downloadModels);
+                } else {
+                    showErrorDialog("Error retrieving data from server" + caught.toString());
+                }
             }
 
             @Override
             public void onSuccess(List<DownloadModel> result) {
                 mainWindow.getMainPanel().getMyDownloadPanel().refresh();
+                // remove items if we have logged out of the facility
+                for (Iterator<DownloadModel> it = result.iterator(); it.hasNext();) {
+                    if (!loadedFacilities.contains(it.next().getFacilityName())) {
+                        it.remove();
+                    }
+                }
+                // issue callback to get remaining status
                 if (result.size() > 0) {
                     waitForDownloads(result);
                 }
