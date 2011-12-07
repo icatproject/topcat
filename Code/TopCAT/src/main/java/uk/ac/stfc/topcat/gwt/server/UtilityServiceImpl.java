@@ -87,6 +87,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     private UserManagementBeanLocal userManager = null;
     private Map<String, String> downloadPlugins = new HashMap<String, String>();
     private static String RESTFUL_DOWNLOAD_SERVICE = "restfulDownload";
+    private static long DOWNLOAD_TIMEOUT = 20000;
 
     /**
      * Servlet Init method.
@@ -684,13 +685,14 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public DownloadModel waitForFinalDownloadStatus(DownloadModel downloadModel) {
         String requestUrl = downloadModel.getUrl();
-        String downloadUrl = requestUrl + "/Download?Filename="+downloadModel.getDownloadName();
+        String downloadUrl = requestUrl + "/Download?Filename=" + downloadModel.getDownloadName();
         try {
             URL statusUrl = new URL(requestUrl + "/Status");
             BufferedReader in;
             String inputLine;
-            // loop until download is complete
-            while (true) {
+            long endTime = System.currentTimeMillis() + DOWNLOAD_TIMEOUT;
+            // loop until download is complete or timeout is reached
+            while (System.currentTimeMillis() < endTime) {
                 // get the status from the download service
                 in = new BufferedReader(new InputStreamReader(statusUrl.openStream()));
                 inputLine = in.readLine();
@@ -716,6 +718,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 } catch (InterruptedException e) {
                 }
             }
+            return downloadModel;
         } catch (IOException e) {
             // assume download is finished, possibly expired
             utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
@@ -730,8 +733,9 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         String requestUrl = null;
         BufferedReader in = null;
         boolean foundOne = false;
-        // loop until at least one download is complete
-        while (true) {
+        long endTime = System.currentTimeMillis() + DOWNLOAD_TIMEOUT;
+        // loop until at least one download is complete or timeout is reached
+        while (System.currentTimeMillis() < endTime) {
             // loop through everything at least once before returning
             for (Iterator<DownloadModel> it = downloadModels.iterator(); it.hasNext();) {
                 DownloadModel downloadModel = it.next();
@@ -744,13 +748,15 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                     if (inputLine.equalsIgnoreCase("COMPLETED")) {
                         // this one is finished
                         utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                                requestUrl, requestUrl + "/Download?Filename="+downloadModel.getDownloadName(), Constants.STATUS_AVAILABLE);
+                                requestUrl, requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(),
+                                Constants.STATUS_AVAILABLE);
                         foundOne = true;
                         it.remove();
                     } else if (inputLine.equalsIgnoreCase("ERROR")) {
                         // this one is finished
                         utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                                requestUrl, requestUrl + "/Download?Filename="+downloadModel.getDownloadName(), Constants.STATUS_ERROR);
+                                requestUrl, requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(),
+                                Constants.STATUS_ERROR);
                         foundOne = true;
                         it.remove();
                     }
@@ -758,7 +764,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 } catch (IOException e) {
                     // assume this one is finished, possibly expired
                     utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
-                            requestUrl + "/Download?Filename="+downloadModel.getDownloadName(), Constants.STATUS_ERROR);
+                            requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(),
+                            Constants.STATUS_ERROR);
                     foundOne = true;
                     it.remove();
                     try {
@@ -776,6 +783,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             } catch (InterruptedException e) {
             }
         }
+        return downloadModels;
     }
 
 }

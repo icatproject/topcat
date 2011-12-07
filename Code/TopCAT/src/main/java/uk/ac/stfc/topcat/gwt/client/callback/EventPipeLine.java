@@ -715,7 +715,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Call the server which will poll the download service until a status of
-     * 'available' or 'error' is received.
+     * 'available' or 'error' is received or the call times out.
      * 
      * @param downloadModel
      */
@@ -727,37 +727,35 @@ public class EventPipeLine implements LoginInterface {
                     // session logged out so do not continue
                     return;
                 }
-                if (caught instanceof InvocationException) {
-                    // query timed out? resubmit
-                    showErrorDialog("caught InvocationException");
-                    showErrorDialog(caught.getCause().toString());
-                    showErrorDialog(caught.toString());
-                    waitForDownload(downloadModel);
-                } else {
-                    showErrorDialog("Error retrieving data from server for download " + downloadModel.getDownloadName());
-                    showErrorDialog(caught.toString());
-                }
+                showErrorDialog("Error retrieving data from server for download " + downloadModel.getDownloadName());
             }
 
             @Override
             public void onSuccess(DownloadModel result) {
+                if (!loadedFacilities.contains(result.getFacilityName())) {
+                    // session logged out so do not continue
+                    return;
+                }
                 if (result.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
                     download(result.getFacilityName(), result.getUrl());
+                    mainWindow.getMainPanel().getMyDownloadPanel().refresh();
                 } else if (result.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
                     showErrorDialog("Error retrieving data from server for download " + result.getDownloadName());
+                    mainWindow.getMainPanel().getMyDownloadPanel().refresh();
+                } else if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
+                    waitForDownload(result);
                 }
-                mainWindow.getMainPanel().getMyDownloadPanel().refresh();
             }
         });
     }
 
     /**
      * Call the server which will poll the download service until a status of
-     * 'available' or 'error' is received for one or more of the downloads. At
-     * which point the server will return a list of downloads that have not
-     * finished. This allows the client to upload the status of those that have
-     * finished, a new waitForDownloads has to called with the outstanding
-     * downloads.
+     * 'available' or 'error' is received for one or more of the downloads or
+     * the call times out. At which point the server will return a list of
+     * downloads that have not finished. This allows the client to upload the
+     * status of those that have finished, a new waitForDownloads has to called
+     * with the outstanding downloads.
      * 
      * @param downloadModel
      */
@@ -765,32 +763,32 @@ public class EventPipeLine implements LoginInterface {
         utilityService.waitForFinalDownloadStati(downloadModels, new AsyncCallback<List<DownloadModel>>() {
             @Override
             public void onFailure(Throwable caught) {
-                if (caught instanceof InvocationException) {
-                    // remove items if we have logged out of the facility
-                    for (Iterator<DownloadModel> it = downloadModels.iterator(); it.hasNext();) {
-                        if (!loadedFacilities.contains(it.next().getFacilityName())) {
-                            it.remove();
-                        }
+                // remove items if we have logged out of the facility
+                for (Iterator<DownloadModel> it = downloadModels.iterator(); it.hasNext();) {
+                    if (!loadedFacilities.contains(it.next().getFacilityName())) {
+                        it.remove();
                     }
-                    // query timed out? resubmit
-                    waitForDownloads(downloadModels);
-                } else {
+                }
+                if (downloadModels.size() > 0) {
                     showErrorDialog("Error retrieving data from server" + caught.toString());
                 }
             }
 
             @Override
-            public void onSuccess(List<DownloadModel> result) {
-                mainWindow.getMainPanel().getMyDownloadPanel().refresh();
+            public void onSuccess(List<DownloadModel> remainingDownloads) {
+                // only refresh if item has been downloaded
+                if (remainingDownloads.size() < downloadModels.size()) {
+                    mainWindow.getMainPanel().getMyDownloadPanel().refresh();
+                }
                 // remove items if we have logged out of the facility
-                for (Iterator<DownloadModel> it = result.iterator(); it.hasNext();) {
+                for (Iterator<DownloadModel> it = remainingDownloads.iterator(); it.hasNext();) {
                     if (!loadedFacilities.contains(it.next().getFacilityName())) {
                         it.remove();
                     }
                 }
                 // issue callback to get remaining status
-                if (result.size() > 0) {
-                    waitForDownloads(result);
+                if (remainingDownloads.size() > 0) {
+                    waitForDownloads(remainingDownloads);
                 }
             }
         });
