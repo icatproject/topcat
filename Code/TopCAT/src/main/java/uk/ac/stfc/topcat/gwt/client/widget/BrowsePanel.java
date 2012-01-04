@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
@@ -281,14 +280,6 @@ public class BrowsePanel extends Composite {
             requiredBatches = requiredBatches + dsMap.get(facility).size();
         }
         requiredBatches = requiredBatches + dfMap.size();
-
-        // check that we will be able to download all the files in the available
-        // number of download frames
-        if (requiredBatches > (Constants.MAX_DOWNLOAD_FRAMES)) {
-            EventPipeLine.getInstance().showErrorDialog(
-                    "Download request exceeds maximum of " + (Constants.MAX_DOWNLOAD_FRAMES) + " data sets");
-            return;
-        }
 
         int batchCount = 0;
         // get a download frame for each data set

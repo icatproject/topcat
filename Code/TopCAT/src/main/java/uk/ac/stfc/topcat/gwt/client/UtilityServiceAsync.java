@@ -235,29 +235,15 @@ public interface UtilityServiceAsync {
     public void getMyDownloadList(Set<String> facilities, AsyncCallback<ArrayList<DownloadModel>> asyncCallback);
 
     /**
-     * Wait for a final status, 'available' or 'ERROR', from the download
-     * service.
-     * 
-     * @param downloadModel
-     *            the model of the items that have already been requested from
-     *            the download service
-     * @param callback
-     *            object to be called on completion
-     */
-    public void waitForFinalDownloadStatus(DownloadModel downloadModel, AsyncCallback<DownloadModel> asyncCallback);
-
-    /**
-     * Check all of the models at least once for a final status, 'available' or
-     * 'ERROR', from the download service. Continue to wait until at least one
-     * of the models has reached a final status.
+     * Check all of the models for a final status, 'available' or 'ERROR', from
+     * the download service.
      * 
      * @param downloadModels
-     *            a list of models of the items that have already been requested
+     *            a set of models of the items that have already been requested
      *            from the download service
      * @param callback
      *            object to be called on completion
      */
-    public void waitForFinalDownloadStati(List<DownloadModel> downloadModels,
-            AsyncCallback<List<DownloadModel>> asyncCallback);
+    public void getDownloadStatus(Set<DownloadModel> downloadQueue, AsyncCallback<List<DownloadModel>> asyncCallback);
 
 }

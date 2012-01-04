@@ -36,8 +36,10 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  */
 @SuppressWarnings("serial")
 public class DownloadModel extends BaseModelData implements Serializable {
-    public DownloadModel() {
+    /** The initial URL. This is used in the equal operator of the object */
+    private String m_ulr;
 
+    public DownloadModel() {
     }
 
     /**
@@ -59,6 +61,7 @@ public class DownloadModel extends BaseModelData implements Serializable {
         setExpiryTime(expiryTime);
         setUrl(url);
         setTimeRemaining(expiryTime);
+        m_ulr = url;
     }
 
     /**
@@ -203,6 +206,31 @@ public class DownloadModel extends BaseModelData implements Serializable {
      */
     public void setUrl(String url) {
         set("url", url);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((m_ulr == null) ? 0 : m_ulr.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DownloadModel other = (DownloadModel) obj;
+        if (m_ulr == null) {
+            if (other.m_ulr != null)
+                return false;
+        } else if (!m_ulr.equals(other.m_ulr))
+            return false;
+        return true;
     }
 
 }

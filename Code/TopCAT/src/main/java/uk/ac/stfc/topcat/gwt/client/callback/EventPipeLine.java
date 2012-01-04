@@ -70,8 +70,8 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.InvocationException;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -101,6 +101,7 @@ public class EventPipeLine implements LoginInterface {
     private WaitDialog waitDialog;
     private int downloadCount = 0;
     private int retrievingDataDialogCount = 0;
+    private Set<DownloadModel> downloadQueue = new HashSet<DownloadModel>();
 
     // Panels from Main Window
     TOPCATOnline mainWindow = null;
@@ -124,6 +125,11 @@ public class EventPipeLine implements LoginInterface {
         tcEvents = new TopcatEvents();
         // Initialise
         loginWidget.setLoginHandler(this);
+
+        // Create a new timer that calls getDownloadStatus() on the server.
+        Timer t = getDownloadStatusTimer();
+        // Schedule the timer to run every 5 seconds.
+        t.scheduleRepeating(5000);
     }
 
     public static EventPipeLine getInstance() {
@@ -624,13 +630,15 @@ public class EventPipeLine implements LoginInterface {
             public void onSuccess(ArrayList<DownloadModel> result) {
                 mainWindow.getMainPanel().getMyDownloadPanel().addDownloads(result);
                 hideRetrievingData();
+                // Check for downloads that are 'in progress' as we need to
+                // add them to the downlod queue
                 for (Iterator<DownloadModel> it = result.iterator(); it.hasNext();) {
                     if (!it.next().getStatus().equals(Constants.STATUS_IN_PROGRESS)) {
                         it.remove();
                     }
                 }
                 if (result.size() > 0) {
-                    waitForDownloads(result);
+                    downloadQueue.addAll(result);
                 }
             }
         });
@@ -676,7 +684,7 @@ public class EventPipeLine implements LoginInterface {
                     public void onSuccess(DownloadModel result) {
                         mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
                         if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
-                            waitForDownload(result);
+                            downloadQueue.add(result);
                         } else {
                             download(facilityName, result.getUrl());
                         }
@@ -705,90 +713,9 @@ public class EventPipeLine implements LoginInterface {
             public void onSuccess(DownloadModel result) {
                 mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
                 if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
-                    waitForDownload(result);
+                    downloadQueue.add(result);
                 } else {
                     download(facilityName, result.getUrl());
-                }
-            }
-        });
-    }
-
-    /**
-     * Call the server which will poll the download service until a status of
-     * 'available' or 'error' is received or the call times out.
-     * 
-     * @param downloadModel
-     */
-    private void waitForDownload(final DownloadModel downloadModel) {
-        utilityService.waitForFinalDownloadStatus(downloadModel, new AsyncCallback<DownloadModel>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                if (!loadedFacilities.contains(downloadModel.getFacilityName())) {
-                    // session logged out so do not continue
-                    return;
-                }
-                showErrorDialog("Error retrieving data from server for download " + downloadModel.getDownloadName());
-            }
-
-            @Override
-            public void onSuccess(DownloadModel result) {
-                if (!loadedFacilities.contains(result.getFacilityName())) {
-                    // session logged out so do not continue
-                    return;
-                }
-                if (result.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
-                    download(result.getFacilityName(), result.getUrl());
-                    mainWindow.getMainPanel().getMyDownloadPanel().refresh();
-                } else if (result.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
-                    showErrorDialog("Error retrieving data from server for download " + result.getDownloadName());
-                    mainWindow.getMainPanel().getMyDownloadPanel().refresh();
-                } else if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
-                    waitForDownload(result);
-                }
-            }
-        });
-    }
-
-    /**
-     * Call the server which will poll the download service until a status of
-     * 'available' or 'error' is received for one or more of the downloads or
-     * the call times out. At which point the server will return a list of
-     * downloads that have not finished. This allows the client to upload the
-     * status of those that have finished, a new waitForDownloads has to called
-     * with the outstanding downloads.
-     * 
-     * @param downloadModel
-     */
-    private void waitForDownloads(final List<DownloadModel> downloadModels) {
-        utilityService.waitForFinalDownloadStati(downloadModels, new AsyncCallback<List<DownloadModel>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                // remove items if we have logged out of the facility
-                for (Iterator<DownloadModel> it = downloadModels.iterator(); it.hasNext();) {
-                    if (!loadedFacilities.contains(it.next().getFacilityName())) {
-                        it.remove();
-                    }
-                }
-                if (downloadModels.size() > 0) {
-                    showErrorDialog("Error retrieving data from server" + caught.toString());
-                }
-            }
-
-            @Override
-            public void onSuccess(List<DownloadModel> remainingDownloads) {
-                // only refresh if item has been downloaded
-                if (remainingDownloads.size() < downloadModels.size()) {
-                    mainWindow.getMainPanel().getMyDownloadPanel().refresh();
-                }
-                // remove items if we have logged out of the facility
-                for (Iterator<DownloadModel> it = remainingDownloads.iterator(); it.hasNext();) {
-                    if (!loadedFacilities.contains(it.next().getFacilityName())) {
-                        it.remove();
-                    }
-                }
-                // issue callback to get remaining status
-                if (remainingDownloads.size() > 0) {
-                    waitForDownloads(remainingDownloads);
                 }
             }
         });
@@ -968,7 +895,6 @@ public class EventPipeLine implements LoginInterface {
      */
     public void showDownloadWindow(String url) {
         try {
-            ;
             DownloadWindow downloadWindow = tcWindowManager.createDownloadWindow();
             downloadWindow.setDownloadUrl(url);
             downloadWindow.show();
@@ -1068,4 +994,66 @@ public class EventPipeLine implements LoginInterface {
         return tcEvents;
     }
 
+    /**
+     * Create a new timer that calls getDownloadStatus() on the server.
+     * 
+     * @return a timer that call getDownloadStatus on the server
+     */
+    private Timer getDownloadStatusTimer() {
+        Timer t = new Timer() {
+            @Override
+            public void run() {
+                if (downloadQueue.size() == 0) {
+                    // nothing to check
+                    return;
+                }
+
+                /*
+                 * Call the server which will poll the download service until a
+                 * status of 'available' or 'error' is received or the call
+                 * times out. N.B. This method should only be called by the
+                 * timer task.
+                 */
+                utilityService.getDownloadStatus(downloadQueue, new AsyncCallback<List<DownloadModel>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // remove items if we have logged out of the facility
+                        for (Iterator<DownloadModel> it = downloadQueue.iterator(); it.hasNext();) {
+                            if (!loadedFacilities.contains(it.next().getFacilityName())) {
+                                it.remove();
+                            }
+                        }
+                        if (downloadQueue.size() > 0) {
+                            showErrorDialog("Error retrieving data from server while trying to get download status");
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(List<DownloadModel> finalStateReached) {
+                        boolean refresh = false;
+                        for (DownloadModel download : finalStateReached) {
+                            // remove done item from the list
+                            downloadQueue.remove(download);
+                            if (!loadedFacilities.contains(download.getFacilityName())) {
+                                // session logged out so do not process this
+                                // download
+                                continue;
+                            }
+                            if (download.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
+                                download(download.getFacilityName(), download.getUrl());
+                            } else if (download.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
+                                showErrorDialog("Error retrieving data from server for download "
+                                        + download.getDownloadName());
+                            }
+                            refresh = true;
+                        }
+                        if (refresh) {
+                            mainWindow.getMainPanel().getMyDownloadPanel().refresh();
+                        }
+                    }
+                });
+            }
+        };
+        return t;
+    }
 }

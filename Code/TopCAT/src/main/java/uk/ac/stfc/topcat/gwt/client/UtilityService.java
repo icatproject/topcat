@@ -234,27 +234,15 @@ public interface UtilityService extends RemoteService {
     public ArrayList<DownloadModel> getMyDownloadList(Set<String> facilities);
 
     /**
-     * Wait for a final status, 'available' or 'ERROR', from the download
-     * service.
-     * 
-     * @param downloadModel
-     *            the model of the items that have already been requested from
-     *            the download service
-     * @return a <code>DownloadModel</code> with a final status and updated url
-     */
-    public DownloadModel waitForFinalDownloadStatus(DownloadModel downloadModel);
-
-    /**
-     * Check all of the models at least once for a final status, 'available' or
-     * 'ERROR', from the download service. Continue to wait until at least one
-     * of the models has reached a final status.
+     * Check all of the models for a final status, 'available' or 'ERROR', from
+     * the download service.
      * 
      * @param downloadModels
-     *            a list of models of the items that have already been requested
+     *            a set of models of the items that have already been requested
      *            from the download service
      * @return a list of <code>DownloadModel</code> that do NOT have a final
      *         status
      */
-    public List<DownloadModel> waitForFinalDownloadStati(List<DownloadModel> downloadModels);
+    public List<DownloadModel> getDownloadStatus(Set<DownloadModel> downloadQueue);
 
 }
