@@ -1,0 +1,5 @@
+#Tue Jun 08 09:05:50 BST 2010
+war.name=TOPCATWeb.war
+compiler.style=DETAILED
+server.path=C\:\\Apps\\JavaLibs\\glassfishv3\\glassfish\\domains\\domain1\\autodeploy
+compiler.memory.max=256m

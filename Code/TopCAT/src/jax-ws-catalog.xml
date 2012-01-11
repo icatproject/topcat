@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="https://facilities02.esc.rl.ac.uk:8181/ICATService/ICAT?wsdl" uri="wsdl/facilities02.esc.rl.ac.uk_8181/ICATService/ICAT.wsdl"/>
+    <system systemId="https://facilities02.esc.rl.ac.uk:8181/ICATService/ICAT?xsd=1" uri="wsdl/facilities02.esc.rl.ac.uk_8181/ICATService/ICAT.xsd_1.xsd"/>
+</catalog>

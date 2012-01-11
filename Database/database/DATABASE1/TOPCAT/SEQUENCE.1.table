@@ -1,0 +1,294 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<table xmlns="http://xmlns.oracle.com/jdeveloper/1111/offlinedb">
+  <ID class="oracle.javatools.db.IdentifierBasedID">
+    <name>SEQUENCE</name>
+    <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+    <schemaName>TOPCAT</schemaName>
+    <type>TABLE</type>
+  </ID>
+  <name>SEQUENCE</name>
+  <columns>
+    <column>
+      <ID class="oracle.javatools.db.IdentifierBasedID">
+        <name>SEQ_NAME</name>
+        <identifier class="java.lang.String">80398946-d7fa-4543-bf9a-a94aa1dbe51d</identifier>
+        <parent class="oracle.javatools.db.IdentifierBasedID">
+          <name>SEQUENCE</name>
+          <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+          <schemaName>TOPCAT</schemaName>
+          <type>TABLE</type>
+        </parent>
+        <schemaName>TOPCAT</schemaName>
+        <type>COLUMN</type>
+      </ID>
+      <name>SEQ_NAME</name>
+      <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+        <ID class="oracle.javatools.db.IdentifierBasedID">
+          <identifier class="java.lang.String">307e1c4a-8aa3-4167-9b0b-8ca5197d6450</identifier>
+          <parent class="oracle.javatools.db.IdentifierBasedID">
+            <name>SEQ_NAME</name>
+            <identifier class="java.lang.String">80398946-d7fa-4543-bf9a-a94aa1dbe51d</identifier>
+            <parent class="oracle.javatools.db.IdentifierBasedID">
+              <name>SEQUENCE</name>
+              <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <schemaName>TOPCAT</schemaName>
+            <type>COLUMN</type>
+          </parent>
+          <schemaName>TOPCAT</schemaName>
+          <type>DataTypeUsage</type>
+        </ID>
+        <attributeValues>
+          <entry>
+            <key>size</key>
+            <value class="java.lang.Long">50</value>
+          </entry>
+          <entry>
+            <key>unit</key>
+            <value class="java.lang.String">BYTE</value>
+          </entry>
+        </attributeValues>
+        <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+          <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+          <typeName>VARCHAR2</typeName>
+        </dataTypeID>
+        <properties>
+          <entry>
+            <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+            <value class="oracle.javatools.db.ReferenceID">
+              <parent class="oracle.javatools.db.ReferenceID">
+                <name>SEQ_NAME</name>
+                <parent class="oracle.javatools.db.ReferenceID">
+                  <name>SEQUENCE</name>
+                  <identifier class="java.math.BigDecimal">206773</identifier>
+                  <schemaName>TOPCAT</schemaName>
+                  <type>TABLE</type>
+                </parent>
+                <type>COLUMN</type>
+              </parent>
+              <type>DataTypeUsage</type>
+            </value>
+          </entry>
+        </properties>
+      </dataTypeUsage>
+      <notNull>true</notNull>
+      <properties>
+        <entry>
+          <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+          <value class="oracle.javatools.db.ReferenceID">
+            <name>SEQ_NAME</name>
+            <parent class="oracle.javatools.db.ReferenceID">
+              <name>SEQUENCE</name>
+              <identifier class="java.math.BigDecimal">206773</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <type>COLUMN</type>
+          </value>
+        </entry>
+      </properties>
+    </column>
+    <column>
+      <ID class="oracle.javatools.db.IdentifierBasedID">
+        <name>SEQ_COUNT</name>
+        <identifier class="java.lang.String">16253463-b967-4b86-8804-ac59fe897962</identifier>
+        <parent class="oracle.javatools.db.IdentifierBasedID">
+          <name>SEQUENCE</name>
+          <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+          <schemaName>TOPCAT</schemaName>
+          <type>TABLE</type>
+        </parent>
+        <schemaName>TOPCAT</schemaName>
+        <type>COLUMN</type>
+      </ID>
+      <name>SEQ_COUNT</name>
+      <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+        <ID class="oracle.javatools.db.IdentifierBasedID">
+          <identifier class="java.lang.String">d78687fd-88a7-44bf-8ea4-1f6c6a4b4d0c</identifier>
+          <parent class="oracle.javatools.db.IdentifierBasedID">
+            <name>SEQ_COUNT</name>
+            <identifier class="java.lang.String">16253463-b967-4b86-8804-ac59fe897962</identifier>
+            <parent class="oracle.javatools.db.IdentifierBasedID">
+              <name>SEQUENCE</name>
+              <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <schemaName>TOPCAT</schemaName>
+            <type>COLUMN</type>
+          </parent>
+          <schemaName>TOPCAT</schemaName>
+          <type>DataTypeUsage</type>
+        </ID>
+        <attributeValues>
+          <entry>
+            <key>precision</key>
+            <value class="java.lang.String">38</value>
+          </entry>
+          <entry>
+            <key>scale</key>
+            <value class="java.lang.Long">0</value>
+          </entry>
+        </attributeValues>
+        <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+          <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+          <typeName>NUMBER</typeName>
+        </dataTypeID>
+        <properties>
+          <entry>
+            <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+            <value class="oracle.javatools.db.ReferenceID">
+              <parent class="oracle.javatools.db.ReferenceID">
+                <name>SEQ_COUNT</name>
+                <parent class="oracle.javatools.db.ReferenceID">
+                  <name>SEQUENCE</name>
+                  <identifier class="java.math.BigDecimal">206773</identifier>
+                  <schemaName>TOPCAT</schemaName>
+                  <type>TABLE</type>
+                </parent>
+                <type>COLUMN</type>
+              </parent>
+              <type>DataTypeUsage</type>
+            </value>
+          </entry>
+        </properties>
+      </dataTypeUsage>
+      <notNull>false</notNull>
+      <properties>
+        <entry>
+          <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+          <value class="oracle.javatools.db.ReferenceID">
+            <name>SEQ_COUNT</name>
+            <parent class="oracle.javatools.db.ReferenceID">
+              <name>SEQUENCE</name>
+              <identifier class="java.math.BigDecimal">206773</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <type>COLUMN</type>
+          </value>
+        </entry>
+      </properties>
+    </column>
+  </columns>
+  <constraints>
+    <constraint class="oracle.javatools.db.PKConstraint">
+      <ID class="oracle.javatools.db.IdentifierBasedID">
+        <name>SEQUENCE_PK</name>
+        <identifier class="java.lang.String">8294b328-355a-41f6-8ad1-bd91a71d4297</identifier>
+        <parent class="oracle.javatools.db.IdentifierBasedID">
+          <name>SEQUENCE</name>
+          <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+          <schemaName>TOPCAT</schemaName>
+          <type>TABLE</type>
+        </parent>
+        <schemaName>TOPCAT</schemaName>
+        <type>CONSTRAINT</type>
+      </ID>
+      <name>SEQUENCE_PK</name>
+      <columnIDs>
+        <columnID class="oracle.javatools.db.IdentifierBasedID">
+          <name>SEQ_NAME</name>
+          <identifier class="java.lang.String">80398946-d7fa-4543-bf9a-a94aa1dbe51d</identifier>
+          <parent class="oracle.javatools.db.IdentifierBasedID">
+            <name>SEQUENCE</name>
+            <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+            <schemaName>TOPCAT</schemaName>
+            <type>TABLE</type>
+          </parent>
+          <schemaName>TOPCAT</schemaName>
+          <type>COLUMN</type>
+        </columnID>
+      </columnIDs>
+      <enabled>true</enabled>
+      <properties>
+        <entry>
+          <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+          <value class="oracle.javatools.db.ReferenceID">
+            <name>SEQUENCE_PK</name>
+            <childObjectNames>
+              <childObjectName>SEQ_NAME</childObjectName>
+            </childObjectNames>
+            <parent class="oracle.javatools.db.ReferenceID">
+              <name>SEQUENCE</name>
+              <identifier class="java.math.BigDecimal">206773</identifier>
+              <schemaName>TOPCAT</schemaName>
+              <type>TABLE</type>
+            </parent>
+            <subType>PKConstraint</subType>
+            <type>CONSTRAINT</type>
+          </value>
+        </entry>
+      </properties>
+    </constraint>
+  </constraints>
+  <properties>
+    <entry>
+      <key>OfflineDBConstants.IMPORT_SOURCE_CONNECTION</key>
+      <value class="java.lang.String">TopCAT-Test11g</value>
+    </entry>
+    <entry>
+      <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+      <value class="oracle.javatools.db.ReferenceID">
+        <name>SEQUENCE</name>
+        <identifier class="java.math.BigDecimal">206773</identifier>
+        <schemaName>TOPCAT</schemaName>
+        <type>TABLE</type>
+      </value>
+    </entry>
+    <entry>
+      <key>OracleStorageProperties</key>
+      <value class="oracle.javatools.db.ora.OracleStorageProperties">
+        <ID class="oracle.javatools.db.IdentifierBasedID">
+          <identifier class="java.lang.String">1aa62000-c16d-4d93-9ca5-95a2be1c4468</identifier>
+          <parent class="oracle.javatools.db.IdentifierBasedID">
+            <name>SEQUENCE</name>
+            <identifier class="java.lang.String">f1cab7a4-d328-4605-a72c-925882318c89</identifier>
+            <schemaName>TOPCAT</schemaName>
+            <type>TABLE</type>
+          </parent>
+          <schemaName>TOPCAT</schemaName>
+          <type>OracleStorageProperties</type>
+        </ID>
+        <bufferMode>DEFAULT</bufferMode>
+        <initialExtent>65536</initialExtent>
+        <initrans>1</initrans>
+        <logging>true</logging>
+        <maxExtent>2147483645</maxExtent>
+        <maxtrans>255</maxtrans>
+        <minExtent>1</minExtent>
+        <percentFree>10</percentFree>
+        <properties>
+          <entry>
+            <key>OfflineDBConstants.IMPORT_SOURCE_ID</key>
+            <value class="oracle.javatools.db.ReferenceID">
+              <parent class="oracle.javatools.db.ReferenceID">
+                <name>SEQUENCE</name>
+                <identifier class="java.math.BigDecimal">206773</identifier>
+                <schemaName>TOPCAT</schemaName>
+                <type>TABLE</type>
+              </parent>
+              <type>OracleStorageProperties</type>
+            </value>
+          </entry>
+        </properties>
+        <tablespace>TOPCAT_TS</tablespace>
+      </value>
+    </entry>
+    <entry>
+      <key>TableType</key>
+      <value class="oracle.javatools.db.Table$TableType">NORMAL</value>
+    </entry>
+  </properties>
+  <schema>
+    <ID class="oracle.javatools.db.IdentifierBasedID">
+      <name>TOPCAT</name>
+      <identifier class="java.lang.String">85623786-6607-4f0e-b2ab-4a079ee58967</identifier>
+      <schemaName>SCHEMA1</schemaName>
+      <type>SCHEMA</type>
+    </ID>
+    <name>TOPCAT</name>
+  </schema>
+</table>

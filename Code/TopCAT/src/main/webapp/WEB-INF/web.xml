@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <listener>
+        <listener-class>uk.ac.stfc.topcat.gwt.server.TOPCATServletSession</listener-class>
+    </listener>
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>searchServlet</servlet-name>
+        <servlet-class>uk.ac.stfc.topcat.gwt.server.SearchServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoginService</servlet-name>
+        <servlet-class>uk.ac.stfc.topcat.gwt.server.LoginServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UtilityService</servlet-name>
+        <servlet-class>uk.ac.stfc.topcat.gwt.server.UtilityServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CopyDataToCSVFile</servlet-name>
+        <servlet-class>uk.ac.stfc.topcat.gwt.server.CopyDataToCSVFile</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>searchServlet</servlet-name>
+        <url-pattern>/topcatweb/search</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginService</servlet-name>
+        <url-pattern>/topcatweb/LoginService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UtilityService</servlet-name>
+        <url-pattern>/topcatweb/UtilityService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CopyDataToCSVFile</servlet-name>
+        <url-pattern>/topcatweb/CopyDataToCSVFile</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>600</session-timeout>
+    </session-config>
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>TOPCATWeb.html</welcome-file>
+    </welcome-file-list>
+    <security-constraint>
+        <display-name>SSLTopcatSecurity</display-name>
+        <web-resource-collection>
+            <web-resource-name>ssl</web-resource-name>
+            <description/>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <description/>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+</web-app>
