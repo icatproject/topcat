@@ -33,7 +33,7 @@ From within the "Installation" directory
 4) mvn install:install-file -Dfile=<oracle_lib>/ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0 -Dpackaging=jar
 5) mvn install
 6) mvn glassfish:create-domain -Dglassfish.home=$GLASSFISH_HOME --non-recursive
-7) openssl s_client -no_tls1 -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
+7) openssl s_client -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
 8) keytool -import -noprompt -alias <alias> -file $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert -keystore $GLASSFISH_HOME/domains/TOPCAT/config/cacerts.jks --storepass changeit 
 9) mvn resources:copy-resources -Dglassfish.home=$GLASSFISH_HOME --non-recursive
 10) mvn glassfish:deploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive
