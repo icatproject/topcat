@@ -15,7 +15,6 @@
 </message>
 <message name="NoSuchObjectFoundException">
 <part name="fault" element="tns:NoSuchObjectFoundException"/>
-
 </message>
 <message name="InsufficientPrivilegesException">
 <part name="fault" element="tns:InsufficientPrivilegesException"/>
@@ -33,7 +32,6 @@
 <part name="parameters" element="tns:deleteResponse"/>
 </message>
 <message name="ValidationException">
-
 <part name="fault" element="tns:ValidationException"/>
 </message>
 <message name="ObjectAlreadyExistsException">
@@ -51,7 +49,6 @@
 <message name="createResponse">
 <part name="parameters" element="tns:createResponse"/>
 </message>
-
 <message name="update">
 <part name="parameters" element="tns:update"/>
 </message>
@@ -69,7 +66,6 @@
 </message>
 <message name="loginResponse">
 <part name="parameters" element="tns:loginResponse"/>
-
 </message>
 <message name="loginLifetime">
 <part name="parameters" element="tns:loginLifetime"/>
@@ -83,11 +79,16 @@
 <message name="logoutResponse">
 <part name="parameters" element="tns:logoutResponse"/>
 </message>
+<message name="addRule">
+<part name="parameters" element="tns:addRule"/>
+</message>
+<message name="addRuleResponse">
+<part name="parameters" element="tns:addRuleResponse"/>
+</message>
 <message name="loginAdmin">
 <part name="parameters" element="tns:loginAdmin"/>
 </message>
 <message name="loginAdminResponse">
-
 <part name="parameters" element="tns:loginAdminResponse"/>
 </message>
 <message name="addUserGroupMember">
@@ -101,13 +102,6 @@
 </message>
 <message name="removeUserGroupMemberResponse">
 <part name="parameters" element="tns:removeUserGroupMemberResponse"/>
-</message>
-<message name="addRule">
-<part name="parameters" element="tns:addRule"/>
-</message>
-
-<message name="addRuleResponse">
-<part name="parameters" element="tns:addRuleResponse"/>
 </message>
 <message name="removeRule">
 <part name="parameters" element="tns:removeRule"/>
@@ -123,7 +117,6 @@
 </message>
 <message name="NoSuchUserException">
 <part name="fault" element="tns:NoSuchUserException"/>
-
 </message>
 <message name="isSessionValid">
 <part name="parameters" element="tns:isSessionValid"/>
@@ -141,7 +134,6 @@
 <part name="parameters" element="tns:getKeywordsForUserStartWithMax"/>
 </message>
 <message name="getKeywordsForUserStartWithMaxResponse">
-
 <part name="parameters" element="tns:getKeywordsForUserStartWithMaxResponse"/>
 </message>
 <message name="getKeywordsForUserMax">
@@ -159,7 +151,6 @@
 <message name="getAllKeywords">
 <part name="parameters" element="tns:getAllKeywords"/>
 </message>
-
 <message name="getAllKeywordsResponse">
 <part name="parameters" element="tns:getAllKeywordsResponse"/>
 </message>
@@ -177,7 +168,6 @@
 </message>
 <message name="searchByKeywords">
 <part name="parameters" element="tns:searchByKeywords"/>
-
 </message>
 <message name="searchByKeywordsResponse">
 <part name="parameters" element="tns:searchByKeywordsResponse"/>
@@ -195,7 +185,6 @@
 <part name="parameters" element="tns:getMyInvestigationsResponse"/>
 </message>
 <message name="getMyInvestigationsIncludes">
-
 <part name="parameters" element="tns:getMyInvestigationsIncludes"/>
 </message>
 <message name="getMyInvestigationsIncludesResponse">
@@ -213,7 +202,6 @@
 <message name="searchByUserIDResponse">
 <part name="parameters" element="tns:searchByUserIDResponse"/>
 </message>
-
 <message name="searchByUserIDPagination">
 <part name="parameters" element="tns:searchByUserIDPagination"/>
 </message>
@@ -231,7 +219,6 @@
 </message>
 <message name="searchByUserSurnamePaginationResponse">
 <part name="parameters" element="tns:searchByUserSurnamePaginationResponse"/>
-
 </message>
 <message name="listInstruments">
 <part name="parameters" element="tns:listInstruments"/>
@@ -249,7 +236,6 @@
 <part name="parameters" element="tns:listParameters"/>
 </message>
 <message name="listParametersResponse">
-
 <part name="parameters" element="tns:listParametersResponse"/>
 </message>
 <message name="listRules">
@@ -267,7 +253,6 @@
 <message name="listFacilityCycles">
 <part name="parameters" element="tns:listFacilityCycles"/>
 </message>
-
 <message name="listFacilityCyclesResponse">
 <part name="parameters" element="tns:listFacilityCyclesResponse"/>
 </message>
@@ -285,7 +270,6 @@
 </message>
 <message name="searchDatasetsBySample">
 <part name="parameters" element="tns:searchDatasetsBySample"/>
-
 </message>
 <message name="searchDatasetsBySampleResponse">
 <part name="parameters" element="tns:searchDatasetsBySampleResponse"/>
@@ -303,7 +287,6 @@
 <part name="parameters" element="tns:listDatasetStatusResponse"/>
 </message>
 <message name="searchByRunNumber">
-
 <part name="parameters" element="tns:searchByRunNumber"/>
 </message>
 <message name="searchByRunNumberResponse">
@@ -321,7 +304,6 @@
 <message name="listDatafileFormatsResponse">
 <part name="parameters" element="tns:listDatafileFormatsResponse"/>
 </message>
-
 <message name="getInvestigation">
 <part name="parameters" element="tns:getInvestigation"/>
 </message>
@@ -339,7 +321,6 @@
 </message>
 <message name="getInvestigationsResponse">
 <part name="parameters" element="tns:getInvestigationsResponse"/>
-
 </message>
 <message name="getInvestigationsIncludes">
 <part name="parameters" element="tns:getInvestigationsIncludes"/>
@@ -357,7 +338,6 @@
 <part name="parameters" element="tns:getDatasetIncludes"/>
 </message>
 <message name="getDatasetIncludesResponse">
-
 <part name="parameters" element="tns:getDatasetIncludesResponse"/>
 </message>
 <message name="getDatasets">
@@ -375,7 +355,6 @@
 <message name="getDatafiles">
 <part name="parameters" element="tns:getDatafiles"/>
 </message>
-
 <message name="getDatafilesResponse">
 <part name="parameters" element="tns:getDatafilesResponse"/>
 </message>
@@ -393,7 +372,6 @@
 </message>
 <message name="downloadDatafileResponse">
 <part name="parameters" element="tns:downloadDatafileResponse"/>
-
 </message>
 <message name="downloadDataset">
 <part name="parameters" element="tns:downloadDataset"/>
@@ -411,7 +389,6 @@
 <part name="parameters" element="tns:checkDatafileDownloadAccess"/>
 </message>
 <message name="checkDatafileDownloadAccessResponse">
-
 <part name="parameters" element="tns:checkDatafileDownloadAccessResponse"/>
 </message>
 <message name="checkDatasetDownloadAccess">
@@ -429,7 +406,6 @@
 <message name="getFacilityUserByFacilityUserId">
 <part name="parameters" element="tns:getFacilityUserByFacilityUserId"/>
 </message>
-
 <message name="getFacilityUserByFacilityUserIdResponse">
 <part name="parameters" element="tns:getFacilityUserByFacilityUserIdResponse"/>
 </message>
@@ -447,7 +423,6 @@
 </message>
 <message name="getParameterByName">
 <part name="parameters" element="tns:getParameterByName"/>
-
 </message>
 <message name="getParameterByNameResponse">
 <part name="parameters" element="tns:getParameterByNameResponse"/>
@@ -465,7 +440,6 @@
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/get/Fault/SessionException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/get/Fault/NoSuchObjectFoundException"/>
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/get/Fault/InsufficientPrivilegesException"/>
-
 <fault message="tns:BadParameterException" name="BadParameterException" wsam:Action="client.icat3.uk/ICAT/get/Fault/BadParameterException"/>
 <fault message="tns:IcatInternalException" name="IcatInternalException" wsam:Action="client.icat3.uk/ICAT/get/Fault/IcatInternalException"/>
 </operation>
@@ -483,7 +457,6 @@
 <input wsam:Action="client.icat3.uk/ICAT/searchRequest" message="tns:search"/>
 <output wsam:Action="client.icat3.uk/ICAT/searchResponse" message="tns:searchResponse"/>
 <fault message="tns:BadParameterException" name="BadParameterException" wsam:Action="client.icat3.uk/ICAT/search/Fault/BadParameterException"/>
-
 <fault message="tns:IcatInternalException" name="IcatInternalException" wsam:Action="client.icat3.uk/ICAT/search/Fault/IcatInternalException"/>
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/search/Fault/InsufficientPrivilegesException"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/search/Fault/SessionException"/>
@@ -501,7 +474,6 @@
 <operation name="update">
 <input wsam:Action="client.icat3.uk/ICAT/updateRequest" message="tns:update"/>
 <output wsam:Action="client.icat3.uk/ICAT/updateResponse" message="tns:updateResponse"/>
-
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/update/Fault/SessionException"/>
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/update/Fault/InsufficientPrivilegesException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/update/Fault/NoSuchObjectFoundException"/>
@@ -519,13 +491,19 @@
 </operation>
 <operation name="loginLifetime">
 <input wsam:Action="client.icat3.uk/ICAT/loginLifetimeRequest" message="tns:loginLifetime"/>
-
 <output wsam:Action="client.icat3.uk/ICAT/loginLifetimeResponse" message="tns:loginLifetimeResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/loginLifetime/Fault/SessionException"/>
 </operation>
 <operation name="logout">
 <input wsam:Action="client.icat3.uk/ICAT/logoutRequest" message="tns:logout"/>
 <output wsam:Action="client.icat3.uk/ICAT/logoutResponse" message="tns:logoutResponse"/>
+</operation>
+<operation name="addRule">
+<input wsam:Action="client.icat3.uk/ICAT/addRuleRequest" message="tns:addRule"/>
+<output wsam:Action="client.icat3.uk/ICAT/addRuleResponse" message="tns:addRuleResponse"/>
+<fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/addRule/Fault/SessionException"/>
+<fault message="tns:IcatInternalException" name="IcatInternalException" wsam:Action="client.icat3.uk/ICAT/addRule/Fault/IcatInternalException"/>
+<fault message="tns:BadParameterException" name="BadParameterException" wsam:Action="client.icat3.uk/ICAT/addRule/Fault/BadParameterException"/>
 </operation>
 <operation name="loginAdmin">
 <input wsam:Action="client.icat3.uk/ICAT/loginAdminRequest" message="tns:loginAdmin"/>
@@ -537,7 +515,6 @@
 <output wsam:Action="client.icat3.uk/ICAT/addUserGroupMemberResponse" message="tns:addUserGroupMemberResponse"/>
 <fault message="tns:ObjectAlreadyExistsException" name="ObjectAlreadyExistsException" wsam:Action="client.icat3.uk/ICAT/addUserGroupMember/Fault/ObjectAlreadyExistsException"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/addUserGroupMember/Fault/SessionException"/>
-
 </operation>
 <operation name="removeUserGroupMember">
 <input wsam:Action="client.icat3.uk/ICAT/removeUserGroupMemberRequest" message="tns:removeUserGroupMember"/>
@@ -545,17 +522,9 @@
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/removeUserGroupMember/Fault/SessionException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/removeUserGroupMember/Fault/NoSuchObjectFoundException"/>
 </operation>
-<operation name="addRule">
-<input wsam:Action="client.icat3.uk/ICAT/addRuleRequest" message="tns:addRule"/>
-<output wsam:Action="client.icat3.uk/ICAT/addRuleResponse" message="tns:addRuleResponse"/>
-<fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/addRule/Fault/SessionException"/>
-<fault message="tns:IcatInternalException" name="IcatInternalException" wsam:Action="client.icat3.uk/ICAT/addRule/Fault/IcatInternalException"/>
-<fault message="tns:BadParameterException" name="BadParameterException" wsam:Action="client.icat3.uk/ICAT/addRule/Fault/BadParameterException"/>
-</operation>
 <operation name="removeRule">
 <input wsam:Action="client.icat3.uk/ICAT/removeRuleRequest" message="tns:removeRule"/>
 <output wsam:Action="client.icat3.uk/ICAT/removeRuleResponse" message="tns:removeRuleResponse"/>
-
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/removeRule/Fault/SessionException"/>
 <fault message="tns:BadParameterException" name="BadParameterException" wsam:Action="client.icat3.uk/ICAT/removeRule/Fault/BadParameterException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/removeRule/Fault/NoSuchObjectFoundException"/>
@@ -573,7 +542,6 @@
 <operation name="getKeywordsForUser">
 <input wsam:Action="client.icat3.uk/ICAT/getKeywordsForUserRequest" message="tns:getKeywordsForUser"/>
 <output wsam:Action="client.icat3.uk/ICAT/getKeywordsForUserResponse" message="tns:getKeywordsForUserResponse"/>
-
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getKeywordsForUser/Fault/SessionException"/>
 </operation>
 <operation name="getKeywordsForUserStartWithMax">
@@ -591,7 +559,6 @@
 <output wsam:Action="client.icat3.uk/ICAT/getKeywordsForUserTypeResponse" message="tns:getKeywordsForUserTypeResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getKeywordsForUserType/Fault/SessionException"/>
 </operation>
-
 <operation name="getAllKeywords">
 <input wsam:Action="client.icat3.uk/ICAT/getAllKeywordsRequest" message="tns:getAllKeywords"/>
 <output wsam:Action="client.icat3.uk/ICAT/getAllKeywordsResponse" message="tns:getAllKeywordsResponse"/>
@@ -609,7 +576,6 @@
 </operation>
 <operation name="searchByKeywords">
 <input wsam:Action="client.icat3.uk/ICAT/searchByKeywordsRequest" message="tns:searchByKeywords"/>
-
 <output wsam:Action="client.icat3.uk/ICAT/searchByKeywordsResponse" message="tns:searchByKeywordsResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/searchByKeywords/Fault/SessionException"/>
 </operation>
@@ -627,7 +593,6 @@
 <input wsam:Action="client.icat3.uk/ICAT/getMyInvestigationsIncludesRequest" message="tns:getMyInvestigationsIncludes"/>
 <output wsam:Action="client.icat3.uk/ICAT/getMyInvestigationsIncludesResponse" message="tns:getMyInvestigationsIncludesResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getMyInvestigationsIncludes/Fault/SessionException"/>
-
 </operation>
 <operation name="getMyInvestigationsIncludesPagination">
 <input wsam:Action="client.icat3.uk/ICAT/getMyInvestigationsIncludesPaginationRequest" message="tns:getMyInvestigationsIncludesPagination"/>
@@ -645,7 +610,6 @@
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/searchByUserIDPagination/Fault/SessionException"/>
 </operation>
 <operation name="searchByUserSurname">
-
 <input wsam:Action="client.icat3.uk/ICAT/searchByUserSurnameRequest" message="tns:searchByUserSurname"/>
 <output wsam:Action="client.icat3.uk/ICAT/searchByUserSurnameResponse" message="tns:searchByUserSurnameResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/searchByUserSurname/Fault/SessionException"/>
@@ -663,7 +627,6 @@
 <operation name="getAllInstruments">
 <input wsam:Action="client.icat3.uk/ICAT/getAllInstrumentsRequest" message="tns:getAllInstruments"/>
 <output wsam:Action="client.icat3.uk/ICAT/getAllInstrumentsResponse" message="tns:getAllInstrumentsResponse"/>
-
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getAllInstruments/Fault/SessionException"/>
 </operation>
 <operation name="listParameters">
@@ -681,7 +644,6 @@
 <output wsam:Action="client.icat3.uk/ICAT/listUserGroupsResponse" message="tns:listUserGroupsResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/listUserGroups/Fault/SessionException"/>
 </operation>
-
 <operation name="listFacilityCycles">
 <input wsam:Action="client.icat3.uk/ICAT/listFacilityCyclesRequest" message="tns:listFacilityCycles"/>
 <output wsam:Action="client.icat3.uk/ICAT/listFacilityCyclesResponse" message="tns:listFacilityCyclesResponse"/>
@@ -699,7 +661,6 @@
 </operation>
 <operation name="searchDatasetsBySample">
 <input wsam:Action="client.icat3.uk/ICAT/searchDatasetsBySampleRequest" message="tns:searchDatasetsBySample"/>
-
 <output wsam:Action="client.icat3.uk/ICAT/searchDatasetsBySampleResponse" message="tns:searchDatasetsBySampleResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/searchDatasetsBySample/Fault/SessionException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/searchDatasetsBySample/Fault/NoSuchObjectFoundException"/>
@@ -717,7 +678,6 @@
 </operation>
 <operation name="searchByRunNumber">
 <input wsam:Action="client.icat3.uk/ICAT/searchByRunNumberRequest" message="tns:searchByRunNumber"/>
-
 <output wsam:Action="client.icat3.uk/ICAT/searchByRunNumberResponse" message="tns:searchByRunNumberResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/searchByRunNumber/Fault/SessionException"/>
 </operation>
@@ -735,7 +695,6 @@
 <input wsam:Action="client.icat3.uk/ICAT/getInvestigationRequest" message="tns:getInvestigation"/>
 <output wsam:Action="client.icat3.uk/ICAT/getInvestigationResponse" message="tns:getInvestigationResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getInvestigation/Fault/SessionException"/>
-
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/getInvestigation/Fault/InsufficientPrivilegesException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/getInvestigation/Fault/NoSuchObjectFoundException"/>
 </operation>
@@ -753,7 +712,6 @@
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/getInvestigations/Fault/InsufficientPrivilegesException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/getInvestigations/Fault/NoSuchObjectFoundException"/>
 </operation>
-
 <operation name="getInvestigationsIncludes">
 <input wsam:Action="client.icat3.uk/ICAT/getInvestigationsIncludesRequest" message="tns:getInvestigationsIncludes"/>
 <output wsam:Action="client.icat3.uk/ICAT/getInvestigationsIncludesResponse" message="tns:getInvestigationsIncludesResponse"/>
@@ -771,7 +729,6 @@
 <operation name="getDatasetIncludes">
 <input wsam:Action="client.icat3.uk/ICAT/getDatasetIncludesRequest" message="tns:getDatasetIncludes"/>
 <output wsam:Action="client.icat3.uk/ICAT/getDatasetIncludesResponse" message="tns:getDatasetIncludesResponse"/>
-
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getDatasetIncludes/Fault/SessionException"/>
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/getDatasetIncludes/Fault/InsufficientPrivilegesException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/getDatasetIncludes/Fault/NoSuchObjectFoundException"/>
@@ -789,7 +746,6 @@
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getDatafile/Fault/SessionException"/>
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/getDatafile/Fault/InsufficientPrivilegesException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/getDatafile/Fault/NoSuchObjectFoundException"/>
-
 </operation>
 <operation name="getDatafiles">
 <input wsam:Action="client.icat3.uk/ICAT/getDatafilesRequest" message="tns:getDatafiles"/>
@@ -807,7 +763,6 @@
 <fault message="tns:ICATAPIException" name="ICATAPIException" wsam:Action="client.icat3.uk/ICAT/ingestMetadata/Fault/ICATAPIException"/>
 </operation>
 <operation name="downloadDatafile">
-
 <input wsam:Action="client.icat3.uk/ICAT/downloadDatafileRequest" message="tns:downloadDatafile"/>
 <output wsam:Action="client.icat3.uk/ICAT/downloadDatafileResponse" message="tns:downloadDatafileResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/downloadDatafile/Fault/SessionException"/>
@@ -825,7 +780,6 @@
 <input wsam:Action="client.icat3.uk/ICAT/downloadDatafilesRequest" message="tns:downloadDatafiles"/>
 <output wsam:Action="client.icat3.uk/ICAT/downloadDatafilesResponse" message="tns:downloadDatafilesResponse"/>
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/downloadDatafiles/Fault/SessionException"/>
-
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/downloadDatafiles/Fault/NoSuchObjectFoundException"/>
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/downloadDatafiles/Fault/InsufficientPrivilegesException"/>
 </operation>
@@ -843,7 +797,6 @@
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/checkDatasetDownloadAccess/Fault/NoSuchObjectFoundException"/>
 <fault message="tns:InsufficientPrivilegesException" name="InsufficientPrivilegesException" wsam:Action="client.icat3.uk/ICAT/checkDatasetDownloadAccess/Fault/InsufficientPrivilegesException"/>
 </operation>
-
 <operation name="getICATAPIVersion">
 <input wsam:Action="client.icat3.uk/ICAT/getICATAPIVersionRequest" message="tns:getICATAPIVersion"/>
 <output wsam:Action="client.icat3.uk/ICAT/getICATAPIVersionResponse" message="tns:getICATAPIVersionResponse"/>
@@ -861,7 +814,6 @@
 <fault message="tns:SessionException" name="SessionException" wsam:Action="client.icat3.uk/ICAT/getFacilityUserByFederalId/Fault/SessionException"/>
 <fault message="tns:NoSuchObjectFoundException" name="NoSuchObjectFoundException" wsam:Action="client.icat3.uk/ICAT/getFacilityUserByFederalId/Fault/NoSuchObjectFoundException"/>
 </operation>
-
 <operation name="getParameterByNameUnits">
 <input wsam:Action="client.icat3.uk/ICAT/getParameterByNameUnitsRequest" message="tns:getParameterByNameUnits"/>
 <output wsam:Action="client.icat3.uk/ICAT/getParameterByNameUnitsResponse" message="tns:getParameterByNameUnitsResponse"/>
@@ -879,7 +831,6 @@
 </operation>
 </portType>
 <binding name="ICATPortBinding" type="tns:ICAT">
-
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
 <operation name="get">
 <soap:operation soapAction=""/>
@@ -897,7 +848,6 @@
 </fault>
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
-
 </fault>
 <fault name="BadParameterException">
 <soap:fault name="BadParameterException" use="literal"/>
@@ -915,7 +865,6 @@
 <soap:body use="literal"/>
 </output>
 <fault name="SessionException">
-
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 <fault name="InsufficientPrivilegesException">
@@ -933,7 +882,6 @@
 <fault name="IcatInternalException">
 <soap:fault name="IcatInternalException" use="literal"/>
 </fault>
-
 </operation>
 <operation name="search">
 <soap:operation soapAction=""/>
@@ -951,7 +899,6 @@
 </fault>
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
-
 </fault>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
@@ -969,7 +916,6 @@
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 <fault name="InsufficientPrivilegesException">
-
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
 </fault>
 <fault name="NoSuchObjectFoundException">
@@ -987,7 +933,6 @@
 </operation>
 <operation name="update">
 <soap:operation soapAction=""/>
-
 <input>
 <soap:body use="literal"/>
 </input>
@@ -1005,7 +950,6 @@
 </fault>
 <fault name="ValidationException">
 <soap:fault name="ValidationException" use="literal"/>
-
 </fault>
 <fault name="IcatInternalException">
 <soap:fault name="IcatInternalException" use="literal"/>
@@ -1023,7 +967,6 @@
 <operation name="login">
 <soap:operation soapAction=""/>
 <input>
-
 <soap:body use="literal"/>
 </input>
 <output>
@@ -1041,7 +984,6 @@
 <output>
 <soap:body use="literal"/>
 </output>
-
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
@@ -1055,11 +997,28 @@
 <soap:body use="literal"/>
 </output>
 </operation>
+<operation name="addRule">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="SessionException">
+<soap:fault name="SessionException" use="literal"/>
+</fault>
+<fault name="IcatInternalException">
+<soap:fault name="IcatInternalException" use="literal"/>
+</fault>
+<fault name="BadParameterException">
+<soap:fault name="BadParameterException" use="literal"/>
+</fault>
+</operation>
 <operation name="loginAdmin">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
-
 </input>
 <output>
 <soap:body use="literal"/>
@@ -1077,7 +1036,6 @@
 <soap:body use="literal"/>
 </output>
 <fault name="ObjectAlreadyExistsException">
-
 <soap:fault name="ObjectAlreadyExistsException" use="literal"/>
 </fault>
 <fault name="SessionException">
@@ -1095,28 +1053,8 @@
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
-
 <fault name="NoSuchObjectFoundException">
 <soap:fault name="NoSuchObjectFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="addRule">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="SessionException">
-<soap:fault name="SessionException" use="literal"/>
-</fault>
-<fault name="IcatInternalException">
-<soap:fault name="IcatInternalException" use="literal"/>
-
-</fault>
-<fault name="BadParameterException">
-<soap:fault name="BadParameterException" use="literal"/>
 </fault>
 </operation>
 <operation name="removeRule">
@@ -1131,7 +1069,6 @@
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 <fault name="BadParameterException">
-
 <soap:fault name="BadParameterException" use="literal"/>
 </fault>
 <fault name="NoSuchObjectFoundException">
@@ -1149,7 +1086,6 @@
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
-
 <fault name="NoSuchUserException">
 <soap:fault name="NoSuchUserException" use="literal"/>
 </fault>
@@ -1167,7 +1103,6 @@
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
-
 </input>
 <output>
 <soap:body use="literal"/>
@@ -1185,7 +1120,6 @@
 <soap:body use="literal"/>
 </output>
 <fault name="SessionException">
-
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 </operation>
@@ -1203,7 +1137,6 @@
 </operation>
 <operation name="getKeywordsForUserType">
 <soap:operation soapAction=""/>
-
 <input>
 <soap:body use="literal"/>
 </input>
@@ -1221,7 +1154,6 @@
 </input>
 <output>
 <soap:body use="literal"/>
-
 </output>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
@@ -1239,7 +1171,6 @@
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 </operation>
-
 <operation name="searchByAdvancedPagination">
 <soap:operation soapAction=""/>
 <input>
@@ -1257,7 +1188,6 @@
 <input>
 <soap:body use="literal"/>
 </input>
-
 <output>
 <soap:body use="literal"/>
 </output>
@@ -1275,7 +1205,6 @@
 </output>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
-
 </fault>
 </operation>
 <operation name="getMyInvestigations">
@@ -1293,7 +1222,6 @@
 <operation name="getMyInvestigationsIncludes">
 <soap:operation soapAction=""/>
 <input>
-
 <soap:body use="literal"/>
 </input>
 <output>
@@ -1311,7 +1239,6 @@
 <output>
 <soap:body use="literal"/>
 </output>
-
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
@@ -1329,7 +1256,6 @@
 </fault>
 </operation>
 <operation name="searchByUserIDPagination">
-
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -1347,7 +1273,6 @@
 <soap:body use="literal"/>
 </input>
 <output>
-
 <soap:body use="literal"/>
 </output>
 <fault name="SessionException">
@@ -1365,7 +1290,6 @@
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
-
 </operation>
 <operation name="listInstruments">
 <soap:operation soapAction=""/>
@@ -1383,7 +1307,6 @@
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
-
 </input>
 <output>
 <soap:body use="literal"/>
@@ -1401,7 +1324,6 @@
 <soap:body use="literal"/>
 </output>
 <fault name="SessionException">
-
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 </operation>
@@ -1419,7 +1341,6 @@
 </operation>
 <operation name="listUserGroups">
 <soap:operation soapAction=""/>
-
 <input>
 <soap:body use="literal"/>
 </input>
@@ -1437,7 +1358,6 @@
 </input>
 <output>
 <soap:body use="literal"/>
-
 </output>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
@@ -1455,7 +1375,6 @@
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 </operation>
-
 <operation name="searchSamplesBySampleName">
 <soap:operation soapAction=""/>
 <input>
@@ -1473,7 +1392,6 @@
 <input>
 <soap:body use="literal"/>
 </input>
-
 <output>
 <soap:body use="literal"/>
 </output>
@@ -1491,7 +1409,6 @@
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
-
 </input>
 <output>
 <soap:body use="literal"/>
@@ -1509,7 +1426,6 @@
 <soap:body use="literal"/>
 </output>
 <fault name="SessionException">
-
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 </operation>
@@ -1527,7 +1443,6 @@
 </operation>
 <operation name="searchByRunNumberPagination">
 <soap:operation soapAction=""/>
-
 <input>
 <soap:body use="literal"/>
 </input>
@@ -1545,7 +1460,6 @@
 </input>
 <output>
 <soap:body use="literal"/>
-
 </output>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
@@ -1563,7 +1477,6 @@
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 <fault name="InsufficientPrivilegesException">
-
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
 </fault>
 <fault name="NoSuchObjectFoundException">
@@ -1581,7 +1494,6 @@
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
-
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
 </fault>
@@ -1599,7 +1511,6 @@
 </output>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
-
 </fault>
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
@@ -1617,7 +1528,6 @@
 <soap:body use="literal"/>
 </output>
 <fault name="SessionException">
-
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 <fault name="InsufficientPrivilegesException">
@@ -1635,7 +1545,6 @@
 <output>
 <soap:body use="literal"/>
 </output>
-
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
@@ -1653,7 +1562,6 @@
 </input>
 <output>
 <soap:body use="literal"/>
-
 </output>
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
@@ -1671,7 +1579,6 @@
 <soap:body use="literal"/>
 </input>
 <output>
-
 <soap:body use="literal"/>
 </output>
 <fault name="SessionException">
@@ -1689,7 +1596,6 @@
 <input>
 <soap:body use="literal"/>
 </input>
-
 <output>
 <soap:body use="literal"/>
 </output>
@@ -1707,7 +1613,6 @@
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
-
 </input>
 <output>
 <soap:body use="literal"/>
@@ -1725,7 +1630,6 @@
 <operation name="ingestMetadata">
 <soap:operation soapAction=""/>
 <input>
-
 <soap:body use="literal"/>
 </input>
 <output>
@@ -1743,7 +1647,6 @@
 <fault name="ICATAPIException">
 <soap:fault name="ICATAPIException" use="literal"/>
 </fault>
-
 </operation>
 <operation name="downloadDatafile">
 <soap:operation soapAction=""/>
@@ -1761,7 +1664,6 @@
 </fault>
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
-
 </fault>
 </operation>
 <operation name="downloadDataset">
@@ -1779,7 +1681,6 @@
 <soap:fault name="NoSuchObjectFoundException" use="literal"/>
 </fault>
 <fault name="InsufficientPrivilegesException">
-
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
 </fault>
 </operation>
@@ -1797,7 +1698,6 @@
 <fault name="NoSuchObjectFoundException">
 <soap:fault name="NoSuchObjectFoundException" use="literal"/>
 </fault>
-
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
 </fault>
@@ -1815,7 +1715,6 @@
 </fault>
 <fault name="NoSuchObjectFoundException">
 <soap:fault name="NoSuchObjectFoundException" use="literal"/>
-
 </fault>
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
@@ -1833,7 +1732,6 @@
 <soap:fault name="SessionException" use="literal"/>
 </fault>
 <fault name="NoSuchObjectFoundException">
-
 <soap:fault name="NoSuchObjectFoundException" use="literal"/>
 </fault>
 <fault name="InsufficientPrivilegesException">
@@ -1851,7 +1749,6 @@
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
-
 <fault name="InsufficientPrivilegesException">
 <soap:fault name="InsufficientPrivilegesException" use="literal"/>
 </fault>
@@ -1869,7 +1766,6 @@
 </fault>
 </operation>
 <operation name="getFacilityUserByFederalId">
-
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -1887,7 +1783,6 @@
 <operation name="getParameterByNameUnits">
 <soap:operation soapAction=""/>
 <input>
-
 <soap:body use="literal"/>
 </input>
 <output>
@@ -1905,7 +1800,6 @@
 <output>
 <soap:body use="literal"/>
 </output>
-
 <fault name="SessionException">
 <soap:fault name="SessionException" use="literal"/>
 </fault>
@@ -1923,10 +1817,9 @@
 </fault>
 </operation>
 </binding>
-
 <service name="ICATService">
 <port name="ICATPort" binding="tns:ICATPortBinding">
-<soap:address location="http://hepntl131.esc.rl.ac.uk:8080/ICATService/ICAT"/>
+<soap:address location="https://astra-gemini.esc.rl.ac.uk:8181/ICATService/ICAT"/>
 </port>
 </service>
 </definitions>
