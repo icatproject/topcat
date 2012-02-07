@@ -39,7 +39,7 @@ public class TDatafile implements Serializable {
     String serverName;
     String id;
     String name;
-    Long size;
+    Integer size;
     String format;
     String formatVersion;
     String formatType;
@@ -56,7 +56,7 @@ public class TDatafile implements Serializable {
         this.name = name;
     }
 
-    public TDatafile(String serverName, String id, String name, Long size, String format, String formatVersion,
+    public TDatafile(String serverName, String id, String name, Integer size, String format, String formatVersion,
             String formatType, Date createTime, String location) {
         this.serverName = serverName;
         this.id = id;
@@ -93,7 +93,7 @@ public class TDatafile implements Serializable {
         this.name = name;
     }
 
-    public void setFileSize(Long size) {
+    public void setFileSize(Integer size) {
         this.size = size;
     }
 
@@ -129,13 +129,13 @@ public class TDatafile implements Serializable {
         this.formatVersion = formatVersion;
     }
 
-    public Long getSize() {
+    public Integer getSize() {
         if (size == null)
-            return new Long(0);
+            return new Integer(0);
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 

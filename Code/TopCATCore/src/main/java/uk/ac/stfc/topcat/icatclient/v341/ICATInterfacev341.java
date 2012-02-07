@@ -2,7 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package uk.ac.stfc.topcat.icatclient.v331;
+
+package uk.ac.stfc.topcat.icatclient.v341;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,7 +12,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
@@ -29,12 +29,11 @@ import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
  * 
  * @author sn65
  */
-public class ICATInterfacev331 extends ICATWebInterfaceBase {
-
+public class ICATInterfacev341 extends ICATWebInterfaceBase {
     private ICAT service;
     private String serverName;
 
-    public ICATInterfacev331(String serverURL, String serverName) throws MalformedURLException {
+    public ICATInterfacev341(String serverURL, String serverName) throws MalformedURLException {
         service = new ICATService(new URL(serverURL), new QName("client.icat3.uk", "ICATService")).getICATPort();
         this.serverName = serverName;
     }
@@ -60,17 +59,25 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
     }
 
     public Boolean isSessionValid(String sessionId) {
-        Boolean result = new Boolean(false);
         try {
-            // TODO: Hack here because the old icat didn't have a method to
-            // check
-            // session validity
-            service.getAllKeywords(sessionId, KeywordType.ALL);
-            result = Boolean.TRUE;
-        } catch (SessionException_Exception ex) {
+            return new Boolean(service.isSessionValid(sessionId));
         } catch (javax.xml.ws.WebServiceException ex) {
         }
-        return result;
+        return Boolean.FALSE;
+    }
+
+    public String getUserSurname(String sessionId, String userId) {
+        try {
+            FacilityUser user = service.getFacilityUserByFederalId(sessionId, userId);
+            String surname = user.getLastName();
+            if (surname == null)
+                return userId;
+            return surname;
+        } catch (NoSuchObjectFoundException_Exception ex) {
+        } catch (javax.xml.ws.WebServiceException ex) {
+        } catch (SessionException_Exception ex) {
+        }
+        return userId;
     }
 
     public ArrayList<String> listInstruments(String sessionId) {
@@ -94,7 +101,25 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
     }
 
     public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
-        throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
+        ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
+        try {
+            // Get the ICAT webservice client and call get investigation types
+            List<FacilityCycle> fcList = service.listFacilityCycles(sessionId);
+            for (FacilityCycle fc : fcList) {
+                Date start = new Date();
+                Date end = new Date();
+                if (fc.getStartDate() != null)
+                    start = fc.getStartDate().toGregorianCalendar().getTime();
+                if (fc.getFinishDate() != null)
+                    end = fc.getFinishDate().toGregorianCalendar().getTime();
+                facilityCycles.add(new TFacilityCycle(fc.getDescription(), fc.getName(), start, end));
+            }
+        } catch (SessionException_Exception ex) {
+        } catch (java.lang.NullPointerException ex) {
+        } catch (Exception ex) {
+            throw new ICATMethodNotFoundException(ex.getMessage());
+        }
+        return facilityCycles;
     }
 
     public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
@@ -172,12 +197,15 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
             Datafile df = service.getDatafile(sessionId, Long.valueOf(datafileId));
             List<DatafileParameter> dfList = df.getDatafileParameterCollection();
             for (DatafileParameter dfParam : dfList) {
-                if (dfParam.isNumeric()) {
+                if (dfParam.getValueType() == ParameterValueType.NUMERIC) {
                     result.add(new TDatafileParameter(dfParam.getDatafileParameterPK().getName(), dfParam
                             .getDatafileParameterPK().getUnits(), dfParam.getNumericValue().toString()));
-                } else {
+                } else if (dfParam.getValueType() == ParameterValueType.STRING) {
                     result.add(new TDatafileParameter(dfParam.getDatafileParameterPK().getName(), dfParam
                             .getDatafileParameterPK().getUnits(), dfParam.getStringValue()));
+                } else if (dfParam.getValueType() == ParameterValueType.DATE_AND_TIME) {
+                    result.add(new TDatafileParameter(dfParam.getDatafileParameterPK().getName(), dfParam
+                            .getDatafileParameterPK().getUnits(), dfParam.getDateTimeValue().toString()));
                 }
             }
         } catch (SessionException_Exception ex) {
@@ -349,5 +377,4 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
                 format, formatVersion, formatType, createDate, datafile.getLocation());
     }
-
 }
