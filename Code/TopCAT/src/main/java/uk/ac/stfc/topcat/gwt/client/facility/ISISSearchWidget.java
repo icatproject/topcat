@@ -29,6 +29,8 @@ import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -241,6 +243,19 @@ public class ISISSearchWidget extends Composite {
         this.facilityName = facilityName;
         ListStore<Instrument> instruments = eventBus.getFacilityInstruments(facilityName);
         lstInstrument.setStore(instruments);
+        createLogoutHandler();
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                lstInstrument = new ListField<Instrument>();
+            }
+        });
     }
 
 }

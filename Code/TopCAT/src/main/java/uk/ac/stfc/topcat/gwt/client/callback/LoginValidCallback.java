@@ -5,6 +5,10 @@
 
 package uk.ac.stfc.topcat.gwt.client.callback;
 
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginInfoPanelUpdateEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -14,10 +18,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class LoginValidCallback implements AsyncCallback<Boolean> {
 
-    private String serverName;
+    private boolean autoLogin;
+    private String facilityName;
 
-    public LoginValidCallback(String serverName) {
-        this.serverName = serverName;
+    public LoginValidCallback(String facilityName, boolean autoLogin) {
+        this.autoLogin = autoLogin;
+        this.facilityName = facilityName;
     }
 
     @Override
@@ -26,7 +32,16 @@ public class LoginValidCallback implements AsyncCallback<Boolean> {
 
     @Override
     public void onSuccess(Boolean result) {
-        EventPipeLine.getInstance().updateLoginPanelStatus(serverName, result);
+        if (result) {
+            if (autoLogin) {
+                EventPipeLine.getEventBus().fireEventFromSource(new LoginEvent(facilityName), facilityName);
+            } else {
+                EventPipeLine.getEventBus().fireEventFromSource(new LoginInfoPanelUpdateEvent(facilityName),
+                        facilityName);
+            }
+        } else {
+            EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName), facilityName);
+        }
     }
 
 }

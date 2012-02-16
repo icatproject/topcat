@@ -107,15 +107,9 @@ public class HistoryManager implements ValueChangeHandler<String> {
      */
     public void processHistory(String history) {
         // First token will be special token or panel
-        if (history.startsWith("download")) { // download
-
-        } else if (history.startsWith("view")) {
+        if (history.startsWith("view")) {
             processHistoryString(history);
             tcWindowManager.processHistoryString(history);
-        } else {
-            // if(EventPipeLine.getInstance().getMainWindow()!=null)
-            // EventPipeLine.getInstance().getMainWindow().getMainPanel().selectPanelWithoutHistory("");
-            // tcWindowManager.closeAllWindows();
         }
     }
 

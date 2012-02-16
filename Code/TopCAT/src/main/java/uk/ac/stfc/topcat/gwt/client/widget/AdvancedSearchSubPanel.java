@@ -30,7 +30,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
+import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.callback.InvestigationSearchCallback;
+import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInstrumentEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddFacilityEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInstrumentEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
@@ -225,11 +234,11 @@ public class AdvancedSearchSubPanel extends Composite {
         layoutContainer.setBorders(true);
         instrumentList = new HashMap<String, ArrayList<Instrument>>();
         investigationTypeList = new HashMap<String, ArrayList<InvestigationType>>();
-    }
 
-    public void setFacilityList(ArrayList<Facility> facility) {
-        listFieldFacility.getStore().removeAll();
-        listFieldFacility.getStore().add(facility);
+        createAddFacilityHandler();
+        createAddInstrumentHandler();
+        createAddInvestigationHandler();
+        createLogoutHandler();
     }
 
     public ListField<InvestigationType> getListFieldInvestigationType() {
@@ -299,28 +308,6 @@ public class AdvancedSearchSubPanel extends Composite {
     }
 
     /**
-     * This methods sets the instrument list for a given facility
-     * 
-     * @param facility
-     * @param instrument
-     */
-    public void setFacilityInstrumentList(String facility, ArrayList<Instrument> instrument) {
-        instrumentList.put(facility, instrument);
-        updateListWidgets();
-    }
-
-    /**
-     * This method sets the investigation type list for a given facility.
-     * 
-     * @param facility
-     * @param invTypeList
-     */
-    public void setFacilityInvestigationTypeList(String facility, ArrayList<InvestigationType> invTypeList) {
-        investigationTypeList.put(facility, invTypeList);
-        updateListWidgets();
-    }
-
-    /**
      * Update List Widgets. instrument list, investigation types.
      */
     public void updateListWidgets() {
@@ -331,6 +318,9 @@ public class AdvancedSearchSubPanel extends Composite {
         // Add new list
         for (String facilityName : facilitySelectedList) {
             lstInstrument.getStore().add(instrumentList.get(facilityName));
+            if (investigationTypeList.get(facilityName) == null) {
+                continue;
+            }
             for (InvestigationType invType : investigationTypeList.get(facilityName)) {
                 boolean invTypeExists = false;
                 for (InvestigationType storeInvType : lstInvestigationTypes.getStore().getModels()) {
@@ -367,4 +357,60 @@ public class AdvancedSearchSubPanel extends Composite {
         txtFldRunNo.clear();
         txtFldGrantId.clear();
     }
+
+    /**
+     * Setup a handler to react to add facility events.
+     */
+    private void createAddFacilityHandler() {
+        AddFacilityEvent.register(EventPipeLine.getEventBus(), new AddFacilityEventHandler() {
+            @Override
+            public void addFacilities(AddFacilityEvent event) {
+                listFieldFacility.getStore().removeAll();
+                listFieldFacility.getStore().add(event.getFacilities());
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to AddInstrument events.
+     */
+    private void createAddInstrumentHandler() {
+        // react to a new set of instruments being added
+        AddInstrumentEvent.register(EventPipeLine.getEventBus(), new AddInstrumentEventHandler() {
+            @Override
+            public void addInstruments(AddInstrumentEvent event) {
+                instrumentList.put(event.getFacilityName(), event.getInstruments());
+                updateListWidgets();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to AddInvestigation events.
+     */
+    private void createAddInvestigationHandler() {
+        // react to a new set of instruments being added
+        AddInvestigationEvent.register(EventPipeLine.getEventBus(), new AddInvestigationEventHandler() {
+            @Override
+            public void addInvestigations(AddInvestigationEvent event) {
+                investigationTypeList.put(event.getFacilityName(), event.getInvestigations());
+                updateListWidgets();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                instrumentList.remove(event.getFacilityName());
+                investigationTypeList.remove(event.getFacilityName());
+                updateListWidgets();
+            }
+        });
+    }
+
 }

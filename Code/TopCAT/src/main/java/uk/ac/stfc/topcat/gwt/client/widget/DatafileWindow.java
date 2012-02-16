@@ -27,8 +27,10 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -340,6 +342,21 @@ public class DatafileWindow extends Window {
         pageBar.show();
     }
 
+    /**
+     * Get the list of facility names associated with the window.
+     * 
+     * @return a set of facility names
+     */
+    public Set<String> getFacilityNames() {
+        Set<String> facilityNames = new HashSet<String>();
+        for (DatasetModel dsm : inputDatasetModels) {
+            facilityNames.add(dsm.getFacilityName());
+        }
+        return facilityNames;
+    }
+    
+    
+    
     /**
      * Get the history of this window.
      * 

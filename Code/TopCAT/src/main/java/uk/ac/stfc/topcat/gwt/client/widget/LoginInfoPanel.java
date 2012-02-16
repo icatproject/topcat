@@ -21,12 +21,18 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
+
 /**
  * Imports
  */
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginInfoPanelUpdateEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.IconAlign;
@@ -40,86 +46,105 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
- * This is a widget that holds a facility information and has a button to login/logout of a facility.
+ * This is a widget that holds a facility information and has a button to
+ * login/logout of a facility.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
- * @since iCAT Version 3.3 
+ * @version 1.0, &nbsp; 30-APR-2010
+ * @since iCAT Version 3.3
  */
 public class LoginInfoPanel extends Composite {
-	Button btnLogin;	
-	private LabelField lblFieldFacility;
-	private HorizontalPanel horizontalPanel;
-	WaitDialog waitDialog;	
-	EventPipeLine eventPipeLine;
-	boolean validLogin;
-	TFacility facility;
-	public LoginInfoPanel() {
-		horizontalPanel = new HorizontalPanel();
-		horizontalPanel.setHorizontalAlign(HorizontalAlignment.RIGHT);
-		horizontalPanel.setSize("100%", "30px");
-				
-		lblFieldFacility = new LabelField("New LabelField");
-		TableData td_lblFieldFacility = new TableData();
-		td_lblFieldFacility.setHorizontalAlign(HorizontalAlignment.RIGHT);
-		horizontalPanel.add(lblFieldFacility, td_lblFieldFacility);
-		
-		btnLogin = new Button("Login");
-		btnLogin.setIconAlign(IconAlign.RIGHT);
-		btnLogin.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconLogin()));
-		TableData td_btnLogin = new TableData();
-		td_btnLogin.setHorizontalAlign(HorizontalAlignment.RIGHT);
-		horizontalPanel.add(btnLogin, td_btnLogin);
-		waitDialog = new WaitDialog();
-		waitDialog.hide();
-		btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>(){
+    Button btnLogin;
+    private LabelField lblFieldFacility;
+    private HorizontalPanel horizontalPanel;
+    WaitDialog waitDialog;
+    EventPipeLine eventPipeLine;
+    boolean validLogin;
+    TFacility facility;
 
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				if(validLogin)
-					eventPipeLine.facilityLogout(facility.getName());
-				else
-					eventPipeLine.showLoginWidget(facility.getName());
-			}
+    public LoginInfoPanel(EventPipeLine epl, TFacility name) {
+        eventPipeLine = epl;
+        facility = name;
 
-		});			
-		initComponent(horizontalPanel);
-		validLogin = false;		
-	}
+        horizontalPanel = new HorizontalPanel();
+        horizontalPanel.setHorizontalAlign(HorizontalAlignment.RIGHT);
+        horizontalPanel.setSize("100%", "30px");
 
-	public EventPipeLine getEventPipeLine() {
-		return eventPipeLine;
-	}
+        lblFieldFacility = new LabelField("New LabelField");
+        TableData td_lblFieldFacility = new TableData();
+        td_lblFieldFacility.setHorizontalAlign(HorizontalAlignment.RIGHT);
+        horizontalPanel.add(lblFieldFacility, td_lblFieldFacility);
+        lblFieldFacility.setText(facility.getName());
 
-	public void setEventPipeLine(EventPipeLine eventPipeLine) {
-		this.eventPipeLine = eventPipeLine;
-	}
+        btnLogin = new Button("Login");
+        btnLogin.setIconAlign(IconAlign.RIGHT);
+        btnLogin.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconLogin()));
+        TableData td_btnLogin = new TableData();
+        td_btnLogin.setHorizontalAlign(HorizontalAlignment.RIGHT);
+        horizontalPanel.add(btnLogin, td_btnLogin);
+        waitDialog = new WaitDialog();
+        waitDialog.hide();
 
-	public void setFacility(TFacility name){
-		facility=name;
-		lblFieldFacility.setText(facility.getName());	
-		horizontalPanel.layout();
-	}
-	
-	public TFacility getFacility(){
-		return facility;
-	}
-	
-	public String getFacilityName(){
-		return facility.getName();
-	}
-	
-	public void successLogin(){
-		validLogin = true;
-		btnLogin.setText("Logout");		
-	}
-	
-	public void successLogout(){
-		validLogin = false;
-		btnLogin.setText("Login");
-	}
+        btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (validLogin)
+                    eventPipeLine.facilityLogout(facility.getName());
+                else
+                    eventPipeLine.showLoginWidget(facility.getName());
+            }
+        });
 
-        public boolean isValidLogin(){
-            return validLogin;
-        }
+        initComponent(horizontalPanel);
+        validLogin = false;
+
+        LoginEvent.registerToSource(EventPipeLine.getEventBus(), facility.getName(), new LoginEventHandler() {
+            @Override
+            public void login(LoginEvent event) {
+                validLogin = true;
+                btnLogin.setText("Logout");
+                EventPipeLine.getEventBus().fireEventFromSource(new LoginInfoPanelUpdateEvent(event.getFacilityName()),
+                        event.getFacilityName());
+            }
+        });
+
+        LogoutEvent.registerToSource(EventPipeLine.getEventBus(), facility.getName(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                validLogin = false;
+                btnLogin.setText("Login");
+                EventPipeLine.getEventBus().fireEventFromSource(new LoginInfoPanelUpdateEvent(event.getFacilityName()),
+                        event.getFacilityName());
+            }
+        });
+
+        horizontalPanel.layout();
+    }
+
+    public EventPipeLine getEventPipeLine() {
+        return eventPipeLine;
+    }
+
+    public void setEventPipeLine(EventPipeLine eventPipeLine) {
+        this.eventPipeLine = eventPipeLine;
+    }
+
+    public void setFacility(TFacility name) {
+        facility = name;
+        lblFieldFacility.setText(facility.getName());
+        horizontalPanel.layout();
+    }
+
+    public TFacility getFacility() {
+        return facility;
+    }
+
+    public String getFacilityName() {
+        return facility.getName();
+    }
+
+    public boolean isValidLogin() {
+        return validLogin;
+    }
 }

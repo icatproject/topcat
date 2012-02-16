@@ -34,6 +34,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddMyInvestigationEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -161,47 +165,9 @@ public class MyDataPanel extends Composite {
 
         setMonitorWindowResize(true);
         initComponent(contentPanel);
-    }
 
-    /**
-     * Remove all investigations for the given facility.
-     * 
-     * @param facilityName
-     */
-    public void clearInvestigationList(String facilityName) {
-        @SuppressWarnings("unchecked")
-        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
-        if (investList != null) {
-            for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
-                if (it.next().getFacilityName().equals(facilityName)) {
-                    it.remove();
-                }
-            }
-            invPageProxy.setData(investList);
-            toolBar.refresh();
-        }
-    }
-
-    /**
-     * This method sets the result investigations that will be displayed in the
-     * results table.
-     * 
-     * @param facilityName
-     * @param invList
-     *            list of investigations
-     */
-    public void addInvestigations(String facilityName, ArrayList<TopcatInvestigation> invList) {
-        clearInvestigationList(facilityName);
-        @SuppressWarnings("unchecked")
-        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
-        if (investList != null) {
-            investList.addAll(invList);
-        } else {
-            investList = new ArrayList<TopcatInvestigation>();
-            investList.addAll(invList);
-        }
-        invPageProxy.setData(investList);
-        toolBar.refresh();
+        createAddMyInvestigationHandler();
+        createLogoutHandler();
     }
 
     public void setEventBus(EventPipeLine eventBus) {
@@ -215,5 +181,60 @@ public class MyDataPanel extends Composite {
      */
     public void setGridWidth(int width) {
         grid.setWidth(width);
+    }
+
+    /**
+     * Setup a handler to react to AddMyInvestigation events.
+     */
+    private void createAddMyInvestigationHandler() {
+        // react to a new set of instruments being added
+        AddMyInvestigationEvent.register(EventPipeLine.getEventBus(), new AddMyInvestigationEventHandler() {
+            @Override
+            public void addMyInvestigations(AddMyInvestigationEvent event) {
+
+                clearInvestigationList(event.getFacilityName());
+                @SuppressWarnings("unchecked")
+                List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
+                if (investList != null) {
+                    investList.addAll(event.getMyInvestigations());
+                } else {
+                    investList = new ArrayList<TopcatInvestigation>();
+                    investList.addAll(event.getMyInvestigations());
+                }
+                invPageProxy.setData(investList);
+                toolBar.refresh();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                clearInvestigationList(event.getFacilityName());
+            }
+        });
+    }
+
+    /**
+     * Remove all investigations for the given facility.
+     * 
+     * @param facilityName
+     */
+    private void clearInvestigationList(String facilityName) {
+        @SuppressWarnings("unchecked")
+        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
+        if (investList != null) {
+            for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
+                if (it.next().getFacilityName().equals(facilityName)) {
+                    it.remove();
+                }
+            }
+            invPageProxy.setData(investList);
+            toolBar.refresh();
+        }
     }
 }

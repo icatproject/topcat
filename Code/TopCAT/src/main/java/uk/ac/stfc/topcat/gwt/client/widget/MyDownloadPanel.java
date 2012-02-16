@@ -35,6 +35,10 @@ import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddMyDownloadEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
 import com.extjs.gxt.ui.client.Style;
@@ -190,6 +194,8 @@ public class MyDownloadPanel extends Composite {
 
         setMonitorWindowResize(true);
         initComponent(contentPanel);
+        createAddMyDownloadHandler();
+        createLogoutHandler();
     }
 
     /**
@@ -206,27 +212,6 @@ public class MyDownloadPanel extends Composite {
         }
         downloadList.add(dlm);
         proxy.setData(downloadList);
-        toolBar.refresh();
-    }
-
-    /**
-     * Add a list of downloads.
-     * 
-     * @param dlms
-     *            a list of DownloadModels
-     */
-    public void addDownloads(List<DownloadModel> dlms) {
-        loadDownloads(dlms);
-        toolBar.refresh();
-    }
-
-    /**
-     * Remove all downloads for the given facility.
-     * 
-     * @param facilityName
-     */
-    public void clearDownloads(String facilityName) {
-        clearDownloadList(facilityName);
         toolBar.refresh();
     }
 
@@ -339,4 +324,30 @@ public class MyDownloadPanel extends Composite {
         });
     }
 
+    /**
+     * Setup a handler to react to AddMyDownload events.
+     */
+    private void createAddMyDownloadHandler() {
+        // react to a new set of instruments being added
+        AddMyDownloadEvent.register(EventPipeLine.getEventBus(), new AddMyDownloadEventHandler() {
+            @Override
+            public void addMyDownloads(AddMyDownloadEvent event) {
+                loadDownloads(event.getMyDownloads());
+                toolBar.refresh();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                clearDownloadList(event.getFacilityName());
+                toolBar.refresh();
+            }
+        });
+    }
 }

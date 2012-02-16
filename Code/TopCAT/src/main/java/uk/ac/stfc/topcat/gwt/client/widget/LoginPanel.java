@@ -21,61 +21,72 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
+
 /**
  * Imports
  */
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddFacilityEventHandler;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+
 /**
  * This is a widget that holds logininfopanel for each facility (ICAT instance).
- * It is created dynamically while the TopCAT is loading in the browser by quering the server to get the list of facilities.
+ * It is created dynamically while the TopCAT is loading in the browser by
+ * quering the server to get the list of facilities.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class LoginPanel extends Composite {
-	private VerticalPanel verticalPanel;
-	HashMap<String ,LoginInfoPanel> listFacilityLogin;
-	public LoginPanel() {
-		listFacilityLogin = new HashMap<String,LoginInfoPanel>();
-		verticalPanel = new VerticalPanel();
-		verticalPanel.setHorizontalAlign(HorizontalAlignment.RIGHT);
-		initComponent(verticalPanel);
-	}
+    private VerticalPanel verticalPanel;
+    HashMap<String, LoginInfoPanel> listFacilityLogin;
 
-	protected VerticalPanel getVerticalPanel() {
-		return verticalPanel;
-	}
+    public LoginPanel() {
+        listFacilityLogin = new HashMap<String, LoginInfoPanel>();
+        verticalPanel = new VerticalPanel();
+        verticalPanel.setHorizontalAlign(HorizontalAlignment.RIGHT);
+        initComponent(verticalPanel);
+        createAddFacilityHandler();
+    }
 
-	public LoginInfoPanel getFacilityLoginInfoPanel(String facilityName){
-		return listFacilityLogin.get(facilityName);		
-	}
-	
-	/**
-	 * Creates the LoginInfoPanel for each facility and added to the widget
-	 * @param eventPipeLine
-	 * @param facilities
-	 */
-	public void createICATLoginLinks(EventPipeLine eventPipeLine,ArrayList<TFacility> facilities) {
-		verticalPanel.removeAll();
-		listFacilityLogin.clear();
-		for(TFacility facility: facilities) {
-			//create a link which opens the login widget
-			LoginInfoPanel infoPanel = new LoginInfoPanel();
-			infoPanel.setFacility(facility);
-			infoPanel.setEventPipeLine(eventPipeLine);
-			listFacilityLogin.put(facility.getName(),infoPanel);
-			verticalPanel.add(infoPanel);
-		}
-		verticalPanel.layout();
-	}
+    protected VerticalPanel getVerticalPanel() {
+        return verticalPanel;
+    }
+
+    public LoginInfoPanel getFacilityLoginInfoPanel(String facilityName) {
+        return listFacilityLogin.get(facilityName);
+    }
+
+    /**
+     * Setup a handler to react to add facility events.
+     */
+    private void createAddFacilityHandler() {
+        AddFacilityEvent.register(EventPipeLine.getEventBus(), new AddFacilityEventHandler() {
+            @Override
+            public void addFacilities(AddFacilityEvent event) {
+                verticalPanel.removeAll();
+                listFacilityLogin.clear();
+                for (TFacility facility : event.getTFacilities()) {
+                    // create a link which opens the login widget
+                    LoginInfoPanel infoPanel = new LoginInfoPanel(EventPipeLine.getInstance(), facility);
+                    infoPanel.setFacility(facility);
+                    infoPanel.setEventPipeLine(EventPipeLine.getInstance());
+                    listFacilityLogin.put(facility.getName(), infoPanel);
+                    verticalPanel.add(infoPanel);
+                }
+                verticalPanel.layout();
+                EventPipeLine.getInstance().checkLoginStatus();
+            }
+        });
+    }
 
 }
