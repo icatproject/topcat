@@ -21,10 +21,13 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
+
 /**
  * Imports
  */
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
+import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -46,96 +49,101 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 /**
  * This class is a widget for login window.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class LoginWidget extends Window {
 
-	private LoginInterface loginHandler = null;
-	private TextField<String> txtFldPassword;
-	private TextField<String> txtFldUsername;
-	private Button btnLogin;
-	private String facilityName;
-	public LoginWidget() {
-		//Auto focus to username text box
-		addListener(Events.OnFocus, new Listener<ComponentEvent>() {
-			public void handleEvent(ComponentEvent e) {
-				txtFldUsername.focus();
-			}
-		});
-		setBlinkModal(true);
-		setModal(true);
+    private LoginInterface loginHandler = null;
+    private TextField<String> txtFldPassword;
+    private TextField<String> txtFldUsername;
+    private Button btnLogin;
+    private String facilityName;
 
-		setHeading("New Window");
-		RowLayout rowLayout=new RowLayout(Orientation.VERTICAL);		
-		setLayout(rowLayout);
-		
-		FlexTable flexTable = new FlexTable();
-		flexTable.setSize("304px", "170px");
-		
-		LabelField lblfldUsername = new LabelField("Username");
-		flexTable.setWidget(0, 0, lblfldUsername);
-		
-		txtFldUsername = new TextField<String>();
-		flexTable.setWidget(0, 1, txtFldUsername);
-		txtFldUsername.setFieldLabel("New TextField");
-		
-		LabelField lblfldPassword = new LabelField("Password");
-		flexTable.setWidget(1, 0, lblfldPassword);
-		
-		txtFldPassword = new TextField<String>();
-		//On enter key in password box. fire click on login button.
-		txtFldPassword.addListener(Events.SpecialKey, new Listener<FieldEvent>() {
-			public void handleEvent(FieldEvent e) {
-				if(e.getKeyCode() == KeyCodes.KEY_ENTER){
-					btnLogin.fireEvent(Events.Select);
-				}
-			}
-		});
-		txtFldPassword.setPassword(true);
-		flexTable.setWidget(1, 1, txtFldPassword);
-		txtFldPassword.setFieldLabel("New TextField");
-		
-		btnLogin = new com.extjs.gxt.ui.client.widget.button.Button("Login");
-		btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			public void componentSelected(ButtonEvent ce) {
-				if(loginHandler!=null)
-					loginHandler.onLoginOk(facilityName,(String)txtFldUsername.getValue(), (String)txtFldPassword.getValue());				
-			}
-		});
-		flexTable.setWidget(2, 0, btnLogin);
-		btnLogin.setSize("50", "25");
-		
-		com.extjs.gxt.ui.client.widget.button.Button btnCancel = new com.extjs.gxt.ui.client.widget.button.Button("Cancel");
-		btnCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			public void componentSelected(ButtonEvent ce) {
-				if(loginHandler!=null)
-					loginHandler.onLoginCancel();				
-			}
-		});
+    public LoginWidget() {
+        // Auto focus to username text box
+        addListener(Events.OnFocus, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent e) {
+                txtFldUsername.focus();
+            }
+        });
+        setBlinkModal(true);
+        setModal(true);
 
-		flexTable.setWidget(2, 1, btnCancel);
-		btnCancel.setSize("50", "25");
-		flexTable.getCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER);
-		
-		add(flexTable);
-		flexTable.getCellFormatter().setVerticalAlignment(2, 0, HasVerticalAlignment.ALIGN_MIDDLE);
-	}
+        setHeading("New Window");
+        RowLayout rowLayout = new RowLayout(Orientation.VERTICAL);
+        setLayout(rowLayout);
 
-	public void setLoginHandler(LoginInterface loginHandler){
-		this.loginHandler = loginHandler;
-	}
-	
-	public void setFacilityName(String facilityName) {
-		this.facilityName = facilityName;
-		setHeading("Login to "+facilityName);		
-	}
-	
-	public String getFacilityName() {
-		return this.facilityName;
-	}
-	
+        FlexTable flexTable = new FlexTable();
+        flexTable.setSize("304px", "170px");
+
+        LabelField lblfldUsername = new LabelField("Username");
+        flexTable.setWidget(0, 0, lblfldUsername);
+
+        txtFldUsername = new TextField<String>();
+        flexTable.setWidget(0, 1, txtFldUsername);
+        txtFldUsername.setFieldLabel("New TextField");
+
+        LabelField lblfldPassword = new LabelField("Password");
+        flexTable.setWidget(1, 0, lblfldPassword);
+
+        txtFldPassword = new TextField<String>();
+        // On enter key in password box. fire click on login button.
+        txtFldPassword.addListener(Events.SpecialKey, new Listener<FieldEvent>() {
+            public void handleEvent(FieldEvent e) {
+                if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    btnLogin.fireEvent(Events.Select);
+                }
+            }
+        });
+        txtFldPassword.setPassword(true);
+        flexTable.setWidget(1, 1, txtFldPassword);
+        txtFldPassword.setFieldLabel("New TextField");
+
+        btnLogin = new com.extjs.gxt.ui.client.widget.button.Button("Login");
+        btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                if (loginHandler != null)
+                    loginHandler.onLoginOk(facilityName, (String) txtFldUsername.getValue(),
+                            (String) txtFldPassword.getValue());
+            }
+        });
+        flexTable.setWidget(2, 0, btnLogin);
+        btnLogin.setSize("50", "25");
+
+        com.extjs.gxt.ui.client.widget.button.Button btnCancel = new com.extjs.gxt.ui.client.widget.button.Button(
+                "Cancel");
+        btnCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                if (loginHandler != null)
+                    loginHandler.onLoginCancel();
+                EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName), facilityName);
+            }
+        });
+
+        flexTable.setWidget(2, 1, btnCancel);
+        btnCancel.setSize("50", "25");
+        flexTable.getCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER);
+
+        add(flexTable);
+        flexTable.getCellFormatter().setVerticalAlignment(2, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+    }
+
+    public void setLoginHandler(LoginInterface loginHandler) {
+        this.loginHandler = loginHandler;
+    }
+
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
+        setHeading("Login to " + facilityName);
+    }
+
+    public String getFacilityName() {
+        return this.facilityName;
+    }
+
     /**
      * Show Login Widget. First clear out password. If user name exists focus on
      * password.

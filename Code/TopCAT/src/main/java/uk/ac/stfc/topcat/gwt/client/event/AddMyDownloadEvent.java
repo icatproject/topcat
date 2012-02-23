@@ -25,8 +25,8 @@ public class AddMyDownloadEvent extends GwtEvent<AddMyDownloadEventHandler> {
     private final String facilityName;
     private final ArrayList<DownloadModel> myDownloads;
 
-    public AddMyDownloadEvent(final String facility, final ArrayList<DownloadModel> myDownloads) {
-        this.facilityName = facility;
+    public AddMyDownloadEvent(final String facilityName, final ArrayList<DownloadModel> myDownloads) {
+        this.facilityName = facilityName;
         this.myDownloads = myDownloads;
     }
 

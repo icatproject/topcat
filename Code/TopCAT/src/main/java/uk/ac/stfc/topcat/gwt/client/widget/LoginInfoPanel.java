@@ -29,7 +29,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
-import uk.ac.stfc.topcat.gwt.client.event.LoginInfoPanelUpdateEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginCheckCompleteEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
@@ -104,8 +104,10 @@ public class LoginInfoPanel extends Composite {
             public void login(LoginEvent event) {
                 validLogin = true;
                 btnLogin.setText("Logout");
-                EventPipeLine.getEventBus().fireEventFromSource(new LoginInfoPanelUpdateEvent(event.getFacilityName()),
-                        event.getFacilityName());
+                if (event.isStatusCheck()) {
+                    EventPipeLine.getEventBus().fireEventFromSource(
+                            new LoginCheckCompleteEvent(event.getFacilityName()), event.getFacilityName());
+                }
             }
         });
 
@@ -114,34 +116,14 @@ public class LoginInfoPanel extends Composite {
             public void logout(LogoutEvent event) {
                 validLogin = false;
                 btnLogin.setText("Login");
-                EventPipeLine.getEventBus().fireEventFromSource(new LoginInfoPanelUpdateEvent(event.getFacilityName()),
-                        event.getFacilityName());
+                if (event.isStatusCheck()) {
+                    EventPipeLine.getEventBus().fireEventFromSource(
+                            new LoginCheckCompleteEvent(event.getFacilityName()), event.getFacilityName());
+                }
             }
         });
 
         horizontalPanel.layout();
-    }
-
-    public EventPipeLine getEventPipeLine() {
-        return eventPipeLine;
-    }
-
-    public void setEventPipeLine(EventPipeLine eventPipeLine) {
-        this.eventPipeLine = eventPipeLine;
-    }
-
-    public void setFacility(TFacility name) {
-        facility = name;
-        lblFieldFacility.setText(facility.getName());
-        horizontalPanel.layout();
-    }
-
-    public TFacility getFacility() {
-        return facility;
-    }
-
-    public String getFacilityName() {
-        return facility.getName();
     }
 
     public boolean isValidLogin() {

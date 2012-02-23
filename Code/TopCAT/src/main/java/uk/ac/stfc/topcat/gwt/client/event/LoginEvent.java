@@ -20,13 +20,40 @@ public class LoginEvent extends GwtEvent<LoginEventHandler> {
     }
 
     private final String facilityName;
+    private final boolean statusCheck;
 
-    public LoginEvent(final String facility) {
-        this.facilityName = facility;
+    /**
+     * @param facilityName
+     *            the name of the facility
+     */
+    public LoginEvent(final String facilityName) {
+        this.facilityName = facilityName;
+        this.statusCheck = false;
     }
 
+    /**
+     * @param facilityName
+     *            the name of the facility
+     * @param statusCheck
+     *            true if we are just doing a check on status
+     */
+    public LoginEvent(final String facilityName, boolean statusCheck) {
+        this.facilityName = facilityName;
+        this.statusCheck = statusCheck;
+    }
+
+    /**
+     * @return the name of the facility
+     */
     public String getFacilityName() {
         return this.facilityName;
+    }
+
+    /**
+     * @return true if we are just doing a check on status
+     */
+    public boolean isStatusCheck() {
+        return statusCheck;
     }
 
     @Override

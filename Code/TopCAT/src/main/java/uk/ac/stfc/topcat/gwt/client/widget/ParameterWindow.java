@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
+
 /**
  * Imports
  */
@@ -30,6 +31,11 @@ import java.util.List;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
@@ -49,185 +55,295 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
- * This class implements the gxt floating window which shows the list of parameters.
+ * This class implements the gxt floating window which shows the list of
+ * parameters.
  * 
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class ParameterWindow extends Window {
-	private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
 
-	private ListStore<ParameterModel> parameterList;
-	private boolean historyVerified;
-	private String facilityName;
-	private String datafileId;
-	private String datafileName;
-	public ParameterWindow() {
-		//Listener called when the parameter window is closed.
-		addWindowListener(new WindowListener() {
-			public void windowHide(WindowEvent we) {
-				//Update the history to notify the close of parameter window
-				EventPipeLine.getInstance().getHistoryManager().updateHistory();
-			}
-		});		
-		parameterList = new ListStore<ParameterModel>();
-		setHeading("");
-		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-		setLayout(new RowLayout(Orientation.VERTICAL));
-		
-		ToolBar toolBar = new ToolBar();
-		
-		Button btnExport = new Button("Export");
-		btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			public void componentSelected(ButtonEvent ce) {
-				EventPipeLine.getInstance().downloadParametersData(facilityName,datafileId);
-			}
-		});
-		toolBar.add(btnExport);
-		
-		SeparatorToolItem separatorToolItem = new SeparatorToolItem();
-		toolBar.add(separatorToolItem);
-		add(toolBar);
-		
-		ColumnConfig clmncnfgName = new ColumnConfig("name", "Name", 150);
-		configs.add(clmncnfgName);
-		
-		ColumnConfig clmncnfgUnits = new ColumnConfig("units", "Units", 178);
-		configs.add(clmncnfgUnits);
-		
-		ColumnConfig clmncnfgValue = new ColumnConfig("value", "Value", 150);
-		configs.add(clmncnfgValue);
-		
-		Grid<ParameterModel> grid = new Grid<ParameterModel>(parameterList, new ColumnModel(configs));
-		add(grid);
-		grid.setSize("661px", "430px");
-		grid.setAutoWidth(true);
-		grid.setBorders(true);
-		setSize("670px","430px");
-	}
+    private ListStore<ParameterModel> parameterList;
+    private boolean historyVerified;
+    private String facilityName;
+    private String datafileId;
+    private String datafileName;
+    private boolean awaitingLogin;
 
-	/**
-	 * @return the facility name to which the parameter window is displaying
-	 */
-	public String getFacilityName() {
-		return facilityName;
-	}
+    public ParameterWindow() {
+        // Listener called when the parameter window is closed.
+        addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                // Update the history to notify the close of parameter window
+                EventPipeLine.getInstance().getHistoryManager().updateHistory();
+            }
+        });
+        parameterList = new ListStore<ParameterModel>();
+        setHeading("");
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+        setLayout(new RowLayout(Orientation.VERTICAL));
 
-	/**
-	 * @return the datafile id of the parameters that parameter window is displaying
-	 */
-	public String getDatafileId() {
-		return datafileId;
-	}
+        ToolBar toolBar = new ToolBar();
 
-	/**
-	 * @return the datafile name of the parameters that parameter window is displaying
-	 */
-	public String getDatafileName() {
-		return datafileName;
-	}
+        Button btnExport = new Button("Export");
+        btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                EventPipeLine.getInstance().downloadParametersData(facilityName, datafileId);
+            }
+        });
+        toolBar.add(btnExport);
 
-	/**
-	 * This method sets the datafile name.
-	 * @param datafileName
-	 */
-	public void setDatafileName(String datafileName) {
-		this.datafileName = datafileName;
-		setHeading("Datafile: "+datafileName);
-	}
+        SeparatorToolItem separatorToolItem = new SeparatorToolItem();
+        toolBar.add(separatorToolItem);
+        add(toolBar);
 
-	/**
-	 * This method sets the datafile information of the parameter window, this will call
-	 * the AJAX method to get the parameters information from the server and displayed in
-	 * this window.
-	 * @param facilityName iCAT instance name
-	 * @param datafileId   Datafile id
-	 */
-	public void setDatafileInfo(String facilityName,String datafileId) {
-		this.facilityName=facilityName;
-		this.datafileId=datafileId;
-		utilityService.getDatafileParameters(facilityName, datafileId, new AsyncCallback<ArrayList<ParameterModel>>() {
-			@Override
-			public void onSuccess(ArrayList<ParameterModel> result) {
-				setParameterList(result);
-				if(result.size()==0){ //If there are no parameters then information message dialog is displayed 
-					EventPipeLine.getInstance().showErrorDialog("No Parameters");
-					hide();
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				parameterList.removeAll();
-				hide();
-			}
-		});
-	}
-	
-	/**
-	 * This method sets the parameters that will be displayed in the window.
-	 * @param parameterList list of parameters
-	 */
-	public void setParameterList(ArrayList<ParameterModel> parameterList) {
-		this.parameterList.removeAll();
-		this.parameterList.add(parameterList);
-	}
-	
-	/**
-	 * This method sets the parameters that will be displayed in the window.
-	 * @param parameterList list of parameters
-	 */
-	public void setParameterList(ListStore<ParameterModel> parameterList) {
-		this.parameterList.removeAll();
-		this.parameterList.add(parameterList.getModels());
-	}
-	
-	/**
-	 * this method returns all the parameters displayed in the window 
-	 * @return
-	 */
-	public ListStore<ParameterModel> getParameterList() {
-		return parameterList;
-	}
+        ColumnConfig clmncnfgName = new ColumnConfig("name", "Name", 150);
+        configs.add(clmncnfgName);
 
-	/**
-	 * @return the history string corresponding to current window.
-	 */
-	public String getHistoryString() {
-		String history="";
-		history+=HistoryManager.seperatorModel+HistoryManager.seperatorToken+"Model"+HistoryManager.seperatorKeyValues+"Parameter";
-		history+=HistoryManager.seperatorToken+"SN"+HistoryManager.seperatorKeyValues+facilityName;		
-		history+=HistoryManager.seperatorToken+"DFId"+HistoryManager.seperatorKeyValues+datafileId;
-		history+=HistoryManager.seperatorToken+"DFN"+HistoryManager.seperatorKeyValues+datafileName;
-		return history;
-	}
+        ColumnConfig clmncnfgUnits = new ColumnConfig("units", "Units", 178);
+        configs.add(clmncnfgUnits);
 
-	/**
-	 * This method compares the input information with the current window information (such as datafile id and server name).
-	 * if the match then they return true otherwise false 
-	 */
-	public boolean isSameModel(String ServerName,String datafileId){
-		if(facilityName.compareTo(ServerName)==0&&this.datafileId.compareTo(datafileId)==0)return true;
-		return false;		
-	}
-	
-	/**
-	 * @return the historyVerified flag
-	 */
-	public boolean isHistoryVerified() {
-		return historyVerified;
-	}
+        ColumnConfig clmncnfgValue = new ColumnConfig("value", "Value", 150);
+        configs.add(clmncnfgValue);
 
-	/**
-	 * Sets the history verified flag
-	 * @param historyVerified
-	 */
-	public void setHistoryVerified(boolean historyVerified) {
-		this.historyVerified = historyVerified;
-	}
+        Grid<ParameterModel> grid = new Grid<ParameterModel>(parameterList, new ColumnModel(configs));
+        add(grid);
+        grid.setSize("661px", "430px");
+        grid.setAutoWidth(true);
+        grid.setBorders(true);
+        setSize("670px", "430px");
+        awaitingLogin = false;
+        createLoginHandler();
+        createLogoutHandler();
+    }
 
+    /**
+     * @return the facility name to which the parameter window is displaying
+     */
+    public String getFacilityName() {
+        return facilityName;
+    }
+
+    /**
+     * @return the datafile id of the parameters that parameter window is
+     *         displaying
+     */
+    public String getDatafileId() {
+        return datafileId;
+    }
+
+    /**
+     * @return the datafile name of the parameters that parameter window is
+     *         displaying
+     */
+    public String getDatafileName() {
+        return datafileName;
+    }
+
+    /**
+     * This method sets the datafile name.
+     * 
+     * @param datafileName
+     */
+    public void setDatafileName(String datafileName) {
+        this.datafileName = datafileName;
+        setHeading("Datafile: " + datafileName);
+    }
+
+    /**
+     * This method sets the datafile information of the parameter window, this
+     * will call the AJAX method to get the parameters information from the
+     * server and displayed in this window.
+     * 
+     * @param facilityName
+     *            iCAT instance name
+     * @param datafileId
+     *            Datafile id
+     */
+    public void setDatafileInfo(String facilityName, String datafileId) {
+        this.facilityName = facilityName;
+        this.datafileId = datafileId;
+        if (EventPipeLine.getInstance().getLoggedInFacilities().contains(facilityName)) {
+            awaitingLogin = false;
+            loadData();
+        } else {
+            awaitingLogin = true;
+        }
+    }
+
+    /**
+     * This method sets the parameters that will be displayed in the window.
+     * 
+     * @param parameterList
+     *            list of parameters
+     */
+    private void setParameterList(ArrayList<ParameterModel> parameterList) {
+        this.parameterList.removeAll();
+        this.parameterList.add(parameterList);
+    }
+
+    /**
+     * @return the history string corresponding to current window.
+     */
+    public String getHistoryString() {
+        String history = "";
+        history += HistoryManager.seperatorModel + HistoryManager.seperatorToken + "Model"
+                + HistoryManager.seperatorKeyValues + "Parameter";
+        history += HistoryManager.seperatorToken + "SN" + HistoryManager.seperatorKeyValues + facilityName;
+        history += HistoryManager.seperatorToken + "DFId" + HistoryManager.seperatorKeyValues + datafileId;
+        history += HistoryManager.seperatorToken + "DFN" + HistoryManager.seperatorKeyValues + datafileName;
+        return history;
+    }
+
+    /**
+     * This method compares the input information with the current window
+     * information (such as datafile id and server name). if the match then they
+     * return true otherwise false
+     */
+    public boolean isSameModel(String ServerName, String datafileId) {
+        if (facilityName.compareTo(ServerName) == 0 && this.datafileId.compareTo(datafileId) == 0)
+            return true;
+        return false;
+    }
+
+    /**
+     * @return the historyVerified flag
+     */
+    public boolean isHistoryVerified() {
+        return historyVerified;
+    }
+
+    /**
+     * Sets the history verified flag
+     * 
+     * @param historyVerified
+     */
+    public void setHistoryVerified(boolean historyVerified) {
+        this.historyVerified = historyVerified;
+    }
+
+    @Override
+    public void show() {
+        if (awaitingLogin || !EventPipeLine.getInstance().getLoggedInFacilities().contains(facilityName)) {
+            return;
+        }
+        if (facilityName != null && !EventPipeLine.getInstance().getLoggedInFacilities().contains(facilityName)) {
+            // trying to use/reuse window but we are not logged in
+            awaitingLogin = true;
+            return;
+        }
+        super.show();
+    }
+
+    /**
+     * Check if the widget is in use by the given facility, i.e. waiting for the
+     * user to log in or widget already visible.
+     * 
+     * @param facilitName
+     * @return true if the widget is in use
+     */
+    public boolean isInUse(String facilitName) {
+        if (!facilityName.equals(facilitName)) {
+            return false;
+        } else {
+            return isInUse();
+        }
+    }
+
+    /**
+     * Check if the widget is in use, i.e. waiting for the user to log in or
+     * widget already visible.
+     * 
+     * @return true if the widget is in use
+     */
+    public boolean isInUse() {
+        if (awaitingLogin) {
+            return true;
+        }
+        return super.isVisible();
+    }
+
+    /**
+     * Clear out data ready for window reuse.
+     */
+    public void reset() {
+        facilityName = "";
+        datafileId = "";
+        parameterList.removeAll();
+        awaitingLogin = false;
+    }
+
+    /**
+     * Call the server to get fresh data.
+     */
+    private void loadData() {
+        EventPipeLine.getInstance().showRetrievingData();
+        utilityService.getDatafileParameters(facilityName, datafileId, new AsyncCallback<ArrayList<ParameterModel>>() {
+            @Override
+            public void onSuccess(ArrayList<ParameterModel> result) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                if (result.size() > 0) {
+                    setParameterList(result);
+                    show();
+                } else {
+                    EventPipeLine.getInstance().showErrorDialog("No Parameters");
+                    hide();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                EventPipeLine.getInstance().showErrorDialog("Error retrieving parameters");
+                hide();
+                reset();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLoginHandler() {
+        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
+            @Override
+            public void login(LoginEvent event) {
+                if (awaitingLogin && event.getFacilityName().equals(facilityName)) {
+                    awaitingLogin = false;
+                    loadData();
+                }
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                if (isInUse() && facilityName.equals(event.getFacilityName())) {
+                    // When we open a web page with a url a status check is done
+                    // on all facilities. We do not want this to remove this
+                    // window. However when the user presses the cancel button
+                    // on the login widget we do want to remove this window.
+                    if (!event.isStatusCheck()) {
+                        awaitingLogin = false;
+                    }
+                    hide();
+                    EventPipeLine.getEventBus().fireEventFromSource(new WindowLogoutEvent(event.getFacilityName()),
+                            event.getFacilityName());
+                }
+            }
+        });
+    }
 }

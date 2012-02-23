@@ -25,8 +25,8 @@ public class AddInvestigationEvent extends GwtEvent<AddInvestigationEventHandler
     private final String facilityName;
     private final ArrayList<InvestigationType> investigations;
 
-    public AddInvestigationEvent(final String facility, final ArrayList<InvestigationType> investigations) {
-        this.facilityName = facility;
+    public AddInvestigationEvent(final String facilityName, final ArrayList<InvestigationType> investigations) {
+        this.facilityName = facilityName;
         this.investigations = investigations;
     }
 

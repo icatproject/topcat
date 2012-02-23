@@ -32,6 +32,11 @@ import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
@@ -78,7 +83,7 @@ public class DatasetWindow extends Window {
     String investigationId;
     String investigationName;
     boolean historyVerified;
-    boolean hasData;
+    private boolean awaitingLogin;
 
     public DatasetWindow() {
         // Update the history upon closing of this window.
@@ -136,7 +141,9 @@ public class DatasetWindow extends Window {
         toolBar.add(btnView);
         toolBar.add(new SeparatorToolItem());
         setTopComponent(toolBar);
-        hasData = true;
+        awaitingLogin = false;
+        createLoginHandler();
+        createLogoutHandler();
     }
 
     /**
@@ -150,51 +157,13 @@ public class DatasetWindow extends Window {
     public void setDataset(String facilityName, String investigationId) {
         this.facilityName = facilityName;
         this.investigationId = investigationId;
-        EventPipeLine.getInstance().showRetrievingData();
-        utilityService.getDatasetsInInvestigations(facilityName, investigationId,
-                new AsyncCallback<ArrayList<DatasetModel>>() {
-                    @Override
-                    public void onSuccess(ArrayList<DatasetModel> result) {
-                        EventPipeLine.getInstance().hideRetrievingData();
-                        if (result.size() > 0) {
-                            setDatasetList(result);
-                            hasData = true;
-                        } else {
-                            EventPipeLine.getInstance().showErrorDialog("No datasets returned");
-                            hide();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        EventPipeLine.getInstance().hideRetrievingData();
-                        datasetList.removeAll();
-                        hasData = false;
-                    }
-                });
-    }
-
-    /**
-     * This method sets the dataset list in the window
-     * 
-     * @param datasetsList
-     */
-    private void setDatasetList(ArrayList<DatasetModel> datasetsList) {
-        this.datasetList.removeAll();
-        this.datasetList.add(datasetsList);
-        if (datasetsList.size() == 1) {
-            datasetSelectModel.selectAll();
-            viewDatafileWindow();
+        if (EventPipeLine.getInstance().getLoggedInFacilities().contains(facilityName)) {
+            awaitingLogin = false;
+            loadData();
+        } else {
+            awaitingLogin = true;
         }
-    }
 
-    /**
-     * This method shows the datafile window for the selected datasets.
-     */
-    public void viewDatafileWindow() {
-        // Get all the datasets selected and show the datafile window
-        EventPipeLine.getInstance().showDatafileWindowWithHistory(
-                new ArrayList<DatasetModel>(datasetSelectModel.getSelectedItems()));
     }
 
     /**
@@ -276,15 +245,143 @@ public class DatasetWindow extends Window {
 
     @Override
     public void show() {
-        if (!hasData) {
-            setDataset(facilityName, investigationId);
+        if (awaitingLogin) {
+            return;
+        }
+        if (facilityName != null && !EventPipeLine.getInstance().getLoggedInFacilities().contains(facilityName)) {
+            // trying to use/reuse window but we are not logged in
+            awaitingLogin = true;
+            return;
         }
         super.show();
     }
 
+    /**
+     * Check if the widget is in use by the given facility, i.e. waiting for the
+     * user to log in or widget already visible.
+     * 
+     * @param facilitName
+     * @return true if the widget is in use
+     */
+    public boolean isInUse(String facilitName) {
+        if (!facilityName.equals(facilitName)) {
+            return false;
+        } else {
+            return isInUse();
+        }
+    }
+
+    /**
+     * Check if the widget is in use, i.e. waiting for the user to log in or
+     * widget already visible.
+     * 
+     * @return true if the widget is in use
+     */
+    public boolean isInUse() {
+        if (awaitingLogin) {
+            return true;
+        }
+        return isVisible();
+    }
+
+    /**
+     * Clear out data ready for window reuse.
+     */
     public void reset() {
         facilityName = "";
         investigationId = "";
         datasetList.removeAll();
+        awaitingLogin = false;
     }
+
+    /**
+     * This method shows the datafile window for the selected datasets.
+     */
+    private void viewDatafileWindow() {
+        // Get all the datasets selected and show the datafile window
+        EventPipeLine.getInstance().showDatafileWindowWithHistory(
+                new ArrayList<DatasetModel>(datasetSelectModel.getSelectedItems()));
+    }
+
+    /**
+     * Call the server to get fresh data.
+     */
+    private void loadData() {
+        EventPipeLine.getInstance().showRetrievingData();
+        utilityService.getDatasetsInInvestigations(facilityName, investigationId,
+                new AsyncCallback<ArrayList<DatasetModel>>() {
+                    @Override
+                    public void onSuccess(ArrayList<DatasetModel> result) {
+                        EventPipeLine.getInstance().hideRetrievingData();
+                        if (result.size() > 0) {
+                            setDatasetList(result);
+                            show();
+                        } else {
+                            EventPipeLine.getInstance().showErrorDialog("No datasets returned");
+                            hide();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        EventPipeLine.getInstance().hideRetrievingData();
+                        EventPipeLine.getInstance().showErrorDialog("Error retrieving dataset");
+                        hide();
+                        reset();
+                    }
+                });
+    }
+
+    /**
+     * This method sets the dataset list in the window
+     * 
+     * @param datasetsList
+     */
+    private void setDatasetList(ArrayList<DatasetModel> datasetsList) {
+        this.datasetList.removeAll();
+        this.datasetList.add(datasetsList);
+        if (datasetsList.size() == 1) {
+            datasetSelectModel.selectAll();
+            viewDatafileWindow();
+        }
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLoginHandler() {
+        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
+            @Override
+            public void login(LoginEvent event) {
+                if (awaitingLogin && event.getFacilityName().equals(facilityName)) {
+                    awaitingLogin = false;
+                    loadData();
+                }
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                if (isInUse() && facilityName.equals(event.getFacilityName())) {
+                    // When we open a web page with a url a status check is done
+                    // on all facilities. We do not want this to remove this
+                    // window. However when the user presses the cancel button
+                    // on the login widget we do want to remove this window.
+                    if (!event.isStatusCheck()) {
+                        awaitingLogin = false;
+                    }
+                    hide();
+                    EventPipeLine.getEventBus().fireEventFromSource(new WindowLogoutEvent(event.getFacilityName()),
+                            event.getFacilityName());
+                }
+            }
+        });
+    }
+
 }

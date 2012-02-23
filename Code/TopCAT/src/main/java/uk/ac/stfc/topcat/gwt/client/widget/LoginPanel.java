@@ -37,9 +37,9 @@ import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 
 /**
- * This is a widget that holds logininfopanel for each facility (ICAT instance).
+ * This is a widget that holds a LoginInfoPanel for each facility (ICAT instance).
  * It is created dynamically while the TopCAT is loading in the browser by
- * quering the server to get the list of facilities.
+ * querying the server to get the list of facilities.
  * <p>
  * 
  * @author Mr. Srikanth Nagella
@@ -78,8 +78,6 @@ public class LoginPanel extends Composite {
                 for (TFacility facility : event.getTFacilities()) {
                     // create a link which opens the login widget
                     LoginInfoPanel infoPanel = new LoginInfoPanel(EventPipeLine.getInstance(), facility);
-                    infoPanel.setFacility(facility);
-                    infoPanel.setEventPipeLine(EventPipeLine.getInstance());
                     listFacilityLogin.put(facility.getName(), infoPanel);
                     verticalPanel.add(infoPanel);
                 }

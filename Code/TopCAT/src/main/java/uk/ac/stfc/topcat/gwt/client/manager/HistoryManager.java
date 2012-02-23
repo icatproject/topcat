@@ -53,7 +53,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param tcWindowManager
      *            Floating Window Manager
@@ -77,7 +77,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Set the current selected tab
+     * Set the current selected tab.
      * 
      * @param tab
      */
@@ -95,13 +95,14 @@ public class HistoryManager implements ValueChangeHandler<String> {
      * com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(
      * com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
+    @Override
     public void onValueChange(ValueChangeEvent<String> event) {
         String historyToken = event.getValue();
         processHistory(historyToken);
     }
 
     /**
-     * Process the input history string
+     * Process the input history string.
      * 
      * @param history
      */
@@ -115,7 +116,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
 
     /**
      * Process the input string to check for selected tab and floating window
-     * history
+     * history.
      * 
      * @param history
      */
@@ -147,7 +148,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Removes the history string from the current history
+     * Removes the history string from the current history.
      * 
      * @param history
      */
@@ -165,7 +166,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Creates a new history string
+     * Creates a new history string.
      */
     public void updateHistory() {
         History.newItem(getHistoryString());

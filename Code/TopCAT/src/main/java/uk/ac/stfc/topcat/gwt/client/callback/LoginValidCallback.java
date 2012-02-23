@@ -6,7 +6,7 @@
 package uk.ac.stfc.topcat.gwt.client.callback;
 
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
-import uk.ac.stfc.topcat.gwt.client.event.LoginInfoPanelUpdateEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginCheckCompleteEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -34,13 +34,13 @@ public class LoginValidCallback implements AsyncCallback<Boolean> {
     public void onSuccess(Boolean result) {
         if (result) {
             if (autoLogin) {
-                EventPipeLine.getEventBus().fireEventFromSource(new LoginEvent(facilityName), facilityName);
+                EventPipeLine.getEventBus().fireEventFromSource(new LoginEvent(facilityName, true), facilityName);
             } else {
-                EventPipeLine.getEventBus().fireEventFromSource(new LoginInfoPanelUpdateEvent(facilityName),
-                        facilityName);
+                EventPipeLine.getEventBus()
+                        .fireEventFromSource(new LoginCheckCompleteEvent(facilityName), facilityName);
             }
         } else {
-            EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName), facilityName);
+            EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName, true), facilityName);
         }
     }
 

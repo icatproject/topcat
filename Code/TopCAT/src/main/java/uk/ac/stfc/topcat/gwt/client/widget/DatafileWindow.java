@@ -36,6 +36,11 @@ import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
@@ -94,8 +99,9 @@ public class DatafileWindow extends Window {
     private GroupingView view;
     private Map<Long, Boolean> selectedFiles = new HashMap<Long, Boolean>();
     boolean historyVerified;
-    boolean hasData;
     Grid<DatafileModel> grid;
+    private Set<String> facilityNames = new HashSet<String>();
+    private boolean awaitingLogin;
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
@@ -283,7 +289,9 @@ public class DatafileWindow extends Window {
         setBottomComponent(pageBar);
 
         add(grid);
-        hasData = true; // ?? but no data is passed in in the constructor
+        awaitingLogin = false;
+        createLoginHandler();
+        createLogoutHandler();
     }
 
     /**
@@ -295,29 +303,16 @@ public class DatafileWindow extends Window {
      */
     public void setDatasets(ArrayList<DatasetModel> datasetList) {
         inputDatasetModels = datasetList;
-        // This is the list of datasets selected to be viewed for datafiles.
-        EventPipeLine.getInstance().showRetrievingData();
-        utilityService.getDatafilesInDatasets(datasetList, new AsyncCallback<ArrayList<DatafileModel>>() {
-            @Override
-            public void onSuccess(ArrayList<DatafileModel> result) {
-                EventPipeLine.getInstance().hideRetrievingData();
-                if (result.size() > 0) {
-                    setDatafileList(result);
-                    hasData = true;
-                } else {
-                    EventPipeLine.getInstance().showErrorDialog("No files returned");
-                    hide();
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                EventPipeLine.getInstance().hideRetrievingData();
-                dfmStore.removeAll();
-                selectedFiles.clear();
-                hasData = false;
-            }
-        });
+        facilityNames = new HashSet<String>();
+        for (DatasetModel dsm : inputDatasetModels) {
+            facilityNames.add(dsm.getFacilityName());
+        }
+        if (EventPipeLine.getInstance().getLoggedInFacilities().containsAll(facilityNames)) {
+            awaitingLogin = false;
+            loadData();
+        } else {
+            awaitingLogin = true;
+        }
     }
 
     /**
@@ -342,21 +337,6 @@ public class DatafileWindow extends Window {
         pageBar.show();
     }
 
-    /**
-     * Get the list of facility names associated with the window.
-     * 
-     * @return a set of facility names
-     */
-    public Set<String> getFacilityNames() {
-        Set<String> facilityNames = new HashSet<String>();
-        for (DatasetModel dsm : inputDatasetModels) {
-            facilityNames.add(dsm.getFacilityName());
-        }
-        return facilityNames;
-    }
-    
-    
-    
     /**
      * Get the history of this window.
      * 
@@ -420,17 +400,55 @@ public class DatafileWindow extends Window {
 
     @Override
     public void show() {
-        if (!hasData) {
-            setDatasets(inputDatasetModels);
+        if (awaitingLogin) {
+            return;
+        }
+        if (!EventPipeLine.getInstance().getLoggedInFacilities().containsAll(facilityNames)) {
+            // trying to use window but we are not logged in
+            awaitingLogin = true;
+            return;
         }
         super.show();
     }
 
+    /**
+     * Check if the widget is in use by the given facility, i.e. waiting for the
+     * user to log in or widget already visible.
+     * 
+     * @param facilitName
+     * @return true if the widget is in use
+     */
+    public boolean isInUse(String facilitName) {
+        if (!facilityNames.contains(facilitName)) {
+            return false;
+        } else {
+            return isInUse();
+        }
+    }
+
+    /**
+     * Check if the widget is in use, i.e. waiting for the user to log in or
+     * widget already visible.
+     * 
+     * @return true if the widget is in use
+     */
+    public boolean isInUse() {
+        if (awaitingLogin) {
+            return true;
+        }
+        return super.isVisible();
+    }
+
+    /**
+     * Clear out data ready for window reuse.
+     */
     public void reset() {
+        facilityNames = new HashSet<String>();
         inputDatasetModels.clear();
         dfmStore.removeAll();
         selectedFiles.clear();
         pageBar.hide();
+        awaitingLogin = false;
     }
 
     /**
@@ -452,6 +470,72 @@ public class DatafileWindow extends Window {
         EventPipeLine.getInstance().showMessageDialog(
                 "Your data is being retrieved from tape and will automatically start downloading shortly "
                         + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
+    }
+
+    /**
+     * Call the server to get fresh data.
+     */
+    private void loadData() {
+        EventPipeLine.getInstance().showRetrievingData();
+        utilityService.getDatafilesInDatasets(inputDatasetModels, new AsyncCallback<ArrayList<DatafileModel>>() {
+            @Override
+            public void onSuccess(ArrayList<DatafileModel> result) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                if (result.size() > 0) {
+                    setDatafileList(result);
+                    show();
+                } else {
+                    EventPipeLine.getInstance().showErrorDialog("No files returned");
+                    hide();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                EventPipeLine.getInstance().showErrorDialog("Error retrieving datafiles");
+                hide();
+                reset();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLoginHandler() {
+        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
+            @Override
+            public void login(LoginEvent event) {
+                if (awaitingLogin && EventPipeLine.getInstance().getLoggedInFacilities().containsAll(facilityNames)) {
+                    awaitingLogin = false;
+                    loadData();
+                }
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                if (isInUse() && facilityNames.contains(event.getFacilityName())) {
+                    // When we open a web page with a url a status check is done
+                    // on all facilities. We do not want this to remove this
+                    // window. However when the user presses the cancel button
+                    // on the login widget we do want to remove this window.
+                    if (!event.isStatusCheck()) {
+                        awaitingLogin = false;
+                    }
+                    hide();
+                    EventPipeLine.getEventBus().fireEventFromSource(new WindowLogoutEvent(event.getFacilityName()),
+                            event.getFacilityName());
+                }
+            }
+        });
     }
 
 }

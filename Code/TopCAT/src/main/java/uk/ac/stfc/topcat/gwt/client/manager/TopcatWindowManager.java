@@ -29,11 +29,10 @@ import com.extjs.gxt.ui.client.util.Point;
 import com.google.gwt.user.client.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
-import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
-import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.exception.WindowsNotAvailableExcecption;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.widget.DatafileWindow;
@@ -54,23 +53,20 @@ public class TopcatWindowManager {
     private ArrayList<DatasetWindow> datasetWindowList;
     private ArrayList<ParameterWindow> parameterWindowList;
     private final static int MAX_NUMBER_WINDOWS = 5;
-    private StringBuilder savedHistory;
 
     /**
-     * Contructor, Initializes the Dataset,Datafile,Parameter windows list
+     * Contructor, Initializes the Dataset, Datafile, Parameter windows list.
      */
     public TopcatWindowManager() {
         datafileWindowList = new ArrayList<DatafileWindow>();
         datasetWindowList = new ArrayList<DatasetWindow>();
         parameterWindowList = new ArrayList<ParameterWindow>();
-        savedHistory = new StringBuilder();
-        createLogoutHandler();
     }
 
     /**
-     * Creates a Datafile window, recycles used windows when needed.
+     * Creates a datafile window, recycles used windows when needed.
      * 
-     * @return
+     * @return a datafile window
      * @throws WindowsNotAvailableExcecption
      */
     public DatafileWindow createDatafileWindow() throws WindowsNotAvailableExcecption {
@@ -80,11 +76,11 @@ public class TopcatWindowManager {
         // Check for any hidden windows and return that window.
         for (DatafileWindow dfWin : datafileWindowList) {
             i++;
-            if (!dfWin.isVisible()) {
+            if (!dfWin.isInUse()) {
+                dfWin.reset();
                 dfWin.show();
                 dfWin.setPosition(vp.x + 30 + i * 10, vp.y + i * 10);
                 dfWin.hide();
-                dfWin.reset();
                 return dfWin;
             }
         }
@@ -101,9 +97,9 @@ public class TopcatWindowManager {
     }
 
     /**
-     * Creates/Recycles a Datasetwindow and returns the window object.
+     * Creates/Recycles a dataset window and returns the window object.
      * 
-     * @return
+     * @return a dataset window
      * @throws WindowsNotAvailableExcecption
      */
     public DatasetWindow createDatasetWindow() throws WindowsNotAvailableExcecption {
@@ -113,11 +109,11 @@ public class TopcatWindowManager {
         // Check for any hidden windows and return that window.
         for (DatasetWindow dsWin : datasetWindowList) {
             i++;
-            if (!dsWin.isVisible()) {
+            if (!dsWin.isInUse()) {
+                dsWin.reset();
                 dsWin.show();
                 dsWin.setPosition(vp.x + i * 10, vp.y + i * 10);
                 dsWin.hide();
-                dsWin.reset();
                 return dsWin;
             }
         }
@@ -134,9 +130,9 @@ public class TopcatWindowManager {
     }
 
     /**
-     * Creates/Recycles a ParameterWindow and returns the window object
+     * Creates/Recycles a parameter window and returns the window object.
      * 
-     * @return
+     * @return a parameter window
      * @throws WindowsNotAvailableExcecption
      */
     public ParameterWindow createParameterWindow() throws WindowsNotAvailableExcecption {
@@ -146,7 +142,8 @@ public class TopcatWindowManager {
         // Check for any hidden windows and return that window.
         for (ParameterWindow paramWin : parameterWindowList) {
             i++;
-            if (!paramWin.isVisible()) {
+            if (!paramWin.isInUse()) {
+                paramWin.reset();
                 paramWin.show();
                 paramWin.setPosition(vp.x + 60 + i * 10, vp.y + i * 10);
                 paramWin.hide();
@@ -166,110 +163,40 @@ public class TopcatWindowManager {
     }
 
     /**
-     * Generates the history string based on the currently open windows.
+     * Generates the history string based on the windows currently in use.
      * 
-     * @return
+     * @return the history string
      */
     public String getWindowHistoryString() {
-        String history = savedHistory.toString();
+        String history = "";
         for (DatasetWindow datasetWindow : datasetWindowList) {
-            if (datasetWindow.isVisible())
+            if (datasetWindow.isInUse())
                 history += datasetWindow.getHistoryString();
         }
         for (DatafileWindow datafileWindow : datafileWindowList) {
-            if (datafileWindow.isVisible())
+            if (datafileWindow.isInUse())
                 history += datafileWindow.getHistoryString();
         }
         for (ParameterWindow parameterWindow : parameterWindowList) {
-            if (parameterWindow.isVisible())
+            if (parameterWindow.isInUse())
                 history += parameterWindow.getHistoryString();
         }
         return history;
     }
 
     /**
-     * Closes all windows that are open
-     */
-    public void closeAllWindows() {
-        for (DatasetWindow datasetWindow : datasetWindowList) {
-            datasetWindow.hide();
-        }
-        for (DatafileWindow datafileWindow : datafileWindowList) {
-            datafileWindow.hide();
-        }
-        for (ParameterWindow parameterWindow : parameterWindowList) {
-            parameterWindow.hide();
-        }
-    }
-
-    /**
-     * Closes all open windows for the given facility
-     */
-    private void closeAllWindows(String facilityName) {
-        for (DatasetWindow datasetWindow : datasetWindowList) {
-            if (datasetWindow.getFacilityName().equals(facilityName)) {
-                datasetWindow.hide();
-            }
-        }
-        for (DatafileWindow datafileWindow : datafileWindowList) {
-            if (datafileWindow.getFacilityNames().contains(facilityName)) {
-                datafileWindow.hide();
-            }
-        }
-        for (ParameterWindow parameterWindow : parameterWindowList) {
-            if (parameterWindow.getFacilityName().equals(facilityName)) {
-                parameterWindow.hide();
-            }
-        }
-        EventPipeLine.getInstance().getHistoryManager().updateHistory();
-    }
-
-    /**
-     * Sets All the windows whether the window is verified
-     */
-    public void setNotVerifiedAllWindows() {
-        for (DatasetWindow datasetWindow : datasetWindowList) {
-            datasetWindow.setHistoryVerified(false);
-        }
-        for (DatafileWindow datafileWindow : datafileWindowList) {
-            datafileWindow.setHistoryVerified(false);
-        }
-        for (ParameterWindow parameterWindow : parameterWindowList) {
-            parameterWindow.setHistoryVerified(false);
-        }
-    }
-
-    /**
-     * Hides all the windows that are not history verified
-     */
-    public void hideNotVerifiedWindows() {
-        for (DatasetWindow datasetWindow : datasetWindowList) {
-            if (!datasetWindow.isHistoryVerified())
-                datasetWindow.hide();
-        }
-        for (DatafileWindow datafileWindow : datafileWindowList) {
-            if (!datafileWindow.isHistoryVerified())
-                datafileWindow.hide();
-        }
-        for (ParameterWindow parameterWindow : parameterWindowList) {
-            if (!parameterWindow.isHistoryVerified())
-                parameterWindow.hide();
-        }
-    }
-
-    /**
      * This method process the history string and creates/recycles windows based
-     * on history string. hides the windows that are not there in the history
-     * string. If the history contains a facility to which the use is not logged
-     * on then save the current history and display the LoginWidget.
+     * on history string. Hides the windows that are not in the history string.
+     * If the history contains a facility to which the use is not logged on then
+     * display the LoginWidget.
      * 
      * @param history
      */
     public void processHistoryString(String history) {
         setNotVerifiedAllWindows();
         Set<String> loggedInFacilities = EventPipeLine.getInstance().getLoggedInFacilities();
-        String loginToFacility = "";
-        StringBuilder savedHistory = new StringBuilder();
+        Set<String> loginToFacilities = new HashSet<String>();
+        ;
         // split the models
         String[] historyTokenList = history.split(HistoryManager.seperatorModel);
         // split the model string to find the model type
@@ -289,85 +216,59 @@ public class TopcatWindowManager {
             }
 
             // now get the type of the model
+            // Investigation
             if (paramMap.get("Model") != null && paramMap.get("Model").compareToIgnoreCase("Investigation") == 0) {
-                if (loggedInFacilities.contains(paramMap.get("ServerName"))) {
-                    DatasetWindow dsWin = findDatasetWindow(paramMap.get("ServerName"), paramMap.get("InvestigationId"));
-                    if (dsWin == null)
-                        EventPipeLine.getInstance().showDatasetWindow(paramMap.get("ServerName"),
-                                paramMap.get("InvestigationId"), paramMap.get("InvestigationName"));
-                    else {
-                        dsWin.show();
-                        dsWin.setHistoryVerified(true);
-                    }
-                } else {
-                    savedHistory.append(HistoryManager.seperatorModel).append(hToken);
-                    if (loginToFacility.isEmpty()) {
-                        loginToFacility = paramMap.get("ServerName");
-                    }
+                if (!loggedInFacilities.contains(paramMap.get("ServerName"))) {
+                    loginToFacilities.add(paramMap.get("ServerName"));
                 }
+                EventPipeLine.getInstance().showDatasetWindow(paramMap.get("ServerName"),
+                        paramMap.get("InvestigationId"), paramMap.get("InvestigationName"));
+
+                // Dataset
             } else if (paramMap.get("Model") != null && paramMap.get("Model").compareToIgnoreCase("Dataset") == 0) {
                 // create dataset models
                 ArrayList<DatasetModel> dsModelList = new ArrayList<DatasetModel>();
                 for (int i = 0; i < paramMap.size(); i++) {
                     if (paramMap.containsKey("DSId-" + i)) {
-                        if (loggedInFacilities.contains(paramMap.get("SN-" + i))) {
-                            dsModelList.add(new DatasetModel(paramMap.get("SN-" + i), paramMap.get("DSId-" + i),
-                                    paramMap.get("DSName-" + i), null, null, null));
-                            paramMap.remove("SN-" + i);
-                            paramMap.remove("DSId-" + i);
-                            paramMap.remove("DSName-" + i);
-                        } else {
-                            savedHistory.append(HistoryManager.seperatorModel).append(hToken);
-                            if (loginToFacility.isEmpty()) {
-                                loginToFacility = paramMap.get("ServerName");
-                            }
+                        if (!loggedInFacilities.contains(paramMap.get("SN-" + i))) {
+                            loginToFacilities.add(paramMap.get("SN-" + i));
                         }
+                        dsModelList.add(new DatasetModel(paramMap.get("SN-" + i), paramMap.get("DSId-" + i), paramMap
+                                .get("DSName-" + i), null, null, null));
+                        paramMap.remove("SN-" + i);
+                        paramMap.remove("DSId-" + i);
+                        paramMap.remove("DSName-" + i);
                     }
                 }
                 if (dsModelList.size() > 0) {
-                    DatafileWindow dfWin = findDatafileWindow(dsModelList);
-                    if (dfWin == null)
-                        EventPipeLine.getInstance().showDatafileWindow(dsModelList);
-                    else {
-                        dfWin.show();
-                        dfWin.setHistoryVerified(true);
-                    }
+                    EventPipeLine.getInstance().showDatafileWindow(dsModelList);
                 }
+
+                // Parameter
             } else if (paramMap.get("Model") != null && paramMap.get("Model").compareToIgnoreCase("Parameter") == 0) {
                 if (loggedInFacilities.contains(paramMap.get("SN"))) {
-                    ParameterWindow paramWin = findParameterWindow(paramMap.get("SN"), paramMap.get("DFId"));
-                    if (paramWin == null)
-                        EventPipeLine.getInstance().showParameterWindow(paramMap.get("SN"), paramMap.get("DFId"),
-                                paramMap.get("DFN"));
-                    else {
-                        paramWin.show();
-                        paramWin.setHistoryVerified(true);
-                    }
-                } else {
-                    savedHistory.append(HistoryManager.seperatorModel).append(hToken);
-                    if (loginToFacility.isEmpty()) {
-                        loginToFacility = paramMap.get("SN");
-                    }
+                    loginToFacilities.add(paramMap.get("SN"));
                 }
+                EventPipeLine.getInstance().showParameterWindow(paramMap.get("SN"), paramMap.get("DFId"),
+                        paramMap.get("DFN"));
             }
         }
         hideNotVerifiedWindows();
-        this.savedHistory = savedHistory;
         // Update the Login info
-        if (!loginToFacility.isEmpty()) {
+        if (!loginToFacilities.isEmpty()) {
             // we were not logged in so prompt user to log in to this facility
-            EventPipeLine.getInstance().setFacilityToLogOn(loginToFacility);
+            EventPipeLine.getInstance().setFacilitiesToLogOn(loginToFacilities);
         }
         EventPipeLine.getInstance().checkStillLoggedIn();
     }
 
     /**
-     * Checks all the Datafilewindows whether the input DatasetModel matches to
-     * the Datafilewindows info. If exists then return the window otherwise
-     * returns null.
+     * Checks all the datafile windows to see whether the input DatasetModel
+     * matches to a datafile window's info. If a match is found then return the
+     * window otherwise returns null.
      * 
      * @param dsModelList
-     * @return
+     * @return DatafileWindow
      */
     public DatafileWindow findDatafileWindow(ArrayList<DatasetModel> dsModelList) {
         for (DatafileWindow dfWin : datafileWindowList) {
@@ -379,55 +280,99 @@ public class TopcatWindowManager {
     }
 
     /**
-     * Checks all the Datasetwindows whether the input facility name and
-     * investigation id matches to the Datasetwindows info. If exists then
-     * return the window otherwise returns null.
+     * Checks all the dataset windows to see whether the input facility name and
+     * investigation id matches a dataset window's info. If a match is found
+     * then return the window otherwise returns null.
      * 
-     * @param serverName
+     * @param facilityName
      * @param investigationId
      * @return
      */
-    public DatasetWindow findDatasetWindow(String serverName, String investigationId) {
+    public DatasetWindow findDatasetWindow(String facilityName, String investigationId) {
         for (DatasetWindow dsWin : datasetWindowList) {
-            if (dsWin.isSameModel(serverName, investigationId))
+            if (dsWin.isSameModel(facilityName, investigationId)) {
                 return dsWin;
+            }
         }
         return null;
     }
 
     /**
-     * Checks all the Parameterwindows whether the input facility name and
-     * datafile id matches to the Parameterwindows info. If exists then return
-     * the window otherwise returns null.
+     * Checks all the parameter windows to see whether the input facility name
+     * and datafile id matches a parameter window's info. If a match is found
+     * then return the window otherwise returns null.
      * 
-     * @param serverName
+     * @param facilityName
      * @param datafileId
      * @return
      */
-    public ParameterWindow findParameterWindow(String serverName, String datafileId) {
+    public ParameterWindow findParameterWindow(String facilityName, String datafileId) {
         for (ParameterWindow paramWin : parameterWindowList) {
-            if (paramWin.isSameModel(serverName, datafileId))
+            if (paramWin.isSameModel(facilityName, datafileId))
                 return paramWin;
         }
         return null;
+    }
+
+    /**
+     * Test if any window is in use by the given facility.
+     * 
+     * @param facilityName
+     * @return true if any window is in use by the given facility
+     */
+    public boolean areWindowsInUse(String facilityName) {
+        for (DatasetWindow datasetWindow : datasetWindowList) {
+            if (datasetWindow.isInUse(facilityName))
+                return true;
+        }
+        for (DatafileWindow datafileWindow : datafileWindowList) {
+            if (datafileWindow.isInUse(facilityName))
+                return true;
+        }
+        for (ParameterWindow parameterWindow : parameterWindowList) {
+            if (parameterWindow.isInUse(facilityName))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Sets all the windows to not verified.
+     */
+    private void setNotVerifiedAllWindows() {
+        for (DatasetWindow datasetWindow : datasetWindowList) {
+            datasetWindow.setHistoryVerified(false);
+        }
+        for (DatafileWindow datafileWindow : datafileWindowList) {
+            datafileWindow.setHistoryVerified(false);
+        }
+        for (ParameterWindow parameterWindow : parameterWindowList) {
+            parameterWindow.setHistoryVerified(false);
+        }
+    }
+
+    /**
+     * Hides all the windows that are not history verified.
+     */
+    private void hideNotVerifiedWindows() {
+        for (DatasetWindow datasetWindow : datasetWindowList) {
+            if (!datasetWindow.isHistoryVerified())
+                datasetWindow.hide();
+        }
+        for (DatafileWindow datafileWindow : datafileWindowList) {
+            if (!datafileWindow.isHistoryVerified())
+                datafileWindow.hide();
+        }
+        for (ParameterWindow parameterWindow : parameterWindowList) {
+            if (!parameterWindow.isHistoryVerified())
+                parameterWindow.hide();
+        }
     }
 
     private Point getStartPointofViewport() {
         int left = Window.getScrollLeft();
         int top = Window.getScrollTop();
         return new Point(left, top);
-    }
-
-    /**
-     * Setup a handler to react to logout events.
-     */
-    private void createLogoutHandler() {
-        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
-            @Override
-            public void logout(LogoutEvent event) {
-                closeAllWindows(event.getFacilityName());
-            }
-        });
     }
 
 }

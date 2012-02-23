@@ -51,11 +51,13 @@ import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
-import uk.ac.stfc.topcat.gwt.client.event.LoginInfoPanelUpdateEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginCheckCompleteEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
-import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginInfoPanelUpdateEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginCheckCompleteEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.WindowLogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.exception.WindowsNotAvailableExcecption;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
@@ -111,7 +113,7 @@ public class EventPipeLine implements LoginInterface {
     /** Keep a track of outstanding call backs to check login status. */
     private int facilitiesToCheck = 0;
     /** When putting up a login panel prompt the user to log into this facility. */
-    private String facilityToLogOn;
+    private Set<String> facilitiesToLogOn;
     private LoginWidget loginWidget;
     private WaitDialog retrievingDataDialog;
     private WaitDialog waitDialog;
@@ -130,7 +132,7 @@ public class EventPipeLine implements LoginInterface {
     private static EventBus eventBus = null;
 
     /**
-     * Private constructor to make a singleton
+     * Private constructor to make a singleton.
      */
     private EventPipeLine() {
         eventBus = new SimpleEventBus();
@@ -143,7 +145,7 @@ public class EventPipeLine implements LoginInterface {
         facilityInstrumentMap = new HashMap<String, ListStore<Instrument>>();
         facilities = new ArrayList<TFacility>();
         tcEvents = new TopcatEvents();
-        facilityToLogOn = "";
+        facilitiesToLogOn = new HashSet<String>();
         // Initialise
         loginWidget.setLoginHandler(this);
 
@@ -155,7 +157,8 @@ public class EventPipeLine implements LoginInterface {
         // Setup handlers
         createLoginHandler();
         createLogoutHandler();
-        createLoginInfoPanelUpdateHandler();
+        createLoginCheckCompleteHandler();
+        createLogoutWindowHandler();
     }
 
     public static EventPipeLine getInstance() {
@@ -175,8 +178,15 @@ public class EventPipeLine implements LoginInterface {
         RootPanel.get().add(paramDownloadForm);
     }
 
-    public void setFacilityToLogOn(String facilityToLogOn) {
-        this.facilityToLogOn = facilityToLogOn;
+    /**
+     * Set the list of facilities that we need to log into in order to view the
+     * requested data.
+     * 
+     * @param facilitiesToLogOn
+     *            a set of facility names
+     */
+    public void setFacilitiesToLogOn(Set<String> facilitiesToLogOn) {
+        this.facilitiesToLogOn.addAll(facilitiesToLogOn);
         checkLoginWidgetStatus();
     }
 
@@ -195,7 +205,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Set the login info panel
+     * Set the login info panel.
      * 
      * @param loginPanel
      */
@@ -204,7 +214,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Get the set of facility names that the user is logged in to.
+     * Get the set of facility names that the user is logged into.
      * 
      * @return set of facility names
      */
@@ -213,7 +223,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Callback on login dialog cancel button
+     * Callback on login dialog cancel button.
      */
     @Override
     public void onLoginCancel() {
@@ -228,7 +238,7 @@ public class EventPipeLine implements LoginInterface {
         loginWidget.hide();
         waitDialog.setMessage(" Logging In...");
         waitDialog.show();
-        // login to the given facility using username and password
+        // Login to the given facility using username and password
         loginService.login(username, password, facilityName, new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -248,28 +258,31 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method checks whether the user has logged into servers or not.
+     * This method checks whether the user is already logged into any
+     * facilities. If the user is logged in then a login event for that facility
+     * will be fired.
      */
     public void checkLoginStatus() {
         for (TFacility facility : facilities) {
+            // Keep a track of the number of outstanding callbacks
             facilitiesToCheck = facilitiesToCheck + 1;
             loginService.isUserLoggedIn(facility.getName(), new LoginValidCallback(facility.getName(), true));
         }
     }
 
     /**
-     * This method checks whether the user is still logged into the facilities
-     * or not.
+     * This method checks whether the user is still logged into the facilities.
      */
     public void checkStillLoggedIn() {
         for (String facilityName : loggedInFacilities) {
+            // Keep a track of the number of outstanding callbacks
             facilitiesToCheck = facilitiesToCheck + 1;
             loginService.isUserLoggedIn(facilityName, new LoginValidCallback(facilityName, false));
         }
     }
 
     /**
-     * This method invokes the AJAX call to get the server logo
+     * This method invokes the AJAX call to get the server logo.
      */
     public void getLogoURL() {
         utilityService.getLogoURL(new AsyncCallback<String>() {
@@ -287,7 +300,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method invokes the AJAX call to get the links for the footer
+     * This method invokes the AJAX call to get the links for the footer.
      */
     public void getLinks() {
         utilityService.getLinks(new AsyncCallback<Map<String, String>>() {
@@ -305,22 +318,27 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Display the login widget once all facilities have been checked.
+     * Check if the login widget needs to be displayed. Only display the login
+     * widget once all facilities have been checked and a login is still
+     * required.
      */
     public void checkLoginWidgetStatus() {
-        // only continue once all of the login call backs have finished
+        // Only continue once all of the login call backs have finished
         if (facilitiesToCheck > 0 || facilities.size() < 1) {
             return;
         }
 
         // Check if we are required to log into a specific facility
-        if (!facilityToLogOn.isEmpty() && !loginPanel.getFacilityLoginInfoPanel(facilityToLogOn).isValidLogin()) {
-            showLoginWidget(facilityToLogOn);
-            facilityToLogOn = "";
-            return;
+        for (Iterator<String> it = facilitiesToLogOn.iterator(); it.hasNext();) {
+            String facility = it.next();
+            if (!loginPanel.getFacilityLoginInfoPanel(facility).isValidLogin()) {
+                showLoginWidget(facility);
+                it.remove();
+                return;
+            }
         }
 
-        // Check all login's whether at least one of them is logged in
+        // Check all login's to see whether at least one of them is logged in
         boolean loggedIn = false;
         for (TFacility facility : facilities) {
             if (loginPanel.getFacilityLoginInfoPanel(facility.getName()).isValidLogin()) {
@@ -334,7 +352,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method shows login dialog box for a input facility
+     * This method shows login dialog box for the given facility.
      * 
      * @param facilityName
      */
@@ -346,8 +364,8 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method is invoked for the failure to login to facility service,
-     * shows an error dialog to check the login details.
+     * Show an error dialog asking to check the login details for the given
+     * facility.
      * 
      * @param facilityName
      */
@@ -359,7 +377,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method logs out user from a input facility
+     * This method logs out the user from the given facility.
      * 
      * @param facilityName
      */
@@ -367,6 +385,7 @@ public class EventPipeLine implements LoginInterface {
         waitDialog.setMessage(" Logging Out...");
         waitDialog.show();
         loginWidget.setFacilityName(facilityName);
+        eventBus.fireEventFromSource(new LogoutEvent(facilityName), facilityName);
 
         // logout of the given facility
         loginService.logout(facilityName, new AsyncCallback<Void>() {
@@ -379,13 +398,12 @@ public class EventPipeLine implements LoginInterface {
             @Override
             public void onSuccess(Void result) {
                 waitDialog.hide();
-                eventBus.fireEventFromSource(new LogoutEvent(facilityName), facilityName);
             }
         });
     }
 
     /**
-     * This method loads available facility from TopCAT service
+     * This method loads available facilities from the TopCAT service.
      */
     public void loadFacilityNames() {
         utilityService.getFacilities(new AsyncCallback<ArrayList<TFacility>>() {
@@ -403,7 +421,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method gets all the instrument details for input facility
+     * This method gets all the instrument details for input facility.
      * 
      * @param facility
      * @return
@@ -418,8 +436,8 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method searches for all the investigations that matches given search
-     * details
+     * This method searches for all the investigations that match the given
+     * search details.
      * 
      * @param searchDetails
      */
@@ -450,8 +468,8 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method searches for the user investigations that matches given
-     * search details
+     * This method searches for the user investigations that match the given
+     * search details.
      * 
      * @param searchDetails
      */
@@ -482,7 +500,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method searches for the user investigations that belongs to user
+     * This method searches for the user investigations that belongs to user.
      */
     public void getMyInvestigationsInMyDataPanel() {
         waitDialog.setMessage("Getting Investigations...");
@@ -495,7 +513,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Show an alert Dialog box
+     * Show an alert dialog box.
      * 
      * @param msg
      *            message in the dialog box
@@ -505,7 +523,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Show an info Dialog box
+     * Show an info dialog box.
      * 
      * @param msg
      *            message in the dialog box
@@ -590,7 +608,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * AJAX call to search of datafiles for the input search details in the
-     * given facility
+     * given facility.
      * 
      * @param facilityName
      *            facility name
@@ -618,16 +636,15 @@ public class EventPipeLine implements LoginInterface {
                             datafileWindow.show();
                             datafileWindow.setHistoryVerified(true);
                         } catch (WindowsNotAvailableExcecption e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            showErrorDialog(e.getMessage());
                         }
                     }
                 });
     }
 
     /**
-     * This method will show the dataset window for the given facility name,
-     * investigation id
+     * This method will show the dataset window for the given facility name and
+     * investigation id.
      * 
      * @param facilityName
      *            facility name
@@ -638,20 +655,22 @@ public class EventPipeLine implements LoginInterface {
      */
     public void showDatasetWindow(String facilityName, String investigationId, String investigationName) {
         try {
-            DatasetWindow datasetWindow = tcWindowManager.createDatasetWindow();
-            datasetWindow.setInvestigationTitle(investigationName);
-            datasetWindow.setDataset(facilityName, investigationId);
+            DatasetWindow datasetWindow = tcWindowManager.findDatasetWindow(facilityName, investigationId);
+            if (datasetWindow == null) {
+                datasetWindow = tcWindowManager.createDatasetWindow();
+                datasetWindow.setInvestigationTitle(investigationName);
+                datasetWindow.setDataset(facilityName, investigationId);
+            }
             datasetWindow.show();
             datasetWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            showErrorDialog(e.getMessage());
         }
     }
 
     /**
-     * This method will show dataset window for the given input facility name,
-     * investigation id and also updates the browser history
+     * This method will show the dataset window for the given facility name and
+     * investigation id, and also updates the browser history.
      * 
      * @param facilityName
      *            facility name
@@ -666,21 +685,22 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method will show the datafile window for the given input dataset
-     * models.
+     * This method will show the datafile window for the given dataset models.
      * 
      * @param datasetModel
      *            list of dataset models
      */
     public void showDatafileWindow(ArrayList<DatasetModel> datasetModel) {
         try {
-            DatafileWindow datafileWindow = tcWindowManager.createDatafileWindow();
-            datafileWindow.setDatasets(datasetModel);
+            DatafileWindow datafileWindow = tcWindowManager.findDatafileWindow(datasetModel);
+            if (datafileWindow == null) {
+                datafileWindow = tcWindowManager.createDatafileWindow();
+                datafileWindow.setDatasets(datasetModel);
+            }
             datafileWindow.show();
             datafileWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            showErrorDialog(e.getMessage());
         }
     }
 
@@ -697,8 +717,8 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method will show the parameter window for the given inputs of
-     * facility name, datafile id
+     * This method will show the parameter window for the given facility name
+     * and datafile id.
      * 
      * @param facilityName
      *            facility name
@@ -709,19 +729,21 @@ public class EventPipeLine implements LoginInterface {
      */
     public void showParameterWindow(String facilityName, String datafileId, String datafileName) {
         try {
-            ParameterWindow paramWindow = tcWindowManager.createParameterWindow();
-            paramWindow.setDatafileName(datafileName);
-            paramWindow.setDatafileInfo(facilityName, datafileId);
+            ParameterWindow paramWindow = tcWindowManager.findParameterWindow(facilityName, datafileId);
+            if (paramWindow == null) {
+                paramWindow = tcWindowManager.createParameterWindow();
+                paramWindow.setDatafileName(datafileName);
+                paramWindow.setDatafileInfo(facilityName, datafileId);
+            }
             paramWindow.show();
             paramWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            showErrorDialog(e.getMessage());
         }
     }
 
     /**
-     * This method will call show parameter window and also update the browser
+     * This method will the show parameter window and also update the browser
      * history.
      * 
      * @param facilityName
@@ -783,6 +805,11 @@ public class EventPipeLine implements LoginInterface {
         }
     }
 
+    /**
+     * Get the facility names.
+     * 
+     * @return a list of facility names
+     */
     public ArrayList<TFacility> getFacilityNames() {
         return facilities;
     }
@@ -981,8 +1008,7 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Setup a handler to react to login events and get the investigations for
-     * the facility.
+     * Setup a handler to react to login events for the facility.
      */
     private void createLoginHandler() {
         // react to user logging into a facility
@@ -994,8 +1020,10 @@ public class EventPipeLine implements LoginInterface {
                 addMyDownloads(event.getFacilityName());
                 addInstruments(event.getFacilityName());
                 addInvestigations(event.getFacilityName());
-//                historyManager.updateHistory(); //TODO
-                historyManager.processHistory(historyManager.getHistoryString());
+                historyManager.updateHistory();
+                if (!facilitiesToLogOn.isEmpty()) {
+                    checkLoginWidgetStatus();
+                }
             }
         });
     }
@@ -1018,26 +1046,41 @@ public class EventPipeLine implements LoginInterface {
                         it.remove();
                     }
                 }
-                // Check if we are required to log into this facility
-                if (facilityToLogOn.equals(event.getFacilityName())) {
-                    showLoginWidget(facilityToLogOn);
-                    facilityToLogOn = "";
-                }
             }
         });
     }
 
     /**
-     * Setup a handler to react to logout events for the facility.
+     * Setup a handler to react to logout check complete events for the
+     * facility.
      */
-    private void createLoginInfoPanelUpdateHandler() {
-        // react to an update of the LoginInfoPanel
-        LoginInfoPanelUpdateEvent.register(EventPipeLine.getEventBus(), new LoginInfoPanelUpdateEventHandler() {
+    private void createLoginCheckCompleteHandler() {
+        // react to an update of the completion of a login check call back and
+        // subsequent processing by the LoginInfoPanel
+        LoginCheckCompleteEvent.register(EventPipeLine.getEventBus(), new LoginCheckCompleteEventHandler() {
             @Override
-            public void update(final LoginInfoPanelUpdateEvent event) {
-                facilitiesToCheck = facilitiesToCheck - 1;
+            public void update(final LoginCheckCompleteEvent event) {
+                if (facilitiesToCheck > 0) {
+                    facilitiesToCheck = facilitiesToCheck - 1;
+                }
                 checkLoginWidgetStatus();
             }
         });
     }
+
+    /**
+     * Setup a handler to react to logout window events for the facility.
+     */
+    private void createLogoutWindowHandler() {
+        WindowLogoutEvent.register(EventPipeLine.getEventBus(), new WindowLogoutEventHandler() {
+            @Override
+            public void logout(final WindowLogoutEvent event) {
+                if (!tcWindowManager.areWindowsInUse(event.getFacilityName())) {
+                    // only update the history once all of the widows have shut
+                    historyManager.updateHistory();
+                }
+            }
+        });
+    }
+
 }

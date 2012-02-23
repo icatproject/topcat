@@ -164,6 +164,11 @@ public class DefaultSearchWidget extends Composite {
         layoutContainer.setBorders(true);
     }
 
+    /**
+     * Set the facility name.
+     * 
+     * @param facilityName
+     */
     public void setFacilityName(String facilityName) {
         this.facilityName = facilityName;
         ListStore<Instrument> instruments = eventBus.getFacilityInstruments(facilityName);

@@ -25,8 +25,8 @@ public class AddInstrumentEvent extends GwtEvent<AddInstrumentEventHandler> {
     private final String facilityName;
     private final ArrayList<Instrument> instruments;
 
-    public AddInstrumentEvent(final String facility, final ArrayList<Instrument> instruments) {
-        this.facilityName = facility;
+    public AddInstrumentEvent(final String facilityName, final ArrayList<Instrument> instruments) {
+        this.facilityName = facilityName;
         this.instruments = instruments;
     }
 

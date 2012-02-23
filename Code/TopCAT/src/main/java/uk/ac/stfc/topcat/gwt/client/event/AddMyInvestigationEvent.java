@@ -25,8 +25,8 @@ public class AddMyInvestigationEvent extends GwtEvent<AddMyInvestigationEventHan
     private final String facilityName;
     private final ArrayList<TopcatInvestigation> myInvestigations;
 
-    public AddMyInvestigationEvent(final String facility, final ArrayList<TopcatInvestigation> myInvestigations) {
-        this.facilityName = facility;
+    public AddMyInvestigationEvent(final String facilityName, final ArrayList<TopcatInvestigation> myInvestigations) {
+        this.facilityName = facilityName;
         this.myInvestigations = myInvestigations;
     }
 
