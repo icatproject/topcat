@@ -503,8 +503,6 @@ public class EventPipeLine implements LoginInterface {
      * This method searches for the user investigations that belongs to user.
      */
     public void getMyInvestigationsInMyDataPanel() {
-        waitDialog.setMessage("Getting Investigations...");
-        waitDialog.show();
         // NOTE: Working without this
         for (TFacility facility : facilities) {
             addMyInvestigations(facility.getName());
@@ -660,8 +658,9 @@ public class EventPipeLine implements LoginInterface {
                 datasetWindow = tcWindowManager.createDatasetWindow();
                 datasetWindow.setInvestigationTitle(investigationName);
                 datasetWindow.setDataset(facilityName, investigationId);
+            } else {
+                datasetWindow.show();
             }
-            datasetWindow.show();
             datasetWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
             showErrorDialog(e.getMessage());
@@ -696,8 +695,9 @@ public class EventPipeLine implements LoginInterface {
             if (datafileWindow == null) {
                 datafileWindow = tcWindowManager.createDatafileWindow();
                 datafileWindow.setDatasets(datasetModel);
+            } else {
+                datafileWindow.show();
             }
-            datafileWindow.show();
             datafileWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
             showErrorDialog(e.getMessage());
@@ -734,8 +734,9 @@ public class EventPipeLine implements LoginInterface {
                 paramWindow = tcWindowManager.createParameterWindow();
                 paramWindow.setDatafileName(datafileName);
                 paramWindow.setDatafileInfo(facilityName, datafileId);
+            } else {
+                paramWindow.show();
             }
-            paramWindow.show();
             paramWindow.setHistoryVerified(true);
         } catch (WindowsNotAvailableExcecption e) {
             showErrorDialog(e.getMessage());

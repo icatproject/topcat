@@ -20,6 +20,7 @@ public class LoginValidCallback implements AsyncCallback<Boolean> {
 
     private boolean autoLogin;
     private String facilityName;
+    private final static boolean STATUS_CHECK = true;
 
     public LoginValidCallback(String facilityName, boolean autoLogin) {
         this.autoLogin = autoLogin;
@@ -34,13 +35,14 @@ public class LoginValidCallback implements AsyncCallback<Boolean> {
     public void onSuccess(Boolean result) {
         if (result) {
             if (autoLogin) {
-                EventPipeLine.getEventBus().fireEventFromSource(new LoginEvent(facilityName, true), facilityName);
+                EventPipeLine.getEventBus().fireEventFromSource(new LoginEvent(facilityName, STATUS_CHECK),
+                        facilityName);
             } else {
                 EventPipeLine.getEventBus()
                         .fireEventFromSource(new LoginCheckCompleteEvent(facilityName), facilityName);
             }
         } else {
-            EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName, true), facilityName);
+            EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName, STATUS_CHECK), facilityName);
         }
     }
 
