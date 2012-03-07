@@ -85,6 +85,7 @@ public class MyDataPanel extends Composite {
     PagingToolBar toolBar = null;
     Grid<TopcatInvestigation> grid;
     private EventPipeLine eventBus;
+    private boolean refreshData = true;
 
     public MyDataPanel() {
         ContentPanel contentPanel = new ContentPanel();
@@ -149,7 +150,7 @@ public class MyDataPanel extends Composite {
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
             @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
-                TopcatInvestigation inv = (TopcatInvestigation) e.getModel();
+                TopcatInvestigation inv = e.getModel();
                 eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
                         inv.getInvestigationTitle());
             }
@@ -159,7 +160,16 @@ public class MyDataPanel extends Composite {
         contentPanel.add(bodyPanel);
 
         // Pagination Bar
-        toolBar = new PagingToolBar(15);
+        toolBar = new PagingToolBar(15) {
+            @Override
+            public void refresh() {
+                super.refresh();
+                if (refreshData) {
+                    // Collect list of investigations
+                    EventPipeLine.getInstance().getMyInvestigationsInMyDataPanel();
+                }
+            }
+        };
         toolBar.bind(loader);
         contentPanel.setBottomComponent(toolBar);
 
@@ -187,11 +197,10 @@ public class MyDataPanel extends Composite {
      * Setup a handler to react to AddMyInvestigation events.
      */
     private void createAddMyInvestigationHandler() {
-        // react to a new set of instruments being added
+        // react to a new set of investigations being added
         AddMyInvestigationEvent.register(EventPipeLine.getEventBus(), new AddMyInvestigationEventHandler() {
             @Override
             public void addMyInvestigations(AddMyInvestigationEvent event) {
-
                 clearInvestigationList(event.getFacilityName());
                 @SuppressWarnings("unchecked")
                 List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
@@ -202,7 +211,9 @@ public class MyDataPanel extends Composite {
                     investList.addAll(event.getMyInvestigations());
                 }
                 invPageProxy.setData(investList);
+                refreshData = false;
                 toolBar.refresh();
+                refreshData = true;
             }
         });
     }
@@ -234,7 +245,9 @@ public class MyDataPanel extends Composite {
                 }
             }
             invPageProxy.setData(investList);
+            refreshData = false;
             toolBar.refresh();
+            refreshData = true;
         }
     }
 }

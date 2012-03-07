@@ -180,12 +180,13 @@ public class AdvancedSearchSubPanel extends Composite {
 
         listFieldFacility = new ListField<Facility>();
         listFieldFacility.addSelectionChangedListener(new SelectionChangedListener<Facility>() {
+            @Override
             public void selectionChanged(SelectionChangedEvent<Facility> se) {
                 updateListWidgets();
             }
         });
         listFieldFacility.setDisplayField("name");
-        listFieldFacility.setStore(new ListStore());
+        listFieldFacility.setStore(new ListStore<Facility>());
         flexTable.setWidget(8, 1, listFieldFacility);
 
         LabelField lblfldInvestigationType = new LabelField("Investigation Type");
@@ -205,13 +206,14 @@ public class AdvancedSearchSubPanel extends Composite {
 
         lstInstrument = new ListField<Instrument>();
         lstInstrument.setDisplayField("displayName");
-        lstInstrument.setStore(new ListStore());
+        lstInstrument.setStore(new ListStore<Instrument>());
         flexTable.setWidget(10, 1, lstInstrument);
 
         flexTable.setWidget(11, 0, new Text());
 
         Button btnSearch = new Button("Search");
         btnSearch.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent e) {
                 searchAdvanced();
             }
@@ -220,6 +222,7 @@ public class AdvancedSearchSubPanel extends Composite {
 
         Button btnReset = new Button("Reset");
         btnReset.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent e) {
                 resetWidgetValues();
             }
@@ -282,17 +285,17 @@ public class AdvancedSearchSubPanel extends Composite {
 
     private TAdvancedSearchDetails createAdvancedSearchDetails() {
         TAdvancedSearchDetails result = new TAdvancedSearchDetails();
-        result.setPropostaltitle((String) txtFldProposalTitle.getValue());
-        result.setProposalAbstract((String) txtFldProposalAbstract.getValue());
-        result.setSample((String) txtFldSampleName.getValue());
+        result.setPropostaltitle(txtFldProposalTitle.getValue());
+        result.setProposalAbstract(txtFldProposalAbstract.getValue());
+        result.setSample(txtFldSampleName.getValue());
         if (txtFldInvestigatorName.getValue() != null && txtFldInvestigatorName.getValue().compareTo("") != 0)
-            result.getInvestigatorNameList().add((String) txtFldInvestigatorName.getValue());
-        result.setDatafileName((String) txtFldDataFileName.getValue());
+            result.getInvestigatorNameList().add(txtFldInvestigatorName.getValue());
+        result.setDatafileName(txtFldDataFileName.getValue());
         result.setStartDate(dateFieldStart.getValue());
         result.setEndDate(dateFieldEnd.getValue());
-        result.setRbNumberStart((String) txtFldRunNo.getValue());
-        result.setRbNumberEnd((String) txtFldRunNo.getValue());
-        result.setGrantId((String) txtFldGrantId.getValue());
+        result.setRbNumberStart(txtFldRunNo.getValue());
+        result.setRbNumberEnd(txtFldRunNo.getValue());
+        result.setGrantId(txtFldGrantId.getValue());
         result.setFacilityList(getFacilitySelectedList());
         result.setInvestigationTypeList(getInvestigationTypeSelectedList());
         result.setInstrumentList(getInstrumentSelectedList());
@@ -389,7 +392,7 @@ public class AdvancedSearchSubPanel extends Composite {
      * Setup a handler to react to AddInvestigation events.
      */
     private void createAddInvestigationHandler() {
-        // react to a new set of instruments being added
+        // react to a new set of investigations being added
         AddInvestigationEvent.register(EventPipeLine.getEventBus(), new AddInvestigationEventHandler() {
             @Override
             public void addInvestigations(AddInvestigationEvent event) {

@@ -196,7 +196,6 @@ public class TopcatWindowManager {
         setNotVerifiedAllWindows();
         Set<String> loggedInFacilities = EventPipeLine.getInstance().getLoggedInFacilities();
         Set<String> loginToFacilities = new HashSet<String>();
-        ;
         // split the models
         String[] historyTokenList = history.split(HistoryManager.seperatorModel);
         // split the model string to find the model type
@@ -246,7 +245,7 @@ public class TopcatWindowManager {
 
                 // Parameter
             } else if (paramMap.get("Model") != null && paramMap.get("Model").compareToIgnoreCase("Parameter") == 0) {
-                if (loggedInFacilities.contains(paramMap.get("SN"))) {
+                if (!loggedInFacilities.contains(paramMap.get("SN"))) {
                     loginToFacilities.add(paramMap.get("SN"));
                 }
                 EventPipeLine.getInstance().showParameterWindow(paramMap.get("SN"), paramMap.get("DFId"),

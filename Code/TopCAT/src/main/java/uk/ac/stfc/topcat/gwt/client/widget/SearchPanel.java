@@ -26,6 +26,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
@@ -33,6 +34,8 @@ import uk.ac.stfc.topcat.gwt.client.KeywordsSuggestOracle;
 import uk.ac.stfc.topcat.gwt.client.autocompletewidget.MultipleTextBox;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.callback.InvestigationSearchCallback;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -128,8 +131,8 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
         Button btnSearch = new Button("Search");
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
             public void componentSelected(ButtonEvent ce) {
-                // waitDialog.show();
                 // Check whether to do searching my data or all data
                 if (rdbtnSearchAllData.getValue()) {
                     // Search all data
@@ -237,7 +240,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                 invPageProxy);
         loader.setRemoteSort(true);
         investigationList = new ListStore<TopcatInvestigation>(loader);
-
         grid = new Grid<TopcatInvestigation>(investigationList, new ColumnModel(configs));
         grid.setAutoExpandColumn("title");
         grid.setAutoExpandMin(200);
@@ -245,7 +247,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
             @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
-                TopcatInvestigation inv = (TopcatInvestigation) e.getModel();
+                TopcatInvestigation inv = e.getModel();
                 eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
                         inv.getInvestigationTitle());
             }
@@ -255,12 +257,19 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         contentPanel.add(bodyPanel);
 
         // Pagination Bar
-        toolBar = new PagingToolBar(15);
+        toolBar = new PagingToolBar(15) {
+            @Override
+            public void refresh() {
+                super.refresh();
+                refresh.hide();
+            }
+        };
         toolBar.bind(loader);
         contentPanel.setBottomComponent(toolBar);
-
+        toolBar.refresh();
         initComponent(contentPanel);
         setMonitorWindowResize(true);
+        createLogoutHandler();
     }
 
     /**
@@ -334,5 +343,36 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
      */
     public void setGridWidth(int width) {
         grid.setWidth(width);
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                clearInvestigationList(event.getFacilityName());
+            }
+        });
+    }
+
+    /**
+     * Remove all investigations for the given facility.
+     * 
+     * @param facilityName
+     */
+    private void clearInvestigationList(String facilityName) {
+        @SuppressWarnings("unchecked")
+        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
+        if (investList != null) {
+            for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
+                if (it.next().getFacilityName().equals(facilityName)) {
+                    it.remove();
+                }
+            }
+            invPageProxy.setData(investList);
+            toolBar.refresh();
+        }
     }
 }

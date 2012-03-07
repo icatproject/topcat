@@ -43,6 +43,11 @@ import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -59,6 +64,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -77,29 +83,43 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  */
 public class DatasetWindow extends Window {
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-    CheckBoxSelectionModel<DatasetModel> datasetSelectModel;
-    private ListStore<DatasetModel> datasetList;
+    private CheckBoxSelectionModel<DatasetModel> datasetSelectionModel = null;
+    private ListStore<DatasetModel> datasetStore;
+    private PagingModelMemoryProxy pageProxy = null;
+    private PagingLoader<PagingLoadResult<DatasetModel>> loader = null;
+    private PagingToolBar pageBar = null;
+    private int selectionCount = 0;
     String facilityName;
     String investigationId;
     String investigationName;
     boolean historyVerified;
     private boolean awaitingLogin;
+    private boolean loadingData = false;
+
+    /** Number of rows of data. */
+    private static final int PAGE_SIZE = 20;
 
     public DatasetWindow() {
-        // Update the history upon closing of this window.
+        // Listener called when the datafile window is closed.
         addWindowListener(new WindowListener() {
+            @Override
             public void windowHide(WindowEvent we) {
+                // Go to page one and de-select everything in case we reuse this
+                // window to display this data again
+                loader.load(0, PAGE_SIZE);
+                datasetSelectionModel.deselectAll();
+                // Update the history to notify the close of dataset window
                 EventPipeLine.getInstance().getHistoryManager().updateHistory();
             }
         });
-        setHeading("");
-        datasetSelectModel = new CheckBoxSelectionModel<DatasetModel>();
-        datasetList = new ListStore<DatasetModel>();
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-        setLayout(new FillLayout(Orientation.HORIZONTAL));
 
-        configs.add(datasetSelectModel.getColumn());
-        datasetList.sort("datasetName", Style.SortDir.ASC);
+        datasetSelectionModel = createDatasetSelectionModel();
+
+        setHeading("");
+        setLayout(new FillLayout(Orientation.HORIZONTAL));
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+        configs.add(datasetSelectionModel.getColumn());
         ColumnConfig clmncnfgName = new ColumnConfig("datasetName", "Dataset Name", 150);
 
         clmncnfgName.setAlignment(HorizontalAlignment.LEFT);
@@ -114,26 +134,39 @@ public class DatasetWindow extends Window {
         ColumnConfig clmncnfgDescription = new ColumnConfig("datasetDescription", "Description", 200);
         configs.add(clmncnfgDescription);
 
-        Grid<DatasetModel> grid = new Grid<DatasetModel>(datasetList, new ColumnModel(configs));
+        // Pagination
+        pageProxy = new PagingModelMemoryProxy(datasetStore);
+        loader = new BasePagingLoader<PagingLoadResult<DatasetModel>>(pageProxy);
+        loader.setRemoteSort(true);
+        datasetStore = new ListStore<DatasetModel>(loader);
+        datasetStore.sort("datasetName", Style.SortDir.ASC);
+
+        // Grid
+        Grid<DatasetModel> grid = new Grid<DatasetModel>(datasetStore, new ColumnModel(configs));
         add(grid);
         grid.setBorders(true);
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<DatasetModel>>() {
+            @Override
             public void handleEvent(GridEvent<DatasetModel> e) {
                 ArrayList<DatasetModel> dsmList = new ArrayList<DatasetModel>();
                 dsmList.add(e.getModel());
                 EventPipeLine.getInstance().showDatafileWindowWithHistory(dsmList);
             }
         });
-        grid.addPlugin(datasetSelectModel);
-        grid.setSelectionModel(datasetSelectModel);
+
+        grid.addPlugin(datasetSelectionModel);
+        grid.setSelectionModel(datasetSelectionModel);
+
         BufferView view = new BufferView();
         view.setRowHeight(32);
+        view.setForceFit(true);
         grid.setView(view);
         setSize(600, 400);
 
         ToolBar toolBar = new ToolBar();
         Button btnView = new Button("View", AbstractImagePrototype.create(Resource.ICONS.iconView()));
         btnView.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 viewDatafileWindow();
             }
@@ -141,6 +174,17 @@ public class DatasetWindow extends Window {
         toolBar.add(btnView);
         toolBar.add(new SeparatorToolItem());
         setTopComponent(toolBar);
+
+        // Pagination Bar
+        pageBar = new PagingToolBar(PAGE_SIZE) {
+            @Override
+            public void refresh() {
+                super.refresh();
+                loadData();
+            }
+        };
+        pageBar.bind(loader);
+        setBottomComponent(pageBar);
         awaitingLogin = false;
         createLoginHandler();
         createLogoutHandler();
@@ -163,7 +207,6 @@ public class DatasetWindow extends Window {
         } else {
             awaitingLogin = true;
         }
-
     }
 
     /**
@@ -290,23 +333,140 @@ public class DatasetWindow extends Window {
     public void reset() {
         facilityName = "";
         investigationId = "";
-        datasetList.removeAll();
+        datasetStore.removeAll();
+        selectionCount = 0;
+        datasetSelectionModel.refresh();
         awaitingLogin = false;
+    }
+
+    /**
+     * Get a customised CheckBoxSelectionModel
+     * 
+     * @return a customised CheckBoxSelectionModel
+     */
+    private CheckBoxSelectionModel<DatasetModel> createDatasetSelectionModel() {
+        CheckBoxSelectionModel<DatasetModel> dsSelectionModel = new CheckBoxSelectionModel<DatasetModel>() {
+            private boolean allSelected = false;
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void deselectAll() {
+                super.deselectAll();
+                if (pageProxy.getData() != null) {
+                    for (DatasetModel m : (List<DatasetModel>) pageProxy.getData()) {
+                        m.setSelected(false);
+                    }
+                }
+                selectionCount = 0;
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void selectAll() {
+                super.selectAll();
+                if (allSelected) {
+                    // no need to loop through every item again
+                    return;
+                }
+                for (DatasetModel m : (List<DatasetModel>) pageProxy.getData()) {
+                    m.setSelected(true);
+                }
+                selectionCount = ((List<DatasetModel>) pageProxy.getData()).size();
+                allSelected = true;
+                setChecked(allSelected);
+            }
+
+            @Override
+            protected void doDeselect(List<DatasetModel> models, boolean supressEvent) {
+                super.doDeselect(models, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatasetModel m : models) {
+                    m.setSelected(false);
+                    selectionCount = selectionCount - 1;
+                }
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void doSelect(List<DatasetModel> models, boolean keepExisting, boolean supressEvent) {
+                super.doSelect(models, keepExisting, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatasetModel m : models) {
+                    m.setSelected(true);
+                    selectionCount = selectionCount + 1;
+                }
+                if (selectionCount == ((List<DatasetModel>) pageProxy.getData()).size()) {
+                    allSelected = true;
+                } else {
+                    allSelected = false;
+                }
+                setChecked(allSelected);
+            }
+
+            @Override
+            public void refresh() {
+                super.refresh();
+                List<DatasetModel> previouslySelected = new ArrayList<DatasetModel>();
+                for (DatasetModel m : listStore.getModels()) {
+                    if (m.getSelected()) {
+                        previouslySelected.add(m);
+                    } else {
+                        allSelected = false;
+                    }
+                }
+                if (previouslySelected.size() > 0) {
+                    doSelect(previouslySelected, true, false);
+                }
+            }
+
+            private void setChecked(boolean checked) {
+                if (grid.isViewReady()) {
+                    El hd = El.fly(grid.getView().getHeader().getElement()).selectNode("div.x-grid3-hd-checker");
+                    if (hd != null) {
+                        hd.getParent().setStyleName("x-grid3-hd-checker-on", checked);
+                    }
+                }
+            }
+        };
+
+        return dsSelectionModel;
     }
 
     /**
      * This method shows the datafile window for the selected datasets.
      */
+    @SuppressWarnings("unchecked")
     private void viewDatafileWindow() {
+        ArrayList<DatasetModel> selectedModels = new ArrayList<DatasetModel>();
+        for (DatasetModel model : (List<DatasetModel>) pageProxy.getData()) {
+            if (model.getSelected()) {
+                selectedModels.add(model);
+            }
+        }
+        if (selectedModels.size() == 0) {
+            EventPipeLine.getInstance().showMessageDialog("No datasets selected for viewing");
+            return;
+        }
+
         // Get all the datasets selected and show the datafile window
-        EventPipeLine.getInstance().showDatafileWindowWithHistory(
-                new ArrayList<DatasetModel>(datasetSelectModel.getSelectedItems()));
+        EventPipeLine.getInstance().showDatafileWindowWithHistory(selectedModels);
+
     }
 
     /**
      * Call the server to get fresh data.
      */
     private void loadData() {
+        if (loadingData) {
+            return;
+        }
+        loadingData = true;
         EventPipeLine.getInstance().showRetrievingData();
         utilityService.getDatasetsInInvestigations(facilityName, investigationId,
                 new AsyncCallback<ArrayList<DatasetModel>>() {
@@ -316,10 +476,12 @@ public class DatasetWindow extends Window {
                         if (result.size() > 0) {
                             setDatasetList(result);
                             show();
+                            EventPipeLine.getInstance().getHistoryManager().updateHistory();
                         } else {
-                            EventPipeLine.getInstance().showErrorDialog("No datasets returned");
+                            EventPipeLine.getInstance().showMessageDialog("No datasets returned");
                             hide();
                         }
+                        loadingData = false;
                     }
 
                     @Override
@@ -328,6 +490,7 @@ public class DatasetWindow extends Window {
                         EventPipeLine.getInstance().showErrorDialog("Error retrieving dataset");
                         hide();
                         reset();
+                        loadingData = false;
                     }
                 });
     }
@@ -338,10 +501,13 @@ public class DatasetWindow extends Window {
      * @param datasetsList
      */
     private void setDatasetList(ArrayList<DatasetModel> datasetsList) {
-        this.datasetList.removeAll();
-        this.datasetList.add(datasetsList);
+        datasetStore.removeAll();
+        selectionCount = 0;
+        pageProxy.setData(datasetsList);
+        loader.load(0, PAGE_SIZE);
+        pageBar.refresh();
         if (datasetsList.size() == 1) {
-            datasetSelectModel.selectAll();
+            datasetSelectionModel.selectAll();
             viewDatafileWindow();
         }
     }
@@ -373,8 +539,8 @@ public class DatasetWindow extends Window {
                     // on all facilities. We do not want this to remove this
                     // window. However when the user presses the cancel button
                     // on the login widget we do want to remove this window.
-                    if (!event.isStatusCheck()) {
-                        awaitingLogin = false;
+                    if (!event.isStatusCheck() || isVisible()) {
+                        reset();
                     }
                     hide();
                     EventPipeLine.getEventBus().fireEventFromSource(new WindowLogoutEvent(event.getFacilityName()),

@@ -613,7 +613,7 @@ public class EventPipeLine implements LoginInterface {
      * @param searchDetails
      *            search details
      */
-    public void searchForDatafiles(String facilityName, TAdvancedSearchDetails searchDetails) {
+    public void searchForDatafiles(final String facilityName, TAdvancedSearchDetails searchDetails) {
         waitDialog.setMessage("  Searching...");
         waitDialog.show();
         searchService.getAdvancedSearchResultsDatafile(null, facilityName, searchDetails,
@@ -629,10 +629,14 @@ public class EventPipeLine implements LoginInterface {
                     public void onSuccess(ArrayList<DatafileModel> result) {
                         waitDialog.hide();
                         try {
-                            DatafileWindow datafileWindow = tcWindowManager.createDatafileWindow();
-                            datafileWindow.setDatafileList(result);
-                            datafileWindow.show();
-                            datafileWindow.setHistoryVerified(true);
+                            if (result.size() > 0) {
+                                DatafileWindow datafileWindow = tcWindowManager.createDatafileWindow();
+                                datafileWindow.setAdvancedSearchResult(facilityName, result);
+                                datafileWindow.show();
+                                datafileWindow.setHistoryVerified(true);
+                            } else {
+                                showMessageDialog("No files returned");
+                            }
                         } catch (WindowsNotAvailableExcecption e) {
                             showErrorDialog(e.getMessage());
                         }

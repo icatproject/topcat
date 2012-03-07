@@ -33,6 +33,7 @@ import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -247,6 +248,7 @@ public class ISISSearchWidget extends Composite {
     public void setFacilityName(String facilityName) {
         this.facilityName = facilityName;
         ListStore<Instrument> instruments = eventBus.getFacilityInstruments(facilityName);
+        instruments.sort("name", Style.SortDir.ASC);
         lstInstrument.setStore(instruments);
         createLogoutHandler();
     }
@@ -258,7 +260,13 @@ public class ISISSearchWidget extends Composite {
         LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
             @Override
             public void logout(LogoutEvent event) {
-                lstInstrument = new ListField<Instrument>();
+                ListStore<Instrument> instruments = new ListStore<Instrument>();
+                lstInstrument.setStore(instruments);
+                errorMessage.setText("");
+                startDate.clear();
+                endDate.clear();
+                runNumberStart.clear();
+                runNumberEnd.clear();
             }
         });
     }

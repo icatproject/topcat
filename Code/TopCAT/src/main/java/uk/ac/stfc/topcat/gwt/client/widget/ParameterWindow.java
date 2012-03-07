@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ParameterWindow extends Window {
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
 
-    private ListStore<ParameterModel> parameterList;
+    private ListStore<ParameterModel> parameterStore;
     private boolean historyVerified;
     private String facilityName;
     private String datafileId;
@@ -85,10 +86,10 @@ public class ParameterWindow extends Window {
                 EventPipeLine.getInstance().getHistoryManager().updateHistory();
             }
         });
-        parameterList = new ListStore<ParameterModel>();
+        parameterStore = new ListStore<ParameterModel>();
         setHeading("");
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         setLayout(new RowLayout(Orientation.VERTICAL));
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ToolBar toolBar = new ToolBar();
 
@@ -108,18 +109,21 @@ public class ParameterWindow extends Window {
         ColumnConfig clmncnfgName = new ColumnConfig("name", "Name", 150);
         configs.add(clmncnfgName);
 
-        ColumnConfig clmncnfgUnits = new ColumnConfig("units", "Units", 178);
+        ColumnConfig clmncnfgUnits = new ColumnConfig("units", "Units", 200);
         configs.add(clmncnfgUnits);
 
         ColumnConfig clmncnfgValue = new ColumnConfig("value", "Value", 150);
         configs.add(clmncnfgValue);
 
-        Grid<ParameterModel> grid = new Grid<ParameterModel>(parameterList, new ColumnModel(configs));
-        add(grid);
-        grid.setSize("661px", "430px");
-        grid.setAutoWidth(true);
+        GridView view = new GridView();
+        view.setForceFit(true);
+        Grid<ParameterModel> grid = new Grid<ParameterModel>(parameterStore, new ColumnModel(configs));
+        grid.setHeight("391px");
+        grid.setView(view);
         grid.setBorders(true);
-        setSize("670px", "430px");
+        setSize("500px", "450px");
+        add(grid);
+
         awaitingLogin = false;
         createLoginHandler();
         createLogoutHandler();
@@ -177,17 +181,6 @@ public class ParameterWindow extends Window {
         } else {
             awaitingLogin = true;
         }
-    }
-
-    /**
-     * This method sets the parameters that will be displayed in the window.
-     * 
-     * @param parameterList
-     *            list of parameters
-     */
-    private void setParameterList(ArrayList<ParameterModel> parameterList) {
-        this.parameterList.removeAll();
-        this.parameterList.add(parameterList);
     }
 
     /**
@@ -277,7 +270,7 @@ public class ParameterWindow extends Window {
     public void reset() {
         facilityName = "";
         datafileId = "";
-        parameterList.removeAll();
+        parameterStore.removeAll();
         awaitingLogin = false;
     }
 
@@ -293,8 +286,9 @@ public class ParameterWindow extends Window {
                 if (result.size() > 0) {
                     setParameterList(result);
                     show();
+                    EventPipeLine.getInstance().getHistoryManager().updateHistory();
                 } else {
-                    EventPipeLine.getInstance().showErrorDialog("No Parameters");
+                    EventPipeLine.getInstance().showMessageDialog("No Parameters");
                     hide();
                 }
             }
@@ -307,6 +301,17 @@ public class ParameterWindow extends Window {
                 reset();
             }
         });
+    }
+
+    /**
+     * This method sets the parameters that will be displayed in the window.
+     * 
+     * @param parameterList
+     *            list of parameters
+     */
+    private void setParameterList(ArrayList<ParameterModel> parameterList) {
+        parameterStore.removeAll();
+        parameterStore.add(parameterList);
     }
 
     /**
@@ -336,8 +341,8 @@ public class ParameterWindow extends Window {
                     // on all facilities. We do not want this to remove this
                     // window. However when the user presses the cancel button
                     // on the login widget we do want to remove this window.
-                    if (!event.isStatusCheck()) {
-                        awaitingLogin = false;
+                    if (!event.isStatusCheck() || isVisible()) {
+                        reset();
                     }
                     hide();
                     EventPipeLine.getEventBus().fireEventFromSource(new WindowLogoutEvent(event.getFacilityName()),

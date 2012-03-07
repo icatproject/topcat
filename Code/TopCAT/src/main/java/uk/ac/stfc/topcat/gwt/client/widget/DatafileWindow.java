@@ -26,10 +26,8 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
@@ -89,121 +87,45 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class DatafileWindow extends Window {
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-    ParameterWindow datafileInfoWindow;
-    CheckBoxSelectionModel<DatafileModel> datafileSelectModel;
+    CheckBoxSelectionModel<DatafileModel> datafileSelectionModel = null;
     GroupingStore<DatafileModel> dfmStore;
-    ArrayList<DatasetModel> inputDatasetModels;
+    ArrayList<DatasetModel> inputDatasetModels = new ArrayList<DatasetModel>();
     private PagingModelMemoryProxy pageProxy = null;
     private PagingLoader<PagingLoadResult<DatafileModel>> loader = null;
     private PagingToolBar pageBar = null;
-    private GroupingView view;
-    private Map<Long, Boolean> selectedFiles = new HashMap<Long, Boolean>();
+    private Set<Long> selectedFiles = new HashSet<Long>();
+
     boolean historyVerified;
     Grid<DatafileModel> grid;
     private Set<String> facilityNames = new HashSet<String>();
     private boolean awaitingLogin;
+    private boolean loadingData = false;
+    private boolean advancedSearchData = false;
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
 
     public DatafileWindow() {
+        // Listener called when the datafile window is closed.
         addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
+                // Go to page one and de-select everything in case we reuse this
+                // window to display this data again
+                loader.load(0, PAGE_SIZE);
+                datafileSelectionModel.deselectAll();
+                // Update the history to notify the close of datafile window
                 EventPipeLine.getInstance().getHistoryManager().updateHistory();
             }
         });
 
-        datafileSelectModel = new CheckBoxSelectionModel<DatafileModel>() {
-            private boolean allSelected = false;
+        datafileSelectionModel = createDatafileSelectionModel();
 
-            @SuppressWarnings("unchecked")
-            @Override
-            public void deselectAll() {
-                super.deselectAll();
-                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
-                    m.setSelected(false);
-                }
-                selectedFiles.clear();
-                allSelected = false;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public void selectAll() {
-                super.selectAll();
-                if (allSelected) {
-                    // no need to loop through every item again
-                    return;
-                }
-                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
-                    m.setSelected(true);
-                    selectedFiles.put(new Long(m.getId()), true);
-                }
-                allSelected = true;
-                setChecked(allSelected);
-            }
-
-            @Override
-            protected void doDeselect(List<DatafileModel> models, boolean supressEvent) {
-                super.doDeselect(models, supressEvent);
-                if (supressEvent) {
-                    return;
-                }
-                for (DatafileModel m : models) {
-                    m.setSelected(false);
-                    selectedFiles.remove(new Long(m.getId()));
-                }
-                allSelected = false;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void doSelect(List<DatafileModel> models, boolean keepExisting, boolean supressEvent) {
-                super.doSelect(models, keepExisting, supressEvent);
-                if (supressEvent) {
-                    return;
-                }
-                for (DatafileModel m : models) {
-                    m.setSelected(true);
-                    selectedFiles.put(new Long(m.getId()), true);
-                }
-                if (!allSelected && selectedFiles.size() == ((List<DatafileModel>) pageProxy.getData()).size()) {
-                    allSelected = true;
-                }
-                setChecked(allSelected);
-            }
-
-            @Override
-            public void refresh() {
-                super.refresh();
-                List<DatafileModel> previouslySelected = new ArrayList<DatafileModel>();
-                for (DatafileModel m : listStore.getModels()) {
-                    if (m.getSelected()) {
-                        previouslySelected.add(m);
-                    }
-                }
-                if (previouslySelected.size() > 0) {
-                    doSelect(previouslySelected, true, false);
-                }
-            }
-
-            private void setChecked(boolean checked) {
-                if (grid.isViewReady()) {
-                    El hd = El.fly(grid.getView().getHeader().getElement()).selectNode("div.x-grid3-hd-checker");
-                    if (hd != null) {
-                        hd.getParent().setStyleName("x-grid3-hd-checker-on", checked);
-                    }
-                }
-            }
-        };
-
-        datafileInfoWindow = new ParameterWindow();
         setHeading("Datafile Window");
         setLayout(new RowLayout(Orientation.VERTICAL));
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        configs.add(datafileSelectModel.getColumn());
+        configs.add(datafileSelectionModel.getColumn());
 
         ColumnConfig clmncnfgDatasetName = new ColumnConfig("datasetName", "Dataset Name", 150);
         configs.add(clmncnfgDatasetName);
@@ -231,7 +153,7 @@ public class DatafileWindow extends Window {
         configs.add(clmncnfgCreateTime);
 
         final ColumnModel cm = new ColumnModel(configs);
-        view = new GroupingView();
+        GroupingView view = new GroupingView();
         view.setShowGroupedColumn(false);
         view.setForceFit(true);
         view.setGroupRenderer(new GridGroupRenderer() {
@@ -264,8 +186,8 @@ public class DatafileWindow extends Window {
             }
         });
 
-        grid.addPlugin(datafileSelectModel);
-        grid.setSelectionModel(datafileSelectModel);
+        grid.addPlugin(datafileSelectionModel);
+        grid.setSelectionModel(datafileSelectionModel);
 
         // ToolBar with download button
         ToolBar toolBar = new ToolBar();
@@ -281,10 +203,24 @@ public class DatafileWindow extends Window {
         setTopComponent(toolBar);
 
         setLayout(new FitLayout());
-        setSize(700, 560);
+        setSize(700, 400);
 
         // Pagination Bar
-        pageBar = new PagingToolBar(PAGE_SIZE);
+        pageBar = new PagingToolBar(PAGE_SIZE) {
+            @Override
+            public void refresh() {
+                super.refresh();
+                if (inputDatasetModels.size() > 0) {
+                    // datafiles are from datasets
+                    loadData();
+                    refresh.show();
+                } else {
+                    // datafiles are from advanced search, i.e. a selection of
+                    // individual data files
+                    refresh.hide();
+                }
+            }
+        };
         pageBar.bind(loader);
         setBottomComponent(pageBar);
 
@@ -302,6 +238,7 @@ public class DatafileWindow extends Window {
      *            an array of <code>DatasetModel</code>
      */
     public void setDatasets(ArrayList<DatasetModel> datasetList) {
+        advancedSearchData = false;
         inputDatasetModels = datasetList;
         facilityNames = new HashSet<String>();
         for (DatasetModel dsm : inputDatasetModels) {
@@ -321,7 +258,23 @@ public class DatafileWindow extends Window {
      * @param datafileList
      *            an array of <code>DatafileModel</code>
      */
-    public void setDatafileList(ArrayList<DatafileModel> datafileList) {
+    public void setAdvancedSearchResult(String facilityName, ArrayList<DatafileModel> datafileList) {
+        loadingData = true;
+        advancedSearchData = true;
+        facilityNames.add(facilityName);
+        setDatafileList(datafileList);
+        show();
+        EventPipeLine.getInstance().getHistoryManager().updateHistory();
+        loadingData = false;
+    }
+
+    /**
+     * Set the datafile list to be displayed in the window.
+     * 
+     * @param datafileList
+     *            an array of <code>DatafileModel</code>
+     */
+    private void setDatafileList(ArrayList<DatafileModel> datafileList) {
         dfmStore.removeAll();
         selectedFiles.clear();
         NumberFormat format = NumberFormat.getDecimalFormat();
@@ -334,7 +287,6 @@ public class DatafileWindow extends Window {
         pageProxy.setData(datafileList);
         loader.load(0, PAGE_SIZE);
         pageBar.refresh();
-        pageBar.show();
     }
 
     /**
@@ -343,6 +295,10 @@ public class DatafileWindow extends Window {
      * @return the history string of this window
      */
     public String getHistoryString() {
+        if (advancedSearchData) {
+            // we do not have any history for advanced searches
+            return "";
+        }
         String history = "";
         history += HistoryManager.seperatorModel + HistoryManager.seperatorToken + "Model"
                 + HistoryManager.seperatorKeyValues + "Dataset";
@@ -369,6 +325,9 @@ public class DatafileWindow extends Window {
      *         <code>DatasetModel</code>s
      */
     public boolean isSameModel(ArrayList<DatasetModel> dsModelList) {
+        if (dsModelList.size() != inputDatasetModels.size()) {
+            return false;
+        }
         int index = 0;
         for (DatasetModel dsModel : dsModelList) {
             if (dsModel.getFacilityName().compareTo(inputDatasetModels.get(index).getFacilityName()) != 0
@@ -385,6 +344,11 @@ public class DatafileWindow extends Window {
      * @return returns the history verified status
      */
     public boolean isHistoryVerified() {
+        if (advancedSearchData) {
+            // we do not have any history for advanced searches but we still
+            // want to use this window
+            return true;
+        }
         return historyVerified;
     }
 
@@ -446,9 +410,109 @@ public class DatafileWindow extends Window {
         facilityNames = new HashSet<String>();
         inputDatasetModels.clear();
         dfmStore.removeAll();
+        datafileSelectionModel.refresh();
         selectedFiles.clear();
-        pageBar.hide();
         awaitingLogin = false;
+        advancedSearchData = false;
+    }
+
+    /**
+     * Get a customised CheckBoxSelectionModel
+     * 
+     * @return a customised CheckBoxSelectionModel
+     */
+    private CheckBoxSelectionModel<DatafileModel> createDatafileSelectionModel() {
+        CheckBoxSelectionModel<DatafileModel> dfSelectionModel = new CheckBoxSelectionModel<DatafileModel>() {
+            private boolean allSelected = false;
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void deselectAll() {
+                super.deselectAll();
+                if (pageProxy.getData() != null) {
+                    for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
+                        m.setSelected(false);
+                    }
+                }
+                selectedFiles.clear();
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void selectAll() {
+                super.selectAll();
+                if (allSelected) {
+                    // no need to loop through every item again
+                    return;
+                }
+                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
+                    m.setSelected(true);
+                    selectedFiles.add(new Long(m.getId()));
+                }
+                allSelected = true;
+                setChecked(allSelected);
+            }
+
+            @Override
+            protected void doDeselect(List<DatafileModel> models, boolean supressEvent) {
+                super.doDeselect(models, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatafileModel m : models) {
+                    m.setSelected(false);
+                    selectedFiles.remove(new Long(m.getId()));
+                }
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void doSelect(List<DatafileModel> models, boolean keepExisting, boolean supressEvent) {
+                super.doSelect(models, keepExisting, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatafileModel m : models) {
+                    m.setSelected(true);
+                    selectedFiles.add(new Long(m.getId()));
+                }
+                if (selectedFiles.size() == ((List<DatafileModel>) pageProxy.getData()).size()) {
+                    allSelected = true;
+                } else {
+                    allSelected = false;
+                }
+                setChecked(allSelected);
+            }
+
+            @Override
+            public void refresh() {
+                super.refresh();
+                List<DatafileModel> previouslySelected = new ArrayList<DatafileModel>();
+                for (DatafileModel m : listStore.getModels()) {
+                    if (m.getSelected()) {
+                        previouslySelected.add(m);
+                    } else {
+                        allSelected = false;
+                    }
+                }
+                if (previouslySelected.size() > 0) {
+                    doSelect(previouslySelected, true, false);
+                }
+            }
+
+            private void setChecked(boolean checked) {
+                if (grid.isViewReady()) {
+                    El hd = El.fly(grid.getView().getHeader().getElement()).selectNode("div.x-grid3-hd-checker");
+                    if (hd != null) {
+                        hd.getParent().setStyleName("x-grid3-hd-checker-on", checked);
+                    }
+                }
+            }
+        };
+
+        return dfSelectionModel;
     }
 
     /**
@@ -462,8 +526,7 @@ public class DatafileWindow extends Window {
             EventPipeLine.getInstance().showMessageDialog("No files selected for download");
             return;
         }
-
-        List<Long> selectedItems = new ArrayList<Long>(selectedFiles.keySet());
+        List<Long> selectedItems = new ArrayList<Long>(selectedFiles);
         @SuppressWarnings("unchecked")
         String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
         EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
@@ -476,6 +539,11 @@ public class DatafileWindow extends Window {
      * Call the server to get fresh data.
      */
     private void loadData() {
+        if (loadingData) {
+            return;
+        }
+        loadingData = true;
+        advancedSearchData = false;
         EventPipeLine.getInstance().showRetrievingData();
         utilityService.getDatafilesInDatasets(inputDatasetModels, new AsyncCallback<ArrayList<DatafileModel>>() {
             @Override
@@ -484,10 +552,12 @@ public class DatafileWindow extends Window {
                 if (result.size() > 0) {
                     setDatafileList(result);
                     show();
+                    EventPipeLine.getInstance().getHistoryManager().updateHistory();
                 } else {
-                    EventPipeLine.getInstance().showErrorDialog("No files returned");
+                    EventPipeLine.getInstance().showMessageDialog("No files returned");
                     hide();
                 }
+                loadingData = false;
             }
 
             @Override
@@ -496,6 +566,7 @@ public class DatafileWindow extends Window {
                 EventPipeLine.getInstance().showErrorDialog("Error retrieving datafiles");
                 hide();
                 reset();
+                loadingData = false;
             }
         });
     }
@@ -527,8 +598,8 @@ public class DatafileWindow extends Window {
                     // on all facilities. We do not want this to remove this
                     // window. However when the user presses the cancel button
                     // on the login widget we do want to remove this window.
-                    if (!event.isStatusCheck()) {
-                        awaitingLogin = false;
+                    if (!event.isStatusCheck() || isVisible()) {
+                        reset();
                     }
                     hide();
                     EventPipeLine.getEventBus().fireEventFromSource(new WindowLogoutEvent(event.getFacilityName()),
