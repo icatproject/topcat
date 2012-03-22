@@ -11,6 +11,21 @@ SETUP THE DATABASE
 ========================================
 From within the "Installation" directory
 1) update values in <> in initalise_topcat_db.sql
+	a) <facility name>, the name of the facility, e.g. ISIS
+	b) <icat url with ?wsdl>, the URL of the wsdl to contact, e.g. https://facilities01.esc.rl.ac.uk/ICATService/ICAT?wsdl
+	c) <default username>, the username to use when contacting ICAT
+	d) <default password>, the password to use when contacting ICAT
+	e) <facility search plugin>, possible values include:
+		null
+		uk.ac.stfc.topcat.gwt.client.facility.ISISFacilityPlugin
+		uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin
+	f) <download plugin name>, possible values include:
+		null
+		restfulDownload
+	g) <ICAT version number>, possible values include:
+		v340
+		v341
+		v400
 2) sqlplus
     Enter user-name: system
    SQL>@createuser_topcat_db
