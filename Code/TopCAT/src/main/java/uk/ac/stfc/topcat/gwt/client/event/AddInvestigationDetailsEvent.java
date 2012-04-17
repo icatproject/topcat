@@ -22,69 +22,50 @@
  */
 package uk.ac.stfc.topcat.gwt.client.event;
 
-import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class LoginEvent extends GwtEvent<LoginEventHandler> {
+public class AddInvestigationDetailsEvent extends GwtEvent<AddInvestigationDetailsEventHandler> {
 
-    public static Type<LoginEventHandler> TYPE = new Type<LoginEventHandler>();
+    public static Type<AddInvestigationDetailsEventHandler> TYPE = new Type<AddInvestigationDetailsEventHandler>();
 
-    public static HandlerRegistration register(final EventBus eventBus, final LoginEventHandler handler) {
-        return eventBus.addHandler(LoginEvent.TYPE, handler);
+    public static HandlerRegistration register(final EventBus eventBus,
+            final AddInvestigationDetailsEventHandler handler) {
+        return eventBus.addHandler(AddInvestigationDetailsEvent.TYPE, handler);
     }
 
     public static HandlerRegistration registerToSource(final EventBus eventBus, Object source,
-            final LoginEventHandler handler) {
-        return eventBus.addHandlerToSource(LoginEvent.TYPE, source, handler);
+            final AddInvestigationDetailsEventHandler handler) {
+        return eventBus.addHandlerToSource(AddInvestigationDetailsEvent.TYPE, source, handler);
     }
 
     private final String facilityName;
-    private final boolean statusCheck;
+    private final TInvestigation investigation;
 
-    /**
-     * @param facilityName
-     *            the name of the facility
-     */
-    public LoginEvent(final String facilityName) {
+    public AddInvestigationDetailsEvent(final String facilityName, final TInvestigation investigation) {
         this.facilityName = facilityName;
-        this.statusCheck = false;
+        this.investigation = investigation;
     }
 
-    /**
-     * @param facilityName
-     *            the name of the facility
-     * @param statusCheck
-     *            true if we are just doing a check on status
-     */
-    public LoginEvent(final String facilityName, boolean statusCheck) {
-        this.facilityName = facilityName;
-        this.statusCheck = statusCheck;
-    }
-
-    /**
-     * @return the name of the facility
-     */
     public String getFacilityName() {
-        return this.facilityName;
+        return facilityName;
     }
 
-    /**
-     * @return true if we are just doing a check on status
-     */
-    public boolean isStatusCheck() {
-        return statusCheck;
+    public TInvestigation getInvestigation() {
+        return investigation;
     }
 
     @Override
-    public Type<LoginEventHandler> getAssociatedType() {
-        return LoginEvent.TYPE;
+    public Type<AddInvestigationDetailsEventHandler> getAssociatedType() {
+        return AddInvestigationDetailsEvent.TYPE;
     }
 
     @Override
-    protected void dispatch(final LoginEventHandler handler) {
-        handler.login(this);
+    protected void dispatch(final AddInvestigationDetailsEventHandler handler) {
+        handler.addInvestigationDetails(this);
     }
 }

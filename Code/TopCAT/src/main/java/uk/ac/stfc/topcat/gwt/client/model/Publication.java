@@ -20,14 +20,59 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
  * OF SUCH DAMAGE.
  */
-package uk.ac.stfc.topcat.gwt.client.eventHandler;
+package uk.ac.stfc.topcat.gwt.client.model;
 
-import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
+import java.io.Serializable;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public interface AddMyInvestigationEventHandler extends EventHandler {
+@SuppressWarnings("serial")
+public class Publication extends BaseModelData implements Serializable {
 
-    void addMyInvestigations(AddMyInvestigationEvent event);
+    public Publication() {
+    }
+
+    public Publication(String fullReference, Long id, String repository, String repositoryId, String url) {
+        set("fullReference", fullReference);
+        set("id", id);
+        set("repository", repository);
+        set("repositoryId", repositoryId);
+        set("url", url);
+    }
+
+    /**
+     * @return full reference
+     */
+    public String getFullReference() {
+        return get("fullReference");
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return get("id");
+    }
+
+    /**
+     * @return the repository
+     */
+    public String getRepository() {
+        return get("repository");
+    }
+
+    /**
+     * @return the repositoryId
+     */
+    public String getRepositoryId() {
+        return get("repositoryId");
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return get("url");
+    }
 
 }

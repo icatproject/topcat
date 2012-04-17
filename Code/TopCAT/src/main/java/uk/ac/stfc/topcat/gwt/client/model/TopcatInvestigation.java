@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -25,6 +25,7 @@ package uk.ac.stfc.topcat.gwt.client.model;
 import java.util.Date;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * This class is a datamodel to hold Investigation information TODO: change it
@@ -37,6 +38,11 @@ import com.extjs.gxt.ui.client.data.BaseModel;
  */
 @SuppressWarnings("serial")
 public class TopcatInvestigation extends BaseModel {
+    /**
+     * Constructor
+     */
+    public TopcatInvestigation() {
+    }
 
     /**
      * Constructor
@@ -78,6 +84,42 @@ public class TopcatInvestigation extends BaseModel {
         set("visitId", visitId);
         set("startDate", startDate);
         set("endDate", endDate);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param serverName
+     *            facility name
+     * @param investigationId
+     *            investigation id
+     * @param investigationName
+     *            Investigation name
+     * @param title
+     *            Investigation title
+     * @param visitId
+     *            Visit id
+     * @param startDate
+     *            Investigation start date
+     * @param endDate
+     *            Investigation end date
+     * @param proposal
+     *            Investigation proposal
+     */
+    public TopcatInvestigation(String serverName, String investigationId, String investigationName, String title,
+            String visitId, Date startDate, Date endDate, String proposal) {
+        set("serverName", serverName);
+        set("investigationName", investigationName);
+        set("investigationId", investigationId);
+        set("title", title);
+        set("visitId", visitId);
+        set("startDate", startDate);
+        set("endDate", endDate);
+        set("proposal", proposal);
+        set("formatedStartDate",
+                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(startDate));
+        set("formatedEndDate", DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT)
+                .format(endDate));
     }
 
     /**

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -208,6 +208,17 @@ public interface UtilityService extends RemoteService {
      * @return a list of <code>TInvestigation</code> containing investigations
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
+
+    /**
+     * Get additional details about an investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            the investigation id
+     * @return a <code>TInvestigation</code> containing additional data
+     */
+    public TInvestigation getInvestigationDetails(String facilityName, long investigationId);
 
     /**
      * This method returns the server logo URL

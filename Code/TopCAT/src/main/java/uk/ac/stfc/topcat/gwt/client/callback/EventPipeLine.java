@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -47,6 +47,7 @@ import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInstrumentEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
@@ -465,6 +466,32 @@ public class EventPipeLine implements LoginInterface {
                         mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);
                     }
                 });
+    }
+
+    /**
+     * Get additional details about an investigation. An asynchronous call is
+     * made to the server and an <code>AddInvestigationDetailsEvent</code> is
+     * fired when the results have been returned.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            the investigation id
+     * @param sourcePanel
+     *            a string containing the name of the calling source panel
+     */
+    public void getInvestigationDetails(final String facilityName, final Long investigationId, final String sourcePanel) {
+        utilityService.getInvestigationDetails(facilityName, investigationId, new AsyncCallback<TInvestigation>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                showErrorDialog("Error retrieving data from server for investigation " + investigationId);
+            }
+
+            @Override
+            public void onSuccess(TInvestigation result) {
+                getEventBus().fireEventFromSource(new AddInvestigationDetailsEvent(facilityName, result), sourcePanel);
+            }
+        });
     }
 
     /**

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -655,6 +655,11 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName) {
         return utilityManager.getMyInvestigationsInServer(getSessionId(), facilityName);
+    }
+
+    @Override
+    public TInvestigation getInvestigationDetails(String facilityName, long investigationId) {
+        return utilityManager.getInvestigationDetails(getSessionId(), facilityName, investigationId);
     }
 
     @Override

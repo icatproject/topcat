@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -208,6 +208,19 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
+
+    /**
+     * Get additional details about an investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            the investigation id a string containing the facility name
+     * @param asyncCallback
+     *            object to be called on completion
+     */
+    public void getInvestigationDetails(String facilityName, long investigationId,
+            AsyncCallback<TInvestigation> asyncCallback);
 
     /**
      * Get the server logo URL
