@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -61,6 +61,7 @@ public interface UtilityLocal {
     ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
     ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
     ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
+    TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId);
     ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId);
     ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);

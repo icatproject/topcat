@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -558,8 +558,8 @@ public class UtilityManager {
     }
 
     /**
-     * This method returns all the investigation for the user in a given server
-     * , the given instrument and facility cycle.
+     * This method returns all the investigation for the user in a given server,
+     * the given instrument and facility cycle.
      * 
      * @param sessionId
      * @param server
@@ -583,6 +583,50 @@ public class UtilityManager {
         }
 
         return new ArrayList<TInvestigation>();
+    }
+
+    /**
+     * This method returns the investigation details from the given server for
+     * the given investigation id.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @param investigationId
+     * @return
+     */
+    public TInvestigation getInvestigationDetails(EntityManager manager, String sessionId, String serverName,
+            long investigationId) {
+        try {
+            TopcatUserSession userSession = (TopcatUserSession) manager
+                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
+                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .getSingleResult();
+            return getInvestigationDetails(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
+                    investigationId);
+        } catch (javax.persistence.NoResultException ex) {
+        }
+        return new TInvestigation();
+    }
+
+    /**
+     * This method returns the investigation details from the given server for
+     * the given investigation id.
+     * 
+     * @param sessionId
+     * @param server
+     * @param investigationId
+     * @return
+     */
+    public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, long investigationId) {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.getInvestigationDetails(sessionId, investigationId);
+        } catch (MalformedURLException ex) {
+            logger.warning("getInvestigationDetails: " + ex.getMessage());
+        }
+        return new TInvestigation();
     }
 
     /**

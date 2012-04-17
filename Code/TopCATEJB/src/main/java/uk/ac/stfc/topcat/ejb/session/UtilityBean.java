@@ -43,8 +43,9 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
  * This is Utiltiy bean implementation which has methods that utility functions
  * such as getting facility names, instrument names etc.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @Stateless
@@ -52,6 +53,7 @@ public class UtilityBean implements UtilityLocal {
     @PersistenceContext(unitName = "TopCATEJBPU")
     protected EntityManager manager;
     private UtilityManager utilManager;
+
     public UtilityBean() {
         utilManager = new UtilityManager();
     }
@@ -72,7 +74,7 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public ArrayList<String> getInstrumentNames(String sessionId,String serverName) {
+    public ArrayList<String> getInstrumentNames(String sessionId, String serverName) {
         return utilManager.getInstrumentNames(manager, sessionId, serverName);
     }
 
@@ -80,21 +82,23 @@ public class UtilityBean implements UtilityLocal {
     public ArrayList<String> getAllInvestigationTypes(String sessionId) {
         return utilManager.getAllInvestigationTypes(manager, sessionId);
     }
+
     @Override
-    public ArrayList<String> getInvestigationTypes(String sessionId,String serverName) {
+    public ArrayList<String> getInvestigationTypes(String sessionId, String serverName) {
         return utilManager.getInvestigationTypes(manager, sessionId, serverName);
     }
 
     @Override
-    public ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException{
-        return utilManager.getFacilityCycles(manager,sessionId,serverName);
-    }
-    
-    @Override
-    public ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId,String serverName, String instrument)throws ICATMethodNotFoundException{
-        return utilManager.getFacilityCyclesWithInstrument(manager,sessionId,serverName,instrument);
+    public ArrayList<TFacilityCycle> getFacilityCycles(String sessionId, String serverName)
+            throws ICATMethodNotFoundException {
+        return utilManager.getFacilityCycles(manager, sessionId, serverName);
     }
 
+    @Override
+    public ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName,
+            String instrument) throws ICATMethodNotFoundException {
+        return utilManager.getFacilityCyclesWithInstrument(manager, sessionId, serverName, instrument);
+    }
 
     @Override
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName) {
@@ -102,49 +106,61 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName) {
+    public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName,
+            String instrumentName) {
         return utilManager.getMyInvestigationsInServerAndInstrument(manager, sessionId, serverName, instrumentName);
     }
 
     @Override
-    public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName) {
+    public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName,
+            String instrumentName) {
         return utilManager.getAllInvestigationsInServerAndInstrument(manager, sessionId, serverName, instrumentName);
     }
 
     @Override
-    public ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle) {
-        return utilManager.getMyInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName, instrumentName,cycle);
+    public ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName,
+            String instrumentName, TFacilityCycle cycle) {
+        return utilManager.getMyInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName,
+                instrumentName, cycle);
     }
 
     @Override
-    public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle) {
-        return utilManager.getAllInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName, instrumentName,cycle);
+    public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId,
+            String serverName, String instrumentName, TFacilityCycle cycle) {
+        return utilManager.getAllInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName,
+                instrumentName, cycle);
     }
 
     @Override
-    public ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId) {
-        return utilManager.getDatasetsInServer(manager,sessionId, serverName, investigationId);
+    public TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId) {
+        return utilManager.getInvestigationDetails(manager, sessionId, serverName, investigationId);
     }
 
     @Override
-    public ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId) {
-        return utilManager.getDatafilesInServer(manager,sessionId,serverName,datasetId);
+    public ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId) {
+        return utilManager.getDatasetsInServer(manager, sessionId, serverName, investigationId);
     }
 
     @Override
-    public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId,String serverName,String datafileId) {
-        return utilManager.getDatafileInfo(manager,sessionId,serverName, datafileId);
+    public ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId) {
+        return utilManager.getDatafilesInServer(manager, sessionId, serverName, datasetId);
+    }
+
+    @Override
+    public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId, String serverName, String datafileId) {
+        return utilManager.getDatafileInfo(manager, sessionId, serverName, datafileId);
     }
 
     @Override
     public String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds) {
         return utilManager.getDatafilesDownloadURL(manager, sessionId, serverName, datafileIds);
     }
+
     @Override
     public String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) {
         return utilManager.getDatasetDownloadURL(manager, sessionId, serverName, datasetId);
     }
-    
+
     @Override
     public List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName) {
         return utilManager.getMyDownloadList(manager, sessionId, serverName);
@@ -153,15 +169,12 @@ public class UtilityBean implements UtilityLocal {
     @Override
     public void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName,
             String status, Date expiryTime, String url) {
-        utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName,
-                status, expiryTime, url);
+        utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName, status, expiryTime, url);
     }
-    
+
     @Override
-    public void updateDownloadStatus(String sessionId, String facilityName, String url,
-            String updatedUrl, String status) {
-        utilManager.updateDownloadStatus(manager, sessionId, facilityName, url,
-                updatedUrl, status);        
+    public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {
+        utilManager.updateDownloadStatus(manager, sessionId, facilityName, url, updatedUrl, status);
     }
-    
+
 }
