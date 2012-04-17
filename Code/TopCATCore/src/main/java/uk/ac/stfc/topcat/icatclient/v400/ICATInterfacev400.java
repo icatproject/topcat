@@ -23,6 +23,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
+import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -133,6 +135,36 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
         }
         Collections.sort(investigationList);
         return investigationList;
+    }
+
+    public TInvestigation getInvestigationDetails(String sessionId, long investigationId) {
+        TInvestigation ti = new TInvestigation();
+        try {
+            Investigation resultInv = service.getInvestigationIncludes(sessionId, investigationId,
+                    InvestigationInclude.ALL_EXCEPT_DATASETS_AND_DATAFILES);
+            ti = copyInvestigationToTInvestigation(serverName, resultInv);
+            ti.setProposal(resultInv.getInvAbstract());
+            ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
+            List<Publication> pubs = resultInv.getPublicationCollection();
+            for (Publication pub : pubs) {
+                publicationList.add(copyPublicationToTPublication(pub));
+            }
+            ti.setPublications(publicationList);
+
+            ArrayList<TInvestigator> investigatorList = new ArrayList<TInvestigator>();
+            List<Investigator> investigators = resultInv.getInvestigatorCollection();
+            for (Investigator investigator : investigators) {
+                investigatorList.add(copyInvestigatorToTInvestigator(investigator));
+            }
+            ti.setInvestigators(investigatorList);
+
+            ti.setParamName(resultInv.getInvParamName());
+            ti.setParamValue(resultInv.getInvParamValue());
+        } catch (SessionException_Exception ex) {
+        } catch (InsufficientPrivilegesException_Exception e) {
+        } catch (NoSuchObjectFoundException_Exception e) {
+        }
+        return ti;
     }
 
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
@@ -370,5 +402,18 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
         }
         return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
                 format, formatVersion, formatType, createDate, datafile.getLocation());
+    }
+
+    private TPublication copyPublicationToTPublication(Publication pub) {
+        return new TPublication(pub.getFullReference(), pub.getId(), pub.getRepository(), pub.getRepositoryId(),
+                pub.getUrl());
+    }
+
+    private TInvestigator copyInvestigatorToTInvestigator(Investigator investigator) {
+        // TODO add missing fields: facilityUser, federalId, firstName,
+        // initials, lastName, middleName, title
+        return new TInvestigator(investigator.getInvestigatorPK().getFacilityUserId(), "", "", "", "", "", "",
+                investigator.getRole());
+
     }
 }

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package uk.ac.stfc.topcat.icatclient.v341;
 
 import java.net.MalformedURLException;
@@ -23,6 +22,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
+import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -124,7 +125,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
 
     public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
             throws ICATMethodNotFoundException {
-        throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
+        throw new ICATMethodNotFoundException("v341 doesn't support facility cycles method");
     }
 
     public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
@@ -139,6 +140,36 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
         }
         Collections.sort(investigationList);
         return investigationList;
+    }
+
+    public TInvestigation getInvestigationDetails(String sessionId, long investigationId) {
+        TInvestigation ti = new TInvestigation();
+        try {
+            Investigation resultInv = service.getInvestigationIncludes(sessionId, investigationId,
+                    InvestigationInclude.ALL_EXCEPT_DATASETS_AND_DATAFILES);
+            ti = copyInvestigationToTInvestigation(serverName, resultInv);
+            ti.setProposal(resultInv.getInvAbstract());
+            ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
+            List<Publication> pubs = resultInv.getPublicationCollection();
+            for (Publication pub : pubs) {
+                publicationList.add(copyPublicationToTPublication(pub));
+            }
+            ti.setPublications(publicationList);
+
+            ArrayList<TInvestigator> investigatorList = new ArrayList<TInvestigator>();
+            List<Investigator> investigators = resultInv.getInvestigatorCollection();
+            for (Investigator investigator : investigators) {
+                investigatorList.add(copyInvestigatorToTInvestigator(investigator));
+            }
+            ti.setInvestigators(investigatorList);
+
+            ti.setParamName(resultInv.getInvParamName());
+            ti.setParamValue(resultInv.getInvParamValue());
+        } catch (SessionException_Exception ex) {
+        } catch (InsufficientPrivilegesException_Exception e) {
+        } catch (NoSuchObjectFoundException_Exception e) {
+        }
+        return ti;
     }
 
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
@@ -376,5 +407,18 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
         }
         return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
                 format, formatVersion, formatType, createDate, datafile.getLocation());
+    }
+
+    private TPublication copyPublicationToTPublication(Publication pub) {
+        return new TPublication(pub.getFullReference(), pub.getId(), pub.getRepository(), pub.getRepositoryId(),
+                pub.getUrl());
+    }
+
+    private TInvestigator copyInvestigatorToTInvestigator(Investigator investigator) {
+        return new TInvestigator(investigator.getFacilityUser().getFacilityUserId(), investigator.getFacilityUser()
+                .getFederalId(), investigator.getFacilityUser().getFirstName(), investigator.getFacilityUser()
+                .getInitials(), investigator.getFacilityUser().getLastName(), investigator.getFacilityUser()
+                .getMiddleName(), investigator.getFacilityUser().getTitle(), investigator.getRole());
+
     }
 }
