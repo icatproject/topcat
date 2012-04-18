@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -61,7 +62,7 @@ public interface UtilityLocal {
     ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
     ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
     ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
-    TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId);
+    TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId) throws AuthenticationException;
     ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId);
     ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);

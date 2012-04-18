@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -29,6 +29,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -132,7 +134,8 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId) {
+    public TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId)
+            throws AuthenticationException {
         return utilManager.getInvestigationDetails(manager, sessionId, serverName, investigationId);
     }
 

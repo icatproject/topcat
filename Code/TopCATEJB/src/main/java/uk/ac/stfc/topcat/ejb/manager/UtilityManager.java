@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
+import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -594,9 +595,10 @@ public class UtilityManager {
      * @param serverName
      * @param investigationId
      * @return
+     * @throws AuthenticationException
      */
     public TInvestigation getInvestigationDetails(EntityManager manager, String sessionId, String serverName,
-            long investigationId) {
+            long investigationId) throws AuthenticationException {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
@@ -618,7 +620,8 @@ public class UtilityManager {
      * @param investigationId
      * @return
      */
-    public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, long investigationId) {
+    public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, long investigationId)
+            throws AuthenticationException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
