@@ -59,6 +59,7 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginCheckCompleteEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.WindowLogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.exception.WindowsNotAvailableExcecption;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
@@ -484,7 +485,13 @@ public class EventPipeLine implements LoginInterface {
         utilityService.getInvestigationDetails(facilityName, investigationId, new AsyncCallback<TInvestigation>() {
             @Override
             public void onFailure(Throwable caught) {
-                showErrorDialog("Error retrieving data from server for investigation " + investigationId);
+                if (caught.getCause() instanceof SessionException) {
+                    // session has probably expired, check all sessions to be
+                    // safe
+                    checkStillLoggedIn();
+                } else {
+                    showErrorDialog("Error retrieving data from server for investigation " + investigationId);
+                }
             }
 
             @Override

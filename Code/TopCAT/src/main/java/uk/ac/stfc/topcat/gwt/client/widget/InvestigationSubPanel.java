@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -25,6 +25,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
+import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -49,6 +51,7 @@ import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 public class InvestigationSubPanel extends Composite {
     private TopcatInvestigation investigationModel = new TopcatInvestigation();
@@ -67,7 +70,9 @@ public class InvestigationSubPanel extends Composite {
     private Button btnShowDataSets;
     private Button btnDownloadInvestigation;
     private LayoutContainer layoutContainer;
+    private Text txtShifts;
     private Text txtPublications;
+    private FlexTable shiftsTable;
     private FlexTable namesTable;
     private FlexTable publicationsTable;
     private EventPipeLine eventBus;
@@ -79,6 +84,7 @@ public class InvestigationSubPanel extends Composite {
     private Button btnShareInvestigation;
     private Text txtProperties;
     private FlexTable propertiesTable;
+    private LayoutContainer shiftsContainer;
     private LayoutContainer publicationsContainer;
     private LayoutContainer investigatorsContainer;
     private LayoutContainer proposalContainer;
@@ -170,6 +176,27 @@ public class InvestigationSubPanel extends Composite {
         verticalPanel.add(layoutContainer);
         layoutContainer.setSize("100%", "100%");
 
+        // Shifts
+        shiftsContainer = new LayoutContainer();
+        TableLayout tl_shiftsContainer = new TableLayout(2);
+        tl_shiftsContainer.setCellSpacing(5);
+        tl_shiftsContainer.setCellVerticalAlign(VerticalAlignment.TOP);
+        tl_shiftsContainer.setCellHorizontalAlign(HorizontalAlignment.LEFT);
+        shiftsContainer.setLayout(tl_shiftsContainer);
+
+        txtShifts = new Text("Shifts:");
+        TableData td_txtShifts = new TableData();
+        td_txtShifts.setWidth("105");
+        shiftsContainer.add(txtShifts, td_txtShifts);
+
+        shiftsTable = new FlexTable();
+        shiftsTable.setBorderWidth(1);
+        shiftsContainer.add(shiftsTable);
+
+        shiftsTable.getColumnFormatter().setWidth(0, "120px");
+        shiftsTable.getColumnFormatter().setWidth(1, "120px");
+        verticalPanel.add(shiftsContainer);
+
         // Investigators
         investigatorsContainer = new LayoutContainer();
         TableLayout tl_investigatorsContainer = new TableLayout(2);
@@ -178,7 +205,7 @@ public class InvestigationSubPanel extends Composite {
         tl_investigatorsContainer.setCellHorizontalAlign(HorizontalAlignment.LEFT);
         investigatorsContainer.setLayout(tl_investigatorsContainer);
 
-        txtInvestigators = new Text("Investigators: ");
+        txtInvestigators = new Text("Investigators:");
         TableData td_txtInvestigators = new TableData();
         td_txtInvestigators.setWidth("105");
         investigatorsContainer.add(txtInvestigators, td_txtInvestigators);
@@ -203,7 +230,7 @@ public class InvestigationSubPanel extends Composite {
         publicationsContainer = new LayoutContainer();
         publicationsContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
-        txtPublications = new Text("Publications");
+        txtPublications = new Text("Publications:");
         publicationsContainer.add(txtPublications, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
 
         publicationsTable = new FlexTable();
@@ -215,17 +242,17 @@ public class InvestigationSubPanel extends Composite {
         propertiesContainer = new LayoutContainer();
         propertiesContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
-        txtProperties = new Text("Properties");
+        txtProperties = new Text("Properties:");
         propertiesContainer.add(txtProperties, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
 
         propertiesTable = new FlexTable();
+        propertiesTable.setBorderWidth(1);
         propertiesContainer.add(propertiesTable, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
         verticalPanel.add(propertiesContainer);
 
         initComponent(verticalPanel);
         verticalPanel.setWidth("705");
         initDataBindings();
-
     }
 
     /**
@@ -242,6 +269,8 @@ public class InvestigationSubPanel extends Composite {
      */
     public void reset() {
         investigationModel = new TopcatInvestigation();
+        shiftsContainer.hide();
+        shiftsTable.removeAllRows();
         investigatorsContainer.hide();
         namesTable.removeAllRows();
         proposalContainer.hide();
@@ -263,27 +292,62 @@ public class InvestigationSubPanel extends Composite {
                 inv.getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv.getEndDate(),
                 inv.getProposal());
 
+        // Shifts
+        if (inv.getShifts().size() > 0) {
+            Text startDate = new Text("Start Date");
+            startDate.setWidth(125);
+            shiftsTable.setWidget(0, 0, startDate);
+            shiftsTable.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
+
+            Text endDate = new Text("End Date");
+            endDate.setWidth(125);
+            shiftsTable.setWidget(0, 1, endDate);
+
+            shiftsTable.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER);
+
+            shiftsTable.setWidget(0, 2, new Text("Comment"));
+            shiftsTable.getCellFormatter().setHorizontalAlignment(0, 2, HasHorizontalAlignment.ALIGN_CENTER);
+            int i = 1;
+            for (TShift shift : inv.getShifts()) {
+                shiftsTable.setWidget(
+                        i,
+                        0,
+                        new Text(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(
+                                shift.getStartDate())));
+                shiftsTable.getCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_CENTER);
+
+                shiftsTable.setWidget(
+                        i,
+                        1,
+                        new Text(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(
+                                shift.getEndDate())));
+                shiftsTable.getCellFormatter().setHorizontalAlignment(i, 1, HasHorizontalAlignment.ALIGN_CENTER);
+                shiftsTable.setWidget(i, 2, new Text(shift.getComment()));
+                shiftsTable.getCellFormatter().setHorizontalAlignment(i, 2, HasHorizontalAlignment.ALIGN_CENTER);
+            }
+            shiftsContainer.show();
+        }
+
+        // Investigators
         if (inv.getInvestigators().size() > 0) {
             int i = 0;
             for (TInvestigator tinvestigator : inv.getInvestigators()) {
                 HorizontalPanel investigatorPanel = new HorizontalPanel();
                 investigatorPanel.addText(tinvestigator.getRole());
                 investigatorPanel.add(new Text("&nbsp;-&nbsp;"));
-                investigatorPanel.addText(tinvestigator.getTitle());
-                investigatorPanel.add(new Text("&nbsp;"));
-                investigatorPanel.addText(tinvestigator.getFirstName());
-                investigatorPanel.add(new Text("&nbsp;"));
-                investigatorPanel.add(new Text(tinvestigator.getLastName()));
+                investigatorPanel.addText(tinvestigator.getFullName());
                 namesTable.setWidget(i, 0, investigatorPanel);
                 i++;
             }
             investigatorsContainer.show();
         }
 
+        // Proposal
         if (!(inv.getProposal() == null) && !(inv.getProposal().isEmpty())) {
             proposalContainer.show();
         }
 
+        // Publications
         if (inv.getPublications().size() > 0) {
             int i = 0;
             for (TPublication publication : inv.getPublications()) {
@@ -298,6 +362,7 @@ public class InvestigationSubPanel extends Composite {
             publicationsContainer.show();
         }
 
+        // Parameters
         if (!(inv.getParamName() == null) && !(inv.getParamName().isEmpty())) {
             propertiesTable.setWidget(0, 0, new Text(inv.getParamName()));
             propertiesTable.setWidget(0, 1, new Text(inv.getParamValue()));

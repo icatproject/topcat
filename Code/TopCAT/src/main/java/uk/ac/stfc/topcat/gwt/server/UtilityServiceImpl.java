@@ -62,6 +62,7 @@ import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -658,8 +659,12 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     }
 
     @Override
-    public TInvestigation getInvestigationDetails(String facilityName, long investigationId) {
-        return utilityManager.getInvestigationDetails(getSessionId(), facilityName, investigationId);
+    public TInvestigation getInvestigationDetails(String facilityName, long investigationId) throws SessionException {
+        try {
+            return utilityManager.getInvestigationDetails(getSessionId(), facilityName, investigationId);
+        } catch (AuthenticationException e) {
+            throw new SessionException(e.getMessage());
+        }
     }
 
     @Override

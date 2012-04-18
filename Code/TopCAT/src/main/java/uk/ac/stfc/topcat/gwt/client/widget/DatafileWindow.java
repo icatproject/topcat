@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -556,6 +556,7 @@ public class DatafileWindow extends Window {
                 } else {
                     EventPipeLine.getInstance().showMessageDialog("No files returned");
                     hide();
+                    reset();
                 }
                 loadingData = false;
             }

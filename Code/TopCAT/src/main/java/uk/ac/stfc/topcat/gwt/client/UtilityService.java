@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -217,8 +218,9 @@ public interface UtilityService extends RemoteService {
      * @param investigationId
      *            the investigation id
      * @return a <code>TInvestigation</code> containing additional data
+     * @throws SessionException
      */
-    public TInvestigation getInvestigationDetails(String facilityName, long investigationId);
+    public TInvestigation getInvestigationDetails(String facilityName, long investigationId) throws SessionException;
 
     /**
      * This method returns the server logo URL
