@@ -23,53 +23,45 @@
 package uk.ac.stfc.topcat.core.gwt.module;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * This is shared with GWT for investigation information. This Class holds
- * details about an investigator.
+ * details about a shift.
  */
-public class TInvestigator implements Serializable {
-    private String facilityUserId;
-    private String federalId;
-    private String fullName;
-    private String role;
+public class TShift implements Serializable {
+    private String comment;
+    private Date startDate;
+    private Date endDate;
 
-    public TInvestigator() {
+    public TShift() {
     }
 
-    public TInvestigator(String facilityUserId, String federalId, String fullName, String role) {
-        this.facilityUserId = facilityUserId;
-        this.federalId = federalId;
-        this.fullName = fullName;
-        this.role = role;
-    }
-
-    /**
-     * @return the facilityUserId
-     */
-    public String getFacilityUserId() {
-        return facilityUserId;
+    public TShift(String comment, Date startDate, Date endDate) {
+        this.comment = comment;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     /**
-     * @return the federalId
+     * @return the comment
      */
-    public String getFederalId() {
-        return federalId;
+    public String getComment() {
+        return comment;
     }
 
     /**
-     * @return the fullName
+     * @return the startDate
      */
-    public String getFullName() {
-        return fullName;
+    public Date getStartDate() {
+        return startDate;
     }
 
     /**
-     * @return the role
+     * @return the endDate
      */
-    public String getRole() {
-        return role;
+    public Date getEndDate() {
+        return endDate;
     }
 
 }

@@ -49,6 +49,7 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
     String paramValue = null;
     List<TPublication> publications = null;
     List<TInvestigator> investigators = null;
+    List<TShift> shifts = null;
 
     public TInvestigation() {
     }
@@ -164,6 +165,14 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
 
     public void setInvestigators(List<TInvestigator> investigators) {
         this.investigators = investigators;
+    }
+
+    public List<TShift> getShifts() {
+        return shifts;
+    }
+
+    public void setShifts(List<TShift> shifts) {
+        this.shifts = shifts;
     }
 
     public int compareTo(TInvestigation inv) {

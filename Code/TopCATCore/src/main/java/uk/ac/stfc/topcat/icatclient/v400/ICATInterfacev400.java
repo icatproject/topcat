@@ -25,6 +25,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
+import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -137,7 +138,8 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
-    public TInvestigation getInvestigationDetails(String sessionId, long investigationId) {
+    public TInvestigation getInvestigationDetails(String sessionId, long investigationId)
+            throws AuthenticationException {
         TInvestigation ti = new TInvestigation();
         try {
             Investigation resultInv = service.getInvestigationIncludes(sessionId, investigationId,
@@ -158,9 +160,17 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
             }
             ti.setInvestigators(investigatorList);
 
+            ArrayList<TShift> shiftList = new ArrayList<TShift>();
+            List<Shift> shifts = resultInv.getShiftCollection();
+            for (Shift shift : shifts) {
+                shiftList.add(copyShiftToTShift(shift));
+            }
+            ti.setShifts(shiftList);
+
             ti.setParamName(resultInv.getInvParamName());
             ti.setParamValue(resultInv.getInvParamValue());
         } catch (SessionException_Exception ex) {
+            throw new AuthenticationException(ex.getMessage());
         } catch (InsufficientPrivilegesException_Exception e) {
         } catch (NoSuchObjectFoundException_Exception e) {
         }
@@ -411,9 +421,13 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
 
     private TInvestigator copyInvestigatorToTInvestigator(Investigator investigator) {
         // TODO add missing fields: facilityUser, federalId, firstName,
-        // initials, lastName, middleName, title
-        return new TInvestigator(investigator.getInvestigatorPK().getFacilityUserId(), "", "", "", "", "", "",
-                investigator.getRole());
-
+        // lastName, title
+        return new TInvestigator(investigator.getInvestigatorPK().getFacilityUserId(), "", "", investigator.getRole());
     }
+
+    private TShift copyShiftToTShift(Shift shift) {
+        return new TShift(shift.getShiftComment(), shift.getShiftPK().getStartDate().toGregorianCalendar().getTime(),
+                shift.getShiftPK().getEndDate().toGregorianCalendar().getTime());
+    }
+
 }
