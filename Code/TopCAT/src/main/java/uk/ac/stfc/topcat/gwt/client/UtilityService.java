@@ -163,6 +163,19 @@ public interface UtilityService extends RemoteService {
     public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId);
 
     /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data set id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            a string containing the data set id
+     * @return a list of <code>ParameterModel</code> which contain parameter
+     *         names and corresponding values
+     */
+    public ArrayList<ParameterModel> getDatasetParameters(String facilityName, String datasetId);
+
+    /**
      * Get a list of data files information corresponding to the given list of
      * data sets.
      * 

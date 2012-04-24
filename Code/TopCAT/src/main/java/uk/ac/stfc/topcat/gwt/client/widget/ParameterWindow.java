@@ -28,6 +28,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
@@ -73,8 +74,9 @@ public class ParameterWindow extends Window {
     private ListStore<ParameterModel> parameterStore;
     private boolean historyVerified;
     private String facilityName;
-    private String datafileId;
-    private String datafileName;
+    private String dataType;
+    private String dataId;
+    private String dataName;
     private boolean awaitingLogin;
 
     public ParameterWindow() {
@@ -97,7 +99,7 @@ public class ParameterWindow extends Window {
         btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                EventPipeLine.getInstance().downloadParametersData(facilityName, datafileId);
+                EventPipeLine.getInstance().downloadParametersData(facilityName, dataId);
             }
         });
         toolBar.add(btnExport);
@@ -141,40 +143,37 @@ public class ParameterWindow extends Window {
      *         displaying
      */
     public String getDatafileId() {
-        return datafileId;
-    }
-
-    /**
-     * @return the datafile name of the parameters that parameter window is
-     *         displaying
-     */
-    public String getDatafileName() {
-        return datafileName;
+        return dataId;
     }
 
     /**
      * This method sets the datafile name.
      * 
-     * @param datafileName
+     * @param dataName
      */
-    public void setDatafileName(String datafileName) {
-        this.datafileName = datafileName;
-        setHeading("Datafile: " + datafileName);
+    public void setDatafileName(String dataType, String dataName) {
+        this.dataType = dataType;
+        this.dataName = dataName;
+        if (dataType.equals(Constants.DATA_SET)) {
+            setHeading("Dataset: " + dataName);
+        } else {
+            setHeading("Datafile: " + dataName);
+        }
     }
 
     /**
-     * This method sets the datafile information of the parameter window, this
-     * will call the AJAX method to get the parameters information from the
+     * This method sets the data set/file information of the parameter window,
+     * this will call the AJAX method to get the parameters information from the
      * server and displayed in this window.
      * 
      * @param facilityName
      *            iCAT instance name
-     * @param datafileId
-     *            Datafile id
+     * @param dataId
+     *            Data set or data file id
      */
-    public void setDatafileInfo(String facilityName, String datafileId) {
+    public void setDataInfo(String facilityName, String dataId) {
         this.facilityName = facilityName;
-        this.datafileId = datafileId;
+        this.dataId = dataId;
         if (EventPipeLine.getInstance().getLoggedInFacilities().contains(facilityName)) {
             awaitingLogin = false;
             loadData();
@@ -191,8 +190,9 @@ public class ParameterWindow extends Window {
         history += HistoryManager.seperatorModel + HistoryManager.seperatorToken + "Model"
                 + HistoryManager.seperatorKeyValues + "Parameter";
         history += HistoryManager.seperatorToken + "SN" + HistoryManager.seperatorKeyValues + facilityName;
-        history += HistoryManager.seperatorToken + "DFId" + HistoryManager.seperatorKeyValues + datafileId;
-        history += HistoryManager.seperatorToken + "DFN" + HistoryManager.seperatorKeyValues + datafileName;
+        history += HistoryManager.seperatorToken + "DT" + HistoryManager.seperatorKeyValues + dataType;
+        history += HistoryManager.seperatorToken + "DId" + HistoryManager.seperatorKeyValues + dataId;
+        history += HistoryManager.seperatorToken + "DN" + HistoryManager.seperatorKeyValues + dataName;
         return history;
     }
 
@@ -200,9 +200,17 @@ public class ParameterWindow extends Window {
      * This method compares the input information with the current window
      * information (such as datafile id and server name). if the match then they
      * return true otherwise false
+     * 
+     * @param facilityName
+     *            the name of the facility
+     * @param dataType
+     *            data set or data file
+     * @param dataId
+     *            id of the data set or data file
      */
-    public boolean isSameModel(String ServerName, String datafileId) {
-        if (facilityName.compareTo(ServerName) == 0 && this.datafileId.compareTo(datafileId) == 0)
+    public boolean isSameModel(String facilityName, String dataType, String dataId) {
+        if (facilityName.compareTo(facilityName) == 0 && this.dataType.compareTo(dataType) == 0
+                && this.dataId.compareTo(dataId) == 0)
             return true;
         return false;
     }
@@ -269,7 +277,8 @@ public class ParameterWindow extends Window {
      */
     public void reset() {
         facilityName = "";
-        datafileId = "";
+        dataType = "";
+        dataId = "";
         parameterStore.removeAll();
         awaitingLogin = false;
     }
@@ -279,29 +288,55 @@ public class ParameterWindow extends Window {
      */
     private void loadData() {
         EventPipeLine.getInstance().showRetrievingData();
-        utilityService.getDatafileParameters(facilityName, datafileId, new AsyncCallback<ArrayList<ParameterModel>>() {
-            @Override
-            public void onSuccess(ArrayList<ParameterModel> result) {
-                EventPipeLine.getInstance().hideRetrievingData();
-                if (result.size() > 0) {
-                    setParameterList(result);
-                    show();
-                    EventPipeLine.getInstance().getHistoryManager().updateHistory();
-                } else {
-                    EventPipeLine.getInstance().showMessageDialog("No Parameters");
+        if (dataType.equals(Constants.DATA_SET)) {
+            utilityService.getDatasetParameters(facilityName, dataId, new AsyncCallback<ArrayList<ParameterModel>>() {
+                @Override
+                public void onSuccess(ArrayList<ParameterModel> result) {
+                    EventPipeLine.getInstance().hideRetrievingData();
+                    if (result.size() > 0) {
+                        setParameterList(result);
+                        show();
+                        EventPipeLine.getInstance().getHistoryManager().updateHistory();
+                    } else {
+                        EventPipeLine.getInstance().showMessageDialog("No Parameters");
+                        hide();
+                        reset();
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    EventPipeLine.getInstance().hideRetrievingData();
+                    EventPipeLine.getInstance().showErrorDialog("Error retrieving parameters");
                     hide();
                     reset();
                 }
-            }
+            });
+        } else {
+            utilityService.getDatafileParameters(facilityName, dataId, new AsyncCallback<ArrayList<ParameterModel>>() {
+                @Override
+                public void onSuccess(ArrayList<ParameterModel> result) {
+                    EventPipeLine.getInstance().hideRetrievingData();
+                    if (result.size() > 0) {
+                        setParameterList(result);
+                        show();
+                        EventPipeLine.getInstance().getHistoryManager().updateHistory();
+                    } else {
+                        EventPipeLine.getInstance().showMessageDialog("No Parameters");
+                        hide();
+                        reset();
+                    }
+                }
 
-            @Override
-            public void onFailure(Throwable caught) {
-                EventPipeLine.getInstance().hideRetrievingData();
-                EventPipeLine.getInstance().showErrorDialog("Error retrieving parameters");
-                hide();
-                reset();
-            }
-        });
+                @Override
+                public void onFailure(Throwable caught) {
+                    EventPipeLine.getInstance().hideRetrievingData();
+                    EventPipeLine.getInstance().showErrorDialog("Error retrieving parameters");
+                    hide();
+                    reset();
+                }
+            });
+        }
     }
 
     /**

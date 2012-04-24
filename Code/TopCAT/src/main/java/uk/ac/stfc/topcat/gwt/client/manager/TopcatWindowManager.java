@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -248,8 +248,8 @@ public class TopcatWindowManager {
                 if (!loggedInFacilities.contains(paramMap.get("SN"))) {
                     loginToFacilities.add(paramMap.get("SN"));
                 }
-                EventPipeLine.getInstance().showParameterWindow(paramMap.get("SN"), paramMap.get("DFId"),
-                        paramMap.get("DFN"));
+                EventPipeLine.getInstance().showParameterWindow(paramMap.get("SN"), paramMap.get("DT"),
+                        paramMap.get("DId"), paramMap.get("DN"));
             }
         }
         hideNotVerifiedWindows();
@@ -298,16 +298,18 @@ public class TopcatWindowManager {
 
     /**
      * Checks all the parameter windows to see whether the input facility name
-     * and datafile id matches a parameter window's info. If a match is found
-     * then return the window otherwise returns null.
+     * and data set / file id matches a parameter window's info. If a match is
+     * found then return the window otherwise returns null.
      * 
      * @param facilityName
-     * @param datafileId
+     * @param type
+     *            data set or file
+     * @param dataId
      * @return
      */
-    public ParameterWindow findParameterWindow(String facilityName, String datafileId) {
+    public ParameterWindow findParameterWindow(String facilityName, String type, String dataId) {
         for (ParameterWindow paramWin : parameterWindowList) {
-            if (paramWin.isSameModel(facilityName, datafileId))
+            if (paramWin.isSameModel(facilityName, type, dataId))
                 return paramWin;
         }
         return null;

@@ -30,9 +30,13 @@ import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
 import com.extjs.gxt.ui.client.widget.Composite;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Text;
 
@@ -55,7 +59,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 public class InvestigationSubPanel extends Composite {
     private TopcatInvestigation investigationModel = new TopcatInvestigation();
-    private VerticalPanel verticalPanel;
+    private ContentPanel contentPanel;
+    private VerticalPanel contentlPanelBody;
     private LabelField lblfldTitle;
     private LabelField lblfldFacility;
     private LabelField lblfldInvestigationNumber;
@@ -68,7 +73,6 @@ public class InvestigationSubPanel extends Composite {
     private Text txtProposal;
     private LabelField lblfldProposal;
     private Button btnShowDataSets;
-    private Button btnDownloadInvestigation;
     private LayoutContainer layoutContainer;
     private Text txtShifts;
     private Text txtPublications;
@@ -94,8 +98,26 @@ public class InvestigationSubPanel extends Composite {
      * Constructor
      */
     public InvestigationSubPanel() {
+        contentPanel = new ContentPanel();
+        contentPanel.setTitleCollapse(true);
+        contentPanel.setFrame(true);
+        contentPanel.setExpanded(false);
+        contentPanel.setHeading("Investigation Details");
+        contentPanel.setCollapsible(true);
+        contentPanel.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        contentPanel.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
 
-        verticalPanel = new VerticalPanel();
+        contentlPanelBody = new VerticalPanel();
 
         layoutContainer = new LayoutContainer();
         TableLayout tl_layoutContainer = new TableLayout(2);
@@ -124,11 +146,8 @@ public class InvestigationSubPanel extends Composite {
         });
         buttonPanel.add(btnShowDataSets);
 
-        btnDownloadInvestigation = new Button("Download Investigation");
-        btnDownloadInvestigation.disable();
-        buttonPanel.add(btnDownloadInvestigation);
-
-        btnShareInvestigation = new Button("Share Investigation");
+        btnShareInvestigation = new Button("Edit Access Permissions");
+        btnShowDataSets.setToolTip("This will be implemented soon");
         btnShareInvestigation.disable();
         buttonPanel.add(btnShareInvestigation);
 
@@ -173,7 +192,7 @@ public class InvestigationSubPanel extends Composite {
         lblfldEndDate = new LabelField("End Date");
         layoutContainer.add(lblfldEndDate);
 
-        verticalPanel.add(layoutContainer);
+        contentlPanelBody.add(layoutContainer);
         layoutContainer.setSize("100%", "100%");
 
         // Shifts
@@ -195,7 +214,7 @@ public class InvestigationSubPanel extends Composite {
 
         shiftsTable.getColumnFormatter().setWidth(0, "120px");
         shiftsTable.getColumnFormatter().setWidth(1, "120px");
-        verticalPanel.add(shiftsContainer);
+        contentlPanelBody.add(shiftsContainer);
 
         // Investigators
         investigatorsContainer = new LayoutContainer();
@@ -212,7 +231,7 @@ public class InvestigationSubPanel extends Composite {
 
         namesTable = new FlexTable();
         investigatorsContainer.add(namesTable);
-        verticalPanel.add(investigatorsContainer);
+        contentlPanelBody.add(investigatorsContainer);
 
         // Proposals
         proposalContainer = new LayoutContainer();
@@ -224,7 +243,7 @@ public class InvestigationSubPanel extends Composite {
         lblfldProposal = new LabelField("Proposal");
         proposalContainer.add(lblfldProposal, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
 
-        verticalPanel.add(proposalContainer);
+        contentlPanelBody.add(proposalContainer);
 
         // Publications
         publicationsContainer = new LayoutContainer();
@@ -236,7 +255,7 @@ public class InvestigationSubPanel extends Composite {
         publicationsTable = new FlexTable();
         publicationsContainer
                 .add(publicationsTable, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
-        verticalPanel.add(publicationsContainer);
+        contentlPanelBody.add(publicationsContainer);
 
         // Properties
         propertiesContainer = new LayoutContainer();
@@ -248,10 +267,12 @@ public class InvestigationSubPanel extends Composite {
         propertiesTable = new FlexTable();
         propertiesTable.setBorderWidth(1);
         propertiesContainer.add(propertiesTable, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
-        verticalPanel.add(propertiesContainer);
+        contentlPanelBody.add(propertiesContainer);
 
-        initComponent(verticalPanel);
-        verticalPanel.setWidth("705");
+        contentPanel.add(contentlPanelBody);
+
+        initComponent(contentPanel);
+        contentlPanelBody.setWidth("705");
         initDataBindings();
     }
 
@@ -268,6 +289,7 @@ public class InvestigationSubPanel extends Composite {
      * Erase all data and hide.
      */
     public void reset() {
+        contentPanel.collapse();
         investigationModel = new TopcatInvestigation();
         shiftsContainer.hide();
         shiftsTable.removeAllRows();
@@ -369,6 +391,7 @@ public class InvestigationSubPanel extends Composite {
             propertiesContainer.show();
         }
 
+        contentPanel.expand();
         initDataBindings();
     }
 

@@ -97,7 +97,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     private AdvancedSearchSubPanel advancedSearchSubPanel;
     private FacilitiesSearchSubPanel facilitiesSearchSubPanel;
     private VerticalPanel investigationPanel;
-    private ContentPanel investigationContentPanel;
     private InvestigationSubPanel investigationSubPanel;
 
     // Radio button for type of search
@@ -264,38 +263,24 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
             @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
-                TopcatInvestigation inv = e.getModel();
-                Long investigationId;
-                try {
-                    investigationId = Long.valueOf(inv.getInvestigationId());
-                } catch (NumberFormatException ne) {
-                    investigationId = 0L; // TODO
-                }
-                eventBus.getInvestigationDetails(inv.getFacilityName(), investigationId, SOURCE);
+                eventBus.getInvestigationDetails(e.getModel().getFacilityName(), e.getModel().getInvestigationId(),
+                        SOURCE);
             }
         });
 
+        // Context Menu
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
-
         MenuItem showInvestigation = new MenuItem();
         showInvestigation.setText("show investigation details");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
-                Long investigationId;
-                try {
-                    investigationId = Long.valueOf(grid.getSelectionModel().getSelectedItem().getInvestigationId());
-                } catch (NumberFormatException ne) {
-                    investigationId = 0L; // TODO
-                }
-                eventBus.getInvestigationDetails(grid.getSelectionModel().getSelectedItem().getFacilityName(),
-                        investigationId, SOURCE);
-
+                eventBus.getInvestigationDetails(grid.getSelectionModel().getSelectedItem().getFacilityName(), grid
+                        .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
             }
         });
-
         MenuItem showDS = new MenuItem();
         showDS.setText("show data sets");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
@@ -307,8 +292,8 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                                 .getSelectedItem().getInvestigationTitle());
             }
         });
-
         grid.setContextMenu(contextMenu);
+
         grid.setAutoHeight(true);
         bodyPanel.add(grid);
         contentPanel.add(bodyPanel, new RowData(Style.DEFAULT, 376.0, new Margins()));
@@ -329,35 +314,16 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
         // Investigation detail
         investigationPanel = new VerticalPanel();
+        investigationPanel.setBorders(true);
+        investigationPanel.setSpacing(20);
         investigationPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
-        investigationContentPanel = new ContentPanel();
-        investigationContentPanel.setTitleCollapse(true);
-        investigationContentPanel.setFrame(true);
-        investigationContentPanel.setExpanded(false);
-        investigationContentPanel.setHeading("Investigation Details");
-        investigationContentPanel.setCollapsible(true);
-        investigationContentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
-        investigationContentPanel.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        investigationContentPanel.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-
         investigationSubPanel = new InvestigationSubPanel();
-        investigationContentPanel.add(investigationSubPanel);
         TableData td_investigationContentPanel = new TableData();
         td_investigationContentPanel.setHeight("100%");
         td_investigationContentPanel.setWidth("705px");
-        investigationPanel.add(investigationContentPanel, td_investigationContentPanel);
+        investigationPanel.add(investigationSubPanel, td_investigationContentPanel);
         investigationPanel.hide();
-        mainContainer.add(investigationPanel, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(20, 0, 20, 0)));
+        mainContainer.add(investigationPanel);
 
         initComponent(mainContainer);
         setMonitorWindowResize(true);
@@ -450,7 +416,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                     public void addInvestigationDetails(AddInvestigationDetailsEvent event) {
                         investigationSubPanel.setInvestigation(event.getInvestigation());
                         investigationPanel.show();
-                        investigationContentPanel.expand();
                     }
                 });
     }
@@ -466,7 +431,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                 String invDetailsFacility = investigationSubPanel.getFacilityName();
                 if (!(invDetailsFacility == null) && invDetailsFacility.equalsIgnoreCase(event.getFacilityName())) {
                     investigationPanel.hide();
-                    investigationContentPanel.collapse();
                     investigationSubPanel.reset();
                 }
             }

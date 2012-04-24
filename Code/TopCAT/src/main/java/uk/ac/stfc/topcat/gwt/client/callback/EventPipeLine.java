@@ -481,8 +481,17 @@ public class EventPipeLine implements LoginInterface {
      * @param sourcePanel
      *            a string containing the name of the calling source panel
      */
-    public void getInvestigationDetails(final String facilityName, final Long investigationId, final String sourcePanel) {
-        utilityService.getInvestigationDetails(facilityName, investigationId, new AsyncCallback<TInvestigation>() {
+    public void getInvestigationDetails(final String facilityName, final String investigationId,
+            final String sourcePanel) {
+        Long invId;
+        try {
+            invId = Long.valueOf(investigationId);
+        } catch (NumberFormatException ne) {
+            showErrorDialog("Error retrieving data from server for investigation " + investigationId);
+            return;
+        }
+
+        utilityService.getInvestigationDetails(facilityName, invId, new AsyncCallback<TInvestigation>() {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught.getCause() instanceof SessionException) {
@@ -760,18 +769,20 @@ public class EventPipeLine implements LoginInterface {
      * 
      * @param facilityName
      *            facility name
-     * @param datafileId
-     *            datafile id
-     * @param datafileName
-     *            datafile name
+     * @param dataType
+     *            data set or data file
+     * @param dataId
+     *            data set or data file id
+     * @param dataName
+     *            data set or data file name
      */
-    public void showParameterWindow(String facilityName, String datafileId, String datafileName) {
+    public void showParameterWindow(String facilityName, String dataType, String dataId, String dataName) {
         try {
-            ParameterWindow paramWindow = tcWindowManager.findParameterWindow(facilityName, datafileId);
+            ParameterWindow paramWindow = tcWindowManager.findParameterWindow(facilityName, dataType, dataId);
             if (paramWindow == null) {
                 paramWindow = tcWindowManager.createParameterWindow();
-                paramWindow.setDatafileName(datafileName);
-                paramWindow.setDatafileInfo(facilityName, datafileId);
+                paramWindow.setDatafileName(dataType, dataName);
+                paramWindow.setDataInfo(facilityName, dataId);
             } else {
                 paramWindow.show();
             }
@@ -792,8 +803,9 @@ public class EventPipeLine implements LoginInterface {
      * @param datafileName
      *            datafile name
      */
-    public void showParameterWindowWithHistory(String facilityName, String datafileId, String datafileName) {
-        showParameterWindow(facilityName, datafileId, datafileName);
+    public void showParameterWindowWithHistory(String facilityName, String dataType, String datafileId,
+            String datafileName) {
+        showParameterWindow(facilityName, dataType, datafileId, datafileName);
         historyManager.updateHistory();
     }
 

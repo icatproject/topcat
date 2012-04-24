@@ -28,6 +28,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -52,6 +53,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
@@ -64,6 +66,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -142,9 +146,10 @@ public class DatasetWindow extends Window {
         datasetStore.sort("datasetName", Style.SortDir.ASC);
 
         // Grid
-        Grid<DatasetModel> grid = new Grid<DatasetModel>(datasetStore, new ColumnModel(configs));
+        final Grid<DatasetModel> grid = new Grid<DatasetModel>(datasetStore, new ColumnModel(configs));
         add(grid);
         grid.setBorders(true);
+        grid.setToolTip("\"Double Click\" row to show data files, right click for more options");
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<DatasetModel>>() {
             @Override
             public void handleEvent(GridEvent<DatasetModel> e) {
@@ -156,6 +161,33 @@ public class DatasetWindow extends Window {
 
         grid.addPlugin(datasetSelectionModel);
         grid.setSelectionModel(datasetSelectionModel);
+
+        // Context Menu
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showDS = new MenuItem();
+        showDS.setText("show data set details");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showDS);
+        showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
+                EventPipeLine.getInstance().showParameterWindowWithHistory(dsm.getFacilityName(), Constants.DATA_SET,
+                        dsm.getId(), dsm.getName());
+            }
+        });
+        MenuItem showFS = new MenuItem();
+        showFS.setText("show data files");
+        showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showFS);
+        showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                ArrayList<DatasetModel> dsmList = new ArrayList<DatasetModel>();
+                dsmList.add((DatasetModel) grid.getSelectionModel().getSelectedItem());
+                EventPipeLine.getInstance().showDatafileWindowWithHistory(dsmList);
+            }
+        });
+        grid.setContextMenu(contextMenu);
 
         BufferView view = new BufferView();
         view.setRowHeight(32);

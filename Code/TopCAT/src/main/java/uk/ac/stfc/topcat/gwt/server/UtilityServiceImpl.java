@@ -54,6 +54,7 @@ import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -330,6 +331,43 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             tnode.setNode(ICATNodeType.DATAFILE, inv.getId(), inv.getName());
             tnode.setFacility(node.getFacility());
             result.add(tnode);
+        }
+        return result;
+    }
+
+    /**
+     * This method returns creates a parameter model which has list of parameter
+     * names and corresponding values for a given dataset id on a server.
+     * 
+     * @param facilityName
+     *            iCAT instance name
+     * @param datasetId
+     *            input dataset Id
+     */
+    @Override
+    public ArrayList<ParameterModel> getDatasetParameters(String facilityName, String datasetId) {
+        return getDatasetParameters(getSessionId(), facilityName, datasetId);
+    }
+
+    /**
+     * This method returns creates a parameter model which has list of parameter
+     * names and corresponding values for a given dataset id on a server.
+     * 
+     * @param sessionId
+     *            user session id
+     * @param facilityName
+     *            iCAT instance name
+     * @param datasetId
+     *            input dataset id.
+     * @return list of parameters corresponding to dataset
+     */
+    private ArrayList<ParameterModel> getDatasetParameters(String sessionId, String facilityName, String datasetId) {
+        ArrayList<ParameterModel> result = new ArrayList<ParameterModel>();
+        ArrayList<TDatasetParameter> ds = utilityManager.getDatasetInfoInServer(sessionId, facilityName, datasetId);
+        if (ds == null)
+            return result;
+        for (TDatasetParameter dsParam : ds) {
+            result.add(new ParameterModel(dsParam.getName(), dsParam.getUnits(), dsParam.getValue()));
         }
         return result;
     }

@@ -38,4 +38,10 @@ public class Constants {
     /** Download status */
     public static final String STATUS_ERROR = "ERROR";
 
+    /** Data set **/
+    public static final String DATA_SET = "DATA_SET";
+
+    /** Data file **/
+    public static final String DATA_FILE = "DATA_FILE";
+
 }

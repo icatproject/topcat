@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
+import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
@@ -53,6 +55,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
@@ -67,6 +70,8 @@ import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -74,6 +79,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * This is a floating window widget, It shows list of datafiles for a given
@@ -173,16 +179,17 @@ public class DatafileWindow extends Window {
         dfmStore.groupBy("datasetName");
 
         // Grid
-        Grid<DatafileModel> grid = new Grid<DatafileModel>(dfmStore, cm);
+        final Grid<DatafileModel> grid = new Grid<DatafileModel>(dfmStore, cm);
         grid.setHeight("420px");
         grid.setView(view);
         grid.setBorders(true);
+        grid.setToolTip("\"Double Click\" row to show data file details, right click for more options");
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<DatafileModel>>() {
             @Override
             public void handleEvent(GridEvent<DatafileModel> e) {
                 DatafileModel datafile = e.getModel();
                 EventPipeLine.getInstance().showParameterWindowWithHistory(datafile.getFacilityName(),
-                        datafile.getId(), datafile.getName());
+                        Constants.DATA_FILE, datafile.getId(), datafile.getName());
             }
         });
 
@@ -191,7 +198,7 @@ public class DatafileWindow extends Window {
 
         // ToolBar with download button
         ToolBar toolBar = new ToolBar();
-        DownloadButton btnDownload = new DownloadButton();
+        final DownloadButton btnDownload = new DownloadButton();
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -201,6 +208,32 @@ public class DatafileWindow extends Window {
         toolBar.add(btnDownload);
         toolBar.add(new SeparatorToolItem());
         setTopComponent(toolBar);
+
+        // Context Menu
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showDS = new MenuItem();
+        showDS.setText("show data file details");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showDS);
+        showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                DatafileModel dfm = (DatafileModel) grid.getSelectionModel().getSelectedItem();
+                EventPipeLine.getInstance().showParameterWindowWithHistory(dfm.getFacilityName(), Constants.DATA_FILE,
+                        dfm.getId(), dfm.getName());
+            }
+        });
+        MenuItem showFS = new MenuItem();
+        showFS.setText("download data file");
+        showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showFS);
+        showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                // simulate the download button being pressed
+                btnDownload.fireEvent(Events.BeforeSelect, new ButtonEvent(btnDownload));
+            }
+        });
+        grid.setContextMenu(contextMenu);
 
         setLayout(new FitLayout());
         setSize(700, 400);
@@ -531,7 +564,7 @@ public class DatafileWindow extends Window {
         String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
         EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
         EventPipeLine.getInstance().showMessageDialog(
-                "Your data is being retrieved from tape and will automatically start downloading shortly "
+                "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                         + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
     }
 

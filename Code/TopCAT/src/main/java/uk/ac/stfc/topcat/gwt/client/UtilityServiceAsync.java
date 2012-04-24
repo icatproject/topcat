@@ -155,6 +155,20 @@ public interface UtilityServiceAsync {
             AsyncCallback<ArrayList<DatasetModel>> callback);
 
     /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data set id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            a string containing the data set id
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatasetParameters(String facilityName, String datasetId,
+            AsyncCallback<ArrayList<ParameterModel>> callback);
+
+    /**
      * Get a list of data files information corresponding to the given list of
      * data sets.
      * 
