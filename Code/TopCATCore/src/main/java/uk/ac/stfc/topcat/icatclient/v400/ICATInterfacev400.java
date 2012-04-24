@@ -21,6 +21,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
@@ -208,6 +209,30 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
         } catch (SessionException_Exception ex) {
         }
         return datasetList;
+    }
+
+    public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
+        ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
+        try {
+            Dataset ds = service.getDataset(sessionId, Long.valueOf(datasetId));
+            List<DatasetParameter> dsList = ds.getDatasetParameterCollection();
+            for (DatasetParameter dsParam : dsList) {
+                if (dsParam.getValueType() == ParameterValueType.NUMERIC) {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getNumericValue().toString()));
+                } else if (dsParam.getValueType() == ParameterValueType.STRING) {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getStringValue()));
+                } else if (dsParam.getValueType() == ParameterValueType.DATE_AND_TIME) {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getDateTimeValue().toString()));
+                }
+            }
+        } catch (SessionException_Exception ex) {
+        } catch (InsufficientPrivilegesException_Exception ex) {
+        } catch (NoSuchObjectFoundException_Exception ex) {
+        }
+        return result;
     }
 
     public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {

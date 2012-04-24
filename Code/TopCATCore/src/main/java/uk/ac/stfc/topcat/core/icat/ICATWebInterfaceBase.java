@@ -12,6 +12,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 
@@ -69,6 +70,10 @@ public class ICATWebInterfaceBase {
 
     public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId) {
         return new ArrayList<TDataset>();
+    }
+
+    public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
+        return new ArrayList<TDatasetParameter>();
     }
 
     public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {
