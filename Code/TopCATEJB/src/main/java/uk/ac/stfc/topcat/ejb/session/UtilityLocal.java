@@ -33,6 +33,7 @@ import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -65,6 +66,7 @@ public interface UtilityLocal {
     TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId) throws AuthenticationException;
     ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId);
     ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
+    ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datasetId);
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);
     String getDatafilesDownloadURL(String sessionId,String serverName,ArrayList<Long> datafileIds);
     String getDatasetDownloadURL(String sessionId,String serverName, Long datasetId);

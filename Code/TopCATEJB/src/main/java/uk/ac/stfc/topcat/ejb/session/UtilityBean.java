@@ -35,6 +35,7 @@ import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -149,6 +150,11 @@ public class UtilityBean implements UtilityLocal {
         return utilManager.getDatafilesInServer(manager, sessionId, serverName, datasetId);
     }
 
+    @Override
+    public ArrayList<TDatasetParameter> getDatasetInfoInServer(String sessionId, String serverName, String datasetId) {
+        return utilManager.getDatasetInfo(manager, sessionId, serverName, datasetId);
+    }
+    
     @Override
     public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId, String serverName, String datafileId) {
         return utilManager.getDatafileInfo(manager, sessionId, serverName, datafileId);

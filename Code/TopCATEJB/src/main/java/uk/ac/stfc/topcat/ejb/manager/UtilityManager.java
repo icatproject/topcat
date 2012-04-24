@@ -37,6 +37,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -675,6 +676,47 @@ public class UtilityManager {
             logger.warning("getDatasetsInServer: " + ex.getMessage());
         }
         return new ArrayList<TDataset>();
+    }
+
+    /**
+     * This method get the parameters corresponding to the input datasetid on
+     * the given server.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @param datasetId
+     * @return
+     */
+    public ArrayList<TDatasetParameter> getDatasetInfo(EntityManager manager, String sessionId, String serverName,
+            String datasetId) {
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, serverName);
+            return getDatasetInfo(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), datasetId);
+        } catch (javax.persistence.NoResultException ex) {
+        }
+        return null;
+    }
+
+    /**
+     * This method get the parameters corresponding to the input datasetid on
+     * the given server.
+     * 
+     * @param sessionId
+     * @param server
+     * @param datasetId
+     * @return
+     */
+    public ArrayList<TDatasetParameter> getDatasetInfo(String sessionId, TopcatIcatServer server, String datasetId) {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.getParametersInDataset(sessionId, Long.valueOf(datasetId));
+        } catch (MalformedURLException ex) {
+            logger.warning("getDatasetInfo: " + ex.getMessage());
+        }
+        return new ArrayList<TDatasetParameter>();
     }
 
     /**
