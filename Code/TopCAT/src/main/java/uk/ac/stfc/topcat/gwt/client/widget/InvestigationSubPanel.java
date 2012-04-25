@@ -85,7 +85,6 @@ public class InvestigationSubPanel extends Composite {
     private Text txtEndDate;
     private LabelField lblfldEndDate;
     private HorizontalPanel buttonPanel;
-    private Button btnShareInvestigation;
     private Text txtProperties;
     private FlexTable propertiesTable;
     private LayoutContainer shiftsContainer;
@@ -145,11 +144,6 @@ public class InvestigationSubPanel extends Composite {
             }
         });
         buttonPanel.add(btnShowDataSets);
-
-        btnShareInvestigation = new Button("Edit Access Permissions");
-        btnShowDataSets.setToolTip("This will be implemented soon");
-        btnShareInvestigation.disable();
-        buttonPanel.add(btnShareInvestigation);
 
         layoutContainer.add(buttonPanel, td_buttonPanel);
         buttonPanel.setHeight("50px");
@@ -289,7 +283,6 @@ public class InvestigationSubPanel extends Composite {
      * Erase all data and hide.
      */
     public void reset() {
-        contentPanel.collapse();
         investigationModel = new TopcatInvestigation();
         shiftsContainer.hide();
         shiftsTable.removeAllRows();
@@ -310,6 +303,7 @@ public class InvestigationSubPanel extends Composite {
      */
     public void setInvestigation(TInvestigation inv) {
         reset();
+        contentPanel.expand();
         investigationModel = new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(),
                 inv.getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv.getEndDate(),
                 inv.getProposal());
@@ -391,7 +385,6 @@ public class InvestigationSubPanel extends Composite {
             propertiesContainer.show();
         }
 
-        contentPanel.expand();
         initDataBindings();
     }
 

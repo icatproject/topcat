@@ -116,10 +116,18 @@ public class TopcatInvestigation extends BaseModel {
         set("startDate", startDate);
         set("endDate", endDate);
         set("proposal", proposal);
-        set("formatedStartDate",
-                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(startDate));
-        set("formatedEndDate", DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT)
-                .format(endDate));
+        if (startDate != null) {
+            set("formatedStartDate",
+                    DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(startDate));
+        } else {
+            set("formatedStartDate", "");
+        }
+        if (endDate != null) {
+            set("formatedEndDate",
+                    DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(endDate));
+        } else {
+            set("formatedEndDate", "");
+        }
     }
 
     /**
