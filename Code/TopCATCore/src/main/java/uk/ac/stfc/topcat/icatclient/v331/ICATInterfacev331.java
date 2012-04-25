@@ -195,7 +195,8 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
     public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
         ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
         try {
-            Dataset ds = service.getDataset(sessionId, Long.valueOf(datasetId));
+            Dataset ds = service.getDatasetIncludes(sessionId, Long.valueOf(datasetId),
+                    DatasetInclude.DATASET_PARAMETERS_ONLY);
             List<DatasetParameter> dsList = ds.getDatasetParameterCollection();
             for (DatasetParameter dsParam : dsList) {
                 if (dsParam.isNumeric()) {

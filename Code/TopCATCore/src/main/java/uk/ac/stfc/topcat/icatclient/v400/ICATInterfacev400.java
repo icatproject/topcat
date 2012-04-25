@@ -214,9 +214,11 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
     public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
         ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
         try {
-            Dataset ds = service.getDataset(sessionId, Long.valueOf(datasetId));
+            Dataset ds = service.getDatasetIncludes(sessionId, Long.valueOf(datasetId),
+                    DatasetInclude.DATASET_PARAMETERS_ONLY);
             List<DatasetParameter> dsList = ds.getDatasetParameterCollection();
             for (DatasetParameter dsParam : dsList) {
+                System.out.println("parameter type: " + dsParam.getValueType());
                 if (dsParam.getValueType() == ParameterValueType.NUMERIC) {
                     result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
                             .getDatasetParameterPK().getUnits(), dsParam.getNumericValue().toString()));
@@ -224,6 +226,15 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
                     result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
                             .getDatasetParameterPK().getUnits(), dsParam.getStringValue()));
                 } else if (dsParam.getValueType() == ParameterValueType.DATE_AND_TIME) {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getDateTimeValue().toString()));
+                } else if (dsParam.getNumericValue() != null) {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getNumericValue().toString()));
+                } else if (dsParam.getStringValue() != null) {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getStringValue()));
+                } else if (dsParam.getDateTimeValue() != null) {
                     result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
                             .getDatasetParameterPK().getUnits(), dsParam.getDateTimeValue().toString()));
                 }
