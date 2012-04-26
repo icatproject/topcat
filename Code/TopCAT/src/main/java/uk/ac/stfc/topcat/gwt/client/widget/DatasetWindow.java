@@ -166,7 +166,7 @@ public class DatasetWindow extends Window {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showDS = new MenuItem();
-        showDS.setText("show data set details");
+        showDS.setText("show data set");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {

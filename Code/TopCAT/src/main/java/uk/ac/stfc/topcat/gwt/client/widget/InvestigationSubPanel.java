@@ -38,9 +38,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Text;
 
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
@@ -60,32 +58,32 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 public class InvestigationSubPanel extends Composite {
     private TopcatInvestigation investigationModel = new TopcatInvestigation();
     private ContentPanel contentPanel;
-    private VerticalPanel contentlPanelBody;
-    private LabelField lblfldTitle;
-    private LabelField lblfldFacility;
-    private LabelField lblfldInvestigationNumber;
-    private Text txtFacility;
-    private Text txtTitle;
-    private Text txtInvestigationNumber;
-    private Text txtVisitId;
-    private LabelField lblfldVisitId;
-    private Text txtInvestigators;
-    private Text txtProposal;
-    private LabelField lblfldProposal;
+    private LayoutContainer contentlPanelBody;
+    private LabelField dataTitle;
+    private LabelField dataFacility;
+    private LabelField dataInvestigationNumber;
+    private LabelField lableFacility;
+    private LabelField lableTitle;
+    private LabelField lableInvestigationNumber;
+    private LabelField lableVisitId;
+    private LabelField dataVisitId;
+    private LabelField lableInvestigators;
+    private LabelField lableProposal;
+    private LabelField dataProposal;
     private Button btnShowDataSets;
-    private LayoutContainer layoutContainer;
-    private Text txtShifts;
-    private Text txtPublications;
+    private LayoutContainer topContainer;
+    private LabelField lableShifts;
+    private LabelField lablePublications;
     private FlexTable shiftsTable;
     private FlexTable namesTable;
     private FlexTable publicationsTable;
     private EventPipeLine eventBus;
-    private Text txtStartDate;
-    private LabelField lblfldStartDate;
-    private Text txtEndDate;
-    private LabelField lblfldEndDate;
+    private LabelField lableStartDate;
+    private LabelField dataStartDate;
+    private LabelField lableEndDate;
+    private LabelField dataEndDate;
     private HorizontalPanel buttonPanel;
-    private Text txtProperties;
+    private LabelField lableProperties;
     private FlexTable propertiesTable;
     private LayoutContainer shiftsContainer;
     private LayoutContainer publicationsContainer;
@@ -101,7 +99,7 @@ public class InvestigationSubPanel extends Composite {
         contentPanel.setTitleCollapse(true);
         contentPanel.setFrame(true);
         contentPanel.setExpanded(false);
-        contentPanel.setHeading("Investigation Details");
+        contentPanel.setHeading("Investigation");
         contentPanel.setCollapsible(true);
         contentPanel.addListener(Events.Expand, new Listener<ComponentEvent>() {
             @Override
@@ -116,15 +114,19 @@ public class InvestigationSubPanel extends Composite {
             }
         });
 
-        contentlPanelBody = new VerticalPanel();
+        contentlPanelBody = new LayoutContainer();
+        TableLayout tl_contentlPanelBody = new TableLayout();
+        tl_contentlPanelBody.setCellVerticalAlign(VerticalAlignment.TOP);
+        tl_contentlPanelBody.setCellHorizontalAlign(HorizontalAlignment.LEFT);
+        tl_contentlPanelBody.setWidth("100%");
+        contentlPanelBody.setLayout(tl_contentlPanelBody);
 
-        layoutContainer = new LayoutContainer();
-        TableLayout tl_layoutContainer = new TableLayout(2);
-        tl_layoutContainer.setWidth("705");
-        tl_layoutContainer.setCellVerticalAlign(VerticalAlignment.TOP);
-        tl_layoutContainer.setCellHorizontalAlign(HorizontalAlignment.LEFT);
-        tl_layoutContainer.setCellSpacing(5);
-        layoutContainer.setLayout(tl_layoutContainer);
+        topContainer = new LayoutContainer();
+        TableLayout tl_topContainer = new TableLayout(2);
+        tl_topContainer.setCellVerticalAlign(VerticalAlignment.TOP);
+        tl_topContainer.setCellHorizontalAlign(HorizontalAlignment.LEFT);
+        tl_topContainer.setCellSpacing(5);
+        topContainer.setLayout(tl_topContainer);
 
         buttonPanel = new HorizontalPanel();
         buttonPanel.setSpacing(5);
@@ -145,49 +147,54 @@ public class InvestigationSubPanel extends Composite {
         });
         buttonPanel.add(btnShowDataSets);
 
-        layoutContainer.add(buttonPanel, td_buttonPanel);
+        // Additional buttons
+        // "Download Data Sets"
+        // "Download Investigation Metadata"
+        // "Edit Permissions"
+        
+        topContainer.add(buttonPanel, td_buttonPanel);
         buttonPanel.setHeight("50px");
 
-        txtFacility = new Text("Facility: ");
-        layoutContainer.add(txtFacility);
+        lableFacility = new LabelField("Facility: ");
+        topContainer.add(lableFacility);
 
-        lblfldFacility = new LabelField("Facility");
-        layoutContainer.add(lblfldFacility);
+        dataFacility = new LabelField("Facility");
+        topContainer.add(dataFacility);
 
-        txtTitle = new Text("Title: ");
-        layoutContainer.add(txtTitle);
+        lableTitle = new LabelField("Title: ");
+        topContainer.add(lableTitle);
 
-        lblfldTitle = new LabelField("Title");
-        layoutContainer.add(lblfldTitle);
+        dataTitle = new LabelField("Title");
+        topContainer.add(dataTitle);
 
-        txtInvestigationNumber = new Text("Investigation No: ");
-        TableData td_txtInvestigationNumber = new TableData();
-        td_txtInvestigationNumber.setWidth("105");
-        layoutContainer.add(txtInvestigationNumber, td_txtInvestigationNumber);
+        lableInvestigationNumber = new LabelField("Investigation No: ");
+        TableData td_lableInvestigationNumber = new TableData();
+        td_lableInvestigationNumber.setWidth("105");
+        topContainer.add(lableInvestigationNumber, td_lableInvestigationNumber);
 
-        lblfldInvestigationNumber = new LabelField("Investigation Number");
-        layoutContainer.add(lblfldInvestigationNumber);
+        dataInvestigationNumber = new LabelField("Investigation Number");
+        topContainer.add(dataInvestigationNumber);
 
-        txtVisitId = new Text("Visit Id: ");
-        layoutContainer.add(txtVisitId);
+        lableVisitId = new LabelField("Visit Id: ");
+        topContainer.add(lableVisitId);
 
-        lblfldVisitId = new LabelField("Visit Id");
-        layoutContainer.add(lblfldVisitId);
+        dataVisitId = new LabelField("Visit Id");
+        topContainer.add(dataVisitId);
 
-        txtStartDate = new Text("Start Date:");
-        layoutContainer.add(txtStartDate);
+        lableStartDate = new LabelField("Start Date:");
+        topContainer.add(lableStartDate);
 
-        lblfldStartDate = new LabelField("Start Date");
-        layoutContainer.add(lblfldStartDate);
+        dataStartDate = new LabelField("Start Date");
+        topContainer.add(dataStartDate);
 
-        txtEndDate = new Text("End Date:");
-        layoutContainer.add(txtEndDate);
+        lableEndDate = new LabelField("End Date:");
+        topContainer.add(lableEndDate);
 
-        lblfldEndDate = new LabelField("End Date");
-        layoutContainer.add(lblfldEndDate);
+        dataEndDate = new LabelField("End Date");
+        topContainer.add(dataEndDate);
 
-        contentlPanelBody.add(layoutContainer);
-        layoutContainer.setSize("100%", "100%");
+        contentlPanelBody.add(topContainer);
+        topContainer.setSize("100%", "100%");
 
         // Shifts
         shiftsContainer = new LayoutContainer();
@@ -197,10 +204,10 @@ public class InvestigationSubPanel extends Composite {
         tl_shiftsContainer.setCellHorizontalAlign(HorizontalAlignment.LEFT);
         shiftsContainer.setLayout(tl_shiftsContainer);
 
-        txtShifts = new Text("Shifts:");
-        TableData td_txtShifts = new TableData();
-        td_txtShifts.setWidth("105");
-        shiftsContainer.add(txtShifts, td_txtShifts);
+        lableShifts = new LabelField("Shifts:");
+        TableData td_lableShifts = new TableData();
+        td_lableShifts.setWidth("105");
+        shiftsContainer.add(lableShifts, td_lableShifts);
 
         shiftsTable = new FlexTable();
         shiftsTable.setBorderWidth(1);
@@ -218,10 +225,10 @@ public class InvestigationSubPanel extends Composite {
         tl_investigatorsContainer.setCellHorizontalAlign(HorizontalAlignment.LEFT);
         investigatorsContainer.setLayout(tl_investigatorsContainer);
 
-        txtInvestigators = new Text("Investigators:");
-        TableData td_txtInvestigators = new TableData();
-        td_txtInvestigators.setWidth("105");
-        investigatorsContainer.add(txtInvestigators, td_txtInvestigators);
+        lableInvestigators = new LabelField("Investigators:");
+        TableData td_lableInvestigators = new TableData();
+        td_lableInvestigators.setWidth("105");
+        investigatorsContainer.add(lableInvestigators, td_lableInvestigators);
 
         namesTable = new FlexTable();
         investigatorsContainer.add(namesTable);
@@ -231,11 +238,11 @@ public class InvestigationSubPanel extends Composite {
         proposalContainer = new LayoutContainer();
         proposalContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
-        txtProposal = new Text("Proposal");
-        proposalContainer.add(txtProposal, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
+        lableProposal = new LabelField("Proposal:");
+        proposalContainer.add(lableProposal, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
 
-        lblfldProposal = new LabelField("Proposal");
-        proposalContainer.add(lblfldProposal, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
+        dataProposal = new LabelField("Proposal");
+        proposalContainer.add(dataProposal, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
 
         contentlPanelBody.add(proposalContainer);
 
@@ -243,8 +250,9 @@ public class InvestigationSubPanel extends Composite {
         publicationsContainer = new LayoutContainer();
         publicationsContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
-        txtPublications = new Text("Publications:");
-        publicationsContainer.add(txtPublications, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
+        lablePublications = new LabelField("Publications:");
+        publicationsContainer.add(lablePublications,
+                new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
 
         publicationsTable = new FlexTable();
         publicationsContainer
@@ -255,8 +263,8 @@ public class InvestigationSubPanel extends Composite {
         propertiesContainer = new LayoutContainer();
         propertiesContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
-        txtProperties = new Text("Properties:");
-        propertiesContainer.add(txtProperties, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
+        lableProperties = new LabelField("Properties:");
+        propertiesContainer.add(lableProperties, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
 
         propertiesTable = new FlexTable();
         propertiesTable.setBorderWidth(1);
@@ -264,9 +272,7 @@ public class InvestigationSubPanel extends Composite {
         contentlPanelBody.add(propertiesContainer);
 
         contentPanel.add(contentlPanelBody);
-
         initComponent(contentPanel);
-        contentlPanelBody.setWidth("705");
         initDataBindings();
     }
 
@@ -276,7 +282,7 @@ public class InvestigationSubPanel extends Composite {
      * @return the facility name
      */
     public String getFacilityName() {
-        return lblfldFacility.getText();
+        return dataFacility.getText();
     }
 
     /**
@@ -302,6 +308,10 @@ public class InvestigationSubPanel extends Composite {
      *            the investigation
      */
     public void setInvestigation(TInvestigation inv) {
+        // For a number of field we have to use the LableField in order to be
+        // able to bind to them. As a consequence we want to display the rest of
+        // the data as LableFields rather than Text in order to maintain
+        // consistent formatting.
         reset();
         contentPanel.expand();
         investigationModel = new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(),
@@ -310,35 +320,31 @@ public class InvestigationSubPanel extends Composite {
 
         // Shifts
         if (inv.getShifts().size() > 0) {
-            Text startDate = new Text("Start Date");
+            LabelField startDate = new LabelField("Start Date");
             startDate.setWidth(125);
             shiftsTable.setWidget(0, 0, startDate);
             shiftsTable.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
 
-            Text endDate = new Text("End Date");
+            LabelField endDate = new LabelField("End Date");
             endDate.setWidth(125);
             shiftsTable.setWidget(0, 1, endDate);
 
             shiftsTable.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER);
 
-            shiftsTable.setWidget(0, 2, new Text("Comment"));
+            shiftsTable.setWidget(0, 2, new LabelField("Comment"));
             shiftsTable.getCellFormatter().setHorizontalAlignment(0, 2, HasHorizontalAlignment.ALIGN_CENTER);
             int i = 1;
             for (TShift shift : inv.getShifts()) {
-                shiftsTable.setWidget(
-                        i,
-                        0,
-                        new Text(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(
-                                shift.getStartDate())));
+                shiftsTable.setWidget(i, 0,
+                        new LabelField(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT)
+                                .format(shift.getStartDate())));
                 shiftsTable.getCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_CENTER);
 
-                shiftsTable.setWidget(
-                        i,
-                        1,
-                        new Text(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(
-                                shift.getEndDate())));
+                shiftsTable.setWidget(i, 1,
+                        new LabelField(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT)
+                                .format(shift.getEndDate())));
                 shiftsTable.getCellFormatter().setHorizontalAlignment(i, 1, HasHorizontalAlignment.ALIGN_CENTER);
-                shiftsTable.setWidget(i, 2, new Text(shift.getComment()));
+                shiftsTable.setWidget(i, 2, new LabelField(shift.getComment()));
                 shiftsTable.getCellFormatter().setHorizontalAlignment(i, 2, HasHorizontalAlignment.ALIGN_CENTER);
             }
             shiftsContainer.show();
@@ -349,9 +355,9 @@ public class InvestigationSubPanel extends Composite {
             int i = 0;
             for (TInvestigator tinvestigator : inv.getInvestigators()) {
                 HorizontalPanel investigatorPanel = new HorizontalPanel();
-                investigatorPanel.addText(tinvestigator.getRole());
-                investigatorPanel.add(new Text("&nbsp;-&nbsp;"));
-                investigatorPanel.addText(tinvestigator.getFullName());
+                investigatorPanel.add(new LabelField(tinvestigator.getRole()));
+                investigatorPanel.add(new LabelField("&nbsp;-&nbsp;"));
+                investigatorPanel.add(new LabelField(tinvestigator.getFullName()));
                 namesTable.setWidget(i, 0, investigatorPanel);
                 i++;
             }
@@ -368,7 +374,7 @@ public class InvestigationSubPanel extends Composite {
             int i = 0;
             for (TPublication publication : inv.getPublications()) {
                 if (publication.getUrl() == null || publication.getUrl().isEmpty()) {
-                    publicationsTable.setText(i, 0, publication.getFullReference());
+                    publicationsTable.setWidget(i, 0, new LabelField(publication.getFullReference()));
                 } else {
                     publicationsTable.setHTML(i, 0,
                             "<a href=\"" + publication.getUrl() + "\">" + publication.getFullReference() + "</a>");
@@ -380,8 +386,8 @@ public class InvestigationSubPanel extends Composite {
 
         // Parameters
         if (!(inv.getParamName() == null) && !(inv.getParamName().isEmpty())) {
-            propertiesTable.setWidget(0, 0, new Text(inv.getParamName()));
-            propertiesTable.setWidget(0, 1, new Text(inv.getParamValue()));
+            propertiesTable.setWidget(0, 0, new LabelField(inv.getParamName()));
+            propertiesTable.setWidget(0, 1, new LabelField(inv.getParamValue()));
             propertiesContainer.show();
         }
 
@@ -399,28 +405,28 @@ public class InvestigationSubPanel extends Composite {
     }
 
     protected void initDataBindings() {
-        FieldBinding fieldBinding = new FieldBinding(lblfldFacility, "serverName");
+        FieldBinding fieldBinding = new FieldBinding(dataFacility, "serverName");
         fieldBinding.bind(investigationModel);
         //
-        FieldBinding fieldBinding_1 = new FieldBinding(lblfldTitle, "investigationName");
+        FieldBinding fieldBinding_1 = new FieldBinding(dataTitle, "investigationName");
         fieldBinding_1.bind(investigationModel);
         //
-        FieldBinding fieldBinding_2 = new FieldBinding(lblfldVisitId, "visitId");
+        FieldBinding fieldBinding_2 = new FieldBinding(dataVisitId, "visitId");
         fieldBinding_2.bind(investigationModel);
         //
-        FieldBinding fieldBinding_3 = new FieldBinding(lblfldProposal, "proposal");
+        FieldBinding fieldBinding_3 = new FieldBinding(dataProposal, "proposal");
         fieldBinding_3.bind(investigationModel);
         //
-        FieldBinding fieldBinding_4 = new FieldBinding(lblfldTitle, "title");
+        FieldBinding fieldBinding_4 = new FieldBinding(dataTitle, "title");
         fieldBinding_4.bind(investigationModel);
         //
-        FieldBinding fieldBinding_5 = new FieldBinding(lblfldInvestigationNumber, "investigationName");
+        FieldBinding fieldBinding_5 = new FieldBinding(dataInvestigationNumber, "investigationName");
         fieldBinding_5.bind(investigationModel);
         //
-        FieldBinding fieldBinding_6 = new FieldBinding(lblfldStartDate, "formatedStartDate");
+        FieldBinding fieldBinding_6 = new FieldBinding(dataStartDate, "formatedStartDate");
         fieldBinding_6.bind(investigationModel);
         //
-        FieldBinding fieldBinding_7 = new FieldBinding(lblfldEndDate, "formatedEndDate");
+        FieldBinding fieldBinding_7 = new FieldBinding(dataEndDate, "formatedEndDate");
         fieldBinding_7.bind(investigationModel);
     }
 }

@@ -259,7 +259,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         grid.setAutoExpandColumn("title");
         grid.setAutoExpandMin(200);
         grid.setMinColumnWidth(100);
-        grid.setToolTip("\"Double Click\" row to show invetigation details, right click for more options");
+        grid.setToolTip("\"Double Click\" row to show invetigation, right click for more options");
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
             @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
@@ -272,7 +272,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show investigation details");
+        showInvestigation.setText("show investigation");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {

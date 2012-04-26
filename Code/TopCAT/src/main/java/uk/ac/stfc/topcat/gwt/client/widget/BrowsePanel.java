@@ -301,7 +301,7 @@ public class BrowsePanel extends Composite {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show investigation details");
+        showInvestigation.setText("show investigation");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -325,7 +325,7 @@ public class BrowsePanel extends Composite {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show data set details");
+        showInvestigation.setText("show data set");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -348,7 +348,7 @@ public class BrowsePanel extends Composite {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show data file details");
+        showInvestigation.setText("show data file");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {

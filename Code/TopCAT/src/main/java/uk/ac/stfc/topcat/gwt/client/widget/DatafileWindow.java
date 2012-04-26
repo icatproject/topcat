@@ -183,7 +183,7 @@ public class DatafileWindow extends Window {
         grid.setHeight("420px");
         grid.setView(view);
         grid.setBorders(true);
-        grid.setToolTip("\"Double Click\" row to show data file details, right click for more options");
+        grid.setToolTip("\"Double Click\" row to show data file, right click for more options");
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<DatafileModel>>() {
             @Override
             public void handleEvent(GridEvent<DatafileModel> e) {
@@ -213,7 +213,7 @@ public class DatafileWindow extends Window {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showDS = new MenuItem();
-        showDS.setText("show data file details");
+        showDS.setText("show data file");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
