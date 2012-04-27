@@ -599,7 +599,7 @@ public class UtilityManager {
      * @throws AuthenticationException
      */
     public TInvestigation getInvestigationDetails(EntityManager manager, String sessionId, String serverName,
-            long investigationId) throws AuthenticationException {
+            String investigationId) throws AuthenticationException {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
@@ -608,8 +608,8 @@ public class UtilityManager {
             return getInvestigationDetails(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationId);
         } catch (javax.persistence.NoResultException ex) {
+            throw new AuthenticationException("Could not find session information");
         }
-        return new TInvestigation();
     }
 
     /**
@@ -621,12 +621,12 @@ public class UtilityManager {
      * @param investigationId
      * @return
      */
-    public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, long investigationId)
+    public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, String investigationId)
             throws AuthenticationException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
-            return service.getInvestigationDetails(sessionId, investigationId);
+            return service.getInvestigationDetails(sessionId, Long.valueOf(investigationId));
         } catch (MalformedURLException ex) {
             logger.warning("getInvestigationDetails: " + ex.getMessage());
         }
@@ -642,17 +642,20 @@ public class UtilityManager {
      * @param serverName
      * @param investigationNumber
      * @return
+     * @throws AuthenticationException
      */
     public ArrayList<TDataset> getDatasetsInServer(EntityManager manager, String sessionId, String serverName,
-            String investigationNumber) {
+            String investigationNumber) throws AuthenticationException {
         try {
-            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+            TopcatUserSession userSession = (TopcatUserSession) manager
+            .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
+            .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+            .getSingleResult();
             return getDatasetsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationNumber);
         } catch (javax.persistence.NoResultException ex) {
+            throw new AuthenticationException("Could not find session information");
         }
-        return new ArrayList<TDataset>();
     }
 
     /**

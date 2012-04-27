@@ -135,13 +135,14 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId)
+    public TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId)
             throws AuthenticationException {
         return utilManager.getInvestigationDetails(manager, sessionId, serverName, investigationId);
     }
 
     @Override
-    public ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId) {
+    public ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId)
+            throws AuthenticationException {
         return utilManager.getDatasetsInServer(manager, sessionId, serverName, investigationId);
     }
 
@@ -154,7 +155,7 @@ public class UtilityBean implements UtilityLocal {
     public ArrayList<TDatasetParameter> getDatasetInfoInServer(String sessionId, String serverName, String datasetId) {
         return utilManager.getDatasetInfo(manager, sessionId, serverName, datasetId);
     }
-    
+
     @Override
     public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId, String serverName, String datafileId) {
         return utilManager.getDatafileInfo(manager, sessionId, serverName, datafileId);

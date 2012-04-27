@@ -63,8 +63,8 @@ public interface UtilityLocal {
     ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
     ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
     ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
-    TInvestigation getInvestigationDetails(String sessionId, String serverName, long investigationId) throws AuthenticationException;
-    ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId);
+    TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId) throws AuthenticationException;
+    ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId) throws AuthenticationException;
     ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
     ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datasetId);
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);
