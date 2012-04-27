@@ -144,7 +144,7 @@ public class CopyDataToCSVFile extends HttpServlet {
         if (dataType.equals(Constants.INVESTIGATION)) {
             TInvestigation inv = null;
             try {
-                inv = utilityManager.getInvestigationDetails(sessionId, facilityName, Long.valueOf(dataId));
+                inv = utilityManager.getInvestigationDetails(sessionId, facilityName, dataId);
             } catch (NumberFormatException e) {
             } catch (AuthenticationException e) {
             }

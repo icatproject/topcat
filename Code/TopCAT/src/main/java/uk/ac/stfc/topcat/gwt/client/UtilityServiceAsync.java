@@ -229,11 +229,11 @@ public interface UtilityServiceAsync {
      * @param facilityName
      *            a string containing the facility name
      * @param investigationId
-     *            the investigation id a string containing the facility name
+     *            the investigation id
      * @param asyncCallback
      *            object to be called on completion
      */
-    public void getInvestigationDetails(String facilityName, long investigationId,
+    public void getInvestigationDetails(String facilityName, String investigationId,
             AsyncCallback<TInvestigation> asyncCallback);
 
     /**

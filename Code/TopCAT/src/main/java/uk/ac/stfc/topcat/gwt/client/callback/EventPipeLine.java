@@ -484,15 +484,7 @@ public class EventPipeLine implements LoginInterface {
      */
     public void getInvestigationDetails(final String facilityName, final String investigationId,
             final String sourcePanel) {
-        Long invId;
-        try {
-            invId = Long.valueOf(investigationId);
-        } catch (NumberFormatException ne) {
-            showErrorDialog("Error retrieving data from server for investigation " + investigationId);
-            return;
-        }
-
-        utilityService.getInvestigationDetails(facilityName, invId, new AsyncCallback<TInvestigation>() {
+        utilityService.getInvestigationDetails(facilityName, investigationId, new AsyncCallback<TInvestigation>() {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught instanceof SessionException) {
@@ -804,8 +796,8 @@ public class EventPipeLine implements LoginInterface {
      * @param dataName
      *            data set or file name
      */
-    public void showParameterWindowWithHistory(String facilityName, String dataType, String dataId, String datafileName) {
-        showParameterWindow(facilityName, dataType, datafileId, dataName);
+    public void showParameterWindowWithHistory(String facilityName, String dataType, String dataId, String dataName) {
+        showParameterWindow(facilityName, dataType, dataId, dataName);
         historyManager.updateHistory();
     }
 

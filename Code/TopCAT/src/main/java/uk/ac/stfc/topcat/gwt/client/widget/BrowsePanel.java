@@ -39,6 +39,7 @@ import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 
@@ -144,6 +145,11 @@ public class BrowsePanel extends Composite {
 
                             @Override
                             public void onFailure(Throwable caught) {
+                                if (caught instanceof SessionException) {
+                                    // session has probably expired, check all
+                                    // sessions to be safe
+                                    EventPipeLine.getInstance().checkStillLoggedIn();
+                                }
                                 callback.onFailure(caught);
                             }
 

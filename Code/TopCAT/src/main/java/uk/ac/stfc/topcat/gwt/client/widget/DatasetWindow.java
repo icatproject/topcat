@@ -38,6 +38,7 @@ import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
@@ -520,10 +521,16 @@ public class DatasetWindow extends Window {
                     @Override
                     public void onFailure(Throwable caught) {
                         EventPipeLine.getInstance().hideRetrievingData();
-                        EventPipeLine.getInstance().showErrorDialog("Error retrieving dataset");
                         hide();
                         reset();
                         loadingData = false;
+                        if (caught instanceof SessionException) {
+                            // session has probably expired, check all sessions
+                            // to be safe
+                            EventPipeLine.getInstance().checkStillLoggedIn();
+                        } else {
+                            EventPipeLine.getInstance().showErrorDialog("Error retrieving dataset");
+                        }
                     }
                 });
     }

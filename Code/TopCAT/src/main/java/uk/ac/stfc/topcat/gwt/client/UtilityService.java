@@ -107,8 +107,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      *            a <code>ICATNode</code> containing the parent information
      * @return a list of child <code>ICATNode</code>
+     * @throws SessionException
      */
-    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node);
+    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) throws SessionException;
 
     /**
      * Get a list of all children for the given ICAT node.
@@ -116,8 +117,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      *            a <code>ICATNode</code> containing the parent information
      * @return a list of child <code>ICATNode</code>
+     * @throws SessionException
      */
-    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node);
+    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) throws SessionException;
 
     /**
      * TODO
@@ -125,8 +127,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      * @return a map with the key as a string containing TODO and the value as a
      *         list of <code>ICATNode</code>
+     * @throws SessionException
      */
-    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node);
+    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node) throws SessionException;
 
     /**
      * TODO
@@ -134,8 +137,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      * @return a map with the key as a string containing TODO and the value as a
      *         list of <code>ICATNode</code>
+     * @throws SessionException
      */
-    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node);
+    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws SessionException;
 
     /**
      * Get a list of parameter models which have parameter names and
@@ -159,8 +163,10 @@ public interface UtilityService extends RemoteService {
      *            a string containing the investigation id
      * @return a list of <code>DatasetModel</code> containing data set
      *         information
+     * @throws SessionException
      */
-    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId);
+    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId)
+            throws SessionException;
 
     /**
      * Get a list of parameter models which have parameter names and
@@ -233,7 +239,7 @@ public interface UtilityService extends RemoteService {
      * @return a <code>TInvestigation</code> containing additional data
      * @throws SessionException
      */
-    public TInvestigation getInvestigationDetails(String facilityName, long investigationId) throws SessionException;
+    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws SessionException;
 
     /**
      * This method returns the server logo URL
