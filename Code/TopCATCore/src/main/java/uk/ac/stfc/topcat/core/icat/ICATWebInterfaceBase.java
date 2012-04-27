@@ -63,7 +63,7 @@ public class ICATWebInterfaceBase {
         return new ArrayList<TInvestigation>();
     }
 
-    public TInvestigation getInvestigationDetails(String sessionId, long investigationId)
+    public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
             throws AuthenticationException {
         return new TInvestigation();
     }

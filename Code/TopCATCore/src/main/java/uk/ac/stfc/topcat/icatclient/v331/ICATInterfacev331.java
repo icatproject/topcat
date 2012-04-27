@@ -120,7 +120,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
-    public TInvestigation getInvestigationDetails(String sessionId, long investigationId)
+    public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
             throws AuthenticationException {
         TInvestigation ti = new TInvestigation();
         try {
