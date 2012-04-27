@@ -99,7 +99,7 @@ public class ParameterWindow extends Window {
         btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                EventPipeLine.getInstance().downloadParametersData(facilityName, dataId);
+                EventPipeLine.getInstance().downloadParametersData(facilityName, dataType, dataId);
             }
         });
         toolBar.add(btnExport);
@@ -132,26 +132,14 @@ public class ParameterWindow extends Window {
     }
 
     /**
-     * @return the facility name to which the parameter window is displaying
-     */
-    public String getFacilityName() {
-        return facilityName;
-    }
-
-    /**
-     * @return the datafile id of the parameters that parameter window is
-     *         displaying
-     */
-    public String getDatafileId() {
-        return dataId;
-    }
-
-    /**
-     * This method sets the datafile name.
+     * This method sets the data set / file name.
      * 
+     * @param dataType
+     *            data set or data file
      * @param dataName
+     *            Data set or file name
      */
-    public void setDatafileName(String dataType, String dataName) {
+    public void setDataName(String dataType, String dataName) {
         this.dataType = dataType;
         this.dataName = dataName;
         if (dataType.equals(Constants.DATA_SET)) {

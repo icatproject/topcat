@@ -26,6 +26,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
@@ -147,11 +148,20 @@ public class InvestigationSubPanel extends Composite {
         });
         buttonPanel.add(btnShowDataSets);
 
+        Button btnExport = new Button("Download Investigation");
+        btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                EventPipeLine.getInstance().downloadParametersData(investigationModel.getFacilityName(),
+                        Constants.INVESTIGATION, investigationModel.getInvestigationId());
+            }
+        });
+        buttonPanel.add(btnExport);
+
         // Additional buttons
         // "Download Data Sets"
-        // "Download Investigation Metadata"
         // "Edit Permissions"
-        
+
         topContainer.add(buttonPanel, td_buttonPanel);
         buttonPanel.setHeight("50px");
 
@@ -408,25 +418,22 @@ public class InvestigationSubPanel extends Composite {
         FieldBinding fieldBinding = new FieldBinding(dataFacility, "serverName");
         fieldBinding.bind(investigationModel);
         //
-        FieldBinding fieldBinding_1 = new FieldBinding(dataTitle, "investigationName");
+        FieldBinding fieldBinding_1 = new FieldBinding(dataVisitId, "visitId");
         fieldBinding_1.bind(investigationModel);
         //
-        FieldBinding fieldBinding_2 = new FieldBinding(dataVisitId, "visitId");
+        FieldBinding fieldBinding_2 = new FieldBinding(dataProposal, "proposal");
         fieldBinding_2.bind(investigationModel);
         //
-        FieldBinding fieldBinding_3 = new FieldBinding(dataProposal, "proposal");
+        FieldBinding fieldBinding_3 = new FieldBinding(dataTitle, "title");
         fieldBinding_3.bind(investigationModel);
         //
-        FieldBinding fieldBinding_4 = new FieldBinding(dataTitle, "title");
+        FieldBinding fieldBinding_4 = new FieldBinding(dataInvestigationNumber, "investigationName");
         fieldBinding_4.bind(investigationModel);
         //
-        FieldBinding fieldBinding_5 = new FieldBinding(dataInvestigationNumber, "investigationName");
+        FieldBinding fieldBinding_5 = new FieldBinding(dataStartDate, "formatedStartDate");
         fieldBinding_5.bind(investigationModel);
         //
-        FieldBinding fieldBinding_6 = new FieldBinding(dataStartDate, "formatedStartDate");
+        FieldBinding fieldBinding_6 = new FieldBinding(dataEndDate, "formatedEndDate");
         fieldBinding_6.bind(investigationModel);
-        //
-        FieldBinding fieldBinding_7 = new FieldBinding(dataEndDate, "formatedEndDate");
-        fieldBinding_7.bind(investigationModel);
     }
 }

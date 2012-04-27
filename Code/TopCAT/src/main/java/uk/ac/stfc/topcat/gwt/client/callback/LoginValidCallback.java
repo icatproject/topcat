@@ -38,8 +38,8 @@ public class LoginValidCallback implements AsyncCallback<Boolean> {
                 EventPipeLine.getEventBus().fireEventFromSource(new LoginEvent(facilityName, STATUS_CHECK),
                         facilityName);
             } else {
-                EventPipeLine.getEventBus()
-                        .fireEventFromSource(new LoginCheckCompleteEvent(facilityName), facilityName);
+                EventPipeLine.getEventBus().fireEventFromSource(new LoginCheckCompleteEvent(facilityName, true),
+                        facilityName);
             }
         } else {
             EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName, STATUS_CHECK), facilityName);

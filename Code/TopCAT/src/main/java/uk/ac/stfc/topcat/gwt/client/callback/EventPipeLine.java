@@ -81,6 +81,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
@@ -494,7 +495,7 @@ public class EventPipeLine implements LoginInterface {
         utilityService.getInvestigationDetails(facilityName, invId, new AsyncCallback<TInvestigation>() {
             @Override
             public void onFailure(Throwable caught) {
-                if (caught.getCause() instanceof SessionException) {
+                if (caught instanceof SessionException) {
                     // session has probably expired, check all sessions to be
                     // safe
                     checkStillLoggedIn();
@@ -765,7 +766,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * This method will show the parameter window for the given facility name
-     * and datafile id.
+     * and data set / file id.
      * 
      * @param facilityName
      *            facility name
@@ -781,7 +782,7 @@ public class EventPipeLine implements LoginInterface {
             ParameterWindow paramWindow = tcWindowManager.findParameterWindow(facilityName, dataType, dataId);
             if (paramWindow == null) {
                 paramWindow = tcWindowManager.createParameterWindow();
-                paramWindow.setDatafileName(dataType, dataName);
+                paramWindow.setDataName(dataType, dataName);
                 paramWindow.setDataInfo(facilityName, dataId);
             } else {
                 paramWindow.show();
@@ -798,34 +799,45 @@ public class EventPipeLine implements LoginInterface {
      * 
      * @param facilityName
      *            facility name
-     * @param datafileId
-     *            datafile id
-     * @param datafileName
-     *            datafile name
+     * @param dataId
+     *            data set or file id
+     * @param dataName
+     *            data set or file name
      */
-    public void showParameterWindowWithHistory(String facilityName, String dataType, String datafileId,
-            String datafileName) {
-        showParameterWindow(facilityName, dataType, datafileId, datafileName);
+    public void showParameterWindowWithHistory(String facilityName, String dataType, String dataId, String datafileName) {
+        showParameterWindow(facilityName, dataType, datafileId, dataName);
         historyManager.updateHistory();
     }
 
     /**
-     * This method will take the input facility name and datafile id and
-     * downloads the parameter files in CSV format.
+     * This method will take the input facility name and invetigation / data set
+     * / file id and downloads the parameter files in CSV format.
      * 
      * @param facilityName
      *            facility name
-     * @param datafileId
-     *            datafile id
+     * @param dataType
+     *            data set or data file
+     * @param dataId
+     *            investigation or data set or file id
      */
-    public void downloadParametersData(String facilityName, String datafileId) {
-        // set the invisible form for parameter download
-        // RootPanel.get("__downloadParameterForm").add(paramDownloadForm);
-        // construct servlet request to call copydatatocsvfile servlet
-        paramDownloadForm.setFacilityName(facilityName);
-        paramDownloadForm.setDatafileId(datafileId);
-        paramDownloadForm.submit();
-        // RootPanel.get("__downloadParameterForm").remove(paramDownloadForm);
+    public void downloadParametersData(final String facilityName, final String dataType, final String dataId) {
+        // We cannot easily pass on a SessionException so do a logged in check
+        // first
+        new LoginCheckCompleteEventHandler() {
+            final HandlerRegistration reg = LoginCheckCompleteEvent.registerToSource(getEventBus(), facilityName, this);
+
+            @Override
+            public void update(final LoginCheckCompleteEvent event) {
+                if (event.getLoggedin()) {
+                    paramDownloadForm.setFacilityName(facilityName);
+                    paramDownloadForm.setDataType(dataType);
+                    paramDownloadForm.setDataId(dataId);
+                    paramDownloadForm.submit();
+                    reg.removeHandler();
+                }
+            }
+        };
+        checkStillLoggedIn();
     }
 
     /**
@@ -1102,12 +1114,11 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Setup a handler to react to logout check complete events for the
-     * facility.
+     * Setup a handler to react to login check complete events for the facility.
      */
     private void createLoginCheckCompleteHandler() {
-        // react to an update of the completion of a login check call back and
-        // subsequent processing by the LoginInfoPanel
+        // react to the completion of a login check call back and subsequent
+        // processing by the LoginInfoPanel
         LoginCheckCompleteEvent.register(EventPipeLine.getEventBus(), new LoginCheckCompleteEventHandler() {
             @Override
             public void update(final LoginCheckCompleteEvent event) {

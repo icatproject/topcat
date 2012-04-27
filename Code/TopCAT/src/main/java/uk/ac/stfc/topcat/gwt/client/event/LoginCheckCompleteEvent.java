@@ -42,13 +42,19 @@ public class LoginCheckCompleteEvent extends GwtEvent<LoginCheckCompleteEventHan
     }
 
     private final String facilityName;
+    private final boolean loggedin;
 
-    public LoginCheckCompleteEvent(final String facilityName) {
+    public LoginCheckCompleteEvent(final String facilityName, boolean loggedin) {
         this.facilityName = facilityName;
+        this.loggedin = loggedin;
     }
 
     public String getFacilityName() {
         return this.facilityName;
+    }
+
+    public boolean getLoggedin() {
+        return loggedin;
     }
 
     @Override

@@ -106,7 +106,7 @@ public class LoginInfoPanel extends Composite {
                 btnLogin.setText("Logout");
                 if (event.isStatusCheck()) {
                     EventPipeLine.getEventBus().fireEventFromSource(
-                            new LoginCheckCompleteEvent(event.getFacilityName()), event.getFacilityName());
+                            new LoginCheckCompleteEvent(event.getFacilityName(), true), event.getFacilityName());
                 }
             }
         });
@@ -118,7 +118,7 @@ public class LoginInfoPanel extends Composite {
                 btnLogin.setText("Login");
                 if (event.isStatusCheck()) {
                     EventPipeLine.getEventBus().fireEventFromSource(
-                            new LoginCheckCompleteEvent(event.getFacilityName()), event.getFacilityName());
+                            new LoginCheckCompleteEvent(event.getFacilityName(), false), event.getFacilityName());
                 }
             }
         });
