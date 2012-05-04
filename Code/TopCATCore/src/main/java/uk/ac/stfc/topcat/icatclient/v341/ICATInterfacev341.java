@@ -54,13 +54,10 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
     }
 
     public String loginWithTicket(String authenticationServiceUrl, String ticket) throws AuthenticationException {
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"); // TODO
-        System.out.println("loginWithTicketId id:" + ticket); // TODO
         String result = new String();
         try {
             result = service.loginWithCredentials(ticket);
         } catch (javax.xml.ws.WebServiceException e) {
-            System.out.println("loginWithTicketId ERROR WebServiceException" + e.getMessage()); // TODO
             throw new AuthenticationException("ICAT Server not available");
         } catch (SessionException_Exception e) {
             throw new AuthenticationException("ICAT Server not available");
@@ -100,7 +97,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
 
     public String getUserNameFromSessionId(String sessionId) {
         try {
-            String surname = service.getUserDetailsFromSessionId(sessionId).getLastName();
+            String surname = service.getUserDetailsFromSessionId(sessionId).getFederalId();
             if (surname == null) {
                 return "";
             }
