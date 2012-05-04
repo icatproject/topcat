@@ -103,14 +103,17 @@ public class TopcatInvestigation extends BaseModel {
      *            Investigation start date
      * @param endDate
      *            Investigation end date
+     * @param instrument
+     *            Instrument name
      * @param proposal
      *            Investigation proposal
      */
     public TopcatInvestigation(String serverName, String investigationId, String investigationName, String title,
-            String visitId, Date startDate, Date endDate, String proposal) {
+            String visitId, Date startDate, Date endDate, String instrument, String proposal) {
         set("serverName", serverName);
         set("investigationName", investigationName);
         set("investigationId", investigationId);
+        set("instrument", instrument);
         set("title", title);
         set("visitId", visitId);
         set("startDate", startDate);

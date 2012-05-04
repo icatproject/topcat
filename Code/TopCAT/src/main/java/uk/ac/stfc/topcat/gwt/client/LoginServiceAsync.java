@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -70,4 +70,19 @@ public interface LoginServiceAsync {
      *            object to be called on completion
      */
     public void isUserLoggedIn(String facilityName, AsyncCallback<Boolean> callback);
+
+    /**
+     * Use the CAS ticket to log in to a iCat server.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param authenticationServiceUrl
+     *            a string containing the authentication service url
+     * @param ticket
+     *            a string containing the authentication ticket
+     * @param callback
+     *            object to be called on completion
+     */
+    public void loginWithTicket(String facilityName, String authenticationServiceUrl, String ticket,
+            AsyncCallback<String> callback);
 }

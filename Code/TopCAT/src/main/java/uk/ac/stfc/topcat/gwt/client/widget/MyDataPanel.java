@@ -164,12 +164,22 @@ public class MyDataPanel extends Composite {
         grid.setAutoExpandColumn("title");
         grid.setAutoExpandMin(200);
         grid.setMinColumnWidth(100);
-        grid.setToolTip("\"Double Click\" row to show invetigation, right click for more options");
-        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
+        grid.setToolTip("\"Click\" row to show investigation, \"Double Click\" to show datasets, right click for more options");
+        // single click
+        grid.addListener(Events.RowClick, new Listener<GridEvent<TopcatInvestigation>>() {
             @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
                 eventBus.getInvestigationDetails(e.getModel().getFacilityName(), e.getModel().getInvestigationId(),
                         SOURCE);
+            }
+        });
+        // double click
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
+            @Override
+            public void handleEvent(GridEvent<TopcatInvestigation> e) {
+                TopcatInvestigation inv = e.getModel();
+                eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
+                        inv.getInvestigationTitle());
             }
         });
 

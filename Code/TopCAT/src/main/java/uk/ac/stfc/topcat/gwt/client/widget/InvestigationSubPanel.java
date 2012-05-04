@@ -62,8 +62,10 @@ public class InvestigationSubPanel extends Composite {
     private LayoutContainer contentlPanelBody;
     private LabelField dataTitle;
     private LabelField dataFacility;
+    private LabelField dataInstrument;
     private LabelField dataInvestigationNumber;
     private LabelField lableFacility;
+    private LabelField lableInstrument;
     private LabelField lableTitle;
     private LabelField lableInvestigationNumber;
     private LabelField lableVisitId;
@@ -148,7 +150,8 @@ public class InvestigationSubPanel extends Composite {
         });
         buttonPanel.add(btnShowDataSets);
 
-        Button btnExport = new Button("Download Investigation");
+        Button btnExport = new Button("Download Investigation Summary");
+        btnExport.setToolTip("Click to download the data shown in this window");
         btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -159,7 +162,7 @@ public class InvestigationSubPanel extends Composite {
         buttonPanel.add(btnExport);
 
         // Additional buttons
-        // "Download Data Sets"
+        // "Download Investigation Data"
         // "Edit Permissions"
 
         topContainer.add(buttonPanel, td_buttonPanel);
@@ -170,6 +173,12 @@ public class InvestigationSubPanel extends Composite {
 
         dataFacility = new LabelField("Facility");
         topContainer.add(dataFacility);
+
+        lableInstrument = new LabelField("Instrument: ");
+        topContainer.add(lableInstrument);
+
+        dataInstrument = new LabelField("Instrument");
+        topContainer.add(dataInstrument);
 
         lableTitle = new LabelField("Title: ");
         topContainer.add(lableTitle);
@@ -326,7 +335,7 @@ public class InvestigationSubPanel extends Composite {
         contentPanel.expand();
         investigationModel = new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(),
                 inv.getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv.getEndDate(),
-                inv.getProposal());
+                inv.getInstrument(), inv.getProposal());
 
         // Shifts
         if (inv.getShifts().size() > 0) {
@@ -435,5 +444,8 @@ public class InvestigationSubPanel extends Composite {
         //
         FieldBinding fieldBinding_6 = new FieldBinding(dataEndDate, "formatedEndDate");
         fieldBinding_6.bind(investigationModel);
+        //
+        FieldBinding fieldBinding_7 = new FieldBinding(dataInstrument, "instrument");
+        fieldBinding_7.bind(investigationModel);
     }
 }

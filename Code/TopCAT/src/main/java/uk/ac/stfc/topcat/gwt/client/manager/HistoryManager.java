@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -46,6 +46,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     public static final String seperatorModel = "///";
     public static final String seperatorToken = "&";
     public static final String seperatorKeyValues = "=";
+    public static final String logonError = "logonError";
 
     public HistoryManager() {
         // Add history handler
@@ -124,9 +125,10 @@ public class HistoryManager implements ValueChangeHandler<String> {
         String[] historyTokenList = history.split(HistoryManager.seperatorModel);
         // tab string
         String tabString = HistoryManager.seperatorToken + "tab";
+        String logonErrorString = HistoryManager.seperatorToken + logonError;
         // split the models
         for (String hToken : historyTokenList) {
-            if (hToken.startsWith(tabString)) {
+            if (hToken.startsWith(tabString) || hToken.startsWith(logonErrorString)) {
                 // split the hToken to model params
                 String[] paramList = hToken.split(HistoryManager.seperatorToken);
                 for (String param : paramList) {
@@ -139,6 +141,15 @@ public class HistoryManager implements ValueChangeHandler<String> {
                                 EventPipeLine.getInstance().getMainWindow().getMainPanel()
                                         .selectPanelWithoutHistory(value);
                             }
+                        } else if (key.compareToIgnoreCase(logonError) == 0) {
+                            // remove error message
+                            String[] newHistory = history.split(seperatorModel + seperatorToken + logonError);
+                            History.newItem(newHistory[0]);
+                            // prompt for logon and display error
+                            EventPipeLine.getInstance().showLoginWidget(value);
+                            EventPipeLine.getInstance().showErrorDialog(
+                                    "ERROR logging on to " + value
+                                            + " with credentials from external authorisation service");
                         }
                     } catch (IndexOutOfBoundsException ex) {
                     }

@@ -66,12 +66,8 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>10.2.0</version>
-			<scope>runtime</scope>
-		</dependency>
+		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc14</artifactId> 
+			<version>10.2.0</version> <scope>runtime</scope> </dependency> -->
 	</dependencies>
 
 	<build>
@@ -110,8 +106,8 @@
 				</executions>
 				<configuration>
 					<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-					<style>OBFUSCATED</style>
-					<!-- <style>PRETTY</style> -->
+					<!-- <style>OBFUSCATED</style> -->
+					<style>PRETTY</style>
 				</configuration>
 			</plugin>
 

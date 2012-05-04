@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -45,84 +45,83 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * AJAX client
  * 
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
-public class LoginServiceImpl extends RemoteServiceServlet implements
-		LoginService {
-	private UserManagementBeanLocal userManager = null;
+public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
+    private UserManagementBeanLocal userManager = null;
 
-	/**
-	 * This method initializes the servlet, creates a usermanagementbean. this
-	 * will be used by the servlet to perform usermanagement operations.
-	 */
-	public void init(ServletConfig conf) throws ServletException {
-		super.init(conf);
+    /**
+     * This method initializes the servlet, creates a usermanagementbean. this
+     * will be used by the servlet to perform usermanagement operations.
+     */
+    public void init(ServletConfig conf) throws ServletException {
+        super.init(conf);
 
-		try {
-			// create initial context
-			Context ctx = new InitialContext();
-			userManager = (UserManagementBeanLocal) ctx
-					.lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-		} catch (NamingException ex) {
-			ex.printStackTrace();
-		}
-	}
+        try {
+            // create initial context
+            Context ctx = new InitialContext();
+            userManager = (UserManagementBeanLocal) ctx
+                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	/*
-	 * This method performs login operation using username and password for a
-	 * ICAT server. TODO: Remove hardcoded number of hours the session is valid.
-	 * (non-Javadoc)
-	 * 
-	 * @param username username for logging into iCAT
-	 * @param password password for logging into iCAT
-	 * @param facilityName name of iCAT instance
-	 * @see uk.ac.stfc.topcat.gwt.client.LoginService#login(java.lang.String,
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public String login(String username, String password, String facilityName)
-			throws LoginException {
-		HttpServletRequest request = this.getThreadLocalRequest();
-		HttpSession session = request.getSession();
-		String sessionId = getSessionId();
-		// TODO: Remove hard coded hours
+    /*
+     * This method performs login operation using username and password for a
+     * ICAT server. TODO: Remove hardcoded number of hours the session is valid.
+     * (non-Javadoc)
+     * 
+     * @param username username for logging into iCAT
+     * 
+     * @param password password for logging into iCAT
+     * 
+     * @param facilityName name of iCAT instance
+     * 
+     * @see uk.ac.stfc.topcat.gwt.client.LoginService#login(java.lang.String,
+     * java.lang.String, java.lang.String)
+     */
+    @Override
+    public String login(String username, String password, String facilityName) throws LoginException {
+        String sessionId = getSessionId();
+        // TODO: Remove hard coded hours
+        long sessionDuration = 2;
+        try {
+            userManager.login(sessionId, facilityName, username, password, sessionDuration);
+        } catch (AuthenticationException e) {
+            throw (new LoginException(e.getMessage()));
+        }
 
-		try {
-			userManager.login(sessionId, facilityName, username, password, 2);
-		} catch (AuthenticationException e) {
-			// TODO Auto-generated catch block
-			throw (new LoginException(e.getMessage()));
-		}
+        return sessionId;
+    }
 
-		return sessionId;
-	}
-
-	/*
-	 * This method performs logout operation from an iCAT server. 
-	 * (non-Javadoc)
-	 * @param facilityName name of iCAT instance 
-	 * @see uk.ac.stfc.topcat.gwt.client.LoginService#logout(java.lang.String)
-	 */
-	@Override
-	public void logout(String facilityName) throws LoginException {
-		HttpServletRequest request = this.getThreadLocalRequest();
-		HttpSession session = request.getSession();
-		String sessionId = null;
-		if (session.getAttribute("SESSION_ID") == null) { // First time login
-			throw new LoginException("Session not valid");
-		} else {
-			sessionId = (String) session.getAttribute("SESSION_ID");
-		}
-		try {
-			userManager.logout(sessionId, facilityName);
-		} catch (AuthenticationException e) {
-			// TODO Auto-generated catch block
-			throw new LoginException(e.getMessage());
-		}
-	}
+    /*
+     * This method performs logout operation from an iCAT server. (non-Javadoc)
+     * 
+     * @param facilityName name of iCAT instance
+     * 
+     * @see uk.ac.stfc.topcat.gwt.client.LoginService#logout(java.lang.String)
+     */
+    @Override
+    public void logout(String facilityName) throws LoginException {
+        HttpServletRequest request = this.getThreadLocalRequest();
+        HttpSession session = request.getSession();
+        String sessionId = null;
+        if (session.getAttribute("SESSION_ID") == null) { // First time login
+            throw new LoginException("Session not valid");
+        } else {
+            sessionId = (String) session.getAttribute("SESSION_ID");
+        }
+        try {
+            userManager.logout(sessionId, facilityName);
+        } catch (AuthenticationException e) {
+            throw new LoginException(e.getMessage());
+        }
+    }
 
     @Override
     public Boolean isUserLoggedIn(String facilityName) {
@@ -130,28 +129,43 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
         return userManager.isSessionValid(topcatSessionId, facilityName);
     }
 
-	/**
-	 * This method returns the session id from the Servlet SESSION variable
-	 * ***WARNING: only works if the user browser cookies are enable ***
-	 * @return
-	 */
-	private String getSessionId() {
-		HttpServletRequest request = this.getThreadLocalRequest();
-		HttpSession session = request.getSession();
-		String sessionId=null;
-		if(session.getAttribute("SESSION_ID") == null) { //First time login
-			try {
-				sessionId=userManager.login();
-				session.setAttribute("SESSION_ID",sessionId );
-			} catch (AuthenticationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			sessionId = (String) session.getAttribute("SESSION_ID");
-		}
-		return sessionId;
-	}
-	
+    @Override
+    public String loginWithTicket(String facilityName, String authenticationServiceUrl, String ticket)
+            throws LoginException {
+        String topcatSessionId = getSessionId();
+        try {
+            // TODO Remove hard coded hours
+            long sessionDuration = 2;
+            userManager
+                    .loginWithTicket(topcatSessionId, facilityName, authenticationServiceUrl, ticket, sessionDuration);
+        } catch (AuthenticationException e) {
+            throw (new LoginException(e.getMessage()));
+        }
+        return topcatSessionId;
+    }
+
+    /**
+     * This method returns the session id from the Servlet SESSION variable
+     * ***WARNING: only works if the user browser cookies are enable ***
+     * 
+     * @return
+     */
+    private String getSessionId() {
+        HttpServletRequest request = this.getThreadLocalRequest();
+        HttpSession session = request.getSession();
+        String sessionId = null;
+        if (session.getAttribute("SESSION_ID") == null) { // First time login
+            try {
+                sessionId = userManager.login();
+                session.setAttribute("SESSION_ID", sessionId);
+            } catch (AuthenticationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            sessionId = (String) session.getAttribute("SESSION_ID");
+        }
+        return sessionId;
+    }
 
 }

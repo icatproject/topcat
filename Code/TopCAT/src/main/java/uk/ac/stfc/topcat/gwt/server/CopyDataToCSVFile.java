@@ -74,7 +74,7 @@ public class CopyDataToCSVFile extends HttpServlet {
         try {
             // create initial context
             Context ctx = new InitialContext();
-            // Use utitlity session bean manager for getting parameter
+            // Use utility session bean manager for getting parameter
             // information
             utilityManager = (UtilityLocal) ctx
                     .lookup("java:global/TopCAT/UtilityBean!uk.ac.stfc.topcat.ejb.session.UtilityLocal");
@@ -84,7 +84,7 @@ public class CopyDataToCSVFile extends HttpServlet {
     }
 
     /**
-     * Servlet post method ovveride function which does the extraction of
+     * Servlet post method override function which does the extraction of
      * parameters information of datafile using the facility name and datafile
      * id from the post request parameters.
      * 
@@ -171,7 +171,11 @@ public class CopyDataToCSVFile extends HttpServlet {
                 result.add(new ParameterModel("Proposal", "", "\"" + inv.getProposal() + "\""));
             }
             for (TPublication pub : inv.getPublications()) {
-                result.add(new ParameterModel("\"" + pub.getFullReference() + "\"", "", "\"" + pub.getUrl() + "\""));
+                if (pub.getUrl() == null) {
+                    result.add(new ParameterModel("\"" + pub.getFullReference() + "\"", "", ""));
+                } else {
+                    result.add(new ParameterModel("\"" + pub.getFullReference() + "\"", "", "\"" + pub.getUrl() + "\""));
+                }
             }
             if (!(inv.getParamName() == null) && !(inv.getParamName().isEmpty())) {
                 result.add(new ParameterModel("\"" + inv.getParamName() + "\"", "", "\"" + inv.getParamValue() + "\""));

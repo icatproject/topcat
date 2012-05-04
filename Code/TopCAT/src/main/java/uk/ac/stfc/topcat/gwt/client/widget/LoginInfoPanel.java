@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -43,6 +43,8 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
@@ -91,8 +93,14 @@ public class LoginInfoPanel extends Composite {
             public void componentSelected(ButtonEvent ce) {
                 if (validLogin)
                     eventPipeLine.facilityLogout(facility.getName());
-                else
+                else if (facility.getAuthenticationServiceUrl() != null) {
+                    UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+                    urlBuilder.setParameter("facilityName", facility.getName());
+                    String url = eventPipeLine.encodeUrlDelimiters(urlBuilder.buildString());
+                    Window.Location.assign(facility.getAuthenticationServiceUrl() + url);
+                } else {
                     eventPipeLine.showLoginWidget(facility.getName());
+                }
             }
         });
 
@@ -129,4 +137,5 @@ public class LoginInfoPanel extends Composite {
     public boolean isValidLogin() {
         return validLogin;
     }
+
 }

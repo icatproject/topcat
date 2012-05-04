@@ -238,6 +238,20 @@ public class BrowsePanel extends Composite {
             }
         });
 
+        // On click show investigation details
+        tree.addListener(Events.OnClick, new Listener<TreePanelEvent<ICATNode>>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                TreePanel<ICATNode>.TreeNode node = be.getNode();
+                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
+                    ICATNode icatnode = node.getModel();
+                    EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
+                            icatnode.getInvestigationId(), SOURCE);
+                }
+            }
+        });
+
         // Context Menu
         tree.setContextMenu(new Menu());
         tree.addListener(Events.ContextMenu, new Listener<TreePanelEvent<ICATNode>>() {
