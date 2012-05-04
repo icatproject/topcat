@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -77,6 +77,10 @@ public class TopcatIcatServer implements Serializable {
     private String downloadPluginName;
     @Column(name = "PLUGIN_NAME")
     private String pluginName;
+    @Column(name = "AUTHENTICATION_SERVICE_URL")
+    private String authenticationServiceUrl;
+    @Column(name = "AUTHENTICATION_SERVICE_TYPE")
+    private String authenticationServiceType;
     @Column(name = "VERSION")
     private String version;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "serverId")
@@ -148,6 +152,22 @@ public class TopcatIcatServer implements Serializable {
 
     public void setPluginName(String pluginName) {
         this.pluginName = pluginName;
+    }
+
+    public String getAuthenticationServiceUrl() {
+        return authenticationServiceUrl;
+    }
+
+    public void setAuthenticationServiceUrl(String authenticationServiceUrl) {
+        this.authenticationServiceUrl = authenticationServiceUrl;
+    }
+
+    public String getAuthenticationServiceType() {
+        return authenticationServiceType;
+    }
+
+    public void setAuthenticationServiceType(String authenticationServiceType) {
+        this.authenticationServiceType = authenticationServiceType;
     }
 
     public List<TopcatUser> getTopcatUserList() {

@@ -79,7 +79,8 @@ public class UtilityManager {
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
         for (TopcatIcatServer icatServer : servers) {
             facilityNames.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(),
-                    icatServer.getPluginName(), icatServer.getDownloadPluginName()));
+                    icatServer.getPluginName(), icatServer.getDownloadPluginName(), icatServer
+                            .getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
         }
         return facilityNames;
     }
@@ -648,9 +649,9 @@ public class UtilityManager {
             String investigationNumber) throws AuthenticationException {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
-            .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-            .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
-            .getSingleResult();
+                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
+                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .getSingleResult();
             return getDatasetsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationNumber);
         } catch (javax.persistence.NoResultException ex) {

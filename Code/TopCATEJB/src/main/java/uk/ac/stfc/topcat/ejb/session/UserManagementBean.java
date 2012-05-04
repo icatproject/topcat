@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -30,10 +30,12 @@ import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.ejb.manager.UserManager;
 
 /**
- * Session Bean implementation class UserManagementBean which includes user login, logout etc.
+ * Session Bean implementation class UserManagementBean which includes user
+ * login, logout etc.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @Stateless
@@ -44,7 +46,7 @@ public class UserManagementBean implements UserManagementBeanLocal {
     private UserManager userManager;
 
     /**
-     * Default constructor. 
+     * Default constructor.
      */
     public UserManagementBean() {
         userManager = new UserManager();
@@ -61,7 +63,7 @@ public class UserManagementBean implements UserManagementBeanLocal {
      * @param sessionId : Session id used for communicating with TopCAT
      */
     public void logout(String sessionId) throws AuthenticationException {
-        userManager.logout(manager,sessionId);
+        userManager.logout(manager, sessionId);
     }
 
     @Override
@@ -70,10 +72,9 @@ public class UserManagementBean implements UserManagementBeanLocal {
      * @param sessionId : Session id used for communicating with TopCAT
      * @param serverName : iCAT Server name
      */
-    public void logout(String sessionId,String serverName) throws AuthenticationException {
-        userManager.logout(manager,sessionId,serverName);
+    public void logout(String sessionId, String serverName) throws AuthenticationException {
+        userManager.logout(manager, sessionId, serverName);
     }
-
 
     @Override
     /**
@@ -95,25 +96,38 @@ public class UserManagementBean implements UserManagementBeanLocal {
      * @param password: password for ICAT server.
      * @param hours: number of hours the authentication to be valid.
      */
-    public void login(String sessionId, String serverName, String username,
-            String password, long hours) throws AuthenticationException {
-            userManager.login(manager,sessionId, serverName, username, password, hours);
+    public void login(String sessionId, String serverName, String username, String password, long hours)
+            throws AuthenticationException {
+        userManager.login(manager, sessionId, serverName, username, password, hours);
     }
 
     /**
-     * This method checks whether the login session is valid 
-     * @param sessionId sessionId used to communicate with TopCAT
-     * @param serverName ICAT Server name to check with
+     * This method login to server with CAS server
      */
-    public Boolean isSessionValid(String sessionId, String serverName){
-            return userManager.isSessionValid(manager, sessionId, serverName);
+    @Override
+    public void loginWithTicket(String sessionId, String serverName, String authenticationServiceUrl, String ticket,
+            long hours) throws AuthenticationException {
+        userManager.loginWithTicket(manager, sessionId, serverName, authenticationServiceUrl, ticket, hours);
     }
+
     /**
-     * This method is a timer service to automatically update the anonymous login
-     * to icat servers.
+     * This method checks whether the login session is valid
+     * 
+     * @param sessionId
+     *            sessionId used to communicate with TopCAT
+     * @param serverName
+     *            ICAT Server name to check with
      */
-    @Schedule(hour="*/6")
-    public void anonymousLogin(){
+    public Boolean isSessionValid(String sessionId, String serverName) {
+        return userManager.isSessionValid(manager, sessionId, serverName);
+    }
+
+    /**
+     * This method is a timer service to automatically update the anonymous
+     * login to icat servers.
+     */
+    @Schedule(hour = "*/6")
+    public void anonymousLogin() {
         userManager.anonymousUserLogin(manager);
     }
 }
