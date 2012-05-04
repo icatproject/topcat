@@ -43,6 +43,21 @@
 						</goals>
 						<configuration>
 							<wsdlFiles>
+								<wsdlFile>ICAT401/ICATService/ICAT.wsdl</wsdlFile>
+							</wsdlFiles>
+							<staleFile>${project.build.directory}/jaxws/stale/ICAT_401.stale</staleFile>
+							<packageName>uk.ac.stfc.topcat.icatclient.v401</packageName>
+						</configuration>
+						<id>wsimport-generate-ICAT_401</id>
+						<phase>generate-sources</phase>
+					</execution>
+					
+					<execution>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+						<configuration>
+							<wsdlFiles>
 								<wsdlFile>ICAT400/ICATService/ICAT.wsdl</wsdlFile>
 							</wsdlFiles>
 							<staleFile>${project.build.directory}/jaxws/stale/ICAT_400.stale</staleFile>
@@ -51,7 +66,7 @@
 						<id>wsimport-generate-ICAT_400</id>
 						<phase>generate-sources</phase>
 					</execution>
-
+					
 					<execution>
 						<goals>
 							<goal>wsimport</goal>

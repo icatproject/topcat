@@ -120,10 +120,9 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
             // TODO use start and end
-            List<Object> resultInv = service.search(sessionId, "0, 200 Investigation");
-            // List<Investigation> resultInv =
-            // service.getMyInvestigationsIncludesPagination(sessionId,
-            // InvestigationInclude.NONE, 0, 200);
+            // List<Object> resultInv = service.search(sessionId,
+            // "0, 200 Investigation");
+            List<Object> resultInv = service.search(sessionId, "Investigation");
             for (Object inv : resultInv) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
@@ -144,11 +143,10 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                     .get(sessionId,
                             "Investigation INCLUDE Publication, InvestigationUser, Instrument, User, Shift, InvestigationParameter, ParameterType",
                             investigationId);
-            // Investigation resultInv =
-            // service.getInvestigationIncludes(sessionId, investigationId,
-            // InvestigationInclude.ALL_EXCEPT_DATASETS_AND_DATAFILES);
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
-            ti.setInstrument((String) resultInv.getInstrument().getFullName()); // TODO
+            // TODO returns null
+            // ti.setInstrument((String)
+            // resultInv.getInstrument().getFullName());
             ti.setProposal(resultInv.getSummary());
             ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
             List<Publication> pubs = resultInv.getPublications();
@@ -231,10 +229,9 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                     "Investigation INCLUDE Dataset, DatasetType, DatasetStatus", investigationId);
             List<Dataset> dList = resultInv.getDatasets();
             for (Dataset dataset : dList) {
-
                 datasetList.add(new TDataset(serverName, dataset.getId().toString(), dataset.getName(), dataset
                         .getDescription(), dataset.getType().getName(), "true"));
-                // dataset.getStatus().getName())); //TODO
+                // dataset.getStatus().getName())); //TODO status don't work
             }
         } catch (InsufficientPrivilegesException_Exception ex) {
         } catch (NoSuchObjectFoundException_Exception ex) {
@@ -249,8 +246,6 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
         try {
             Dataset ds = (Dataset) service.get(sessionId, "Dataset INCLUDE DatasetParameter, ParameterType", datasetId);
-            // service.getDatasetIncludes(sessionId, Long.valueOf(datasetId),
-            // DatasetInclude.DATASET_PARAMETERS_ONLY);
             List<DatasetParameter> dsList = ds.getDatasetParameters();
             for (DatasetParameter dsParam : dsList) {
                 System.out.println("parameter type: " + dsParam.getType());
@@ -261,15 +256,6 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                     result.add(new TDatasetParameter(dsParam.getType().getName(), dsParam.getType().getUnits(), dsParam
                             .getStringValue()));
                 } else if (dsParam.getType().getValueType() == ParameterValueType.DATE_AND_TIME) {
-                    result.add(new TDatasetParameter(dsParam.getType().getName(), dsParam.getType().getUnits(), dsParam
-                            .getDateTimeValue().toString()));
-                } else if (dsParam.getNumericValue() != null) {
-                    result.add(new TDatasetParameter(dsParam.getType().getName(), dsParam.getType().getUnits(), dsParam
-                            .getNumericValue().toString()));
-                } else if (dsParam.getStringValue() != null) {
-                    result.add(new TDatasetParameter(dsParam.getType().getName(), dsParam.getType().getUnits(), dsParam
-                            .getStringValue()));
-                } else if (dsParam.getDateTimeValue() != null) {
                     result.add(new TDatasetParameter(dsParam.getType().getName(), dsParam.getType().getUnits(), dsParam
                             .getDateTimeValue().toString()));
                 }
@@ -286,9 +272,6 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
     public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {
         ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
         try {
-            // resultInv = service.getDatasetIncludes(sessionId,
-            // Long.valueOf(datasetId),
-            // DatasetInclude.DATASET_AND_DATAFILES_ONLY);
             Dataset resultInv = (Dataset) service.get(sessionId, "Dataset INCLUDE Datafile, DatafileFormat", datasetId);
             List<Datafile> dList = resultInv.getDatafiles();
             for (Datafile datafile : dList) {
@@ -305,35 +288,28 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
 
     public ArrayList<TDatafileParameter> getParametersInDatafile(String sessionId, Long datafileId) {
         ArrayList<TDatafileParameter> result = new ArrayList<TDatafileParameter>();
-        // try {
-        // Datafile df = service.getDatafile(sessionId,
-        // Long.valueOf(datafileId));
-        // List<DatafileParameter> dfList = df.getDatafileParameterCollection();
-        // for (DatafileParameter dfParam : dfList) {
-        // if (dfParam.getValueType() == ParameterValueType.NUMERIC) {
-        // result.add(new
-        // TDatafileParameter(dfParam.getDatafileParameterPK().getName(),
-        // dfParam
-        // .getDatafileParameterPK().getUnits(),
-        // dfParam.getNumericValue().toString()));
-        // } else if (dfParam.getValueType() == ParameterValueType.STRING) {
-        // result.add(new
-        // TDatafileParameter(dfParam.getDatafileParameterPK().getName(),
-        // dfParam
-        // .getDatafileParameterPK().getUnits(), dfParam.getStringValue()));
-        // } else if (dfParam.getValueType() ==
-        // ParameterValueType.DATE_AND_TIME) {
-        // result.add(new
-        // TDatafileParameter(dfParam.getDatafileParameterPK().getName(),
-        // dfParam
-        // .getDatafileParameterPK().getUnits(),
-        // dfParam.getDateTimeValue().toString()));
-        // }
-        // }
-        // } catch (SessionException_Exception ex) {
-        // } catch (InsufficientPrivilegesException_Exception ex) {
-        // } catch (NoSuchObjectFoundException_Exception ex) {
-        // }
+        try {
+            Datafile df = (Datafile) service.get(sessionId, "Datafile INCLUDE DatasetParameter, ParameterType",
+                    datafileId);
+            List<DatafileParameter> dfList = df.getDatafileParameters();
+            for (DatafileParameter dfParam : dfList) {
+                if (dfParam.getType().getValueType() == ParameterValueType.NUMERIC) {
+                    result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
+                            dfParam.getNumericValue().toString()));
+                } else if (dfParam.getType().getValueType() == ParameterValueType.STRING) {
+                    result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
+                            dfParam.getStringValue()));
+                } else if (dfParam.getType().getValueType() == ParameterValueType.DATE_AND_TIME) {
+                    result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
+                            dfParam.getDateTimeValue().toString()));
+                }
+            }
+        } catch (SessionException_Exception ex) {
+        } catch (InsufficientPrivilegesException_Exception ex) {
+        } catch (NoSuchObjectFoundException_Exception ex) {
+        } catch (BadParameterException_Exception e) {
+        } catch (IcatInternalException_Exception e) {
+        }
         return result;
     }
 
@@ -371,9 +347,6 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
             Investigation inv = (Investigation) service
                     .get(sessionId, "Investigation INCLUDE Keyword", investigationId);
             List<Keyword> resultKeywords = inv.getKeywords();
-            // Investigation resultInvestigation. =
-            // service.getInvestigationIncludes(sessionId, investigationId,
-            // InvestigationInclude.KEYWORDS_ONLY);
             for (Keyword key : resultKeywords) {
                 keywords.add(key.getName());
             }
@@ -401,13 +374,6 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         } catch (InsufficientPrivilegesException_Exception e) {
         } catch (SessionException_Exception e) {
         }
-        // if (resultInvestigations != null) {
-        // // There are some result investigations
-        // for (Object inv : resultInvestigations) {
-        // returnTInvestigations.add(copyInvestigationToTInvestigation(serverName,
-        // (Investigation) inv));
-        // }
-        // }
         Collections.sort(returnTInvestigations);
         return returnTInvestigations;
     }
@@ -433,27 +399,19 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
     public ArrayList<String> getKeywordsForUserWithStartMax(String sessionId, String partialKey, int numberOfKeywords) {
 
         ArrayList<String> resultKeywords = new ArrayList<String>();
-        // try {
-        // resultKeywords.addAll(service.getKeywordsForUserStartWithMax(sessionId,
-        // partialKey, numberOfKeywords)); // TODO
-        // List<Object> results = service.search(sessionId, "0," +
-        // numberOfKeywords + "DISTINCT Keyword.name"); // TODO
-        //
-        // for (Object keyword : results) {
-        // resultKeywords.add((String) keyword);
-        // }
-        // } catch (BadParameterException_Exception e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (IcatInternalException_Exception e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (InsufficientPrivilegesException_Exception e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (SessionException_Exception e) {
-        // // TODO Auto-generated catch block
-        // }
+        try {
+            // resultKeywords.addAll(service.getKeywordsForUserStartWithMax(sessionId,
+            // partialKey, numberOfKeywords));
+            // TODO need to start with partialKey
+            List<Object> results = service.search(sessionId, "0," + numberOfKeywords + "DISTINCT Keyword.name");
+            for (Object keyword : results) {
+                resultKeywords.add((String) keyword);
+            }
+        } catch (BadParameterException_Exception e) {
+        } catch (IcatInternalException_Exception e) {
+        } catch (InsufficientPrivilegesException_Exception e) {
+        } catch (SessionException_Exception e) {
+        }
         return resultKeywords;
     }
 
