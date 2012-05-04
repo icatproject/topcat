@@ -127,6 +127,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
             Investigation resultInv = service.getInvestigationIncludes(sessionId, investigationId,
                     InvestigationInclude.ALL_EXCEPT_DATASETS_AND_DATAFILES);
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
+            ti.setInstrument(resultInv.getInstrument());
             ti.setProposal(resultInv.getInvAbstract());
             ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
             List<Publication> pubs = resultInv.getPublicationCollection();
@@ -140,6 +141,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
             for (Investigator investigator : investigators) {
                 investigatorList.add(copyInvestigatorToTInvestigator(investigator));
             }
+            Collections.sort(investigatorList);
             ti.setInvestigators(investigatorList);
 
             ArrayList<TShift> shiftList = new ArrayList<TShift>();

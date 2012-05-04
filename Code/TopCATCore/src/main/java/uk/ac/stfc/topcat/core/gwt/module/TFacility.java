@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -37,16 +37,20 @@ public class TFacility implements Serializable {
     private String name;
     private String pluginName;
     private String url;
+    private String authenticationServiceUrl;
+    private String authenticationServiceType;
 
     public TFacility() {
-
     }
 
-    public TFacility(String name, String url, String pluginName, String downloadPluginName) {
+    public TFacility(String name, String url, String pluginName, String downloadPluginName,
+            String authenticationServiceUrl, String authenticationServiceType) {
         this.downloadPluginName = downloadPluginName;
         this.name = name;
         this.pluginName = pluginName;
         this.url = url;
+        this.authenticationServiceUrl = authenticationServiceUrl;
+        this.authenticationServiceType = authenticationServiceType;
     }
 
     public String getDownloadPluginName() {
@@ -79,5 +83,21 @@ public class TFacility implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getAuthenticationServiceUrl() {
+        return authenticationServiceUrl;
+    }
+
+    public void setAuthenticationServiceUrl(String authenticationServiceUrl) {
+        this.authenticationServiceUrl = authenticationServiceUrl;
+    }
+
+    public String getAuthenticationServiceType() {
+        return authenticationServiceType;
+    }
+
+    public void setAuthenticationServiceType(String authenticationServiceType) {
+        this.authenticationServiceType = authenticationServiceType;
     }
 }

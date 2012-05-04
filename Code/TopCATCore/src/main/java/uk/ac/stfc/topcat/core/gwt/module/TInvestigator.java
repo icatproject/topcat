@@ -28,7 +28,7 @@ import java.io.Serializable;
  * This is shared with GWT for investigation information. This Class holds
  * details about an investigator.
  */
-public class TInvestigator implements Serializable {
+public class TInvestigator implements Serializable, Comparable<TInvestigator> {
     private String facilityUserId;
     private String federalId;
     private String fullName;
@@ -72,4 +72,27 @@ public class TInvestigator implements Serializable {
         return role;
     }
 
+    public int compareTo(TInvestigator inv) {
+        // compare role and then full name
+        int nameCmp = 0;
+        try {
+            Integer a = Integer.parseInt(role);
+            Integer b = Integer.parseInt(inv.getRole());
+            nameCmp = a.compareTo(b);
+        } catch (NumberFormatException e) {
+            // If alpha do reverse compare as we want principal experimenter
+            // ahead of experimenter
+            nameCmp = inv.role.compareTo(role);
+        }
+        if (nameCmp == 0) {
+            try {
+                Integer a = Integer.parseInt(fullName);
+                Integer b = Integer.parseInt(inv.fullName);
+                return a.compareTo(b);
+            } catch (NumberFormatException e) {
+                return fullName.compareTo(inv.fullName);
+            }
+        }
+        return nameCmp;
+    }
 }

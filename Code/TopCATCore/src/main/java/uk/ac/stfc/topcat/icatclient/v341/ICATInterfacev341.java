@@ -53,6 +53,21 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
         return result;
     }
 
+    public String loginWithTicket(String authenticationServiceUrl, String ticket) throws AuthenticationException {
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"); // TODO
+        System.out.println("loginWithTicketId id:" + ticket); // TODO
+        String result = new String();
+        try {
+            result = service.loginWithCredentials(ticket);
+        } catch (javax.xml.ws.WebServiceException e) {
+            System.out.println("loginWithTicketId ERROR WebServiceException" + e.getMessage()); // TODO
+            throw new AuthenticationException("ICAT Server not available");
+        } catch (SessionException_Exception e) {
+            throw new AuthenticationException("ICAT Server not available");
+        }
+        return result;
+    }
+
     public void logout(String sessionId) throws AuthenticationException {
         try {
             service.logout(sessionId);
@@ -81,6 +96,19 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
         } catch (SessionException_Exception ex) {
         }
         return userId;
+    }
+
+    public String getUserNameFromSessionId(String sessionId) {
+        try {
+            String surname = service.getUserDetailsFromSessionId(sessionId).getLastName();
+            if (surname == null) {
+                return "";
+            }
+            return surname;
+        } catch (NoSuchUserException_Exception e) {
+        } catch (SessionException_Exception e) {
+        }
+        return "";
     }
 
     public ArrayList<String> listInstruments(String sessionId) {
@@ -151,6 +179,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
             Investigation resultInv = service.getInvestigationIncludes(sessionId, investigationId,
                     InvestigationInclude.ALL_EXCEPT_DATASETS_AND_DATAFILES);
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
+            ti.setInstrument(resultInv.getInstrument());
             ti.setProposal(resultInv.getInvAbstract());
             ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
             List<Publication> pubs = resultInv.getPublicationCollection();
@@ -164,6 +193,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
             for (Investigator investigator : investigators) {
                 investigatorList.add(copyInvestigatorToTInvestigator(investigator));
             }
+            Collections.sort(investigatorList);
             ti.setInvestigators(investigatorList);
 
             ArrayList<TShift> shiftList = new ArrayList<TShift>();

@@ -26,7 +26,6 @@ public class ICATWebInterfaceBase {
     }
 
     public void logout(String sessionId) throws AuthenticationException {
-
     }
 
     public Boolean isSessionValid(String sessionId) {
@@ -112,4 +111,13 @@ public class ICATWebInterfaceBase {
     public ArrayList<String> getKeywordsForUserWithStartMax(String sessionId, String partialKey, int numberOfKeywords) {
         return new ArrayList<String>();
     }
+
+    public String loginWithTicket(String authenticationServiceUrl, String ticket) throws AuthenticationException {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getUserNameFromSessionId(String icatSessionId) {
+        throw new UnsupportedOperationException();
+    }
+
 }
