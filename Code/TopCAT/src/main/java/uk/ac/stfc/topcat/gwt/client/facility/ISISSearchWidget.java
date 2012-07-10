@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -114,7 +114,6 @@ public class ISISSearchWidget extends Composite {
         layoutContainer.add(lstInstrument);
         lstInstrument.setFieldLabel("New ListField");
         lstInstrument.setDisplayField("name");
-
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
@@ -126,48 +125,10 @@ public class ISISSearchWidget extends Composite {
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                errorMessage.setText("");
-                TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-                if (endDate.getValue() != null) {
-                    if (startDate.getValue() == null) {
-                        errorMessage.setText("Please enter a 'Start Date'");
-                        startDate.focus();
-                        return;
-                    } else {
-                        if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
-                            errorMessage.setText("'End Date' must be equal or greater than 'Start Date'");
-                            endDate.focus();
-                            return;
-                        }
-                    }
+                TAdvancedSearchDetails searchDetails = validateInput();
+                if (searchDetails != null) {
+                    eventBus.searchForInvestigation(searchDetails);
                 }
-                searchDetails.setStartDate(startDate.getValue());
-                searchDetails.setEndDate(endDate.getValue());
-                searchDetails.getFacilityList().add(facilityName);
-                if (runNumberEnd.getValue() != null) {
-                    if (runNumberStart.getValue() == null) {
-                        errorMessage.setText("Please enter a 'Run Number Start'");
-                        runNumberStart.focus();
-                        return;
-                    } else {
-                        if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
-                            errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
-                            runNumberEnd.focus();
-                            return;
-                        }
-                        searchDetails.setRbNumberEnd(runNumberEnd.getValue().toString());
-                    }
-                }
-                List<Instrument> selectedIns = lstInstrument.getSelection();
-                if (selectedIns.size() == 0) {
-                    errorMessage.setText("Please select at least one instrument");
-                    lstInstrument.focus();
-                    return;
-                }
-                for (Instrument ins : selectedIns) {
-                    searchDetails.getInstrumentList().add(ins.getName());
-                }
-                eventBus.searchForInvestigation(searchDetails);
             }
         });
         layoutContainer.add(btnSearch);
@@ -187,9 +148,9 @@ public class ISISSearchWidget extends Composite {
                     errorMessage.setText("Please enter a run number");
                     runNumberStart.focus();
                     return;
-                } else {
-                    searchDetails.setRbNumberStart(runNumberStart.getValue().toString());
                 }
+                searchDetails.setRbNumberStart(runNumberStart.getValue().toString());
+
                 if (runNumberEnd.getValue() != null) {
                     if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
                         errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
@@ -251,6 +212,62 @@ public class ISISSearchWidget extends Composite {
         instruments.sort("name", Style.SortDir.ASC);
         lstInstrument.setStore(instruments);
         createLogoutHandler();
+    }
+
+    private TAdvancedSearchDetails validateInput() {
+        errorMessage.setText("");
+        TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
+        if (endDate.getValue() == null) {
+            if (startDate.getValue() != null) {
+                searchDetails.setEndDate(startDate.getValue());
+            }
+        } else {
+            if (startDate.getValue() == null) {
+                errorMessage.setText("Please enter a 'Start Date'");
+                startDate.focus();
+                return null;
+            } else {
+                if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
+                    errorMessage.setText("'End Date' must be equal or greater than 'Start Date'");
+                    endDate.focus();
+                    return null;
+                }
+            }
+            searchDetails.setEndDate(endDate.getValue());
+        }
+        searchDetails.setStartDate(startDate.getValue());
+        searchDetails.getFacilityList().add(facilityName);
+        if (runNumberEnd.getValue() == null) {
+            if (runNumberStart.getValue() != null) {
+                searchDetails.setRbNumberEnd(runNumberStart.getValue().toString());
+            }
+        } else {
+            if (runNumberStart.getValue() == null) {
+                errorMessage.setText("Please enter a 'Run Number Start'");
+                runNumberStart.focus();
+                return null;
+            } else {
+                if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
+                    errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
+                    runNumberEnd.focus();
+                    return null;
+                }
+            }
+            searchDetails.setRbNumberEnd(runNumberEnd.getValue().toString());
+        }
+        if (runNumberStart.getValue() != null) {
+            searchDetails.setRbNumberStart(runNumberStart.getValue().toString());
+        }
+        List<Instrument> selectedIns = lstInstrument.getSelection();
+        if (selectedIns.size() == 0) {
+            errorMessage.setText("Please select at least one instrument");
+            lstInstrument.focus();
+            return null;
+        }
+        for (Instrument ins : selectedIns) {
+            searchDetails.getInstrumentList().add(ins.getName());
+        }
+        return searchDetails;
     }
 
     /**
