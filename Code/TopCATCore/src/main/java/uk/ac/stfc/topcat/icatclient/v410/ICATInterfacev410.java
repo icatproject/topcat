@@ -3,17 +3,15 @@
  * and open the template in the editor.
  */
 
-package uk.ac.stfc.topcat.icatclient.v401;
+package uk.ac.stfc.topcat.icatclient.v410;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
@@ -32,24 +30,25 @@ import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 /**
  * 
  */
-public class ICATInterfacev401 extends ICATWebInterfaceBase {
+public class ICATInterfacev410 extends ICATWebInterfaceBase {
     private ICAT service;
     private String serverName;
 
-    public ICATInterfacev401(String serverURL, String serverName) throws MalformedURLException {
-        service = new ICATService(new URL(serverURL), new QName("client.icat3.uk", "ICATService")).getICATPort();
+    public ICATInterfacev410(String serverURL, String serverName) throws MalformedURLException {
+        service = new ICATService(new URL(serverURL), new QName("http://icatproject.org", "ICATService")).getICATPort();
         this.serverName = serverName;
     }
 
     public String loginLifetime(String username, String password, int hours) throws AuthenticationException {
         String result = new String();
         try {
-            result = service.loginLifetime(username, password, hours);
-        } catch (SessionException_Exception ex) {
+            // TODO no longer uses hours
+            result = service.login(username, password);
+        } catch (IcatException_Exception ex) {
+            // TODO check type
             throw new AuthenticationException("ICAT Server not available");
         } catch (javax.xml.ws.WebServiceException ex) {
             throw new AuthenticationException("ICAT Server not available");
-        } catch (IcatInternalException_Exception e) {
         }
         return result;
     }
@@ -57,6 +56,9 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
     public void logout(String sessionId) throws AuthenticationException {
         try {
             service.logout(sessionId);
+        } catch (IcatException_Exception e) {
+            // TODO check type
+            throw new AuthenticationException("ICAT Server not available");
         } catch (javax.xml.ws.WebServiceException ex) {
             throw new AuthenticationException("ICAT Server not available");
         }
@@ -64,33 +66,35 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
 
     public Boolean isSessionValid(String sessionId) {
         try {
-            return new Boolean(service.isSessionValid(sessionId));
+            return new Boolean(service.getRemainingMinutes(sessionId) > 0);
         } catch (javax.xml.ws.WebServiceException ex) {
+        } catch (IcatException_Exception e) {
+            IcatException ue = e.getFaultInfo();
+            if (ue.getType().equals(IcatExceptionType.SESSION)) {
+                return Boolean.FALSE;
+            } else {
+                // TODO handle other types
+            }
         }
         return Boolean.FALSE;
     }
 
     public String getUserSurname(String sessionId, String userId) {
-        // try {
-        // FacilityUser user = service.getFacilityUserByFederalId(sessionId,
-        // userId);
-        // String surname = user.getLastName();
-        // if (surname == null)
-        // return userId;
-        // return surname;
-        // } catch (NoSuchObjectFoundException_Exception ex) {
-        // } catch (javax.xml.ws.WebServiceException ex) {
-        // } catch (SessionException_Exception ex) {
-        // } TODO
-        return userId;
+        String name;
+        try {
+            name = service.getUserName(sessionId);
+        } catch (IcatException_Exception e) {
+            return userId;
+        }
+        return name;
     }
 
     public ArrayList<String> listInstruments(String sessionId) {
-        return searchList(sessionId, "DISTINCT Instrument.fullName");
+        return searchList(sessionId, "DISTINCT Instrument.name");
     }
 
     public ArrayList<String> listInvestigationTypes(String sessionId) {
-        return searchList(sessionId, "DISTINCT InvestigationType.description");
+        return searchList(sessionId, "DISTINCT InvestigationType.name");
     }
 
     public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
@@ -108,7 +112,7 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         // facilityCycles.add(new TFacilityCycle(fc.getDescription(),
         // fc.getName(), start, end));
         // }
-        // } catch (SessionException_Exception ex) {
+        // } catch (IcatException_Exception ex) {
         // } catch (java.lang.NullPointerException ex) {
         // } catch (Exception ex) {
         // throw new ICATMethodNotFoundException(ex.getMessage());
@@ -116,20 +120,29 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         return facilityCycles;
     }
 
-    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
+    public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
-            // TODO use start and end
-            // List<Object> resultInv = service.search(sessionId,
-            // "0, 200 Investigation");
             List<Object> resultInv = service.search(sessionId, "Investigation");
             for (Object inv : resultInv) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
-        } catch (SessionException_Exception ex) {
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
-        } catch (InsufficientPrivilegesException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
+        }
+        Collections.sort(investigationList);
+        return investigationList;
+    }
+
+    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
+        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+        try {
+            List<Object> resultInv = service.search(sessionId, start + ", " + end + " Investigation");
+            for (Object inv : resultInv) {
+                investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
+            }
+        } catch (IcatException_Exception ex) {
+            // TODO check type
         }
         Collections.sort(investigationList);
         return investigationList;
@@ -144,9 +157,10 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                             "Investigation INCLUDE Publication, InvestigationUser, Instrument, User, Shift, InvestigationParameter, ParameterType",
                             investigationId);
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
-            // TODO returns null
-            // ti.setInstrument((String)
-            // resultInv.getInstrument().getFullName());
+
+            if (resultInv.getInstrument() != null) {
+                ti.setInstrument(resultInv.getInstrument().getFullName());
+            }
             ti.setProposal(resultInv.getSummary());
             ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
             List<Publication> pubs = resultInv.getPublications();
@@ -170,7 +184,7 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
             }
             ti.setShifts(shiftList);
 
-            List<InvestigationParameter> params = resultInv.getInvestigationParameters();
+            List<InvestigationParameter> params = resultInv.getParameters();
             // TODO currently single parameter need to make into list
             for (InvestigationParameter param : params) {
                 ti.setParamName(param.getType().getName());
@@ -182,12 +196,9 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                     ti.setParamValue(param.getDateTimeValue().toGregorianCalendar().getTime().toString());
                 }
             }
-        } catch (SessionException_Exception ex) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
             throw new AuthenticationException(ex.getMessage());
-        } catch (InsufficientPrivilegesException_Exception e) {
-        } catch (NoSuchObjectFoundException_Exception e) {
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
         }
         return ti;
     }
@@ -195,30 +206,20 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
             int start, int end) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
-        // AdvancedSearchDetails inputParams =
-        // convertToAdvancedSearchDetails(details);
-        //
-        // try {
-        // List<Investigation> resultInv =
-        // service.searchByAdvancedPagination(sessionId, inputParams, 0, 200);
-        // List<Investigation> resultInv = service.searchByAdvanced(sessionId,
-        // inputParams); // TODO
-        // for (Investigation inv : resultInv) {
-        // investigationList.add(copyInvestigationToTInvestigation(serverName,
-        // inv));
-        // }
-        // } catch (SessionException_Exception ex) {
-        // } catch (BadParameterException_Exception e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (IcatInternalException_Exception e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (InsufficientPrivilegesException_Exception e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // Collections.sort(investigationList);
+        String query = getAdvancedQuery(details);
+        List<Object> resultInv = null;
+        try {
+            resultInv = service.search(sessionId, start + ", " + end + query);
+        } catch (IcatException_Exception ex) {
+            // TODO check type
+            System.out.println("ERROR - searchByAdvancedPagination: " + ex.getMessage());
+        }
+
+        for (Object inv : resultInv) {
+            investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
+        }
+
+        Collections.sort(investigationList);
         return investigationList;
     }
 
@@ -226,18 +227,15 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         ArrayList<TDataset> datasetList = new ArrayList<TDataset>();
         try {
             Investigation resultInv = (Investigation) service.get(sessionId,
-                    "Investigation INCLUDE Dataset, DatasetType, DatasetStatus", investigationId);
+                    "Investigation INCLUDE Dataset, DatasetType", investigationId);
             List<Dataset> dList = resultInv.getDatasets();
             for (Dataset dataset : dList) {
                 datasetList.add(new TDataset(serverName, dataset.getId().toString(), dataset.getName(), dataset
-                        .getDescription(), dataset.getType().getName(), "true"));
-                // dataset.getStatus().getName())); //TODO status don't work
+                        .getDescription(), dataset.getType().getName(), Boolean.toString(dataset.isComplete())));
             }
-        } catch (InsufficientPrivilegesException_Exception ex) {
-        } catch (NoSuchObjectFoundException_Exception ex) {
-        } catch (SessionException_Exception ex) {
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
+            System.out.println("ERROR - getDatasetsInInvestigation: " + ex.getMessage());
         }
         return datasetList;
     }
@@ -246,7 +244,7 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
         try {
             Dataset ds = (Dataset) service.get(sessionId, "Dataset INCLUDE DatasetParameter, ParameterType", datasetId);
-            List<DatasetParameter> dsList = ds.getDatasetParameters();
+            List<DatasetParameter> dsList = ds.getParameters();
             for (DatasetParameter dsParam : dsList) {
                 System.out.println("parameter type: " + dsParam.getType());
                 if (dsParam.getType().getValueType() == ParameterValueType.NUMERIC) {
@@ -260,11 +258,9 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                             .getDateTimeValue().toString()));
                 }
             }
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
-        } catch (InsufficientPrivilegesException_Exception e) {
-        } catch (NoSuchObjectFoundException_Exception e) {
-        } catch (SessionException_Exception e) {
+        } catch (IcatException_Exception e) {
+            // TODO check type
+            System.out.println("ERROR - getParametersInDataset: " + e.getMessage());
         }
         return result;
     }
@@ -277,11 +273,9 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
             for (Datafile datafile : dList) {
                 datafileList.add(copyDatafileToTDatafile(serverName, datafile));
             }
-        } catch (SessionException_Exception ex) {
-        } catch (InsufficientPrivilegesException_Exception ex) {
-        } catch (NoSuchObjectFoundException_Exception ex) {
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
+            System.out.println("ERROR - getDatafilesInDataset: " + ex.getMessage());
         }
         return datafileList;
     }
@@ -291,7 +285,7 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
         try {
             Datafile df = (Datafile) service.get(sessionId, "Datafile INCLUDE DatasetParameter, ParameterType",
                     datafileId);
-            List<DatafileParameter> dfList = df.getDatafileParameters();
+            List<DatafileParameter> dfList = df.getParameters();
             for (DatafileParameter dfParam : dfList) {
                 if (dfParam.getType().getValueType() == ParameterValueType.NUMERIC) {
                     result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
@@ -304,36 +298,29 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                             dfParam.getDateTimeValue().toString()));
                 }
             }
-        } catch (SessionException_Exception ex) {
-        } catch (InsufficientPrivilegesException_Exception ex) {
-        } catch (NoSuchObjectFoundException_Exception ex) {
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
         }
         return result;
     }
 
     public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
         String result = "";
-        try {
-            result = service.downloadDatafiles(sessionId, datafileIds);
-        } catch (InsufficientPrivilegesException_Exception ex) {
-        } catch (NoSuchObjectFoundException_Exception ex) {
-        } catch (SessionException_Exception ex) {
-        } catch (IcatInternalException_Exception e) {
-        }
+        // try {
+        // result = service.downloadDatafiles(sessionId, datafileIds);
+        // } catch (IcatException_Exception ex) {
+        // // TODO check type
+        // }
         return result;
     }
 
     public String downloadDataset(String sessionId, Long datasetId) {
         String result = "";
-        try {
-            result = service.downloadDataset(sessionId, datasetId);
-        } catch (InsufficientPrivilegesException_Exception ex) {
-        } catch (NoSuchObjectFoundException_Exception ex) {
-        } catch (SessionException_Exception ex) {
-        } catch (IcatInternalException_Exception e) {
-        }
+        // try {
+        // result = service.downloadDataset(sessionId, datasetId);
+        // } catch (IcatException_Exception ex) {
+        // // TODO check type
+        // }
         return result;
     }
 
@@ -350,11 +337,8 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
             for (Keyword key : resultKeywords) {
                 keywords.add(key.getName());
             }
-        } catch (InsufficientPrivilegesException_Exception ex) {
-        } catch (NoSuchObjectFoundException_Exception ex) {
-        } catch (SessionException_Exception ex) {
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
         }
         return keywords;
     }
@@ -369,10 +353,8 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
             for (Object inv : resultInvestigations) {
                 returnTInvestigations.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
-        } catch (InsufficientPrivilegesException_Exception e) {
-        } catch (SessionException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
         }
         Collections.sort(returnTInvestigations);
         return returnTInvestigations;
@@ -380,19 +362,21 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
 
     public ArrayList<TDatafile> searchByRunNumber(String sessionId, ArrayList<String> instruments,
             float startRunNumber, float endRunNumber) {
-        List<Datafile> resultDatafiles = null;
+        List<Object> resultDatafiles = null;
         ArrayList<TDatafile> returnTDatafiles = new ArrayList<TDatafile>();
-        // try {
-        // resultDatafiles = service.searchByRunNumber(sessionId, instruments,
-        // startRunNumber, endRunNumber);
-        // } catch (SessionException_Exception ex) {
-        // }
-        // if (resultDatafiles != null) { // There are some result
-        // investigations
-        // for (Datafile datafile : resultDatafiles) {
-        // returnTDatafiles.add(copyDatafileToTDatafile(serverName, datafile));
-        // }
-        // }
+        try {
+            resultDatafiles = service.search(sessionId,
+                    "DISTINCT Datafile  INCLUDE DatafileFormat <-> Dataset <-> Investigation <-> Instrument[name IN "
+                            + getIN(instruments)
+                            + "] <-> DatafileParameter[type.name='run_number' AND numericValue BETWEEN "
+                            + startRunNumber + " AND " + endRunNumber + "]");
+        } catch (IcatException_Exception ex) {
+            // TODO check type
+            System.out.println("ERROR - searchByRunNumber: " + ex.getMessage());
+        }
+        for (Object datafile : resultDatafiles) {
+            returnTDatafiles.add(copyDatafileToTDatafile(serverName, (Datafile) datafile));
+        }
         return returnTDatafiles;
     }
 
@@ -400,56 +384,113 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
 
         ArrayList<String> resultKeywords = new ArrayList<String>();
         try {
-            // resultKeywords.addAll(service.getKeywordsForUserStartWithMax(sessionId,
-            // partialKey, numberOfKeywords));
-            // TODO need to start with partialKey
-            List<Object> results = service.search(sessionId, "0," + numberOfKeywords + "DISTINCT Keyword.name");
+            List<Object> results = service.search(sessionId, "0," + numberOfKeywords + "DISTINCT Keyword.name LIKE "
+                    + partialKey + "%");
             for (Object keyword : results) {
                 resultKeywords.add((String) keyword);
             }
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
-        } catch (InsufficientPrivilegesException_Exception e) {
-        } catch (SessionException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
         }
         return resultKeywords;
     }
 
-    private AdvancedSearchDetails convertToAdvancedSearchDetails(TAdvancedSearchDetails searchDetails) {
-        AdvancedSearchDetails resultDetails = new AdvancedSearchDetails();
-        try {
-            resultDetails.setInvestigationName(searchDetails.getPropostaltitle());
-            resultDetails.setInvestigationAbstract(searchDetails.getProposalAbstract());
-            resultDetails.getInvestigators().addAll(searchDetails.getInvestigatorNameList());
-            GregorianCalendar gc = new GregorianCalendar();
-            if (searchDetails.getStartDate() != null) {
-                gc.setTime(searchDetails.getStartDate());
-                resultDetails.setDateRangeStart(DatatypeFactory.newInstance().newXMLGregorianCalendar(gc));
-            }
-            if (searchDetails.getEndDate() != null) {
-                gc.setTime(searchDetails.getEndDate());
-                resultDetails.setDateRangeEnd(DatatypeFactory.newInstance().newXMLGregorianCalendar(gc));
-            }
-            resultDetails.setDatafileName(searchDetails.getDatafileName());
-            resultDetails.getInstruments().addAll(searchDetails.getInstrumentList());
-            // if (searchDetails.getGrantId() != null) {
-            // resultDetails.setGrantId(Long.parseLong(searchDetails.getGrantId()));
-            // } TODO
-            if (searchDetails.getInvestigationTypeList().size() != 0) {
-                resultDetails.setInvestigationType(searchDetails.getInvestigationTypeList().get(0));
-            }
-            if (searchDetails.getRbNumberStart() != null) {
-                resultDetails.setRunStart(Double.valueOf(searchDetails.getRbNumberStart()));
-            }
-            if (searchDetails.getRbNumberEnd() != null) {
-                resultDetails.setRunEnd(Double.valueOf(searchDetails.getRbNumberEnd()));
-            }
+    private String getAdvancedQuery(TAdvancedSearchDetails details) {
+        StringBuilder query = new StringBuilder(" DISTINCT Investigation");
+        boolean addAnd = false;
 
-            resultDetails.setSampleName(searchDetails.getSample());
-            resultDetails.getKeywords().addAll(searchDetails.getKeywords());
-        } catch (DatatypeConfigurationException ex) {
+        // Dates
+        if (details.getStartDate() != null && details.getEndDate() != null) {
+            addAnd = true;
+            String startDate = getDate(details.getStartDate());
+            String endDate = getDate(details.getEndDate());
+            query.append(" [((startDate<=" + startDate + " AND endDate>=" + startDate + ") OR (startDate>=" + startDate
+                    + " AND endDate<=" + endDate + ") OR (startDate<=" + endDate + " AND endDate>=" + endDate + "))");
         }
-        return resultDetails;
+
+        // Proposal Abstract
+        if (details.getProposalAbstract() != null) {
+            if (addAnd) {
+                query.append(" AND");
+            } else {
+                query.append(" [");
+                addAnd = true;
+            }
+            query.append(" summary='" + details.getProposalAbstract() + "'");
+        }
+
+        // Proposal Title
+        if (details.getPropostaltitle() != null) {
+            if (addAnd) {
+                query.append(" AND");
+            } else {
+                query.append(" [");
+                addAnd = true;
+            }
+            query.append(" title='" + details.getPropostaltitle() + "'");
+        }
+
+        if (addAnd) {
+            query.append("]");
+        }
+
+        // Data File Name
+        if (details.getDatafileName() != null) {
+            query.append(" <-> Dataset <-> Datafile[name='" + details.getDatafileName() + "']");
+        }
+
+        // Grant Id
+        if (details.getGrantId() != null) {
+            query.append(" <-> InvestigationParameter [type.name='grant_id' AND stringValue='" + details.getGrantId()
+                    + "']");
+        }
+
+        // Instrument
+        if (details.getInstrumentList().size() > 0) {
+            query.append(" <-> Instrument[name IN " + getIN(details.getInstrumentList()) + "]");
+        }
+
+        // Investigation Type
+        if (details.getInvestigationTypeList().size() > 0) {
+            query.append(" <-> InvestigationType[name IN " + getIN(details.getInvestigationTypeList()) + "]");
+        }
+
+        // Investigator Name
+        if (details.getInvestigatorNameList().size() > 0) {
+            query.append(" <-> InvestigationUser <-> User[name IN " + getIN(details.getInvestigatorNameList()) + "]");
+        }
+
+        // Keywords
+        if (details.getKeywords().size() > 0
+                && !(details.getKeywords().size() == 1 && details.getKeywords().get(0).length() == 0)) {
+            query.append(" <-> Keyword[name IN " + getIN(details.getKeywords()) + "]");
+        }
+
+        // Run Numbers
+        if (details.getRbNumberStart() != null && details.getRbNumberEnd() != null) {
+            query.append(" <-> InvestigationParameter [type.name='run_number_range' AND ((rangeBottom<="
+                    + details.getRbNumberStart() + " AND rangeTop>=" + details.getRbNumberStart()
+                    + ") OR (rangeBottom>=" + details.getRbNumberStart() + " AND rangeTop<=" + details.getRbNumberEnd()
+                    + ") OR (rangeBottom<=" + details.getRbNumberEnd() + " AND rangeTop>=" + details.getRbNumberEnd()
+                    + "))]");
+        }
+
+        // Sample
+        if (details.getSample() != null) {
+            query.append(" <-> Sample[name='" + details.getSample() + "']");
+        }
+
+        System.out.println("INFO - searchByAdvancedPagination: " + query.toString());
+        return query.toString();
+    }
+
+    private String getDate(Date date) {
+        StringBuilder retDate = new StringBuilder();
+        retDate.append("{ts ");
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        retDate.append(formater.format(date));
+        retDate.append("}");
+        return retDate.toString();
     }
 
     private TInvestigation copyInvestigationToTInvestigation(String serverName, Investigation inv) {
@@ -490,7 +531,6 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
     }
 
     private TInvestigator copyInvestigatorToTInvestigator(InvestigationUser investigator) {
-        // TODO add missing fields: facilityUser, federalId
         return new TInvestigator("", "", investigator.getUser().getFullName(), investigator.getRole());
     }
 
@@ -507,10 +547,8 @@ public class ICATInterfacev401 extends ICATWebInterfaceBase {
                 returnList.add((String) item);
             }
         } catch (java.lang.NullPointerException ex) {
-        } catch (BadParameterException_Exception e) {
-        } catch (IcatInternalException_Exception e) {
-        } catch (InsufficientPrivilegesException_Exception e) {
-        } catch (SessionException_Exception e) {
+        } catch (IcatException_Exception ex) {
+            // TODO check type
         }
         return returnList;
     }

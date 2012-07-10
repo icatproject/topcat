@@ -53,6 +53,10 @@ public class ICATWebInterfaceBase {
         return new ArrayList<TFacilityCycle>();
     }
 
+    public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
+        return new ArrayList<TInvestigation>();
+    }
+
     public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
         return new ArrayList<TInvestigation>();
     }

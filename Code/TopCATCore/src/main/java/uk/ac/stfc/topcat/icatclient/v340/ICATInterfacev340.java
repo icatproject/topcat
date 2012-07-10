@@ -151,11 +151,24 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         return facilityCycles;
     }
 
+    public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
+        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+        try {
+            List<Investigation> resultInv = service.getMyInvestigations(sessionId);
+            for (Investigation inv : resultInv) {
+                investigationList.add(copyInvestigationToTInvestigation(serverName, inv));
+            }
+        } catch (SessionException_Exception ex) {
+        }
+        Collections.sort(investigationList);
+        return investigationList;
+    }
+
     public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
             List<Investigation> resultInv = service.getMyInvestigationsIncludesPagination(sessionId,
-                    InvestigationInclude.NONE, 0, 200);
+                    InvestigationInclude.NONE, start, end);
             for (Investigation inv : resultInv) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, inv));
             }
