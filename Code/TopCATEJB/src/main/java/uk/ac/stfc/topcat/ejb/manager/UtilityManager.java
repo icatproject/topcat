@@ -370,7 +370,7 @@ public class UtilityManager {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
-            return service.getMyInvestigationsIncludesPagination(sessionId, 0, 200);
+            return service.getMyInvestigations(sessionId);
         } catch (MalformedURLException ex) {
             logger.warning("getMyInvestigationsInServer: " + ex.getMessage());
         }
