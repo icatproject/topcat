@@ -365,6 +365,7 @@ public class InvestigationSubPanel extends Composite {
                 shiftsTable.getCellFormatter().setHorizontalAlignment(i, 1, HasHorizontalAlignment.ALIGN_CENTER);
                 shiftsTable.setWidget(i, 2, new LabelField(shift.getComment()));
                 shiftsTable.getCellFormatter().setHorizontalAlignment(i, 2, HasHorizontalAlignment.ALIGN_CENTER);
+                i++;
             }
             shiftsContainer.show();
         }
@@ -374,8 +375,10 @@ public class InvestigationSubPanel extends Composite {
             int i = 0;
             for (TInvestigator tinvestigator : inv.getInvestigators()) {
                 HorizontalPanel investigatorPanel = new HorizontalPanel();
-                investigatorPanel.add(new LabelField(tinvestigator.getRole()));
-                investigatorPanel.add(new LabelField("&nbsp;-&nbsp;"));
+                if (tinvestigator.getRole() != null) {
+                    investigatorPanel.add(new LabelField(tinvestigator.getRole()));
+                    investigatorPanel.add(new LabelField("&nbsp;-&nbsp;"));
+                }
                 investigatorPanel.add(new LabelField(tinvestigator.getFullName()));
                 namesTable.setWidget(i, 0, investigatorPanel);
                 i++;
