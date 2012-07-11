@@ -246,7 +246,6 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             Dataset ds = (Dataset) service.get(sessionId, "Dataset INCLUDE DatasetParameter, ParameterType", datasetId);
             List<DatasetParameter> dsList = ds.getParameters();
             for (DatasetParameter dsParam : dsList) {
-                System.out.println("parameter type: " + dsParam.getType());
                 if (dsParam.getType().getValueType() == ParameterValueType.NUMERIC) {
                     result.add(new TDatasetParameter(dsParam.getType().getName(), dsParam.getType().getUnits(), dsParam
                             .getNumericValue().toString()));
@@ -398,6 +397,7 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     private String getAdvancedQuery(TAdvancedSearchDetails details) {
         StringBuilder query = new StringBuilder(" DISTINCT Investigation");
         boolean addAnd = false;
+        boolean queryDataset = false;
 
         // Dates
         if (details.getStartDate() != null && details.getEndDate() != null) {
@@ -437,13 +437,15 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         // Data File Name
         if (details.getDatafileName() != null) {
             query.append(" <-> Dataset <-> Datafile[name='" + details.getDatafileName() + "']");
+            queryDataset = true;
         }
 
         // Grant Id
-        if (details.getGrantId() != null) {
-            query.append(" <-> InvestigationParameter [type.name='grant_id' AND stringValue='" + details.getGrantId()
-                    + "']");
-        }
+        // if (details.getGrantId() != null) {
+        // query.append(" <-> InvestigationParameter [type.name='grant_id' AND stringValue='"
+        // + details.getGrantId()
+        // + "']");
+        // }
 
         // Instrument
         if (details.getInstrumentList().size() > 0) {
@@ -457,7 +459,17 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
 
         // Investigator Name
         if (details.getInvestigatorNameList().size() > 0) {
-            query.append(" <-> InvestigationUser <-> User[name IN " + getIN(details.getInvestigatorNameList()) + "]");
+            query.append(" <-> InvestigationUser <-> User[");
+            boolean firstLoop = true;
+            for (String name : details.getInvestigatorNameList()) {
+                if (firstLoop) {
+                    firstLoop = false;
+                } else {
+                    query.append(" OR ");
+                }
+                query.append("name LIKE '%" + name + "%'");
+            }
+            query.append("]");
         }
 
         // Keywords
@@ -468,19 +480,16 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
 
         // Run Numbers
         if (details.getRbNumberStart() != null && details.getRbNumberEnd() != null) {
-            query.append(" <-> InvestigationParameter [type.name='run_number_range' AND ((rangeBottom<="
-                    + details.getRbNumberStart() + " AND rangeTop>=" + details.getRbNumberStart()
-                    + ") OR (rangeBottom>=" + details.getRbNumberStart() + " AND rangeTop<=" + details.getRbNumberEnd()
-                    + ") OR (rangeBottom<=" + details.getRbNumberEnd() + " AND rangeTop>=" + details.getRbNumberEnd()
-                    + "))]");
+            query.append(" <-> Dataset <-> Datafile <-> DatafileParameter[type.name='run_number' AND numericValue BETWEEN "
+                    + details.getRbNumberStart() + " AND " + details.getRbNumberEnd() + "]");
+            queryDataset = true;
         }
 
         // Sample
-        if (details.getSample() != null) {
+        // TODO We cannot use dataset and sample in the same query
+        if (details.getSample() != null && !queryDataset) {
             query.append(" <-> Sample[name='" + details.getSample() + "']");
         }
-
-        System.out.println("INFO - searchByAdvancedPagination: " + query.toString());
         return query.toString();
     }
 
