@@ -120,6 +120,7 @@ public class ISISSearchWidget extends Composite {
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
+        layoutContainer.add(new Text());
 
         Button btnSearch = new Button("Search Experiments");
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -173,9 +174,6 @@ public class ISISSearchWidget extends Composite {
         });
         layoutContainer.add(btnSearchFile);
 
-        layoutContainer.add(new Text());
-        layoutContainer.add(new Text());
-
         Button btnReset = new Button("Reset");
         btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -189,6 +187,7 @@ public class ISISSearchWidget extends Composite {
             }
         });
         layoutContainer.add(btnReset);
+        layoutContainer.add(new Text());
 
         topContainer.add(layoutContainer);
         topContainer.add(new Text());

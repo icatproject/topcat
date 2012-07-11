@@ -124,6 +124,7 @@ public class DefaultSearchWidget extends Composite {
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
+        layoutContainer.add(new Text());
 
         Button btnSearch = new Button("Search");
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -136,8 +137,6 @@ public class DefaultSearchWidget extends Composite {
             }
         });
         layoutContainer.add(btnSearch);
-        layoutContainer.add(new Text());
-        layoutContainer.add(new Text());
 
         Button btnReset = new Button("Reset");
         btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -152,6 +151,7 @@ public class DefaultSearchWidget extends Composite {
             }
         });
         layoutContainer.add(btnReset);
+        layoutContainer.add(new Text());
 
         topContainer.add(layoutContainer);
         topContainer.add(new Text());
