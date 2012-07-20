@@ -4,7 +4,7 @@
 	<groupId>uk.ac.stfc</groupId>
 	<artifactId>TopCATEJB</artifactId>
 	<packaging>ejb</packaging>
-	<version>1.5</version>
+	<version>1.4</version>
 	<name>TopCATEJB Java EE 6 EJB</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
