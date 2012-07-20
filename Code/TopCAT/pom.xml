@@ -5,7 +5,7 @@
 	<groupId>uk.ac.stfc</groupId>
 	<artifactId>TopCAT</artifactId>
 	<packaging>war</packaging>
-	<version>1.3</version>
+	<version>1.4</version>
 	<properties>
 		<gwt.version>2.2.0</gwt.version>
 		<gwt.plugin.version>2.2.0</gwt.plugin.version>
