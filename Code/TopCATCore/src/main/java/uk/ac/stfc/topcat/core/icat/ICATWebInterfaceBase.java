@@ -57,10 +57,6 @@ public class ICATWebInterfaceBase {
         return new ArrayList<TInvestigation>();
     }
 
-    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
-        return new ArrayList<TInvestigation>();
-    }
-
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
             int start, int end) {
         return new ArrayList<TInvestigation>();
