@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -63,19 +63,6 @@ public interface SearchService extends RemoteService {
      * 
      */
     List<String> getKeywordsFromServer(String sessionId, String serverName, String partialKey, int numberOfKeywords);
-
-    /**
-     * Get a list of investigations that have the given keywords. Search all the
-     * iCat servers. <b>NB</b>: the search is case sensitive and return maximum
-     * of 200 results.
-     * 
-     * @param sessionId
-     *            a string containing the session id
-     * @param keywords
-     *            a list of strings containing keywords to search on
-     * @return a list of <code>TInvestigation</code> containing investigations
-     */
-    List<TInvestigation> getSearchResultsInvestigationFromKeywords(String sessionId, ArrayList<String> keywords);
 
     /**
      * Get a list of investigations that have the given input keywords and are

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.server;
+
 /**
  * Imports
  */
@@ -48,139 +49,146 @@ import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * This is Search Service servlet implementation, it provides basic and advanced search options on ICAT for AJAX
+ * This is Search Service servlet implementation, it provides basic and advanced
+ * search options on ICAT for AJAX
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
-public class SearchServiceImpl extends RemoteServiceServlet implements
-		SearchService {
-	
-	private SearchManagementBeanLocal searchManager = null;
-	private KeywordManagementLocal keywordManager = null;
-	private UserManagementBeanLocal userManager = null;
+public class SearchServiceImpl extends RemoteServiceServlet implements SearchService {
 
-	/*
-	 * This is servlet initialisation code. creates search, keyword and user managers (local interface for EJB session beans's)
-	 * (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-	 */
-	public void init(ServletConfig conf) throws ServletException {
-		super.init(conf);
-		
-		try{
-			//create initial context
-			Context ctx = new InitialContext();
-			searchManager = (SearchManagementBeanLocal) ctx.lookup("java:global/TopCAT/SearchManagementBean!uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal");
-			keywordManager = (KeywordManagementLocal) ctx.lookup("java:global/TopCAT/KeywordManagementBean!uk.ac.stfc.topcat.ejb.session.KeywordManagementLocal");
-			userManager = (UserManagementBeanLocal) ctx.lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-			
-		}catch(NamingException ex){
-			ex.printStackTrace();
-		}
-	}
-	
-	/* 
-	 * This method returns the *public* keywords from the server that matches the partial keys and given maximum number of keywords.
-	 * (non-Javadoc)
-	 * @see uk.ac.stfc.topcat.gwt.client.SearchService#getKeywordsFromServer(java.lang.String, java.lang.String, java.lang.String, int)
-	 */
-	@Override
-	public List<String> getKeywordsFromServer(String sessionId,
-			String ServerName, String partialKey, int numberOfKeywords) {
-                if(sessionId==null)
-                    sessionId=getSessionId();
-		List<String> results=keywordManager.getKeywordsWithPrefix(sessionId, ServerName, partialKey, numberOfKeywords);
-		return results;
-	}
+    private SearchManagementBeanLocal searchManager = null;
+    private KeywordManagementLocal keywordManager = null;
+    private UserManagementBeanLocal userManager = null;
 
-	/*
-	 * This method searches all the icat servers and returns the investigation list that has given input keywords
-	 * ***WARNING: Search is CASE Sensitive and return maximum of 200 results*** 
-	 * (non-Javadoc)
-	 * @see uk.ac.stfc.topcat.gwt.client.SearchService#getSearchResultsInvestigationFromKeywords(java.lang.String, java.util.List)
-	 */
-	@Override
-	public List<TInvestigation> getSearchResultsInvestigationFromKeywords(
-			String sessionId, ArrayList<String> keywords) {
-		if(sessionId==null)
-			sessionId=getSessionId();
-		List<TInvestigation> investigationList=searchManager.searchBasicInvestigationByKeywords(sessionId, keywords);
-		return investigationList;
-	}
+    /*
+     * This is servlet initialisation code. creates search, keyword and user
+     * managers (local interface for EJB session beans's) (non-Javadoc)
+     * 
+     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+     */
+    @Override
+    public void init(ServletConfig conf) throws ServletException {
+        super.init(conf);
 
-	/*
-	 * This method searches all the icat servers for user investigations(User as Investigator) that has given input keywords
-	 * ***WARNING: Search is CASE Sensitive and return maximum of 200 results*** 
-	 * (non-Javadoc)
-	 * @see uk.ac.stfc.topcat.gwt.client.SearchService#getSearchResultsMyInvestigationFromKeywords(java.lang.String, java.util.List)
-	 */
-	@Override
-	public List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(
-			String sessionId, ArrayList<String> keywords) {
-		if(sessionId==null)
-			sessionId=getSessionId();
-		List<TInvestigation> investigationList=searchManager.searchBasicMyInvestigationByKeywords(sessionId, keywords);
-		return investigationList;
-	}
-	
-	/*
-	 * This method searches all the icat servers for investigations with the input search parameters.
-	 * (non-Javadoc)
-	 * @see uk.ac.stfc.topcat.gwt.client.SearchService#getAdvancedSearchResultsInvestigation(java.lang.String, uk.ac.stfc.topcat.ejb.gwt.module.TAdvancedSearchDetails)
-	 */
-	@Override
-	public List<TInvestigation> getAdvancedSearchResultsInvestigation(
-			String sessionId, TAdvancedSearchDetails searchDetails) {
-		if(sessionId==null)
-			sessionId=getSessionId();
-		List<TInvestigation> investigationList=searchManager.searchAdvancedInvestigation(sessionId, searchDetails);
-		return investigationList;
-	}
-	
-	/**
-	 * This methods searches for the datafiles that meet the criteria given in the searchDetails
-	 * NOTE: only instruments and run number start and end used.
-	 * (non-Javadoc)
-	 * @see uk.ac.stfc.topcat.gwt.client.SearchService#getAdvancedSearchResultsDatafile(java.lang.String, uk.ac.stfc.topcat.ejb.gwt.module.TAdvancedSearchDetails)
-	 */
-	@Override
-	public ArrayList<DatafileModel> getAdvancedSearchResultsDatafile(String sessionId,String serverName,
-			TAdvancedSearchDetails searchDetails) {
-		if(sessionId==null)
-			sessionId=getSessionId();
-		List<TDatafile> datafileList=searchManager.searchAdvancedDatafileInServer(sessionId, serverName, searchDetails);
-		//Convert TDatafiles to DatafileModel
-		ArrayList<DatafileModel> datafileModel = new ArrayList<DatafileModel>();
-		for(TDatafile datafile : datafileList){
-			datafileModel.add(new DatafileModel(serverName,null,datafile.getId(),datafile.getName(),datafile.getSize().toString(),datafile.getFormat(),datafile.getFormatVersion(),datafile.getFormatType(),datafile.getCreateTime(), datafile.getLocation()));
-		}
-		return datafileModel;
-	}	
+        try {
+            // create initial context
+            Context ctx = new InitialContext();
+            searchManager = (SearchManagementBeanLocal) ctx
+                    .lookup("java:global/TopCAT/SearchManagementBean!uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal");
+            keywordManager = (KeywordManagementLocal) ctx
+                    .lookup("java:global/TopCAT/KeywordManagementBean!uk.ac.stfc.topcat.ejb.session.KeywordManagementLocal");
+            userManager = (UserManagementBeanLocal) ctx
+                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
 
-	/**
-	 * This method returns the session id from the Servlet SESSION variable
-	 * ***WARNING: only works if the user browser cookies are enable ***
-	 * @return
-	 */
-	private String getSessionId() {
-		HttpServletRequest request = this.getThreadLocalRequest();
-		HttpSession session = request.getSession();
-		String sessionId=null;
-		if(session.getAttribute("SESSION_ID") == null) { //First time login
-			try {
-				sessionId=userManager.login();
-				session.setAttribute("SESSION_ID",sessionId );
-			} catch (AuthenticationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			sessionId = (String) session.getAttribute("SESSION_ID");
-		}
-		return sessionId;
-	}
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /*
+     * This method returns the *public* keywords from the server that matches
+     * the partial keys and given maximum number of keywords. (non-Javadoc)
+     * 
+     * @see
+     * uk.ac.stfc.topcat.gwt.client.SearchService#getKeywordsFromServer(java
+     * .lang.String, java.lang.String, java.lang.String, int)
+     */
+    @Override
+    public List<String> getKeywordsFromServer(String sessionId, String ServerName, String partialKey,
+            int numberOfKeywords) {
+        if (sessionId == null)
+            sessionId = getSessionId();
+        List<String> results = keywordManager
+                .getKeywordsWithPrefix(sessionId, ServerName, partialKey, numberOfKeywords);
+        return results;
+    }
+
+    /*
+     * This method searches all the icat servers for user investigations(User as
+     * Investigator) that has given input keywords ***WARNING: Search is CASE
+     * Sensitive and return maximum of 200 results*** (non-Javadoc)
+     * 
+     * @see uk.ac.stfc.topcat.gwt.client.SearchService#
+     * getSearchResultsMyInvestigationFromKeywords(java.lang.String,
+     * java.util.List)
+     */
+    @Override
+    public List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords) {
+        if (sessionId == null)
+            sessionId = getSessionId();
+        List<TInvestigation> investigationList = searchManager
+                .searchBasicMyInvestigationByKeywords(sessionId, keywords);
+        return investigationList;
+    }
+
+    /*
+     * This method searches all the icat servers for investigations with the
+     * input search parameters. (non-Javadoc)
+     * 
+     * @see uk.ac.stfc.topcat.gwt.client.SearchService#
+     * getAdvancedSearchResultsInvestigation(java.lang.String,
+     * uk.ac.stfc.topcat.ejb.gwt.module.TAdvancedSearchDetails)
+     */
+    @Override
+    public List<TInvestigation> getAdvancedSearchResultsInvestigation(String sessionId,
+            TAdvancedSearchDetails searchDetails) {
+        if (sessionId == null)
+            sessionId = getSessionId();
+        List<TInvestigation> investigationList = searchManager.searchAdvancedInvestigation(sessionId, searchDetails);
+        return investigationList;
+    }
+
+    /**
+     * This methods searches for the datafiles that meet the criteria given in
+     * the searchDetails NOTE: only instruments and run number start and end
+     * used. (non-Javadoc)
+     * 
+     * @see uk.ac.stfc.topcat.gwt.client.SearchService#getAdvancedSearchResultsDatafile(java.lang.String,
+     *      uk.ac.stfc.topcat.ejb.gwt.module.TAdvancedSearchDetails)
+     */
+    @Override
+    public ArrayList<DatafileModel> getAdvancedSearchResultsDatafile(String sessionId, String serverName,
+            TAdvancedSearchDetails searchDetails) {
+        if (sessionId == null)
+            sessionId = getSessionId();
+        List<TDatafile> datafileList = searchManager.searchAdvancedDatafileInServer(sessionId, serverName,
+                searchDetails);
+        // Convert TDatafiles to DatafileModel
+        ArrayList<DatafileModel> datafileModel = new ArrayList<DatafileModel>();
+        for (TDatafile datafile : datafileList) {
+            datafileModel.add(new DatafileModel(serverName, null, datafile.getId(), datafile.getName(), datafile
+                    .getSize().toString(), datafile.getFormat(), datafile.getFormatVersion(), datafile.getFormatType(),
+                    datafile.getCreateTime(), datafile.getLocation()));
+        }
+        return datafileModel;
+    }
+
+    /**
+     * This method returns the session id from the Servlet SESSION variable
+     * ***WARNING: only works if the user browser cookies are enable ***
+     * 
+     * @return
+     */
+    private String getSessionId() {
+        HttpServletRequest request = this.getThreadLocalRequest();
+        HttpSession session = request.getSession();
+        String sessionId = null;
+        if (session.getAttribute("SESSION_ID") == null) { // First time login
+            try {
+                sessionId = userManager.login();
+                session.setAttribute("SESSION_ID", sessionId);
+            } catch (AuthenticationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            sessionId = (String) session.getAttribute("SESSION_ID");
+        }
+        return sessionId;
+    }
 
 }

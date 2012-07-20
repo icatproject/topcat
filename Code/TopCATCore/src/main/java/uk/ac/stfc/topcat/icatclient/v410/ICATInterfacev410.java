@@ -543,9 +543,8 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        // TODO change FileSize in TDatafile to a Long
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize()
-                .intValue(), format, formatVersion, formatType, createDate, datafile.getLocation());
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
+                format, formatVersion, formatType, createDate, datafile.getLocation());
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

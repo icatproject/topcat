@@ -58,6 +58,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      * This method initializes the servlet, creates a usermanagementbean. this
      * will be used by the servlet to perform usermanagement operations.
      */
+    @Override
     public void init(ServletConfig conf) throws ServletException {
         super.init(conf);
 
@@ -136,8 +137,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         try {
             // TODO Remove hard coded hours
             long sessionDuration = 2;
-            userManager
-                    .loginWithTicket(topcatSessionId, facilityName, authenticationServiceUrl, ticket, sessionDuration);
+            userManager.loginWithTicket(topcatSessionId, facilityName, authenticationServiceUrl, ticket,
+                    sessionDuration);
         } catch (AuthenticationException e) {
             throw (new LoginException(e.getMessage()));
         }

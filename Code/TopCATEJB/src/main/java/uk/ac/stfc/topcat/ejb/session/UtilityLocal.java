@@ -52,11 +52,11 @@ public interface UtilityLocal {
 
     ArrayList<TFacility> getFacilities();
     ArrayList<String> getFacilityNames();
-    ArrayList<String> getAllInstrumentNames(String sessionId);
+//    ArrayList<String> getAllInstrumentNames(String sessionId);
     ArrayList<String> getInstrumentNames(String sessionId,String serverName);
-    ArrayList<String> getAllInvestigationTypes(String sessionId);
+//    ArrayList<String> getAllInvestigationTypes(String sessionId);
     ArrayList<String> getInvestigationTypes(String sessionId,String serverName);
-    ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException;
+//    ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException;
     ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId,String serverName, String instrument)throws ICATMethodNotFoundException;
     ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName);
     ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);

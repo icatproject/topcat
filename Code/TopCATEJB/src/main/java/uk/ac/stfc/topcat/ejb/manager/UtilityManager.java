@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -43,8 +43,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
 /**
  * This has utilties such as getting list of facilities etc.
@@ -83,25 +83,6 @@ public class UtilityManager {
                             .getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
         }
         return facilityNames;
-    }
-
-    /**
-     * This method returns all the instrument names in available servers
-     * 
-     * @param manager
-     * @return
-     */
-    public ArrayList<String> getAllInstrumentNames(EntityManager manager, String sessionId) {
-
-        ArrayList<String> instrumentNames = new ArrayList<String>();
-        List<TopcatUserSession> userSessions = manager
-                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
-                .setParameter("topcatSessionId", sessionId).getResultList();
-        for (TopcatUserSession topcatUserSession : userSessions) {
-            instrumentNames.addAll(getInstrumentNames(topcatUserSession.getIcatSessionId(), topcatUserSession
-                    .getUserId().getServerId()));
-        }
-        return instrumentNames;
     }
 
     /**
@@ -156,25 +137,6 @@ public class UtilityManager {
     }
 
     /**
-     * This method returns all the investigation types available in all servers
-     * 
-     * @param manager
-     * @return
-     */
-    public ArrayList<String> getAllInvestigationTypes(EntityManager manager, String sessionId) {
-
-        ArrayList<String> instrumentNames = new ArrayList<String>();
-        List<TopcatUserSession> userSessions = manager
-                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
-                .setParameter("topcatSessionId", sessionId).getResultList();
-        for (TopcatUserSession topcatUserSession : userSessions) {
-            instrumentNames.addAll(getInvestigationTypes(topcatUserSession.getIcatSessionId(), topcatUserSession
-                    .getUserId().getServerId()));
-        }
-        return instrumentNames;
-    }
-
-    /**
      * This method returns all the investigation types from a given server
      * 
      * @param manager
@@ -225,35 +187,6 @@ public class UtilityManager {
             logger.warning("getInvestigationTypes: " + ex.getMessage());
         }
         return new ArrayList<String>();
-    }
-
-    /**
-     * This method returns all the investigation types from a given server
-     * 
-     * @param manager
-     * @param sessionId
-     * @param serverName
-     * @return
-     */
-    public ArrayList<TFacilityCycle> getFacilityCycles(EntityManager manager, String sessionId, String serverName)
-            throws ICATMethodNotFoundException {
-        TopcatUserSession userSession = null;
-        try {
-            userSession = (TopcatUserSession) manager
-                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
-                    .getSingleResult();
-            return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
-        } catch (javax.persistence.NoResultException ex) {
-            try {
-                userSession = (TopcatUserSession) manager
-                        .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("serverName", serverName).getSingleResult();
-                return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
-            } catch (javax.persistence.NoResultException exinnex) {
-            }
-        }
-        return new ArrayList<TFacilityCycle>();
     }
 
     /**

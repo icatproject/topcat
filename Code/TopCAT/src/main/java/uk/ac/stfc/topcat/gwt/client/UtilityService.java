@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
@@ -42,7 +43,6 @@ import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 
 /**
  * The <code>UtilityService</code> interface is used to perform searches to get
@@ -76,13 +76,6 @@ public interface UtilityService extends RemoteService {
     public ArrayList<TFacility> getFacilities();
 
     /**
-     * Get a list of facilities registered in TopCAT.
-     * 
-     * @return a list of strings containing facility names
-     */
-    public ArrayList<String> getFacilityNames();
-
-    /**
      * Get a list of instrument names for the given facility.
      * 
      * @param facilityName
@@ -99,37 +92,6 @@ public interface UtilityService extends RemoteService {
      * @return a list of strings containing investigation types
      */
     public ArrayList<String> getInvestigationTypes(String facilityName);
-
-    /**
-     * Get a list of all children for the given ICAT node for which the user has
-     * investigation rights.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @return a list of child <code>ICATNode</code>
-     * @throws SessionException
-     */
-    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) throws SessionException;
-
-    /**
-     * Get a list of all children for the given ICAT node.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @return a list of child <code>ICATNode</code>
-     * @throws SessionException
-     */
-    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) throws SessionException;
-
-    /**
-     * TODO
-     * 
-     * @param node
-     * @return a map with the key as a string containing TODO and the value as a
-     *         list of <code>ICATNode</code>
-     * @throws SessionException
-     */
-    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node) throws SessionException;
 
     /**
      * TODO

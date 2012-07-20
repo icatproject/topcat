@@ -61,14 +61,6 @@ public interface UtilityServiceAsync {
     public void getFacilities(AsyncCallback<ArrayList<TFacility>> callback);
 
     /**
-     * Get a list of facilities registered in TopCAT.
-     * 
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getFacilityNames(AsyncCallback<ArrayList<String>> callback);
-
-    /**
      * Get a list of instrument names for the given facility.
      * 
      * @param facilityName
@@ -87,36 +79,6 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getInvestigationTypes(String facilityName, AsyncCallback<ArrayList<String>> callback);
-
-    /**
-     * Get a list of all children for the given ICAT node for which the user has
-     * investigation rights.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getMyICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);
-
-    /**
-     * Get a list of all children for the given ICAT node.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getAllICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);
-
-    /**
-     * TODO
-     * 
-     * @param node
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getMyICATNodeDatafiles(ICATNode node, AsyncCallback<HashMap<String, ArrayList<ICATNode>>> callback);
 
     /**
      * TODO

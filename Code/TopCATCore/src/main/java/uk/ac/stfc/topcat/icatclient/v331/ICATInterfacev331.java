@@ -43,6 +43,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         this.serverName = serverName;
     }
 
+    @Override
     public String loginLifetime(String username, String password, int hours) throws AuthenticationException {
         String result = new String();
         try {
@@ -55,6 +56,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return result;
     }
 
+    @Override
     public void logout(String sessionId) throws AuthenticationException {
         try {
             service.logout(sessionId);
@@ -63,6 +65,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         }
     }
 
+    @Override
     public Boolean isSessionValid(String sessionId) {
         Boolean result = new Boolean(false);
         try {
@@ -77,6 +80,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return result;
     }
 
+    @Override
     public ArrayList<String> listInstruments(String sessionId) {
         ArrayList<String> instruments = new ArrayList<String>();
         try {
@@ -87,6 +91,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return instruments;
     }
 
+    @Override
     public ArrayList<String> listInvestigationTypes(String sessionId) {
         ArrayList<String> investigationTypes = new ArrayList<String>();
         try {
@@ -97,15 +102,18 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return investigationTypes;
     }
 
+    @Override
     public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
         throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
     }
 
+    @Override
     public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
             throws ICATMethodNotFoundException {
         throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
     }
 
+    @Override
     public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
@@ -119,20 +127,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
-    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
-        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
-        try {
-            List<Investigation> resultInv = service.getMyInvestigationsIncludesPagination(sessionId,
-                    InvestigationInclude.NONE, start, end);
-            for (Investigation inv : resultInv) {
-                investigationList.add(copyInvestigationToTInvestigation(serverName, inv));
-            }
-        } catch (SessionException_Exception ex) {
-        }
-        Collections.sort(investigationList);
-        return investigationList;
-    }
-
+    @Override
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
             throws AuthenticationException {
         TInvestigation ti = new TInvestigation();
@@ -174,6 +169,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return ti;
     }
 
+    @Override
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
             int start, int end) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
@@ -190,6 +186,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
+    @Override
     public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId) {
         ArrayList<TDataset> datasetList = new ArrayList<TDataset>();
         try {
@@ -207,6 +204,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return datasetList;
     }
 
+    @Override
     public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
         ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
         try {
@@ -229,6 +227,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return result;
     }
 
+    @Override
     public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {
         ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
         try {
@@ -246,6 +245,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return datafileList;
     }
 
+    @Override
     public ArrayList<TDatafileParameter> getParametersInDatafile(String sessionId, Long datafileId) {
         ArrayList<TDatafileParameter> result = new ArrayList<TDatafileParameter>();
         try {
@@ -267,6 +267,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return result;
     }
 
+    @Override
     public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
         String result = "";
         try {
@@ -278,6 +279,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return result;
     }
 
+    @Override
     public String downloadDataset(String sessionId, Long datasetId) {
         String result = "";
         try {
@@ -289,6 +291,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return result;
     }
 
+    @Override
     public ArrayList<String> getKeywordsForUser(String sessionId) {
         ArrayList<String> resultKeywords = new ArrayList<String>();
         try {
@@ -298,6 +301,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return resultKeywords;
     }
 
+    @Override
     public ArrayList<String> getKeywordsInInvestigation(String sessionId, Long investigationId) {
         ArrayList<String> keywords = new ArrayList<String>();
         try {
@@ -314,6 +318,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return keywords;
     }
 
+    @Override
     public ArrayList<TInvestigation> searchByKeywords(String sessionId, ArrayList<String> keywords) {
         // call the search using keyword method
         List<Investigation> resultInvestigations = null;
@@ -334,6 +339,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return returnTInvestigations;
     }
 
+    @Override
     public ArrayList<TDatafile> searchByRunNumber(String sessionId, ArrayList<String> instruments,
             float startRunNumber, float endRunNumber) {
         List<Datafile> resultDatafiles = null;
@@ -350,6 +356,7 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         return returnTDatafiles;
     }
 
+    @Override
     public ArrayList<String> getKeywordsForUserWithStartMax(String sessionId, String partialKey, int numberOfKeywords) {
         ArrayList<String> resultKeywords = new ArrayList<String>();
         try {
@@ -426,8 +433,8 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
-                format, formatVersion, formatType, createDate, datafile.getLocation());
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize()
+                .longValue(), format, formatVersion, formatType, createDate, datafile.getLocation());
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

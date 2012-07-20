@@ -61,6 +61,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
+import uk.ac.stfc.topcat.ejb.utils.Configuration;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
@@ -72,7 +73,6 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import uk.ac.stfc.topcat.ejb.utils.Configuration;
 
 /**
  * This is servlet implementation of Utility methods such as getting information
@@ -113,14 +113,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         for (TFacility facility : facilities) {
             downloadPlugins.put(facility.getName(), facility.getDownloadPluginName());
         }
-    }
-
-    /**
-     * This method returns list of facilities registered in TopCAT.
-     */
-    @Override
-    public ArrayList<String> getFacilityNames() {
-        return utilityManager.getFacilityNames();
     }
 
     /**
@@ -495,31 +487,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         return sessionId;
     }
 
-    /**
-     * This method returns list of all children for a given input ICATNode.
-     * 
-     * @param node
-     *            input parent ICATNode information.
-     * @throws SessionException
-     */
-    @Override
-    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) throws SessionException {
-        return getICATNodeChildren(node, false);
-    }
-
-    /**
-     * This method returns list of all Children but only includes the ones that
-     * the user has investigation rights.
-     * 
-     * @param node
-     *            input parent ICATNode information.
-     * @throws SessionException
-     */
-    @Override
-    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) throws SessionException {
-        return getICATNodeChildren(node, true);
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -597,30 +564,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         ArrayList<ICATNode> resultNodes;
         try {
             resultNodes = getICATNodeChildren(node, false);
-        } catch (SessionException e) {
-            throw new SessionException(e.getMessage());
-        }
-        if (resultNodes.size() != 0 && resultNodes.get(0).getNodeType() != ICATNodeType.DATAFILE) {
-            HashMap<String, ArrayList<ICATNode>> result = new HashMap<String, ArrayList<ICATNode>>();
-            result.put("", resultNodes);
-            return result;
-        } else {
-            return createDatafilesHierarchy(resultNodes);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * uk.ac.stfc.topcat.gwt.client.UtilityService#getMyICATNodeDatafiles(uk
-     * .ac.stfc.topcat.gwt.client.model.ICATNode)
-     */
-    @Override
-    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node) throws SessionException {
-        ArrayList<ICATNode> resultNodes;
-        try {
-            resultNodes = getICATNodeChildren(node, true);
         } catch (SessionException e) {
             throw new SessionException(e.getMessage());
         }
