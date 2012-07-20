@@ -602,10 +602,8 @@ public class UtilityManager {
     public TInvestigation getInvestigationDetails(EntityManager manager, String sessionId, String serverName,
             String investigationId) throws AuthenticationException {
         try {
-            TopcatUserSession userSession = (TopcatUserSession) manager
-                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
-                    .getSingleResult();
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, serverName);
             return getInvestigationDetails(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationId);
         } catch (javax.persistence.NoResultException ex) {
@@ -648,10 +646,8 @@ public class UtilityManager {
     public ArrayList<TDataset> getDatasetsInServer(EntityManager manager, String sessionId, String serverName,
             String investigationNumber) throws AuthenticationException {
         try {
-            TopcatUserSession userSession = (TopcatUserSession) manager
-                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
-                    .getSingleResult();
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, serverName);
             return getDatasetsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationNumber);
         } catch (javax.persistence.NoResultException ex) {

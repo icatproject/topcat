@@ -499,7 +499,10 @@ public class UserManager {
             try {
                 ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                         server.getVersion(), server.getServerUrl());
-                service.logout(userSession.getIcatSessionId());
+                try {
+                    service.logout(userSession.getIcatSessionId());
+                } catch (AuthenticationException ex) {
+                }
                 String icatSessionId = service.loginLifetime(server.getDefaultUser(), server.getDefaultPassword(), 24);
                 userSession.setIcatSessionId(icatSessionId);
                 manager.persist(userSession);
