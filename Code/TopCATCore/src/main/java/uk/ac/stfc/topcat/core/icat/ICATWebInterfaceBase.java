@@ -75,6 +75,10 @@ public class ICATWebInterfaceBase {
         return new ArrayList<TDatasetParameter>();
     }
 
+    public String getDatasetName(String sessionId, Long datasetId) {
+        return "";
+    }
+
     public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {
         return new ArrayList<TDatafile>();
     }

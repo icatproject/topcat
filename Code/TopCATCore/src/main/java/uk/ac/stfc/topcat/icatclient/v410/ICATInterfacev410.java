@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 import javax.xml.namespace.QName;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
@@ -266,6 +268,18 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             System.out.println("ERROR - getParametersInDataset: " + e.getMessage());
         }
         return result;
+    }
+
+    @Override
+    public String getDatasetName(String sessionId, Long datasetId) {
+        try {
+            Dataset ds = (Dataset) service.get(sessionId, "Dataset", datasetId);
+            return ds.getName();
+        } catch (IcatException_Exception e) {
+            // TODO check type
+            System.out.println("ERROR - getParametersInDataset: " + e.getMessage());
+        }
+        return "";
     }
 
     @Override
@@ -543,8 +557,9 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
-                format, formatVersion, formatType, createDate, datafile.getLocation());
+        // TODO change FileSize in TDatafile to a Long
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize()
+                .intValue(), format, formatVersion, formatType, createDate, datafile.getLocation());
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

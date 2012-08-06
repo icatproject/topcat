@@ -12,9 +12,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
@@ -173,6 +175,20 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
+    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
+        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+        try {
+            List<Investigation> resultInv = service.getMyInvestigationsIncludesPagination(sessionId,
+                    InvestigationInclude.NONE, start, end);
+            for (Investigation inv : resultInv) {
+                investigationList.add(copyInvestigationToTInvestigation(serverName, inv));
+            }
+        } catch (SessionException_Exception ex) {
+        }
+        Collections.sort(investigationList);
+        return investigationList;
+    }
+
     @Override
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
             throws AuthenticationException {
@@ -274,6 +290,18 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         } catch (NoSuchObjectFoundException_Exception ex) {
         }
         return result;
+    }
+
+    @Override
+    public String getDatasetName(String sessionId, Long datasetId) {
+        try {
+            Dataset ds = service.getDataset(sessionId, datasetId);
+            return ds.getName();
+        } catch (SessionException_Exception ex) {
+        } catch (InsufficientPrivilegesException_Exception ex) {
+        } catch (NoSuchObjectFoundException_Exception ex) {
+        }
+        return "";
     }
 
     @Override
@@ -485,8 +513,8 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize()
-                .longValue(), format, formatVersion, formatType, createDate, datafile.getLocation());
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
+                format, formatVersion, formatType, createDate, datafile.getLocation());
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {
