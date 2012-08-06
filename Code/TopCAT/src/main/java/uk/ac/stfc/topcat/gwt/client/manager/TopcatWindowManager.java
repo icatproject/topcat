@@ -221,22 +221,24 @@ public class TopcatWindowManager {
                     loginToFacilities.add(paramMap.get("ServerName"));
                 }
                 EventPipeLine.getInstance().showDatasetWindow(paramMap.get("ServerName"),
-                        paramMap.get("InvestigationId"), paramMap.get("InvestigationName"));
+                        paramMap.get("InvestigationId"), null);
 
                 // Dataset
             } else if (paramMap.get("Model") != null && paramMap.get("Model").compareToIgnoreCase("Dataset") == 0) {
                 // create dataset models
                 ArrayList<DatasetModel> dsModelList = new ArrayList<DatasetModel>();
-                for (int i = 0; i < paramMap.size(); i++) {
+                // 1 parameter will be the model name, then there are 2
+                // parameters per dataset
+                int dsCount = (paramMap.size() - 1) / 2;
+                for (int i = 0; i < dsCount; i++) {
                     if (paramMap.containsKey("DSId-" + i)) {
                         if (!loggedInFacilities.contains(paramMap.get("SN-" + i))) {
                             loginToFacilities.add(paramMap.get("SN-" + i));
                         }
-                        dsModelList.add(new DatasetModel(paramMap.get("SN-" + i), paramMap.get("DSId-" + i), paramMap
-                                .get("DSName-" + i), null, null, null));
+                        dsModelList.add(new DatasetModel(paramMap.get("SN-" + i), paramMap.get("DSId-" + i), null,
+                                null, null, null));
                         paramMap.remove("SN-" + i);
                         paramMap.remove("DSId-" + i);
-                        paramMap.remove("DSName-" + i);
                     }
                 }
                 if (dsModelList.size() > 0) {

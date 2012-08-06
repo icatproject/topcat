@@ -341,8 +341,6 @@ public class DatafileWindow extends Window {
                     + dataset.getFacilityName();
             history += HistoryManager.seperatorToken + "DSId-" + count + HistoryManager.seperatorKeyValues
                     + dataset.getId();
-            history += HistoryManager.seperatorToken + "DSName-" + count + HistoryManager.seperatorKeyValues
-                    + dataset.getName();
             count++;
         }
         return history;
@@ -397,7 +395,7 @@ public class DatafileWindow extends Window {
 
     @Override
     public void show() {
-        if (awaitingLogin) {
+        if (awaitingLogin || loadingData) {
             return;
         }
         if (!EventPipeLine.getInstance().getLoggedInFacilities().containsAll(facilityNames)) {
@@ -430,7 +428,7 @@ public class DatafileWindow extends Window {
      * @return true if the widget is in use
      */
     public boolean isInUse() {
-        if (awaitingLogin) {
+        if (awaitingLogin || loadingData) {
             return true;
         }
         return super.isVisible();
@@ -584,6 +582,7 @@ public class DatafileWindow extends Window {
                 EventPipeLine.getInstance().hideRetrievingData();
                 if (result.size() > 0) {
                     setDatafileList(result);
+                    loadingData = false;
                     show();
                     EventPipeLine.getInstance().getHistoryManager().updateHistory();
                 } else {

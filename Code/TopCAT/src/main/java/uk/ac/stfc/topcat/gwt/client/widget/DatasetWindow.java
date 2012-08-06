@@ -284,8 +284,6 @@ public class DatasetWindow extends Window {
         history += HistoryManager.seperatorToken + "ServerName" + HistoryManager.seperatorKeyValues + facilityName;
         history += HistoryManager.seperatorToken + "InvestigationId" + HistoryManager.seperatorKeyValues
                 + investigationId;
-        history += HistoryManager.seperatorToken + "InvestigationName" + HistoryManager.seperatorKeyValues
-                + investigationName;
         return history;
     }
 

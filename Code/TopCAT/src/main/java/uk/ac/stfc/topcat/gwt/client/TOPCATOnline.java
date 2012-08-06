@@ -125,15 +125,15 @@ public class TOPCATOnline implements EntryPoint {
 
     public void resizePanels(int width) {
         int newWidth = width;
-        if (newWidth < 800)
-            newWidth = 800;
+        if (newWidth < 910)
+            newWidth = 910;
         headerPanel.setWidth(newWidth - 5);
         mainPanel.setWidth(newWidth - 5);
         mainPanel.getSearchPanel().setGridWidth(newWidth - 7);
         mainPanel.getMyDataPanel().setGridWidth(newWidth - 7);
         mainPanel.getMyDownloadPanel().setGridWidth(newWidth - 7);
         mainPanel.getBrowserPanel().setTreeWidth(newWidth - 30);
-        // footerPanel.setWidth(newWidth - 5);TODO
+        footerPanel.setWidth(newWidth - 5);
     }
 
     public RootPanel getRootPanel() {

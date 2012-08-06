@@ -116,6 +116,14 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     }
 
     /**
+     * This method returns list of facilities registered in TopCAT.
+     */
+    @Override
+    public ArrayList<String> getFacilityNames() {
+        return utilityManager.getFacilityNames();
+    }
+
+    /**
      * This method returns all facility(iCAT instances) objects.
      */
     @Override
@@ -445,20 +453,27 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets) {
         ArrayList<DatafileModel> result = new ArrayList<DatafileModel>();
+        String sessionId = getSessionId();
+        String dsName;
         for (DatasetModel dataset : datasets) {
-            ArrayList<TDatafile> dfList = utilityManager.getDatafilesInServer(getSessionId(),
-                    dataset.getFacilityName(), dataset.getId());
+            if (dataset.getName() != null) {
+                dsName = dataset.getName();
+            } else {
+                dsName = utilityManager.getDatasetName(sessionId, dataset.getFacilityName(), dataset.getId());
+            }
+            ArrayList<TDatafile> dfList = utilityManager.getDatafilesInServer(sessionId, dataset.getFacilityName(),
+                    dataset.getId());
             if (dfList == null)
                 continue;
             for (TDatafile df : dfList) {
                 if (df.getCreateTime() != null)
-                    result.add(new DatafileModel(dataset.getFacilityName(), dataset.getName(), df.getId(),
-                            df.getName(), df.getSize().toString(), df.getFormat(), df.getFormatVersion(), df
-                                    .getFormatType(), df.getCreateTime(), df.getLocation()));
+                    result.add(new DatafileModel(dataset.getFacilityName(), dsName, df.getId(), df.getName(), df
+                            .getSize().toString(), df.getFormat(), df.getFormatVersion(), df.getFormatType(), df
+                            .getCreateTime(), df.getLocation()));
                 else
-                    result.add(new DatafileModel(dataset.getFacilityName(), dataset.getName(), df.getId(),
-                            df.getName(), df.getSize().toString(), df.getFormat(), df.getFormatVersion(), df
-                                    .getFormatType(), null, df.getLocation()));
+                    result.add(new DatafileModel(dataset.getFacilityName(), dsName, df.getId(), df.getName(), df
+                            .getSize().toString(), df.getFormat(), df.getFormatVersion(), df.getFormatType(), null, df
+                            .getLocation()));
             }
         }
         return result;
@@ -485,6 +500,31 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             sessionId = (String) session.getAttribute("SESSION_ID");
         }
         return sessionId;
+    }
+
+    /**
+     * This method returns list of all children for a given input ICATNode.
+     * 
+     * @param node
+     *            input parent ICATNode information.
+     * @throws SessionException
+     */
+    @Override
+    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) throws SessionException {
+        return getICATNodeChildren(node, false);
+    }
+
+    /**
+     * This method returns list of all Children but only includes the ones that
+     * the user has investigation rights.
+     * 
+     * @param node
+     *            input parent ICATNode information.
+     * @throws SessionException
+     */
+    @Override
+    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) throws SessionException {
+        return getICATNodeChildren(node, true);
     }
 
     /*
@@ -564,6 +604,30 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         ArrayList<ICATNode> resultNodes;
         try {
             resultNodes = getICATNodeChildren(node, false);
+        } catch (SessionException e) {
+            throw new SessionException(e.getMessage());
+        }
+        if (resultNodes.size() != 0 && resultNodes.get(0).getNodeType() != ICATNodeType.DATAFILE) {
+            HashMap<String, ArrayList<ICATNode>> result = new HashMap<String, ArrayList<ICATNode>>();
+            result.put("", resultNodes);
+            return result;
+        } else {
+            return createDatafilesHierarchy(resultNodes);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * uk.ac.stfc.topcat.gwt.client.UtilityService#getMyICATNodeDatafiles(uk
+     * .ac.stfc.topcat.gwt.client.model.ICATNode)
+     */
+    @Override
+    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node) throws SessionException {
+        ArrayList<ICATNode> resultNodes;
+        try {
+            resultNodes = getICATNodeChildren(node, true);
         } catch (SessionException e) {
             throw new SessionException(e.getMessage());
         }

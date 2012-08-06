@@ -771,7 +771,11 @@ public class EventPipeLine implements LoginInterface {
             DatasetWindow datasetWindow = tcWindowManager.findDatasetWindow(facilityName, investigationId);
             if (datasetWindow == null) {
                 datasetWindow = tcWindowManager.createDatasetWindow();
-                datasetWindow.setInvestigationTitle(investigationName);
+                if (investigationName == null) {
+                    setInvestigationTitle(facilityName, investigationId, datasetWindow);
+                } else {
+                    datasetWindow.setInvestigationTitle(investigationName);
+                }
                 datasetWindow.setDataset(facilityName, investigationId);
             } else {
                 datasetWindow.show();
@@ -1144,6 +1148,36 @@ public class EventPipeLine implements LoginInterface {
                 getEventBus()
                         .fireEventFromSource(new AddInvestigationEvent(facilityName, investigations), facilityName);
                 hideRetrievingData();
+            }
+        });
+    }
+
+    /**
+     * Get the investigation title from the server and then set it in the
+     * window.
+     * 
+     * @param facilityName
+     * @param investigationId
+     * @param datasetWindow
+     */
+    private void setInvestigationTitle(String facilityName, final String investigationId,
+            final DatasetWindow datasetWindow) {
+        utilityService.getInvestigationDetails(facilityName, investigationId, new AsyncCallback<TInvestigation>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof SessionException) {
+                    // session has probably expired, check all sessions to be
+                    // safe
+                    checkStillLoggedIn();
+                } else {
+                    showErrorDialog("Error retrieving data from server for investigation " + investigationId);
+                }
+            }
+
+            @Override
+            public void onSuccess(TInvestigation result) {
+                datasetWindow.setInvestigationTitle(result.getTitle());
+                datasetWindow.repaint();
             }
         });
     }
