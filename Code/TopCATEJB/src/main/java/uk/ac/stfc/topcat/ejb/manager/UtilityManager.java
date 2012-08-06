@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -31,18 +31,20 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
+import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
 /**
  * This has utilties such as getting list of facilities etc.
@@ -77,7 +79,8 @@ public class UtilityManager {
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
         for (TopcatIcatServer icatServer : servers) {
             facilityNames.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(),
-                    icatServer.getPluginName(), icatServer.getDownloadPluginName()));
+                    icatServer.getPluginName(), icatServer.getDownloadPluginName(), icatServer
+                            .getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
         }
         return facilityNames;
     }
@@ -367,7 +370,7 @@ public class UtilityManager {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
-            return service.getMyInvestigationsIncludesPagination(sessionId, 0, 200);
+            return service.getMyInvestigations(sessionId);
         } catch (MalformedURLException ex) {
             logger.warning("getMyInvestigationsInServer: " + ex.getMessage());
         }
@@ -558,8 +561,8 @@ public class UtilityManager {
     }
 
     /**
-     * This method returns all the investigation for the user in a given server
-     * , the given instrument and facility cycle.
+     * This method returns all the investigation for the user in a given server,
+     * the given instrument and facility cycle.
      * 
      * @param sessionId
      * @param server
@@ -586,6 +589,50 @@ public class UtilityManager {
     }
 
     /**
+     * This method returns the investigation details from the given server for
+     * the given investigation id.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @param investigationId
+     * @return
+     * @throws AuthenticationException
+     */
+    public TInvestigation getInvestigationDetails(EntityManager manager, String sessionId, String serverName,
+            String investigationId) throws AuthenticationException {
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, serverName);
+            return getInvestigationDetails(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
+                    investigationId);
+        } catch (javax.persistence.NoResultException ex) {
+            throw new AuthenticationException("Could not find session information");
+        }
+    }
+
+    /**
+     * This method returns the investigation details from the given server for
+     * the given investigation id.
+     * 
+     * @param sessionId
+     * @param server
+     * @param investigationId
+     * @return
+     */
+    public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, String investigationId)
+            throws AuthenticationException {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.getInvestigationDetails(sessionId, Long.valueOf(investigationId));
+        } catch (MalformedURLException ex) {
+            logger.warning("getInvestigationDetails: " + ex.getMessage());
+        }
+        return new TInvestigation();
+    }
+
+    /**
      * This method returns datasets for a given investigation number on given
      * input server
      * 
@@ -594,17 +641,18 @@ public class UtilityManager {
      * @param serverName
      * @param investigationNumber
      * @return
+     * @throws AuthenticationException
      */
     public ArrayList<TDataset> getDatasetsInServer(EntityManager manager, String sessionId, String serverName,
-            String investigationNumber) {
+            String investigationNumber) throws AuthenticationException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
             return getDatasetsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationNumber);
         } catch (javax.persistence.NoResultException ex) {
+            throw new AuthenticationException("Could not find session information");
         }
-        return new ArrayList<TDataset>();
     }
 
     /**
@@ -628,6 +676,87 @@ public class UtilityManager {
             logger.warning("getDatasetsInServer: " + ex.getMessage());
         }
         return new ArrayList<TDataset>();
+    }
+
+    /**
+     * This method get the parameters corresponding to the input datasetid on
+     * the given server.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @param datasetId
+     * @return
+     */
+    public ArrayList<TDatasetParameter> getDatasetInfo(EntityManager manager, String sessionId, String serverName,
+            String datasetId) {
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, serverName);
+            return getDatasetInfo(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), datasetId);
+        } catch (javax.persistence.NoResultException ex) {
+        }
+        return null;
+    }
+
+    /**
+     * This method get the parameters corresponding to the input datasetid on
+     * the given server.
+     * 
+     * @param sessionId
+     * @param server
+     * @param datasetId
+     * @return
+     */
+    public ArrayList<TDatasetParameter> getDatasetInfo(String sessionId, TopcatIcatServer server, String datasetId) {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.getParametersInDataset(sessionId, Long.valueOf(datasetId));
+        } catch (MalformedURLException ex) {
+            logger.warning("getDatasetInfo: " + ex.getMessage());
+        }
+        return new ArrayList<TDatasetParameter>();
+    }
+
+    /**
+     * This method returns the datafile name corresponding to a given datasetid
+     * in a given input server
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @param datasetId
+     * @return
+     */
+    public String getDatasetName(EntityManager manager, String sessionId, String serverName, String datasetId) {
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, serverName);
+            return getDatasetName(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), datasetId);
+        } catch (javax.persistence.NoResultException ex) {
+        }
+        return "";
+    }
+
+    /**
+     * This method returns the datafile name corresponding to a given datasetid
+     * in a given input server
+     * 
+     * @param sessionId
+     * @param server
+     * @param datasetId
+     * @return
+     */
+    public String getDatasetName(String sessionId, TopcatIcatServer server, String datasetId) {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.getDatasetName(sessionId, Long.valueOf(datasetId));
+        } catch (MalformedURLException ex) {
+            logger.warning("getDatasetName: " + ex.getMessage());
+        }
+        return "";
     }
 
     /**

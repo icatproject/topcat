@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -26,6 +26,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 
@@ -33,7 +34,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddMyInvestigationEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -44,21 +52,30 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+
 import java.util.List;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
@@ -81,8 +98,15 @@ public class MyDataPanel extends Composite {
     PagingToolBar toolBar = null;
     Grid<TopcatInvestigation> grid;
     private EventPipeLine eventBus;
+    private boolean refreshData = true;
+    private VerticalPanel investigationPanel;
+    private InvestigationSubPanel investigationSubPanel;
+    private static final String SOURCE = "MyDataPanel";
 
     public MyDataPanel() {
+        LayoutContainer mainContainer = new LayoutContainer();
+        mainContainer.setLayout(new RowLayout(Orientation.VERTICAL));
+
         ContentPanel contentPanel = new ContentPanel();
         contentPanel.setHeaderVisible(false);
         contentPanel.setCollapsible(true);
@@ -112,11 +136,9 @@ public class MyDataPanel extends Composite {
         configs.add(clmncnfgServerName);
 
         ColumnConfig clmncnfgInvestigationNumber = new ColumnConfig("investigationName", "Investigation Number", 150);
-        clmncnfgInvestigationNumber.setToolTip("\"Double Click\" to show datasets");
         configs.add(clmncnfgInvestigationNumber);
 
         ColumnConfig clmncnfgVisitId = new ColumnConfig("visitId", "Visit Id", 150);
-        clmncnfgVisitId.setToolTip("\"Double Click\" to show datasets");
         configs.add(clmncnfgVisitId);
 
         ColumnConfig clmncnfgTitle = new ColumnConfig("title", "Title", 150);
@@ -142,70 +164,95 @@ public class MyDataPanel extends Composite {
         grid.setAutoExpandColumn("title");
         grid.setAutoExpandMin(200);
         grid.setMinColumnWidth(100);
+        grid.setToolTip("\"Click\" row to show investigation, \"Double Click\" to show datasets, right click for more options");
+        // single click
+        grid.addListener(Events.RowClick, new Listener<GridEvent<TopcatInvestigation>>() {
+            @Override
+            public void handleEvent(GridEvent<TopcatInvestigation> e) {
+                eventBus.getInvestigationDetails(e.getModel().getFacilityName(), e.getModel().getInvestigationId(),
+                        SOURCE);
+            }
+        });
+        // double click
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
             @Override
             public void handleEvent(GridEvent<TopcatInvestigation> e) {
-                TopcatInvestigation inv = (TopcatInvestigation) e.getModel();
+                TopcatInvestigation inv = e.getModel();
                 eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
                         inv.getInvestigationTitle());
             }
         });
-        grid.setHeight("376px");
+
+        // Context Menu
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showInvestigation = new MenuItem();
+        showInvestigation.setText("show investigation");
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showInvestigation);
+        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                eventBus.getInvestigationDetails(grid.getSelectionModel().getSelectedItem().getFacilityName(), grid
+                        .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
+            }
+        });
+        MenuItem showDS = new MenuItem();
+        showDS.setText("show data sets");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showDS);
+        showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                eventBus.showDatasetWindowWithHistory(grid.getSelectionModel().getSelectedItem().getFacilityName(),
+                        grid.getSelectionModel().getSelectedItem().getInvestigationId(), grid.getSelectionModel()
+                                .getSelectedItem().getInvestigationTitle());
+            }
+        });
+        grid.setContextMenu(contextMenu);
+
+        grid.setAutoHeight(true);
         bodyPanel.add(grid);
-        contentPanel.add(bodyPanel);
+        contentPanel.add(bodyPanel, new RowData(Style.DEFAULT, 376.0, new Margins()));
 
         // Pagination Bar
-        toolBar = new PagingToolBar(15);
+        toolBar = new PagingToolBar(15) {
+            @Override
+            public void refresh() {
+                super.refresh();
+                if (refreshData) {
+                    // Collect list of investigations
+                    EventPipeLine.getInstance().getMyInvestigationsInMyDataPanel();
+                }
+            }
+        };
         toolBar.bind(loader);
         contentPanel.setBottomComponent(toolBar);
 
+        mainContainer.add(contentPanel);
+
+        // Investigation detail
+        investigationPanel = new VerticalPanel();
+        investigationPanel.setBorders(true);
+        investigationPanel.setSpacing(20);
+        investigationPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
+        investigationSubPanel = new InvestigationSubPanel();
+        TableData td_investigationContentPanel = new TableData();
+        td_investigationContentPanel.setHeight("100%");
+        td_investigationContentPanel.setWidth("705px");
+        investigationPanel.add(investigationSubPanel, td_investigationContentPanel);
+        investigationPanel.hide();
+        mainContainer.add(investigationPanel);
+
+        initComponent(mainContainer);
         setMonitorWindowResize(true);
-        initComponent(contentPanel);
-    }
 
-    /**
-     * Remove all investigations for the given facility.
-     * 
-     * @param facilityName
-     */
-    public void clearInvestigationList(String facilityName) {
-        @SuppressWarnings("unchecked")
-        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
-        if (investList != null) {
-            for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
-                if (it.next().getFacilityName().equals(facilityName)) {
-                    it.remove();
-                }
-            }
-            invPageProxy.setData(investList);
-            toolBar.refresh();
-        }
-    }
-
-    /**
-     * This method sets the result investigations that will be displayed in the
-     * results table.
-     * 
-     * @param facilityName
-     * @param invList
-     *            list of investigations
-     */
-    public void addInvestigations(String facilityName, ArrayList<TopcatInvestigation> invList) {
-        clearInvestigationList(facilityName);
-        @SuppressWarnings("unchecked")
-        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
-        if (investList != null) {
-            investList.addAll(invList);
-        } else {
-            investList = new ArrayList<TopcatInvestigation>();
-            investList.addAll(invList);
-        }
-        invPageProxy.setData(investList);
-        toolBar.refresh();
+        createAddInvestigationDetailsHandler();
+        createAddMyInvestigationHandler();
+        createLogoutHandler();
     }
 
     public void setEventBus(EventPipeLine eventBus) {
         this.eventBus = eventBus;
+        investigationSubPanel.setEventBus(eventBus);
     }
 
     /**
@@ -215,5 +262,82 @@ public class MyDataPanel extends Composite {
      */
     public void setGridWidth(int width) {
         grid.setWidth(width);
+    }
+
+    /**
+     * Setup a handler to react to AddMyInvestigation events.
+     */
+    private void createAddMyInvestigationHandler() {
+        // react to a new set of investigations being added
+        AddMyInvestigationEvent.register(EventPipeLine.getEventBus(), new AddMyInvestigationEventHandler() {
+            @Override
+            public void addMyInvestigations(AddMyInvestigationEvent event) {
+                clearInvestigationList(event.getFacilityName());
+                @SuppressWarnings("unchecked")
+                List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
+                if (investList != null) {
+                    investList.addAll(event.getMyInvestigations());
+                } else {
+                    investList = new ArrayList<TopcatInvestigation>();
+                    investList.addAll(event.getMyInvestigations());
+                }
+                invPageProxy.setData(investList);
+                refreshData = false;
+                toolBar.refresh();
+                refreshData = true;
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to add investigation details events.
+     */
+    private void createAddInvestigationDetailsHandler() {
+        AddInvestigationDetailsEvent.registerToSource(EventPipeLine.getEventBus(), SOURCE,
+                new AddInvestigationDetailsEventHandler() {
+                    @Override
+                    public void addInvestigationDetails(AddInvestigationDetailsEvent event) {
+                        investigationSubPanel.setInvestigation(event.getInvestigation());
+                        investigationPanel.show();
+                    }
+                });
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                clearInvestigationList(event.getFacilityName());
+                String invDetailsFacility = investigationSubPanel.getFacilityName();
+                if (!(invDetailsFacility == null) && invDetailsFacility.equalsIgnoreCase(event.getFacilityName())) {
+                    investigationPanel.hide();
+                    investigationSubPanel.reset();
+                }
+            }
+        });
+    }
+
+    /**
+     * Remove all investigations for the given facility.
+     * 
+     * @param facilityName
+     */
+    private void clearInvestigationList(String facilityName) {
+        @SuppressWarnings("unchecked")
+        List<TopcatInvestigation> investList = (List<TopcatInvestigation>) invPageProxy.getData();
+        if (investList != null) {
+            for (Iterator<TopcatInvestigation> it = investList.iterator(); it.hasNext();) {
+                if (it.next().getFacilityName().equals(facilityName)) {
+                    it.remove();
+                }
+            }
+            invPageProxy.setData(investList);
+            refreshData = false;
+            toolBar.refresh();
+            refreshData = true;
+        }
     }
 }

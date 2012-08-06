@@ -1837,7 +1837,7 @@
 <xs:complexContent>
 <xs:extension base="tns:entityBaseBean">
 <xs:sequence>
-<xs:element ref="tns:investigation" minOccurs="0"/>
+<xs:element name="investigation" type="tns:investigation" minOccurs="0"/>
 <xs:element name="investigationVisitId" type="xs:string" minOccurs="0"/>
 <xs:element name="study" type="tns:study" minOccurs="0"/>
 <xs:element name="studyInvestigationPK" type="tns:studyInvestigationPK" minOccurs="0"/>

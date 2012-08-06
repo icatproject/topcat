@@ -23,6 +23,10 @@
 package uk.ac.stfc.topcat.gwt.client.widget;
 
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddFacilityEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.facility.FacilityPlugin;
 import uk.ac.stfc.topcat.gwt.client.facility.FacilityPluginFactory;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
@@ -114,20 +118,38 @@ public class FacilitiesSearchSubPanel extends Composite {
         initComponent(layoutContainer);
         setBorders(true);
         setAutoHeight(true);
+
+        createAddFacilityHandler();
+        createLogonHandler();
     }
 
-    public ComboBox<Facility> getComboBoxFacility() {
-        return comboBoxFacility;
+    /**
+     * Setup a handler to react to add facility events.
+     */
+    private void createAddFacilityHandler() {
+        AddFacilityEvent.register(EventPipeLine.getEventBus(), new AddFacilityEventHandler() {
+            @Override
+            public void addFacilities(AddFacilityEvent event) {
+                comboBoxFacility.getStore().add(event.getFacilities());
+            }
+        });
     }
 
-    public void setFacilitySearch(String facilityName) {
-        Facility facility = comboBoxFacility.getStore().findModel("name", facilityName);
-        if (facility != null) {
-            comboBoxFacility.setValue(facility);
-        }
-    }
-
-    public LayoutContainer getFacilityWidget() {
-        return facilityWidget;
+    /**
+     * Setup a handler to react to logon events.
+     */
+    private void createLogonHandler() {
+        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
+            @Override
+            public void login(LoginEvent event) {
+                // if the facility search has not been set, set it
+                if (facilityWidget.getItemCount() == 0) {
+                    Facility facility = comboBoxFacility.getStore().findModel("name", event.getFacilityName());
+                    if (facility != null) {
+                        comboBoxFacility.setValue(facility);
+                    }
+                }
+            }
+        });
     }
 }

@@ -68,7 +68,7 @@ public class MainPanel extends Composite {
 
         TabItem tbtmMyDownload = new TabItem("My Downloads");
         tbtmMyDownload.setItemId("MyDownloads");
-        myDownloadPanel = new MyDownloadPanel();
+        myDownloadPanel = new MyDownloadPanel(tabPanel, tbtmMyDownload);
         myDownloadPanel.setAutoWidth(true);
         myDownloadPanel.setAutoHeight(true);
         tbtmMyDownload.add(myDownloadPanel);

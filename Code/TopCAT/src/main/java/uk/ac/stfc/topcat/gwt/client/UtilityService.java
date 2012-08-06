@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -106,8 +107,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      *            a <code>ICATNode</code> containing the parent information
      * @return a list of child <code>ICATNode</code>
+     * @throws SessionException
      */
-    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node);
+    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) throws SessionException;
 
     /**
      * Get a list of all children for the given ICAT node.
@@ -115,8 +117,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      *            a <code>ICATNode</code> containing the parent information
      * @return a list of child <code>ICATNode</code>
+     * @throws SessionException
      */
-    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node);
+    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) throws SessionException;
 
     /**
      * TODO
@@ -124,8 +127,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      * @return a map with the key as a string containing TODO and the value as a
      *         list of <code>ICATNode</code>
+     * @throws SessionException
      */
-    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node);
+    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node) throws SessionException;
 
     /**
      * TODO
@@ -133,8 +137,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      * @return a map with the key as a string containing TODO and the value as a
      *         list of <code>ICATNode</code>
+     * @throws SessionException
      */
-    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node);
+    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws SessionException;
 
     /**
      * Get a list of parameter models which have parameter names and
@@ -158,8 +163,23 @@ public interface UtilityService extends RemoteService {
      *            a string containing the investigation id
      * @return a list of <code>DatasetModel</code> containing data set
      *         information
+     * @throws SessionException
      */
-    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId);
+    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId)
+            throws SessionException;
+
+    /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data set id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            a string containing the data set id
+     * @return a list of <code>ParameterModel</code> which contain parameter
+     *         names and corresponding values
+     */
+    public ArrayList<ParameterModel> getDatasetParameters(String facilityName, String datasetId);
 
     /**
      * Get a list of data files information corresponding to the given list of
@@ -208,6 +228,18 @@ public interface UtilityService extends RemoteService {
      * @return a list of <code>TInvestigation</code> containing investigations
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
+
+    /**
+     * Get additional details about an investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            the investigation id
+     * @return a <code>TInvestigation</code> containing additional data
+     * @throws SessionException
+     */
+    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws SessionException;
 
     /**
      * This method returns the server logo URL

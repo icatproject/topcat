@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -20,45 +20,19 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
  * OF SUCH DAMAGE.
  */
-package uk.ac.stfc.topcat.gwt.client.callback;
-/**
- * Imports
- */
-import java.util.ArrayList;
+package uk.ac.stfc.topcat.gwt.client.exception;
 
-import uk.ac.stfc.topcat.gwt.client.model.Instrument;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
- * Callback for the updating of Instruments
- * TODO: depricate and add this functionality to event pipeline
+ * This is an exception for login errors.
  * <p>
- * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
- * @since iCAT Version 3.3
  */
-public class InstrumentCallback implements AsyncCallback<ArrayList<String>> {
+@SuppressWarnings("serial")
+public class SessionException extends Exception {
+    public SessionException() {
+        super();
+    }
 
-	String facilityName;
-	EventPipeLine eventPipeLine;
-	public InstrumentCallback(String facilityName, EventPipeLine eventPipeLine) {
-		this.facilityName = facilityName;
-		this.eventPipeLine = eventPipeLine;
-	}
-	
-	@Override
-	public void onFailure(Throwable caught) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onSuccess(ArrayList<String> instrumentList) {
-		// TODO Auto-generated method stub
-		ArrayList<Instrument> inList = new ArrayList<Instrument>();
-		for(String instrument : instrumentList){
-			inList.add(new Instrument(facilityName, instrument));
-		}
-		eventPipeLine.updateFacilityInstrumentListWidgets(facilityName,inList);		
-	}
-
+    public SessionException(String msg) {
+        super(msg);
+    }
 }

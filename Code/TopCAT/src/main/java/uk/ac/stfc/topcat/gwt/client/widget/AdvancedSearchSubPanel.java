@@ -30,7 +30,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
+import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.callback.InvestigationSearchCallback;
+import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInstrumentEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddFacilityEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInstrumentEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
@@ -171,12 +180,13 @@ public class AdvancedSearchSubPanel extends Composite {
 
         listFieldFacility = new ListField<Facility>();
         listFieldFacility.addSelectionChangedListener(new SelectionChangedListener<Facility>() {
+            @Override
             public void selectionChanged(SelectionChangedEvent<Facility> se) {
                 updateListWidgets();
             }
         });
         listFieldFacility.setDisplayField("name");
-        listFieldFacility.setStore(new ListStore());
+        listFieldFacility.setStore(new ListStore<Facility>());
         flexTable.setWidget(8, 1, listFieldFacility);
 
         LabelField lblfldInvestigationType = new LabelField("Investigation Type");
@@ -196,13 +206,14 @@ public class AdvancedSearchSubPanel extends Composite {
 
         lstInstrument = new ListField<Instrument>();
         lstInstrument.setDisplayField("displayName");
-        lstInstrument.setStore(new ListStore());
+        lstInstrument.setStore(new ListStore<Instrument>());
         flexTable.setWidget(10, 1, lstInstrument);
 
         flexTable.setWidget(11, 0, new Text());
 
         Button btnSearch = new Button("Search");
         btnSearch.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent e) {
                 searchAdvanced();
             }
@@ -211,6 +222,7 @@ public class AdvancedSearchSubPanel extends Composite {
 
         Button btnReset = new Button("Reset");
         btnReset.addListener(Events.Select, new Listener<ButtonEvent>() {
+            @Override
             public void handleEvent(ButtonEvent e) {
                 resetWidgetValues();
             }
@@ -225,11 +237,11 @@ public class AdvancedSearchSubPanel extends Composite {
         layoutContainer.setBorders(true);
         instrumentList = new HashMap<String, ArrayList<Instrument>>();
         investigationTypeList = new HashMap<String, ArrayList<InvestigationType>>();
-    }
 
-    public void setFacilityList(ArrayList<Facility> facility) {
-        listFieldFacility.getStore().removeAll();
-        listFieldFacility.getStore().add(facility);
+        createAddFacilityHandler();
+        createAddInstrumentHandler();
+        createAddInvestigationHandler();
+        createLogoutHandler();
     }
 
     public ListField<InvestigationType> getListFieldInvestigationType() {
@@ -273,17 +285,17 @@ public class AdvancedSearchSubPanel extends Composite {
 
     private TAdvancedSearchDetails createAdvancedSearchDetails() {
         TAdvancedSearchDetails result = new TAdvancedSearchDetails();
-        result.setPropostaltitle((String) txtFldProposalTitle.getValue());
-        result.setProposalAbstract((String) txtFldProposalAbstract.getValue());
-        result.setSample((String) txtFldSampleName.getValue());
+        result.setPropostaltitle(txtFldProposalTitle.getValue());
+        result.setProposalAbstract(txtFldProposalAbstract.getValue());
+        result.setSample(txtFldSampleName.getValue());
         if (txtFldInvestigatorName.getValue() != null && txtFldInvestigatorName.getValue().compareTo("") != 0)
-            result.getInvestigatorNameList().add((String) txtFldInvestigatorName.getValue());
-        result.setDatafileName((String) txtFldDataFileName.getValue());
+            result.getInvestigatorNameList().add(txtFldInvestigatorName.getValue());
+        result.setDatafileName(txtFldDataFileName.getValue());
         result.setStartDate(dateFieldStart.getValue());
         result.setEndDate(dateFieldEnd.getValue());
-        result.setRbNumberStart((String) txtFldRunNo.getValue());
-        result.setRbNumberEnd((String) txtFldRunNo.getValue());
-        result.setGrantId((String) txtFldGrantId.getValue());
+        result.setRbNumberStart(txtFldRunNo.getValue());
+        result.setRbNumberEnd(txtFldRunNo.getValue());
+        result.setGrantId(txtFldGrantId.getValue());
         result.setFacilityList(getFacilitySelectedList());
         result.setInvestigationTypeList(getInvestigationTypeSelectedList());
         result.setInstrumentList(getInstrumentSelectedList());
@@ -299,28 +311,6 @@ public class AdvancedSearchSubPanel extends Composite {
     }
 
     /**
-     * This methods sets the instrument list for a given facility
-     * 
-     * @param facility
-     * @param instrument
-     */
-    public void setFacilityInstrumentList(String facility, ArrayList<Instrument> instrument) {
-        instrumentList.put(facility, instrument);
-        updateListWidgets();
-    }
-
-    /**
-     * This method sets the investigation type list for a given facility.
-     * 
-     * @param facility
-     * @param invTypeList
-     */
-    public void setFacilityInvestigationTypeList(String facility, ArrayList<InvestigationType> invTypeList) {
-        investigationTypeList.put(facility, invTypeList);
-        updateListWidgets();
-    }
-
-    /**
      * Update List Widgets. instrument list, investigation types.
      */
     public void updateListWidgets() {
@@ -331,6 +321,9 @@ public class AdvancedSearchSubPanel extends Composite {
         // Add new list
         for (String facilityName : facilitySelectedList) {
             lstInstrument.getStore().add(instrumentList.get(facilityName));
+            if (investigationTypeList.get(facilityName) == null) {
+                continue;
+            }
             for (InvestigationType invType : investigationTypeList.get(facilityName)) {
                 boolean invTypeExists = false;
                 for (InvestigationType storeInvType : lstInvestigationTypes.getStore().getModels()) {
@@ -367,4 +360,60 @@ public class AdvancedSearchSubPanel extends Composite {
         txtFldRunNo.clear();
         txtFldGrantId.clear();
     }
+
+    /**
+     * Setup a handler to react to add facility events.
+     */
+    private void createAddFacilityHandler() {
+        AddFacilityEvent.register(EventPipeLine.getEventBus(), new AddFacilityEventHandler() {
+            @Override
+            public void addFacilities(AddFacilityEvent event) {
+                listFieldFacility.getStore().removeAll();
+                listFieldFacility.getStore().add(event.getFacilities());
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to AddInstrument events.
+     */
+    private void createAddInstrumentHandler() {
+        // react to a new set of instruments being added
+        AddInstrumentEvent.register(EventPipeLine.getEventBus(), new AddInstrumentEventHandler() {
+            @Override
+            public void addInstruments(AddInstrumentEvent event) {
+                instrumentList.put(event.getFacilityName(), event.getInstruments());
+                updateListWidgets();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to AddInvestigation events.
+     */
+    private void createAddInvestigationHandler() {
+        // react to a new set of investigations being added
+        AddInvestigationEvent.register(EventPipeLine.getEventBus(), new AddInvestigationEventHandler() {
+            @Override
+            public void addInvestigations(AddInvestigationEvent event) {
+                investigationTypeList.put(event.getFacilityName(), event.getInvestigations());
+                updateListWidgets();
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                instrumentList.remove(event.getFacilityName());
+                investigationTypeList.remove(event.getFacilityName());
+                updateListWidgets();
+            }
+        });
+    }
+
 }

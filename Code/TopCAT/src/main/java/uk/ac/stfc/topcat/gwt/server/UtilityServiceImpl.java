@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -54,14 +54,17 @@ import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
+import uk.ac.stfc.topcat.ejb.utils.Configuration;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -70,7 +73,6 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import uk.ac.stfc.topcat.ejb.utils.Configuration;
 
 /**
  * This is servlet implementation of Utility methods such as getting information
@@ -157,8 +159,9 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * @param node
      * @param isMyData
      * @return list of ICATNode's children
+     * @throws SessionException
      */
-    private ArrayList<ICATNode> getICATNodeChildren(ICATNode node, boolean isMyData) {
+    private ArrayList<ICATNode> getICATNodeChildren(ICATNode node, boolean isMyData) throws SessionException {
         // Check the node type
         ArrayList<ICATNode> result = new ArrayList<ICATNode>();
         // if the node is null then its root, load the facilities
@@ -299,11 +302,16 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * 
      * @param node
      * @return
+     * @throws SessionException
      */
-    private ArrayList<ICATNode> createDatasetNodesInInvestigation(ICATNode node) {
+    private ArrayList<ICATNode> createDatasetNodesInInvestigation(ICATNode node) throws SessionException {
         ArrayList<ICATNode> result = new ArrayList<ICATNode>();
-        ArrayList<TDataset> invList = utilityManager.getDatasetsInServer(getSessionId(), node.getFacility(),
-                node.getInvestigationId());
+        ArrayList<TDataset> invList;
+        try {
+            invList = utilityManager.getDatasetsInServer(getSessionId(), node.getFacility(), node.getInvestigationId());
+        } catch (AuthenticationException e) {
+            throw new SessionException(e.getMessage());
+        }
         for (TDataset inv : invList) {
             ICATNode tnode = new ICATNode();
             tnode.setNode(ICATNodeType.DATASET, inv.getId(), inv.getName());
@@ -329,6 +337,43 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             tnode.setNode(ICATNodeType.DATAFILE, inv.getId(), inv.getName());
             tnode.setFacility(node.getFacility());
             result.add(tnode);
+        }
+        return result;
+    }
+
+    /**
+     * This method returns creates a parameter model which has list of parameter
+     * names and corresponding values for a given dataset id on a server.
+     * 
+     * @param facilityName
+     *            iCAT instance name
+     * @param datasetId
+     *            input dataset Id
+     */
+    @Override
+    public ArrayList<ParameterModel> getDatasetParameters(String facilityName, String datasetId) {
+        return getDatasetParameters(getSessionId(), facilityName, datasetId);
+    }
+
+    /**
+     * This method returns creates a parameter model which has list of parameter
+     * names and corresponding values for a given dataset id on a server.
+     * 
+     * @param sessionId
+     *            user session id
+     * @param facilityName
+     *            iCAT instance name
+     * @param datasetId
+     *            input dataset id.
+     * @return list of parameters corresponding to dataset
+     */
+    private ArrayList<ParameterModel> getDatasetParameters(String sessionId, String facilityName, String datasetId) {
+        ArrayList<ParameterModel> result = new ArrayList<ParameterModel>();
+        ArrayList<TDatasetParameter> ds = utilityManager.getDatasetInfoInServer(sessionId, facilityName, datasetId);
+        if (ds == null)
+            return result;
+        for (TDatasetParameter dsParam : ds) {
+            result.add(new ParameterModel(dsParam.getName(), dsParam.getUnits(), dsParam.getValue()));
         }
         return result;
     }
@@ -377,11 +422,18 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      *            iCAT instance name
      * @param investigationId
      *            input id of investigation
+     * @throws SessionException
      */
     @Override
-    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId) {
+    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId)
+            throws SessionException {
         ArrayList<DatasetModel> result = new ArrayList<DatasetModel>();
-        ArrayList<TDataset> dsList = utilityManager.getDatasetsInServer(getSessionId(), facilityName, investigationId);
+        ArrayList<TDataset> dsList;
+        try {
+            dsList = utilityManager.getDatasetsInServer(getSessionId(), facilityName, investigationId);
+        } catch (AuthenticationException e) {
+            throw new SessionException(e.getMessage());
+        }
         if (dsList == null)
             return result;
         for (TDataset ds : dsList) {
@@ -401,20 +453,27 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets) {
         ArrayList<DatafileModel> result = new ArrayList<DatafileModel>();
+        String sessionId = getSessionId();
+        String dsName;
         for (DatasetModel dataset : datasets) {
-            ArrayList<TDatafile> dfList = utilityManager.getDatafilesInServer(getSessionId(),
-                    dataset.getFacilityName(), dataset.getId());
+            if (dataset.getName() != null) {
+                dsName = dataset.getName();
+            } else {
+                dsName = utilityManager.getDatasetName(sessionId, dataset.getFacilityName(), dataset.getId());
+            }
+            ArrayList<TDatafile> dfList = utilityManager.getDatafilesInServer(sessionId, dataset.getFacilityName(),
+                    dataset.getId());
             if (dfList == null)
                 continue;
             for (TDatafile df : dfList) {
                 if (df.getCreateTime() != null)
-                    result.add(new DatafileModel(dataset.getFacilityName(), dataset.getName(), df.getId(),
-                            df.getName(), df.getSize().toString(), df.getFormat(), df.getFormatVersion(), df
-                                    .getFormatType(), df.getCreateTime(), df.getLocation()));
+                    result.add(new DatafileModel(dataset.getFacilityName(), dsName, df.getId(), df.getName(), df
+                            .getSize().toString(), df.getFormat(), df.getFormatVersion(), df.getFormatType(), df
+                            .getCreateTime(), df.getLocation()));
                 else
-                    result.add(new DatafileModel(dataset.getFacilityName(), dataset.getName(), df.getId(),
-                            df.getName(), df.getSize().toString(), df.getFormat(), df.getFormatVersion(), df
-                                    .getFormatType(), null, df.getLocation()));
+                    result.add(new DatafileModel(dataset.getFacilityName(), dsName, df.getId(), df.getName(), df
+                            .getSize().toString(), df.getFormat(), df.getFormatVersion(), df.getFormatType(), null, df
+                            .getLocation()));
             }
         }
         return result;
@@ -448,9 +507,10 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * 
      * @param node
      *            input parent ICATNode information.
+     * @throws SessionException
      */
     @Override
-    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) {
+    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node) throws SessionException {
         return getICATNodeChildren(node, false);
     }
 
@@ -460,9 +520,10 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * 
      * @param node
      *            input parent ICATNode information.
+     * @throws SessionException
      */
     @Override
-    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) {
+    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node) throws SessionException {
         return getICATNodeChildren(node, true);
     }
 
@@ -539,8 +600,13 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * .ac.stfc.topcat.gwt.client.model.ICATNode)
      */
     @Override
-    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) {
-        ArrayList<ICATNode> resultNodes = getICATNodeChildren(node, false);
+    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws SessionException {
+        ArrayList<ICATNode> resultNodes;
+        try {
+            resultNodes = getICATNodeChildren(node, false);
+        } catch (SessionException e) {
+            throw new SessionException(e.getMessage());
+        }
         if (resultNodes.size() != 0 && resultNodes.get(0).getNodeType() != ICATNodeType.DATAFILE) {
             HashMap<String, ArrayList<ICATNode>> result = new HashMap<String, ArrayList<ICATNode>>();
             result.put("", resultNodes);
@@ -558,8 +624,13 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * .ac.stfc.topcat.gwt.client.model.ICATNode)
      */
     @Override
-    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node) {
-        ArrayList<ICATNode> resultNodes = getICATNodeChildren(node, true);
+    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node) throws SessionException {
+        ArrayList<ICATNode> resultNodes;
+        try {
+            resultNodes = getICATNodeChildren(node, true);
+        } catch (SessionException e) {
+            throw new SessionException(e.getMessage());
+        }
         if (resultNodes.size() != 0 && resultNodes.get(0).getNodeType() != ICATNodeType.DATAFILE) {
             HashMap<String, ArrayList<ICATNode>> result = new HashMap<String, ArrayList<ICATNode>>();
             result.put("", resultNodes);
@@ -655,6 +726,15 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     @Override
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName) {
         return utilityManager.getMyInvestigationsInServer(getSessionId(), facilityName);
+    }
+
+    @Override
+    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws SessionException {
+        try {
+            return utilityManager.getInvestigationDetails(getSessionId(), facilityName, investigationId);
+        } catch (AuthenticationException e) {
+            throw new SessionException(e.getMessage());
+        }
     }
 
     @Override

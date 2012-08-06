@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -26,14 +26,21 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
+import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
@@ -48,6 +55,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
@@ -62,6 +70,8 @@ import com.extjs.gxt.ui.client.widget.grid.GroupColumnData;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -69,6 +79,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * This is a floating window widget, It shows list of datafiles for a given
@@ -82,120 +93,45 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class DatafileWindow extends Window {
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-    ParameterWindow datafileInfoWindow;
-    CheckBoxSelectionModel<DatafileModel> datafileSelectModel;
+    CheckBoxSelectionModel<DatafileModel> datafileSelectionModel = null;
     GroupingStore<DatafileModel> dfmStore;
-    ArrayList<DatasetModel> inputDatasetModels;
+    ArrayList<DatasetModel> inputDatasetModels = new ArrayList<DatasetModel>();
     private PagingModelMemoryProxy pageProxy = null;
     private PagingLoader<PagingLoadResult<DatafileModel>> loader = null;
     private PagingToolBar pageBar = null;
-    private GroupingView view;
-    private Map<Long, Boolean> selectedFiles = new HashMap<Long, Boolean>();
+    private Set<Long> selectedFiles = new HashSet<Long>();
+
     boolean historyVerified;
-    boolean hasData;
     Grid<DatafileModel> grid;
+    private Set<String> facilityNames = new HashSet<String>();
+    private boolean awaitingLogin;
+    private boolean loadingData = false;
+    private boolean advancedSearchData = false;
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
 
     public DatafileWindow() {
+        // Listener called when the datafile window is closed.
         addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
+                // Go to page one and de-select everything in case we reuse this
+                // window to display this data again
+                loader.load(0, PAGE_SIZE);
+                datafileSelectionModel.deselectAll();
+                // Update the history to notify the close of datafile window
                 EventPipeLine.getInstance().getHistoryManager().updateHistory();
             }
         });
 
-        datafileSelectModel = new CheckBoxSelectionModel<DatafileModel>() {
-            private boolean allSelected = false;
+        datafileSelectionModel = createDatafileSelectionModel();
 
-            @SuppressWarnings("unchecked")
-            @Override
-            public void deselectAll() {
-                super.deselectAll();
-                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
-                    m.setSelected(false);
-                }
-                selectedFiles.clear();
-                allSelected = false;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public void selectAll() {
-                super.selectAll();
-                if (allSelected) {
-                    // no need to loop through every item again
-                    return;
-                }
-                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
-                    m.setSelected(true);
-                    selectedFiles.put(new Long(m.getId()), true);
-                }
-                allSelected = true;
-                setChecked(allSelected);
-            }
-
-            @Override
-            protected void doDeselect(List<DatafileModel> models, boolean supressEvent) {
-                super.doDeselect(models, supressEvent);
-                if (supressEvent) {
-                    return;
-                }
-                for (DatafileModel m : models) {
-                    m.setSelected(false);
-                    selectedFiles.remove(new Long(m.getId()));
-                }
-                allSelected = false;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void doSelect(List<DatafileModel> models, boolean keepExisting, boolean supressEvent) {
-                super.doSelect(models, keepExisting, supressEvent);
-                if (supressEvent) {
-                    return;
-                }
-                for (DatafileModel m : models) {
-                    m.setSelected(true);
-                    selectedFiles.put(new Long(m.getId()), true);
-                }
-                if (!allSelected && selectedFiles.size() == ((List<DatafileModel>) pageProxy.getData()).size()) {
-                    allSelected = true;
-                }
-                setChecked(allSelected);
-            }
-
-            @Override
-            public void refresh() {
-                super.refresh();
-                List<DatafileModel> previouslySelected = new ArrayList<DatafileModel>();
-                for (DatafileModel m : listStore.getModels()) {
-                    if (m.getSelected()) {
-                        previouslySelected.add(m);
-                    }
-                }
-                if (previouslySelected.size() > 0) {
-                    doSelect(previouslySelected, true, false);
-                }
-            }
-
-            private void setChecked(boolean checked) {
-                if (grid.isViewReady()) {
-                    El hd = El.fly(grid.getView().getHeader().getElement()).selectNode("div.x-grid3-hd-checker");
-                    if (hd != null) {
-                        hd.getParent().setStyleName("x-grid3-hd-checker-on", checked);
-                    }
-                }
-            }
-        };
-
-        datafileInfoWindow = new ParameterWindow();
         setHeading("Datafile Window");
         setLayout(new RowLayout(Orientation.VERTICAL));
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        configs.add(datafileSelectModel.getColumn());
+        configs.add(datafileSelectionModel.getColumn());
 
         ColumnConfig clmncnfgDatasetName = new ColumnConfig("datasetName", "Dataset Name", 150);
         configs.add(clmncnfgDatasetName);
@@ -223,7 +159,7 @@ public class DatafileWindow extends Window {
         configs.add(clmncnfgCreateTime);
 
         final ColumnModel cm = new ColumnModel(configs);
-        view = new GroupingView();
+        GroupingView view = new GroupingView();
         view.setShowGroupedColumn(false);
         view.setForceFit(true);
         view.setGroupRenderer(new GridGroupRenderer() {
@@ -243,25 +179,26 @@ public class DatafileWindow extends Window {
         dfmStore.groupBy("datasetName");
 
         // Grid
-        Grid<DatafileModel> grid = new Grid<DatafileModel>(dfmStore, cm);
+        final Grid<DatafileModel> grid = new Grid<DatafileModel>(dfmStore, cm);
         grid.setHeight("420px");
         grid.setView(view);
         grid.setBorders(true);
+        grid.setToolTip("\"Double Click\" row to show data file, right click for more options");
         grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<DatafileModel>>() {
             @Override
             public void handleEvent(GridEvent<DatafileModel> e) {
                 DatafileModel datafile = e.getModel();
                 EventPipeLine.getInstance().showParameterWindowWithHistory(datafile.getFacilityName(),
-                        datafile.getId(), datafile.getName());
+                        Constants.DATA_FILE, datafile.getId(), datafile.getName());
             }
         });
 
-        grid.addPlugin(datafileSelectModel);
-        grid.setSelectionModel(datafileSelectModel);
+        grid.addPlugin(datafileSelectionModel);
+        grid.setSelectionModel(datafileSelectionModel);
 
         // ToolBar with download button
         ToolBar toolBar = new ToolBar();
-        DownloadButton btnDownload = new DownloadButton();
+        final DownloadButton btnDownload = new DownloadButton();
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -272,16 +209,58 @@ public class DatafileWindow extends Window {
         toolBar.add(new SeparatorToolItem());
         setTopComponent(toolBar);
 
+        // Context Menu
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showDS = new MenuItem();
+        showDS.setText("show data file");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showDS);
+        showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                DatafileModel dfm = (DatafileModel) grid.getSelectionModel().getSelectedItem();
+                EventPipeLine.getInstance().showParameterWindowWithHistory(dfm.getFacilityName(), Constants.DATA_FILE,
+                        dfm.getId(), dfm.getName());
+            }
+        });
+        MenuItem showFS = new MenuItem();
+        showFS.setText("download data file");
+        showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showFS);
+        showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                // simulate the download button being pressed
+                btnDownload.fireEvent(Events.BeforeSelect, new ButtonEvent(btnDownload));
+            }
+        });
+        grid.setContextMenu(contextMenu);
+
         setLayout(new FitLayout());
-        setSize(700, 560);
+        setSize(700, 400);
 
         // Pagination Bar
-        pageBar = new PagingToolBar(PAGE_SIZE);
+        pageBar = new PagingToolBar(PAGE_SIZE) {
+            @Override
+            public void refresh() {
+                super.refresh();
+                if (inputDatasetModels.size() > 0) {
+                    // datafiles are from datasets
+                    loadData();
+                    refresh.show();
+                } else {
+                    // datafiles are from advanced search, i.e. a selection of
+                    // individual data files
+                    refresh.hide();
+                }
+            }
+        };
         pageBar.bind(loader);
         setBottomComponent(pageBar);
 
         add(grid);
-        hasData = true; // ?? but no data is passed in in the constructor
+        awaitingLogin = false;
+        createLoginHandler();
+        createLogoutHandler();
     }
 
     /**
@@ -292,30 +271,18 @@ public class DatafileWindow extends Window {
      *            an array of <code>DatasetModel</code>
      */
     public void setDatasets(ArrayList<DatasetModel> datasetList) {
+        advancedSearchData = false;
         inputDatasetModels = datasetList;
-        // This is the list of datasets selected to be viewed for datafiles.
-        EventPipeLine.getInstance().showRetrievingData();
-        utilityService.getDatafilesInDatasets(datasetList, new AsyncCallback<ArrayList<DatafileModel>>() {
-            @Override
-            public void onSuccess(ArrayList<DatafileModel> result) {
-                EventPipeLine.getInstance().hideRetrievingData();
-                if (result.size() > 0) {
-                    setDatafileList(result);
-                    hasData = true;
-                } else {
-                    EventPipeLine.getInstance().showErrorDialog("No files returned");
-                    hide();
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                EventPipeLine.getInstance().hideRetrievingData();
-                dfmStore.removeAll();
-                selectedFiles.clear();
-                hasData = false;
-            }
-        });
+        facilityNames = new HashSet<String>();
+        for (DatasetModel dsm : inputDatasetModels) {
+            facilityNames.add(dsm.getFacilityName());
+        }
+        if (EventPipeLine.getInstance().getLoggedInFacilities().containsAll(facilityNames)) {
+            awaitingLogin = false;
+            loadData();
+        } else {
+            awaitingLogin = true;
+        }
     }
 
     /**
@@ -324,7 +291,23 @@ public class DatafileWindow extends Window {
      * @param datafileList
      *            an array of <code>DatafileModel</code>
      */
-    public void setDatafileList(ArrayList<DatafileModel> datafileList) {
+    public void setAdvancedSearchResult(String facilityName, ArrayList<DatafileModel> datafileList) {
+        loadingData = true;
+        advancedSearchData = true;
+        facilityNames.add(facilityName);
+        setDatafileList(datafileList);
+        show();
+        EventPipeLine.getInstance().getHistoryManager().updateHistory();
+        loadingData = false;
+    }
+
+    /**
+     * Set the datafile list to be displayed in the window.
+     * 
+     * @param datafileList
+     *            an array of <code>DatafileModel</code>
+     */
+    private void setDatafileList(ArrayList<DatafileModel> datafileList) {
         dfmStore.removeAll();
         selectedFiles.clear();
         NumberFormat format = NumberFormat.getDecimalFormat();
@@ -337,7 +320,6 @@ public class DatafileWindow extends Window {
         pageProxy.setData(datafileList);
         loader.load(0, PAGE_SIZE);
         pageBar.refresh();
-        pageBar.show();
     }
 
     /**
@@ -346,6 +328,10 @@ public class DatafileWindow extends Window {
      * @return the history string of this window
      */
     public String getHistoryString() {
+        if (advancedSearchData) {
+            // we do not have any history for advanced searches
+            return "";
+        }
         String history = "";
         history += HistoryManager.seperatorModel + HistoryManager.seperatorToken + "Model"
                 + HistoryManager.seperatorKeyValues + "Dataset";
@@ -355,8 +341,6 @@ public class DatafileWindow extends Window {
                     + dataset.getFacilityName();
             history += HistoryManager.seperatorToken + "DSId-" + count + HistoryManager.seperatorKeyValues
                     + dataset.getId();
-            history += HistoryManager.seperatorToken + "DSName-" + count + HistoryManager.seperatorKeyValues
-                    + dataset.getName();
             count++;
         }
         return history;
@@ -372,6 +356,9 @@ public class DatafileWindow extends Window {
      *         <code>DatasetModel</code>s
      */
     public boolean isSameModel(ArrayList<DatasetModel> dsModelList) {
+        if (dsModelList.size() != inputDatasetModels.size()) {
+            return false;
+        }
         int index = 0;
         for (DatasetModel dsModel : dsModelList) {
             if (dsModel.getFacilityName().compareTo(inputDatasetModels.get(index).getFacilityName()) != 0
@@ -388,6 +375,11 @@ public class DatafileWindow extends Window {
      * @return returns the history verified status
      */
     public boolean isHistoryVerified() {
+        if (advancedSearchData) {
+            // we do not have any history for advanced searches but we still
+            // want to use this window
+            return true;
+        }
         return historyVerified;
     }
 
@@ -403,17 +395,155 @@ public class DatafileWindow extends Window {
 
     @Override
     public void show() {
-        if (!hasData) {
-            setDatasets(inputDatasetModels);
+        if (awaitingLogin || loadingData) {
+            return;
+        }
+        if (!EventPipeLine.getInstance().getLoggedInFacilities().containsAll(facilityNames)) {
+            // trying to use window but we are not logged in
+            awaitingLogin = true;
+            return;
         }
         super.show();
     }
 
+    /**
+     * Check if the widget is in use by the given facility, i.e. waiting for the
+     * user to log in or widget already visible.
+     * 
+     * @param facilitName
+     * @return true if the widget is in use
+     */
+    public boolean isInUse(String facilitName) {
+        if (!facilityNames.contains(facilitName)) {
+            return false;
+        } else {
+            return isInUse();
+        }
+    }
+
+    /**
+     * Check if the widget is in use, i.e. waiting for the user to log in or
+     * widget already visible.
+     * 
+     * @return true if the widget is in use
+     */
+    public boolean isInUse() {
+        if (awaitingLogin || loadingData) {
+            return true;
+        }
+        return super.isVisible();
+    }
+
+    /**
+     * Clear out data ready for window reuse.
+     */
     public void reset() {
+        facilityNames = new HashSet<String>();
         inputDatasetModels.clear();
         dfmStore.removeAll();
+        datafileSelectionModel.refresh();
         selectedFiles.clear();
-        pageBar.hide();
+        awaitingLogin = false;
+        advancedSearchData = false;
+    }
+
+    /**
+     * Get a customised CheckBoxSelectionModel
+     * 
+     * @return a customised CheckBoxSelectionModel
+     */
+    private CheckBoxSelectionModel<DatafileModel> createDatafileSelectionModel() {
+        CheckBoxSelectionModel<DatafileModel> dfSelectionModel = new CheckBoxSelectionModel<DatafileModel>() {
+            private boolean allSelected = false;
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void deselectAll() {
+                super.deselectAll();
+                if (pageProxy.getData() != null) {
+                    for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
+                        m.setSelected(false);
+                    }
+                }
+                selectedFiles.clear();
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void selectAll() {
+                super.selectAll();
+                if (allSelected) {
+                    // no need to loop through every item again
+                    return;
+                }
+                for (DatafileModel m : (List<DatafileModel>) pageProxy.getData()) {
+                    m.setSelected(true);
+                    selectedFiles.add(new Long(m.getId()));
+                }
+                allSelected = true;
+                setChecked(allSelected);
+            }
+
+            @Override
+            protected void doDeselect(List<DatafileModel> models, boolean supressEvent) {
+                super.doDeselect(models, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatafileModel m : models) {
+                    m.setSelected(false);
+                    selectedFiles.remove(new Long(m.getId()));
+                }
+                allSelected = false;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void doSelect(List<DatafileModel> models, boolean keepExisting, boolean supressEvent) {
+                super.doSelect(models, keepExisting, supressEvent);
+                if (supressEvent) {
+                    return;
+                }
+                for (DatafileModel m : models) {
+                    m.setSelected(true);
+                    selectedFiles.add(new Long(m.getId()));
+                }
+                if (selectedFiles.size() == ((List<DatafileModel>) pageProxy.getData()).size()) {
+                    allSelected = true;
+                } else {
+                    allSelected = false;
+                }
+                setChecked(allSelected);
+            }
+
+            @Override
+            public void refresh() {
+                super.refresh();
+                List<DatafileModel> previouslySelected = new ArrayList<DatafileModel>();
+                for (DatafileModel m : listStore.getModels()) {
+                    if (m.getSelected()) {
+                        previouslySelected.add(m);
+                    } else {
+                        allSelected = false;
+                    }
+                }
+                if (previouslySelected.size() > 0) {
+                    doSelect(previouslySelected, true, false);
+                }
+            }
+
+            private void setChecked(boolean checked) {
+                if (grid.isViewReady()) {
+                    El hd = El.fly(grid.getView().getHeader().getElement()).selectNode("div.x-grid3-hd-checker");
+                    if (hd != null) {
+                        hd.getParent().setStyleName("x-grid3-hd-checker-on", checked);
+                    }
+                }
+            }
+        };
+
+        return dfSelectionModel;
     }
 
     /**
@@ -427,14 +557,89 @@ public class DatafileWindow extends Window {
             EventPipeLine.getInstance().showMessageDialog("No files selected for download");
             return;
         }
-
-        List<Long> selectedItems = new ArrayList<Long>(selectedFiles.keySet());
+        List<Long> selectedItems = new ArrayList<Long>(selectedFiles);
         @SuppressWarnings("unchecked")
         String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
         EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
         EventPipeLine.getInstance().showMessageDialog(
-                "Your data is being retrieved from tape and will automatically start downloading shortly "
+                "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                         + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
+    }
+
+    /**
+     * Call the server to get fresh data.
+     */
+    private void loadData() {
+        if (loadingData) {
+            return;
+        }
+        loadingData = true;
+        advancedSearchData = false;
+        EventPipeLine.getInstance().showRetrievingData();
+        utilityService.getDatafilesInDatasets(inputDatasetModels, new AsyncCallback<ArrayList<DatafileModel>>() {
+            @Override
+            public void onSuccess(ArrayList<DatafileModel> result) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                if (result.size() > 0) {
+                    setDatafileList(result);
+                    loadingData = false;
+                    show();
+                    EventPipeLine.getInstance().getHistoryManager().updateHistory();
+                } else {
+                    EventPipeLine.getInstance().showMessageDialog("No files returned");
+                    hide();
+                    reset();
+                }
+                loadingData = false;
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                EventPipeLine.getInstance().showErrorDialog("Error retrieving datafiles");
+                hide();
+                reset();
+                loadingData = false;
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLoginHandler() {
+        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
+            @Override
+            public void login(LoginEvent event) {
+                if (awaitingLogin && EventPipeLine.getInstance().getLoggedInFacilities().containsAll(facilityNames)) {
+                    awaitingLogin = false;
+                    loadData();
+                }
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                if (isInUse() && facilityNames.contains(event.getFacilityName())) {
+                    // When we open a web page with a url a status check is done
+                    // on all facilities. We do not want this to remove this
+                    // window. However when the user presses the cancel button
+                    // on the login widget we do want to remove this window.
+                    if (!event.isStatusCheck() || isVisible()) {
+                        reset();
+                    }
+                    hide();
+                    EventPipeLine.getEventBus().fireEventFromSource(new WindowLogoutEvent(event.getFacilityName()),
+                            event.getFacilityName());
+                }
+            }
+        });
     }
 
 }

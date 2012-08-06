@@ -11,6 +11,21 @@ SETUP THE DATABASE
 ========================================
 From within the "Installation" directory
 1) update values in <> in initalise_topcat_db.sql
+	a) <facility name>, the name of the facility, e.g. ISIS
+	b) <icat url with ?wsdl>, the URL of the wsdl to contact, e.g. https://facilities01.esc.rl.ac.uk/ICATService/ICAT?wsdl
+	c) <default username>, the username to use when contacting ICAT
+	d) <default password>, the password to use when contacting ICAT
+	e) <facility search plugin>, possible values include:
+		null
+		uk.ac.stfc.topcat.gwt.client.facility.ISISFacilityPlugin
+		uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin
+	f) <download plugin name>, possible values include:
+		null
+		restfulDownload
+	g) <ICAT version number>, possible values include:
+		v340
+		v341
+		v400
 2) sqlplus
     Enter user-name: system
    SQL>@createuser_topcat_db
@@ -33,7 +48,7 @@ From within the "Installation" directory
 4) mvn install:install-file -Dfile=<oracle_lib>/ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0 -Dpackaging=jar
 5) mvn install
 6) mvn glassfish:create-domain -Dglassfish.home=$GLASSFISH_HOME --non-recursive
-7) openssl s_client -no_tls1 -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
+7) openssl s_client -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
 8) keytool -import -noprompt -alias <alias> -file $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert -keystore $GLASSFISH_HOME/domains/TOPCAT/config/cacerts.jks --storepass changeit 
 9) mvn resources:copy-resources -Dglassfish.home=$GLASSFISH_HOME --non-recursive
 10) mvn glassfish:deploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive

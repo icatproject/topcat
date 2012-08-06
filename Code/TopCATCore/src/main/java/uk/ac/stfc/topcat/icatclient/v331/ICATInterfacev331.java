@@ -21,8 +21,12 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
+import uk.ac.stfc.topcat.core.gwt.module.TPublication;
+import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -102,11 +106,10 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
     }
 
-    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
+    public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
-            List<Investigation> resultInv = service.getMyInvestigationsIncludesPagination(sessionId,
-                    InvestigationInclude.NONE, 0, 200);
+            List<Investigation> resultInv = service.getMyInvestigations(sessionId);
             for (Investigation inv : resultInv) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, inv));
             }
@@ -114,6 +117,61 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         }
         Collections.sort(investigationList);
         return investigationList;
+    }
+
+    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
+        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+        try {
+            List<Investigation> resultInv = service.getMyInvestigationsIncludesPagination(sessionId,
+                    InvestigationInclude.NONE, start, end);
+            for (Investigation inv : resultInv) {
+                investigationList.add(copyInvestigationToTInvestigation(serverName, inv));
+            }
+        } catch (SessionException_Exception ex) {
+        }
+        Collections.sort(investigationList);
+        return investigationList;
+    }
+
+    public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
+            throws AuthenticationException {
+        TInvestigation ti = new TInvestigation();
+        try {
+            Investigation resultInv = service.getInvestigationIncludes(sessionId, investigationId,
+                    InvestigationInclude.ALL_EXCEPT_DATASETS_AND_DATAFILES);
+            ti = copyInvestigationToTInvestigation(serverName, resultInv);
+            ti.setInstrument(resultInv.getInstrument());
+            ti.setProposal(resultInv.getInvAbstract());
+            ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
+            List<Publication> pubs = resultInv.getPublicationCollection();
+            for (Publication pub : pubs) {
+                publicationList.add(copyPublicationToTPublication(pub));
+            }
+            ti.setPublications(publicationList);
+
+            ArrayList<TInvestigator> investigatorList = new ArrayList<TInvestigator>();
+            List<Investigator> investigators = resultInv.getInvestigatorCollection();
+            for (Investigator investigator : investigators) {
+                investigatorList.add(copyInvestigatorToTInvestigator(investigator));
+            }
+            Collections.sort(investigatorList);
+            ti.setInvestigators(investigatorList);
+
+            ArrayList<TShift> shiftList = new ArrayList<TShift>();
+            List<Shift> shifts = resultInv.getShiftCollection();
+            for (Shift shift : shifts) {
+                shiftList.add(copyShiftToTShift(shift));
+            }
+            ti.setShifts(shiftList);
+
+            ti.setParamName(resultInv.getInvParamName());
+            ti.setParamValue(resultInv.getInvParamValue());
+        } catch (SessionException_Exception ex) {
+            throw new AuthenticationException(ex.getMessage());
+        } catch (InsufficientPrivilegesException_Exception e) {
+        } catch (NoSuchObjectFoundException_Exception e) {
+        }
+        return ti;
     }
 
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
@@ -147,6 +205,28 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         } catch (SessionException_Exception ex) {
         }
         return datasetList;
+    }
+
+    public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
+        ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
+        try {
+            Dataset ds = service.getDatasetIncludes(sessionId, Long.valueOf(datasetId),
+                    DatasetInclude.DATASET_PARAMETERS_ONLY);
+            List<DatasetParameter> dsList = ds.getDatasetParameterCollection();
+            for (DatasetParameter dsParam : dsList) {
+                if (dsParam.isNumeric()) {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getNumericValue().toString()));
+                } else {
+                    result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
+                            .getDatasetParameterPK().getUnits(), dsParam.getStringValue()));
+                }
+            }
+        } catch (SessionException_Exception ex) {
+        } catch (InsufficientPrivilegesException_Exception ex) {
+        } catch (NoSuchObjectFoundException_Exception ex) {
+        }
+        return result;
     }
 
     public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {
@@ -348,6 +428,27 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
         }
         return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
                 format, formatVersion, formatType, createDate, datafile.getLocation());
+    }
+
+    private TPublication copyPublicationToTPublication(Publication pub) {
+        return new TPublication(pub.getFullReference(), pub.getId(), pub.getRepository(), pub.getRepositoryId(),
+                pub.getUrl());
+    }
+
+    private TInvestigator copyInvestigatorToTInvestigator(Investigator investigator) {
+        StringBuilder fullName = new StringBuilder();
+        fullName.append(investigator.getFacilityUser().getTitle());
+        fullName.append(" ");
+        fullName.append(investigator.getFacilityUser().getFirstName());
+        fullName.append(" ");
+        fullName.append(investigator.getFacilityUser().getLastName());
+        return new TInvestigator(investigator.getFacilityUser().getFacilityUserId(), investigator.getFacilityUser()
+                .getFederalId(), fullName.toString(), investigator.getRole());
+    }
+
+    private TShift copyShiftToTShift(Shift shift) {
+        return new TShift(shift.getShiftComment(), shift.getShiftPK().getStartDate().toGregorianCalendar().getTime(),
+                shift.getShiftPK().getEndDate().toGregorianCalendar().getTime());
     }
 
 }

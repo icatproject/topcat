@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -28,10 +28,12 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -61,8 +63,11 @@ public interface UtilityLocal {
     ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
     ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
     ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
-    ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId);
+    TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId) throws AuthenticationException;
+    ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId) throws AuthenticationException;
+    String getDatasetName(String sessionId,String serverName,String datasetId);
     ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
+    ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datasetId);
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);
     String getDatafilesDownloadURL(String sessionId,String serverName,ArrayList<Long> datafileIds);
     String getDatasetDownloadURL(String sessionId,String serverName, Long datasetId);

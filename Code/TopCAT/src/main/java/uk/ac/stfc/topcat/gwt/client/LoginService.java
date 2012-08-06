@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -91,5 +91,20 @@ public interface LoginService extends RemoteService {
      * @return <code>true</code> if the user is logged in
      */
     public Boolean isUserLoggedIn(String facilityName);
+
+    /**
+     * Use the CAS ticket to log in to a iCat server.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param authenticationServiceUrl
+     *            a string containing the authentication service url
+     * @param ticket
+     *            a string containing the authentication ticket
+     * @return <code>true</code> if the user is logged in
+     * @throws LoginException
+     */
+    public String loginWithTicket(String facilityName, String authenticationServiceUrl, String ticket)
+            throws LoginException;
 
 }

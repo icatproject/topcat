@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -155,6 +155,20 @@ public interface UtilityServiceAsync {
             AsyncCallback<ArrayList<DatasetModel>> callback);
 
     /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data set id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            a string containing the data set id
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatasetParameters(String facilityName, String datasetId,
+            AsyncCallback<ArrayList<ParameterModel>> callback);
+
+    /**
      * Get a list of data files information corresponding to the given list of
      * data sets.
      * 
@@ -208,6 +222,19 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
+
+    /**
+     * Get additional details about an investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            the investigation id
+     * @param asyncCallback
+     *            object to be called on completion
+     */
+    public void getInvestigationDetails(String facilityName, String investigationId,
+            AsyncCallback<TInvestigation> asyncCallback);
 
     /**
      * Get the server logo URL
