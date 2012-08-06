@@ -52,11 +52,11 @@ public interface UtilityLocal {
 
     ArrayList<TFacility> getFacilities();
     ArrayList<String> getFacilityNames();
-//    ArrayList<String> getAllInstrumentNames(String sessionId);
+    ArrayList<String> getAllInstrumentNames(String sessionId);
     ArrayList<String> getInstrumentNames(String sessionId,String serverName);
-//    ArrayList<String> getAllInvestigationTypes(String sessionId);
+    ArrayList<String> getAllInvestigationTypes(String sessionId);
     ArrayList<String> getInvestigationTypes(String sessionId,String serverName);
-//    ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException;
+    ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException;
     ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId,String serverName, String instrument)throws ICATMethodNotFoundException;
     ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName);
     ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
@@ -65,6 +65,7 @@ public interface UtilityLocal {
     ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
     TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId) throws AuthenticationException;
     ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId) throws AuthenticationException;
+    String getDatasetName(String sessionId,String serverName,String datasetId);
     ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
     ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datasetId);
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);

@@ -86,6 +86,25 @@ public class UtilityManager {
     }
 
     /**
+     * This method returns all the instrument names in available servers
+     * 
+     * @param manager
+     * @return
+     */
+    public ArrayList<String> getAllInstrumentNames(EntityManager manager, String sessionId) {
+
+        ArrayList<String> instrumentNames = new ArrayList<String>();
+        List<TopcatUserSession> userSessions = manager
+                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
+                .setParameter("topcatSessionId", sessionId).getResultList();
+        for (TopcatUserSession topcatUserSession : userSessions) {
+            instrumentNames.addAll(getInstrumentNames(topcatUserSession.getIcatSessionId(), topcatUserSession
+                    .getUserId().getServerId()));
+        }
+        return instrumentNames;
+    }
+
+    /**
      * This method returns all the instrument names from a given server
      * 
      * @param manager
@@ -134,6 +153,25 @@ public class UtilityManager {
             logger.warning("getInstrumentNames: " + ex.getMessage());
         }
         return new ArrayList<String>();
+    }
+
+    /**
+     * This method returns all the investigation types available in all servers
+     * 
+     * @param manager
+     * @return
+     */
+    public ArrayList<String> getAllInvestigationTypes(EntityManager manager, String sessionId) {
+
+        ArrayList<String> instrumentNames = new ArrayList<String>();
+        List<TopcatUserSession> userSessions = manager
+                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
+                .setParameter("topcatSessionId", sessionId).getResultList();
+        for (TopcatUserSession topcatUserSession : userSessions) {
+            instrumentNames.addAll(getInvestigationTypes(topcatUserSession.getIcatSessionId(), topcatUserSession
+                    .getUserId().getServerId()));
+        }
+        return instrumentNames;
     }
 
     /**
@@ -187,6 +225,35 @@ public class UtilityManager {
             logger.warning("getInvestigationTypes: " + ex.getMessage());
         }
         return new ArrayList<String>();
+    }
+
+    /**
+     * This method returns all the investigation types from a given server
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @return
+     */
+    public ArrayList<TFacilityCycle> getFacilityCycles(EntityManager manager, String sessionId, String serverName)
+            throws ICATMethodNotFoundException {
+        TopcatUserSession userSession = null;
+        try {
+            userSession = (TopcatUserSession) manager
+                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
+                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .getSingleResult();
+            return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
+        } catch (javax.persistence.NoResultException ex) {
+            try {
+                userSession = (TopcatUserSession) manager
+                        .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
+                        .setParameter("serverName", serverName).getSingleResult();
+                return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
+            } catch (javax.persistence.NoResultException exinnex) {
+            }
+        }
+        return new ArrayList<TFacilityCycle>();
     }
 
     /**
@@ -650,6 +717,46 @@ public class UtilityManager {
             logger.warning("getDatasetInfo: " + ex.getMessage());
         }
         return new ArrayList<TDatasetParameter>();
+    }
+
+    /**
+     * This method returns the datafile name corresponding to a given datasetid
+     * in a given input server
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @param datasetId
+     * @return
+     */
+    public String getDatasetName(EntityManager manager, String sessionId, String serverName, String datasetId) {
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, serverName);
+            return getDatasetName(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), datasetId);
+        } catch (javax.persistence.NoResultException ex) {
+        }
+        return "";
+    }
+
+    /**
+     * This method returns the datafile name corresponding to a given datasetid
+     * in a given input server
+     * 
+     * @param sessionId
+     * @param server
+     * @param datasetId
+     * @return
+     */
+    public String getDatasetName(String sessionId, TopcatIcatServer server, String datasetId) {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.getDatasetName(sessionId, Long.valueOf(datasetId));
+        } catch (MalformedURLException ex) {
+            logger.warning("getDatasetName: " + ex.getMessage());
+        }
+        return "";
     }
 
     /**

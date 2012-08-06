@@ -72,13 +72,29 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
+    public ArrayList<String> getAllInstrumentNames(String sessionId) {
+        return utilManager.getAllInstrumentNames(manager, sessionId);
+    }
+
+    @Override
     public ArrayList<String> getInstrumentNames(String sessionId, String serverName) {
         return utilManager.getInstrumentNames(manager, sessionId, serverName);
     }
 
     @Override
+    public ArrayList<String> getAllInvestigationTypes(String sessionId) {
+        return utilManager.getAllInvestigationTypes(manager, sessionId);
+    }
+
+    @Override
     public ArrayList<String> getInvestigationTypes(String sessionId, String serverName) {
         return utilManager.getInvestigationTypes(manager, sessionId, serverName);
+    }
+
+    @Override
+    public ArrayList<TFacilityCycle> getFacilityCycles(String sessionId, String serverName)
+            throws ICATMethodNotFoundException {
+        return utilManager.getFacilityCycles(manager, sessionId, serverName);
     }
 
     @Override
@@ -128,6 +144,11 @@ public class UtilityBean implements UtilityLocal {
     public ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId)
             throws AuthenticationException {
         return utilManager.getDatasetsInServer(manager, sessionId, serverName, investigationId);
+    }
+
+    @Override
+    public String getDatasetName(String sessionId, String serverName, String datasetId) {
+        return utilManager.getDatasetName(manager, sessionId, serverName, datasetId);
     }
 
     @Override
