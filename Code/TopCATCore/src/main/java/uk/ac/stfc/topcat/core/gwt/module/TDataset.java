@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,11 +25,12 @@ package uk.ac.stfc.topcat.core.gwt.module;
 import java.io.Serializable;
 
 /**
- * This is shared with GWT for dataset information.
- * This is temporary storage for dataset information that will be passed to topcat.
+ * This is shared with GWT for dataset information. This is temporary storage
+ * for dataset information that will be passed to topcat.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class TDataset implements Serializable {
@@ -44,7 +45,12 @@ public class TDataset implements Serializable {
     public TDataset() {
     }
 
-    public TDataset(String serverName,String id, String name,String description,String type,String status) {
+    public TDataset(String serverName, String id) {
+        this.serverName = serverName;
+        this.id = id;
+    }
+
+    public TDataset(String serverName, String id, String name, String description, String type, String status) {
         this.serverName = serverName;
         this.id = id;
         this.name = name;

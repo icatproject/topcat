@@ -29,6 +29,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -175,20 +176,6 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
-    public ArrayList<TInvestigation> getMyInvestigationsIncludesPagination(String sessionId, int start, int end) {
-        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
-        try {
-            List<Investigation> resultInv = service.getMyInvestigationsIncludesPagination(sessionId,
-                    InvestigationInclude.NONE, start, end);
-            for (Investigation inv : resultInv) {
-                investigationList.add(copyInvestigationToTInvestigation(serverName, inv));
-            }
-        } catch (SessionException_Exception ex) {
-        }
-        Collections.sort(investigationList);
-        return investigationList;
-    }
-
     @Override
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
             throws AuthenticationException {
@@ -235,6 +222,30 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
             int start, int end) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+
+        if (details.getParameterName() != null) {
+            // this is a parameter search
+            Parameter param = new Parameter();
+            param.setNonNumericValueFormat(details.getParameterValue());
+            param.setUnitsLongVersion(details.getParameterUnits());
+            ParameterPK pk = new ParameterPK();
+            pk.setName(details.getParameterName());
+            param.setParameterPK(pk);
+            ParameterSearch ps = new ParameterSearch();
+            ps.setParam(param);
+
+            List<ParameterSearch> parameters = new ArrayList<ParameterSearch>();
+            parameters.add(ps);
+            try {
+                List<Object> resultInv = service.searchInvestigationByParameter(sessionId, parameters);
+                for (Object inv : resultInv) {
+                    investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
+                }
+            } catch (SessionException_Exception e) {
+            }
+            return investigationList;
+        }
+
         AdvancedSearchDetails inputParams = convertToAdvancedSearchDetails(details);
 
         try {
@@ -246,6 +257,35 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         }
         Collections.sort(investigationList);
         return investigationList;
+    }
+
+    @Override
+    public ArrayList<TDatafile> searchForDatafilesByAdvancedPagination(String sessionId,
+            TAdvancedSearchDetails details, int start, int end) throws TopcatException {
+        ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
+
+        Parameter param = new Parameter();
+        param.setNonNumericValueFormat(details.getParameterValue());
+        param.setUnitsLongVersion(details.getParameterUnits());
+        ParameterPK pk = new ParameterPK();
+        pk.setName(details.getParameterName());
+        param.setParameterPK(pk);
+        param.setDatafileParameter(true);
+        ParameterSearch ps = new ParameterSearch();
+        ps.setParam(param);
+
+        List<ParameterSearch> parameters = new ArrayList<ParameterSearch>();
+        parameters.add(ps);
+        try {
+            List<Object> resultDf = service.searchDatafileByParameter(sessionId, parameters);
+            for (Object df : resultDf) {
+                datafileList.add(copyDatafileToTDatafile(serverName, (Datafile) df));
+            }
+        } catch (SessionException_Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return datafileList;
     }
 
     @Override
@@ -513,8 +553,8 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
-                format, formatVersion, formatType, createDate, datafile.getLocation());
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize()
+                .longValue(), format, formatVersion, formatType, createDate, datafile.getLocation());
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

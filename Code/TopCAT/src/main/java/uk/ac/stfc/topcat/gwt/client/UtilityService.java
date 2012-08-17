@@ -33,6 +33,7 @@ import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
@@ -100,8 +101,10 @@ public interface UtilityService extends RemoteService {
      * @return a map with the key as a string containing TODO and the value as a
      *         list of <code>ICATNode</code>
      * @throws SessionException
+     * @throws TopcatException
      */
-    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws SessionException;
+    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws SessionException,
+            TopcatException;
 
     /**
      * Get a list of parameter models which have parameter names and

@@ -39,6 +39,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
@@ -72,29 +73,13 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public ArrayList<String> getAllInstrumentNames(String sessionId) {
-        return utilManager.getAllInstrumentNames(manager, sessionId);
-    }
-
-    @Override
     public ArrayList<String> getInstrumentNames(String sessionId, String serverName) {
         return utilManager.getInstrumentNames(manager, sessionId, serverName);
     }
 
     @Override
-    public ArrayList<String> getAllInvestigationTypes(String sessionId) {
-        return utilManager.getAllInvestigationTypes(manager, sessionId);
-    }
-
-    @Override
     public ArrayList<String> getInvestigationTypes(String sessionId, String serverName) {
         return utilManager.getInvestigationTypes(manager, sessionId, serverName);
-    }
-
-    @Override
-    public ArrayList<TFacilityCycle> getFacilityCycles(String sessionId, String serverName)
-            throws ICATMethodNotFoundException {
-        return utilManager.getFacilityCycles(manager, sessionId, serverName);
     }
 
     @Override
@@ -110,26 +95,26 @@ public class UtilityBean implements UtilityLocal {
 
     @Override
     public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName,
-            String instrumentName) {
+            String instrumentName) throws TopcatException {
         return utilManager.getMyInvestigationsInServerAndInstrument(manager, sessionId, serverName, instrumentName);
     }
 
     @Override
     public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName,
-            String instrumentName) {
+            String instrumentName) throws TopcatException {
         return utilManager.getAllInvestigationsInServerAndInstrument(manager, sessionId, serverName, instrumentName);
     }
 
     @Override
     public ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName,
-            String instrumentName, TFacilityCycle cycle) {
+            String instrumentName, TFacilityCycle cycle) throws TopcatException {
         return utilManager.getMyInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName,
                 instrumentName, cycle);
     }
 
     @Override
     public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId,
-            String serverName, String instrumentName, TFacilityCycle cycle) {
+            String serverName, String instrumentName, TFacilityCycle cycle) throws TopcatException {
         return utilManager.getAllInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName,
                 instrumentName, cycle);
     }

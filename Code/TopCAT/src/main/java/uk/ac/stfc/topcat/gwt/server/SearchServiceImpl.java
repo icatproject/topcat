@@ -39,12 +39,15 @@ import javax.servlet.http.HttpSession;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.KeywordManagementLocal;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.gwt.client.SearchService;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
+import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -98,12 +101,12 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
      * .lang.String, java.lang.String, java.lang.String, int)
      */
     @Override
-    public List<String> getKeywordsFromServer(String sessionId, String ServerName, String partialKey,
+    public List<String> getKeywordsFromServer(String sessionId, String facilityName, String partialKey,
             int numberOfKeywords) {
         if (sessionId == null)
             sessionId = getSessionId();
-        List<String> results = keywordManager
-                .getKeywordsWithPrefix(sessionId, ServerName, partialKey, numberOfKeywords);
+        List<String> results = keywordManager.getKeywordsWithPrefix(sessionId, facilityName, partialKey,
+                numberOfKeywords);
         return results;
     }
 
@@ -126,16 +129,15 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
     }
 
     /*
-     * This method searches all the icat servers for investigations with the
-     * input search parameters. (non-Javadoc)
+     * (non-Javadoc)
      * 
      * @see uk.ac.stfc.topcat.gwt.client.SearchService#
      * getAdvancedSearchResultsInvestigation(java.lang.String,
-     * uk.ac.stfc.topcat.ejb.gwt.module.TAdvancedSearchDetails)
+     * uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails)
      */
     @Override
     public List<TInvestigation> getAdvancedSearchResultsInvestigation(String sessionId,
-            TAdvancedSearchDetails searchDetails) {
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
         if (sessionId == null)
             sessionId = getSessionId();
         List<TInvestigation> investigationList = searchManager.searchAdvancedInvestigation(sessionId, searchDetails);
@@ -147,24 +149,51 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
      * the searchDetails NOTE: only instruments and run number start and end
      * used. (non-Javadoc)
      * 
+     * @throws TopcatException
+     * 
      * @see uk.ac.stfc.topcat.gwt.client.SearchService#getAdvancedSearchResultsDatafile(java.lang.String,
      *      uk.ac.stfc.topcat.ejb.gwt.module.TAdvancedSearchDetails)
      */
     @Override
-    public ArrayList<DatafileModel> getAdvancedSearchResultsDatafile(String sessionId, String serverName,
-            TAdvancedSearchDetails searchDetails) {
+    public ArrayList<DatafileModel> getAdvancedSearchResultsDatafile(String sessionId, String facilityName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
         if (sessionId == null)
             sessionId = getSessionId();
-        List<TDatafile> datafileList = searchManager.searchAdvancedDatafileInServer(sessionId, serverName,
+        List<TDatafile> datafileList = searchManager.searchAdvancedDatafileInServer(sessionId, facilityName,
                 searchDetails);
         // Convert TDatafiles to DatafileModel
         ArrayList<DatafileModel> datafileModel = new ArrayList<DatafileModel>();
         for (TDatafile datafile : datafileList) {
-            datafileModel.add(new DatafileModel(serverName, null, datafile.getId(), datafile.getName(), datafile
+            datafileModel.add(new DatafileModel(facilityName, null, datafile.getId(), datafile.getName(), datafile
                     .getSize().toString(), datafile.getFormat(), datafile.getFormatVersion(), datafile.getFormatType(),
                     datafile.getCreateTime(), datafile.getLocation()));
         }
         return datafileModel;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * uk.ac.stfc.topcat.gwt.client.SearchService#getAdvancedSearchResultsDatasets
+     * (java.lang.String, java.lang.String,
+     * uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails)
+     */
+    @Override
+    public ArrayList<DatasetModel> getAdvancedSearchResultsDatasets(String sessionId, String facilityName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        if (sessionId == null)
+            sessionId = getSessionId();
+        ArrayList<TDataset> datasetList = searchManager.searchForDatasetsByParameter(sessionId, facilityName,
+                searchDetails);
+
+        // Convert TDatasets to DatasetModel
+        ArrayList<DatasetModel> datasetModel = new ArrayList<DatasetModel>();
+        for (TDataset dataset : datasetList) {
+            datasetModel.add(new DatasetModel(facilityName, dataset.getId(), dataset.getName(), dataset.getStatus(),
+                    dataset.getType(), dataset.getDescription()));
+        }
+        return datasetModel;
     }
 
     /**

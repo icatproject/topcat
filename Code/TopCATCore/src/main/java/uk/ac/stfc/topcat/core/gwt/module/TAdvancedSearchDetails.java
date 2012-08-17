@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -30,8 +30,9 @@ import java.util.List;
 /**
  * This is shared with GWT for advanced search details.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class TAdvancedSearchDetails implements Serializable {
@@ -51,6 +52,9 @@ public class TAdvancedSearchDetails implements Serializable {
     protected ArrayList<String> instrumentList;
     protected Boolean datafileNameCaseSensitive;
     protected ArrayList<String> keywordsList;
+    protected String parameterName;
+    protected String parameterUnits;
+    protected String parameterValue;
 
     public TAdvancedSearchDetails() {
         investigatorNameList = new ArrayList<String>();
@@ -60,7 +64,6 @@ public class TAdvancedSearchDetails implements Serializable {
         keywordsList = new ArrayList<String>();
     }
 
-    
     public String getDatafileName() {
         return datafileName;
     }
@@ -98,7 +101,7 @@ public class TAdvancedSearchDetails implements Serializable {
     }
 
     public void setInstrumentList(ArrayList<String> instrumentList) {
-        if(instrumentList!=null)
+        if (instrumentList != null)
             this.instrumentList = instrumentList;
     }
 
@@ -107,7 +110,7 @@ public class TAdvancedSearchDetails implements Serializable {
     }
 
     public void setInvestigationTypeList(ArrayList<String> investigationTypeList) {
-        if(investigationTypeList!=null)
+        if (investigationTypeList != null)
             this.investigationTypeList = investigationTypeList;
     }
 
@@ -117,6 +120,30 @@ public class TAdvancedSearchDetails implements Serializable {
 
     public void setInvestigatorNameList(ArrayList<String> investigatorNames) {
         this.investigatorNameList = investigatorNames;
+    }
+
+    public String getParameterName() {
+        return parameterName;
+    }
+
+    public void setParameterName(String name) {
+        this.parameterName = name;
+    }
+
+    public String getParameterUnits() {
+        return parameterUnits;
+    }
+
+    public void setParameterUnits(String units) {
+        this.parameterUnits = units;
+    }
+
+    public String getParameterValue() {
+        return parameterValue;
+    }
+
+    public void setParameterValue(String value) {
+        this.parameterValue = value;
     }
 
     public String getProposalAbstract() {
@@ -150,7 +177,7 @@ public class TAdvancedSearchDetails implements Serializable {
     public void setRbNumberEnd(String rbNumberEnd) {
         this.rbNumberEnd = rbNumberEnd;
     }
-    
+
     public String getSample() {
         return sample;
     }
@@ -172,7 +199,7 @@ public class TAdvancedSearchDetails implements Serializable {
     }
 
     public void setKeywords(List<String> keywords) {
-        if(keywords!=null) {
+        if (keywords != null) {
             this.keywordsList.clear();
             this.keywordsList.addAll(keywords);
         }

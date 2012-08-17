@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -24,27 +24,47 @@ package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ejb.Local;
+
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 
 /**
  * This is local interface to the search management stateless session bean
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 
 @Local
 public interface SearchManagementBeanLocal {
-    public ArrayList<TInvestigation> searchBasicInvestigationByKeywords(String topcatSessionId,ArrayList<String> keywords);
-    public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId, String serverName, ArrayList<String> keywords);
-    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId,List<String> keywords);
-    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId, String serverName, ArrayList<String> keywords);
-    public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,TAdvancedSearchDetails searchDetails);
-    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String serverName,TAdvancedSearchDetails searchDetails);
-    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId,String serverName,TAdvancedSearchDetails searchDetails);
+    public ArrayList<TInvestigation> searchBasicInvestigationByKeywords(String topcatSessionId,
+            ArrayList<String> keywords);
+
+    public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId,
+            String serverName, ArrayList<String> keywords);
+
+    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId, List<String> keywords);
+
+    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId,
+            String serverName, ArrayList<String> keywords);
+
+    public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,
+            TAdvancedSearchDetails searchDetails) throws TopcatException;
+
+    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String serverName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException;
+
+    public ArrayList<TDataset> searchForDatasetsByParameter(String topcatSessionId, String facilityName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException;
+
+    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String serverName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException;
+
 }

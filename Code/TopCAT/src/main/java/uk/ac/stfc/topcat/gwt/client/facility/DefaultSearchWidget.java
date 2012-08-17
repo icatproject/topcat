@@ -142,12 +142,7 @@ public class DefaultSearchWidget extends Composite {
         btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                errorMessage.setText("");
-                startDate.clear();
-                endDate.clear();
-                runNumberStart.clear();
-                runNumberEnd.clear();
-                lstInstrument.getListView().getSelectionModel().deselectAll();
+                reset();
             }
         });
         layoutContainer.add(btnReset);
@@ -228,6 +223,15 @@ public class DefaultSearchWidget extends Composite {
         return searchDetails;
     }
 
+    private void reset() {
+        errorMessage.setText("");
+        startDate.clear();
+        endDate.clear();
+        runNumberStart.clear();
+        runNumberEnd.clear();
+        lstInstrument.getListView().getSelectionModel().deselectAll();
+    }
+
     /**
      * Setup a handler to react to Logout events.
      */
@@ -235,6 +239,7 @@ public class DefaultSearchWidget extends Composite {
         LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
             @Override
             public void logout(LogoutEvent event) {
+                reset();
                 lstInstrument = new ListField<Instrument>();
             }
         });

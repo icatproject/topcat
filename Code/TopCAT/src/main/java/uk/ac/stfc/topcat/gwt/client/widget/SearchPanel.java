@@ -95,6 +95,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     private SuggestBox keywords;
     private MultipleTextBox multipleTextBox;
     private AdvancedSearchSubPanel advancedSearchSubPanel;
+    private ParameterSearchSubPanel parameterSearchSubPanel;
     private FacilitiesSearchSubPanel facilitiesSearchSubPanel;
     private VerticalPanel investigationPanel;
     private InvestigationSubPanel investigationSubPanel;
@@ -203,6 +204,31 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         topPanel.add(cntntpnlAdvancedSearch, td_cntntpnlAdvancedSearch);
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
+        ContentPanel cntntpnlParameterSearch = new ContentPanel();
+        cntntpnlParameterSearch.setTitleCollapse(true);
+        cntntpnlParameterSearch.setFrame(true);
+        cntntpnlParameterSearch.setExpanded(false);
+        cntntpnlParameterSearch.setHeading("Parameter Search");
+        cntntpnlParameterSearch.setCollapsible(true);
+        cntntpnlParameterSearch.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        cntntpnlParameterSearch.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        parameterSearchSubPanel = new ParameterSearchSubPanel();
+        cntntpnlParameterSearch.add(parameterSearchSubPanel);
+        TableData td_cntntpnlParameterSearch = new TableData();
+        td_cntntpnlParameterSearch.setHeight("100%");
+        td_cntntpnlParameterSearch.setWidth("705px");
+        topPanel.add(cntntpnlParameterSearch, td_cntntpnlParameterSearch);
+
         ContentPanel cntntpnlFacilitiesSearch = new ContentPanel();
         cntntpnlFacilitiesSearch.setTitleCollapse(true);
         cntntpnlFacilitiesSearch.setExpanded(false);
@@ -286,6 +312,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
             public void componentSelected(MenuEvent ce) {
                 eventBus.getInvestigationDetails(grid.getSelectionModel().getSelectedItem().getFacilityName(), grid
                         .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
@@ -296,6 +323,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
             public void componentSelected(MenuEvent ce) {
                 eventBus.showDatasetWindowWithHistory(grid.getSelectionModel().getSelectedItem().getFacilityName(),
                         grid.getSelectionModel().getSelectedItem().getInvestigationId(), grid.getSelectionModel()

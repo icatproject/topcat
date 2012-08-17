@@ -27,6 +27,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -202,17 +204,19 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
 
     @Override
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
-            int start, int end) {
+            int start, int end) throws TopcatException {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
-        String query = getAdvancedQuery(details);
+        String query = getAdvancedQuery(sessionId, details);
+        if (query == null) {
+            // Given parameter name was not found
+            return investigationList;
+        }
         List<Object> resultInv = null;
         try {
             resultInv = service.search(sessionId, start + ", " + end + query);
-        } catch (IcatException_Exception ex) {
-            // TODO check type
-            System.out.println("ERROR - searchByAdvancedPagination: " + ex.getMessage());
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e);
         }
-
         for (Object inv : resultInv) {
             investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
         }
@@ -421,8 +425,71 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         return resultKeywords;
     }
 
-    private String getAdvancedQuery(TAdvancedSearchDetails details) {
+    @Override
+    public ArrayList<TDatafile> searchForDatafilesByAdvancedPagination(String sessionId,
+            TAdvancedSearchDetails details, int start, int end) throws TopcatException {
+        ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
+        String query = getDatafileAdvancedQuery(sessionId, details);
+        if (query == null) {
+            // Parameter not found
+            return datafileList;
+        }
+        List<Object> resultDf = null;
+        try {
+            resultDf = service.search(sessionId, start + ", " + end + query);
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e);
+        }
+        for (Object df : resultDf) {
+            datafileList.add(copyDatafileToTDatafile(serverName, (Datafile) df));
+        }
+        return datafileList;
+    }
+
+    private void convertToTopcatException(IcatException_Exception e) throws TopcatException {
+        IcatException ue = e.getFaultInfo();
+        System.out.println("ERROR - throwTopcatException: " + ue.getType() + " ~ " + e.getMessage());
+        if (ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
+            throw new TopcatException(e.getMessage(), TopcatExceptionType.BAD_PARAMETER);
+        } else if (ue.getType().equals(IcatExceptionType.INSUFFICIENT_PRIVILEGES)) {
+            throw new TopcatException(e.getMessage(), TopcatExceptionType.INSUFFICIENT_PRIVILEGES);
+        } else if (ue.getType().equals(IcatExceptionType.INTERNAL)) {
+            throw new TopcatException(e.getMessage(), TopcatExceptionType.INTERNAL);
+        } else if (ue.getType().equals(IcatExceptionType.NO_SUCH_OBJECT_FOUND)) {
+            throw new TopcatException(e.getMessage(), TopcatExceptionType.NO_SUCH_OBJECT_FOUND);
+        } else if (ue.getType().equals(IcatExceptionType.OBJECT_ALREADY_EXISTS)) {
+            throw new TopcatException(e.getMessage(), TopcatExceptionType.OBJECT_ALREADY_EXISTS);
+        } else if (ue.getType().equals(IcatExceptionType.SESSION)) {
+            throw new TopcatException(e.getMessage(), TopcatExceptionType.SESSION);
+        } else if (ue.getType().equals(IcatExceptionType.VALIDATION)) {
+            throw new TopcatException(e.getMessage(), TopcatExceptionType.VALIDATION);
+        }
+    }
+
+    private String getAdvancedQuery(String sessionId, TAdvancedSearchDetails details) throws TopcatException {
         StringBuilder query = new StringBuilder(" DISTINCT Investigation");
+
+        // Parameter - if it is a parameter search then we do not use the other
+        // search details
+        if (details.getParameterName() != null) {
+            ParameterValueType type = getParameterType(sessionId, details.getParameterName(),
+                    details.getParameterUnits());
+            if (type == ParameterValueType.DATE_AND_TIME) {
+                query.append(" <-> InvestigationParameter [type.name='" + details.getParameterName()
+                        + "' AND type.units='" + details.getParameterUnits() + "' AND dateTimeValue='"
+                        + details.getParameterValue() + "']");
+            } else if (type == ParameterValueType.NUMERIC) {
+                query.append(" <-> InvestigationParameter [type.name='" + details.getParameterName()
+                        + "' AND type.units='" + details.getParameterUnits() + "' AND numericValue="
+                        + details.getParameterValue() + "]");
+            } else if (type == ParameterValueType.STRING) {
+                query.append(" <-> InvestigationParameter [type.name='" + details.getParameterName()
+                        + "' AND type.units='" + details.getParameterUnits() + "' AND stringValue='"
+                        + details.getParameterValue() + "']");
+            }
+            return query.toString();
+        }
+
         boolean addAnd = false;
         boolean queryDataset = false;
 
@@ -468,11 +535,10 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         }
 
         // Grant Id
-        // if (details.getGrantId() != null) {
-        // query.append(" <-> InvestigationParameter [type.name='grant_id' AND stringValue='"
-        // + details.getGrantId()
-        // + "']");
-        // }
+        if (details.getGrantId() != null) {
+            query.append(" <-> InvestigationParameter [type.name='grant_id' AND stringValue='" + details.getGrantId()
+                    + "']");
+        }
 
         // Instrument
         if (details.getInstrumentList().size() > 0) {
@@ -520,6 +586,53 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         return query.toString();
     }
 
+    /**
+     * 
+     * @param sessionId
+     * @param details
+     * @return
+     * @throws TopcatException
+     */
+    private String getDatafileAdvancedQuery(String sessionId, TAdvancedSearchDetails details) throws TopcatException {
+        StringBuilder query = new StringBuilder(" DISTINCT Datafile");
+        // Parameter - if it is a parameter search then we do not use the other
+        // search details
+        if (details.getParameterName() != null) {
+            ParameterValueType type = getParameterType(sessionId, details.getParameterName(),
+                    details.getParameterUnits());
+            if (type == ParameterValueType.DATE_AND_TIME) {
+                query.append(" <-> DatafileParameter [type.name='" + details.getParameterName() + "' AND type.units='"
+                        + details.getParameterUnits() + "' AND dateTimeValue='" + details.getParameterValue() + "']");
+            } else if (type == ParameterValueType.NUMERIC) {
+                query.append(" <-> DatafileParameter [type.name='" + details.getParameterName() + "' AND type.units='"
+                        + details.getParameterUnits() + "' AND numericValue=" + details.getParameterValue() + "]");
+            } else if (type == ParameterValueType.STRING) {
+                query.append(" <-> DatafileParameter [type.name='" + details.getParameterName() + "' AND type.units='"
+                        + details.getParameterUnits() + "' AND stringValue='" + details.getParameterValue() + "']");
+            }
+            return query.toString();
+        }
+
+        return query.toString();
+    }
+
+    private ParameterValueType getParameterType(String sessionId, String name, String units) throws TopcatException {
+        String query = "DISTINCT ParameterType.valueType [name='" + name + "' and units='" + units + "']";
+        try {
+            List<Object> results = service.search(sessionId, query);
+            for (Object item : results) {
+                // We are selecting on the key so there should only be one
+                // result
+                return (ParameterValueType) item;
+            }
+        } catch (java.lang.NullPointerException ex) {
+        } catch (IcatException_Exception ex) {
+            convertToTopcatException(ex);
+        }
+        // Parameter not found
+        throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
+    }
+
     private String getDate(Date date) {
         StringBuilder retDate = new StringBuilder();
         retDate.append("{ts ");
@@ -557,9 +670,8 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        // TODO change FileSize in TDatafile to a Long
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize()
-                .intValue(), format, formatVersion, formatType, createDate, datafile.getLocation());
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
+                format, formatVersion, formatType, createDate, datafile.getLocation());
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {
@@ -576,7 +688,7 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
                 .toGregorianCalendar().getTime());
     }
 
-    public ArrayList<String> searchList(String sessionId, String query) {
+    private ArrayList<String> searchList(String sessionId, String query) {
         ArrayList<String> returnList = new ArrayList<String>();
         try {
             List<Object> results = service.search(sessionId, query);

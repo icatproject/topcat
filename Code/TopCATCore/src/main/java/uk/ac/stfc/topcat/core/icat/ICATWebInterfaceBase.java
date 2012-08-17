@@ -6,6 +6,7 @@
 package uk.ac.stfc.topcat.core.icat;
 
 import java.util.ArrayList;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
@@ -15,6 +16,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 
 /**
  * 
@@ -58,8 +60,13 @@ public class ICATWebInterfaceBase {
     }
 
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
-            int start, int end) {
+            int start, int end) throws TopcatException {
         return new ArrayList<TInvestigation>();
+    }
+
+    public ArrayList<TDatafile> searchForDatafilesByAdvancedPagination(String sessionId,
+            TAdvancedSearchDetails details, int start, int end) throws TopcatException {
+        return new ArrayList<TDatafile>();
     }
 
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)

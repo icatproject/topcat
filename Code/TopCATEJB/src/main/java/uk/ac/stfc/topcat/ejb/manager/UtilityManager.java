@@ -41,6 +41,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
@@ -83,25 +84,6 @@ public class UtilityManager {
                             .getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
         }
         return facilityNames;
-    }
-
-    /**
-     * This method returns all the instrument names in available servers
-     * 
-     * @param manager
-     * @return
-     */
-    public ArrayList<String> getAllInstrumentNames(EntityManager manager, String sessionId) {
-
-        ArrayList<String> instrumentNames = new ArrayList<String>();
-        List<TopcatUserSession> userSessions = manager
-                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
-                .setParameter("topcatSessionId", sessionId).getResultList();
-        for (TopcatUserSession topcatUserSession : userSessions) {
-            instrumentNames.addAll(getInstrumentNames(topcatUserSession.getIcatSessionId(), topcatUserSession
-                    .getUserId().getServerId()));
-        }
-        return instrumentNames;
     }
 
     /**
@@ -156,25 +138,6 @@ public class UtilityManager {
     }
 
     /**
-     * This method returns all the investigation types available in all servers
-     * 
-     * @param manager
-     * @return
-     */
-    public ArrayList<String> getAllInvestigationTypes(EntityManager manager, String sessionId) {
-
-        ArrayList<String> instrumentNames = new ArrayList<String>();
-        List<TopcatUserSession> userSessions = manager
-                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
-                .setParameter("topcatSessionId", sessionId).getResultList();
-        for (TopcatUserSession topcatUserSession : userSessions) {
-            instrumentNames.addAll(getInvestigationTypes(topcatUserSession.getIcatSessionId(), topcatUserSession
-                    .getUserId().getServerId()));
-        }
-        return instrumentNames;
-    }
-
-    /**
      * This method returns all the investigation types from a given server
      * 
      * @param manager
@@ -225,35 +188,6 @@ public class UtilityManager {
             logger.warning("getInvestigationTypes: " + ex.getMessage());
         }
         return new ArrayList<String>();
-    }
-
-    /**
-     * This method returns all the investigation types from a given server
-     * 
-     * @param manager
-     * @param sessionId
-     * @param serverName
-     * @return
-     */
-    public ArrayList<TFacilityCycle> getFacilityCycles(EntityManager manager, String sessionId, String serverName)
-            throws ICATMethodNotFoundException {
-        TopcatUserSession userSession = null;
-        try {
-            userSession = (TopcatUserSession) manager
-                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
-                    .getSingleResult();
-            return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
-        } catch (javax.persistence.NoResultException ex) {
-            try {
-                userSession = (TopcatUserSession) manager
-                        .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("serverName", serverName).getSingleResult();
-                return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
-            } catch (javax.persistence.NoResultException exinnex) {
-            }
-        }
-        return new ArrayList<TFacilityCycle>();
     }
 
     /**
@@ -387,9 +321,10 @@ public class UtilityManager {
      * @param serverName
      * @param instrumentName
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(EntityManager manager, String sessionId,
-            String serverName, String instrumentName) {
+            String serverName, String instrumentName) throws TopcatException {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
@@ -412,9 +347,10 @@ public class UtilityManager {
      * @param userName
      * @param instrumentName
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId,
-            TopcatIcatServer server, String userName, String userSurname, String instrumentName) {
+            TopcatIcatServer server, String userName, String userSurname, String instrumentName) throws TopcatException {
         logger.finest("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
                 + server.getName() + " username:" + userName + " instrument:" + instrumentName);
         try {
@@ -440,9 +376,10 @@ public class UtilityManager {
      * @param serverName
      * @param instrumentName
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(EntityManager manager, String sessionId,
-            String serverName, String instrumentName) {
+            String serverName, String instrumentName) throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
@@ -462,9 +399,10 @@ public class UtilityManager {
      * @param userName
      * @param instrumentName
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId,
-            TopcatIcatServer server, String userName, String instrumentName) {
+            TopcatIcatServer server, String userName, String instrumentName) throws TopcatException {
         try {
             TAdvancedSearchDetails details = new TAdvancedSearchDetails();
             details.getInstrumentList().add(instrumentName);
@@ -488,9 +426,11 @@ public class UtilityManager {
      * @param instrumentName
      * @param facilityCycle
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(EntityManager manager,
-            String sessionId, String serverName, String instrumentName, TFacilityCycle facilityCycle) {
+            String sessionId, String serverName, String instrumentName, TFacilityCycle facilityCycle)
+            throws TopcatException {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
@@ -514,10 +454,11 @@ public class UtilityManager {
      * @param instrumentName
      * @param facilityCycle
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServeInstrumentAndCycle(String sessionId,
             TopcatIcatServer server, String userName, String userSurname, String instrumentName,
-            TFacilityCycle facilityCycle) {
+            TFacilityCycle facilityCycle) throws TopcatException {
         logger.finest("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
                 + server.getName() + " username:" + userName + " instrument:" + instrumentName + " facilityCycle:"
                 + facilityCycle);
@@ -547,9 +488,11 @@ public class UtilityManager {
      * @param instrumentName
      * @param facilityCycle
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(EntityManager manager,
-            String sessionId, String serverName, String instrumentName, TFacilityCycle facilityCycle) {
+            String sessionId, String serverName, String instrumentName, TFacilityCycle facilityCycle)
+            throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
@@ -570,9 +513,11 @@ public class UtilityManager {
      * @param instrumentName
      * @param facilityCycle
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId,
-            TopcatIcatServer server, String userName, String instrumentName, TFacilityCycle facilityCycle) {
+            TopcatIcatServer server, String userName, String instrumentName, TFacilityCycle facilityCycle)
+            throws TopcatException {
         try {
             TAdvancedSearchDetails details = new TAdvancedSearchDetails();
             details.getInstrumentList().add(instrumentName);

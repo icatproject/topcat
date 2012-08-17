@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -32,13 +32,13 @@ import java.util.List;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.callback.InvestigationSearchCallback;
-import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInstrumentEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
-import uk.ac.stfc.topcat.gwt.client.eventHandler.AddFacilityEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInstrumentEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
@@ -54,7 +54,6 @@ import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.ListField;
@@ -83,17 +82,14 @@ public class AdvancedSearchSubPanel extends Composite {
     private TextField<String> txtFldSampleName;
     private TextField<String> txtFldInvestigatorName;
     private TextField<String> txtFldDataFileName;
-    private CheckBox chckbxCaseSensitive;
     private DateField dateFieldStart;
     private DateField dateFieldEnd;
     private TextField<String> txtFldRunNo;
-    private TextField<String> txtFldGrantId;
     private InvestigationSearchCallback invSearchCallback;
 
     private HashMap<String, ArrayList<Instrument>> instrumentList;
     private HashMap<String, ArrayList<InvestigationType>> investigationTypeList;
 
-    @SuppressWarnings("unchecked")
     public AdvancedSearchSubPanel() {
 
         LayoutContainer layoutContainer = new LayoutContainer();
@@ -138,11 +134,6 @@ public class AdvancedSearchSubPanel extends Composite {
         flexTable.setWidget(4, 1, txtFldDataFileName);
         txtFldDataFileName.setFieldLabel("New TextField");
 
-        chckbxCaseSensitive = new CheckBox();
-        flexTable.setWidget(4, 2, chckbxCaseSensitive);
-        chckbxCaseSensitive.setBoxLabel("Case Sensitive");
-        chckbxCaseSensitive.setHideLabel(true);
-
         LabelField lblfldStartDate = new LabelField("Start Date");
         flexTable.setWidget(5, 0, lblfldStartDate);
 
@@ -167,13 +158,6 @@ public class AdvancedSearchSubPanel extends Composite {
         txtFldRunNo = new TextField<String>();
         flexTable.setWidget(6, 1, txtFldRunNo);
         txtFldRunNo.setFieldLabel("New TextField");
-
-        LabelField lblfldGrantId = new LabelField("Grant Id");
-        flexTable.setWidget(7, 0, lblfldGrantId);
-
-        txtFldGrantId = new TextField<String>();
-        flexTable.setWidget(7, 1, txtFldGrantId);
-        txtFldGrantId.setFieldLabel("New TextField");
 
         LabelField lblfldFacility = new LabelField("Facility");
         flexTable.setWidget(8, 0, lblfldFacility);
@@ -238,7 +222,7 @@ public class AdvancedSearchSubPanel extends Composite {
         instrumentList = new HashMap<String, ArrayList<Instrument>>();
         investigationTypeList = new HashMap<String, ArrayList<InvestigationType>>();
 
-        createAddFacilityHandler();
+        createLoginHandler();
         createAddInstrumentHandler();
         createAddInvestigationHandler();
         createLogoutHandler();
@@ -295,11 +279,9 @@ public class AdvancedSearchSubPanel extends Composite {
         result.setEndDate(dateFieldEnd.getValue());
         result.setRbNumberStart(txtFldRunNo.getValue());
         result.setRbNumberEnd(txtFldRunNo.getValue());
-        result.setGrantId(txtFldGrantId.getValue());
         result.setFacilityList(getFacilitySelectedList());
         result.setInvestigationTypeList(getInvestigationTypeSelectedList());
         result.setInstrumentList(getInstrumentSelectedList());
-        // TODO: Case insensitive datafile search
         return result;
     }
 
@@ -354,22 +336,19 @@ public class AdvancedSearchSubPanel extends Composite {
         txtFldSampleName.clear();
         txtFldInvestigatorName.clear();
         txtFldDataFileName.clear();
-        chckbxCaseSensitive.setValue(true);
         dateFieldStart.clear();
         dateFieldEnd.clear();
         txtFldRunNo.clear();
-        txtFldGrantId.clear();
     }
 
     /**
-     * Setup a handler to react to add facility events.
+     * Setup a handler to react to Login events.
      */
-    private void createAddFacilityHandler() {
-        AddFacilityEvent.register(EventPipeLine.getEventBus(), new AddFacilityEventHandler() {
+    private void createLoginHandler() {
+        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
             @Override
-            public void addFacilities(AddFacilityEvent event) {
-                listFieldFacility.getStore().removeAll();
-                listFieldFacility.getStore().add(event.getFacilities());
+            public void login(LoginEvent event) {
+                listFieldFacility.getStore().add(new Facility(event.getFacilityName(), null));
             }
         });
     }
@@ -411,6 +390,8 @@ public class AdvancedSearchSubPanel extends Composite {
             public void logout(LogoutEvent event) {
                 instrumentList.remove(event.getFacilityName());
                 investigationTypeList.remove(event.getFacilityName());
+                Facility facility = listFieldFacility.getStore().findModel("name", event.getFacilityName());
+                listFieldFacility.getStore().remove(facility);
                 updateListWidgets();
             }
         });

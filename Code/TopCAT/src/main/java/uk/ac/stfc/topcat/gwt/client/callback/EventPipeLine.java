@@ -36,6 +36,8 @@ import java.util.Set;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
@@ -51,12 +53,12 @@ import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
-import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginCheckCompleteEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
-import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginCheckCompleteEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.WindowLogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
@@ -527,7 +529,17 @@ public class EventPipeLine implements LoginInterface {
                     @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
-                        showErrorDialog("Error retrieving data from server");
+                        if (caught instanceof TopcatException) {
+                            if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
+                                checkStillLoggedIn();
+                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.BAD_PARAMETER)) {
+                                showErrorDialog("Error bad parameter");
+                            } else {
+                                showErrorDialog("Error retrieving data from server");
+                            }
+                        } else {
+                            showErrorDialog("Error retrieving data from server");
+                        }
                     }
 
                     @Override
@@ -732,7 +744,17 @@ public class EventPipeLine implements LoginInterface {
                     @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
-                        showErrorDialog("Error retrieving data from server");
+                        if (caught instanceof TopcatException) {
+                            if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
+                                checkStillLoggedIn();
+                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.BAD_PARAMETER)) {
+                                showErrorDialog("Error bad parameter");
+                            } else {
+                                showErrorDialog("Error retrieving data from server");
+                            }
+                        } else {
+                            showErrorDialog("Error retrieving data from server");
+                        }
                     }
 
                     @Override
@@ -746,13 +768,25 @@ public class EventPipeLine implements LoginInterface {
                                 datafileWindow.show();
                                 datafileWindow.setHistoryVerified(true);
                             } else {
-                                showMessageDialog("No files returned");
+                                showMessageDialog("No files returned from " + facilityName);
                             }
                         } catch (WindowsNotAvailableExcecption e) {
                             showErrorDialog(e.getMessage());
                         }
                     }
                 });
+    }
+
+    /**
+     * This method searches for all the datafiles that match the given
+     * searchDetails.
+     * 
+     * @param searchDetails
+     */
+    public void searchForDatafilesByParameter(TAdvancedSearchDetails searchDetails) {
+        for (final String facilityName : searchDetails.getFacilityList()) {
+            searchForDatafiles(facilityName, searchDetails);
+        }
     }
 
     /**

@@ -5,10 +5,10 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
-        <dependent-module archiveName="TopCATEJB-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/TopCATEJB/TopCATEJB">
+        <dependent-module archiveName="TopCATEJB-1.6-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/TopCATEJB/TopCATEJB">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="TopCATCore-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/TopCATCore/TopCATCore">
+        <dependent-module archiveName="TopCATCore-1.6-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/TopCATCore/TopCATCore">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="TopCAT"/>
