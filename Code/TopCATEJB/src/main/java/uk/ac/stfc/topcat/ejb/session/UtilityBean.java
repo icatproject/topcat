@@ -152,6 +152,23 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
+    public ArrayList<String> getParameterNames(String sessionId, String facilityName) throws TopcatException {
+        return utilManager.getParameterNames(manager, sessionId, facilityName);
+    }
+
+    @Override
+    public ArrayList<String> getParameterUnits(String sessionId, String facilityName, String name)
+            throws TopcatException {
+        return utilManager.getParameterUnits(manager, sessionId, facilityName, name);
+    }
+
+    @Override
+    public String getParameterType(String sessionId, String facilityName, String name, String units)
+            throws TopcatException {
+        return utilManager.getParameterType(manager, sessionId, facilityName, name, units);
+    }
+
+    @Override
     public String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds) {
         return utilManager.getDatafilesDownloadURL(manager, sessionId, serverName, datafileIds);
     }

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package uk.ac.stfc.topcat.icatclient.v410;
+package uk.ac.stfc.topcat.icatclient.v420;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,15 +30,17 @@ import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
+import uk.ac.stfc.topcat.icatclient.v420.Login.Credentials;
+import uk.ac.stfc.topcat.icatclient.v420.Login.Credentials.Entry;
 
 /**
  * 
  */
-public class ICATInterfacev410 extends ICATWebInterfaceBase {
+public class ICATInterfacev420 extends ICATWebInterfaceBase {
     private ICAT service;
     private String serverName;
 
-    public ICATInterfacev410(String serverURL, String serverName) throws MalformedURLException {
+    public ICATInterfacev420(String serverURL, String serverName) throws MalformedURLException {
         service = new ICATService(new URL(serverURL), new QName("http://icatproject.org", "ICATService")).getICATPort();
         this.serverName = serverName;
     }
@@ -48,7 +50,18 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         String result = new String();
         try {
             // TODO no longer uses hours
-            result = service.login(username, password);
+            Credentials credentials = new Credentials();
+            List<Entry> entries = credentials.getEntry();
+            Entry entry = new Entry();
+            entry.setKey("username");
+            entry.setValue(username);
+            entries.add(entry);
+            entry = new Entry();
+            entry.setKey("password");
+            entry.setValue(password);
+            entries.add(entry);
+            credentials.entry.add(entry);
+            result = service.login("db", credentials);
         } catch (IcatException_Exception ex) {
             // TODO check type
             throw new AuthenticationException("ICAT Server not available");

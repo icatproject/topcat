@@ -17,6 +17,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 
 /**
  * 
@@ -64,9 +65,10 @@ public class ICATWebInterfaceBase {
         return new ArrayList<TInvestigation>();
     }
 
-    public ArrayList<TDatafile> searchForDatafilesByAdvancedPagination(String sessionId,
-            TAdvancedSearchDetails details, int start, int end) throws TopcatException {
-        return new ArrayList<TDatafile>();
+    public ArrayList<TDatafile> searchDatafilesByParameter(String sessionId, TAdvancedSearchDetails details)
+            throws TopcatException {
+        throw new TopcatException("Parameter searching is not currently supported by this server",
+                TopcatExceptionType.NOT_SUPPORTED);
     }
 
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
@@ -94,6 +96,18 @@ public class ICATWebInterfaceBase {
         return new ArrayList<TDatafileParameter>();
     }
 
+    public ArrayList<String> getParameterNames(String sessionId) throws TopcatException {
+        throw new TopcatException("getParameterNames is not supported", TopcatExceptionType.NOT_SUPPORTED);
+    }
+
+    public ArrayList<String> getParameterUnits(String sessionId, String name) throws TopcatException {
+        throw new TopcatException("getParameterUnits is not supported", TopcatExceptionType.NOT_SUPPORTED);
+    }
+
+    public String getParameterType(String sessionId, String name, String units) throws TopcatException {
+        throw new TopcatException("getParameterType is not supported", TopcatExceptionType.NOT_SUPPORTED);
+    }
+
     public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
         return null;
     }
@@ -114,7 +128,7 @@ public class ICATWebInterfaceBase {
         return new ArrayList<TInvestigation>();
     }
 
-    public ArrayList<TDatafile> searchByRunNumber(String sessionId, ArrayList<String> instruments,
+    public ArrayList<TDatafile> searchDatafilesByRunNumber(String sessionId, ArrayList<String> instruments,
             float startRunNumber, float endRunNumber) {
         return new ArrayList<TDatafile>();
     }

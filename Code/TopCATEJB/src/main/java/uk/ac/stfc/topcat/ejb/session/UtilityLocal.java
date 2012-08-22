@@ -93,6 +93,12 @@ public interface UtilityLocal {
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName,
             java.lang.String datafileId);
 
+    ArrayList<String> getParameterNames(String sessionId, String facilityName) throws TopcatException;
+
+    ArrayList<String> getParameterUnits(String sessionId, String facilityName, String name) throws TopcatException;
+
+    String getParameterType(String sessionId, String facilityName, String name, String units) throws TopcatException;
+
     String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds);
 
     String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId);

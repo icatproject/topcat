@@ -242,4 +242,41 @@ public interface UtilityService extends RemoteService {
      */
     public List<DownloadModel> getDownloadStatus(Set<DownloadModel> downloadQueue);
 
+    /**
+     * Get a list of parameter names known to a facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of parameter names
+     * @throws TopcatException
+     */
+    ArrayList<String> getParameterNames(String facilityName) throws TopcatException;
+
+    /**
+     * Get a list of parameter units for the given facility and parameter name.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @return a list of units
+     * @throws TopcatException
+     */
+    ArrayList<String> getParameterUnits(String facilityName, String name) throws TopcatException;
+
+    /**
+     * Get the expected type of the parameter value for the given facility,
+     * parameter name and parameter units.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @param units
+     *            a string containing the parameter units
+     * @return the expected type of the value
+     * @throws TopcatException
+     */
+    String getParameterType(String facilityName, String name, String units) throws TopcatException;
+
 }

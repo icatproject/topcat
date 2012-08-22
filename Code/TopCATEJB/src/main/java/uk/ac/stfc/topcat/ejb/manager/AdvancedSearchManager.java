@@ -157,8 +157,8 @@ public class AdvancedSearchManager {
     }
 
     /**
-     * This method returns all datafiles that match the instrument and Run
-     * number range.
+     * This method returns all datafiles that match the parameter if given
+     * else the instrument and Run number range.
      * 
      * @param manager
      * @param topcatSessionId
@@ -178,9 +178,9 @@ public class AdvancedSearchManager {
                 topcatSessionId, serverName);
         if (userSession != null) {
             if (searchDetails.getParameterName() != null) {
-                resultDatafiles = searchAdvancedDatafilesUsingICATSession(userSession, searchDetails);
+                resultDatafiles = searchDatafilesByParameterUsingICATSession(userSession, searchDetails);
             } else {
-                resultDatafiles = searchRunnoDatafilesUsingICATSession(userSession, searchDetails);
+                resultDatafiles = searchDatafilesByRunnoUsingICATSession(userSession, searchDetails);
             }
         }
         return resultDatafiles;
@@ -188,32 +188,32 @@ public class AdvancedSearchManager {
 
     /**
      * This method calls the icat instance of the server requested to search for
-     * datafiles that correspond to given instrument and run number range
+     * datafiles that correspond to given parameter
      * 
      * @param session
      * @param searchDetails
      * @return
      * @throws TopcatException
      */
-    private ArrayList<TDatafile> searchAdvancedDatafilesUsingICATSession(TopcatUserSession session,
+    private ArrayList<TDatafile> searchDatafilesByParameterUsingICATSession(TopcatUserSession session,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
-        logger.fine("searchAdvancedDatafilesUsingICATSession: Searching server "
+        logger.fine("searchDatafilesByParameterUsingICATSession: Searching server "
                 + session.getUserId().getServerId().getServerUrl() + "  with icat session id "
                 + session.getIcatSessionId());
-        logger.fine("Search Details: RunNumber Start" + searchDetails.getRbNumberStart() + "  RunNumber End:"
-                + searchDetails.getRbNumberEnd());
+        logger.fine("Search Details: Parameter name" + searchDetails.getParameterName() + "  Parameter vale:"
+                + searchDetails.getParameterValue() + "  Parameter units:" + searchDetails.getParameterUnits());
         ArrayList<TDatafile> returnTDatafiles = new ArrayList<TDatafile>();
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(
                     session.getUserId().getServerId().getName(), session.getUserId().getServerId().getVersion(),
                     session.getUserId().getServerId().getServerUrl());
-            return service.searchForDatafilesByAdvancedPagination(session.getIcatSessionId(), searchDetails, 0, 200);
+            return service.searchDatafilesByParameter(session.getIcatSessionId(), searchDetails);
         } catch (TopcatException e) {
             throw e;
         } catch (MalformedURLException ex) {
-            logger.warning("searchAdvancedDatafilesUsingICATSession:" + ex.getMessage());
+            logger.warning("searchDatafilesByParameterUsingICATSession:" + ex.getMessage());
         } catch (Exception ex) {
-            logger.warning("searchAdvancedDatafilesUsingICATSession: (Unknown expetion)" + ex.getMessage());
+            logger.warning("searchDatafilesByParameterUsingICATSession: (Unknown expetion)" + ex.getMessage());
             ex.printStackTrace();
         }
         return returnTDatafiles;
@@ -227,9 +227,9 @@ public class AdvancedSearchManager {
      * @param searchDetails
      * @return
      */
-    private ArrayList<TDatafile> searchRunnoDatafilesUsingICATSession(TopcatUserSession session,
+    private ArrayList<TDatafile> searchDatafilesByRunnoUsingICATSession(TopcatUserSession session,
             TAdvancedSearchDetails searchDetails) {
-        logger.fine("searchRunnoDatafilesUsingICATSession: Searching server "
+        logger.fine("searchDatafilesByRunnoUsingICATSession: Searching server "
                 + session.getUserId().getServerId().getServerUrl() + "  with icat session id "
                 + session.getIcatSessionId());
         logger.fine("Search Details: RunNumber Start" + searchDetails.getRbNumberStart() + "  RunNumber End:"
@@ -247,13 +247,13 @@ public class AdvancedSearchManager {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(
                     session.getUserId().getServerId().getName(), session.getUserId().getServerId().getVersion(),
                     session.getUserId().getServerId().getServerUrl());
-            return service.searchByRunNumber(session.getIcatSessionId(), searchDetails.getInstrumentList(), startRun,
-                    endRun);
+            return service.searchDatafilesByRunNumber(session.getIcatSessionId(), searchDetails.getInstrumentList(),
+                    startRun, endRun);
 
         } catch (MalformedURLException ex) {
-            logger.warning("searchRunnoDatafilesUsingICATSession:" + ex.getMessage());
+            logger.warning("searchDatafilesByRunnoUsingICATSession:" + ex.getMessage());
         } catch (Exception ex) {
-            logger.warning("searchRunnoDatafilesUsingICATSession: (Unknown expetion)" + ex.getMessage());
+            logger.warning("searchDatafilesByRunnoUsingICATSession: (Unknown expetion)" + ex.getMessage());
             ex.printStackTrace();
         }
         return returnTDatafiles;

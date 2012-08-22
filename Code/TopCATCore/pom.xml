@@ -43,6 +43,21 @@
 						</goals>
 						<configuration>
 							<wsdlFiles>
+								<wsdlFile>ICAT420/ICATService/ICAT.wsdl</wsdlFile>
+							</wsdlFiles>
+							<staleFile>${project.build.directory}/jaxws/stale/ICAT_420.stale</staleFile>
+							<packageName>uk.ac.stfc.topcat.icatclient.v420</packageName>
+						</configuration>
+						<id>wsimport-generate-ICAT_420</id>
+						<phase>generate-sources</phase>
+					</execution>
+					
+					<execution>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+						<configuration>
+							<wsdlFiles>
 								<wsdlFile>ICAT410/ICATService/ICAT.wsdl</wsdlFile>
 							</wsdlFiles>
 							<staleFile>${project.build.directory}/jaxws/stale/ICAT_410.stale</staleFile>

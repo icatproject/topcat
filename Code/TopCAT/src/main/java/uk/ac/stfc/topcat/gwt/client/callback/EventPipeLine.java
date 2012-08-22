@@ -521,7 +521,7 @@ public class EventPipeLine implements LoginInterface {
      * 
      * @param searchDetails
      */
-    public void searchForInvestigation(TAdvancedSearchDetails searchDetails) {
+    public void searchForInvestigation(final TAdvancedSearchDetails searchDetails) {
         waitDialog.setMessage("  Searching...");
         waitDialog.show();
         searchService.getAdvancedSearchResultsInvestigation(null, searchDetails,
@@ -533,7 +533,9 @@ public class EventPipeLine implements LoginInterface {
                             if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
                                 checkStillLoggedIn();
                             } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.BAD_PARAMETER)) {
-                                showErrorDialog("Error bad parameter");
+                                showErrorDialog("Error " + ((TopcatException) caught).getMessage());
+                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.NOT_SUPPORTED)) {
+                                showErrorDialog("Error " + ((TopcatException) caught).getMessage());
                             } else {
                                 showErrorDialog("Error retrieving data from server");
                             }
@@ -748,12 +750,15 @@ public class EventPipeLine implements LoginInterface {
                             if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
                                 checkStillLoggedIn();
                             } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.BAD_PARAMETER)) {
-                                showErrorDialog("Error bad parameter");
+                                showErrorDialog("Error from " + facilityName + ". "
+                                        + ((TopcatException) caught).getMessage());
+                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.NOT_SUPPORTED)) {
+                                showErrorDialog("Error " + ((TopcatException) caught).getMessage());
                             } else {
-                                showErrorDialog("Error retrieving data from server");
+                                showErrorDialog("Error retrieving data from " + facilityName);
                             }
                         } else {
-                            showErrorDialog("Error retrieving data from server");
+                            showErrorDialog("Error retrieving data from " + facilityName);
                         }
                     }
 

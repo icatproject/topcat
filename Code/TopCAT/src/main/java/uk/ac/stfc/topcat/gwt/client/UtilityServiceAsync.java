@@ -235,4 +235,41 @@ public interface UtilityServiceAsync {
      */
     public void getDownloadStatus(Set<DownloadModel> downloadQueue, AsyncCallback<List<DownloadModel>> asyncCallback);
 
+    /**
+     * Get a list of parameter names known to a facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    void getParameterNames(String facilityName, AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get a list of parameter units for the given facility and parameter name.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @param callback
+     *            object to be called on completion
+     */
+    void getParameterUnits(String facilityName, String name, AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get the expected type of the parameter value for the given facility,
+     * parameter name and parameter units.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @param units
+     *            a string containing the parameter units
+     * @param callback
+     *            object to be called on completion
+     */
+    void getParameterType(String facilityName, String name, String units, AsyncCallback<String> callback);
+
 }

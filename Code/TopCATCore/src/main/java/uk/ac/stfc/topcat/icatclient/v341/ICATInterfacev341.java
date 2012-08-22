@@ -412,7 +412,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TDatafile> searchByRunNumber(String sessionId, ArrayList<String> instruments,
+    public ArrayList<TDatafile> searchDatafilesByRunNumber(String sessionId, ArrayList<String> instruments,
             float startRunNumber, float endRunNumber) {
         List<Datafile> resultDatafiles = null;
         ArrayList<TDatafile> returnTDatafiles = new ArrayList<TDatafile>();
