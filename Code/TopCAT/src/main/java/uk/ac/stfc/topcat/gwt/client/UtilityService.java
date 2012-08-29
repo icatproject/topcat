@@ -266,7 +266,8 @@ public interface UtilityService extends RemoteService {
 
     /**
      * Get the expected type of the parameter value for the given facility,
-     * parameter name and parameter units.
+     * parameter name and parameter units. If the units are '--ALL--' then
+     * return types for all units.
      * 
      * @param facilityName
      *            a string containing the facility name
@@ -277,6 +278,6 @@ public interface UtilityService extends RemoteService {
      * @return the expected type of the value
      * @throws TopcatException
      */
-    String getParameterType(String facilityName, String name, String units) throws TopcatException;
+    ArrayList<String> getParameterTypes(String facilityName, String name, String units) throws TopcatException;
 
 }

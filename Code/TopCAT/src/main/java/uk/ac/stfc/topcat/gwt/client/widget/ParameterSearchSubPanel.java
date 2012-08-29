@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
+import uk.ac.stfc.topcat.core.gwt.module.TConstants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
@@ -164,18 +165,14 @@ public class ParameterSearchSubPanel extends Composite {
         layoutContainer.add(new Text());
 
         // Experiment Search Button
-        Button btnSearchExp = new Button("Search Experiments");
+        Button btnSearchExp = new Button("Search Experiment Parameters");
         btnSearchExp.setToolTip("Get a list of experiments");
         btnSearchExp.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 errorMessage.setText("");
                 if (validateInput()) {
-                    TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-                    searchDetails.setFacilityList(getFacilitySelectedList());
-                    searchDetails.setParameterName(comboBoxName.getSelection().get(0).getName());
-                    searchDetails.setParameterUnits(comboBoxUnits.getSelection().get(0).getUnits());
-                    searchDetails.setParameterValue(paramValue.getValue());
+                    TAdvancedSearchDetails searchDetails = getSearchDetails();
                     eventBus.searchForInvestigation(searchDetails);
                 }
             }
@@ -186,19 +183,14 @@ public class ParameterSearchSubPanel extends Composite {
         // Dataset Search Button TODO
 
         // Datafile Search Button
-        Button btnSearchFile = new Button("Search Data Files");
+        Button btnSearchFile = new Button("Search Data File Parameters");
         btnSearchFile.setToolTip("Get a list of data files");
         btnSearchFile.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 errorMessage.setText("");
                 if (validateInput()) {
-                    TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-                    searchDetails.setFacilityList((ArrayList<String>) comboBoxUnits.getSelection().get(0)
-                            .getFacilityNames());
-                    searchDetails.setParameterName(comboBoxUnits.getSelection().get(0).getName());
-                    searchDetails.setParameterUnits(comboBoxUnits.getSelection().get(0).getUnits());
-                    searchDetails.setParameterValue(paramValue.getValue());
+                    TAdvancedSearchDetails searchDetails = getSearchDetails();
                     eventBus.searchForDatafilesByParameter(searchDetails);
                 }
             }
@@ -230,10 +222,20 @@ public class ParameterSearchSubPanel extends Composite {
         createLogoutHandler();
     }
 
+    private TAdvancedSearchDetails getSearchDetails() {
+        TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
+        searchDetails.setFacilityList((ArrayList<String>) comboBoxUnits.getSelection().get(0).getFacilityNames());
+        searchDetails.setParameterName(comboBoxUnits.getSelection().get(0).getName());
+        searchDetails.setParameterUnits(comboBoxUnits.getSelection().get(0).getUnits());
+        searchDetails.setParameterValue(paramValue.getValue());
+        return searchDetails;
+    }
+
     private void addNames(List<Facility> facilities) {
         comboBoxName.getStore().removeAll();
         comboBoxName.clear();
         if (facilities == null) {
+            // this is a result of reset
             return;
         }
         for (final Facility facility : facilities) {
@@ -269,8 +271,18 @@ public class ParameterSearchSubPanel extends Composite {
         comboBoxUnits.getStore().removeAll();
         comboBoxUnits.clear();
         if (parameter == null) {
+            // this is a result of reset
             return;
         }
+
+        // Create an all units parameter
+        ParameterModel allUnits = new ParameterModel(parameter.getName(), TConstants.ALL_UNITS, "");
+        for (final String facilityName : parameter.getFacilityNames()) {
+            allUnits.addFacilityName(facilityName);
+        }
+        comboBoxUnits.getStore().add(allUnits);
+
+        // Get the possible units from each facility
         for (final String facilityName : parameter.getFacilityNames()) {
             EventPipeLine.getInstance().showRetrievingData();
             utilityService.getParameterUnits(facilityName, parameter.getName(), new AsyncCallback<ArrayList<String>>() {
@@ -301,6 +313,10 @@ public class ParameterSearchSubPanel extends Composite {
                                         new ParameterModel(facilityName, parameter.getName(), units, ""));
                             }
                         }
+                        if (comboBoxUnits.getStore().getCount() == 2) {
+                            comboBoxUnits.expand();
+                            comboBoxUnits.setValue(comboBoxUnits.getStore().getAt(1));
+                        }
                         comboBoxUnits.focus();
                     }
                 }
@@ -315,19 +331,32 @@ public class ParameterSearchSubPanel extends Composite {
         }
     }
 
-    private void getType(final ParameterModel parameter) {
+    private void getType(ParameterModel parameter) {
         type.clear();
         if (parameter == null) {
+            // this is a result of reset
             return;
+        }
+        if (parameter.getUnits().equals(TConstants.ALL_UNITS)) {
+            if (comboBoxUnits.getStore().getCount() > 2) {
+                paramValue.focus();
+                return;
+            } else {
+                // even though --ALL-- is selected there is only one unit so we
+                // can do type checking
+                parameter = comboBoxUnits.getStore().getAt(1);
+            }
         }
         for (final String facilityName : parameter.getFacilityNames()) {
             EventPipeLine.getInstance().showRetrievingData();
-            utilityService.getParameterType(facilityName, parameter.getName(), parameter.getUnits(),
-                    new AsyncCallback<String>() {
+            utilityService.getParameterTypes(facilityName, parameter.getName(), parameter.getUnits(),
+                    new AsyncCallback<ArrayList<String>>() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(ArrayList<String> results) {
                             EventPipeLine.getInstance().hideRetrievingData();
-                            type.add(result);
+                            for (String result : results) {
+                                type.add(result);
+                            }
                             paramValue.focus();
                         }
 
@@ -339,15 +368,6 @@ public class ParameterSearchSubPanel extends Composite {
                         }
                     });
         }
-    }
-
-    private ArrayList<String> getFacilitySelectedList() {
-        List<Facility> facilityList = listFieldFacility.getSelection();
-        ArrayList<String> resultFacility = new ArrayList<String>();
-        for (Facility facility : facilityList) {
-            resultFacility.add(facility.getFacilityName());
-        }
-        return resultFacility;
     }
 
     private boolean validateInput() {

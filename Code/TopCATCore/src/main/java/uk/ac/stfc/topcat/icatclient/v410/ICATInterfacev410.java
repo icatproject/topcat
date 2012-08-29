@@ -18,6 +18,7 @@ import javax.xml.namespace.QName;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
+import uk.ac.stfc.topcat.core.gwt.module.TConstants;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
@@ -425,7 +426,7 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     public ArrayList<TDatafile> searchDatafilesByParameter(String sessionId, TAdvancedSearchDetails details)
             throws TopcatException {
         ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
-        String query = getDatafilesByParameterQuery(sessionId, details);
+        String query = getParameterQuery(sessionId, details, "Datafile");
         List<Object> resultDf = null;
         try {
             resultDf = service.search(sessionId, query);
@@ -449,9 +450,13 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public String getParameterType(String sessionId, String name, String units) throws TopcatException {
-        ParameterValueType type = getParameterTypeFormService(sessionId, name, units);
-        return type.toString();
+    public ArrayList<String> getParameterTypes(String sessionId, String name, String units) throws TopcatException {
+        ArrayList<String> unitsList = new ArrayList<String>();
+        List<ParameterValueType> results = getParameterTypesFormService(sessionId, name, units);
+        for (ParameterValueType result : results) {
+            unitsList.add(result.toString());
+        }
+        return unitsList;
     }
 
     private void convertToTopcatException(IcatException_Exception e) throws TopcatException {
@@ -475,29 +480,13 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     }
 
     private String getAdvancedQuery(String sessionId, TAdvancedSearchDetails details) throws TopcatException {
-        StringBuilder query = new StringBuilder(" DISTINCT Investigation");
-
         // Parameter - if it is a parameter search then we do not use the other
         // search details
         if (details.getParameterName() != null) {
-            ParameterValueType type = getParameterTypeFormService(sessionId, details.getParameterName(),
-                    details.getParameterUnits());
-            if (type == ParameterValueType.DATE_AND_TIME) {
-                query.append(" <-> InvestigationParameter [type.name='" + details.getParameterName()
-                        + "' AND type.units='" + details.getParameterUnits() + "' AND dateTimeValue='"
-                        + details.getParameterValue() + "']");
-            } else if (type == ParameterValueType.NUMERIC) {
-                query.append(" <-> InvestigationParameter [type.name='" + details.getParameterName()
-                        + "' AND type.units='" + details.getParameterUnits() + "' AND numericValue="
-                        + details.getParameterValue() + "]");
-            } else if (type == ParameterValueType.STRING) {
-                query.append(" <-> InvestigationParameter [type.name='" + details.getParameterName()
-                        + "' AND type.units='" + details.getParameterUnits() + "' AND stringValue='"
-                        + details.getParameterValue() + "']");
-            }
-            return query.toString();
+            return getParameterQuery(sessionId, details, "Investigation");
         }
 
+        StringBuilder query = new StringBuilder(" DISTINCT Investigation");
         boolean addAnd = false;
         boolean queryDataset = false;
 
@@ -595,48 +584,82 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     }
 
     /**
-     * Construct the query string to search for datafiles for the given
-     * parameter
+     * Construct the query string to search for parameter(s).
      * 
      * @param sessionId
      * @param details
-     * @return
+     * @param name
+     *            'Investigation', 'Dataset' or 'Datafile'
+     * @return a query string
      * @throws TopcatException
      */
-    private String getDatafilesByParameterQuery(String sessionId, TAdvancedSearchDetails details)
+    private String getParameterQuery(String sessionId, TAdvancedSearchDetails details, String name)
             throws TopcatException {
-        StringBuilder query = new StringBuilder(" DISTINCT Datafile");
-        ParameterValueType type = getParameterTypeFormService(sessionId, details.getParameterName(),
+        List<ParameterValueType> types = getParameterTypesFormService(sessionId, details.getParameterName(),
                 details.getParameterUnits());
-        if (type == ParameterValueType.DATE_AND_TIME) {
-            query.append(" <-> DatafileParameter [type.name='" + details.getParameterName() + "' AND type.units='"
-                    + details.getParameterUnits() + "' AND dateTimeValue='" + details.getParameterValue() + "']");
-        } else if (type == ParameterValueType.NUMERIC) {
-            query.append(" <-> DatafileParameter [type.name='" + details.getParameterName() + "' AND type.units='"
-                    + details.getParameterUnits() + "' AND numericValue=" + details.getParameterValue() + "]");
-        } else if (type == ParameterValueType.STRING) {
-            query.append(" <-> DatafileParameter [type.name='" + details.getParameterName() + "' AND type.units='"
-                    + details.getParameterUnits() + "' AND stringValue='" + details.getParameterValue() + "']");
+        StringBuilder query = new StringBuilder(" DISTINCT " + name);
+        if (details.getParameterUnits().equals(TConstants.ALL_UNITS)) {
+            query.append(" <-> " + name + "Parameter [");
+            boolean first = true;
+            for (ParameterValueType type : types) {
+                if (first) {
+                    first = false;
+                } else {
+                    query.append(" OR ");
+                }
+                if (type == ParameterValueType.DATE_AND_TIME) {
+                    query.append("(type.name='" + details.getParameterName() + "' AND dateTimeValue='"
+                            + details.getParameterValue() + "')");
+                } else if (type == ParameterValueType.NUMERIC) {
+                    query.append("(type.name='" + details.getParameterName() + "' AND numericValue="
+                            + details.getParameterValue() + ")");
+                } else if (type == ParameterValueType.STRING) {
+                    query.append("(type.name='" + details.getParameterName() + "' AND stringValue='"
+                            + details.getParameterValue() + "')");
+                }
+            }
+            query.append("]");
+        } else {
+            query.append(" <-> " + name + "Parameter [type.name='" + details.getParameterName() + "' AND type.units='"
+                    + details.getParameterUnits() + "' AND ");
+            if (types.get(0) == ParameterValueType.DATE_AND_TIME) {
+                query.append("dateTimeValue='" + details.getParameterValue() + "']");
+            } else if (types.get(0) == ParameterValueType.NUMERIC) {
+                query.append("numericValue=" + details.getParameterValue() + "]");
+            } else if (types.get(0) == ParameterValueType.STRING) {
+                query.append("stringValue='" + details.getParameterValue() + "']");
+            }
         }
         return query.toString();
     }
 
-    private ParameterValueType getParameterTypeFormService(String sessionId, String name, String units)
+    private List<ParameterValueType> getParameterTypesFormService(String sessionId, String name, String units)
             throws TopcatException {
-        String query = "DISTINCT ParameterType.valueType [name='" + name + "' and units='" + units + "']";
+        String query;
+        List<ParameterValueType> types = new ArrayList<ParameterValueType>();
+        if (units.equals(TConstants.ALL_UNITS)) {
+            query = "DISTINCT ParameterType.valueType [name='" + name + "']";
+        } else {
+            query = "DISTINCT ParameterType.valueType [name='" + name + "' and units='" + units + "']";
+        }
         try {
             List<Object> results = service.search(sessionId, query);
-            // We are selecting on the key so there should only be one result
-            return (ParameterValueType) results.get(0);
-        } catch (IndexOutOfBoundsException e) {
+            for (Object result : results) {
+                types.add((ParameterValueType) result);
+            }
         } catch (IcatException_Exception e) {
             IcatException ue = e.getFaultInfo();
             if (!ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
                 convertToTopcatException(e);
+            } else {
+                throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
             }
         }
-        // Parameter not found
-        throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
+        if (types.size() == 0) {
+            // Parameter not found
+            throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
+        }
+        return types;
     }
 
     private String getDate(Date date) {

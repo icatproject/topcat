@@ -104,7 +104,7 @@ public class ICATWebInterfaceBase {
         throw new TopcatException("getParameterUnits is not supported", TopcatExceptionType.NOT_SUPPORTED);
     }
 
-    public String getParameterType(String sessionId, String name, String units) throws TopcatException {
+    public ArrayList<String> getParameterTypes(String sessionId, String name, String units) throws TopcatException {
         throw new TopcatException("getParameterType is not supported", TopcatExceptionType.NOT_SUPPORTED);
     }
 

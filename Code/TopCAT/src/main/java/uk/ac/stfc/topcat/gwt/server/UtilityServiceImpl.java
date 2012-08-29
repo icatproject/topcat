@@ -695,8 +695,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     }
 
     @Override
-    public String getParameterType(String facilityName, String name, String units) throws TopcatException {
-        return utilityManager.getParameterType(getSessionId(), facilityName, name, units);
+    public ArrayList<String> getParameterTypes(String facilityName, String name, String units) throws TopcatException {
+        return utilityManager.getParameterTypes(getSessionId(), facilityName, name, units);
     }
 
     @Override

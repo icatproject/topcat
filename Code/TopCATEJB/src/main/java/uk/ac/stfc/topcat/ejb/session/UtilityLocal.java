@@ -97,7 +97,8 @@ public interface UtilityLocal {
 
     ArrayList<String> getParameterUnits(String sessionId, String facilityName, String name) throws TopcatException;
 
-    String getParameterType(String sessionId, String facilityName, String name, String units) throws TopcatException;
+    ArrayList<String> getParameterTypes(String sessionId, String facilityName, String name, String units)
+            throws TopcatException;
 
     String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds);
 

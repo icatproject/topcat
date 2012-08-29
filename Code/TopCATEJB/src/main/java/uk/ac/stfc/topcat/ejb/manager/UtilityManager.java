@@ -813,7 +813,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getParameterNames(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getDatafileInfo: " + ex.getMessage());
+            logger.warning("getParameterNames: " + ex.getMessage());
         }
         return new ArrayList<String>();
     }
@@ -846,14 +846,15 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getParameterUnits(sessionId, name);
         } catch (MalformedURLException ex) {
-            logger.warning("getDatafileInfo: " + ex.getMessage());
+            logger.warning("getParameterUnits: " + ex.getMessage());
         }
         return new ArrayList<String>();
     }
 
     /**
      * Get the expected type of the parameter value for the given facility,
-     * parameter name and parameter units.
+     * parameter name and parameter units. If the units are '--ALL--' then
+     * return types for all units.
      * 
      * @param manager
      * @param sessionId
@@ -863,27 +864,27 @@ public class UtilityManager {
      * @return
      * @throws TopcatException
      */
-    public String getParameterType(EntityManager manager, String sessionId, String facilityName, String name,
-            String units) throws TopcatException {
+    public ArrayList<String> getParameterTypes(EntityManager manager, String sessionId, String facilityName,
+            String name, String units) throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, facilityName);
-            return getParameterType(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), name, units);
+            return getParameterTypes(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), name, units);
         } catch (javax.persistence.NoResultException ex) {
         }
         return null;
     }
 
-    private String getParameterType(String sessionId, TopcatIcatServer server, String name, String units)
+    private ArrayList<String> getParameterTypes(String sessionId, TopcatIcatServer server, String name, String units)
             throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
-            return service.getParameterType(sessionId, name, units);
+            return service.getParameterTypes(sessionId, name, units);
         } catch (MalformedURLException ex) {
-            logger.warning("getDatafileInfo: " + ex.getMessage());
+            logger.warning("getParameterTypes: " + ex.getMessage());
         }
-        return "";
+        return null;
     }
 
     public String getDatafilesDownloadURL(EntityManager manager, String sessionId, String serverName,

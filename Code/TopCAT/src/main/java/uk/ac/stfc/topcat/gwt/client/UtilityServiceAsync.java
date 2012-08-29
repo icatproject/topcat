@@ -259,7 +259,8 @@ public interface UtilityServiceAsync {
 
     /**
      * Get the expected type of the parameter value for the given facility,
-     * parameter name and parameter units.
+     * parameter name and parameter units. If the units are '--ALL--' then
+     * return types for all units.
      * 
      * @param facilityName
      *            a string containing the facility name
@@ -270,6 +271,6 @@ public interface UtilityServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    void getParameterType(String facilityName, String name, String units, AsyncCallback<String> callback);
+    void getParameterTypes(String facilityName, String name, String units, AsyncCallback<ArrayList<String>> callback);
 
 }

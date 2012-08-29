@@ -163,9 +163,9 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public String getParameterType(String sessionId, String facilityName, String name, String units)
+    public ArrayList<String> getParameterTypes(String sessionId, String facilityName, String name, String units)
             throws TopcatException {
-        return utilManager.getParameterType(manager, sessionId, facilityName, name, units);
+        return utilManager.getParameterTypes(manager, sessionId, facilityName, name, units);
     }
 
     @Override
