@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -29,8 +29,11 @@ import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -42,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.ListField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 
 /**
@@ -59,6 +63,7 @@ public class ISISSearchWidget extends Composite {
     private DateField endDate;
     private NumberField runNumberStart;
     private NumberField runNumberEnd;
+    private TextField<String> grantId;
     private ListField<Instrument> lstInstrument;
     private String facilityName;
     private Text errorMessage;
@@ -104,6 +109,15 @@ public class ISISSearchWidget extends Composite {
         layoutContainer.add(runNumberEnd);
         runNumberEnd.setFieldLabel("New NumberField");
 
+        LabelField lblfldGrantId = new LabelField("Grant Id");
+        layoutContainer.add(lblfldGrantId);
+
+        grantId = new TextField<String>();
+        layoutContainer.add(grantId);
+        grantId.setFieldLabel("New TextField");
+        layoutContainer.add(new Text());
+        layoutContainer.add(new Text());
+
         LabelField lblfldInstrument = new LabelField("Instrument");
         layoutContainer.add(lblfldInstrument);
 
@@ -111,7 +125,7 @@ public class ISISSearchWidget extends Composite {
         layoutContainer.add(lstInstrument);
         lstInstrument.setFieldLabel("New ListField");
         lstInstrument.setDisplayField("name");
-
+        layoutContainer.add(new Text());
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
@@ -123,48 +137,10 @@ public class ISISSearchWidget extends Composite {
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                errorMessage.setText("");
-                TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-                if (endDate.getValue() != null) {
-                    if (startDate.getValue() == null) {
-                        errorMessage.setText("Please enter a 'Start Date'");
-                        startDate.focus();
-                        return;
-                    } else {
-                        if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
-                            errorMessage.setText("'End Date' must be equal or greater than 'Start Date'");
-                            endDate.focus();
-                            return;
-                        }
-                    }
+                TAdvancedSearchDetails searchDetails = validateExperimentSearchInput();
+                if (searchDetails != null) {
+                    eventBus.searchForInvestigation(searchDetails);
                 }
-                searchDetails.setStartDate(startDate.getValue());
-                searchDetails.setEndDate(endDate.getValue());
-                searchDetails.getFacilityList().add(facilityName);
-                if (runNumberEnd.getValue() != null) {
-                    if (runNumberStart.getValue() == null) {
-                        errorMessage.setText("Please enter a 'Run Number Start'");
-                        runNumberStart.focus();
-                        return;
-                    } else {
-                        if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
-                            errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
-                            runNumberEnd.focus();
-                            return;
-                        }
-                        searchDetails.setRbNumberEnd(runNumberEnd.getValue().toString());
-                    }
-                }
-                List<Instrument> selectedIns = lstInstrument.getSelection();
-                if (selectedIns.size() == 0) {
-                    errorMessage.setText("Please select at least one instrument");
-                    lstInstrument.focus();
-                    return;
-                }
-                for (Instrument ins : selectedIns) {
-                    searchDetails.getInstrumentList().add(ins.getName());
-                }
-                eventBus.searchForInvestigation(searchDetails);
             }
         });
         layoutContainer.add(btnSearch);
@@ -173,74 +149,192 @@ public class ISISSearchWidget extends Composite {
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
 
-        Button btnSearchFile = new Button("Search Datafiles");
+        Button btnSearchFile = new Button("Search Data Files");
+        btnSearchFile
+                .setToolTip("Get a list of data files. Only the run nubers and instrument name are used as search criteria.");
         btnSearchFile.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                errorMessage.setText("");
-                TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-                searchDetails.getFacilityList().add(facilityName);
-                if (runNumberStart.getValue() == null) {
-                    errorMessage.setText("Please enter a run number");
-                    runNumberStart.focus();
-                    return;
-                } else {
-                    searchDetails.setRbNumberStart(runNumberStart.getValue().toString());
+                TAdvancedSearchDetails searchDetails = validateDatafileSearchInput();
+                if (searchDetails != null) {
+                    eventBus.searchForDatafiles(facilityName, searchDetails);
                 }
-                if (runNumberEnd.getValue() != null) {
-                    if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
-                        errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
-                        runNumberEnd.focus();
-                        return;
-                    }
-                    searchDetails.setRbNumberEnd(runNumberEnd.getValue().toString());
-                }
-                List<Instrument> selectedIns = lstInstrument.getSelection();
-                if (selectedIns.size() == 0) {
-                    errorMessage.setText("Please select at least one instrument");
-                    lstInstrument.focus();
-                    return;
-                }
-                for (Instrument ins : selectedIns) {
-                    searchDetails.getInstrumentList().add(ins.getName());
-                }
-                eventBus.searchForDatafiles(facilityName, searchDetails);
             }
         });
         layoutContainer.add(btnSearchFile);
-
-        layoutContainer.add(new Text());
-        layoutContainer.add(new Text());
 
         Button btnReset = new Button("Reset");
         btnReset.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                errorMessage.setText("");
-                startDate.clear();
-                endDate.clear();
-                runNumberStart.clear();
-                runNumberEnd.clear();
-                lstInstrument.getListView().getSelectionModel().deselectAll();
+                reset();
             }
         });
         layoutContainer.add(btnReset);
+        layoutContainer.add(new Text());
 
         topContainer.add(layoutContainer);
         topContainer.add(new Text());
         errorMessage = new Text();
         errorMessage.setText("");
         topContainer.add(errorMessage);
-        topContainer.setHeight("275px");
+        topContainer.setHeight("310px");
         initComponent(topContainer);
         setBorders(true);
         setAutoHeight(true);
     }
 
+    /**
+     * Set the facility name.
+     * 
+     * @param facilityName
+     */
     public void setFacilityName(String facilityName) {
         this.facilityName = facilityName;
         ListStore<Instrument> instruments = eventBus.getFacilityInstruments(facilityName);
+        instruments.sort("name", Style.SortDir.ASC);
         lstInstrument.setStore(instruments);
+        createLogoutHandler();
+    }
+
+    private TAdvancedSearchDetails validateExperimentSearchInput() {
+        errorMessage.setText("");
+        TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
+        searchDetails = validateDates(searchDetails);
+        if (searchDetails == null) {
+            return null;
+        }
+        searchDetails.setStartDate(startDate.getValue());
+        searchDetails.getFacilityList().add(facilityName);
+        searchDetails.setGrantId(grantId.getValue());
+        searchDetails = validRunNosE(searchDetails);
+        if (searchDetails == null) {
+            return null;
+        }
+        searchDetails = validateInstrument(searchDetails);
+        if (searchDetails == null) {
+            return null;
+        }
+        return searchDetails;
+    }
+
+    private TAdvancedSearchDetails validateDates(TAdvancedSearchDetails searchDetails) {
+        if (endDate.getValue() == null) {
+            if (startDate.getValue() != null) {
+                searchDetails.setEndDate(startDate.getValue());
+            }
+        } else {
+            if (startDate.getValue() == null) {
+                errorMessage.setText("Please enter a 'Start Date'");
+                startDate.focus();
+                return null;
+            } else {
+                if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
+                    errorMessage.setText("'End Date' must be equal or greater than 'Start Date'");
+                    endDate.focus();
+                    return null;
+                }
+            }
+            searchDetails.setEndDate(endDate.getValue());
+        }
+        return searchDetails;
+    }
+
+    private TAdvancedSearchDetails validRunNosE(TAdvancedSearchDetails searchDetails) {
+        if (runNumberEnd.getValue() == null) {
+            if (runNumberStart.getValue() != null) {
+                searchDetails.setRbNumberEnd(runNumberStart.getValue().toString());
+            }
+        } else {
+            if (runNumberStart.getValue() == null) {
+                errorMessage.setText("Please enter a 'Run Number Start'");
+                runNumberStart.focus();
+                return null;
+            } else {
+                if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
+                    errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
+                    runNumberEnd.focus();
+                    return null;
+                }
+            }
+            searchDetails.setRbNumberEnd(runNumberEnd.getValue().toString());
+        }
+        if (runNumberStart.getValue() != null) {
+            searchDetails.setRbNumberStart(runNumberStart.getValue().toString());
+        }
+        return searchDetails;
+    }
+
+    private TAdvancedSearchDetails validateDatafileSearchInput() {
+        errorMessage.setText("");
+        TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
+        searchDetails.getFacilityList().add(facilityName);
+        searchDetails.setGrantId(grantId.getValue());
+        searchDetails = validRunNosD(searchDetails);
+        if (searchDetails == null) {
+            return null;
+        }
+        searchDetails = validateInstrument(searchDetails);
+        if (searchDetails == null) {
+            return null;
+        }
+        return searchDetails;
+    }
+
+    private TAdvancedSearchDetails validateInstrument(TAdvancedSearchDetails searchDetails) {
+        List<Instrument> selectedIns = lstInstrument.getSelection();
+        if (selectedIns.size() == 0) {
+            errorMessage.setText("Please select at least one instrument");
+            lstInstrument.focus();
+            return null;
+        }
+        for (Instrument ins : selectedIns) {
+            searchDetails.getInstrumentList().add(ins.getName());
+        }
+        return searchDetails;
+    }
+
+    private TAdvancedSearchDetails validRunNosD(TAdvancedSearchDetails searchDetails) {
+        if (runNumberStart.getValue() == null) {
+            errorMessage.setText("Please enter a run number");
+            runNumberStart.focus();
+            return null;
+        }
+        searchDetails.setRbNumberStart(runNumberStart.getValue().toString());
+
+        if (runNumberEnd.getValue() != null) {
+            if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
+                errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
+                runNumberEnd.focus();
+                return null;
+            }
+            searchDetails.setRbNumberEnd(runNumberEnd.getValue().toString());
+        }
+        return searchDetails;
+    }
+
+    private void reset() {
+        errorMessage.setText("");
+        startDate.clear();
+        endDate.clear();
+        runNumberStart.clear();
+        runNumberEnd.clear();
+        grantId.clear();
+        lstInstrument.getListView().getSelectionModel().deselectAll();
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                reset();
+                ListStore<Instrument> instruments = new ListStore<Instrument>();
+                lstInstrument.setStore(instruments);
+            }
+        });
     }
 
 }

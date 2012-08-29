@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -92,12 +92,15 @@ public class TOPCATOnline implements EntryPoint {
         eventPipeLine = EventPipeLine.getInstance();
         eventPipeLine.setLoginPanel(headerPanel.getLoginPanel());
         eventPipeLine.setMainWindow(this);
+        // This is to handle a call back from an authentication service
+        eventPipeLine.setAuthentication(Window.Location.getParameter("facilityName"), Window.Location.getHash());
         // Initialise
         eventPipeLine.getLogoURL();
         eventPipeLine.getLinks();
         eventPipeLine.loadFacilityNames();
+
         // Set Event pipeline
-        mainPanel.getSearchPanel().setEventBus(eventPipeLine); 
+        mainPanel.getSearchPanel().setEventBus(eventPipeLine);
         mainPanel.getMyDataPanel().setEventBus(eventPipeLine);
         mainPanel.getMyDownloadPanel().setEventBus(eventPipeLine);
 
@@ -122,15 +125,15 @@ public class TOPCATOnline implements EntryPoint {
 
     public void resizePanels(int width) {
         int newWidth = width;
-        if (newWidth < 800)
-            newWidth = 800;
+        if (newWidth < 910)
+            newWidth = 910;
         headerPanel.setWidth(newWidth - 5);
         mainPanel.setWidth(newWidth - 5);
         mainPanel.getSearchPanel().setGridWidth(newWidth - 7);
         mainPanel.getMyDataPanel().setGridWidth(newWidth - 7);
         mainPanel.getMyDownloadPanel().setGridWidth(newWidth - 7);
         mainPanel.getBrowserPanel().setTreeWidth(newWidth - 30);
-//        footerPanel.setWidth(newWidth - 5);TODO
+        footerPanel.setWidth(newWidth - 5);
     }
 
     public RootPanel getRootPanel() {

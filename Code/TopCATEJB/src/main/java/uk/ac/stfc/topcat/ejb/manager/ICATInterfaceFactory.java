@@ -9,7 +9,10 @@ import java.net.MalformedURLException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.icatclient.v331.ICATInterfacev331;
 import uk.ac.stfc.topcat.icatclient.v340.ICATInterfacev340;
+import uk.ac.stfc.topcat.icatclient.v341.ICATInterfacev341;
 import uk.ac.stfc.topcat.icatclient.v400.ICATInterfacev400;
+import uk.ac.stfc.topcat.icatclient.v410.ICATInterfacev410;
+import uk.ac.stfc.topcat.icatclient.v420.ICATInterfacev420;
 
 /**
  * 
@@ -32,8 +35,14 @@ public class ICATInterfaceFactory {
             return new ICATInterfacev331(URL, serverName);
         } else if (version.compareToIgnoreCase("v340") == 0) {
             return new ICATInterfacev340(URL, serverName);
+        } else if (version.compareToIgnoreCase("v341") == 0) {
+            return new ICATInterfacev341(URL, serverName);
         } else if (version.compareToIgnoreCase("v400") == 0) {
             return new ICATInterfacev400(URL, serverName);
+        } else if (version.compareToIgnoreCase("v410") == 0) {
+            return new ICATInterfacev410(URL, serverName);
+        } else if (version.compareToIgnoreCase("v420") == 0) {
+            return new ICATInterfacev420(URL, serverName);
         }
         return null;
     }

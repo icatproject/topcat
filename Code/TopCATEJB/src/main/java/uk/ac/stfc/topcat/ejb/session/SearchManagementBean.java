@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -24,20 +24,25 @@ package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.ejb.manager.AdvancedSearchManager;
 import uk.ac.stfc.topcat.ejb.manager.BasicSearchManager;
 
 /**
  * This is stateless bean implementation for searching icat servers.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 
@@ -45,40 +50,65 @@ import uk.ac.stfc.topcat.ejb.manager.BasicSearchManager;
 public class SearchManagementBean implements SearchManagementBeanLocal {
     @PersistenceContext(unitName = "TopCATEJBPU")
     protected EntityManager manager;
-    
+
     private BasicSearchManager basicSearchManager;
     private AdvancedSearchManager advancedSearchManager;
 
     public SearchManagementBean() {
-        basicSearchManager=new BasicSearchManager();
+        basicSearchManager = new BasicSearchManager();
         advancedSearchManager = new AdvancedSearchManager();
     }
-    
-    public ArrayList<TInvestigation> searchBasicInvestigationByKeywords(String topcatSessionId,ArrayList<String> keywords) {
-        return basicSearchManager.searchBasicInvestigationByKeywords(manager,topcatSessionId, keywords);
+
+    @Override
+    public ArrayList<TInvestigation> searchBasicInvestigationByKeywords(String topcatSessionId,
+            ArrayList<String> keywords) {
+        return basicSearchManager.searchBasicInvestigationByKeywords(manager, topcatSessionId, keywords);
     }
 
-    public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId, String serverName, ArrayList<String> keywords) {
-        return basicSearchManager.searchBasicInvestigationByKeywordsInServer(manager,topcatSessionId,serverName,keywords);
+    @Override
+    public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId,
+            String serverName, ArrayList<String> keywords) {
+        return basicSearchManager.searchBasicInvestigationByKeywordsInServer(manager, topcatSessionId, serverName,
+                keywords);
     }
 
-    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId, String serverName, ArrayList<String> keywords) {
-        return basicSearchManager.searchBasicMyInvestigationByKeywordsInServer(manager,topcatSessionId,serverName,keywords);
+    @Override
+    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId,
+            String serverName, ArrayList<String> keywords) {
+        return basicSearchManager.searchBasicMyInvestigationByKeywordsInServer(manager, topcatSessionId, serverName,
+                keywords);
     }
 
+    @Override
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId, List<String> keywords) {
-       return basicSearchManager.searchBasicMyInvestigationByKeywords(manager,topcatSessionId,keywords);
+        return basicSearchManager.searchBasicMyInvestigationByKeywords(manager, topcatSessionId, keywords);
     }
 
-    public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,TAdvancedSearchDetails searchDetails) {
-        return advancedSearchManager.searchAdvancedInvestigation(manager,topcatSessionId, searchDetails);
+    @Override
+    public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        return advancedSearchManager.searchAdvancedInvestigation(manager, topcatSessionId, searchDetails);
     }
 
-    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String serverName,TAdvancedSearchDetails searchDetails) {
-        return advancedSearchManager.searchAdvancedInvestigationInServer(manager,topcatSessionId,serverName,searchDetails);
+    @Override
+    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String serverName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        return advancedSearchManager.searchAdvancedInvestigationInServer(manager, topcatSessionId, serverName,
+                searchDetails);
     }
 
-    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId,String serverName,TAdvancedSearchDetails searchDetails){
-        return advancedSearchManager.searchAdvancedDatafilesInServer(manager, topcatSessionId, serverName, searchDetails);
+    @Override
+    public ArrayList<TDataset> searchForDatasetsByParameter(String topcatSessionId, String facilityName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        return advancedSearchManager
+                .searchForDatasetsByParameter(manager, topcatSessionId, facilityName, searchDetails);
     }
+
+    @Override
+    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String serverName,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        return advancedSearchManager.searchAdvancedDatafilesInServer(manager, topcatSessionId, serverName,
+                searchDetails);
+    }
+
 }

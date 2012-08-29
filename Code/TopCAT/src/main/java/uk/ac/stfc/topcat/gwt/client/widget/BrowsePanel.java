@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -29,13 +29,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import uk.ac.stfc.topcat.gwt.client.Constants;
+import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -43,6 +51,7 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -53,13 +62,17 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * This widget shows a tree to browse All data. The hierarchy is:
@@ -82,6 +95,9 @@ public class BrowsePanel extends Composite {
     private BaseTreeLoader<ICATNode> loader;
     TreePanel<ICATNode> tree;
     HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
+    private VerticalPanel investigationPanel;
+    private InvestigationSubPanel investigationSubPanel;
+    private static final String SOURCE = "BrowsePanel";
 
     public BrowsePanel() {
 
@@ -129,6 +145,11 @@ public class BrowsePanel extends Composite {
 
                             @Override
                             public void onFailure(Throwable caught) {
+                                if (caught instanceof SessionException) {
+                                    // session has probably expired, check all
+                                    // sessions to be safe
+                                    EventPipeLine.getInstance().checkStillLoggedIn();
+                                }
                                 callback.onFailure(caught);
                             }
 
@@ -201,10 +222,51 @@ public class BrowsePanel extends Composite {
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
-                if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {
+                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
+                    ICATNode icatnode = node.getModel();
+                    EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
+                            icatnode.getInvestigationId(), SOURCE);
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATASET) {
                     ICATNode icatnode = node.getModel();
                     EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(),
-                            icatnode.getDatafileId(), icatnode.getDatafileName());
+                            Constants.DATA_SET, icatnode.getDatasetId(), icatnode.getDatafileName());
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {
+                    ICATNode icatnode = node.getModel();
+                    EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(),
+                            Constants.DATA_FILE, icatnode.getDatafileId(), icatnode.getDatafileName());
+                }
+            }
+        });
+
+        // On click show investigation details
+        tree.addListener(Events.OnClick, new Listener<TreePanelEvent<ICATNode>>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                TreePanel<ICATNode>.TreeNode node = be.getNode();
+                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
+                    ICATNode icatnode = node.getModel();
+                    EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
+                            icatnode.getInvestigationId(), SOURCE);
+                }
+            }
+        });
+
+        // Context Menu
+        tree.setContextMenu(new Menu());
+        tree.addListener(Events.ContextMenu, new Listener<TreePanelEvent<ICATNode>>() {
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                @SuppressWarnings("unchecked")
+                TreePanel<ICATNode>.TreeNode node = be.getNode();
+                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
+                    tree.setContextMenu(getInvestigationMenu());
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATASET) {
+                    tree.setContextMenu(getDatasetMenu());
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {
+                    tree.setContextMenu(getDatafileMenu());
+                } else {
+                    be.setCancelled(true);
                 }
             }
         });
@@ -227,7 +289,97 @@ public class BrowsePanel extends Composite {
         contentPanel.add(bodyPanel);
 
         layoutContainer.add(contentPanel);
+
+        // mainContainer.add(contentPanel);
+
+        // Investigation detail
+        investigationPanel = new VerticalPanel();
+        investigationPanel.setBorders(true);
+        investigationPanel.setSpacing(20);
+        investigationPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
+        investigationSubPanel = new InvestigationSubPanel();
+        investigationSubPanel.setEventBus(EventPipeLine.getInstance());
+        TableData td_investigationContentPanel = new TableData();
+        td_investigationContentPanel.setHeight("100%");
+        td_investigationContentPanel.setWidth("705px");
+        investigationPanel.add(investigationSubPanel, td_investigationContentPanel);
+        investigationPanel.hide();
+        layoutContainer.add(investigationPanel);
+
         initComponent(layoutContainer);
+
+        createAddInvestigationDetailsHandler();
+        createLogoutHandler();
+    }
+
+    /**
+     * Get a context menu specific to an investigation node.
+     * 
+     * @return a context menu
+     */
+    private Menu getInvestigationMenu() {
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showInvestigation = new MenuItem();
+        showInvestigation.setText("show investigation");
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showInvestigation);
+        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (tree.getSelectionModel().getSelectedItem().getNodeType() == ICATNodeType.INVESTIGATION) {
+                    EventPipeLine.getInstance().getInvestigationDetails(
+                            tree.getSelectionModel().getSelectedItem().getFacility(),
+                            tree.getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
+                }
+            }
+        });
+        return contextMenu;
+    }
+
+    /**
+     * Get a context menu specific to an data set node.
+     * 
+     * @return a context menu
+     */
+    private Menu getDatasetMenu() {
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showInvestigation = new MenuItem();
+        showInvestigation.setText("show data set");
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showInvestigation);
+        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                EventPipeLine.getInstance().showParameterWindowWithHistory(
+                        tree.getSelectionModel().getSelectedItem().getFacility(), Constants.DATA_SET,
+                        tree.getSelectionModel().getSelectedItem().getDatasetId(),
+                        tree.getSelectionModel().getSelectedItem().getDatasetName());
+            }
+        });
+        return contextMenu;
+    }
+
+    /**
+     * Get a context menu specific to an data file node.
+     * 
+     * @return a context menu
+     */
+    private Menu getDatafileMenu() {
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showInvestigation = new MenuItem();
+        showInvestigation.setText("show data file");
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showInvestigation);
+        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                EventPipeLine.getInstance().showParameterWindowWithHistory(
+                        tree.getSelectionModel().getSelectedItem().getFacility(), Constants.DATA_FILE,
+                        tree.getSelectionModel().getSelectedItem().getDatafileId(),
+                        tree.getSelectionModel().getSelectedItem().getDatafileName());
+            }
+        });
+        return contextMenu;
     }
 
     /**
@@ -319,12 +471,12 @@ public class BrowsePanel extends Composite {
             EventPipeLine.getInstance().showMessageDialog("Nothing selected for download");
         } else if (batchCount == 1) {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Your data is being retrieved from tape and will automatically start downloading shortly "
+                    "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                             + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
         } else {
             EventPipeLine.getInstance().showMessageDialog(
-                    "Your data is being retrieved from tape and will automatically start downloading shortly " + "as "
-                            + batchCount
+                    "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
+                            + "as " + batchCount
                             + " files. The status of your download can be seen from the ‘My Downloads’ tab.");
         }
     }
@@ -338,4 +490,34 @@ public class BrowsePanel extends Composite {
         tree.setWidth(width);
     }
 
+    /**
+     * Setup a handler to react to add investigation details events.
+     */
+    private void createAddInvestigationDetailsHandler() {
+        AddInvestigationDetailsEvent.registerToSource(EventPipeLine.getEventBus(), SOURCE,
+                new AddInvestigationDetailsEventHandler() {
+                    @Override
+                    public void addInvestigationDetails(AddInvestigationDetailsEvent event) {
+                        investigationSubPanel.setInvestigation(event.getInvestigation());
+                        investigationPanel.show();
+                    }
+                });
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                // TODO close tree
+                String invDetailsFacility = investigationSubPanel.getFacilityName();
+                if (!(invDetailsFacility == null) && invDetailsFacility.equalsIgnoreCase(event.getFacilityName())) {
+                    investigationPanel.hide();
+                    investigationSubPanel.reset();
+                }
+            }
+        });
+    }
 }

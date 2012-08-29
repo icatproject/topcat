@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,6 +25,7 @@ package uk.ac.stfc.topcat.core.gwt.module;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This is shared with GWT for dataset information. This Class holds the icat
@@ -43,6 +44,13 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
     Date endDate = null;
     String title = null;
     String visitId = null;
+    String instrument = null;
+    String proposal = null;
+    String paramName = null;
+    String paramValue = null;
+    List<TPublication> publications = null;
+    List<TInvestigator> investigators = null;
+    List<TShift> shifts = null;
 
     public TInvestigation() {
     }
@@ -118,6 +126,62 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
 
     public void setVisitId(String visitId) {
         this.visitId = visitId;
+    }
+
+    public String getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(String instrument) {
+        this.instrument = instrument;
+    }
+
+    public List<TPublication> getPublications() {
+        return publications;
+    }
+
+    public void setPublications(List<TPublication> publications) {
+        this.publications = publications;
+    }
+
+    public String getProposal() {
+        return proposal;
+    }
+
+    public void setProposal(String proposal) {
+        this.proposal = proposal;
+    }
+
+    public String getParamName() {
+        return paramName;
+    }
+
+    public void setParamName(String paramName) {
+        this.paramName = paramName;
+    }
+
+    public String getParamValue() {
+        return paramValue;
+    }
+
+    public void setParamValue(String paramValue) {
+        this.paramValue = paramValue;
+    }
+
+    public List<TInvestigator> getInvestigators() {
+        return investigators;
+    }
+
+    public void setInvestigators(List<TInvestigator> investigators) {
+        this.investigators = investigators;
+    }
+
+    public List<TShift> getShifts() {
+        return shifts;
+    }
+
+    public void setShifts(List<TShift> shifts) {
+        this.shifts = shifts;
     }
 
     public int compareTo(TInvestigation inv) {

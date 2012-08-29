@@ -35,6 +35,10 @@ import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddMyDownloadEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
 import com.extjs.gxt.ui.client.Style;
@@ -49,10 +53,13 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -71,6 +78,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  */
 public class MyDownloadPanel extends Composite {
+    private TabPanel mainPanel;
+    private TabItem myDownloadTab;
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private Grid<DownloadModel> grid;
     private PagingModelMemoryProxy proxy = new PagingModelMemoryProxy(new ArrayList<DownloadModel>());
@@ -79,18 +88,22 @@ public class MyDownloadPanel extends Composite {
     private WaitDialog waitDialog;
     private PagingLoader<PagingLoadResult<DownloadModel>> loader;
 
-    public MyDownloadPanel() {
+    public MyDownloadPanel(TabPanel tabPanel, TabItem myDownloadTabItem) {
+        myDownloadTab = myDownloadTabItem;
+        mainPanel = tabPanel;
 
         GridCellRenderer<DownloadModel> buttonRenderer = new GridCellRenderer<DownloadModel>() {
 
             private boolean init;
 
+            @Override
             public Object render(final DownloadModel model, String property, ColumnData config, final int rowIndex,
                     final int colIndex, ListStore<DownloadModel> store, Grid<DownloadModel> grid) {
                 if (!init) {
                     init = true;
                     grid.addListener(Events.ColumnResize, new Listener<GridEvent<DownloadModel>>() {
 
+                        @Override
                         public void handleEvent(GridEvent<DownloadModel> be) {
                             for (int i = 0; i < be.getGrid().getStore().getCount(); i++) {
                                 if (be.getGrid().getView().getWidget(i, be.getColIndex()) != null
@@ -190,6 +203,9 @@ public class MyDownloadPanel extends Composite {
 
         setMonitorWindowResize(true);
         initComponent(contentPanel);
+        createAddMyDownloadHandler();
+        createTabSelectedHandler();
+        createLogoutHandler();
     }
 
     /**
@@ -206,27 +222,6 @@ public class MyDownloadPanel extends Composite {
         }
         downloadList.add(dlm);
         proxy.setData(downloadList);
-        toolBar.refresh();
-    }
-
-    /**
-     * Add a list of downloads.
-     * 
-     * @param dlms
-     *            a list of DownloadModels
-     */
-    public void addDownloads(List<DownloadModel> dlms) {
-        loadDownloads(dlms);
-        toolBar.refresh();
-    }
-
-    /**
-     * Remove all downloads for the given facility.
-     * 
-     * @param facilityName
-     */
-    public void clearDownloads(String facilityName) {
-        clearDownloadList(facilityName);
         toolBar.refresh();
     }
 
@@ -339,4 +334,45 @@ public class MyDownloadPanel extends Composite {
         });
     }
 
+    /**
+     * Setup a handler to react to AddMyDownload events.
+     */
+    private void createAddMyDownloadHandler() {
+        // react to a new set of downloads being added
+        AddMyDownloadEvent.register(EventPipeLine.getEventBus(), new AddMyDownloadEventHandler() {
+            @Override
+            public void addMyDownloads(AddMyDownloadEvent event) {
+                loadDownloads(event.getMyDownloads());
+                toolBar.refresh();
+            }
+        });
+    }
+
+    /**
+     * Setup a listener to react to Select events.
+     */
+    private void createTabSelectedHandler() {
+        // When the tab is changed update the download info
+        mainPanel.addListener(Events.Select, new Listener<TabPanelEvent>() {
+            @Override
+            public void handleEvent(TabPanelEvent event) {
+                if (event.getItem() == myDownloadTab) {
+                    refreshDownloadData();
+                }
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to Logout events.
+     */
+    private void createLogoutHandler() {
+        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+            @Override
+            public void logout(LogoutEvent event) {
+                clearDownloadList(event.getFacilityName());
+                toolBar.refresh();
+            }
+        });
+    }
 }

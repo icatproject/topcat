@@ -1,51 +1,74 @@
-PREREQUISITES
-========================================
-1) Glassfish v3 or later
-2) Maven 2.0.9 or later
-3) Oracle
-4) Oracle JDBC Driver ojdbc14.jar @ http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-10201-088211.html
-5) GLASSFISH_HOME is set to point to <glassfish_home_path>
+TOPCAT is an companion product for ICAT.  It provides a user friendly way to browse the contents of an ICAT.  
+
+These installation instructions are intended for installing Topcat as a companion to ICAT42.
+
+In order to make it simple to install TOPCAT, the following configuration is assumed:
+
+Ports:
+The port 8181 is available for the Glassfish Server to deploy Topcat.
+
+Glassfish Server:
+topcat.properties - has been added to /home/glassfish3/glassfish3/glassfish/domains/domain1/lib/classes
+
+ICAT Servers:
+The configuration for the icat servers can be found in the .icat files in the topcat41/icat.servers directory. To add additional icat servers, create a file containing the configuration information in the same format, and add the filename to topcat41/icat.servers/icat.list
 
 
-SETUP THE DATABASE
-========================================
-From within the "Installation" directory
-1) update values in <> in initalise_topcat_db.sql
-2) sqlplus
-    Enter user-name: system
-   SQL>@createuser_topcat_db
-    Enter Database Name     : XE
-    Enter SYS password              : 
-    Enter topcat password       : 
-    Enter External tables location : /tmp/extloc
-3) sqlplus
-    Enter user-name: topcat
-   SQL>@generate_topcat_db
-   SQL>@initialise_topcat_db 
+Configuration is stored in the following files:
+topcat41/deploy.props
+topcat41/topcat.properties
+topcat41/icat.servers/icat.list
+topcat41/icat.servers/localhost.icat
+topcat41/icat.servers/icata.icat
+topcat41/icat.servers/icatb.icat
+
+Instructions:
+
+Create a environment similar to the one assumed in these instructions. If it is not possible to be identical, then deploy.props will require changes. 
+
+Ensure the following conditions on the system: 
+
+- deploy.props and topcat.properties are created using the example files;
+- Database server running;
+- Glassfish server running;
+- the file topcat.properties is available in the appropriate directory for the glassfish server (see above);
+- the topcat war file is named TopCAT.war
+
+Do the following from the topcat directory:
+
+# Create schemas and initialise the tables  
+./deploy.sh setupDB
+
+# Create the database pools
+./deploy.sh create
+
+# Deploy topcat
+./deploy.sh deploy
+
+# Add ICAT connection information
+./deploy.sh setupICAT
+
+# Logon to topcat 
+https://localhost:8181/TOPCATWeb.jsp 
+
+# To stop, undeploy topcat and delete the connection pools, do the following:
+./deploy.sh undeploy
+./deploy.sh delete
+
+# To delete the ICAT connection information and the topcat schemas, do the following:
+./deploy.sh deleteICAT
+./deploy.sh deleteDB
 
 
-INSTALLATION INSTRUCTIONS
-========================================
-From within the "Installation" directory
-1) Modify resources.xml database password and connection string
-2) Modify passFile with a password to use for the TOPCAT domain
-3) Modify the topcat.properties file to select the caching and LOGO URL location and the values that will be used in the links in the footer
-4) mvn install:install-file -Dfile=<oracle_lib>/ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0 -Dpackaging=jar
-5) mvn install
-6) mvn glassfish:create-domain -Dglassfish.home=$GLASSFISH_HOME --non-recursive
-7) openssl s_client -no_tls1 -showcerts -connect <server>:<port> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert
-8) keytool -import -noprompt -alias <alias> -file $GLASSFISH_HOME/domains/TOPCAT/config/facility.cert -keystore $GLASSFISH_HOME/domains/TOPCAT/config/cacerts.jks --storepass changeit 
-9) mvn resources:copy-resources -Dglassfish.home=$GLASSFISH_HOME --non-recursive
-10) mvn glassfish:deploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive
+The script deploy.sh suppports the following arguments:
+----------------
 
+setupDB			Creates the database schemas for Topcat
+deleteDB		Complement of setupDB 
+create			Creates the jdbc connection pools between the database and glassfish. Please ensure that the parameters in deploy.props are correctly defined.
+delete			Deletes the jdbc connection pools between the database and glassfish.
+deploy			Use with topcat to deploy the specified application.
+undeploy 		Use with topcat to undeploy the specified application.
+setupICAT		Populates the database schemas for Topcat with information about the available ICATs 
+deleteICAT		Complement of setupICAT 
 
-UNDEPLOY
-=======================================
-From within the "Installation" directory
-1) mvn glassfish:undeploy -Dglassfish.home=$GLASSFISH_HOME --non-recursive
-
-
-UNINSTALL
-=======================================
-From within the "Installation" directory
-1) mvn glassfish:delete-domain -Dglassfish.home=$GLASSFISH_HOME --non-recursive

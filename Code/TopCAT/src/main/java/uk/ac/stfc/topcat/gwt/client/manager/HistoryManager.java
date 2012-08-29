@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -46,6 +46,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     public static final String seperatorModel = "///";
     public static final String seperatorToken = "&";
     public static final String seperatorKeyValues = "=";
+    public static final String logonError = "logonError";
 
     public HistoryManager() {
         // Add history handler
@@ -53,7 +54,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param tcWindowManager
      *            Floating Window Manager
@@ -77,7 +78,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Set the current selected tab
+     * Set the current selected tab.
      * 
      * @param tab
      */
@@ -95,33 +96,28 @@ public class HistoryManager implements ValueChangeHandler<String> {
      * com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(
      * com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
+    @Override
     public void onValueChange(ValueChangeEvent<String> event) {
         String historyToken = event.getValue();
         processHistory(historyToken);
     }
 
     /**
-     * Process the input history string
+     * Process the input history string.
      * 
      * @param history
      */
     public void processHistory(String history) {
         // First token will be special token or panel
-        if (history.startsWith("download")) { // download
-
-        } else if (history.startsWith("view")) {
+        if (history.startsWith("view")) {
             processHistoryString(history);
             tcWindowManager.processHistoryString(history);
-        } else {
-            // if(EventPipeLine.getInstance().getMainWindow()!=null)
-            // EventPipeLine.getInstance().getMainWindow().getMainPanel().selectPanelWithoutHistory("");
-            // tcWindowManager.closeAllWindows();
         }
     }
 
     /**
      * Process the input string to check for selected tab and floating window
-     * history
+     * history.
      * 
      * @param history
      */
@@ -129,9 +125,10 @@ public class HistoryManager implements ValueChangeHandler<String> {
         String[] historyTokenList = history.split(HistoryManager.seperatorModel);
         // tab string
         String tabString = HistoryManager.seperatorToken + "tab";
+        String logonErrorString = HistoryManager.seperatorToken + logonError;
         // split the models
         for (String hToken : historyTokenList) {
-            if (hToken.startsWith(tabString)) {
+            if (hToken.startsWith(tabString) || hToken.startsWith(logonErrorString)) {
                 // split the hToken to model params
                 String[] paramList = hToken.split(HistoryManager.seperatorToken);
                 for (String param : paramList) {
@@ -144,6 +141,15 @@ public class HistoryManager implements ValueChangeHandler<String> {
                                 EventPipeLine.getInstance().getMainWindow().getMainPanel()
                                         .selectPanelWithoutHistory(value);
                             }
+                        } else if (key.compareToIgnoreCase(logonError) == 0) {
+                            // remove error message
+                            String[] newHistory = history.split(seperatorModel + seperatorToken + logonError);
+                            History.newItem(newHistory[0]);
+                            // prompt for logon and display error
+                            EventPipeLine.getInstance().showLoginWidget(value);
+                            EventPipeLine.getInstance().showErrorDialog(
+                                    "ERROR logging on to " + value
+                                            + " with credentials from external authorisation service");
                         }
                     } catch (IndexOutOfBoundsException ex) {
                     }
@@ -153,7 +159,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Removes the history string from the current history
+     * Removes the history string from the current history.
      * 
      * @param history
      */
@@ -171,7 +177,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     }
 
     /**
-     * Creates a new history string
+     * Creates a new history string.
      */
     public void updateHistory() {
         History.newItem(getHistoryString());

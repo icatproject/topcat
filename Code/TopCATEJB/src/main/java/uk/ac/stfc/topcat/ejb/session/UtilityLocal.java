@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -28,20 +28,24 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
+import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 
 /**
  * This is local interface to utility bean
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 
@@ -49,24 +53,61 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 public interface UtilityLocal {
 
     ArrayList<TFacility> getFacilities();
+
     ArrayList<String> getFacilityNames();
-    ArrayList<String> getAllInstrumentNames(String sessionId);
-    ArrayList<String> getInstrumentNames(String sessionId,String serverName);
-    ArrayList<String> getAllInvestigationTypes(String sessionId);
-    ArrayList<String> getInvestigationTypes(String sessionId,String serverName);
-    ArrayList<TFacilityCycle> getFacilityCycles(String sessionId,String serverName)throws ICATMethodNotFoundException;
-    ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId,String serverName, String instrument)throws ICATMethodNotFoundException;
+
+    ArrayList<String> getInstrumentNames(String sessionId, String serverName);
+
+    ArrayList<String> getInvestigationTypes(String sessionId, String serverName);
+
+    ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
+            throws ICATMethodNotFoundException;
+
     ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName);
-    ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
-    ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName, String instrumentName);
-    ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
-    ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName, String instrumentName,TFacilityCycle cycle);
-    ArrayList<TDataset> getDatasetsInServer(String sessionId,String serverName,String investigationId);
-    ArrayList<TDatafile> getDatafilesInServer(String sessionId,String serverName,String datasetId);
-    ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName, java.lang.String datafileId);
-    String getDatafilesDownloadURL(String sessionId,String serverName,ArrayList<Long> datafileIds);
-    String getDatasetDownloadURL(String sessionId,String serverName, Long datasetId);
+
+    ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName,
+            String instrumentName) throws TopcatException;
+
+    ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName,
+            String instrumentName) throws TopcatException;
+
+    ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName,
+            String instrumentName, TFacilityCycle cycle) throws TopcatException;
+
+    ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName,
+            String instrumentName, TFacilityCycle cycle) throws TopcatException;
+
+    TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId)
+            throws AuthenticationException;
+
+    ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId)
+            throws AuthenticationException;
+
+    String getDatasetName(String sessionId, String serverName, String datasetId);
+
+    ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId);
+
+    ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String serverName,
+            java.lang.String datasetId);
+
+    ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName,
+            java.lang.String datafileId);
+
+    ArrayList<String> getParameterNames(String sessionId, String facilityName) throws TopcatException;
+
+    ArrayList<String> getParameterUnits(String sessionId, String facilityName, String name) throws TopcatException;
+
+    ArrayList<String> getParameterTypes(String sessionId, String facilityName, String name, String units)
+            throws TopcatException;
+
+    String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds);
+
+    String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId);
+
     List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName);
-    void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status, Date expiryTime, String url);
+
+    void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
+            Date expiryTime, String url);
+
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 }

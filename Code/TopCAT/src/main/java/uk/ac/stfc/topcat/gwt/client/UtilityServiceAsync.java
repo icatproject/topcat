@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -61,14 +61,6 @@ public interface UtilityServiceAsync {
     public void getFacilities(AsyncCallback<ArrayList<TFacility>> callback);
 
     /**
-     * Get a list of facilities registered in TopCAT.
-     * 
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getFacilityNames(AsyncCallback<ArrayList<String>> callback);
-
-    /**
      * Get a list of instrument names for the given facility.
      * 
      * @param facilityName
@@ -87,36 +79,6 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getInvestigationTypes(String facilityName, AsyncCallback<ArrayList<String>> callback);
-
-    /**
-     * Get a list of all children for the given ICAT node for which the user has
-     * investigation rights.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getMyICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);
-
-    /**
-     * Get a list of all children for the given ICAT node.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getAllICATNodeChildren(ICATNode node, AsyncCallback<ArrayList<ICATNode>> callback);
-
-    /**
-     * TODO
-     * 
-     * @param node
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getMyICATNodeDatafiles(ICATNode node, AsyncCallback<HashMap<String, ArrayList<ICATNode>>> callback);
 
     /**
      * TODO
@@ -153,6 +115,20 @@ public interface UtilityServiceAsync {
      */
     public void getDatasetsInInvestigations(String facilityName, String investigationId,
             AsyncCallback<ArrayList<DatasetModel>> callback);
+
+    /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data set id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            a string containing the data set id
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatasetParameters(String facilityName, String datasetId,
+            AsyncCallback<ArrayList<ParameterModel>> callback);
 
     /**
      * Get a list of data files information corresponding to the given list of
@@ -210,6 +186,19 @@ public interface UtilityServiceAsync {
     public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
 
     /**
+     * Get additional details about an investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            the investigation id
+     * @param asyncCallback
+     *            object to be called on completion
+     */
+    public void getInvestigationDetails(String facilityName, String investigationId,
+            AsyncCallback<TInvestigation> asyncCallback);
+
+    /**
      * Get the server logo URL
      * 
      * @param asyncCallback
@@ -245,5 +234,43 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getDownloadStatus(Set<DownloadModel> downloadQueue, AsyncCallback<List<DownloadModel>> asyncCallback);
+
+    /**
+     * Get a list of parameter names known to a facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    void getParameterNames(String facilityName, AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get a list of parameter units for the given facility and parameter name.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @param callback
+     *            object to be called on completion
+     */
+    void getParameterUnits(String facilityName, String name, AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get the expected type of the parameter value for the given facility,
+     * parameter name and parameter units. If the units are '--ALL--' then
+     * return types for all units.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @param units
+     *            a string containing the parameter units
+     * @param callback
+     *            object to be called on completion
+     */
+    void getParameterTypes(String facilityName, String name, String units, AsyncCallback<ArrayList<String>> callback);
 
 }

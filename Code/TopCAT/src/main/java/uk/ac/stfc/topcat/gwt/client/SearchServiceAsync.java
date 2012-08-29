@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -31,6 +31,7 @@ import java.util.List;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
+import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -50,8 +51,8 @@ public interface SearchServiceAsync {
      * 
      * @param sessionId
      *            a string containing the session id
-     * @param serverName
-     *            a string containing the server name
+     * @param facilityName
+     *            a string containing the facility name
      * @param partialKey
      *            a string containing the partial key to search on
      * @param numberOfKeywords
@@ -59,23 +60,8 @@ public interface SearchServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    void getKeywordsFromServer(String sessionId, String serverName, String partialKey, int numberOfKeywords,
+    void getKeywordsFromServer(String sessionId, String facilityName, String partialKey, int numberOfKeywords,
             AsyncCallback<List<String>> callback);
-
-    /**
-     * Get a list of investigations that have the given keywords. Search all the
-     * iCat servers. <b>NB</b>: the search is case sensitive and return maximum
-     * of 200 results.
-     * 
-     * @param sessionId
-     *            a string containing the session id
-     * @param keywords
-     *            a list of strings containing keywords to search on
-     * @param callback
-     *            object to be called on completion
-     */
-    void getSearchResultsInvestigationFromKeywords(String sessionId, ArrayList<String> keywords,
-            AsyncCallback<List<TInvestigation>> callback);
 
     /**
      * Get a list of investigations that have the given input keywords and are
@@ -108,19 +94,36 @@ public interface SearchServiceAsync {
             AsyncCallback<List<TInvestigation>> callback);
 
     /**
-     * Get a list of data files matching the criteria given in the search
-     * details. <b>NB</b>: only instruments and run number start and end used.
+     * Get a list of data sets matching the criteria given in the search
+     * details.
      * 
      * @param sessionId
      *            a string containing the session id
-     * @param serverName
-     *            a string containing the server name
+     * @param facilityName
+     *            a string containing the facility name
      * @param searchDetails
      *            a <code>TAdvancedSearchDetails</code> containing the search
      *            details
      * @param callback
      *            object to be called on completion
      */
-    void getAdvancedSearchResultsDatafile(String sessionId, String serverName, TAdvancedSearchDetails searchDetails,
+    void getAdvancedSearchResultsDatasets(String sessionId, String facilityName, TAdvancedSearchDetails searchDetails,
+            AsyncCallback<ArrayList<DatasetModel>> callback);
+
+    /**
+     * Get a list of data files matching the criteria given in the search
+     * details. <b>NB</b>: only instruments and run number start and end used.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param facilityName
+     *            a string containing the facility name
+     * @param searchDetails
+     *            a <code>TAdvancedSearchDetails</code> containing the search
+     *            details
+     * @param callback
+     *            object to be called on completion
+     */
+    void getAdvancedSearchResultsDatafile(String sessionId, String facilityName, TAdvancedSearchDetails searchDetails,
             AsyncCallback<ArrayList<DatafileModel>> callback);
 }

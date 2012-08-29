@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -21,81 +21,142 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.model;
+
 /**
  * Imports
  */
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+
 /**
- * This class is a datamodel to hold Parameter information
- * TODO: change it from datamodel to beanmodel
+ * This class is a datamodel to hold Parameter information TODO: change it from
+ * datamodel to beanmodel
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
- * @since iCAT Version 3.3   
+ * @version 1.0, &nbsp; 30-APR-2010
+ * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
 public class ParameterModel extends BaseModelData implements Serializable {
-	
-	public ParameterModel() {
-		
-	}
+    private List<String> facilityNames = new ArrayList<String>();
 
-	/**
-	 * Constructor
-	 * @param name Parameter name 
-	 * @param units units of parameter
-	 * @param value value of paramter
-	 */
-	public ParameterModel(String name,String units,String value) {
-		setName(name);
-		setUnits(units);
-		setValue(value);
-	}
-	
-	/**
-	 * @return parameter name
-	 */
-	public String getName(){
-		return get("name");
-	}
-	
-	/**
-	 * Set parameter name
-	 * @param name
-	 */
-	public void setName(String name) {
-		set("name", name);
-	}
-	
-	/**
-	 * @return units of parameter
-	 */
-	public String getUnits() {
-		return get("units");
-	}
-	
-	/**
-	 * Set the units of parameter
-	 * @param units
-	 */
-	public void setUnits(String units) {
-		set("units",units);
-	}
+    public ParameterModel() {
 
-	/**
-	 * @return the value of parameter
-	 */
-	public String getValue() {
-		return get("value");
-	}
-	
-	/**
-	 * Set the value of parameter
-	 * @param value
-	 */
-	public void setValue(String value) {
-		set("value",value);
-	}
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param facilityName
+     *            facility name
+     * @param name
+     *            parameter name
+     */
+    public ParameterModel(String facilityName, String name) {
+        facilityNames.add(facilityName);
+        setName(name);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param name
+     *            Parameter name
+     * @param units
+     *            units of parameter
+     * @param value
+     *            value of parameter
+     */
+    public ParameterModel(String name, String units, String value) {
+        setName(name);
+        setUnits(units);
+        setValue(value);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param facilityName
+     *            facility name
+     * @param name
+     *            parameter name
+     * @param units
+     *            units of parameter
+     * @param value
+     *            value of parameter
+     */
+    public ParameterModel(String facilityName, String name, String units, String value) {
+        facilityNames.add(facilityName);
+        setName(name);
+        setUnits(units);
+        setValue(value);
+    }
+
+    /**
+     * @return facility name
+     */
+    public List<String> getFacilityNames() {
+        return facilityNames;
+    }
+
+    /**
+     * Set facility name
+     * 
+     * @param facilityName
+     */
+    public void addFacilityName(String facilityName) {
+        facilityNames.add(facilityName);
+    }
+
+    /**
+     * @return parameter name
+     */
+    public String getName() {
+        return get("name");
+    }
+
+    /**
+     * Set parameter name
+     * 
+     * @param name
+     */
+    public void setName(String name) {
+        set("name", name);
+    }
+
+    /**
+     * @return units of parameter
+     */
+    public String getUnits() {
+        return get("units");
+    }
+
+    /**
+     * Set the units of parameter
+     * 
+     * @param units
+     */
+    public void setUnits(String units) {
+        set("units", units);
+    }
+
+    /**
+     * @return the value of parameter
+     */
+    public String getValue() {
+        return get("value");
+    }
+
+    /**
+     * Set the value of parameter
+     * 
+     * @param value
+     */
+    public void setValue(String value) {
+        set("value", value);
+    }
 }

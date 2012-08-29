@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -41,7 +44,6 @@ import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 
 /**
  * The <code>UtilityService</code> interface is used to perform searches to get
@@ -75,13 +77,6 @@ public interface UtilityService extends RemoteService {
     public ArrayList<TFacility> getFacilities();
 
     /**
-     * Get a list of facilities registered in TopCAT.
-     * 
-     * @return a list of strings containing facility names
-     */
-    public ArrayList<String> getFacilityNames();
-
-    /**
      * Get a list of instrument names for the given facility.
      * 
      * @param facilityName
@@ -100,41 +95,16 @@ public interface UtilityService extends RemoteService {
     public ArrayList<String> getInvestigationTypes(String facilityName);
 
     /**
-     * Get a list of all children for the given ICAT node for which the user has
-     * investigation rights.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @return a list of child <code>ICATNode</code>
-     */
-    public ArrayList<ICATNode> getMyICATNodeChildren(ICATNode node);
-
-    /**
-     * Get a list of all children for the given ICAT node.
-     * 
-     * @param node
-     *            a <code>ICATNode</code> containing the parent information
-     * @return a list of child <code>ICATNode</code>
-     */
-    public ArrayList<ICATNode> getAllICATNodeChildren(ICATNode node);
-
-    /**
      * TODO
      * 
      * @param node
      * @return a map with the key as a string containing TODO and the value as a
      *         list of <code>ICATNode</code>
+     * @throws SessionException
+     * @throws TopcatException
      */
-    public HashMap<String, ArrayList<ICATNode>> getMyICATNodeDatafiles(ICATNode node);
-
-    /**
-     * TODO
-     * 
-     * @param node
-     * @return a map with the key as a string containing TODO and the value as a
-     *         list of <code>ICATNode</code>
-     */
-    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node);
+    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws SessionException,
+            TopcatException;
 
     /**
      * Get a list of parameter models which have parameter names and
@@ -158,8 +128,23 @@ public interface UtilityService extends RemoteService {
      *            a string containing the investigation id
      * @return a list of <code>DatasetModel</code> containing data set
      *         information
+     * @throws SessionException
      */
-    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId);
+    public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId)
+            throws SessionException;
+
+    /**
+     * Get a list of parameter models which have parameter names and
+     * corresponding values for a given facility and data set id.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            a string containing the data set id
+     * @return a list of <code>ParameterModel</code> which contain parameter
+     *         names and corresponding values
+     */
+    public ArrayList<ParameterModel> getDatasetParameters(String facilityName, String datasetId);
 
     /**
      * Get a list of data files information corresponding to the given list of
@@ -210,6 +195,18 @@ public interface UtilityService extends RemoteService {
     public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
 
     /**
+     * Get additional details about an investigation.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param investigationId
+     *            the investigation id
+     * @return a <code>TInvestigation</code> containing additional data
+     * @throws SessionException
+     */
+    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws SessionException;
+
+    /**
      * This method returns the server logo URL
      * 
      * @return
@@ -244,5 +241,43 @@ public interface UtilityService extends RemoteService {
      *         status
      */
     public List<DownloadModel> getDownloadStatus(Set<DownloadModel> downloadQueue);
+
+    /**
+     * Get a list of parameter names known to a facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of parameter names
+     * @throws TopcatException
+     */
+    ArrayList<String> getParameterNames(String facilityName) throws TopcatException;
+
+    /**
+     * Get a list of parameter units for the given facility and parameter name.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @return a list of units
+     * @throws TopcatException
+     */
+    ArrayList<String> getParameterUnits(String facilityName, String name) throws TopcatException;
+
+    /**
+     * Get the expected type of the parameter value for the given facility,
+     * parameter name and parameter units. If the units are '--ALL--' then
+     * return types for all units.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param name
+     *            a string containing the parameter name
+     * @param units
+     *            a string containing the parameter units
+     * @return the expected type of the value
+     * @throws TopcatException
+     */
+    ArrayList<String> getParameterTypes(String facilityName, String name, String units) throws TopcatException;
 
 }

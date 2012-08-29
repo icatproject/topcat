@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -22,22 +22,29 @@
  */
 package uk.ac.stfc.topcat.ejb.session;
 
-import javax.ejb.Local;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-
 
 /**
  * This is local interface to user management stateless session bean.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public interface UserManagementBeanLocal {
 
     public String login() throws AuthenticationException;
-    public void login(String sessionId, String serverName, String username, String password, long hours) throws AuthenticationException;
+
+    public void login(String sessionId, String serverName, String username, String password, long hours)
+            throws AuthenticationException;
+
     public void logout(String sessionId) throws AuthenticationException;
-    public void logout(String sessionId,String serverName) throws AuthenticationException;
-    public Boolean isSessionValid(String sessionId,String serverName);
+
+    public void logout(String sessionId, String serverName) throws AuthenticationException;
+
+    public Boolean isSessionValid(String sessionId, String serverName);
+
+    public void loginWithTicket(String sessionId, String serverName, String authenticationServiceUrl, String ticket,
+            long hours) throws AuthenticationException;
 }

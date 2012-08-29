@@ -53,7 +53,7 @@ public class HeaderPanel extends Composite {
         layoutContainer.setLayout(new TableRowLayout());
 
         image = new Image();
-        image.setSize("263px", "58px");
+        image.setHeight("71px");
         TableData td_image = new TableData();
         td_image.setPadding(2);
         layoutContainer.add(image, td_image);
