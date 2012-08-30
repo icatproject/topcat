@@ -1,6 +1,6 @@
 TOPCAT is an companion product for ICAT.  It provides a user friendly way to browse the contents of an ICAT.  
 
-These installation instructions are intended for installing Topcat as a companion to ICAT42.
+These installation instructions are intended for installing Topcat as a companion to ICAT.
 
 In order to make it simple to install TOPCAT, the following configuration is assumed:
 
@@ -8,27 +8,25 @@ Ports:
 The port 8181 is available for the Glassfish Server to deploy Topcat.
 
 Glassfish Server:
-topcat.properties - has been added to /home/glassfish3/glassfish3/glassfish/domains/domain1/lib/classes
+topcat.properties - has been added to $GLASSFISH_HOME/glassfish/domains/domain1/lib/classes
 
 ICAT Servers:
-The configuration for the icat servers can be found in the .icat files in the topcat41/icat.servers directory. To add additional icat servers, create a file containing the configuration information in the same format, and add the filename to topcat41/icat.servers/icat.list
+The configuration for the icat servers can be found in the .icat files in the icats.d directory. To add additional icat servers, create a file containing the configuration information in the same format, and add the filename to icats.d/icat.list
 
 
 Configuration is stored in the following files:
-topcat41/deploy.props
-topcat41/topcat.properties
-topcat41/icat.servers/icat.list
-topcat41/icat.servers/localhost.icat
-topcat41/icat.servers/icata.icat
-topcat41/icat.servers/icatb.icat
+deploy.conf
+topcat.properties
+icats.d/icat.list
+icats.d/localhost.icat
 
 Instructions:
 
-Create a environment similar to the one assumed in these instructions. If it is not possible to be identical, then deploy.props will require changes. 
+Create a environment similar to the one assumed in these instructions. If it is not possible to be identical, then deploy.conf will require changes. 
 
 Ensure the following conditions on the system: 
 
-- deploy.props and topcat.properties are created using the example files;
+- deploy.conf and topcat.properties are created using the example files;
 - Database server running;
 - Glassfish server running;
 - the file topcat.properties is available in the appropriate directory for the glassfish server (see above);
@@ -65,7 +63,7 @@ The script deploy.sh suppports the following arguments:
 
 setupDB			Creates the database schemas for Topcat
 deleteDB		Complement of setupDB 
-create			Creates the jdbc connection pools between the database and glassfish. Please ensure that the parameters in deploy.props are correctly defined.
+create			Creates the jdbc connection pools between the database and glassfish. Please ensure that the parameters in deploy.conf are correctly defined.
 delete			Deletes the jdbc connection pools between the database and glassfish.
 deploy			Use with topcat to deploy the specified application.
 undeploy 		Use with topcat to undeploy the specified application.

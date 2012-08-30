@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# $Id$
-
 #set -x
 opts="setupDB, deleteDB, create, delete, deploy, undeploy, setupICAT, deleteICAT"
 
@@ -10,49 +8,14 @@ if [ $# = 0 ]; then
     exit 1
 fi
 
-props=./deploy.props
+props=./deploy.conf
 if [ ! -f $props ]; then
     echo There is no $props file
     exit 1
 fi
 . $props
 
-icatlist=icat.servers/icat.list
-if [ ! -f $icatlist ]; then
-    echo There is no $icatlist file
-exit 1
-fi
-
-if [ -z "$databaseName" ]; then
-    if [ $databaseType = oracle ]; then
-    databaseName="XE"
-    elif [ $databaseType = mysql ]; then
-    databaseName="topcat"
-    fi
-fi
-
-if [ -z "$databasePort" ]; then
-    if [ $databaseType = oracle ]; then
-    databasePort="1521"
-    elif [ $databaseType = mysql ]; then
-    databasePort="3306"
-    fi
-fi
-
-if [ -z "$databaseURL" ]; then
-    if [ $databaseType = oracle ]; then
-    databaseURL="jdbc:$databaseType:thin:@//$databaseServer:$databasePort/$databaseName"
-    elif [ $databaseType = mysql ]; then
-    databaseURL="jdbc:$databaseType://$databaseServer:$databasePort/$databaseName"
-    fi
-fi
-
-TopCATDB=TopCATDB
-topcatBase=`basename $topcat`
-topcatWarStem=${topcatBase%%.war}
-asadmin="$glassfish/bin/asadmin --port $port"
-
-for key in databaseType sysPW databaseServer topcatName topcatPW topcat glassfish port; do
+for key in DB_TYPE DB_ROOT_PASSWORD DB_HOSTNAME TOPCAT_DB_USER_NAME TOPCAT_DB_PASSWORD WAR_LOCATION GLASSFISH_HOME GLASSFISH_ADMIN_PORT; do
     eval val='$'$key
     if [ -z "$val" ]; then
         echo $key must be set in $props file
@@ -60,84 +23,118 @@ for key in databaseType sysPW databaseServer topcatName topcatPW topcat glassfis
 	fi
 done
 
+icatlist=icats.d/icat.list
+if [ ! -f $icatlist ]; then
+    echo There is no $icatlist file
+exit 1
+fi
+
+if [ -z "$databaseName" ]; then
+    if [ $DB_TYPE = oracle ]; then
+    databaseName="XE"
+    elif [ $DB_TYPE = mysql ]; then
+    databaseName="topcat"
+    fi
+fi
+
+if [ -z "$databasePort" ]; then
+    if [ $DB_TYPE = oracle ]; then
+    databasePort="1521"
+    elif [ $DB_TYPE = mysql ]; then
+    databasePort="3306"
+    fi
+fi
+
+if [ -z "$databaseURL" ]; then
+    if [ $DB_TYPE = oracle ]; then
+    databaseURL="jdbc:$DB_TYPE:thin:@//$DB_HOSTNAME:$databasePort/$databaseName"
+    elif [ $DB_TYPE = mysql ]; then
+    databaseURL="jdbc:$DB_TYPE://$DB_HOSTNAME:$databasePort/$databaseName"
+    fi
+fi
+
+TopCATDB=TopCATDB
+topcatBase=`basename $WAR_LOCATION`
+topcatWarStem=${topcatBase%%.war}
+asadmin="$GLASSFISH_HOME/bin/asadmin --port $GLASSFISH_ADMIN_PORT"
 
 case $1 in
 setupDB) 
-    if [ $databaseType = oracle ]; then
-        sqlplus sys/$sysPW@$databaseServer AS SYSDBA <<EOF
-        CREATE USER $topcatName PROFILE "DEFAULT" IDENTIFIED BY "$topcatPW" DEFAULT TABLESPACE "USERS" TEMPORARY TABLESPACE "TEMP" QUOTA UNLIMITED ON "USERS" ACCOUNT UNLOCK;
-        GRANT CREATE DATABASE LINK TO $topcatName;
-        GRANT CREATE LIBRARY TO $topcatName;
-        GRANT CREATE MATERIALIZED VIEW TO $topcatName;
-        GRANT CREATE OPERATOR TO $topcatName;
-        GRANT CREATE PROCEDURE TO $topcatName;
-        GRANT CREATE PUBLIC DATABASE LINK TO $topcatName;
-        GRANT CREATE PUBLIC SYNONYM TO $topcatName;
-        GRANT CREATE SEQUENCE TO $topcatName;
-        GRANT CREATE SESSION TO $topcatName;
-        GRANT CREATE SYNONYM TO $topcatName;
-        GRANT CREATE TABLE TO $topcatName;
-        GRANT CREATE TRIGGER TO $topcatName;
-        GRANT CREATE TYPE TO $topcatName;
-        GRANT CREATE VIEW TO $topcatName;
-        GRANT UNLIMITED TABLESPACE TO $topcatName;
-        GRANT "CONNECT" TO $topcatName;
-        GRANT "PLUSTRACE" TO $topcatName;
-        GRANT "RESOURCE" TO $topcatName;
-        GRANT CREATE JOB TO $topcatName;
+    if [ $DB_TYPE = oracle ]; then
+        sqlplus sys/$DB_ROOT_PASSWORD@$DB_HOSTNAME AS SYSDBA <<EOF
+        CREATE USER $TOPCAT_DB_USER_NAME PROFILE "DEFAULT" IDENTIFIED BY "$TOPCAT_DB_PASSWORD" DEFAULT TABLESPACE "USERS" TEMPORARY TABLESPACE "TEMP" QUOTA UNLIMITED ON "USERS" ACCOUNT UNLOCK;
+        GRANT CREATE DATABASE LINK TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE LIBRARY TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE MATERIALIZED VIEW TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE OPERATOR TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE PROCEDURE TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE PUBLIC DATABASE LINK TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE PUBLIC SYNONYM TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE SEQUENCE TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE SESSION TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE SYNONYM TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE TABLE TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE TRIGGER TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE TYPE TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE VIEW TO $TOPCAT_DB_USER_NAME;
+        GRANT UNLIMITED TABLESPACE TO $TOPCAT_DB_USER_NAME;
+        GRANT "CONNECT" TO $TOPCAT_DB_USER_NAME;
+        GRANT "PLUSTRACE" TO $TOPCAT_DB_USER_NAME;
+        GRANT "RESOURCE" TO $TOPCAT_DB_USER_NAME;
+        GRANT CREATE JOB TO $TOPCAT_DB_USER_NAME;
         exit;
 EOF
   
-    elif [ $databaseType = mysql ]; then
-        mysqladmin -u root -p$sysPW -h $databaseServer create $databaseName
+    elif [ $DB_TYPE = mysql ]; then
+        mysqladmin -u root -p$DB_ROOT_PASSWORD -h $DB_HOSTNAME create $databaseName
         echo "Created database $databaseName"
-        mysql -u root -p$sysPW -h $databaseServer<<EOF
-        CREATE USER '$topcatName'@'$databaseServer' IDENTIFIED BY '$topcatPW';
-        GRANT ALL PRIVILEGES ON $databaseName.* TO '$topcatName'@'%';
+        mysql -u root -p$DB_ROOT_PASSWORD -h $DB_HOSTNAME<<EOF
+        CREATE USER '$TOPCAT_DB_USER_NAME'@'$DB_HOSTNAME' IDENTIFIED BY '$TOPCAT_DB_PASSWORD';
+        GRANT ALL PRIVILEGES ON $databaseName.* TO '$TOPCAT_DB_USER_NAME'@'%';
 EOF
-        echo "Created user $topcatName"
+        echo "Created user $TOPCAT_DB_USER_NAME"
     fi
 ;;
 
 deleteDB) 
-    if [ $databaseType = oracle ]; then
-        sqlplus sys/$sysPW@$databaseServer AS SYSDBA <<EOF
-        DROP USER $topcatName CASCADE;
+    if [ $DB_TYPE = oracle ]; then
+        sqlplus sys/$DB_ROOT_PASSWORD@$DB_HOSTNAME AS SYSDBA <<EOF
+        DROP USER $TOPCAT_DB_USER_NAME CASCADE;
 EOF
-        echo "Dropped user $topcatName"
+        echo "Dropped user $TOPCAT_DB_USER_NAME"
 
-    elif [ $databaseType = mysql ]; then
-        mysql -u root -p$sysPW -h $databaseServer<<EOF
+    elif [ $DB_TYPE = mysql ]; then
+        mysql -u root -p$DB_ROOT_PASSWORD -h $DB_HOSTNAME<<EOF
         DROP DATABASE $databaseName;
-        DROP USER '$topcatName'@'$databaseServer';
+        DROP USER '$TOPCAT_DB_USER_NAME'@'$DB_HOSTNAME';
 EOF
-        echo "Dropped database $databaseName and user $topcatName"
+        echo "Dropped database $databaseName and user $TOPCAT_DB_USER_NAME"
     fi
 ;;
 
 setupICAT) 
-    if [ $databaseType = oracle ]; then
+    if [ $DB_TYPE = oracle ]; then
         ID=0
         while read icat_descripter_file
         do
         if [ "${icat_descripter_file:0:1}" != "#" ]; then
         . $icat_descripter_file
         ID=`expr $ID + 1`
-        sqlplus $topcatName/$topcatPW@$databaseServer <<EOF
-        INSERT INTO TOPCAT_ICAT_SERVER (ID, NAME, SERVER_URL, DEFAULT_USER, DEFAULT_PASSWORD, PLUGIN_NAME, DOWNLOAD_PLUGIN_NAME, VERSION) VALUES ('$ID', '$FacilityName', '$ICAT_url', '', '', '', '', '$ICAT_version');
+        sqlplus $TOPCAT_DB_USER_NAME/$TOPCAT_DB_PASSWORD@$DB_HOSTNAME <<EOF
+        INSERT INTO TOPCAT_ICAT_SERVER (ID, NAME, SERVER_URL, DEFAULT_USER, DEFAULT_PASSWORD, PLUGIN_NAME, DOWNLOAD_PLUGIN_NAME, VERSION) VALUES ('$ID', '$FACILITY_NAME', '$ICAT_URL', '', '', '', '', '$ICAT_VERSION');
 EOF
         fi
         done < $icatlist
 
-    elif [ $databaseType = mysql ]; then
+    elif [ $DB_TYPE = mysql ]; then
         ID=0
         while read icat_descripter_file
         do
         if [ "${icat_descripter_file:0:1}" != "#" ]; then
         . $icat_descripter_file
         ID=`expr $ID + 1`
-        mysql -u $topcatName -p$topcatPW -h $databaseServer $databaseName<<EOF
-        INSERT INTO TOPCAT_ICAT_SERVER (ID, NAME, SERVER_URL, DEFAULT_USER, DEFAULT_PASSWORD, PLUGIN_NAME, DOWNLOAD_PLUGIN_NAME, VERSION) VALUES ('$ID', '$FacilityName', '$ICAT_url', '', '', '', '', '$ICAT_version');
+        mysql -u $TOPCAT_DB_USER_NAME -p$TOPCAT_DB_PASSWORD -h $DB_HOSTNAME $databaseName<<EOF
+        INSERT INTO TOPCAT_ICAT_SERVER (ID, NAME, SERVER_URL, DEFAULT_USER, DEFAULT_PASSWORD, PLUGIN_NAME, DOWNLOAD_PLUGIN_NAME, VERSION) VALUES ('$ID', '$FACILITY_NAME', '$ICAT_URL', '', '', '', '', '$ICAT_VERSION');
 EOF
         fi
         done < $icatlist
@@ -147,14 +144,14 @@ EOF
 
 
 deleteICAT)
-    if [ $databaseType = oracle ]; then
-        sqlplus $topcatName/$topcatPW@$databaseServer <<EOF
+    if [ $DB_TYPE = oracle ]; then
+        sqlplus $TOPCAT_DB_USER_NAME/$TOPCAT_DB_PASSWORD@$DB_HOSTNAME <<EOF
         DELETE FROM TOPCAT_ICAT_SERVER;
 EOF
         echo "ICAT connection information removed"
 
-    elif [ $databaseType = mysql ]; then
-        mysql -u $topcatName -p$topcatPW -h $databaseServer $databaseName<<EOF
+    elif [ $DB_TYPE = mysql ]; then
+        mysql -u $TOPCAT_DB_USER_NAME -p$TOPCAT_DB_PASSWORD -h $DB_HOSTNAME $databaseName<<EOF
         DELETE FROM TOPCAT_ICAT_SERVER;
 EOF
         echo "ICAT connection information removed"
@@ -191,19 +188,19 @@ create)
             --validateatmostonceperiod 0 \
             --wrapjdbcobjects false \
             --ping \
-            --property User=${topcatName}:Password=${topcatPW}:URL="'"${databaseURL}"'" $TopCATDB
+            --property User=${TOPCAT_DB_USER_NAME}:Password=${TOPCAT_DB_PASSWORD}:URL="'"${databaseURL}"'" $TopCATDB
 
         create-jdbc-resource  \
             --connectionpoolid $TopCATDB jdbc/$TopCATDB
 EOF
-    if [ $databaseType = oracle ]; then
-        fname=$glassfish/glassfish/domains/domain1/lib/ojdbc*.jar
+    if [ $DB_TYPE = oracle ]; then
+        fname=$GLASSFISH_HOME/glassfish/domains/domain1/lib/ojdbc*.jar
         if [ ! -f $fname ]; then
             echo Warning $fname does not exist
         fi
 
-    elif [ $databaseType = mysql ]; then
-        fname=$glassfish/glassfish/domains/domain1/lib/mysql-connector-java-*.jar
+    elif [ $DB_TYPE = mysql ]; then
+        fname=$GLASSFISH_HOME/glassfish/domains/domain1/lib/mysql-connector-java-*.jar
         if [ ! -f $fname ]; then
             echo Warning $fname does not exist
         fi
@@ -218,17 +215,17 @@ EOF
 ;;
 
 deploy)
-    if [ -n "$topcat" -a '(' -z "$2" -o "$2" = topcat ')' ]; then
+    if [ -n "$WAR_LOCATION" -a '(' -z "$2" -o "$2" = topcat ')' ]; then
         echo "*** Deploying topcat"
-        echo $0 $1 $topcat
+        echo $0 $1 $WAR_LOCATION
         $asadmin --interactive=false <<EOF
-        deploy $topcat
+        deploy $WAR_LOCATION
 EOF
     fi
 ;;
 
 undeploy)
-    if [ -n "$topcat" -a '(' -z "$2" -o "$2" = topcat ')' ]; then
+    if [ -n "$WAR_LOCATION" -a '(' -z "$2" -o "$2" = topcat ')' ]; then
         echo "*** Undeploying topcat"
         echo $0 $1 $topcatWarStem
         $asadmin --interactive=false <<EOF
@@ -242,6 +239,3 @@ EOF
     exit 1
 esac;
 
-#
-# - the end -
-#
