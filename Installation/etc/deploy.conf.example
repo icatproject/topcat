@@ -1,0 +1,18 @@
+# Database connection information
+DB_TYPE=oracle
+#DB_TYPE=mysql
+DB_ROOT_PASSWORD=secret
+DB_HOSTNAME=localhost
+
+# Topcat database schema user name and password
+TOPCAT_DB_USER_NAME=topcat 
+TOPCAT_DB_PASSWORD=mytopcatpasswd 
+
+# Topcat war file location
+WAR_LOCATION=TopCAT.war
+
+# Must contain "glassfish/domains"
+GLASSFISH_HOME=/home/glassfish3/glassfish3
+
+# Port for glassfish admin calls (normally 4848)
+GLASSFISH_ADMIN_PORT=4848
