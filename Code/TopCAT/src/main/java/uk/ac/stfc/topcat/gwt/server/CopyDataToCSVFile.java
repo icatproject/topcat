@@ -45,6 +45,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
+import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
@@ -68,6 +69,7 @@ public class CopyDataToCSVFile extends HttpServlet {
     /**
      * Servlet Init method
      */
+    @Override
     public void init(ServletConfig conf) throws ServletException {
         super.init(conf);
 
@@ -93,6 +95,7 @@ public class CopyDataToCSVFile extends HttpServlet {
      * @param response
      *            Servlet response object
      */
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("Performing request for the parameter csv file conversion");
         String facilityName = request.getParameter("FacilityName");
@@ -177,8 +180,11 @@ public class CopyDataToCSVFile extends HttpServlet {
                     result.add(new ParameterModel("\"" + pub.getFullReference() + "\"", "", "\"" + pub.getUrl() + "\""));
                 }
             }
-            if (!(inv.getParamName() == null) && !(inv.getParamName().isEmpty())) {
-                result.add(new ParameterModel("\"" + inv.getParamName() + "\"", "", "\"" + inv.getParamValue() + "\""));
+
+            for (TParameter p : inv.getParameters()) {
+                result.add(new ParameterModel("Parameter Name", "", "\"" + p.getName() + "\""));
+                result.add(new ParameterModel("Parameter Value", "", "\"" + p.getValue() + "\""));
+                result.add(new ParameterModel("Parameter Units", "", "\"" + p.getUnits() + "\""));
             }
 
         } else if (dataType.equals(Constants.DATA_SET)) {

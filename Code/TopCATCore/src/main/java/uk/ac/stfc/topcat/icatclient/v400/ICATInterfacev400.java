@@ -12,9 +12,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
@@ -178,8 +180,8 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
             }
             ti.setShifts(shiftList);
 
-            ti.setParamName(resultInv.getInvParamName());
-            ti.setParamValue(resultInv.getInvParamValue());
+            // ti.setParamName(resultInv.getInvParamName());
+            // ti.setParamValue(resultInv.getInvParamValue());
         } catch (SessionException_Exception ex) {
             throw new AuthenticationException(ex.getMessage());
         } catch (InsufficientPrivilegesException_Exception e) {

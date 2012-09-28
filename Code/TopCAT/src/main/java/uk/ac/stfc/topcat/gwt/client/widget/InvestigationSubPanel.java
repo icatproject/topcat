@@ -24,36 +24,36 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
+import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
-import com.extjs.gxt.ui.client.widget.Composite;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.Composite;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.VerticalAlignment;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 public class InvestigationSubPanel extends Composite {
@@ -407,9 +407,20 @@ public class InvestigationSubPanel extends Composite {
         }
 
         // Parameters
-        if (!(inv.getParamName() == null) && !(inv.getParamName().isEmpty())) {
-            propertiesTable.setWidget(0, 0, new LabelField(inv.getParamName()));
-            propertiesTable.setWidget(0, 1, new LabelField(inv.getParamValue()));
+        if (inv.getParameters().size() > 0) {
+            LabelField name = new LabelField("Name");
+            propertiesTable.setWidget(0, 0, name);
+            LabelField value = new LabelField("Value");
+            propertiesTable.setWidget(0, 1, value);
+            LabelField units = new LabelField("Units");
+            propertiesTable.setWidget(0, 2, units);
+            int i = 1;
+            for (TParameter tparameter : inv.getParameters()) {
+                propertiesTable.setWidget(i, 0, new LabelField(tparameter.getName()));
+                propertiesTable.setWidget(i, 1, new LabelField(tparameter.getValue()));
+                propertiesTable.setWidget(i, 2, new LabelField(tparameter.getUnits()));
+                i++;
+            }
             propertiesContainer.show();
         }
 

@@ -27,6 +27,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
+import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
@@ -207,8 +208,14 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
             }
             ti.setShifts(shiftList);
 
-            ti.setParamName(resultInv.getInvParamName());
-            ti.setParamValue(resultInv.getInvParamValue());
+            ArrayList<TParameter> parameterList = new ArrayList<TParameter>();
+            if (resultInv.getInvParamName() != null) {
+                TParameter param = new TParameter();
+                param.setName(resultInv.getInvParamName());
+                param.setValue(resultInv.getInvParamValue());
+                parameterList.add(param);
+            }
+            ti.setParameters(parameterList);
         } catch (SessionException_Exception ex) {
             throw new AuthenticationException(ex.getMessage());
         } catch (InsufficientPrivilegesException_Exception e) {

@@ -46,8 +46,7 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
     String visitId = null;
     String instrument = null;
     String proposal = null;
-    String paramName = null;
-    String paramValue = null;
+    List<TParameter> parameters = null;
     List<TPublication> publications = null;
     List<TInvestigator> investigators = null;
     List<TShift> shifts = null;
@@ -152,20 +151,12 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
         this.proposal = proposal;
     }
 
-    public String getParamName() {
-        return paramName;
+    public List<TParameter> getParameters() {
+        return parameters;
     }
 
-    public void setParamName(String paramName) {
-        this.paramName = paramName;
-    }
-
-    public String getParamValue() {
-        return paramValue;
-    }
-
-    public void setParamValue(String paramValue) {
-        this.paramValue = paramValue;
+    public void setParameters(List<TParameter> parameters) {
+        this.parameters = parameters;
     }
 
     public List<TInvestigator> getInvestigators() {
@@ -184,6 +175,7 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
         this.shifts = shifts;
     }
 
+    @Override
     public int compareTo(TInvestigation inv) {
         // compare investigationName and then visitId
         int nameCmp = 0;

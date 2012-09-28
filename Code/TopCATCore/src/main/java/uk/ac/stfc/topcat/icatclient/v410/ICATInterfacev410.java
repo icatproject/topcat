@@ -26,6 +26,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
+import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
@@ -184,23 +185,31 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             }
             ti.setShifts(shiftList);
 
+            ArrayList<TParameter> parameterList = new ArrayList<TParameter>();
             List<InvestigationParameter> params = resultInv.getParameters();
-            // TODO currently single parameter need to make into list
             for (InvestigationParameter param : params) {
-                ti.setParamName(param.getType().getName());
-                if (param.getType().getValueType() == ParameterValueType.NUMERIC) {
-                    ti.setParamValue(param.getNumericValue().toString());
-                } else if (param.getType().getValueType() == ParameterValueType.STRING) {
-                    ti.setParamValue(param.getStringValue());
-                } else if (param.getType().getValueType() == ParameterValueType.DATE_AND_TIME) {
-                    ti.setParamValue(param.getDateTimeValue().toGregorianCalendar().getTime().toString());
-                }
+                parameterList.add(copyParameterToTParameter(param));
             }
+            ti.setParameters(parameterList);
         } catch (IcatException_Exception ex) {
             // TODO check type
             throw new AuthenticationException(ex.getMessage());
         }
         return ti;
+    }
+
+    private TParameter copyParameterToTParameter(InvestigationParameter param) {
+        TParameter tp = new TParameter();
+        tp.setName(param.getType().getName());
+        if (param.getType().getValueType() == ParameterValueType.NUMERIC) {
+            tp.setValue(param.getNumericValue().toString());
+        } else if (param.getType().getValueType() == ParameterValueType.STRING) {
+            tp.setValue(param.getStringValue());
+        } else if (param.getType().getValueType() == ParameterValueType.DATE_AND_TIME) {
+            tp.setValue(param.getDateTimeValue().toGregorianCalendar().getTime().toString());
+        }
+        tp.setUnits(param.getType().getUnits());
+        return tp;
     }
 
     @Override
