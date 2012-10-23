@@ -223,20 +223,24 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         try {
             ArrayList<TFacilityCycle> facilityCycleList = utilityManager.getFacilityCyclesWithInstrument(
                     getSessionId(), node.getFacility(), node.getInstrumentName());
-            for (TFacilityCycle cycle : facilityCycleList) {
-                ICATNode tnode = new ICATNode();
-                tnode.setNode(ICATNodeType.CYCLE, "", cycle.getName());
-                tnode.setStartDate(cycle.getStartDate());
-                tnode.setEndDate(cycle.getFinishDate());
-                tnode.setFacility(node.getFacility());
-                tnode.setInstrumentName(node.getInstrumentName());
-                tnode.setDescription(cycle.getDescription());
-                result.add(tnode);
+            if (facilityCycleList.size() > 0) {
+                for (TFacilityCycle cycle : facilityCycleList) {
+                    ICATNode tnode = new ICATNode();
+                    tnode.setNode(ICATNodeType.CYCLE, "", cycle.getName());
+                    tnode.setStartDate(cycle.getStartDate());
+                    tnode.setEndDate(cycle.getFinishDate());
+                    tnode.setFacility(node.getFacility());
+                    tnode.setInstrumentName(node.getInstrumentName());
+                    tnode.setDescription(cycle.getDescription());
+                    result.add(tnode);
+                }
+            } else {
+                // No cycles found try investigations directly from instruments
+                result.addAll(createInvestigationNodesInInstrument(node, isMyData));
             }
-        } catch (ICATMethodNotFoundException ex) { // Cycle method is not
-                                                   // available try
-                                                   // investigations directly
-                                                   // from instruments
+        } catch (ICATMethodNotFoundException ex) {
+            // Cycle method is not available try investigations directly from
+            // instruments
             result.addAll(createInvestigationNodesInInstrument(node, isMyData));
         }
         return result;

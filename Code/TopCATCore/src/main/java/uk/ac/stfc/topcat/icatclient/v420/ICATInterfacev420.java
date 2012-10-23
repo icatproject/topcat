@@ -135,32 +135,50 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     @Override
     public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
-        // try {
-        // // Get the ICAT webservice client and call get investigation types
-        // List<FacilityCycle> fcList = service.listFacilityCycles(sessionId);
-        // for (FacilityCycle fc : fcList) {
-        // Date start = new Date();
-        // Date end = new Date();
-        // if (fc.getStartDate() != null)
-        // start = fc.getStartDate().toGregorianCalendar().getTime();
-        // if (fc.getFinishDate() != null)
-        // end = fc.getFinishDate().toGregorianCalendar().getTime();
-        // facilityCycles.add(new TFacilityCycle(fc.getDescription(),
-        // fc.getName(), start, end));
-        // }
-        // } catch (IcatException_Exception ex) {
-        // } catch (java.lang.NullPointerException ex) {
-        // } catch (Exception ex) {
-        // throw new ICATMethodNotFoundException(ex.getMessage());
-        // }
+        try {
+            List<Object> resultCycle = service.search(sessionId, "FacilityCycle");
+            for (Object fc : resultCycle) {
+                facilityCycles.add(copyFacilityCycleToTFacilityCycle((FacilityCycle) fc));
+            }
+        } catch (IcatException_Exception ex) {
+            // TODO check type
+        }
         return facilityCycles;
+    }
+
+    @Override
+    public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
+            throws ICATMethodNotFoundException {
+        ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
+        try {
+            List<Object> resultCycle = service.search(sessionId,
+                    "FacilityCycle <-> Investigation <-> Instrument[name='" + instrument + "'] ");
+            for (Object fc : resultCycle) {
+                facilityCycles.add(copyFacilityCycleToTFacilityCycle((FacilityCycle) fc));
+            }
+        } catch (IcatException_Exception ex) {
+            // TODO check type
+        }
+        return facilityCycles;
+    }
+
+    private TFacilityCycle copyFacilityCycleToTFacilityCycle(FacilityCycle fc) {
+        Date start = new Date();
+        Date end = new Date();
+        if (fc.getStartDate() != null)
+            start = fc.getStartDate().toGregorianCalendar().getTime();
+        if (fc.getEndDate() != null)
+            end = fc.getEndDate().toGregorianCalendar().getTime();
+        return new TFacilityCycle(fc.getDescription(), ((FacilityCycle) fc).getName(), start, end);
     }
 
     @Override
     public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
-            List<Object> resultInv = service.search(sessionId, "Investigation");
+            String name = service.getUserName(sessionId);
+            List<Object> resultInv = service.search(sessionId, "Investigation <-> InvestigationUser <-> User[name='"
+                    + name + "']");
             for (Object inv : resultInv) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
