@@ -244,12 +244,12 @@ public class EventPipeLine implements LoginInterface {
      * Callback on login dialog ok button.
      */
     @Override
-    public void onLoginOk(final String facilityName, String username, String password) {
+    public void onLoginOk(final String facilityName, String authenticationType, Map<String, String> paramerters) {
         loginWidget.hide();
         waitDialog.setMessage(" Logging In...");
         waitDialog.show();
         // Login to the given facility using username and password
-        loginService.login(username, password, facilityName, new AsyncCallback<String>() {
+        loginService.login(paramerters, authenticationType, facilityName, new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable caught) {
                 // Show the RPC error message to the user

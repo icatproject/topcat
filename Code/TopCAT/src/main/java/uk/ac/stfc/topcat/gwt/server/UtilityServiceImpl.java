@@ -66,6 +66,7 @@ import uk.ac.stfc.topcat.ejb.utils.Configuration;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -781,4 +782,15 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         }
         return finalStateReached;
     }
+
+    @Override
+    public List<AuthenticationModel> getAuthenticationTypes(String facilityName) {
+        List<String> types = utilityManager.getAuthenticationTypes(facilityName);
+        List<AuthenticationModel> models = new ArrayList<AuthenticationModel>();
+        for (String type : types) {
+            models.add(new AuthenticationModel(facilityName, type, ""));
+        }
+        return models;
+    }
+
 }

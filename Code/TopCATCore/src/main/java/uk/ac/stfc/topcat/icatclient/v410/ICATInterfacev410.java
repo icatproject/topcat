@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -46,11 +47,12 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public String loginLifetime(String username, String password, int hours) throws AuthenticationException {
+    public String loginLifetime(String authenticationType, Map<String, String> parameters, int hours)
+            throws AuthenticationException {
         String result = new String();
         try {
             // TODO no longer uses hours
-            result = service.login(username, password);
+            result = service.login(parameters.get("username"), parameters.get("password"));
         } catch (IcatException_Exception ex) {
             // TODO check type
             throw new AuthenticationException("ICAT Server not available");

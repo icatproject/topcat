@@ -33,6 +33,7 @@ import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -243,7 +244,7 @@ public interface UtilityServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    void getParameterNames(String facilityName, AsyncCallback<ArrayList<String>> callback);
+    public void getParameterNames(String facilityName, AsyncCallback<ArrayList<String>> callback);
 
     /**
      * Get a list of parameter units for the given facility and parameter name.
@@ -255,7 +256,7 @@ public interface UtilityServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    void getParameterUnits(String facilityName, String name, AsyncCallback<ArrayList<String>> callback);
+    public void getParameterUnits(String facilityName, String name, AsyncCallback<ArrayList<String>> callback);
 
     /**
      * Get the expected type of the parameter value for the given facility,
@@ -271,6 +272,17 @@ public interface UtilityServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    void getParameterTypes(String facilityName, String name, String units, AsyncCallback<ArrayList<String>> callback);
+    public void getParameterTypes(String facilityName, String name, String units,
+            AsyncCallback<ArrayList<String>> callback);
+
+    /**
+     * Get the known authentication types for the given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getAuthenticationTypes(String facilityName, AsyncCallback<List<AuthenticationModel>> callback);
 
 }

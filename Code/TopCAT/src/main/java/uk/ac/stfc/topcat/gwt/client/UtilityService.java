@@ -35,6 +35,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -250,7 +251,7 @@ public interface UtilityService extends RemoteService {
      * @return a list of parameter names
      * @throws TopcatException
      */
-    ArrayList<String> getParameterNames(String facilityName) throws TopcatException;
+    public ArrayList<String> getParameterNames(String facilityName) throws TopcatException;
 
     /**
      * Get a list of parameter units for the given facility and parameter name.
@@ -262,7 +263,7 @@ public interface UtilityService extends RemoteService {
      * @return a list of units
      * @throws TopcatException
      */
-    ArrayList<String> getParameterUnits(String facilityName, String name) throws TopcatException;
+    public ArrayList<String> getParameterUnits(String facilityName, String name) throws TopcatException;
 
     /**
      * Get the expected type of the parameter value for the given facility,
@@ -278,6 +279,16 @@ public interface UtilityService extends RemoteService {
      * @return the expected type of the value
      * @throws TopcatException
      */
-    ArrayList<String> getParameterTypes(String facilityName, String name, String units) throws TopcatException;
+    public ArrayList<String> getParameterTypes(String facilityName, String name, String units) throws TopcatException;
+
+    /**
+     * Get the known authentication types for the given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of authentication models containing the authentication
+     *         types
+     */
+    public List<AuthenticationModel> getAuthenticationTypes(String facilityName);
 
 }

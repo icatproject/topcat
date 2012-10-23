@@ -5,6 +5,7 @@
 	<persistence-unit name="TopCATEJBPU" transaction-type="JTA">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>jdbc/TopCATDB</jta-data-source>
+		<class>uk.ac.stfc.topcat.ejb.entity.IcatAuthentication</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUser</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload</class>
@@ -26,6 +27,7 @@
 	<persistence-unit name="TopCATEJBPU-Test"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>uk.ac.stfc.topcat.ejb.entity.IcatAuthentication</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUser</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload</class>

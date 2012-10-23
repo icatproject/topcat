@@ -25,8 +25,10 @@ package uk.ac.stfc.topcat.ejb.manager;
 import java.net.MalformedURLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +37,7 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUser;
@@ -106,7 +109,7 @@ public class UserManager {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
                     icatServer.getVersion(), icatServer.getServerUrl());
             String icatSessionId = service.loginWithTicket(authenticationServiceUrl, ticket);
-            String username = service.getUserNameFromSessionId(icatSessionId);
+            String username = service.getUserName(icatSessionId);
             loginUpdate(manager, service, topcatSessionId, icatServer, username, icatSessionId, hours);
         } catch (MalformedURLException ex) {
             logger.warning("UserManager (login): " + ex.getMessage());
@@ -116,6 +119,8 @@ public class UserManager {
             throw new AuthenticationException("ICAT Server not available");
         } catch (UnsupportedOperationException ex) {
             throw new AuthenticationException("ICAT Server is not supported for CAS ticket authentication");
+        } catch (TopcatException e) {
+            throw new AuthenticationException("Unable to get surname");
         }
     }
 
@@ -125,14 +130,13 @@ public class UserManager {
      * @param manager
      * @param topcatSessionId
      * @param serverName
-     * @param username
-     * @param password
-     * @param hours
+     * @param authenticationType
      * @throws MalformedURLException
      * @throws SessionException_Exception
      */
-    public void login(EntityManager manager, String topcatSessionId, String serverName, String username,
-            String password, long hours) throws AuthenticationException {
+    public void login(EntityManager manager, String topcatSessionId, String serverName, String authenticationType,
+            Map<String, String> parameters) throws AuthenticationException {
+        long hours = 2;
         // Process
         // 1) Get the icat server
         // 2) Login to the ICAT Server using user name and password
@@ -140,12 +144,18 @@ public class UserManager {
 
         // Get the icat server
         TopcatIcatServer icatServer = findTopcatIcatServerByName(manager, serverName);
-        logger.finest("login:" + icatServer.getServerUrl() + " username: " + username);
+        logger.finest("login:" + icatServer.getServerUrl());
         // Login to the icat server
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
                     icatServer.getVersion(), icatServer.getServerUrl());
-            String icatSessionId = service.loginLifetime(username, password, (int) hours);
+            String icatSessionId = service.loginLifetime(authenticationType, parameters, (int) hours);
+            String username = parameters.get("username");
+            if (username == null) {
+                // currently only implemented in 3.4.1 and 4.2
+                username = service.getUserName(icatSessionId);
+            }
+
             loginUpdate(manager, service, topcatSessionId, icatServer, username, icatSessionId, hours);
 
         } catch (MalformedURLException ex) {
@@ -154,6 +164,8 @@ public class UserManager {
         } catch (javax.xml.ws.WebServiceException ex) {
             logger.warning("UserManager (login): " + ex.getMessage());
             throw new AuthenticationException("ICAT Server not available");
+        } catch (TopcatException e) {
+            throw new AuthenticationException("Unable to get surname");
         }
     }
 
@@ -503,7 +515,10 @@ public class UserManager {
                     service.logout(userSession.getIcatSessionId());
                 } catch (AuthenticationException ex) {
                 }
-                String icatSessionId = service.loginLifetime(server.getDefaultUser(), server.getDefaultPassword(), 24);
+                Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("username", server.getDefaultUser());
+                parameters.put("password", server.getDefaultPassword());
+                String icatSessionId = service.loginLifetime(null, parameters, 24);
                 userSession.setIcatSessionId(icatSessionId);
                 manager.persist(userSession);
             } catch (MalformedURLException ex) {

@@ -22,6 +22,8 @@
  */
 package uk.ac.stfc.topcat.ejb.session;
 
+import java.util.Map;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 
 /**
@@ -36,7 +38,7 @@ public interface UserManagementBeanLocal {
 
     public String login() throws AuthenticationException;
 
-    public void login(String sessionId, String serverName, String username, String password, long hours)
+    public void login(String sessionId, String serverName, String authenticationType, Map<String, String> parameters)
             throws AuthenticationException;
 
     public void logout(String sessionId) throws AuthenticationException;

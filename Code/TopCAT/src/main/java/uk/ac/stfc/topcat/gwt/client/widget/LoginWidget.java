@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -22,29 +22,33 @@
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
 
-/**
- * Imports
- */
+import java.util.List;
+
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
+import uk.ac.stfc.topcat.gwt.client.UtilityService;
+import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.authentication.AuthenticationPlugin;
+import uk.ac.stfc.topcat.gwt.client.authentication.AuthenticationPluginFactory;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
-import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * This class is a widget for login window.
@@ -55,20 +59,15 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
  * @since iCAT Version 3.3
  */
 public class LoginWidget extends Window {
-
+    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private LoginInterface loginHandler = null;
-    private TextField<String> txtFldPassword;
-    private TextField<String> txtFldUsername;
-    private Button btnLogin;
+    private LayoutContainer authTypeContainer = new LayoutContainer();
     private String facilityName;
+    private ComboBox<AuthenticationModel> authTypesBox;
+    private LayoutContainer authenticationWidget;
+    private AuthenticationPlugin plugin;
 
     public LoginWidget() {
-        // Auto focus to username text box
-        addListener(Events.OnFocus, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent e) {
-                txtFldUsername.focus();
-            }
-        });
         setBlinkModal(true);
         setModal(true);
 
@@ -76,59 +75,49 @@ public class LoginWidget extends Window {
         RowLayout rowLayout = new RowLayout(Orientation.VERTICAL);
         setLayout(rowLayout);
 
-        FlexTable flexTable = new FlexTable();
-        flexTable.setSize("304px", "170px");
+        TableLayout tl_layoutContainer = new TableLayout(2);
+        tl_layoutContainer.setCellSpacing(5);
+        authTypeContainer.setLayout(tl_layoutContainer);
 
-        LabelField lblfldUsername = new LabelField("Username");
-        flexTable.setWidget(0, 0, lblfldUsername);
+        LabelField lblfldAuthType = new LabelField("Authentication Type");
+        authTypeContainer.add(lblfldAuthType);
 
-        txtFldUsername = new TextField<String>();
-        flexTable.setWidget(0, 1, txtFldUsername);
-        txtFldUsername.setFieldLabel("New TextField");
-
-        LabelField lblfldPassword = new LabelField("Password");
-        flexTable.setWidget(1, 0, lblfldPassword);
-
-        txtFldPassword = new TextField<String>();
-        // On enter key in password box. fire click on login button.
-        txtFldPassword.addListener(Events.SpecialKey, new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent e) {
-                if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    btnLogin.fireEvent(Events.Select);
-                }
+        authTypesBox = new ComboBox<AuthenticationModel>();
+        authTypesBox.addSelectionChangedListener(new SelectionChangedListener<AuthenticationModel>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<AuthenticationModel> se) {
+                showPlugin(se.getSelectedItem());
             }
         });
-        txtFldPassword.setPassword(true);
-        flexTable.setWidget(1, 1, txtFldPassword);
-        txtFldPassword.setFieldLabel("New TextField");
+        authTypesBox.setStore(new ListStore<AuthenticationModel>());
+        authTypesBox.setDisplayField("authenticationType");
+        authTypesBox.setTypeAhead(true);
+        authTypesBox.setTriggerAction(TriggerAction.ALL);
+        authTypeContainer.add(authTypesBox);
+        authTypeContainer.setAutoHeight(true);
+        add(authTypeContainer);
 
-        btnLogin = new com.extjs.gxt.ui.client.widget.button.Button("Login");
-        btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                if (loginHandler != null)
-                    loginHandler.onLoginOk(facilityName, (String) txtFldUsername.getValue(),
-                            (String) txtFldPassword.getValue());
+        authTypesBox.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
-        flexTable.setWidget(2, 0, btnLogin);
-        btnLogin.setSize("50", "25");
-
-        com.extjs.gxt.ui.client.widget.button.Button btnCancel = new com.extjs.gxt.ui.client.widget.button.Button(
-                "Cancel");
-        btnCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                if (loginHandler != null)
-                    loginHandler.onLoginCancel();
-                EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(facilityName), facilityName);
+        authTypesBox.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
 
-        flexTable.setWidget(2, 1, btnCancel);
-        btnCancel.setSize("50", "25");
-        flexTable.getCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER);
-
-        add(flexTable);
-        flexTable.getCellFormatter().setVerticalAlignment(2, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+        authenticationWidget = new LayoutContainer();
+        authenticationWidget.setHeight("0px");
+        authenticationWidget.setLayout(new FitLayout());
+        authenticationWidget.setAutoHeight(true);
+        add(authenticationWidget);
+        setWidth(310);
+        setLayout(new FitLayout());
+        setAutoHeight(true);
     }
 
     public void setLoginHandler(LoginInterface loginHandler) {
@@ -138,24 +127,71 @@ public class LoginWidget extends Window {
     public void setFacilityName(String facilityName) {
         this.facilityName = facilityName;
         setHeading("Login to " + facilityName);
+        getAuthenticationTypes(facilityName);
     }
 
     public String getFacilityName() {
-        return this.facilityName;
+        return facilityName;
+    }
+
+    @Override
+    public void show() {
+        if (plugin != null) {
+            setFocusWidget(plugin.getWidget());
+        }
+        super.show();
+    }
+
+    private void getAuthenticationTypes(final String facilityName) {
+        authTypesBox.getStore().removeAll();
+        authTypesBox.clear();
+        authTypeContainer.hide();
+        authenticationWidget.removeAll();
+        EventPipeLine.getInstance().showRetrievingData();
+        utilityService.getAuthenticationTypes(facilityName, new AsyncCallback<List<AuthenticationModel>>() {
+            @Override
+            public void onSuccess(List<AuthenticationModel> result) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                authTypesBox.getStore().add(result);
+                if (result.size() > 1) {
+                    authTypeContainer.show();
+                    authTypesBox.focus();
+                } else if (result.size() == 1) {
+                    showPlugin(result.get(0));
+                } else {
+                    hide();
+                    EventPipeLine.getInstance().showErrorDialog(
+                            "Error no authentication types found for " + facilityName);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                EventPipeLine.getInstance().hideRetrievingData();
+                EventPipeLine.getInstance()
+                        .showErrorDialog("Error retrieving authentication types for " + facilityName);
+            }
+        });
     }
 
     /**
-     * Show Login Widget. First clear out password. If user name exists focus on
-     * password.
+     * If user name exists focus on password.
+     * 
+     * @param model
      */
-    @Override
-    public void show() {
-        txtFldPassword.clear();
-        if (txtFldUsername.isDirty()) {
-            setFocusWidget(txtFldPassword);
-        } else {
-            setFocusWidget(txtFldUsername);
+    private void showPlugin(AuthenticationModel model) {
+        if (model == null) {
+            // result of selecting auth type and then switching to a different
+            // facility
+            return;
         }
-        super.show();
+
+        authenticationWidget.removeAll();
+        plugin = AuthenticationPluginFactory.getInstance().getPlugin(model.getAuthenticationPluginName());
+        plugin.setAuthenticationModel(model);
+        plugin.setLoginHandler(loginHandler);
+        authenticationWidget.add(plugin.getWidget());
+        authenticationWidget.layout(true);
+        setFocusWidget(plugin.getWidget());
     }
 }

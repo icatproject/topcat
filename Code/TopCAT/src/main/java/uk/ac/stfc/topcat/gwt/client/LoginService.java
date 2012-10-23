@@ -25,6 +25,8 @@ package uk.ac.stfc.topcat.gwt.client;
 /**
  * Imports
  */
+import java.util.Map;
+
 import uk.ac.stfc.topcat.gwt.client.exception.LoginException;
 
 import com.google.gwt.core.client.GWT;
@@ -61,18 +63,21 @@ public interface LoginService extends RemoteService {
     }
 
     /**
-     * Login to an iCat server using the given username and password.
+     * Login to an iCat server using the given parameters.
      * 
-     * @param username
-     *            a string containing the user name for logging into iCat
-     * @param password
-     *            a string containing the password for logging into iCat
+     * @param parameters
+     *            a map of parameters that are specific to the
+     *            authentication type
+     * @param authenticationType
+     *            a string containing the authentication type
      * @param facilityName
      *            a string containing the facility name
+     * 
      * @return a string containing the session id
      * @throws LoginException
      */
-    public String login(String username, String password, String facilityName) throws LoginException;
+    public String login(Map<String, String> parameters, String authenticationType, String facilityName)
+            throws LoginException;
 
     /**
      * Logout of an iCat server.

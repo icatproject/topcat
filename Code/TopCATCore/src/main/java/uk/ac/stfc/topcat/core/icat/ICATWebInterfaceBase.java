@@ -6,6 +6,7 @@
 package uk.ac.stfc.topcat.core.icat;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
@@ -24,7 +25,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
  * @author sn65
  */
 public class ICATWebInterfaceBase {
-    public String loginLifetime(String username, String password, int hours) throws AuthenticationException {
+    public String loginLifetime(String authenticationType, Map<String, String> parameters, int hours)
+            throws AuthenticationException {
         return null;
     }
 
@@ -141,7 +143,7 @@ public class ICATWebInterfaceBase {
         throw new UnsupportedOperationException();
     }
 
-    public String getUserNameFromSessionId(String icatSessionId) {
+    public String getUserName(String icatSessionId) throws TopcatException {
         throw new UnsupportedOperationException();
     }
 

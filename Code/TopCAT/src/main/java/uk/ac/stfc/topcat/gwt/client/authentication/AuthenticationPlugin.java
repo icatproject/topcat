@@ -20,16 +20,27 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
  * OF SUCH DAMAGE.
  */
-package uk.ac.stfc.topcat.gwt.client;
+package uk.ac.stfc.topcat.gwt.client.authentication;
 
-import java.util.Map;
+import uk.ac.stfc.topcat.gwt.client.LoginInterface;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
+
+import com.extjs.gxt.ui.client.widget.Composite;
 
 /**
- * @author sn65 Any widget that wants to use login widget needs to implement
- *         this interface
+ * This is an abstract authentication plugin class. Which uses authentication
+ * plugin factory to register all the plugins available.
  */
-public interface LoginInterface {
-    public void onLoginOk(String facilityName, String authenticationType, Map<String, String> paramerters);
+public abstract class AuthenticationPlugin {
 
-    public void onLoginCancel();
+    protected AuthenticationPlugin() {
+        AuthenticationPluginFactory factory = AuthenticationPluginFactory.getInstance();
+        factory.registerPlugin(this.getClass().getName(), this);
+    }
+
+    public abstract Composite getWidget();
+
+    public abstract void setAuthenticationModel(AuthenticationModel authenticationModel);
+
+    public abstract void setLoginHandler(LoginInterface loginHandler);
 }

@@ -40,6 +40,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.ejb.entity.IcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
@@ -192,6 +193,12 @@ public class UtilityBean implements UtilityLocal {
     @Override
     public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {
         utilManager.updateDownloadStatus(manager, sessionId, facilityName, url, updatedUrl, status);
+    }
+
+    @Override
+    public List<String> getAuthenticationTypes(String facilityName) {
+        return utilManager.getAuthenticationTypes(manager, facilityName);
+
     }
 
 }

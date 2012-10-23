@@ -25,6 +25,8 @@ package uk.ac.stfc.topcat.gwt.client;
 /**
  * Imports
  */
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -38,18 +40,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface LoginServiceAsync {
 
     /**
-     * Login to an iCat server using the given username and password.
+     * Login to an iCat server using the given parameters.
      * 
-     * @param username
-     *            a string containing the user name for logging into iCat
-     * @param password
-     *            a string containing the password for logging into iCat
+     * @param parameters
+     *            a map of parameters that are specific to the
+     *            authentication type
+     * @param authenticationType
+     *            a string containing the authentication type
      * @param facilityName
      *            a string containing the facility name
      * @param callback
      *            object to be called on completion
      */
-    public void login(String username, String password, String facilityName, AsyncCallback<String> callback);
+    public void login(Map<String, String> parameters, String authenticationType, String facilityName,
+            AsyncCallback<String> callback);
 
     /**
      * Logout of an iCat server.

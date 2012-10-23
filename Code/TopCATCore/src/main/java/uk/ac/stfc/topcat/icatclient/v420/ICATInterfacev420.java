@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -48,22 +49,20 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public String loginLifetime(String username, String password, int hours) throws AuthenticationException {
+    public String loginLifetime(String authenticationType, Map<String, String> parameters, int hours)
+            throws AuthenticationException {
         String result = new String();
         try {
             // TODO no longer uses hours
             Credentials credentials = new Credentials();
             List<Entry> entries = credentials.getEntry();
-            Entry entry = new Entry();
-            entry.setKey("username");
-            entry.setValue(username);
-            entries.add(entry);
-            entry = new Entry();
-            entry.setKey("password");
-            entry.setValue(password);
-            entries.add(entry);
-            credentials.entry.add(entry);
-            result = service.login("db", credentials);
+            for (String key : parameters.keySet()) {
+                Entry entry = new Entry();
+                entry.setKey(key);
+                entry.setValue(parameters.get(key));
+                entries.add(entry);
+            }
+            result = service.login(authenticationType, credentials);
         } catch (IcatException_Exception ex) {
             // TODO check type
             throw new AuthenticationException("ICAT Server not available");
@@ -108,6 +107,17 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             name = service.getUserName(sessionId);
         } catch (IcatException_Exception e) {
             return userId;
+        }
+        return name;
+    }
+
+    @Override
+    public String getUserName(String sessionId) throws TopcatException {
+        String name = "";
+        try {
+            name = service.getUserName(sessionId);
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e);
         }
         return name;
     }

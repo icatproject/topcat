@@ -22,6 +22,8 @@
  */
 package uk.ac.stfc.topcat.ejb.webservice;
 
+import java.util.Map;
+
 import javax.ejb.EJB;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -33,13 +35,13 @@ import javax.xml.ws.RequestWrapper;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
-import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 
 /**
  * Webservice interface to the TopCAT
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @WebService()
@@ -58,26 +60,22 @@ public class TOPCAT {
 
     @WebMethod(operationName = "ICATLogin")
     @RequestWrapper(className = "ICATLogin")
-    public void ICATLogin(@WebParam(name = "sessionId")
-    String sessionId, @WebParam(name = "serverName")
-    String serverName, @WebParam(name = "username")
-    String username, @WebParam(name = "password")
-    String password, @WebParam(name = "hours")
-    long hours) throws AuthenticationException {
-        userManagement.login(sessionId, serverName, username, password, hours);
+    public void ICATLogin(@WebParam(name = "sessionId") String sessionId,
+            @WebParam(name = "serverName") String serverName,
+            @WebParam(name = "authenticationType") String authenticationType,
+            @WebParam(name = "parameters") Map<String, String> parameters) throws AuthenticationException {
+        userManagement.login(sessionId, serverName, authenticationType, parameters);
     }
 
     @WebMethod(operationName = "logout")
-    public void logout(@WebParam(name = "sessionId")
-    String sessionId) throws AuthenticationException {
+    public void logout(@WebParam(name = "sessionId") String sessionId) throws AuthenticationException {
         userManagement.logout(sessionId);
     }
 
-
     @WebMethod(operationName = "searchBasicInvestigationByKeywords")
-    public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> searchBasicInvestigationByKeywords(@WebParam(name = "topcatSessionId")
-    String topcatSessionId, @WebParam(name = "keywords")
-    java.util.ArrayList<java.lang.String> keywords) {
+    public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> searchBasicInvestigationByKeywords(
+            @WebParam(name = "topcatSessionId") String topcatSessionId,
+            @WebParam(name = "keywords") java.util.ArrayList<java.lang.String> keywords) {
         return searchManagement.searchBasicInvestigationByKeywords(topcatSessionId, keywords);
     }
 
@@ -85,13 +83,12 @@ public class TOPCAT {
      * Web service operation
      */
     @WebMethod(operationName = "searchBasicInvestigationByKeywordsInServer")
-    public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> searchBasicInvestigationByKeywordsInServer(@WebParam(name = "topcatSessionId")
-    String topcatSessionId, @WebParam(name = "serverName")
-    String serverName, @WebParam(name = "keywords")
-    java.util.ArrayList<java.lang.String> keywords) {
-        //TODO write your implementation code here:
+    public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> searchBasicInvestigationByKeywordsInServer(
+            @WebParam(name = "topcatSessionId") String topcatSessionId,
+            @WebParam(name = "serverName") String serverName,
+            @WebParam(name = "keywords") java.util.ArrayList<java.lang.String> keywords) {
+        // TODO write your implementation code here:
         return searchManagement.searchBasicInvestigationByKeywordsInServer(topcatSessionId, serverName, keywords);
     }
-
 
 }

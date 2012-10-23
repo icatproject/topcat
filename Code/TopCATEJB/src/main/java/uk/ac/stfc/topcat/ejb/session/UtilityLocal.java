@@ -110,4 +110,7 @@ public interface UtilityLocal {
             Date expiryTime, String url);
 
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
+
+    List<String> getAuthenticationTypes(String facilityName);
+
 }

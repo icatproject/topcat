@@ -22,6 +22,8 @@
  */
 package uk.ac.stfc.topcat.ejb.session;
 
+import java.util.Map;
+
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -90,15 +92,15 @@ public class UserManagementBean implements UserManagementBeanLocal {
     /**
      * This method authenticates and authorises a user with session id to an ICAT server so that the
      * further opertaion with TopCAT will uses this new credential rather than anonymous user login to icat server.
-     * @param sessionId : sessionId used to communicate with TopCAT.
-     * @param serverName: ICAT Server name to authenticate with.
-     * @param username: username for ICAT server.
-     * @param password: password for ICAT server.
-     * @param hours: number of hours the authentication to be valid.
+     * @param sessionId : sessionId used to communicate with TopCAT
+     * @param serverName: ICAT Server name to authenticate with
+     * @param authenticationType: a string containing the authentication type
+     * @param parameters: a map of parameters that are specific to the authenticationType
+     * @param hours: number of hours the authentication to be valid
      */
-    public void login(String sessionId, String serverName, String username, String password, long hours)
+    public void login(String sessionId, String serverName, String authenticationType, Map<String, String> parameters)
             throws AuthenticationException {
-        userManager.login(manager, sessionId, serverName, username, password, hours);
+        userManager.login(manager, sessionId, serverName, authenticationType, parameters);
     }
 
     /**
@@ -118,6 +120,7 @@ public class UserManagementBean implements UserManagementBeanLocal {
      * @param serverName
      *            ICAT Server name to check with
      */
+    @Override
     public Boolean isSessionValid(String sessionId, String serverName) {
         return userManager.isSessionValid(manager, sessionId, serverName);
     }

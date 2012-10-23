@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -45,10 +46,11 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public String loginLifetime(String username, String password, int hours) throws AuthenticationException {
+    public String loginLifetime(String authenticationType, Map<String, String> parameters, int hours)
+            throws AuthenticationException {
         String result = new String();
         try {
-            result = service.loginLifetime(username, password, hours);
+            result = service.loginLifetime(parameters.get("username"), parameters.get("password"), hours);
         } catch (SessionException_Exception ex) {
             throw new AuthenticationException("ICAT Server not available");
         } catch (javax.xml.ws.WebServiceException ex) {
@@ -104,7 +106,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public String getUserNameFromSessionId(String sessionId) {
+    public String getUserName(String sessionId) {
         try {
             String surname = service.getUserDetailsFromSessionId(sessionId).getFederalId();
             if (surname == null) {

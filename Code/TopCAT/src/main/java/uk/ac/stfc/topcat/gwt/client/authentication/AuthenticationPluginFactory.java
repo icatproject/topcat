@@ -20,16 +20,50 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
  * OF SUCH DAMAGE.
  */
-package uk.ac.stfc.topcat.gwt.client;
-
-import java.util.Map;
+package uk.ac.stfc.topcat.gwt.client.authentication;
 
 /**
- * @author sn65 Any widget that wants to use login widget needs to implement
- *         this interface
+ * Imports
  */
-public interface LoginInterface {
-    public void onLoginOk(String facilityName, String authenticationType, Map<String, String> paramerters);
+import java.util.ArrayList;
+import java.util.HashMap;
 
-    public void onLoginCancel();
+/**
+ * This is Authentication Plugin Factory which holds all the plugins that are
+ * available in TopCAT.
+ * 
+ */
+public class AuthenticationPluginFactory {
+    private static AuthenticationPluginFactory pluginFactory = new AuthenticationPluginFactory();
+    // With out these GWT will not compile the plugins and add them to AJAX code
+    private static DefaultAuthenticationPlugin defaultPlugin = DefaultAuthenticationPlugin.getInstance();
+
+    private HashMap<String, AuthenticationPlugin> authenticationPluginMap;
+
+    private AuthenticationPluginFactory() {
+        authenticationPluginMap = new HashMap<String, AuthenticationPlugin>();
+    }
+
+    public static AuthenticationPluginFactory getInstance() {
+        return pluginFactory;
+    }
+
+    public void registerPlugin(String pluginName, AuthenticationPlugin plugin) {
+        authenticationPluginMap.put(pluginName, plugin);
+    }
+
+    public AuthenticationPlugin getPlugin(String pluginName) {
+        AuthenticationPlugin plugin = authenticationPluginMap.get(pluginName);
+        if (plugin == null)
+            plugin = defaultPlugin;
+        return plugin;
+    }
+
+    public int getNumberOfPlugins() {
+        return authenticationPluginMap.size();
+    }
+
+    public ArrayList<String> getPluginNames() {
+        return new ArrayList<String>(authenticationPluginMap.keySet());
+    }
 }

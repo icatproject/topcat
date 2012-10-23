@@ -1,8 +1,27 @@
-6/10/11
-NB There have been additions to the database. The column TOPCAT_ICAT_SERVER has been add to the table TOPCAT_ICAT_SERVER
-and the table TOPCAT_USER_DOWNLOAD is a new table.
+Added table ICAT_AUTHENTICATION:
+Column ID is a unique id 
+Column AUTHENTICATION_SERVICE_URL is the URL of the authentication service,
+ maybe null, i.e. the CAS server
+Column AUTHENTICATION_TYPE is the mnemonic as used by the corresponding ICAT 
+Column PLUGIN_NAME if the name of the topcat plugin to use, if null the default
+ plugin will be used, which provides a user name and password
+Column SERVER_ID is the id of the ICAT server as defined in the table
+ TOPCAT_ICAT_SERVER
+Now when logging in to an ICAT if there is more than one type of authentication
+ available the user will be presented with a drop down list of types
+ 
+NB there is still stuff hard coded for CAS and entries for
+AUTHENTICATION_SERVICE_URL and AUTHENTICATION_TYPE in the table
+TOPCAT_ICAT_SERVER. These will be removed in a future release.
 
-This version contains updates for the new download service. You can now specify the download service that the
-facility uses. This is done via an entry in the TOPCAT_ICAT_SERVER table which is set via the initialise_topcat_db.sql
-script. If the DOWNLOAD_PLUGIN_NAME field is left blank the existing download mechanism is used. A value of 
-'restfulDownload' indicates that the new restful download service should be used.
+6/10/11
+NB There have been additions to the database. The column TOPCAT_ICAT_SERVER has
+been add to the table TOPCAT_ICAT_SERVER and the table TOPCAT_USER_DOWNLOAD is
+a new table.
+
+This version contains updates for the new download service. You can now specify
+the download service that the facility uses. This is done via an entry in the
+TOPCAT_ICAT_SERVER table which is set via the initialise_topcat_db.sql script.
+If the DOWNLOAD_PLUGIN_NAME field is left blank the existing download mechanism
+is used. A value of 'restfulDownload' indicates that the new restful download
+service should be used.

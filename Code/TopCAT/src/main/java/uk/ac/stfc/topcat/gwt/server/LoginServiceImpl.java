@@ -25,6 +25,8 @@ package uk.ac.stfc.topcat.gwt.server;
 /**
  * Imports
  */
+import java.util.Map;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -73,26 +75,17 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     }
 
     /*
-     * This method performs login operation using username and password for a
-     * ICAT server. TODO: Remove hardcoded number of hours the session is valid.
      * (non-Javadoc)
      * 
-     * @param username username for logging into iCAT
-     * 
-     * @param password password for logging into iCAT
-     * 
-     * @param facilityName name of iCAT instance
-     * 
-     * @see uk.ac.stfc.topcat.gwt.client.LoginService#login(java.lang.String,
+     * @see uk.ac.stfc.topcat.gwt.client.LoginService#login(java.util.Map,
      * java.lang.String, java.lang.String)
      */
     @Override
-    public String login(String username, String password, String facilityName) throws LoginException {
+    public String login(Map<String, String> parameters, String authenticationType, String facilityName)
+            throws LoginException {
         String sessionId = getSessionId();
-        // TODO: Remove hard coded hours
-        long sessionDuration = 2;
         try {
-            userManager.login(sessionId, facilityName, username, password, sessionDuration);
+            userManager.login(sessionId, facilityName, authenticationType, parameters);
         } catch (AuthenticationException e) {
             throw (new LoginException(e.getMessage()));
         }

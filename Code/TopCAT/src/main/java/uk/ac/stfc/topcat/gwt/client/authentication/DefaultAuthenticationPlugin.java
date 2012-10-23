@@ -20,16 +20,48 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
  * OF SUCH DAMAGE.
  */
-package uk.ac.stfc.topcat.gwt.client;
-
-import java.util.Map;
+package uk.ac.stfc.topcat.gwt.client.authentication;
 
 /**
- * @author sn65 Any widget that wants to use login widget needs to implement
- *         this interface
+ * Imports
  */
-public interface LoginInterface {
-    public void onLoginOk(String facilityName, String authenticationType, Map<String, String> paramerters);
+import uk.ac.stfc.topcat.gwt.client.LoginInterface;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
-    public void onLoginCancel();
+import com.extjs.gxt.ui.client.widget.Composite;
+import com.google.gwt.core.client.GWT;
+
+/**
+ * Default plugin for authentication. If no plugin is specified in the
+ * authentication configuration then this plugin is used.
+ */
+public class DefaultAuthenticationPlugin extends AuthenticationPlugin {
+
+    private static DefaultAuthenticationPlugin defaultAuthentication = GWT.create(DefaultAuthenticationPlugin.class);
+    DefaultAuthenticationWidget widget;
+
+    private DefaultAuthenticationPlugin() {
+        super();
+        widget = new DefaultAuthenticationWidget();
+    }
+
+    @Override
+    public Composite getWidget() {
+        return widget;
+    }
+
+    public static DefaultAuthenticationPlugin getInstance() {
+        return defaultAuthentication;
+    }
+
+    @Override
+    public void setAuthenticationModel(AuthenticationModel authenticationModel) {
+        widget.setAuthenticationModel(authenticationModel);
+    }
+
+    @Override
+    public void setLoginHandler(LoginInterface loginHandler) {
+        widget.setLoginHandler(loginHandler);
+    }
+
 }

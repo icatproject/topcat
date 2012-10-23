@@ -43,6 +43,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
+import uk.ac.stfc.topcat.ejb.entity.IcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
@@ -959,6 +960,24 @@ public class UtilityManager {
         manager.createNamedQuery("TopcatUserDownload.updateStatus").setParameter("url", url)
                 .setParameter("updatedUrl", updatedUrl).setParameter("status", status).executeUpdate();
         manager.flush();
+    }
+
+    /**
+     * Get a list of authentication types for a facility.
+     * 
+     * @param manager
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of authentication types
+     */
+    public List<String> getAuthenticationTypes(EntityManager manager, String facilityName) {
+        List<String> authenticationTypes = new ArrayList<String>();
+        List<?> icatAuthentications = manager.createNamedQuery("IcatAuthentication.findByServerName")
+                .setParameter("serverName", facilityName).getResultList();
+        for (Object icatAuthentication : icatAuthentications) {
+            authenticationTypes.add(((IcatAuthentication) icatAuthentication).getAuthenticationType());
+        }
+        return authenticationTypes;
     }
 
 }
