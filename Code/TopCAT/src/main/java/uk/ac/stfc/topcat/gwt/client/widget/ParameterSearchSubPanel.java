@@ -23,6 +23,7 @@
 package uk.ac.stfc.topcat.gwt.client.widget;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,13 +52,16 @@ import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.ListField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ParameterSearchSubPanel extends Composite {
@@ -66,15 +70,22 @@ public class ParameterSearchSubPanel extends Composite {
     private ListField<Facility> listFieldFacility;
     private ComboBox<ParameterModel> comboBoxName;
     private ComboBox<ParameterModel> comboBoxUnits;
-    private Set<String> type = new HashSet<String>();
-    private TextField<String> paramValue;
+    private Set<String> types = new HashSet<String>();
+    private CheckBox valueRange;
+    private LabelField lblfldValue;
+    private TextField<String> value;
+    private TextField<String> valueMax;
+    private LabelField lblfldValueDate;
+    private DateField valueDate;
+    private DateField valueDateMax;
     private Text errorMessage;
+    private boolean dateValueSelected = false;
 
     public ParameterSearchSubPanel() {
         eventBus = EventPipeLine.getInstance();
         LayoutContainer topContainer = new LayoutContainer();
         LayoutContainer layoutContainer = new LayoutContainer();
-        TableLayout tl_layoutContainer = new TableLayout(2);
+        TableLayout tl_layoutContainer = new TableLayout(3);
         tl_layoutContainer.setCellSpacing(5);
         layoutContainer.setLayout(tl_layoutContainer);
 
@@ -92,6 +103,7 @@ public class ParameterSearchSubPanel extends Composite {
             }
         });
         layoutContainer.add(listFieldFacility);
+        layoutContainer.add(new Text());
 
         // Name
         LabelField lblfldParamName = new LabelField("Parameter Name");
@@ -122,6 +134,7 @@ public class ParameterSearchSubPanel extends Composite {
                 EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
+        layoutContainer.add(new Text());
 
         // Units
         LabelField lblfldParamUnits = new LabelField("Parameter Units");
@@ -152,15 +165,48 @@ public class ParameterSearchSubPanel extends Composite {
                 EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
+        layoutContainer.add(new Text());
+
+        // Parameter range selection box
+        LabelField lblfldRange = new LabelField("Parameter Range");
+        layoutContainer.add(lblfldRange);
+        valueRange = new CheckBox();
+        valueRange.setValue(false);
+        layoutContainer.add(valueRange);
+
+        valueRange.addListener(Events.Change, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                showParameterValueBoxes();
+            }
+        });
+        layoutContainer.add(new Text());
 
         // Value
-        LabelField lblfldParamValue = new LabelField("Parameter Value");
-        layoutContainer.add(lblfldParamValue);
+        lblfldValue = new LabelField("Parameter Value");
+        layoutContainer.add(lblfldValue);
 
-        paramValue = new TextField<String>();
-        layoutContainer.add(paramValue);
-        paramValue.setFieldLabel("New TextField");
+        value = new TextField<String>();
+        layoutContainer.add(value);
 
+        valueMax = new TextField<String>();
+        layoutContainer.add(valueMax);
+        valueMax.hide();
+
+        // Date
+        lblfldValueDate = new LabelField("Parameter Value");
+        layoutContainer.add(lblfldValueDate);
+        lblfldValueDate.hide();
+
+        valueDate = new DateField();
+        layoutContainer.add(valueDate);
+        valueDate.hide();
+
+        valueDateMax = new DateField();
+        layoutContainer.add(valueDateMax);
+        valueDateMax.hide();
+
+        layoutContainer.add(new Text());
         layoutContainer.add(new Text());
         layoutContainer.add(new Text());
 
@@ -178,6 +224,7 @@ public class ParameterSearchSubPanel extends Composite {
             }
         });
         layoutContainer.add(btnSearchExp);
+        layoutContainer.add(new Text());
         layoutContainer.add(new Text());
 
         // Dataset Search Button TODO
@@ -208,12 +255,14 @@ public class ParameterSearchSubPanel extends Composite {
 
         layoutContainer.add(btnReset);
 
+        // Other bits
         topContainer.add(layoutContainer);
         topContainer.add(new Text());
         errorMessage = new Text();
         errorMessage.setText("");
         topContainer.add(errorMessage);
         topContainer.setHeight("310px");
+        topContainer.setHeight("330px");
         initComponent(topContainer);
         setBorders(true);
         setAutoHeight(true);
@@ -227,11 +276,31 @@ public class ParameterSearchSubPanel extends Composite {
         searchDetails.setFacilityList((ArrayList<String>) comboBoxUnits.getSelection().get(0).getFacilityNames());
         searchDetails.setParameterName(comboBoxUnits.getSelection().get(0).getName());
         searchDetails.setParameterUnits(comboBoxUnits.getSelection().get(0).getUnits());
-        searchDetails.setParameterValue(paramValue.getValue());
+        if (dateValueSelected) {
+            searchDetails.setParameterValue(getDate(valueDate.getValue()));
+        } else {
+            searchDetails.setParameterValue(value.getValue());
+        }
+        if (valueRange.getValue()) {
+            if (dateValueSelected) {
+                searchDetails.setParameterValueMax(getDate(valueDateMax.getValue()));
+            } else {
+                searchDetails.setParameterValueMax(valueMax.getValue());
+            }
+        }
         return searchDetails;
     }
 
-    private void addNames(List<Facility> facilities) {
+    private String getDate(Date date) {
+        StringBuilder retDate = new StringBuilder();
+        retDate.append("{ts ");
+        DateTimeFormat f = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+        retDate.append(f.format(date));
+        retDate.append("}");
+        return retDate.toString();
+    }
+
+    private void addNames(final List<Facility> facilities) {
         comboBoxName.getStore().removeAll();
         comboBoxName.clear();
         if (facilities == null) {
@@ -253,7 +322,14 @@ public class ParameterSearchSubPanel extends Composite {
                                 comboBoxName.getStore().add(new ParameterModel(facility.getFacilityName(), name));
                             }
                         }
-                        comboBoxName.focus();
+                        if (facilities.size() == 1 && comboBoxName.getStore().getCount() == 1) {
+                            // We are only checking one facility so we are not
+                            // waiting for more data to come back
+                            comboBoxName.setValue(comboBoxName.getStore().getAt(0));
+                        } else {
+                            comboBoxName.focus();
+                            comboBoxName.expand();
+                        }
                     }
                 }
 
@@ -313,11 +389,15 @@ public class ParameterSearchSubPanel extends Composite {
                                         new ParameterModel(facilityName, parameter.getName(), units, ""));
                             }
                         }
-                        if (comboBoxUnits.getStore().getCount() == 2) {
-                            comboBoxUnits.expand();
+                        comboBoxUnits.focus();
+                        if (parameter.getFacilityNames().size() == 1 && comboBoxUnits.getStore().getCount() == 2) {
+                            // We are only checking one facility so we are not
+                            // waiting for more data to come back
                             comboBoxUnits.setValue(comboBoxUnits.getStore().getAt(1));
                         }
-                        comboBoxUnits.focus();
+                        if (comboBoxUnits.getStore().getCount() > 2) {
+                            comboBoxUnits.expand();
+                        }
                     }
                 }
 
@@ -331,33 +411,50 @@ public class ParameterSearchSubPanel extends Composite {
         }
     }
 
-    private void getType(ParameterModel parameter) {
-        type.clear();
-        if (parameter == null) {
+    /**
+     * Ask all of the selected facilities for the parameter types for the given
+     * name and unit.
+     * 
+     * @param selectedModel
+     */
+    private void getType(ParameterModel selectedModel) {
+        types.clear();
+        if (selectedModel == null) {
             // this is a result of reset
             return;
         }
-        if (parameter.getUnits().equals(TConstants.ALL_UNITS)) {
+        if (selectedModel.getUnits().equals(TConstants.ALL_UNITS)) {
             if (comboBoxUnits.getStore().getCount() > 2) {
-                paramValue.focus();
+                // As there are more than 1 set of units we will not bother
+                // getting the types, the server can do the type checking
+                dateValueSelected = false;
+                showParameterValueBoxes();
                 return;
             } else {
                 // even though --ALL-- is selected there is only one unit so we
-                // can do type checking
-                parameter = comboBoxUnits.getStore().getAt(1);
+                // will do type checking
+                selectedModel = comboBoxUnits.getStore().getAt(1);
             }
         }
-        for (final String facilityName : parameter.getFacilityNames()) {
+        for (final String facilityName : selectedModel.getFacilityNames()) {
             EventPipeLine.getInstance().showRetrievingData();
-            utilityService.getParameterTypes(facilityName, parameter.getName(), parameter.getUnits(),
+            utilityService.getParameterTypes(facilityName, selectedModel.getName(), selectedModel.getUnits(),
                     new AsyncCallback<ArrayList<String>>() {
                         @Override
                         public void onSuccess(ArrayList<String> results) {
                             EventPipeLine.getInstance().hideRetrievingData();
                             for (String result : results) {
-                                type.add(result);
+                                types.add(result);
                             }
-                            paramValue.focus();
+                            if (types.size() == 1 && types.contains("DATE_AND_TIME")) {
+                                dateValueSelected = true;
+                                showParameterValueBoxes();
+                                valueDate.focus();
+                            } else {
+                                dateValueSelected = false;
+                                showParameterValueBoxes();
+                                value.focus();
+                            }
                         }
 
                         @Override
@@ -386,32 +483,130 @@ public class ParameterSearchSubPanel extends Composite {
             comboBoxUnits.focus();
             return false;
         }
-        if (paramValue.getValue() == null) {
-            errorMessage.setText("Please enter a 'Parameter Value'");
-            paramValue.focus();
-            return false;
+        if (dateValueSelected) {
+            if (valueDate.getValue() == null) {
+                errorMessage.setText("Please enter a 'Parameter Value'");
+                valueDate.focus();
+                return false;
+            }
+        } else {
+            if (value.getValue() == null) {
+                errorMessage.setText("Please enter a 'Parameter Value'");
+                value.focus();
+                return false;
+            }
         }
-        if (type.size() == 1) {
+        if (types.size() == 1) {
             // As there is only one type we can do type checking
-            if (type.contains("NUMERIC")) {
+            if (types.contains("NUMERIC")) {
                 try {
-                    new Double(paramValue.getValue());
+                    new Double(value.getValue());
                 } catch (NumberFormatException e) {
-                    errorMessage.setText("Parameter Value must be numeric");
-                    paramValue.focus();
+                    errorMessage.setText("'Parameter Value' must be numeric");
+                    value.focus();
                     return false;
                 }
-            } else if (type.contains("DATE_AND_TIME")) {
-                // TODO
+            }
+        }
+
+        if (valueRange.getValue()) {
+            if (dateValueSelected) {
+                if (valueDateMax.getValue() == null) {
+                    errorMessage.setText("Please enter a second 'Parameter Value'");
+                    valueDateMax.focus();
+                    return false;
+                }
+            } else {
+                if (valueMax.getValue() == null) {
+                    errorMessage.setText("Please enter a second 'Parameter Value'");
+                    valueMax.focus();
+                    return false;
+                }
+            }
+            if (types.size() == 1) {
+                // As there is only one type we can do type checking
+                if (types.contains("NUMERIC")) {
+                    try {
+                        new Double(valueMax.getValue());
+                    } catch (NumberFormatException e) {
+                        errorMessage.setText("Second 'Parameter Value' must be numeric");
+                        valueMax.focus();
+                        return false;
+                    }
+                    if (new Double(value.getValue()) > new Double(valueMax.getValue())) {
+                        errorMessage.setText("Second 'Parameter Value' must be equal or greater than the first");
+                        valueMax.focus();
+                        return false;
+                    }
+                } else if (types.contains("DATE_AND_TIME")) {
+                    if (valueDate.getValue().compareTo(valueDateMax.getValue()) > 0) {
+                        errorMessage.setText("Second 'Parameter Value' must be equal or greater than the first");
+                        valueDateMax.focus();
+                        return false;
+                    }
+                } else {
+                    if (value.getValue().compareTo(valueMax.getValue()) > 0) {
+                        errorMessage.setText("Second 'Parameter Value' must be equal or greater than the first");
+                        valueMax.focus();
+                        return false;
+                    }
+                }
+
             }
         }
         return true;
     }
 
+    private void showParameterValueBoxes() {
+        valueMax.clear();
+        valueDateMax.clear();
+        if (dateValueSelected) {
+            // show date stuff
+            lblfldValueDate.show();
+            valueDate.show();
+            if (valueRange.getValue()) {
+                valueDateMax.show();
+                if (valueDate.getValue() == null) {
+                    valueDate.focus();
+                } else {
+                    valueDateMax.focus();
+                }
+            } else {
+                valueDateMax.hide();
+            }
+            // hide numeric/string stuff
+            lblfldValue.hide();
+            value.hide();
+            valueMax.hide();
+        } else {
+            // hide date stuff
+            lblfldValueDate.hide();
+            valueDate.hide();
+            valueDateMax.hide();
+            // show numeric/string stuff
+            lblfldValue.show();
+            value.show();
+            if (valueRange.getValue()) {
+                valueMax.show();
+                if (value.getValue() == null || value.getValue().isEmpty()) {
+                    value.focus();
+                } else {
+                    valueMax.focus();
+                }
+            } else {
+                valueMax.hide();
+            }
+        }
+    }
+
     private void reset() {
         errorMessage.setText("");
-        type.clear();
-        paramValue.clear();
+        types.clear();
+        value.clear();
+        valueMax.clear();
+        valueDate.clear();
+        valueDateMax.clear();
+        dateValueSelected = false;
         comboBoxUnits.getStore().removeAll();
         comboBoxUnits.clear();
         comboBoxName.clear();

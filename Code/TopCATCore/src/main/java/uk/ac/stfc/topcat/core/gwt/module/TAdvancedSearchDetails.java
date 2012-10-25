@@ -55,6 +55,7 @@ public class TAdvancedSearchDetails implements Serializable {
     protected String parameterName;
     protected String parameterUnits;
     protected String parameterValue;
+    protected String parameterValueMax;
 
     public TAdvancedSearchDetails() {
         investigatorNameList = new ArrayList<String>();
@@ -144,6 +145,14 @@ public class TAdvancedSearchDetails implements Serializable {
 
     public void setParameterValue(String value) {
         this.parameterValue = value;
+    }
+
+    public String getParameterValueMax() {
+        return parameterValueMax;
+    }
+
+    public void setParameterValueMax(String value) {
+        this.parameterValueMax = value;
     }
 
     public String getProposalAbstract() {

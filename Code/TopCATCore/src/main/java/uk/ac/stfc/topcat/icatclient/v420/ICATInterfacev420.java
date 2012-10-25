@@ -247,7 +247,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         } else if (param.getType().getValueType() == ParameterValueType.STRING) {
             tp.setValue(param.getStringValue());
         } else if (param.getType().getValueType() == ParameterValueType.DATE_AND_TIME) {
-            tp.setValue(param.getDateTimeValue().toGregorianCalendar().getTime().toString());
+            tp.setValue(param.getDateTimeValue().toString());
         }
         tp.setUnits(param.getType().getUnits());
         return tp;
@@ -649,38 +649,88 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 details.getParameterUnits());
         StringBuilder query = new StringBuilder(" DISTINCT " + name);
         if (details.getParameterUnits().equals(TConstants.ALL_UNITS)) {
+            // Search for all possible units for the parameter type
             query.append(" <-> " + name + "Parameter [");
             boolean first = true;
             for (ParameterValueType type : types) {
-                if (first) {
-                    first = false;
-                } else {
+                if (!first) {
                     query.append(" OR ");
                 }
-                if (type == ParameterValueType.DATE_AND_TIME) {
-                    query.append("(type.name='" + details.getParameterName() + "' AND dateTimeValue='"
-                            + details.getParameterValue() + "')");
-                } else if (type == ParameterValueType.NUMERIC) {
-                    query.append("(type.name='" + details.getParameterName() + "' AND numericValue="
-                            + details.getParameterValue() + ")");
-                } else if (type == ParameterValueType.STRING) {
-                    query.append("(type.name='" + details.getParameterName() + "' AND stringValue='"
-                            + details.getParameterValue() + "')");
+                if (details.getParameterValueMax() == null || details.getParameterValueMax().isEmpty()) {
+                    // Search for a single value
+                    if (type == ParameterValueType.DATE_AND_TIME) {
+                        query.append("(type.name='" + details.getParameterName() + "' AND dateTimeValue="
+                                + details.getParameterValue() + ")");
+                        first = false;
+                    } else if (type == ParameterValueType.NUMERIC && isNumeric(details.getParameterValue())) {
+                        // As this is checking all parameters only check numeric
+                        // types if values are numeric
+                        query.append("(type.name='" + details.getParameterName() + "' AND numericValue="
+                                + details.getParameterValue() + ")");
+                        first = false;
+                    } else if (type == ParameterValueType.STRING) {
+                        query.append("(type.name='" + details.getParameterName() + "' AND stringValue='"
+                                + details.getParameterValue() + "')");
+                        first = false;
+                    }
+                } else {
+                    // Search for a range of single values
+                    if (type == ParameterValueType.DATE_AND_TIME) {
+                        query.append("(type.name='" + details.getParameterName() + "' AND dateTimeValue BETWEEN "
+                                + details.getParameterValue() + " AND " + details.getParameterValueMax() + ")");
+                        first = false;
+                    } else if (type == ParameterValueType.NUMERIC && isNumeric(details.getParameterValue())
+                            & isNumeric(details.getParameterValueMax())) {
+                        // As this is checking all parameters only check numeric
+                        // types if values are numeric
+                        query.append("(type.name='" + details.getParameterName() + "' AND numericValue BETWEEN "
+                                + details.getParameterValue() + " AND " + details.getParameterValueMax() + ")");
+                        first = false;
+                    } else if (type == ParameterValueType.STRING) {
+                        query.append("(type.name='" + details.getParameterName() + "' AND stringValue BETWEEN '"
+                                + details.getParameterValue() + "' AND '" + details.getParameterValueMax() + "')");
+                        first = false;
+                    }
                 }
             }
             query.append("]");
         } else {
+            // Search for specific parameter type and units
             query.append(" <-> " + name + "Parameter [type.name='" + details.getParameterName() + "' AND type.units='"
                     + details.getParameterUnits() + "' AND ");
-            if (types.get(0) == ParameterValueType.DATE_AND_TIME) {
-                query.append("dateTimeValue='" + details.getParameterValue() + "']");
-            } else if (types.get(0) == ParameterValueType.NUMERIC) {
-                query.append("numericValue=" + details.getParameterValue() + "]");
-            } else if (types.get(0) == ParameterValueType.STRING) {
-                query.append("stringValue='" + details.getParameterValue() + "']");
+            if (details.getParameterValueMax() == null || details.getParameterValueMax().isEmpty()) {
+                // Search for a single value
+                if (types.get(0) == ParameterValueType.DATE_AND_TIME) {
+                    query.append("dateTimeValue=" + details.getParameterValue() + "]");
+                } else if (types.get(0) == ParameterValueType.NUMERIC) {
+                    query.append("numericValue=" + details.getParameterValue() + "]");
+                } else if (types.get(0) == ParameterValueType.STRING) {
+                    query.append("stringValue='" + details.getParameterValue() + "']");
+                }
+            } else {
+                // Search for a range of values
+                if (types.get(0) == ParameterValueType.DATE_AND_TIME) {
+                    query.append("dateTimeValue BETWEEN " + details.getParameterValue() + " AND "
+                            + details.getParameterValueMax() + "]");
+                } else if (types.get(0) == ParameterValueType.NUMERIC) {
+                    query.append("numericValue BETWEEN " + details.getParameterValue() + " AND "
+                            + details.getParameterValueMax() + "]");
+                } else if (types.get(0) == ParameterValueType.STRING) {
+                    query.append("stringValue BETWEEN '" + details.getParameterValue() + "' AND '"
+                            + details.getParameterValueMax() + "']");
+                }
             }
         }
         return query.toString();
+    }
+
+    private boolean isNumeric(String value) {
+        try {
+            new Double(value);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
     private List<ParameterValueType> getParameterTypesFormService(String sessionId, String name, String units)

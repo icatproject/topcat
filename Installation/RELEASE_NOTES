@@ -1,3 +1,5 @@
+Added range searches to parameter search
+
 Added table ICAT_AUTHENTICATION:
 Column ID is a unique id 
 Column AUTHENTICATION_SERVICE_URL is the URL of the authentication service,
