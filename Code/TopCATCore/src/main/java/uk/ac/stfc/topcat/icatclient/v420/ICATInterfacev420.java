@@ -491,12 +491,16 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     @Override
     public ArrayList<String> getParameterNames(String sessionId) throws TopcatException {
-        return searchList(sessionId, "DISTINCT ParameterType.name");
+        ArrayList<String> names = searchList(sessionId, "DISTINCT ParameterType.name");
+        Collections.sort(names);
+        return names;
     }
 
     @Override
     public ArrayList<String> getParameterUnits(String sessionId, String name) throws TopcatException {
-        return searchList(sessionId, "DISTINCT ParameterType.units [name = '" + name + "']");
+        ArrayList<String> units = searchList(sessionId, "DISTINCT ParameterType.units [name = '" + name + "']");
+        Collections.sort(units);
+        return units;
     }
 
     @Override
