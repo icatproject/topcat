@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -23,7 +23,6 @@
 package uk.ac.stfc.topcat.ejb.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -40,24 +39,25 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * This is UserInfo entity. Abstraction above User, each UserInfo can have one or
- * more User objects.
+ * This is UserInfo entity. Abstraction above User, each UserInfo can have one
+ * or more User objects.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @Entity
 @Table(name = "TOPCAT_USER_INFO")
-@NamedQueries({@NamedQuery(name = "TopcatUserInfo.findAll", query = "SELECT t FROM TopcatUserInfo t"),
-               @NamedQuery(name = "TopcatUserInfo.findById", query = "SELECT t FROM TopcatUserInfo t WHERE t.id = :id"),
-               @NamedQuery(name = "TopcatUserInfo.findByDisplayName", query = "SELECT t FROM TopcatUserInfo t WHERE t.displayName = :displayName"),
-               @NamedQuery(name = "TopcatUserInfo.findAnonymousUser", query = "SELECT t FROM TopcatUserInfo t WHERE t.displayName = 'Anonymous'")
-})
+@NamedQueries({
+        @NamedQuery(name = "TopcatUserInfo.findAll", query = "SELECT t FROM TopcatUserInfo t"),
+        @NamedQuery(name = "TopcatUserInfo.findById", query = "SELECT t FROM TopcatUserInfo t WHERE t.id = :id"),
+        @NamedQuery(name = "TopcatUserInfo.findByDisplayName", query = "SELECT t FROM TopcatUserInfo t WHERE t.displayName = :displayName"),
+        @NamedQuery(name = "TopcatUserInfo.findAnonymousUser", query = "SELECT t FROM TopcatUserInfo t WHERE t.displayName = 'Anonymous'") })
 public class TopcatUserInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
@@ -117,7 +117,8 @@ public class TopcatUserInfo implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the id fields are
+        // not set
         if (!(object instanceof TopcatUserInfo)) {
             return false;
         }

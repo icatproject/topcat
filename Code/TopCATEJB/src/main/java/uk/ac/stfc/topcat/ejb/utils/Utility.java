@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -22,15 +22,12 @@
  */
 package uk.ac.stfc.topcat.ejb.utils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import javax.xml.namespace.QName;
-
 /**
  * This is utility functions.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 

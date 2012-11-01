@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2012
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -23,7 +23,6 @@
 package uk.ac.stfc.topcat.ejb.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -43,27 +42,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * This is User entity.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @Entity
 @Table(name = "TOPCAT_USER")
 @NamedQueries({
-    @NamedQuery(name = "TopcatUser.findById", query = "SELECT t FROM TopcatUser t WHERE t.id = :id"),
-    @NamedQuery(name = "TopcatUser.findByName", query = "SELECT t FROM TopcatUser t WHERE t.name = :name"),
-    @NamedQuery(name = "TopcatUser.findByDn", query = "SELECT t FROM TopcatUser t WHERE t.dn = :dn"),
-    @NamedQuery(name = "TopcatUser.findByNameAndServer", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName"),
-    @NamedQuery(name = "TopcatUser.findByNameAndServerNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.displayName <> 'Anonymous'"),
-    @NamedQuery(name = "TopcatUser.findByNameAndServerAndHomeNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.homeServer.name = :serverName AND t.topcatUserId.displayName <> 'Anonymous'"),
-    @NamedQuery(name = "TopcatUser.findAnonymousUser", query = "SELECT t FROM TopcatUser t WHERE t.name = 'Anonymous'")
-})
+        @NamedQuery(name = "TopcatUser.findById", query = "SELECT t FROM TopcatUser t WHERE t.id = :id"),
+        @NamedQuery(name = "TopcatUser.findByName", query = "SELECT t FROM TopcatUser t WHERE t.name = :name"),
+        @NamedQuery(name = "TopcatUser.findByDn", query = "SELECT t FROM TopcatUser t WHERE t.dn = :dn"),
+        @NamedQuery(name = "TopcatUser.findByNameAndServer", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName"),
+        @NamedQuery(name = "TopcatUser.findByNameAndServerNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.displayName <> 'Anonymous'"),
+        @NamedQuery(name = "TopcatUser.findByNameAndServerAndHomeNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.homeServer.name = :serverName AND t.topcatUserId.displayName <> 'Anonymous'"),
+        @NamedQuery(name = "TopcatUser.findAnonymousUser", query = "SELECT t FROM TopcatUser t WHERE t.name = 'Anonymous'") })
 @XmlRootElement
 public class TopcatUser implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
     @Column(name = "NAME")
@@ -84,9 +83,10 @@ public class TopcatUser implements Serializable {
     public TopcatUser() {
     }
 
-    public TopcatUser(String name,String dn,TopcatIcatServer serverId,TopcatUserInfo topcatUserId,List<TopcatUserSession> topcatUserSessionList) {
+    public TopcatUser(String name, String dn, TopcatIcatServer serverId, TopcatUserInfo topcatUserId,
+            List<TopcatUserSession> topcatUserSessionList) {
         this.name = name;
-        this.dn   = dn;
+        this.dn = dn;
         this.serverId = serverId;
         this.topcatUserId = topcatUserId;
         this.topcatUserSessionList = topcatUserSessionList;
@@ -108,7 +108,6 @@ public class TopcatUser implements Serializable {
         this.name = name;
     }
 
-
     public String getUserSurname() {
         return userSurname;
     }
@@ -116,7 +115,7 @@ public class TopcatUser implements Serializable {
     public void setUserSurname(String userSurname) {
         this.userSurname = userSurname;
     }
-    
+
     public String getDn() {
         return dn;
     }
@@ -158,7 +157,8 @@ public class TopcatUser implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the id fields are
+        // not set
         if (!(object instanceof TopcatUser)) {
             return false;
         }
