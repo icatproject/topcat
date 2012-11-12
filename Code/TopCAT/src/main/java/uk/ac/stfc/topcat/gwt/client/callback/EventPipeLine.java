@@ -464,7 +464,6 @@ public class EventPipeLine implements LoginInterface {
     public void facilityLogout(final String facilityName) {
         waitDialog.setMessage(" Logging Out...");
         waitDialog.show();
-        loginWidget.setFacilityName(facilityName);
         eventBus.fireEventFromSource(new LogoutEvent(facilityName), facilityName);
 
         // logout of the given facility

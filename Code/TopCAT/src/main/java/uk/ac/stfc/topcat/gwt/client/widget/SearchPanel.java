@@ -37,6 +37,7 @@ import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.callback.InvestigationSearchCallback;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.SearchAllButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
@@ -73,6 +74,8 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -164,11 +167,22 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         flexTable.setWidget(0, 2, btnSearch);
 
         rdbtnSearchJustMy = new RadioButton("new name", "Search Just My Data");
+        rdbtnSearchJustMy.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent clickEvent) {
+                EventPipeLine.getEventBus().fireEvent(new SearchAllButtonEvent(false));
+            }
+        });
         rdbtnSearchJustMy.setValue(true);
         rdbtnSearchJustMy.setHTML(" Search Just My Data");
         flexTable.setWidget(1, 0, rdbtnSearchJustMy);
 
         rdbtnSearchAllData = new RadioButton("new name", " Search All Data");
+        rdbtnSearchAllData.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent clickEvent) {
+                EventPipeLine.getEventBus().fireEvent(new SearchAllButtonEvent(true));
+            }
+        });
+
         flexTable.setWidget(1, 1, rdbtnSearchAllData);
         flexTable.getFlexCellFormatter().setColSpan(1, 1, 2);
         flexTable.getFlexCellFormatter().setColSpan(1, 0, 2);

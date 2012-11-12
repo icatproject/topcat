@@ -35,8 +35,10 @@ import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.SearchAllButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.SearchAllButtonEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
@@ -64,6 +66,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Display selection boxes for the parameter search. Selection in the facilities
+ * box triggers a query to the server to populate the 'Parameter Name' box.
+ * Selection in the 'Parameter Name' box triggers a query to the server to
+ * populate the 'Parameter Units' box.
+ * 
+ */
 public class ParameterSearchSubPanel extends Composite {
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private EventPipeLine eventBus;
@@ -80,18 +89,19 @@ public class ParameterSearchSubPanel extends Composite {
     private DateField valueDateMax;
     private Text errorMessage;
     private boolean dateValueSelected = false;
+    private boolean searchAllData = false;
 
     public ParameterSearchSubPanel() {
         eventBus = EventPipeLine.getInstance();
-        LayoutContainer topContainer = new LayoutContainer();
-        LayoutContainer layoutContainer = new LayoutContainer();
+        LayoutContainer mainContainer = new LayoutContainer();
+        LayoutContainer selectionContainer = new LayoutContainer();
         TableLayout tl_layoutContainer = new TableLayout(3);
         tl_layoutContainer.setCellSpacing(5);
-        layoutContainer.setLayout(tl_layoutContainer);
+        selectionContainer.setLayout(tl_layoutContainer);
 
         // Facility
         LabelField lblfldFacility = new LabelField("Facility");
-        layoutContainer.add(lblfldFacility);
+        selectionContainer.add(lblfldFacility);
 
         listFieldFacility = new ListField<Facility>();
         listFieldFacility.setDisplayField("name");
@@ -102,12 +112,12 @@ public class ParameterSearchSubPanel extends Composite {
                 addNames(se.getSelection());
             }
         });
-        layoutContainer.add(listFieldFacility);
-        layoutContainer.add(new Text());
+        selectionContainer.add(listFieldFacility);
+        selectionContainer.add(new Text());
 
         // Name
         LabelField lblfldParamName = new LabelField("Parameter Name");
-        layoutContainer.add(lblfldParamName);
+        selectionContainer.add(lblfldParamName);
 
         comboBoxName = new ComboBox<ParameterModel>();
         comboBoxName.addSelectionChangedListener(new SelectionChangedListener<ParameterModel>() {
@@ -120,7 +130,7 @@ public class ParameterSearchSubPanel extends Composite {
         comboBoxName.setDisplayField("name");
         comboBoxName.setTypeAhead(true);
         comboBoxName.setTriggerAction(TriggerAction.ALL);
-        layoutContainer.add(comboBoxName);
+        selectionContainer.add(comboBoxName);
 
         comboBoxName.addListener(Events.Expand, new Listener<ComponentEvent>() {
             @Override
@@ -134,11 +144,11 @@ public class ParameterSearchSubPanel extends Composite {
                 EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
-        layoutContainer.add(new Text());
+        selectionContainer.add(new Text());
 
         // Units
         LabelField lblfldParamUnits = new LabelField("Parameter Units");
-        layoutContainer.add(lblfldParamUnits);
+        selectionContainer.add(lblfldParamUnits);
 
         comboBoxUnits = new ComboBox<ParameterModel>();
         comboBoxUnits.addSelectionChangedListener(new SelectionChangedListener<ParameterModel>() {
@@ -151,7 +161,7 @@ public class ParameterSearchSubPanel extends Composite {
         comboBoxUnits.setDisplayField("units");
         comboBoxUnits.setTypeAhead(true);
         comboBoxUnits.setTriggerAction(TriggerAction.ALL);
-        layoutContainer.add(comboBoxUnits);
+        selectionContainer.add(comboBoxUnits);
 
         comboBoxUnits.addListener(Events.Expand, new Listener<ComponentEvent>() {
             @Override
@@ -165,14 +175,14 @@ public class ParameterSearchSubPanel extends Composite {
                 EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
-        layoutContainer.add(new Text());
+        selectionContainer.add(new Text());
 
         // Parameter range selection box
         LabelField lblfldRange = new LabelField("Parameter Range");
-        layoutContainer.add(lblfldRange);
+        selectionContainer.add(lblfldRange);
         valueRange = new CheckBox();
         valueRange.setValue(false);
-        layoutContainer.add(valueRange);
+        selectionContainer.add(valueRange);
 
         valueRange.addListener(Events.Change, new Listener<ComponentEvent>() {
             @Override
@@ -180,35 +190,35 @@ public class ParameterSearchSubPanel extends Composite {
                 showParameterValueBoxes();
             }
         });
-        layoutContainer.add(new Text());
+        selectionContainer.add(new Text());
 
         // Value
         lblfldValue = new LabelField("Parameter Value");
-        layoutContainer.add(lblfldValue);
+        selectionContainer.add(lblfldValue);
 
         value = new TextField<String>();
-        layoutContainer.add(value);
+        selectionContainer.add(value);
 
         valueMax = new TextField<String>();
-        layoutContainer.add(valueMax);
+        selectionContainer.add(valueMax);
         valueMax.hide();
 
         // Date
         lblfldValueDate = new LabelField("Parameter Value");
-        layoutContainer.add(lblfldValueDate);
+        selectionContainer.add(lblfldValueDate);
         lblfldValueDate.hide();
 
         valueDate = new DateField();
-        layoutContainer.add(valueDate);
+        selectionContainer.add(valueDate);
         valueDate.hide();
 
         valueDateMax = new DateField();
-        layoutContainer.add(valueDateMax);
+        selectionContainer.add(valueDateMax);
         valueDateMax.hide();
 
-        layoutContainer.add(new Text());
-        layoutContainer.add(new Text());
-        layoutContainer.add(new Text());
+        selectionContainer.add(new Text());
+        selectionContainer.add(new Text());
+        selectionContainer.add(new Text());
 
         // Experiment Search Button
         Button btnSearchExp = new Button("Search Experiment Parameters");
@@ -223,9 +233,9 @@ public class ParameterSearchSubPanel extends Composite {
                 }
             }
         });
-        layoutContainer.add(btnSearchExp);
-        layoutContainer.add(new Text());
-        layoutContainer.add(new Text());
+        selectionContainer.add(btnSearchExp);
+        selectionContainer.add(new Text());
+        selectionContainer.add(new Text());
 
         // Dataset Search Button TODO
 
@@ -242,7 +252,7 @@ public class ParameterSearchSubPanel extends Composite {
                 }
             }
         });
-        layoutContainer.add(btnSearchFile);
+        selectionContainer.add(btnSearchFile);
 
         // Reset Button
         Button btnReset = new Button("Reset");
@@ -253,22 +263,23 @@ public class ParameterSearchSubPanel extends Composite {
             }
         });
 
-        layoutContainer.add(btnReset);
+        selectionContainer.add(btnReset);
 
         // Other bits
-        topContainer.add(layoutContainer);
-        topContainer.add(new Text());
+        mainContainer.add(selectionContainer);
+        mainContainer.add(new Text());
         errorMessage = new Text();
         errorMessage.setText("");
-        topContainer.add(errorMessage);
-        topContainer.setHeight("310px");
-        topContainer.setHeight("330px");
-        initComponent(topContainer);
+        mainContainer.add(errorMessage);
+        mainContainer.setHeight("310px");
+        mainContainer.setHeight("330px");
+        initComponent(mainContainer);
         setBorders(true);
         setAutoHeight(true);
 
         createLoginHandler();
         createLogoutHandler();
+        createSearchAllDataHandler();
     }
 
     private TAdvancedSearchDetails getSearchDetails() {
@@ -283,11 +294,18 @@ public class ParameterSearchSubPanel extends Composite {
         }
         if (valueRange.getValue()) {
             if (dateValueSelected) {
-                searchDetails.setParameterValueMax(getDate(valueDateMax.getValue()));
+                searchDetails.setParameterValueMax(getEndOfDay(valueDateMax.getValue()));
             } else {
                 searchDetails.setParameterValueMax(valueMax.getValue());
             }
+        } else {
+            if (dateValueSelected) {
+                // When searching on date the user only selects date and not
+                // time, so search to end of selected day
+                searchDetails.setParameterValueMax(getEndOfDay(valueDate.getValue()));
+            }
         }
+        searchDetails.setSearchAllData(searchAllData);
         return searchDetails;
     }
 
@@ -296,6 +314,16 @@ public class ParameterSearchSubPanel extends Composite {
         retDate.append("{ts ");
         DateTimeFormat f = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
         retDate.append(f.format(date));
+        retDate.append("}");
+        return retDate.toString();
+    }
+
+    private String getEndOfDay(Date date) {
+        StringBuilder retDate = new StringBuilder();
+        retDate.append("{ts ");
+        DateTimeFormat f = DateTimeFormat.getFormat("yyyy-MM-dd");
+        retDate.append(f.format(date));
+        retDate.append(" 23:59:59");
         retDate.append("}");
         return retDate.toString();
     }
@@ -611,7 +639,7 @@ public class ParameterSearchSubPanel extends Composite {
         comboBoxUnits.clear();
         comboBoxName.clear();
         comboBoxName.getStore().removeAll();
-        listFieldFacility.clear();
+        listFieldFacility.getStore().removeAll();
         listFieldFacility.focus();
     }
 
@@ -636,6 +664,21 @@ public class ParameterSearchSubPanel extends Composite {
             public void logout(LogoutEvent event) {
                 Facility facility = listFieldFacility.getStore().findModel("name", event.getFacilityName());
                 listFieldFacility.getStore().remove(facility);
+                if (listFieldFacility.getStore().getCount() == 0) {
+                    reset();
+                }
+            }
+        });
+    }
+
+    /**
+     * Setup a handler to react to searchAllData events.
+     */
+    private void createSearchAllDataHandler() {
+        SearchAllButtonEvent.register(EventPipeLine.getEventBus(), new SearchAllButtonEventHandler() {
+            @Override
+            public void searchAll(SearchAllButtonEvent event) {
+                searchAllData = event.isSearchAll();
             }
         });
     }
