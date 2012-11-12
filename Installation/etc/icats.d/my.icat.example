@@ -1,0 +1,5 @@
+facilityName=ICAT
+wsdlUrl=https://hostname.domain:8181/ICATService/ICAT?wsdl
+icatVersion=v420
+
+authenticationProperties=url=:type=db:plugin=

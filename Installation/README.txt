@@ -1,72 +1,168 @@
-TOPCAT is an companion product for ICAT.  It provides a user friendly way to browse the contents of an ICAT.  
+TopCAT a Web Based GUI for ICAT
+###############################
 
-These installation instructions are intended for installing Topcat as a companion to ICAT.
-
-In order to make it simple to install TOPCAT, the following configuration is assumed:
-
-Ports:
-The port 8181 is available for the Glassfish Server to deploy Topcat.
-
-Glassfish Server:
-topcat.properties - has been added to $GLASSFISH_HOME/glassfish/domains/domain1/lib/classes
-
-ICAT Servers:
-The configuration for the icat servers can be found in the .icat files in the icats.d directory. To add additional icat servers, create a file containing the configuration information in the same format, and add the filename to icats.d/icat.list
+A setup script has been provided to help configure TopCAT.
 
 
-Configuration is stored in the following files:
-deploy.conf
-topcat.properties
-icats.d/icat.list
+PREREQUISITES
+#############
+
+Glassfish installed and domain1 running:
+> <GLASSFISH_HOME>/glassfish/bin/asadmin start-domain domain1
+
+If you are not using the Derby database ensure the appropriate driver is in 
+<GLASSFISH_HOME>glassfish/domains/domain1/lib/. Glassfish will need to be
+restarted after the driver is put there. You will also need write access to a
+database/schema.
+
+
+CONFIGURATION FILES
+###################
+
+The configuration files are described in more detail below. Configuration data
+is stored in the following files:
+	glassfish.props
+	icats.d/localhost.icat
+	topcat.properties
+
+
+INSTALLATION
+############
+
+1) customise glassfish.props
+2) create and customise topcat.properties using topcat.properties.example as a
+   template
+3) add a .icat file to the icats.d directory for every ICAT you wish to be able
+   to access via TopCAT, using my.icat.example as a template. The setup script 
+   looks for all .icat files in the icats.d directory.
+4) create the connection pool, recourses and copy the topcat.properties file 
+   into place (only if it does not already exist) using:
+> ./topcat_setup.py --create
+5) Deploy TopCAT to Glassfish using:
+> ./topcat_setup.py --deploy
+6) Initialise the database with data about ICAT using:
+> ./topcat_setup.py --addICAT
+7) If the ICATs you are connecting to are using non standard certificates you
+   will need to add them to the Glassfish trust store
+
+
+UPGRADING
+#########
+
+1) Undeploy TopCAT to Glassfish using:
+> ./topcat_setup.py --undeploy
+2) Deploy TopCAT to Glassfish using:
+> ./topcat_setup.py --deploy
+3) Manually update the database table ICAT_AUTHENTICATION with entries for the
+   authentication plugin
+
+
+LOG FILE
+########
+
+Messages are logged in <GLASSFISH_HOME>glassfish/domains/domain1/log/server.log
+
+
+CONFIGURATION FILES IN MORE DETAIL
+##################################
+
+glassfish.props
+~~~~~~~~~~~~~~~
+
+The keys in this file are:
+	dbType (optional)
+	driver
+	topcatProperties
+	glassfish
+	port (optional)
+
+A) dbType (optional, default:derby) - The type of database to use, i.e.:
+	derby
+	mysql
+	oracle
+	
+B) driver - The database driver to be used, e.g.
+	for Derby:
+		org.apache.derby.jdbc.ClientDataSource
+	for Oracle:
+		oracle.jdbc.pool.OracleDataSource
+	for MySQL:
+		com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+
+C) topcatProperties - The TopCAT connection properties, e.g.
+	for Derby:
+		Password=APP:User=APP:serverName=localhost:DatabaseName=topcat: \
+			connectionAttributes=";"create"'"="'"true
+	for Oracle:
+		url="'"jdbc:oracle:thin:@//localhost:1521/XE"'": \
+		ImplicitCachingEnabled=true:MaxStatements=200:user=topcat:password=secret
+	for MySQL:
+		user=topcat:password=secret:databaseName=topcat
+
+D) glassfish - The Glassfish home directory, must contain "glassfish/domains"
+
+E) port (optional, default:4848) - The port for glassfish admin calls (normally 4848)
+
+
+
 icats.d/localhost.icat
+~~~~~~~~~~~~~~~~~~~~~~
 
-Instructions:
+The keys in this file are:
+	facilityName
+	wdslUrl
+	icatVersion
+	authenticationProperties
 
-Create a environment similar to the one assumed in these instructions. If it is not possible to be identical, then deploy.conf will require changes. 
+A) facilityName - The name of the facility to be displayed in TopCAT
 
-Ensure the following conditions on the system: 
+B) wsdlUrl - The URL of the WSDL for the ICAT
 
-- deploy.conf and topcat.properties are created using the example files;
-- Database server running;
-- Glassfish server running;
-- the file topcat.properties is available in the appropriate directory for the glassfish server (see above);
-- the topcat war file is named TopCAT.war
+C) icatVersion - The name of the plugin in TopCAT to be used with this ICAT,
+   i.e. v420
 
-Do the following from the topcat directory:
-
-# Create schemas and initialise the tables  
-./deploy.sh setupDB
-
-# Create the database pools
-./deploy.sh create
-
-# Deploy topcat
-./deploy.sh deploy
-
-# Add ICAT connection information
-./deploy.sh setupICAT
-
-# Logon to topcat 
-https://localhost:8181/TOPCATWeb.jsp 
-
-# To stop, undeploy topcat and delete the connection pools, do the following:
-./deploy.sh undeploy
-./deploy.sh delete
-
-# To delete the ICAT connection information and the topcat schemas, do the following:
-./deploy.sh deleteICAT
-./deploy.sh deleteDB
+D) authenticationProperties - The properties for the authentication plugin
+   There can be multiple authenticationProperties entries. The components are:
+		url -    The url of the athentication service, NOT currently used
+		type -   The ICAT authentication type, i.e. 'db' or 'ldap'
+		plugin - The TopCAT plugin name, leave blank to use the default 
+				 username/password plugin
 
 
-The script deploy.sh suppports the following arguments:
-----------------
+topcat.properties
+~~~~~~~~~~~~~~~~~
 
-setupDB			Creates the database schemas for Topcat
-deleteDB		Complement of setupDB 
-create			Creates the jdbc connection pools between the database and glassfish. Please ensure that the parameters in deploy.conf are correctly defined.
-delete			Deletes the jdbc connection pools between the database and glassfish.
-deploy			Use with topcat to deploy the specified application.
-undeploy 		Use with topcat to undeploy the specified application.
-setupICAT		Populates the database schemas for Topcat with information about the available ICATs 
-deleteICAT		Complement of setupICAT 
+The keys in this file are:
+	KEYWORDS_CACHED
+	LOGO_URL
+	ACCESSIBILITY
+	PRIVACY_POLICY
+	DATA_POLICY
+	TERMS_OF_USE
+	COMPLAINTS_PROCEDURE
+	FEEDBACK
+
+A) KEYWORDS_CACHED - Boolean flag, 'true' or 'false'
+
+B) LOGO_URL - The location of an image to display in the header of TopCAT. The
+   value should be a path/file name relative to the 
+   <GLASSFISH_HOME>glassfish/domains/domain1/applications/TopCAT/ directory.
+
+C) ACCESSIBILITY - The URL for an accessibility web page, a link to this is
+   included in the TopCAT footer
+
+D) PRIVACY_POLICY - The URL for a privacy policy web page, a link to this is
+   included in the TopCAT footer
+
+E) DATA_POLICY - The URL for a data policy web page, a link to this is included
+   in the TopCAT footer
+
+F) TERMS_OF_USE - The URL for a terms of use web page, a link to this is
+   included in the TopCAT footer
+
+G) COMPLAINTS_PROCEDURE - The URL for a complaints web page, a link to this is
+   included in the TopCAT footer
+
+H) FEEDBACK - The URL for a mailto link, a link to this is included in the
+   TopCAT footer
 

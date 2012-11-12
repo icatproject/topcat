@@ -1,7 +1,0 @@
-# !/bin/bash
-#
-# Any line which begins with a # is ignored.
-#
-# Note that the .icat files can be anywhere.  However as they are used as script files, it is necessary to use ./ for the current directory.
-#
-./icats.d/localhost.icat

@@ -1,5 +1,0 @@
-#!/bin/bash
-#
-FACILITY_NAME=ICAT
-ICAT_URL=http://localhost:8080/ICATService/ICAT?wsdl
-ICAT_VERSION=v420
