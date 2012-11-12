@@ -56,6 +56,7 @@ public class TAdvancedSearchDetails implements Serializable {
     protected String parameterUnits;
     protected String parameterValue;
     protected String parameterValueMax;
+    protected boolean searchAllData = false;
 
     public TAdvancedSearchDetails() {
         investigatorNameList = new ArrayList<String>();
@@ -169,6 +170,14 @@ public class TAdvancedSearchDetails implements Serializable {
 
     public void setPropostaltitle(String propostaltitle) {
         this.propostaltitle = propostaltitle;
+    }
+
+    public boolean getSearchAllData() {
+        return searchAllData;
+    }
+
+    public void setSearchAllData(boolean searchAllData) {
+        this.searchAllData = searchAllData;
     }
 
     public String getRbNumberStart() {

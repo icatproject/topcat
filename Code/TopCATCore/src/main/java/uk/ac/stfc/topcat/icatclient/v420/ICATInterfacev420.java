@@ -642,19 +642,35 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
      * 
      * @param sessionId
      * @param details
-     * @param name
+     * @param entityName
      *            'Investigation', 'Dataset' or 'Datafile'
      * @return a query string
      * @throws TopcatException
      */
-    private String getParameterQuery(String sessionId, TAdvancedSearchDetails details, String name)
+    private String getParameterQuery(String sessionId, TAdvancedSearchDetails details, String entityName)
             throws TopcatException {
         List<ParameterValueType> types = getParameterTypesFormService(sessionId, details.getParameterName(),
                 details.getParameterUnits());
-        StringBuilder query = new StringBuilder(" DISTINCT " + name);
+        StringBuilder query = new StringBuilder(" DISTINCT " + entityName);
+        if (!details.getSearchAllData()) {
+            String name = null;
+            try {
+                name = service.getUserName(sessionId);
+            } catch (IcatException_Exception e) {
+                convertToTopcatException(e);
+            }
+            if (entityName.equalsIgnoreCase("Investigation")) {
+                query.append("<-> InvestigationUser <-> User[name='" + name + "']");
+            } else if (entityName.equalsIgnoreCase("Dataset")) {
+                query.append("<-> Investigation <-> InvestigationUser <-> User[name='" + name + "']");
+
+            } else if (entityName.equalsIgnoreCase("Datafile")) {
+                query.append("<-> Dataset <-> Investigation <-> InvestigationUser <-> User[name='" + name + "']");
+            }
+        }
         if (details.getParameterUnits().equals(TConstants.ALL_UNITS)) {
             // Search for all possible units for the parameter type
-            query.append(" <-> " + name + "Parameter [");
+            query.append(" <-> " + entityName + "Parameter [");
             boolean first = true;
             for (ParameterValueType type : types) {
                 if (!first) {
@@ -700,8 +716,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             query.append("]");
         } else {
             // Search for specific parameter type and units
-            query.append(" <-> " + name + "Parameter [type.name='" + details.getParameterName() + "' AND type.units='"
-                    + details.getParameterUnits() + "' AND ");
+            query.append(" <-> " + entityName + "Parameter [type.name='" + details.getParameterName()
+                    + "' AND type.units='" + details.getParameterUnits() + "' AND ");
             if (details.getParameterValueMax() == null || details.getParameterValueMax().isEmpty()) {
                 // Search for a single value
                 if (types.get(0) == ParameterValueType.DATE_AND_TIME) {
