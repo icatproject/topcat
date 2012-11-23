@@ -44,6 +44,8 @@ import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.SearchService;
 import uk.ac.stfc.topcat.gwt.client.SearchServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.SoftwareRepoService;
+import uk.ac.stfc.topcat.gwt.client.SoftwareRepoServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.TOPCATOnline;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -108,6 +110,7 @@ public class EventPipeLine implements LoginInterface {
     private final LoginServiceAsync loginService = GWT.create(LoginService.class);
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private final SearchServiceAsync searchService = GWT.create(SearchService.class);
+    private final SoftwareRepoServiceAsync softwareRepoService = GWT.create(SoftwareRepoService.class);
     ArrayList<TFacility> facilities;
     HashMap<String, ListStore<Instrument>> facilityInstrumentMap;
     ParameterDownloadForm paramDownloadForm;
@@ -181,6 +184,10 @@ public class EventPipeLine implements LoginInterface {
 
     public void setMainWindow(TOPCATOnline topcatOnline) {
         mainWindow = topcatOnline;
+    }
+
+    public SoftwareRepoServiceAsync getSoftwareRepoService() {
+        return softwareRepoService;
     }
 
     public void initDownloadParameter() {

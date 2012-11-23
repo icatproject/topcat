@@ -43,7 +43,6 @@ import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -62,7 +61,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -95,8 +93,7 @@ public class BrowsePanel extends Composite {
     private BaseTreeLoader<ICATNode> loader;
     TreePanel<ICATNode> tree;
     HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
-    private VerticalPanel investigationPanel;
-    private InvestigationSubPanel investigationSubPanel;
+    private InvestigationPanel investigationPanel;
     private static final String SOURCE = "BrowsePanel";
 
     public BrowsePanel() {
@@ -293,16 +290,7 @@ public class BrowsePanel extends Composite {
         // mainContainer.add(contentPanel);
 
         // Investigation detail
-        investigationPanel = new VerticalPanel();
-        investigationPanel.setBorders(true);
-        investigationPanel.setSpacing(20);
-        investigationPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
-        investigationSubPanel = new InvestigationSubPanel();
-        investigationSubPanel.setEventBus(EventPipeLine.getInstance());
-        TableData td_investigationContentPanel = new TableData();
-        td_investigationContentPanel.setHeight("100%");
-        td_investigationContentPanel.setWidth("705px");
-        investigationPanel.add(investigationSubPanel, td_investigationContentPanel);
+        investigationPanel = new InvestigationPanel();
         investigationPanel.hide();
         layoutContainer.add(investigationPanel);
 
@@ -498,8 +486,8 @@ public class BrowsePanel extends Composite {
                 new AddInvestigationDetailsEventHandler() {
                     @Override
                     public void addInvestigationDetails(AddInvestigationDetailsEvent event) {
-                        investigationSubPanel.setInvestigation(event.getInvestigation());
                         investigationPanel.show();
+                        investigationPanel.setInvestigation(event.getInvestigation());
                     }
                 });
     }
@@ -512,10 +500,10 @@ public class BrowsePanel extends Composite {
             @Override
             public void logout(LogoutEvent event) {
                 // TODO close tree
-                String invDetailsFacility = investigationSubPanel.getFacilityName();
+                String invDetailsFacility = investigationPanel.getFacilityName();
                 if (!(invDetailsFacility == null) && invDetailsFacility.equalsIgnoreCase(event.getFacilityName())) {
                     investigationPanel.hide();
-                    investigationSubPanel.reset();
+                    investigationPanel.reset();
                 }
             }
         });

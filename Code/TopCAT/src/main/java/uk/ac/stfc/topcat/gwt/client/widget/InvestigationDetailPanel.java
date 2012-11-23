@@ -27,7 +27,6 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
-import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
@@ -36,17 +35,10 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Composite;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -56,10 +48,10 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
-public class InvestigationSubPanel extends Composite {
+public class InvestigationDetailPanel extends Composite {
     private TopcatInvestigation investigationModel = new TopcatInvestigation();
-    private ContentPanel contentPanel;
-    private LayoutContainer contentlPanelBody;
+    // private ContentPanel contentPanel;
+    private LayoutContainer mainPanel;
     private LabelField dataTitle;
     private LabelField dataFacility;
     private LabelField dataInstrument;
@@ -73,147 +65,88 @@ public class InvestigationSubPanel extends Composite {
     private LabelField lableInvestigators;
     private LabelField lableProposal;
     private LabelField dataProposal;
-    private Button btnShowDataSets;
-    private LayoutContainer topContainer;
+    private LayoutContainer topPanel;
     private LabelField lableShifts;
     private LabelField lablePublications;
     private FlexTable shiftsTable;
     private FlexTable namesTable;
     private FlexTable publicationsTable;
-    private EventPipeLine eventBus;
     private LabelField lableStartDate;
     private LabelField dataStartDate;
     private LabelField lableEndDate;
     private LabelField dataEndDate;
-    private HorizontalPanel buttonPanel;
-    private LabelField lableProperties;
-    private FlexTable propertiesTable;
+    private LabelField lableParameters;
+    private FlexTable parametersTable;
     private LayoutContainer shiftsContainer;
     private LayoutContainer publicationsContainer;
     private LayoutContainer investigatorsContainer;
     private LayoutContainer proposalContainer;
-    private LayoutContainer propertiesContainer;
+    private LayoutContainer parametersContainer;
 
     /**
      * Constructor
      */
-    public InvestigationSubPanel() {
-        contentPanel = new ContentPanel();
-        contentPanel.setTitleCollapse(true);
-        contentPanel.setFrame(true);
-        contentPanel.setExpanded(false);
-        contentPanel.setHeading("Investigation");
-        contentPanel.setCollapsible(true);
-        contentPanel.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        contentPanel.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
+    public InvestigationDetailPanel() {
+        mainPanel = new LayoutContainer();
+        TableLayout tl_mainPanel = new TableLayout();
+        tl_mainPanel.setCellVerticalAlign(VerticalAlignment.TOP);
+        tl_mainPanel.setCellHorizontalAlign(HorizontalAlignment.LEFT);
+        tl_mainPanel.setWidth("705px");
+        mainPanel.setLayout(tl_mainPanel);
 
-        contentlPanelBody = new LayoutContainer();
-        TableLayout tl_contentlPanelBody = new TableLayout();
-        tl_contentlPanelBody.setCellVerticalAlign(VerticalAlignment.TOP);
-        tl_contentlPanelBody.setCellHorizontalAlign(HorizontalAlignment.LEFT);
-        tl_contentlPanelBody.setWidth("100%");
-        contentlPanelBody.setLayout(tl_contentlPanelBody);
-
-        topContainer = new LayoutContainer();
+        topPanel = new LayoutContainer();
         TableLayout tl_topContainer = new TableLayout(2);
         tl_topContainer.setCellVerticalAlign(VerticalAlignment.TOP);
         tl_topContainer.setCellHorizontalAlign(HorizontalAlignment.LEFT);
         tl_topContainer.setCellSpacing(5);
-        topContainer.setLayout(tl_topContainer);
-
-        buttonPanel = new HorizontalPanel();
-        buttonPanel.setSpacing(5);
-        TableData td_buttonPanel = new TableData();
-        td_buttonPanel.setVerticalAlign(VerticalAlignment.TOP);
-        td_buttonPanel.setHorizontalAlign(HorizontalAlignment.LEFT);
-        td_buttonPanel.setColspan(2);
-
-        btnShowDataSets = new Button("Show Data Sets");
-        btnShowDataSets
-                .setToolTip("Click to open a window containing the list of data sets associated with this investigation");
-        btnShowDataSets.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                eventBus.showDatasetWindowWithHistory(investigationModel.getFacilityName(),
-                        investigationModel.getInvestigationId(), investigationModel.getInvestigationTitle());
-            }
-        });
-        buttonPanel.add(btnShowDataSets);
-
-        Button btnExport = new Button("Download Investigation Summary");
-        btnExport.setToolTip("Click to download the data shown in this window");
-        btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                EventPipeLine.getInstance().downloadParametersData(investigationModel.getFacilityName(),
-                        Constants.INVESTIGATION, investigationModel.getInvestigationId());
-            }
-        });
-        buttonPanel.add(btnExport);
-
-        // Additional buttons
-        // "Download Investigation Data"
-        // "Edit Permissions"
-
-        topContainer.add(buttonPanel, td_buttonPanel);
-        buttonPanel.setHeight("50px");
+        topPanel.setLayout(tl_topContainer);
 
         lableFacility = new LabelField("Facility: ");
-        topContainer.add(lableFacility);
+        topPanel.add(lableFacility);
 
         dataFacility = new LabelField("Facility");
-        topContainer.add(dataFacility);
+        topPanel.add(dataFacility);
 
         lableInstrument = new LabelField("Instrument: ");
-        topContainer.add(lableInstrument);
+        topPanel.add(lableInstrument);
 
         dataInstrument = new LabelField("Instrument");
-        topContainer.add(dataInstrument);
+        topPanel.add(dataInstrument);
 
         lableTitle = new LabelField("Title: ");
-        topContainer.add(lableTitle);
+        topPanel.add(lableTitle);
 
         dataTitle = new LabelField("Title");
-        topContainer.add(dataTitle);
+        topPanel.add(dataTitle);
 
         lableInvestigationNumber = new LabelField("Investigation No: ");
         TableData td_lableInvestigationNumber = new TableData();
         td_lableInvestigationNumber.setWidth("105");
-        topContainer.add(lableInvestigationNumber, td_lableInvestigationNumber);
+        topPanel.add(lableInvestigationNumber, td_lableInvestigationNumber);
 
         dataInvestigationNumber = new LabelField("Investigation Number");
-        topContainer.add(dataInvestigationNumber);
+        topPanel.add(dataInvestigationNumber);
 
         lableVisitId = new LabelField("Visit Id: ");
-        topContainer.add(lableVisitId);
+        topPanel.add(lableVisitId);
 
         dataVisitId = new LabelField("Visit Id");
-        topContainer.add(dataVisitId);
+        topPanel.add(dataVisitId);
 
         lableStartDate = new LabelField("Start Date:");
-        topContainer.add(lableStartDate);
+        topPanel.add(lableStartDate);
 
         dataStartDate = new LabelField("Start Date");
-        topContainer.add(dataStartDate);
+        topPanel.add(dataStartDate);
 
         lableEndDate = new LabelField("End Date:");
-        topContainer.add(lableEndDate);
+        topPanel.add(lableEndDate);
 
         dataEndDate = new LabelField("End Date");
-        topContainer.add(dataEndDate);
+        topPanel.add(dataEndDate);
 
-        contentlPanelBody.add(topContainer);
-        topContainer.setSize("100%", "100%");
+        mainPanel.add(topPanel);
+        topPanel.setSize("100%", "100%");
 
         // Shifts
         shiftsContainer = new LayoutContainer();
@@ -234,7 +167,7 @@ public class InvestigationSubPanel extends Composite {
 
         shiftsTable.getColumnFormatter().setWidth(0, "120px");
         shiftsTable.getColumnFormatter().setWidth(1, "120px");
-        contentlPanelBody.add(shiftsContainer);
+        mainPanel.add(shiftsContainer);
 
         // Investigators
         investigatorsContainer = new LayoutContainer();
@@ -251,7 +184,7 @@ public class InvestigationSubPanel extends Composite {
 
         namesTable = new FlexTable();
         investigatorsContainer.add(namesTable);
-        contentlPanelBody.add(investigatorsContainer);
+        mainPanel.add(investigatorsContainer);
 
         // Proposals
         proposalContainer = new LayoutContainer();
@@ -263,7 +196,7 @@ public class InvestigationSubPanel extends Composite {
         dataProposal = new LabelField("Proposal");
         proposalContainer.add(dataProposal, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
 
-        contentlPanelBody.add(proposalContainer);
+        mainPanel.add(proposalContainer);
 
         // Publications
         publicationsContainer = new LayoutContainer();
@@ -276,22 +209,21 @@ public class InvestigationSubPanel extends Composite {
         publicationsTable = new FlexTable();
         publicationsContainer
                 .add(publicationsTable, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
-        contentlPanelBody.add(publicationsContainer);
+        mainPanel.add(publicationsContainer);
 
-        // Properties
-        propertiesContainer = new LayoutContainer();
-        propertiesContainer.setLayout(new RowLayout(Orientation.VERTICAL));
+        // Parameters
+        parametersContainer = new LayoutContainer();
+        parametersContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
-        lableProperties = new LabelField("Properties:");
-        propertiesContainer.add(lableProperties, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
+        lableParameters = new LabelField("Parameters:");
+        parametersContainer.add(lableParameters, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 5, 5, 5)));
 
-        propertiesTable = new FlexTable();
-        propertiesTable.setBorderWidth(1);
-        propertiesContainer.add(propertiesTable, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
-        contentlPanelBody.add(propertiesContainer);
+        parametersTable = new FlexTable();
+        parametersTable.setBorderWidth(1);
+        parametersContainer.add(parametersTable, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(0, 5, 5, 5)));
+        mainPanel.add(parametersContainer);
 
-        contentPanel.add(contentlPanelBody);
-        initComponent(contentPanel);
+        initComponent(mainPanel);
         initDataBindings();
     }
 
@@ -314,10 +246,11 @@ public class InvestigationSubPanel extends Composite {
         investigatorsContainer.hide();
         namesTable.removeAllRows();
         proposalContainer.hide();
+        dataProposal.clear();
         publicationsContainer.hide();
         publicationsTable.removeAllRows();
-        propertiesContainer.hide();
-        propertiesTable.removeAllRows();
+        parametersContainer.hide();
+        parametersTable.removeAllRows();
     }
 
     /**
@@ -332,7 +265,6 @@ public class InvestigationSubPanel extends Composite {
         // the data as LableFields rather than Text in order to maintain
         // consistent formatting.
         reset();
-        contentPanel.expand();
         investigationModel = new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(),
                 inv.getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv.getEndDate(),
                 inv.getInstrument(), inv.getProposal());
@@ -409,32 +341,23 @@ public class InvestigationSubPanel extends Composite {
         // Parameters
         if (inv.getParameters().size() > 0) {
             LabelField name = new LabelField("Name");
-            propertiesTable.setWidget(0, 0, name);
+            parametersTable.setWidget(0, 0, name);
             LabelField value = new LabelField("Value");
-            propertiesTable.setWidget(0, 1, value);
+            parametersTable.setWidget(0, 1, value);
             LabelField units = new LabelField("Units");
-            propertiesTable.setWidget(0, 2, units);
+            parametersTable.setWidget(0, 2, units);
             int i = 1;
             for (TParameter tparameter : inv.getParameters()) {
-                propertiesTable.setWidget(i, 0, new LabelField(tparameter.getName()));
-                propertiesTable.setWidget(i, 1, new LabelField(tparameter.getValue()));
-                propertiesTable.setWidget(i, 2, new LabelField(tparameter.getUnits()));
+                parametersTable.setWidget(i, 0, new LabelField(tparameter.getName()));
+                parametersTable.setWidget(i, 1, new LabelField(tparameter.getValue()));
+                parametersTable.setWidget(i, 2, new LabelField(tparameter.getUnits()));
                 i++;
             }
-            propertiesContainer.show();
+            parametersContainer.show();
         }
 
         initDataBindings();
-    }
-
-    /**
-     * Set the event bus.
-     * 
-     * @param eventBus
-     *            the event bus
-     */
-    public void setEventBus(EventPipeLine eventBus) {
-        this.eventBus = eventBus;
+        EventPipeLine.getInstance().getTcEvents().fireResize();
     }
 
     protected void initDataBindings() {
@@ -461,5 +384,9 @@ public class InvestigationSubPanel extends Composite {
         //
         FieldBinding fieldBinding_7 = new FieldBinding(dataInstrument, "instrument");
         fieldBinding_7.bind(investigationModel);
+    }
+
+    protected TopcatInvestigation getInvestigationModel() {
+        return investigationModel;
     }
 }

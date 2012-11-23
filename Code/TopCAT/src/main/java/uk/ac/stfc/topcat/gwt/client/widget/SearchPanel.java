@@ -100,8 +100,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     private AdvancedSearchSubPanel advancedSearchSubPanel;
     private ParameterSearchSubPanel parameterSearchSubPanel;
     private FacilitiesSearchSubPanel facilitiesSearchSubPanel;
-    private VerticalPanel investigationPanel;
-    private InvestigationSubPanel investigationSubPanel;
+    private InvestigationPanel investigationPanel;
 
     // Radio button for type of search
     RadioButton rdbtnSearchJustMy; // Search just my data
@@ -365,15 +364,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         mainContainer.add(contentPanel);
 
         // Investigation detail
-        investigationPanel = new VerticalPanel();
-        investigationPanel.setBorders(true);
-        investigationPanel.setSpacing(20);
-        investigationPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
-        investigationSubPanel = new InvestigationSubPanel();
-        TableData td_investigationContentPanel = new TableData();
-        td_investigationContentPanel.setHeight("100%");
-        td_investigationContentPanel.setWidth("705px");
-        investigationPanel.add(investigationSubPanel, td_investigationContentPanel);
+        investigationPanel = new InvestigationPanel();
         investigationPanel.hide();
         mainContainer.add(investigationPanel);
 
@@ -420,7 +411,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     public void setEventBus(EventPipeLine eventBus) {
         this.eventBus = eventBus;
-        investigationSubPanel.setEventBus(eventBus);
     }
 
     /**
@@ -466,8 +456,8 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                 new AddInvestigationDetailsEventHandler() {
                     @Override
                     public void addInvestigationDetails(AddInvestigationDetailsEvent event) {
-                        investigationSubPanel.setInvestigation(event.getInvestigation());
                         investigationPanel.show();
+                        investigationPanel.setInvestigation(event.getInvestigation());
                     }
                 });
     }
@@ -480,10 +470,10 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
             @Override
             public void logout(LogoutEvent event) {
                 clearInvestigationList(event.getFacilityName());
-                String invDetailsFacility = investigationSubPanel.getFacilityName();
+                String invDetailsFacility = investigationPanel.getFacilityName();
                 if (!(invDetailsFacility == null) && invDetailsFacility.equalsIgnoreCase(event.getFacilityName())) {
                     investigationPanel.hide();
-                    investigationSubPanel.reset();
+                    investigationPanel.reset();
                 }
             }
         });
