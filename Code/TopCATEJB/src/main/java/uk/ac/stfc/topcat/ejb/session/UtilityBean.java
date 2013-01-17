@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -33,6 +33,7 @@ import javax.persistence.PersistenceContext;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
@@ -73,12 +74,12 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public ArrayList<String> getInstrumentNames(String sessionId, String serverName) {
+    public ArrayList<String> getInstrumentNames(String sessionId, String serverName) throws TopcatException {
         return utilManager.getInstrumentNames(manager, sessionId, serverName);
     }
 
     @Override
-    public ArrayList<String> getInvestigationTypes(String sessionId, String serverName) {
+    public ArrayList<String> getInvestigationTypes(String sessionId, String serverName) throws TopcatException {
         return utilManager.getInvestigationTypes(manager, sessionId, serverName);
     }
 
@@ -199,5 +200,14 @@ public class UtilityBean implements UtilityLocal {
         return utilManager.getAuthenticationTypes(manager, facilityName);
 
     }
+    
+    @Override
+    public List<TDatafileFormat> getDatafileFormats(String sessionId, String facilityName) throws TopcatException {
+        return utilManager.getDatafileFormats(manager, sessionId, facilityName);
+    }
 
+    @Override
+    public List<String> getDatasetTypes(String sessionId, String facilityName) throws TopcatException {
+        return utilManager.getDatasetTypes(manager, sessionId, facilityName);
+    }
 }

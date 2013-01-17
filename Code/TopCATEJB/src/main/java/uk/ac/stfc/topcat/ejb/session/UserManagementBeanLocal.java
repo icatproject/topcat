@@ -25,6 +25,7 @@ package uk.ac.stfc.topcat.ejb.session;
 import java.util.Map;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 
 /**
  * This is local interface to user management stateless session bean.
@@ -49,4 +50,7 @@ public interface UserManagementBeanLocal {
 
     public void loginWithTicket(String sessionId, String serverName, String authenticationServiceUrl, String ticket,
             long hours) throws AuthenticationException;
+
+    public String getIcatSessionId(String sessionId, String facilityName) throws TopcatException;
+
 }

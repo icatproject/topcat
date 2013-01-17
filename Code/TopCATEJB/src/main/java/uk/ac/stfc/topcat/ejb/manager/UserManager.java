@@ -497,7 +497,7 @@ public class UserManager {
      * @param serverName
      * @throws AuthenticationException
      */
-    public void anonymousUserLoginToServer(EntityManager manager, String serverName) throws AuthenticationException {
+    private void anonymousUserLoginToServer(EntityManager manager, String serverName) throws AuthenticationException {
         // Get the anonymous User session for the server
         TopcatUserSession userSession = null;
         try {
@@ -527,4 +527,22 @@ public class UserManager {
             }
         }
     }
+
+    /**
+     * Get the current ICAT session id for the given TopCAT session and
+     * facility.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param facilityName
+     * @return ICAT session id
+     * @throws TopcatException
+     */
+    public String getIcatSessionId(EntityManager manager, String sessionId, String facilityName) throws TopcatException {
+        TopcatUserSession userSession = (TopcatUserSession) manager
+                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
+                .setParameter("topcatSessionId", sessionId).setParameter("serverName", facilityName).getSingleResult();
+        return userSession.getIcatSessionId();
+    }
+
 }

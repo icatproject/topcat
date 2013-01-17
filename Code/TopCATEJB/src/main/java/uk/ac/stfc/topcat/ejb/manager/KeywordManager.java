@@ -64,9 +64,10 @@ public class KeywordManager {
      * @param serverURL
      *            : icat server URL.
      * @return : list of keywords
+     * @throws TopcatException
      */
     public List<String> getKeywordsFromServer(String sessionId, String serverName, String serverVersion,
-            String serverURL) {
+            String serverURL) throws TopcatException {
         List<String> resultKeywords = null;
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(serverName,
@@ -205,8 +206,9 @@ public class KeywordManager {
      *            : session to connect to icat server. NOTE: This method takes a
      *            days to update. need to figure out best way to updating the
      *            local cache
+     * @throws TopcatException
      */
-    public void UpdateKeywordsFromServer(EntityManager manager, TopcatUserSession session) {
+    public void UpdateKeywordsFromServer(EntityManager manager, TopcatUserSession session) throws TopcatException {
         // Get all the keywords from the server
         List<String> resultKeywords = getKeywordsFromServer(session.getIcatSessionId(), session.getUserId()
                 .getServerId().getName(), session.getUserId().getServerId().getVersion(), session.getUserId()

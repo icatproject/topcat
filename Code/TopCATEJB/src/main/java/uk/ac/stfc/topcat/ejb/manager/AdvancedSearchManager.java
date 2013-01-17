@@ -96,8 +96,8 @@ public class AdvancedSearchManager {
         if (searchDetails.getFacilityList().size() == 0) {
             userSessions = UserManager.getValidUserSessionByTopcatSession(manager, topcatSessionId);
         } else {
+            userSessions = new ArrayList<TopcatUserSession>();
             for (String facility : searchDetails.getFacilityList()) {
-                userSessions = new ArrayList<TopcatUserSession>();
                 TopcatUserSession facilitySession = UserManager.getValidUserSessionByTopcatSessionAndServerName(
                         manager, topcatSessionId, facility);
                 if (facilitySession != null) {
@@ -157,8 +157,8 @@ public class AdvancedSearchManager {
     }
 
     /**
-     * This method returns all datafiles that match the parameter if given
-     * else the instrument and Run number range.
+     * This method returns all datafiles that match the parameter if given else
+     * the instrument and Run number range.
      * 
      * @param manager
      * @param topcatSessionId

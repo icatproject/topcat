@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -35,6 +35,7 @@ import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
@@ -94,8 +95,10 @@ public class UtilityManager {
      * @param sessionId
      * @param serverName
      * @return
+     * @throws TopcatException
      */
-    public ArrayList<String> getInstrumentNames(EntityManager manager, String sessionId, String serverName) {
+    public ArrayList<String> getInstrumentNames(EntityManager manager, String sessionId, String serverName)
+            throws TopcatException {
         ArrayList<String> instrumentNames = new ArrayList<String>();
         TopcatUserSession userSession = null;
         try {
@@ -126,8 +129,9 @@ public class UtilityManager {
      * @param sessionId
      * @param server
      * @return
+     * @throws TopcatException
      */
-    private List<String> getInstrumentNames(String sessionId, TopcatIcatServer server) {
+    private List<String> getInstrumentNames(String sessionId, TopcatIcatServer server) throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
@@ -145,8 +149,10 @@ public class UtilityManager {
      * @param sessionId
      * @param serverName
      * @return
+     * @throws TopcatException
      */
-    public ArrayList<String> getInvestigationTypes(EntityManager manager, String sessionId, String serverName) {
+    public ArrayList<String> getInvestigationTypes(EntityManager manager, String sessionId, String serverName)
+            throws TopcatException {
         ArrayList<String> investigationTypes = new ArrayList<String>();
         TopcatUserSession userSession = null;
         try {
@@ -176,8 +182,9 @@ public class UtilityManager {
      * @param sessionId
      * @param server
      * @return
+     * @throws TopcatException
      */
-    private List<String> getInvestigationTypes(String sessionId, TopcatIcatServer server) {
+    private List<String> getInvestigationTypes(String sessionId, TopcatIcatServer server) throws TopcatException {
         try {
             // Get the ICAT webservice client and call get investigation types
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
@@ -980,4 +987,67 @@ public class UtilityManager {
         return authenticationTypes;
     }
 
+    /**
+     * Get the data file formats for the given facility.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param facilityName
+     * @return
+     * @throws TopcatException
+     */
+    public List<TDatafileFormat> getDatafileFormats(EntityManager manager, String sessionId, String facilityName)
+            throws TopcatException {
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, facilityName);
+            return getDatafileFormats(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
+        } catch (javax.persistence.NoResultException ex) {
+            logger.warning("getDatafileFormats: " + ex.getMessage());
+        }
+        return null;
+    }
+
+    private List<TDatafileFormat> getDatafileFormats(String sessionId, TopcatIcatServer server) throws TopcatException {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.listDatafileFormats(sessionId);
+        } catch (MalformedURLException ex) {
+            logger.warning("getDatafileFormats: " + ex.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Get the data set types for the given facility.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param facilityName
+     * @return
+     * @throws TopcatException
+     */
+    public List<String> getDatasetTypes(EntityManager manager, String sessionId, String facilityName)
+            throws TopcatException {
+        try {
+            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                    sessionId, facilityName);
+            return getDatasetTypes(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
+        } catch (javax.persistence.NoResultException ex) {
+            logger.warning("getDatasetTypes: " + ex.getMessage());
+        }
+        return null;
+    }
+
+    private List<String> getDatasetTypes(String sessionId, TopcatIcatServer server) throws TopcatException {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.listDatasetTypes(sessionId);
+        } catch (MalformedURLException ex) {
+            logger.warning("getDatasetTypes: " + ex.getMessage());
+        }
+        return null;
+    }
 }

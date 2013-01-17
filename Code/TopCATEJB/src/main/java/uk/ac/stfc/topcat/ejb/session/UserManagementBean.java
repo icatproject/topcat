@@ -29,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.ejb.manager.UserManager;
 
 /**
@@ -80,7 +81,7 @@ public class UserManagementBean implements UserManagementBeanLocal {
 
     @Override
     /**
-     * This method login to TopCAT and retun a session id string. this string should be used for
+     * This method login to TopCAT and return a session id string. this string should be used for
      * communicating with the TopCAT System.
      * @return Session id string value
      */
@@ -91,7 +92,7 @@ public class UserManagementBean implements UserManagementBeanLocal {
     @Override
     /**
      * This method authenticates and authorises a user with session id to an ICAT server so that the
-     * further opertaion with TopCAT will uses this new credential rather than anonymous user login to icat server.
+     * further operation with TopCAT will uses this new credential rather than anonymous user login to icat server.
      * @param sessionId : sessionId used to communicate with TopCAT
      * @param serverName: ICAT Server name to authenticate with
      * @param authenticationType: a string containing the authentication type
@@ -125,6 +126,11 @@ public class UserManagementBean implements UserManagementBeanLocal {
         return userManager.isSessionValid(manager, sessionId, serverName);
     }
 
+    @Override
+    public String getIcatSessionId(String sessionId, String facilityName) throws TopcatException {
+        return userManager.getIcatSessionId(manager, sessionId, facilityName);
+    }
+
     /**
      * This method is a timer service to automatically update the anonymous
      * login to icat servers.
@@ -133,4 +139,5 @@ public class UserManagementBean implements UserManagementBeanLocal {
     public void anonymousLogin() {
         userManager.anonymousUserLogin(manager);
     }
+
 }

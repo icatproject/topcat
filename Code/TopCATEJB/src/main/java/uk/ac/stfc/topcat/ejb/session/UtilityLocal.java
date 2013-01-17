@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -31,6 +31,7 @@ import javax.ejb.Local;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
@@ -56,9 +57,9 @@ public interface UtilityLocal {
 
     ArrayList<String> getFacilityNames();
 
-    ArrayList<String> getInstrumentNames(String sessionId, String serverName);
+    ArrayList<String> getInstrumentNames(String sessionId, String serverName) throws TopcatException;
 
-    ArrayList<String> getInvestigationTypes(String sessionId, String serverName);
+    ArrayList<String> getInvestigationTypes(String sessionId, String serverName) throws TopcatException;
 
     ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
             throws ICATMethodNotFoundException;
@@ -112,5 +113,8 @@ public interface UtilityLocal {
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
     List<String> getAuthenticationTypes(String facilityName);
+    
+    List<TDatafileFormat> getDatafileFormats(String sessionId, String facilityName) throws TopcatException;
 
+    List<String> getDatasetTypes(String sessionId, String facilityName) throws TopcatException;
 }

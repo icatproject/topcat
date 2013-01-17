@@ -34,6 +34,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.xml.ws.RequestWrapper;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
+import uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 
@@ -53,6 +54,8 @@ public class TOPCAT {
     private UserManagementBeanLocal userManagement;
     @EJB
     private SearchManagementBeanLocal searchManagement;
+    @EJB
+    private UploadManagementBeanLocal uploadManagement;
     @EJB
     private UtilityLocal utility;
 
