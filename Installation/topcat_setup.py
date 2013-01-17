@@ -179,8 +179,14 @@ def install_props_file():
     """
     Copy the topcat.properties file
     """
-    dest = path.join(CONF_PROPS_TOPCAT["glassfish"], "glassfish", "domains",
-                     "domain1", "lib", "classes", "topcat.properties")    
+    domain = "domain1"
+    dest_dir = path.join(CONF_PROPS_TOPCAT["glassfish"], "glassfish", "domains",
+                     domain, "lib", "classes")
+    if not path.exists(dest_dir):
+        print "ERROR Cannot find the directory" + dest_dir
+        exit(1)
+    dest = path.join(dest_dir, "topcat.properties")
+        
     if not path.exists(dest):
         if not  path.exists('topcat.properties'):
             print "ERROR Cannot find topcat.properties in the current directory"

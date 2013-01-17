@@ -1,3 +1,8 @@
+Release 1.8 17/01/13
+~~~~~~~~~~~~~~~~~~~~
+This is a bug fix release for sites still running ICAT 3.4
+Parameter searching has temporarily bee disabled
+
 Release 1.7 13/11/12
 ~~~~~~~~~~~~~~~~~~~~
 Added range searches to the parameter search
