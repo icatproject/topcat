@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -36,6 +36,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
+import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -83,8 +84,9 @@ public interface UtilityService extends RemoteService {
      * @param facilityName
      *            a string containing the facility name
      * @return a list of strings containing instrument names
+     * @throws TopcatException
      */
-    public ArrayList<String> getInstrumentNames(String facilityName);
+    public ArrayList<String> getInstrumentNames(String facilityName) throws TopcatException;
 
     /**
      * Get a list of investigation types for the given facility.
@@ -92,8 +94,9 @@ public interface UtilityService extends RemoteService {
      * @param facilityName
      *            a string containing the facility name
      * @return a list of strings containing investigation types
+     * @throws TopcatException
      */
-    public ArrayList<String> getInvestigationTypes(String facilityName);
+    public ArrayList<String> getInvestigationTypes(String facilityName) throws TopcatException;
 
     /**
      * TODO
@@ -291,4 +294,23 @@ public interface UtilityService extends RemoteService {
      */
     public List<AuthenticationModel> getAuthenticationTypes(String facilityName);
 
+    /**
+     * Get a list of data set types for a given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of data set types
+     * @throws TopcatException
+     */
+    public List<String> getDatasetTypes(String facilityName) throws TopcatException;
+
+    /**
+     * Get a list of data file formats for a given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of DatafileFormatModels containing data file formats
+     * @throws TopcatException
+     */
+    public List<DatafileFormatModel> getDatafileFormats(String facilityName) throws TopcatException;
 }

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -52,6 +52,7 @@ import javax.servlet.http.HttpSession;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
@@ -67,6 +68,7 @@ import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
+import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -130,9 +132,10 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * 
      * @param facilityName
      *            iCAT instance name
+     * @throws TopcatException
      */
     @Override
-    public ArrayList<String> getInstrumentNames(String facilityName) {
+    public ArrayList<String> getInstrumentNames(String facilityName) throws TopcatException {
         return utilityManager.getInstrumentNames(getSessionId(), facilityName);
     }
 
@@ -141,9 +144,10 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * 
      * @param facilityName
      *            iCAT instance name
+     * @throws TopcatException
      */
     @Override
-    public ArrayList<String> getInvestigationTypes(String facilityName) {
+    public ArrayList<String> getInvestigationTypes(String facilityName) throws TopcatException {
         return utilityManager.getInvestigationTypes(getSessionId(), facilityName);
     }
 
@@ -198,8 +202,9 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * 
      * @param node
      * @return
+     * @throws TopcatException
      */
-    private ArrayList<ICATNode> createInstrumentsNodesInFacility(ICATNode node) {
+    private ArrayList<ICATNode> createInstrumentsNodesInFacility(ICATNode node) throws TopcatException {
         ArrayList<ICATNode> result = new ArrayList<ICATNode>();
         ArrayList<String> instrumentList = utilityManager.getInstrumentNames(getSessionId(), node.getFacility());
         for (String instrument : instrumentList) {
@@ -467,13 +472,16 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             }
             for (TDatafile df : dfList) {
                 if (df.getCreateTime() != null)
-                    result.add(new DatafileModel(dataset.getFacilityName(), dsName, df.getId(), df.getName(), df
-                            .getSize().toString(), df.getFormat(), df.getFormatVersion(), df.getFormatType(), df
-                            .getCreateTime(), df.getLocation()));
+                    result.add(new DatafileModel(dataset.getFacilityName(), dataset.getId(), dsName, df.getId(), df
+                            .getName(), df.getDescription(), df.getSize().toString(), df.getDoi(), df.getLocation(), df
+                            .getFormatId(), df.getFormat(), df.getFormatDescription(), df.getFormatVersion(), df
+                            .getFormatType(), df.getCreateTime(), df.getModTime()));
                 else
-                    result.add(new DatafileModel(dataset.getFacilityName(), dsName, df.getId(), df.getName(), df
-                            .getSize().toString(), df.getFormat(), df.getFormatVersion(), df.getFormatType(), null, df
-                            .getLocation()));
+                    result.add(new DatafileModel(dataset.getFacilityName(), dataset.getId(), dsName, df.getId(), df
+                            .getName(), df.getDescription(), df.getSize().toString(), df.getDoi(), df.getLocation(), df
+                            .getFormatId(), df.getFormat(), df.getFormatDescription(), df.getFormatVersion(), df
+                            .getFormatType(), null, null));
+
             }
         }
         return result;
@@ -797,4 +805,20 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         return models;
     }
 
+    @Override
+    public List<String> getDatasetTypes(String facilityName) throws TopcatException {
+        return utilityManager.getDatasetTypes(getSessionId(), facilityName);
+    }
+
+    @Override
+    public List<DatafileFormatModel> getDatafileFormats(String facilityName) throws TopcatException {
+        List<DatafileFormatModel> models = new ArrayList<DatafileFormatModel>();
+        List<TDatafileFormat> result = utilityManager.getDatafileFormats(getSessionId(), facilityName);
+        for (TDatafileFormat df : result) {
+            models.add(new DatafileFormatModel(facilityName, 
+                    df.getFormatId(), df.getFormat(), df.getFormatDescription(), df.getFormatVersion(), df
+                            .getFormatType()));
+        }
+        return models;
+    }
 }

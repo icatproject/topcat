@@ -6,6 +6,7 @@
 	<inherits name="com.google.gwt.http.HTTP" />
 	<inherits name="com.google.gwt.i18n.CldrLocales" />
 
+	<!-- comment out the following 3 lines to speed up compile for development -->
 	<extend-property name="locale" values="en_GB" />
 	<extend-property name="locale" values="en_US" />
 	<extend-property name="locale" values="en_FR" />
@@ -24,4 +25,7 @@
 	<inherits name="uk.ac.stfc.topcat.core.gwt.module" />
 	<entry-point class="uk.ac.stfc.topcat.gwt.client.TOPCATOnline" />
 	<!--<inherits name="com.google.appengine.repackaged.com.google.common.base.Base"/> -->
+
+	<!-- development setting to only compile for Firefox -->
+	<!-- <set-property name="user.agent" value="gecko1_8"/> -->
 </module>

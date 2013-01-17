@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -164,9 +164,11 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
         // Convert TDatafiles to DatafileModel
         ArrayList<DatafileModel> datafileModel = new ArrayList<DatafileModel>();
         for (TDatafile datafile : datafileList) {
-            datafileModel.add(new DatafileModel(facilityName, null, datafile.getId(), datafile.getName(), datafile
-                    .getSize().toString(), datafile.getFormat(), datafile.getFormatVersion(), datafile.getFormatType(),
-                    datafile.getCreateTime(), datafile.getLocation()));
+            datafileModel.add(new DatafileModel(facilityName, null, null, datafile.getId(), datafile.getName(),
+                    datafile.getDescription(), datafile.getSize().toString(), datafile.getDoi(),
+                    datafile.getLocation(), datafile.getFormatId(), datafile.getFormat(), datafile
+                            .getFormatDescription(), datafile.getFormatVersion(), datafile.getFormatType(), datafile
+                            .getCreateTime(), datafile.getModTime()));
         }
         return datafileModel;
     }

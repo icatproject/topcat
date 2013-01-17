@@ -22,11 +22,6 @@
  */
 package uk.ac.stfc.topcat.gwt.server;
 
-/**
- * Imports
- */
-import java.util.Map;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -36,38 +31,34 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
-import uk.ac.stfc.topcat.gwt.client.LoginService;
-import uk.ac.stfc.topcat.gwt.client.exception.LoginException;
+import uk.ac.stfc.topcat.gwt.client.UploadService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * This class is a servlet implementation providing the login service to the gwt
- * AJAX client
+ * This is servlet implementation of Upload methods.
  * 
- * <p>
- * 
- * @author Mr. Srikanth Nagella
- * @version 1.0, &nbsp; 30-APR-2010
- * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
-public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
+public class UploadServiceImpl extends RemoteServiceServlet implements UploadService {
+    private UploadManagementBeanLocal uploadManager = null;
     private UserManagementBeanLocal userManager = null;
 
     /**
-     * This method initializes the servlet, creates a usermanagementbean. this
-     * will be used by the servlet to perform usermanagement operations.
+     * Servlet Init method.
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
         super.init(conf);
-
         try {
             // create initial context
             Context ctx = new InitialContext();
+            uploadManager = (UploadManagementBeanLocal) ctx
+                    .lookup("java:global/TopCAT/UploadManagementBean!uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal");
             userManager = (UserManagementBeanLocal) ctx
                     .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
         } catch (NamingException ex) {
@@ -75,82 +66,17 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see uk.ac.stfc.topcat.gwt.client.LoginService#login(java.util.Map,
-     * java.lang.String, java.lang.String)
-     */
     @Override
-    public String login(Map<String, String> parameters, String authenticationType, String facilityName)
-            throws LoginException {
-        String sessionId = getTopcatSessionId();
-        try {
-            userManager.login(sessionId, facilityName, authenticationType, parameters);
-        } catch (AuthenticationException e) {
-            throw (new LoginException(e.getMessage()));
-        }
-
-        return sessionId;
-    }
-
-    /*
-     * This method performs logout operation from an iCAT server. (non-Javadoc)
-     * 
-     * @param facilityName name of iCAT instance
-     * 
-     * @see uk.ac.stfc.topcat.gwt.client.LoginService#logout(java.lang.String)
-     */
-    @Override
-    public void logout(String facilityName) throws LoginException {
-        HttpServletRequest request = this.getThreadLocalRequest();
-        HttpSession session = request.getSession();
-        String sessionId = null;
-        if (session.getAttribute("SESSION_ID") == null) { // First time login
-            throw new LoginException("Session not valid");
-        } else {
-            sessionId = (String) session.getAttribute("SESSION_ID");
-        }
-        try {
-            userManager.logout(sessionId, facilityName);
-        } catch (AuthenticationException e) {
-            throw new LoginException(e.getMessage());
-        }
-    }
-
-    @Override
-    public Boolean isUserLoggedIn(String facilityName) {
-        String topcatSessionId = getTopcatSessionId();
-        return userManager.isSessionValid(topcatSessionId, facilityName);
-    }
-
-    @Override
-    public String loginWithTicket(String facilityName, String authenticationServiceUrl, String ticket)
-            throws LoginException {
-        String topcatSessionId = getTopcatSessionId();
-        try {
-            // TODO Remove hard coded hours
-            long sessionDuration = 2;
-            userManager.loginWithTicket(topcatSessionId, facilityName, authenticationServiceUrl, ticket,
-                    sessionDuration);
-        } catch (AuthenticationException e) {
-            throw (new LoginException(e.getMessage()));
-        }
-        return topcatSessionId;
-    }
-
-    @Override
-    public String getSessionId(String facilityName) throws TopcatException {
-        return userManager.getIcatSessionId(getTopcatSessionId(), facilityName);
+    public Long createDataSet(TDataset dataset) throws TopcatException {
+        return uploadManager.createDataSet(getSessionId(), dataset);
     }
 
     /**
-     * This method returns the session id from the Servlet SESSION variable
-     * ***WARNING: only works if the user browser cookies are enable ***
+     * This method returns session id from the session information.
      * 
-     * @return
+     * @return user session id
      */
-    private String getTopcatSessionId() {
+    private String getSessionId() {
         HttpServletRequest request = this.getThreadLocalRequest();
         HttpSession session = request.getSession();
         String sessionId = null;
@@ -167,5 +93,4 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         }
         return sessionId;
     }
-
 }

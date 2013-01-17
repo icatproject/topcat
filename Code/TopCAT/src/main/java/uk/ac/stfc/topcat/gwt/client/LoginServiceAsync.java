@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -43,8 +43,8 @@ public interface LoginServiceAsync {
      * Login to an iCat server using the given parameters.
      * 
      * @param parameters
-     *            a map of parameters that are specific to the
-     *            authentication type
+     *            a map of parameters that are specific to the authentication
+     *            type
      * @param authenticationType
      *            a string containing the authentication type
      * @param facilityName
@@ -89,4 +89,14 @@ public interface LoginServiceAsync {
      */
     public void loginWithTicket(String facilityName, String authenticationServiceUrl, String ticket,
             AsyncCallback<String> callback);
+
+    /**
+     * Get the ICAT current session id for the given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     */
+    public void getSessionId(String facilityName, AsyncCallback<String> callback);
+
 }

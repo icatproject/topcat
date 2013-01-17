@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -290,7 +290,7 @@ public class BrowsePanel extends Composite {
         // mainContainer.add(contentPanel);
 
         // Investigation detail
-        investigationPanel = new InvestigationPanel();
+        investigationPanel = new InvestigationPanel(SOURCE);
         investigationPanel.hide();
         layoutContainer.add(investigationPanel);
 

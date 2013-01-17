@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -68,36 +68,6 @@ public class DatasetModel extends BaseModelData implements Serializable {
         setStatus(datasetStatus);
         setType(datasetType);
         setDescription(datasetDescription);
-        setSelected(false);
-    }
-
-    /**
-     * Constructor to set dataset information
-     * 
-     * @param facilityName
-     *            facility name
-     * @param datasetId
-     *            dataset id
-     * @param datasetName
-     *            dataset name
-     * @param datasetStatus
-     *            dataset status
-     * @param datasetType
-     *            dataset type
-     * @param datasetDescription
-     *            dataset description
-     * @param datasetSample
-     *            dataset sample
-     */
-    public DatasetModel(String facilityName, String datasetId, String datasetName, String datasetStatus,
-            String datasetType, String datasetDescription, String datasetSample) {
-        setFacilityName(facilityName);
-        setId(datasetId);
-        setName(datasetName);
-        setStatus(datasetStatus);
-        setType(datasetType);
-        setDescription(datasetDescription);
-        setSample(datasetSample);
         setSelected(false);
     }
 

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -34,6 +34,7 @@ import java.util.Set;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
+import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
@@ -284,5 +285,24 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getAuthenticationTypes(String facilityName, AsyncCallback<List<AuthenticationModel>> callback);
+
+    /**
+     * Get a list of data set types for a given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void getDatasetTypes(String facilityName, AsyncCallback<List<String>> callback);
+
+    /**
+     * Get a list of data file formats for a given facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     */
+    public void getDatafileFormats(String facilityName, AsyncCallback<List<DatafileFormatModel>> callback);
 
 }

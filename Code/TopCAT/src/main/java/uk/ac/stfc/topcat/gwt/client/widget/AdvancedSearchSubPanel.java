@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -44,6 +44,7 @@ import uk.ac.stfc.topcat.gwt.client.model.Facility;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -322,6 +323,8 @@ public class AdvancedSearchSubPanel extends Composite {
                 }
             }
         }
+        lstInstrument.getStore().sort("name", Style.SortDir.ASC);
+        lstInvestigationTypes.getStore().sort("name", Style.SortDir.ASC);
     }
 
     /**

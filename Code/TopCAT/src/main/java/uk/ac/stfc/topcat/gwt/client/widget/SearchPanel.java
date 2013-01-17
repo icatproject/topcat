@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -95,7 +95,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     private VerticalPanel topPanel = new VerticalPanel();
     private KeywordsSuggestOracle oracle;
-    private SuggestBox keywords;
     private MultipleTextBox multipleTextBox;
     private AdvancedSearchSubPanel advancedSearchSubPanel;
     private ParameterSearchSubPanel parameterSearchSubPanel;
@@ -123,9 +122,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         contentPanel.setCollapsible(true);
         contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
 
-        VerticalPanel bodyPanel = new VerticalPanel();
-        bodyPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
-
         waitDialog = new WaitDialog();
         waitDialog.setMessage(" Searching...");
         waitDialog.hide();
@@ -134,159 +130,27 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         topPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
         topPanel.setBorders(true);
         contentPanel.setTopComponent(topPanel);
+        topPanel.add(getFlexTable());
 
-        FlexTable flexTable = new FlexTable();
-        flexTable.setCellSpacing(8);
-        flexTable.setCellPadding(2);
-        topPanel.add(flexTable);
-        flexTable.setHeight("20%");
-
-        LabelField lblfldEywords = new LabelField("Keywords");
-        flexTable.setWidget(0, 0, lblfldEywords);
-
-        multipleTextBox = new MultipleTextBox();
-        multipleTextBox.setWidth("361px");
-        keywords = new SuggestBox(oracle, multipleTextBox);
-        flexTable.setWidget(0, 1, keywords);
-
-        Button btnSearch = new Button("Search");
-        btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                // Check whether to do searching my data or all data
-                if (rdbtnSearchAllData.getValue()) {
-                    // Search all data
-                    doSearchAllData();
-                } else if (rdbtnSearchJustMy.getValue()) {
-                    // Search just my data
-                    doSearchJustMyData();
-                }
-            }
-        });
-        flexTable.setWidget(0, 2, btnSearch);
-
-        rdbtnSearchJustMy = new RadioButton("new name", "Search Just My Data");
-        rdbtnSearchJustMy.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent clickEvent) {
-                EventPipeLine.getEventBus().fireEvent(new SearchAllButtonEvent(false));
-            }
-        });
-        rdbtnSearchJustMy.setValue(true);
-        rdbtnSearchJustMy.setHTML(" Search Just My Data");
-        flexTable.setWidget(1, 0, rdbtnSearchJustMy);
-
-        rdbtnSearchAllData = new RadioButton("new name", " Search All Data");
-        rdbtnSearchAllData.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent clickEvent) {
-                EventPipeLine.getEventBus().fireEvent(new SearchAllButtonEvent(true));
-            }
-        });
-
-        flexTable.setWidget(1, 1, rdbtnSearchAllData);
-        flexTable.getFlexCellFormatter().setColSpan(1, 1, 2);
-        flexTable.getFlexCellFormatter().setColSpan(1, 0, 2);
-        flexTable.getCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
-        flexTable.getCellFormatter().setHorizontalAlignment(1, 1, HasHorizontalAlignment.ALIGN_CENTER);
-        flexTable.getFlexCellFormatter().setColSpan(0, 1, 2);
-
-        ContentPanel cntntpnlAdvancedSearch = new ContentPanel();
-        cntntpnlAdvancedSearch.setTitleCollapse(true);
-        cntntpnlAdvancedSearch.setFrame(true);
-        cntntpnlAdvancedSearch.setExpanded(false);
-        cntntpnlAdvancedSearch.setHeading("Advanced Search");
-        cntntpnlAdvancedSearch.setCollapsible(true);
-        cntntpnlAdvancedSearch.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        cntntpnlAdvancedSearch.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-
-        advancedSearchSubPanel = new AdvancedSearchSubPanel();
-        advancedSearchSubPanel.setInvSearchCallback(this);
-        cntntpnlAdvancedSearch.add(advancedSearchSubPanel);
+        // Advanced Search Panel
         TableData td_cntntpnlAdvancedSearch = new TableData();
         td_cntntpnlAdvancedSearch.setHeight("100%");
         td_cntntpnlAdvancedSearch.setWidth("705px");
-        topPanel.add(cntntpnlAdvancedSearch, td_cntntpnlAdvancedSearch);
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+        topPanel.add(getAdvancedSearchPanel(), td_cntntpnlAdvancedSearch);
 
-        ContentPanel cntntpnlParameterSearch = new ContentPanel();
-        cntntpnlParameterSearch.setTitleCollapse(true);
-        cntntpnlParameterSearch.setFrame(true);
-        cntntpnlParameterSearch.setExpanded(false);
-        cntntpnlParameterSearch.setHeading("Parameter Search");
-        cntntpnlParameterSearch.setCollapsible(true);
-        cntntpnlParameterSearch.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        cntntpnlParameterSearch.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        parameterSearchSubPanel = new ParameterSearchSubPanel();
-        cntntpnlParameterSearch.add(parameterSearchSubPanel);
-        TableData td_cntntpnlParameterSearch = new TableData();
-        td_cntntpnlParameterSearch.setHeight("100%");
-        td_cntntpnlParameterSearch.setWidth("705px");
-        topPanel.add(cntntpnlParameterSearch, td_cntntpnlParameterSearch);
+        // Parameter Search Panel
+        // TODO add back in for icat 4
+        // TableData td_cntntpnlParameterSearch = new TableData();
+        // td_cntntpnlParameterSearch.setHeight("100%");
+        // td_cntntpnlParameterSearch.setWidth("705px");
+        // topPanel.add(getParameterSearchPanel(), td_cntntpnlParameterSearch);
 
-        ContentPanel cntntpnlFacilitiesSearch = new ContentPanel();
-        cntntpnlFacilitiesSearch.setTitleCollapse(true);
-        cntntpnlFacilitiesSearch.setExpanded(false);
-        cntntpnlFacilitiesSearch.setFrame(true);
-        cntntpnlFacilitiesSearch.setHeading("Facilities Search");
-        cntntpnlFacilitiesSearch.setCollapsible(true);
-        cntntpnlFacilitiesSearch.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        cntntpnlFacilitiesSearch.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        facilitiesSearchSubPanel = new FacilitiesSearchSubPanel();
-        cntntpnlFacilitiesSearch.add(facilitiesSearchSubPanel);
+        // Facilities Search Panel
         TableData td_cntntpnlFacilitiesSearch = new TableData();
         td_cntntpnlFacilitiesSearch.setHeight("100%");
         td_cntntpnlFacilitiesSearch.setWidth("705px");
-        topPanel.add(cntntpnlFacilitiesSearch, td_cntntpnlFacilitiesSearch);
+        topPanel.add(getFacilitiesSearchPanel(), td_cntntpnlFacilitiesSearch);
         topPanel.add(new Text(""));
-
-        ColumnConfig clmncnfgServerName = new ColumnConfig("serverName", "Facility Name", 150);
-        configs.add(clmncnfgServerName);
-
-        ColumnConfig clmncnfgInvestigationNumber = new ColumnConfig("investigationName", "Investigation Number", 150);
-        configs.add(clmncnfgInvestigationNumber);
-
-        ColumnConfig clmncnfgVisitId = new ColumnConfig("visitId", "Visit Id", 150);
-        configs.add(clmncnfgVisitId);
-
-        ColumnConfig clmncnfgTitle = new ColumnConfig("title", "Title", 150);
-        configs.add(clmncnfgTitle);
-
-        ColumnConfig clmncnfgStartDate = new ColumnConfig("startDate", "Start Date", 150);
-        clmncnfgStartDate.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
-        configs.add(clmncnfgStartDate);
-
-        ColumnConfig clmncnfgEndDate = new ColumnConfig("endDate", "End Date", 150);
-        clmncnfgEndDate.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
-        configs.add(clmncnfgEndDate);
 
         // Pagination
         invPageProxy = new PagingModelMemoryProxy(investigationList);
@@ -294,60 +158,8 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                 invPageProxy);
         loader.setRemoteSort(true);
         investigationList = new ListStore<TopcatInvestigation>(loader);
-        grid = new Grid<TopcatInvestigation>(investigationList, new ColumnModel(configs));
-        grid.setAutoExpandColumn("title");
-        grid.setAutoExpandMin(200);
-        grid.setMinColumnWidth(100);
-        grid.setToolTip("\"Click\" row to show investigation, \"Double Click\" to show datasets, right click for more options");
-        // single click
-        grid.addListener(Events.RowClick, new Listener<GridEvent<TopcatInvestigation>>() {
-            @Override
-            public void handleEvent(GridEvent<TopcatInvestigation> e) {
-                eventBus.getInvestigationDetails(e.getModel().getFacilityName(), e.getModel().getInvestigationId(),
-                        SOURCE);
-            }
-        });
-        // double click
-        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
-            @Override
-            public void handleEvent(GridEvent<TopcatInvestigation> e) {
-                TopcatInvestigation inv = e.getModel();
-                eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
-                        inv.getInvestigationTitle());
-            }
-        });
 
-        // Context Menu
-        Menu contextMenu = new Menu();
-        contextMenu.setWidth(160);
-        MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show investigation");
-        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
-        contextMenu.add(showInvestigation);
-        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                eventBus.getInvestigationDetails(grid.getSelectionModel().getSelectedItem().getFacilityName(), grid
-                        .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
-            }
-        });
-        MenuItem showDS = new MenuItem();
-        showDS.setText("show data sets");
-        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
-        contextMenu.add(showDS);
-        showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                eventBus.showDatasetWindowWithHistory(grid.getSelectionModel().getSelectedItem().getFacilityName(),
-                        grid.getSelectionModel().getSelectedItem().getInvestigationId(), grid.getSelectionModel()
-                                .getSelectedItem().getInvestigationTitle());
-            }
-        });
-        grid.setContextMenu(contextMenu);
-
-        grid.setAutoHeight(true);
-        bodyPanel.add(grid);
-        contentPanel.add(bodyPanel, new RowData(Style.DEFAULT, 376.0, new Margins()));
+        contentPanel.add(getResultsPanel(), new RowData(Style.DEFAULT, 376.0, new Margins()));
 
         // Pagination Bar
         toolBar = new PagingToolBar(15) {
@@ -364,7 +176,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         mainContainer.add(contentPanel);
 
         // Investigation detail
-        investigationPanel = new InvestigationPanel();
+        investigationPanel = new InvestigationPanel(SOURCE);
         investigationPanel.hide();
         mainContainer.add(investigationPanel);
 
@@ -437,6 +249,8 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     public void setInvestigations(ArrayList<TopcatInvestigation> invList) {
         invPageProxy.setData(invList);
         toolBar.refresh();
+        investigationPanel.hide();
+        investigationPanel.reset();
     }
 
     /**
@@ -446,6 +260,256 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
      */
     public void setGridWidth(int width) {
         grid.setWidth(width);
+    }
+
+    /**
+     * Set up a flex table containing the keyword selection and my data / all
+     * data button.
+     * 
+     * @return a felex table
+     */
+    private FlexTable getFlexTable() {
+        FlexTable flexTable = new FlexTable();
+        flexTable.setCellSpacing(8);
+        flexTable.setCellPadding(2);
+        flexTable.setHeight("20%");
+
+        LabelField lblfldEywords = new LabelField("Keywords");
+        flexTable.setWidget(0, 0, lblfldEywords);
+
+        multipleTextBox = new MultipleTextBox();
+        multipleTextBox.setWidth("361px");
+        SuggestBox keywords = new SuggestBox(oracle, multipleTextBox);
+        flexTable.setWidget(0, 1, keywords);
+
+        Button btnSearch = new Button("Search");
+        btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                // Check whether to do searching my data or all data
+                if (rdbtnSearchAllData.getValue()) {
+                    // Search all data
+                    doSearchAllData();
+                } else if (rdbtnSearchJustMy.getValue()) {
+                    // Search just my data
+                    doSearchJustMyData();
+                }
+            }
+        });
+        flexTable.setWidget(0, 2, btnSearch);
+
+        rdbtnSearchJustMy = new RadioButton("new name", "Search Just My Data");
+        rdbtnSearchJustMy.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent clickEvent) {
+                EventPipeLine.getEventBus().fireEvent(new SearchAllButtonEvent(false));
+            }
+        });
+        rdbtnSearchJustMy.setValue(true);
+        rdbtnSearchJustMy.setHTML(" Search Just My Data");
+        flexTable.setWidget(1, 0, rdbtnSearchJustMy);
+
+        rdbtnSearchAllData = new RadioButton("new name", " Search All Data");
+        rdbtnSearchAllData.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent clickEvent) {
+                EventPipeLine.getEventBus().fireEvent(new SearchAllButtonEvent(true));
+            }
+        });
+
+        flexTable.setWidget(1, 1, rdbtnSearchAllData);
+        flexTable.getFlexCellFormatter().setColSpan(1, 1, 2);
+        flexTable.getFlexCellFormatter().setColSpan(1, 0, 2);
+        flexTable.getCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
+        flexTable.getCellFormatter().setHorizontalAlignment(1, 1, HasHorizontalAlignment.ALIGN_CENTER);
+        flexTable.getFlexCellFormatter().setColSpan(0, 1, 2);
+        return flexTable;
+    }
+
+    /**
+     * Set up a ContentPanel containing the advancedSearchSubPanel.
+     * 
+     * @return a ContentPanel containing the advancedSearchSubPanel
+     */
+    private ContentPanel getAdvancedSearchPanel() {
+        ContentPanel cp = new ContentPanel();
+        cp.setTitleCollapse(true);
+        cp.setFrame(true);
+        cp.setExpanded(false);
+        cp.setHeading("Advanced Search");
+        cp.setCollapsible(true);
+        cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        cp.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        advancedSearchSubPanel = new AdvancedSearchSubPanel();
+        advancedSearchSubPanel.setInvSearchCallback(this);
+        cp.add(advancedSearchSubPanel);
+        return cp;
+    }
+
+    /**
+     * Set up a ContentPanel containing the parameterSearchSubPanel.
+     * 
+     * @return a ContentPanel containing the parameterSearchSubPanel
+     */
+    private ContentPanel getParameterSearchPanel() {
+        ContentPanel cp = new ContentPanel();
+        cp.setTitleCollapse(true);
+        cp.setFrame(true);
+        cp.setExpanded(false);
+        cp.setHeading("Parameter Search");
+        cp.setCollapsible(true);
+        cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        cp.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        parameterSearchSubPanel = new ParameterSearchSubPanel();
+        cp.add(parameterSearchSubPanel);
+        return cp;
+    }
+
+    /**
+     * Set up a ContentPanel containing the facilitiesSearchSubPanel.
+     * 
+     * @return a ContentPanel containing the facilitiesSearchSubPanel
+     */
+    private ContentPanel getFacilitiesSearchPanel() {
+        ContentPanel cp = new ContentPanel();
+        cp.setTitleCollapse(true);
+        cp.setExpanded(false);
+        cp.setFrame(true);
+        cp.setHeading("Facilities Search");
+        cp.setCollapsible(true);
+        cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        cp.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+            @Override
+            public void handleEvent(ComponentEvent event) {
+                EventPipeLine.getInstance().getTcEvents().fireResize();
+            }
+        });
+        facilitiesSearchSubPanel = new FacilitiesSearchSubPanel();
+        cp.add(facilitiesSearchSubPanel);
+        return cp;
+    }
+
+    /**
+     * Get a panel containing a grid for the search results.
+     * 
+     * @return results panel
+     */
+    private VerticalPanel getResultsPanel() {
+        grid = new Grid<TopcatInvestigation>(investigationList, new ColumnModel(getColumnConfigs()));
+        grid.setAutoExpandColumn("title");
+        grid.setAutoExpandMin(200);
+        grid.setMinColumnWidth(100);
+        grid.setToolTip("\"Click\" row to show investigation, \"Double Click\" to show datasets, right click for more options");
+        // single click
+        grid.addListener(Events.RowClick, new Listener<GridEvent<TopcatInvestigation>>() {
+            @Override
+            public void handleEvent(GridEvent<TopcatInvestigation> e) {
+                eventBus.getInvestigationDetails(e.getModel().getFacilityName(), e.getModel().getInvestigationId(),
+                        SOURCE);
+            }
+        });
+        // double click
+        grid.addListener(Events.RowDoubleClick, new Listener<GridEvent<TopcatInvestigation>>() {
+            @Override
+            public void handleEvent(GridEvent<TopcatInvestigation> e) {
+                TopcatInvestigation inv = e.getModel();
+                eventBus.showDatasetWindowWithHistory(inv.getFacilityName(), inv.getInvestigationId(),
+                        inv.getInvestigationTitle());
+            }
+        });
+
+        grid.setContextMenu(getMenu());
+        grid.setAutoHeight(true);
+        VerticalPanel bodyPanel = new VerticalPanel();
+        bodyPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
+        bodyPanel.add(grid);
+        return bodyPanel;
+    }
+
+    /**
+     * Get the list of column configs.
+     * 
+     * @return a list of ColumnConfig
+     */
+    private List<ColumnConfig> getColumnConfigs() {
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+        ColumnConfig clmncnfgServerName = new ColumnConfig("serverName", "Facility Name", 150);
+        configs.add(clmncnfgServerName);
+
+        ColumnConfig clmncnfgInvestigationNumber = new ColumnConfig("investigationName", "Investigation Number", 150);
+        configs.add(clmncnfgInvestigationNumber);
+
+        ColumnConfig clmncnfgVisitId = new ColumnConfig("visitId", "Visit Id", 150);
+        configs.add(clmncnfgVisitId);
+
+        ColumnConfig clmncnfgTitle = new ColumnConfig("title", "Title", 150);
+        configs.add(clmncnfgTitle);
+
+        ColumnConfig clmncnfgStartDate = new ColumnConfig("startDate", "Start Date", 150);
+        clmncnfgStartDate.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
+        configs.add(clmncnfgStartDate);
+
+        ColumnConfig clmncnfgEndDate = new ColumnConfig("endDate", "End Date", 150);
+        clmncnfgEndDate.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
+        configs.add(clmncnfgEndDate);
+        return configs;
+    }
+
+    /**
+     * Get the context menu.
+     * 
+     * @return the context menu
+     */
+    private Menu getMenu() {
+        Menu contextMenu = new Menu();
+        contextMenu.setWidth(160);
+        MenuItem showInvestigation = new MenuItem();
+        showInvestigation.setText("show investigation");
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showInvestigation);
+        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                eventBus.getInvestigationDetails(grid.getSelectionModel().getSelectedItem().getFacilityName(), grid
+                        .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
+            }
+        });
+        MenuItem showDS = new MenuItem();
+        showDS.setText("show data sets");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        contextMenu.add(showDS);
+        showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                eventBus.showDatasetWindowWithHistory(grid.getSelectionModel().getSelectedItem().getFacilityName(),
+                        grid.getSelectionModel().getSelectedItem().getInvestigationId(), grid.getSelectionModel()
+                                .getSelectedItem().getInvestigationTitle());
+            }
+        });
+        return contextMenu;
     }
 
     /**

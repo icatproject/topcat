@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -115,6 +115,7 @@ public class DiamondSearchWidget extends Composite {
                 TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
                 searchDetails.setStartDate(startDate.getValue());
                 searchDetails.setEndDate(endDate.getValue());
+                searchDetails.setVisitId(visitId.getValue());
                 searchDetails.getFacilityList().add(facilityName);
                 List<Instrument> selectedIns = beamLine.getSelection();
                 for (Instrument ins : selectedIns) {

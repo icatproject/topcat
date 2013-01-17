@@ -19,6 +19,10 @@
 		<servlet-class>uk.ac.stfc.topcat.gwt.server.SoftwareRepoServiceImpl</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>UploadService</servlet-name>
+		<servlet-class>uk.ac.stfc.topcat.gwt.server.UploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>UtilityService</servlet-name>
 		<servlet-class>uk.ac.stfc.topcat.gwt.server.UtilityServiceImpl</servlet-class>
 	</servlet>
@@ -37,6 +41,10 @@
 	<servlet-mapping>
 		<servlet-name>SoftwareRepoService</servlet-name>
 		<url-pattern>/topcatweb/SoftwareRepoService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UploadService</servlet-name>
+		<url-pattern>/topcatweb/UploadService</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>UtilityService</servlet-name>

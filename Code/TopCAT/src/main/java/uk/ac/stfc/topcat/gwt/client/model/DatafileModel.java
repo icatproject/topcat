@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -28,8 +28,6 @@ package uk.ac.stfc.topcat.gwt.client.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
 /**
  * This class is a datamodel to hold datafile information TODO: change it from
  * datamodel to beanmodel
@@ -40,10 +38,10 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
-public class DatafileModel extends BaseModelData implements Serializable {
+public class DatafileModel extends DatafileFormatModel implements Serializable {
 
     public DatafileModel() {
-
+        super();
     }
 
     /**
@@ -51,48 +49,59 @@ public class DatafileModel extends BaseModelData implements Serializable {
      * 
      * @param facilityName
      *            facility Name
+     * @param datasetId
+     *            dataset id
      * @param datasetName
      *            dataset name
-     * @param datafileId
+     * @param id
      *            datafile id
      * @param name
      *            datafile name
+     * @param description
+     *            datafile description
      * @param fileSize
      *            datafile size
-     * @param format
+     * @param doi
+     *            datafile doi
+     * @param location
+     *            datafile location
+     * @param formatId
+     *            datafile format id
+     * @param formatName
+     *            datafile format name
+     * @param formatDescription
      *            datafile format
      * @param formatVersion
      *            datafile format version
      * @param formatType
      *            datafile format type
      * @param createTime
-     *            datafile creation time
-     * @param location
-     *            datafile location
-     * 
+     *            datafile create time
+     * @param modTime
+     *            datafile mod time
      */
-    public DatafileModel(String facilityName, String datasetName, String datafileId, String name, String fileSize,
-            String format, String formatVersion, String formatType, Date createTime, String location) {
-        setFacilityName(facilityName);
+    public DatafileModel(String facilityName, String datasetId, String datasetName, String id, String name,
+            String description, String fileSize, String doi, String location, String formatId, String formatName,
+            String formatDescription, String formatVersion, String formatType, Date createTime, Date modTime) {
+        super(facilityName, formatId, formatName, formatDescription, formatVersion, formatType);
+        setDatasetId(datasetId);
         setDatasetName(datasetName);
-        setId(datafileId);
+        setId(id);
         setName(name);
+        setDescription(description);
         setFileSize(fileSize);
-        setFormat(format);
-        setFormatVersion(formatVersion);
-        setFormatType(formatType);
         setCreateTime(createTime);
         setLocation(location);
         setSelected(false);
     }
 
     /**
-     * Set the facility name
+     * Set the dataset id
      * 
-     * @param facilityName
+     * @param datasetId
      */
-    public void setFacilityName(String facilityName) {
-        set("facilityName", facilityName);
+    public void setDatasetId(String datasetId) {
+        set("datasetId", datasetId);
     }
 
     /**
@@ -123,30 +132,30 @@ public class DatafileModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * Set the dataile format type
+     * Set the datafile mod time
      * 
-     * @param formatType
+     * @param modTime
      */
-    public void setFormatType(String formatType) {
-        set("datafileFormatType", formatType);
+    public void setModTime(Date modTime) {
+        set("datafileModTime", modTime);
     }
 
     /**
-     * Set the datafile format version
+     * Set the datafile description
      * 
-     * @param formatVersion
+     * @param description
      */
-    public void setFormatVersion(String formatVersion) {
-        set("datafileFormatVersion", formatVersion);
+    public void setDescription(String description) {
+        set("datafileDescription", description);
     }
 
     /**
-     * Set the datafile format
+     * Set the datafile doi
      * 
-     * @param format
+     * @param doi
      */
-    public void setFormat(String format) {
-        set("datafileFormat", format);
+    public void setDoi(String doi) {
+        set("datafileDoi", doi);
     }
 
     /**
@@ -186,10 +195,10 @@ public class DatafileModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * @return facility name
+     * @return dataset id
      */
-    public String getFacilityName() {
-        return get("facilityName");
+    public String getDatasetId() {
+        return get("datasetId");
     }
 
     /**
@@ -200,24 +209,24 @@ public class DatafileModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * @return datafile format type
+     * @return datafile mod time
      */
-    public String getFormatType() {
-        return get("datafileFormatType");
+    public String getModTime() {
+        return get("datafileModTime");
     }
 
     /**
-     * @return datafile format version
+     * @return description
      */
-    public String getFormatVersion() {
-        return get("datafileFormatVersion");
+    public String getDescription() {
+        return get("datafileDescription");
     }
 
     /**
-     * @return datafile format
+     * @return doi
      */
-    public String getFormat() {
-        return get("datafileFormat");
+    public String getDoi() {
+        return get("datafileDoi");
     }
 
     /**

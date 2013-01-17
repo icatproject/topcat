@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -91,7 +91,6 @@ public class InvestigationDetailPanel extends Composite {
         TableLayout tl_mainPanel = new TableLayout();
         tl_mainPanel.setCellVerticalAlign(VerticalAlignment.TOP);
         tl_mainPanel.setCellHorizontalAlign(HorizontalAlignment.LEFT);
-        tl_mainPanel.setWidth("705px");
         mainPanel.setLayout(tl_mainPanel);
 
         topPanel = new LayoutContainer();
