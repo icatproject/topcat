@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -56,6 +56,7 @@ public class TAdvancedSearchDetails implements Serializable {
     protected String parameterUnits;
     protected String parameterValue;
     protected String parameterValueMax;
+    protected String visitId;
     protected boolean searchAllData = false;
 
     public TAdvancedSearchDetails() {
@@ -222,4 +223,13 @@ public class TAdvancedSearchDetails implements Serializable {
             this.keywordsList.addAll(keywords);
         }
     }
+
+    public String getVisitId() {
+        return visitId;
+    }
+
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
+    }
+
 }

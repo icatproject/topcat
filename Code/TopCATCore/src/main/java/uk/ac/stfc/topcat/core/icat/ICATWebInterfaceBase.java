@@ -6,12 +6,14 @@
 package uk.ac.stfc.topcat.core.icat;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
@@ -41,12 +43,20 @@ public class ICATWebInterfaceBase {
         return userId; // If not implemented just return the userid
     }
 
-    public ArrayList<String> listInstruments(String sessionId) {
+    public ArrayList<String> listInstruments(String sessionId) throws TopcatException {
         return new ArrayList<String>();
     }
 
-    public ArrayList<String> listInvestigationTypes(String sessionId) {
+    public ArrayList<String> listInvestigationTypes(String sessionId) throws TopcatException {
         return new ArrayList<String>();
+    }
+
+    public List<TDatafileFormat> listDatafileFormats(String sessionId) throws TopcatException {
+        throw new TopcatException("listDatafileFormats is not supported", TopcatExceptionType.NOT_SUPPORTED);
+    }
+
+    public List<String> listDatasetTypes(String sessionId) throws TopcatException {
+        throw new TopcatException("listDatasetTypes is not supported", TopcatExceptionType.NOT_SUPPORTED);
     }
 
     public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
@@ -118,7 +128,7 @@ public class ICATWebInterfaceBase {
         return null;
     }
 
-    public ArrayList<String> getKeywordsForUser(String sessionId) {
+    public ArrayList<String> getKeywordsForUser(String sessionId) throws TopcatException {
         return new ArrayList<String>();
     }
 
@@ -145,6 +155,10 @@ public class ICATWebInterfaceBase {
 
     public String getUserName(String icatSessionId) throws TopcatException {
         throw new UnsupportedOperationException();
+    }
+
+    public Long createDataSet(String sessionId, TDataset dataset) throws TopcatException {
+        throw new TopcatException("createDataSet is not supported", TopcatExceptionType.NOT_SUPPORTED);
     }
 
 }

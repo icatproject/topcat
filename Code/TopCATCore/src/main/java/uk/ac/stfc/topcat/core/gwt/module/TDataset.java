@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -34,7 +34,8 @@ import java.io.Serializable;
  * @since iCAT Version 3.3
  */
 public class TDataset implements Serializable {
-    String serverName;
+    String facilityName;
+    String investigationId;
     String id;
     String name;
     String status;
@@ -45,18 +46,36 @@ public class TDataset implements Serializable {
     public TDataset() {
     }
 
-    public TDataset(String serverName, String id) {
-        this.serverName = serverName;
+    public TDataset(String facilityName, String id) {
+        this.facilityName = facilityName;
         this.id = id;
     }
 
-    public TDataset(String serverName, String id, String name, String description, String type, String status) {
-        this.serverName = serverName;
+    public TDataset(String facilityName, String investigationId, String id, String name, String description,
+            String type, String status) {
+        this.facilityName = facilityName;
+        this.investigationId = investigationId;
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
         this.status = status;
+    }
+
+    public String getFacilityName() {
+        return facilityName;
+    }
+
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
+    }
+
+    public String getInvestigationId() {
+        return investigationId;
+    }
+
+    public void setInvestigationId(String investigationId) {
+        this.investigationId = investigationId;
     }
 
     public String getId() {
@@ -106,4 +125,5 @@ public class TDataset implements Serializable {
     public void setSample(String sample) {
         this.sample = sample;
     }
+
 }

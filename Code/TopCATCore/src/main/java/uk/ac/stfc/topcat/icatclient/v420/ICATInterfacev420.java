@@ -11,9 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
@@ -21,6 +25,7 @@ import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TConstants;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
+import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
@@ -42,6 +47,7 @@ import uk.ac.stfc.topcat.icatclient.v420.Login.Credentials.Entry;
 public class ICATInterfacev420 extends ICATWebInterfaceBase {
     private ICAT service;
     private String serverName;
+    private final static Logger logger = Logger.getLogger(ICATInterfacev420.class.getName());
 
     public ICATInterfacev420(String serverURL, String serverName) throws MalformedURLException {
         service = new ICATService(new URL(serverURL), new QName("http://icatproject.org", "ICATService")).getICATPort();
@@ -117,18 +123,41 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         try {
             name = service.getUserName(sessionId);
         } catch (IcatException_Exception e) {
-            convertToTopcatException(e);
+            convertToTopcatException(e, "getUserName");
         }
         return name;
     }
 
     @Override
-    public ArrayList<String> listInstruments(String sessionId) {
+    public List<TDatafileFormat> listDatafileFormats(String sessionId) throws TopcatException {
+        ArrayList<TDatafileFormat> formatList = new ArrayList<TDatafileFormat>();
+        try {
+            List<Object> result = (List<Object>) service.search(sessionId, "DISTINCT DatafileFormat");
+            logger.warning("listDatafileFormats: count" + result.size()); // TODO
+            for (Object dfFormat : result) {
+                formatList.add(new TDatafileFormat(serverName, ((DatafileFormat) dfFormat).getId().toString(),
+                        ((DatafileFormat) dfFormat).getName(), ((DatafileFormat) dfFormat).getDescription(),
+                        ((DatafileFormat) dfFormat).getVersion(), ((DatafileFormat) dfFormat).getType()));
+            }
+        } catch (IcatException_Exception e) {
+            logger.warning("listDatafileFormats: " + e.getMessage());
+            convertToTopcatException(e, "listDatafileFormats");
+        }
+        return formatList;
+    }
+
+    @Override
+    public List<String> listDatasetTypes(String sessionId) throws TopcatException {
+        return searchList(sessionId, "DISTINCT DatasetType.name");
+    }
+
+    @Override
+    public ArrayList<String> listInstruments(String sessionId) throws TopcatException {
         return searchList(sessionId, "DISTINCT Instrument.name");
     }
 
     @Override
-    public ArrayList<String> listInvestigationTypes(String sessionId) {
+    public ArrayList<String> listInvestigationTypes(String sessionId) throws TopcatException {
         return searchList(sessionId, "DISTINCT InvestigationType.name");
     }
 
@@ -262,7 +291,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         try {
             resultInv = service.search(sessionId, start + ", " + end + query);
         } catch (IcatException_Exception e) {
-            convertToTopcatException(e);
+            convertToTopcatException(e, "searchByAdvancedPagination");
         }
         for (Object inv : resultInv) {
             investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
@@ -286,12 +315,12 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 } else {
                     status = "in progress";
                 }
-                datasetList.add(new TDataset(serverName, dataset.getId().toString(), dataset.getName(), dataset
+                datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
                         .getDescription(), dataset.getType().getName(), status));
             }
         } catch (IcatException_Exception ex) {
             // TODO check type
-            System.out.println("ERROR - getDatasetsInInvestigation: " + ex.getMessage());
+            logger.warning("getDatasetsInInvestigation: " + ex.getMessage());
         }
         return datasetList;
     }
@@ -316,7 +345,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             }
         } catch (IcatException_Exception e) {
             // TODO check type
-            System.out.println("ERROR - getParametersInDataset: " + e.getMessage());
+            logger.warning("getParametersInDataset: " + e.getMessage());
         }
         return result;
     }
@@ -328,7 +357,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             return ds.getName();
         } catch (IcatException_Exception e) {
             // TODO check type
-            System.out.println("ERROR - getParametersInDataset: " + e.getMessage());
+            logger.warning("getDatasetName: " + e.getMessage());
         }
         return "";
     }
@@ -342,9 +371,9 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             for (Datafile datafile : dList) {
                 datafileList.add(copyDatafileToTDatafile(serverName, datafile));
             }
-        } catch (IcatException_Exception ex) {
+        } catch (IcatException_Exception e) {
             // TODO check type
-            System.out.println("ERROR - getDatafilesInDataset: " + ex.getMessage());
+            logger.warning("getDatafilesInDataset: " + e.getMessage());
         }
         return datafileList;
     }
@@ -397,7 +426,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<String> getKeywordsForUser(String sessionId) {
+    public ArrayList<String> getKeywordsForUser(String sessionId) throws TopcatException {
         return searchList(sessionId, "DISTINCT Keyword.name");
     }
 
@@ -442,13 +471,13 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         ArrayList<TDatafile> returnTDatafiles = new ArrayList<TDatafile>();
         try {
             resultDatafiles = service.search(sessionId,
-                    "DISTINCT Datafile  INCLUDE DatafileFormat <-> Dataset <-> Investigation <-> Instrument[name IN "
+                    "DISTINCT Datafile INCLUDE DatafileFormat <-> Dataset <-> Investigation <-> Instrument[name IN "
                             + getIN(instruments)
                             + "] <-> DatafileParameter[type.name='run_number' AND numericValue BETWEEN "
                             + startRunNumber + " AND " + endRunNumber + "]");
-        } catch (IcatException_Exception ex) {
+        } catch (IcatException_Exception e) {
             // TODO check type
-            System.out.println("ERROR - searchByRunNumber: " + ex.getMessage());
+            logger.warning("searchDatafilesByRunNumber: " + e.getMessage());
         }
         for (Object datafile : resultDatafiles) {
             returnTDatafiles.add(copyDatafileToTDatafile(serverName, (Datafile) datafile));
@@ -481,7 +510,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         try {
             resultDf = service.search(sessionId, query);
         } catch (IcatException_Exception e) {
-            convertToTopcatException(e);
+            convertToTopcatException(e, "searchDatafilesByParameter");
         }
         for (Object df : resultDf) {
             datafileList.add(copyDatafileToTDatafile(serverName, (Datafile) df));
@@ -513,9 +542,42 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         return unitsList;
     }
 
-    private void convertToTopcatException(IcatException_Exception e) throws TopcatException {
+    @Override
+    public Long createDataSet(String sessionId, TDataset dataset) throws TopcatException {
+        Dataset ds = new Dataset();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(new Date());
+        try {
+            ds.setStartDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(gc));
+        } catch (DatatypeConfigurationException e) {
+            logger.warning("createDataSet, cannot get date: " + e.getMessage());
+        }
+        try {
+            List<Object> datasetType = service.search(sessionId, "DatasetType [name='" + dataset.getType() + "']");
+            ds.setType((DatasetType) datasetType.get(0));
+        } catch (IcatException_Exception e) {
+            logger.warning("createDataSet, cannot get DatasetType: " + e.getMessage());
+        }
+        try {
+            ds.setInvestigation((Investigation) service.get(sessionId, "Investigation",
+                    Long.valueOf(dataset.getInvestigationId())));
+        } catch (IcatException_Exception e) {
+            logger.warning("createDataSet, cannot get Investigation: " + e.getMessage());
+        }
+        ds.setDescription(dataset.getDescription());
+        ds.setName(dataset.getName());
+        ds.setComplete(false);
+        try {
+            return service.create(sessionId, ds);
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "createDataSet");
+        }
+        return null;
+    }
+
+    private void convertToTopcatException(IcatException_Exception e, String callingMethod) throws TopcatException {
         IcatException ue = e.getFaultInfo();
-        System.out.println("ERROR - throwTopcatException: " + ue.getType() + " ~ " + e.getMessage());
+        logger.warning(callingMethod + " threw TopcatException: " + ue.getType() + " ~ " + e.getMessage());
         if (ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
             throw new TopcatException(e.getMessage(), TopcatExceptionType.BAD_PARAMETER);
         } else if (ue.getType().equals(IcatExceptionType.INSUFFICIENT_PRIVILEGES)) {
@@ -573,6 +635,17 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 addAnd = true;
             }
             query.append(" title='" + details.getPropostaltitle() + "'");
+        }
+
+        // Visit Id
+        if (details.getVisitId() != null) {
+            if (addAnd) {
+                query.append(" AND");
+            } else {
+                query.append(" [");
+                addAnd = true;
+            }
+            query.append(" visitId='" + details.getVisitId() + "'");
         }
 
         if (addAnd) {
@@ -634,6 +707,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         if (details.getSample() != null && !queryDataset) {
             query.append(" <-> Sample[name='" + details.getSample() + "']");
         }
+
         return query.toString();
     }
 
@@ -657,7 +731,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             try {
                 name = service.getUserName(sessionId);
             } catch (IcatException_Exception e) {
-                convertToTopcatException(e);
+                convertToTopcatException(e, "getParameterQuery");
             }
             if (entityName.equalsIgnoreCase("Investigation")) {
                 query.append("<-> InvestigationUser <-> User[name='" + name + "']");
@@ -770,7 +844,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         } catch (IcatException_Exception e) {
             IcatException ue = e.getFaultInfo();
             if (!ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
-                convertToTopcatException(e);
+                convertToTopcatException(e, "getParameterTypesFormService");
             } else {
                 throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
             }
@@ -807,20 +881,24 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     private TDatafile copyDatafileToTDatafile(String serverName, Datafile datafile) {
-        String format = "";
-        String formatVersion = "";
-        String formatType = "";
-        Date createDate = null;
+        String formatId = "", formatName = "", formatDescription = "", formatVersion = "", formatType = "";
+        Date createDate = null, modDate = null;
         if (datafile.getDatafileFormat() != null) {
-            format = datafile.getDatafileFormat().getName();
+            formatId = datafile.getDatafileFormat().getId().toString();
+            formatName = datafile.getDatafileFormat().getName();
+            formatDescription = datafile.getDatafileFormat().getDescription();
             formatVersion = datafile.getDatafileFormat().getVersion();
             formatType = datafile.getDatafileFormat().getType();
         }
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
-                format, formatVersion, formatType, createDate, datafile.getLocation());
+        if (datafile.getDatafileModTime() != null) {
+            modDate = datafile.getDatafileModTime().toGregorianCalendar().getTime();
+        }
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getDescription(),
+                datafile.getFileSize(), formatId, formatName, formatDescription, formatVersion, formatType, createDate,
+                modDate, datafile.getLocation(), datafile.getDoi());
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {
@@ -837,7 +915,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 .toGregorianCalendar().getTime());
     }
 
-    private ArrayList<String> searchList(String sessionId, String query) {
+    private ArrayList<String> searchList(String sessionId, String query) throws TopcatException {
         ArrayList<String> returnList = new ArrayList<String>();
         try {
             List<Object> results = service.search(sessionId, query);
@@ -845,8 +923,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 returnList.add((String) item);
             }
         } catch (java.lang.NullPointerException ex) {
-        } catch (IcatException_Exception ex) {
-            // TODO check type
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "searchList");
         }
         return returnList;
     }

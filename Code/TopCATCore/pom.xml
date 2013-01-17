@@ -4,7 +4,7 @@
 	<groupId>uk.ac.stfc</groupId>
 	<artifactId>TopCATCore</artifactId>
 	<packaging>jar</packaging>
-	<version>1.8-SNAPSHOT</version>
+	<version>1.8</version>
 	<name>TopCATCore</name>
 	<url>http://maven.apache.org</url>
 	<build>

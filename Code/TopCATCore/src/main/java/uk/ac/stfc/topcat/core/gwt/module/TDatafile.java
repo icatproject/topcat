@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -34,39 +34,29 @@ import java.util.Date;
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class TDatafile implements Serializable {
+public class TDatafile extends TDatafileFormat implements Serializable {
 
-    String serverName;
     String id;
     String name;
+    String description;
     Long size;
-    String format;
-    String formatVersion;
-    String formatType;
     Date createTime;
+    Date modTime;
     String location;
+    String doi;
 
-    public TDatafile() {
-
-    }
-
-    public TDatafile(String serverName, String id, String name) {
-        this.serverName = serverName;
+    public TDatafile(String serverName, String id, String name, String description, Long size, String formatId,
+            String format, String formatDescription, String formatVersion, String formatType, Date createTime,
+            Date modTime, String location, String doi) {
+        super(serverName, formatId, format, formatDescription, formatVersion, formatType);
         this.id = id;
         this.name = name;
-    }
-
-    public TDatafile(String serverName, String id, String name, Long size, String format, String formatVersion,
-            String formatType, Date createTime, String location) {
-        this.serverName = serverName;
-        this.id = id;
-        this.name = name;
+        this.description = description;
         this.size = size;
-        this.format = format;
-        this.formatVersion = formatVersion;
-        this.formatType = formatType;
         this.createTime = createTime;
+        this.modTime = modTime;
         this.location = location;
+        this.doi = doi;
     }
 
     public String getServerName() {
@@ -93,6 +83,14 @@ public class TDatafile implements Serializable {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setFileSize(Long size) {
         this.size = size;
     }
@@ -105,28 +103,12 @@ public class TDatafile implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getFormat() {
-        return format;
+    public Date getModTime() {
+        return modTime;
     }
 
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public String getFormatType() {
-        return formatType;
-    }
-
-    public void setFormatType(String formatType) {
-        this.formatType = formatType;
-    }
-
-    public String getFormatVersion() {
-        return formatVersion;
-    }
-
-    public void setFormatVersion(String formatVersion) {
-        this.formatVersion = formatVersion;
+    public void setModTime(Date modTime) {
+        this.modTime = modTime;
     }
 
     public Long getSize() {
@@ -145,5 +127,13 @@ public class TDatafile implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getDoi() {
+        return doi;
+    }
+
+    public void setDoi(String doi) {
+        this.doi = doi;
     }
 }

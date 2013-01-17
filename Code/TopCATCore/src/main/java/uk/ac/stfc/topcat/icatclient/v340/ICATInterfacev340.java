@@ -251,8 +251,8 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
                     InvestigationInclude.DATASETS_ONLY);
             List<Dataset> dList = resultInv.getDatasetCollection();
             for (Dataset dataset : dList) {
-                datasetList.add(new TDataset(serverName, dataset.getId().toString(), dataset.getName(), dataset
-                        .getDescription(), dataset.getDatasetType(), dataset.getDatasetStatus()));
+                datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
+                                .getDescription(), dataset.getDatasetType(), dataset.getDatasetStatus()));
             }
         } catch (InsufficientPrivilegesException_Exception ex) {
         } catch (NoSuchObjectFoundException_Exception ex) {
@@ -508,8 +508,8 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize()
-                .longValue(), format, formatVersion, formatType, createDate, datafile.getLocation());
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), null, datafile.getFileSize()
+                        .longValue(), null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(), null);
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

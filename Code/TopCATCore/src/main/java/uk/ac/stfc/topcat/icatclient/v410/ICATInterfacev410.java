@@ -247,8 +247,8 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
                 } else {
                     status = "in progress";
                 }
-                datasetList.add(new TDataset(serverName, dataset.getId().toString(), dataset.getName(), dataset
-                        .getDescription(), dataset.getType().getName(), status));
+                datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
+                                .getDescription(), dataset.getType().getName(), status));
             }
         } catch (IcatException_Exception ex) {
             // TODO check type
@@ -710,8 +710,8 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), datafile.getFileSize(),
-                format, formatVersion, formatType, createDate, datafile.getLocation());
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), null,
+                datafile.getFileSize(), null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(), null);
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {
