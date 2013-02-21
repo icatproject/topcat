@@ -9,15 +9,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- *
+ * 
  * @author sn65
  */
-public class TFacilityCycle implements Serializable {
+public class TFacilityCycle implements Serializable, Comparable<TFacilityCycle> {
     String description;
     String name;
-    Date   startDate;
-    Date   finishDate;
-    public TFacilityCycle(){
+    Date startDate;
+    Date finishDate;
+
+    public TFacilityCycle() {
     }
 
     public TFacilityCycle(String description, String name, Date startDate, Date finishDate) {
@@ -58,4 +59,10 @@ public class TFacilityCycle implements Serializable {
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
+
+    @Override
+    public int compareTo(TFacilityCycle fc) {
+        return fc.getStartDate().compareTo(startDate);
+    }
+
 }

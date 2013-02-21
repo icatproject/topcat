@@ -48,7 +48,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 
 /**
- * This is a widget, Customized for Diamond Facility
+ * This is a widget, Customised for Diamond Facility
  * <p>
  * 
  * @author Mr. Srikanth Nagella
@@ -163,7 +163,7 @@ public class DiamondSearchWidget extends Composite {
      * Setup a handler to react to Logout events.
      */
     private void createLogoutHandler() {
-        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+        LogoutEvent.registerToSource(EventPipeLine.getEventBus(), facilityName, new LogoutEventHandler() {
             @Override
             public void logout(LogoutEvent event) {
                 ListStore<Instrument> instruments = new ListStore<Instrument>();

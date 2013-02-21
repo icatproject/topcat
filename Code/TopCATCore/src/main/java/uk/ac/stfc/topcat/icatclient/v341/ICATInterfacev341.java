@@ -18,7 +18,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -30,6 +29,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -142,7 +143,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
+    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws TopcatException {
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
         try {
             // Get the ICAT webservice client and call get investigation types
@@ -159,15 +160,9 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
         } catch (SessionException_Exception ex) {
         } catch (java.lang.NullPointerException ex) {
         } catch (Exception ex) {
-            throw new ICATMethodNotFoundException(ex.getMessage());
+            throw new TopcatException(ex.getMessage(), TopcatExceptionType.INTERNAL);
         }
         return facilityCycles;
-    }
-
-    @Override
-    public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
-            throws ICATMethodNotFoundException {
-        throw new ICATMethodNotFoundException("v341 doesn't support facility cycles method");
     }
 
     @Override
@@ -258,7 +253,7 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
             List<Dataset> dList = resultInv.getDatasetCollection();
             for (Dataset dataset : dList) {
                 datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
-                                .getDescription(), dataset.getDatasetType(), dataset.getDatasetStatus()));
+                        .getDescription(), dataset.getDatasetType(), dataset.getDatasetStatus()));
             }
         } catch (InsufficientPrivilegesException_Exception ex) {
         } catch (NoSuchObjectFoundException_Exception ex) {
@@ -515,7 +510,8 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
         return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), null, datafile.getFileSize()
-                        .longValue(), null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(), null);
+                .longValue(), null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(),
+                null);
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

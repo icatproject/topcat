@@ -327,7 +327,7 @@ public class ISISSearchWidget extends Composite {
      * Setup a handler to react to Logout events.
      */
     private void createLogoutHandler() {
-        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+        LogoutEvent.registerToSource(EventPipeLine.getEventBus(), facilityName, new LogoutEventHandler() {
             @Override
             public void logout(LogoutEvent event) {
                 reset();

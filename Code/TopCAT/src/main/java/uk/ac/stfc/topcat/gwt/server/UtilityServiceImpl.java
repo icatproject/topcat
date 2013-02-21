@@ -50,7 +50,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -60,6 +59,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
@@ -226,8 +226,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     private ArrayList<ICATNode> createCyclesInInstrument(ICATNode node, boolean isMyData) throws TopcatException {
         ArrayList<ICATNode> result = new ArrayList<ICATNode>();
         try {
-            ArrayList<TFacilityCycle> facilityCycleList = utilityManager.getFacilityCyclesWithInstrument(
-                    getSessionId(), node.getFacility(), node.getInstrumentName());
+            List<TFacilityCycle> facilityCycleList = utilityManager.getFacilityCyclesWithInstrument(getSessionId(),
+                    node.getFacility(), node.getInstrumentName());
             if (facilityCycleList.size() > 0) {
                 for (TFacilityCycle cycle : facilityCycleList) {
                     ICATNode tnode = new ICATNode();
@@ -243,10 +243,13 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 // No cycles found try investigations directly from instruments
                 result.addAll(createInvestigationNodesInInstrument(node, isMyData));
             }
-        } catch (ICATMethodNotFoundException ex) {
-            // Cycle method is not available try investigations directly from
-            // instruments
-            result.addAll(createInvestigationNodesInInstrument(node, isMyData));
+        } catch (TopcatException ex) {
+            if (ex.getType().equals(TopcatExceptionType.NOT_SUPPORTED)) {
+                // Cycle method is not available try investigations directly
+                // from instruments
+                result.addAll(createInvestigationNodesInInstrument(node, isMyData));
+            }
+            throw ex;
         }
         return result;
     }
@@ -815,9 +818,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         List<DatafileFormatModel> models = new ArrayList<DatafileFormatModel>();
         List<TDatafileFormat> result = utilityManager.getDatafileFormats(getSessionId(), facilityName);
         for (TDatafileFormat df : result) {
-            models.add(new DatafileFormatModel(facilityName, 
-                    df.getFormatId(), df.getFormat(), df.getFormatDescription(), df.getFormatVersion(), df
-                            .getFormatType()));
+            models.add(new DatafileFormatModel(facilityName, df.getFormatId(), df.getFormat(), df
+                    .getFormatDescription(), df.getFormatVersion(), df.getFormatType()));
         }
         return models;
     }

@@ -18,10 +18,10 @@ import java.util.logging.Logger;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TConstants;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
@@ -153,7 +153,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     @Override
     public ArrayList<String> listInstruments(String sessionId) throws TopcatException {
-        return searchList(sessionId, "DISTINCT Instrument.name");
+        return searchList(sessionId, "DISTINCT Instrument.fullName");
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
+    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws TopcatException {
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
         try {
             List<Object> resultCycle = service.search(sessionId, "FacilityCycle");
@@ -170,24 +170,36 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 facilityCycles.add(copyFacilityCycleToTFacilityCycle((FacilityCycle) fc));
             }
         } catch (IcatException_Exception ex) {
-            // TODO check type
+            logger.warning("listFacilityCycles: " + ex.getMessage());
+            convertToTopcatException(ex, "listFacilityCycles");
         }
         return facilityCycles;
     }
 
     @Override
     public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
-            throws ICATMethodNotFoundException {
+            throws TopcatException {
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
         try {
-            List<Object> resultCycle = service.search(sessionId,
-                    "FacilityCycle <-> Investigation <-> Instrument[name='" + instrument + "'] ");
+            // get the id of the instrument
+            List<Object> ids = service.search(sessionId, "Instrument.id[fullName='" + instrument + "']");
+            long id = (Long) (ids.get(0));
+            // get the list of cycles
+            List<Object> resultCycle = service.search(sessionId, "FacilityCycle");
             for (Object fc : resultCycle) {
-                facilityCycles.add(copyFacilityCycleToTFacilityCycle((FacilityCycle) fc));
+                // check there is at least one investigation in the cycle
+                List<Object> result = service.search(sessionId, "Investigation[startDate >= "
+                        + getDate(((FacilityCycle) fc).getStartDate()) + " AND startDate <= "
+                        + getDate(((FacilityCycle) fc).getEndDate()) + "] <-> Instrument [id=" + id + "] ");
+                if (result.size() > 0) {
+                    facilityCycles.add(copyFacilityCycleToTFacilityCycle((FacilityCycle) fc));
+                }
             }
-        } catch (IcatException_Exception ex) {
-            // TODO check type
+        } catch (IcatException_Exception e) {
+            logger.warning("listFacilityCyclesForInstrument: " + e.getMessage());
+            convertToTopcatException(e, "listFacilityCyclesForInstrument");
         }
+        Collections.sort(facilityCycles);
         return facilityCycles;
     }
 
@@ -854,6 +866,10 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
         }
         return types;
+    }
+
+    private String getDate(XMLGregorianCalendar date) {
+        return getDate(date.toGregorianCalendar().getTime());
     }
 
     private String getDate(Date date) {

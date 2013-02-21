@@ -59,13 +59,15 @@ public class ICATWebInterfaceBase {
         throw new TopcatException("listDatasetTypes is not supported", TopcatExceptionType.NOT_SUPPORTED);
     }
 
-    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
-        return new ArrayList<TFacilityCycle>();
+    public List<TFacilityCycle> listFacilityCycles(String sessionId) throws TopcatException {
+        throw new TopcatException("listFacilityCycles is not supported by this server",
+                TopcatExceptionType.NOT_SUPPORTED);
     }
 
-    public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
-            throws ICATMethodNotFoundException {
-        return new ArrayList<TFacilityCycle>();
+    public List<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
+            throws TopcatException {
+        throw new TopcatException("listFacilityCyclesForInstrument is not supported by this server",
+                TopcatExceptionType.NOT_SUPPORTED);
     }
 
     public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {

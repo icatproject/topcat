@@ -19,7 +19,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -30,6 +29,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -114,7 +115,7 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
+    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws TopcatException {
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
         try {
             // Get the ICAT webservice client and call get investigation types
@@ -131,7 +132,7 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
         } catch (SessionException_Exception ex) {
         } catch (java.lang.NullPointerException ex) {
         } catch (Exception ex) {
-            throw new ICATMethodNotFoundException(ex.getMessage());
+            throw new TopcatException(ex.getMessage(), TopcatExceptionType.INTERNAL);
         }
         return facilityCycles;
     }

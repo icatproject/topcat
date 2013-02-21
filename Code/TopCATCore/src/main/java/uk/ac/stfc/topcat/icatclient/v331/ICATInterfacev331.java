@@ -107,17 +107,6 @@ public class ICATInterfacev331 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
-        throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
-    }
-
-    @Override
-    public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
-            throws ICATMethodNotFoundException {
-        throw new ICATMethodNotFoundException("v331 doesn't support facility cycles method");
-    }
-
-    @Override
     public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {

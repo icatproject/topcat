@@ -80,6 +80,8 @@ def add_optional_props(props_dict):
     The add_optional_props function checks if optional properties have been
     configured, if not then they're set with the default values.
     """   
+    if not props_dict.has_key("domain"):
+        props_dict["domain"] = 'domain1'
     if not props_dict.has_key("port"):
         props_dict["port"] = 4848
     if not props_dict.has_key("dbType"):
@@ -179,9 +181,8 @@ def install_props_file():
     """
     Copy the topcat.properties file
     """
-    domain = "domain1"
     dest_dir = path.join(CONF_PROPS_TOPCAT["glassfish"], "glassfish", "domains",
-                     domain, "lib", "classes")
+                     CONF_PROPS_TOPCAT["domain"], "lib", "classes")
     if not path.exists(dest_dir):
         print "ERROR Cannot find the directory" + dest_dir
         exit(1)

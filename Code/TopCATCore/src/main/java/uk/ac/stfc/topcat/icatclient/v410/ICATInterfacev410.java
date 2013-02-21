@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TConstants;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
@@ -112,7 +111,7 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws ICATMethodNotFoundException {
+    public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) {
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
         // try {
         // // Get the ICAT webservice client and call get investigation types
@@ -248,7 +247,7 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
                     status = "in progress";
                 }
                 datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
-                                .getDescription(), dataset.getType().getName(), status));
+                        .getDescription(), dataset.getType().getName(), status));
             }
         } catch (IcatException_Exception ex) {
             // TODO check type
@@ -710,8 +709,8 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
         if (datafile.getDatafileCreateTime() != null) {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
-        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), null,
-                datafile.getFileSize(), null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(), null);
+        return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), null, datafile.getFileSize(),
+                null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(), null);
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

@@ -140,10 +140,10 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
         // Parameter Search Panel
         // TODO add back in for icat 4
-        // TableData td_cntntpnlParameterSearch = new TableData();
-        // td_cntntpnlParameterSearch.setHeight("100%");
-        // td_cntntpnlParameterSearch.setWidth("705px");
-        // topPanel.add(getParameterSearchPanel(), td_cntntpnlParameterSearch);
+        TableData td_cntntpnlParameterSearch = new TableData();
+        td_cntntpnlParameterSearch.setHeight("100%");
+        td_cntntpnlParameterSearch.setWidth("705px");
+        topPanel.add(getParameterSearchPanel(), td_cntntpnlParameterSearch);
 
         // Facilities Search Panel
         TableData td_cntntpnlFacilitiesSearch = new TableData();

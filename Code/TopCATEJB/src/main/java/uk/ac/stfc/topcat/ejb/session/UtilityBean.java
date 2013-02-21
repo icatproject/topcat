@@ -31,7 +31,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -84,8 +83,8 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName,
-            String instrument) throws ICATMethodNotFoundException {
+    public List<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
+            throws TopcatException {
         return utilManager.getFacilityCyclesWithInstrument(manager, sessionId, serverName, instrument);
     }
 
@@ -200,7 +199,7 @@ public class UtilityBean implements UtilityLocal {
         return utilManager.getAuthenticationTypes(manager, facilityName);
 
     }
-    
+
     @Override
     public List<TDatafileFormat> getDatafileFormats(String sessionId, String facilityName) throws TopcatException {
         return utilManager.getDatafileFormats(manager, sessionId, facilityName);

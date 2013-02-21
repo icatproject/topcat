@@ -61,8 +61,8 @@ public interface UtilityLocal {
 
     ArrayList<String> getInvestigationTypes(String sessionId, String serverName) throws TopcatException;
 
-    ArrayList<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
-            throws ICATMethodNotFoundException;
+    List<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
+            throws TopcatException;
 
     ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName);
 
@@ -113,7 +113,7 @@ public interface UtilityLocal {
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
     List<String> getAuthenticationTypes(String facilityName);
-    
+
     List<TDatafileFormat> getDatafileFormats(String sessionId, String facilityName) throws TopcatException;
 
     List<String> getDatasetTypes(String sessionId, String facilityName) throws TopcatException;

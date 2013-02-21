@@ -82,7 +82,9 @@ public class TInvestigator implements Serializable, Comparable<TInvestigator> {
         } catch (NumberFormatException e) {
             // If alpha do reverse compare as we want principal experimenter
             // ahead of experimenter
-            nameCmp = inv.role.compareTo(role);
+            if (role != null && inv.getRole() != null) {
+                nameCmp = inv.getRole().compareTo(role);
+            }
         }
         if (nameCmp == 0) {
             try {
