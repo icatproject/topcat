@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -41,6 +41,7 @@ import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
@@ -560,7 +561,7 @@ public class DatafileWindow extends Window {
         List<Long> selectedItems = new ArrayList<Long>(selectedFiles);
         @SuppressWarnings("unchecked")
         String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
-        EventPipeLine.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
+        DownloadManager.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
         EventPipeLine.getInstance().showMessageDialog(
                 "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                         + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");

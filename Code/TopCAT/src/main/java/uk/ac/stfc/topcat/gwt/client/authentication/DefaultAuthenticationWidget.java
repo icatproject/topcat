@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -94,8 +94,8 @@ public class DefaultAuthenticationWidget extends Composite {
                     Map<String, String> parameters = new HashMap<String, String>();
                     parameters.put("username", txtFldUsername.getValue());
                     parameters.put("password", txtFldPassword.getValue());
-                    loginHandler.onLoginOk(authenticationModel.getFacilityName(),
-                            authenticationModel.getAuthenticationType(), parameters);
+                    loginHandler.onLoginOk(authenticationModel.getFacilityName(), authenticationModel.getType(),
+                            parameters);
                 }
             }
         });

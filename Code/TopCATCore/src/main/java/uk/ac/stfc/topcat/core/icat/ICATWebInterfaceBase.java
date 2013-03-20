@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
@@ -70,7 +69,11 @@ public class ICATWebInterfaceBase {
                 TopcatExceptionType.NOT_SUPPORTED);
     }
 
-    public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
+    public List<TInvestigation> getMyInvestigations(String sessionId) throws TopcatException {
+        return new ArrayList<TInvestigation>();
+    }
+
+    public List<TInvestigation> getAllInvestigations(String sessionId) throws TopcatException {
         return new ArrayList<TInvestigation>();
     }
 

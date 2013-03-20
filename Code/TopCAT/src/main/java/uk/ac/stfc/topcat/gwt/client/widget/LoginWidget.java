@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -51,7 +51,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * This class is a widget for login window.
+ * This class is a widget for login window. It will check to see what types of
+ * login are available for the facility. If there are more than one type a combo
+ * box will be displayed.
  * <p>
  * 
  * @author Mr. Srikanth Nagella
@@ -75,14 +77,65 @@ public class LoginWidget extends Window {
         RowLayout rowLayout = new RowLayout(Orientation.VERTICAL);
         setLayout(rowLayout);
 
+        // Set up the container for the authentication types
         TableLayout tl_layoutContainer = new TableLayout(2);
         tl_layoutContainer.setCellSpacing(5);
         authTypeContainer.setLayout(tl_layoutContainer);
 
+        // Set up the label and combo box for the authentication types
         LabelField lblfldAuthType = new LabelField("Authentication Type");
         authTypeContainer.add(lblfldAuthType);
+        authTypesBox = getAuthTypesBox();
+        authTypeContainer.add(authTypesBox);
 
-        authTypesBox = new ComboBox<AuthenticationModel>();
+        authTypeContainer.setAutoHeight(true);
+        add(authTypeContainer);
+
+        authenticationWidget = new LayoutContainer();
+        authenticationWidget.setHeight("0px");
+        authenticationWidget.setLayout(new FitLayout());
+        authenticationWidget.setAutoHeight(true);
+        add(authenticationWidget);
+
+        setWidth(310);
+        setLayout(new FitLayout());
+        setAutoHeight(true);
+    }
+
+    public void setLoginHandler(LoginInterface loginHandler) {
+        this.loginHandler = loginHandler;
+    }
+
+    @Override
+    public void show() {
+        if (authTypesBox.getStore().getCount() > 1) {
+            super.show();
+        } else {
+            if (plugin != null) {
+                if (plugin.showable()) {
+                    super.show();
+                }
+            }
+        }
+    }
+
+    public void show(String facilityName) {
+        this.facilityName = facilityName;
+        setHeading("Login to " + facilityName);
+        getAuthenticationTypes(facilityName);
+    }
+
+    public String getFacilityName() {
+        return facilityName;
+    }
+
+    /**
+     * Get the combo box for the authentication types.
+     * 
+     * @return
+     */
+    private ComboBox<AuthenticationModel> getAuthTypesBox() {
+        ComboBox<AuthenticationModel> authTypesBox = new ComboBox<AuthenticationModel>();
         authTypesBox.addSelectionChangedListener(new SelectionChangedListener<AuthenticationModel>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<AuthenticationModel> se) {
@@ -90,13 +143,9 @@ public class LoginWidget extends Window {
             }
         });
         authTypesBox.setStore(new ListStore<AuthenticationModel>());
-        authTypesBox.setDisplayField("authenticationType");
+        authTypesBox.setDisplayField("type");
         authTypesBox.setTypeAhead(true);
         authTypesBox.setTriggerAction(TriggerAction.ALL);
-        authTypeContainer.add(authTypesBox);
-        authTypeContainer.setAutoHeight(true);
-        add(authTypeContainer);
-
         authTypesBox.addListener(Events.Expand, new Listener<ComponentEvent>() {
             @Override
             public void handleEvent(ComponentEvent event) {
@@ -109,51 +158,28 @@ public class LoginWidget extends Window {
                 EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
-
-        authenticationWidget = new LayoutContainer();
-        authenticationWidget.setHeight("0px");
-        authenticationWidget.setLayout(new FitLayout());
-        authenticationWidget.setAutoHeight(true);
-        add(authenticationWidget);
-        setWidth(310);
-        setLayout(new FitLayout());
-        setAutoHeight(true);
+        return authTypesBox;
     }
 
-    public void setLoginHandler(LoginInterface loginHandler) {
-        this.loginHandler = loginHandler;
-    }
-
-    public void setFacilityName(String facilityName) {
-        this.facilityName = facilityName;
-        setHeading("Login to " + facilityName);
-        getAuthenticationTypes(facilityName);
-    }
-
-    public String getFacilityName() {
-        return facilityName;
-    }
-
-    @Override
-    public void show() {
-        if (plugin != null) {
-            setFocusWidget(plugin.getWidget());
-        }
-        super.show();
-    }
-
+    /**
+     * Call out to get the list of authentication types for the given facility.
+     * 
+     * @param facilityName
+     */
     private void getAuthenticationTypes(final String facilityName) {
+        plugin = null;
         authTypesBox.getStore().removeAll();
         authTypesBox.clear();
         authTypeContainer.hide();
         authenticationWidget.removeAll();
         EventPipeLine.getInstance().showRetrievingData();
-        utilityService.getAuthenticationTypes(facilityName, new AsyncCallback<List<AuthenticationModel>>() {
+        utilityService.getAuthenticationDetails(facilityName, new AsyncCallback<List<AuthenticationModel>>() {
             @Override
             public void onSuccess(List<AuthenticationModel> result) {
                 EventPipeLine.getInstance().hideRetrievingData();
                 authTypesBox.getStore().add(result);
                 if (result.size() > 1) {
+                    show();
                     authTypeContainer.show();
                     authTypesBox.focus();
                 } else if (result.size() == 1) {
@@ -187,11 +213,16 @@ public class LoginWidget extends Window {
         }
 
         authenticationWidget.removeAll();
-        plugin = AuthenticationPluginFactory.getInstance().getPlugin(model.getAuthenticationPluginName());
+        plugin = AuthenticationPluginFactory.getInstance().getPlugin(model.getPluginName());
         plugin.setAuthenticationModel(model);
-        plugin.setLoginHandler(loginHandler);
-        authenticationWidget.add(plugin.getWidget());
-        authenticationWidget.layout(true);
-        setFocusWidget(plugin.getWidget());
+        if (plugin.showable()) {
+            super.show();
+            plugin.setLoginHandler(loginHandler);
+            authenticationWidget.add(plugin.getWidget());
+            authenticationWidget.layout(true);
+            setFocusWidget(plugin.getWidget());
+        } else {
+            plugin.authenticate();
+        }
     }
 }

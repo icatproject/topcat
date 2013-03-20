@@ -50,6 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -173,7 +174,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 result.add(tnode);
             }
         } else if (node.getNodeType() == ICATNodeType.FACILITY) {
-            result.addAll(createInstrumentsNodesInFacility(node));
+            result.addAll(createInstrumentsNodesInFacility(node, isMyData));
         } else if (node.getNodeType() == ICATNodeType.INSTRUMENT) {
             result.addAll(createCyclesInInstrument(node, isMyData));
         } else if (node.getNodeType() == ICATNodeType.CYCLE) {
@@ -204,14 +205,19 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * @return
      * @throws TopcatException
      */
-    private ArrayList<ICATNode> createInstrumentsNodesInFacility(ICATNode node) throws TopcatException {
+    private ArrayList<ICATNode> createInstrumentsNodesInFacility(ICATNode node, boolean isMyData)
+            throws TopcatException {
         ArrayList<ICATNode> result = new ArrayList<ICATNode>();
         ArrayList<String> instrumentList = utilityManager.getInstrumentNames(getSessionId(), node.getFacility());
-        for (String instrument : instrumentList) {
-            ICATNode tnode = new ICATNode();
-            tnode.setNode(ICATNodeType.INSTRUMENT, instrument, instrument);
-            tnode.setFacility(node.getFacility());
-            result.add(tnode);
+        if (instrumentList.size() > 0) {
+            for (String instrument : instrumentList) {
+                ICATNode tnode = new ICATNode();
+                tnode.setNode(ICATNodeType.INSTRUMENT, instrument, instrument);
+                tnode.setFacility(node.getFacility());
+                result.add(tnode);
+            }
+        } else {
+            result.addAll(createInvestigationNodesInFacility(node, isMyData));
         }
         return result;
     }
@@ -248,8 +254,9 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                 // Cycle method is not available try investigations directly
                 // from instruments
                 result.addAll(createInvestigationNodesInInstrument(node, isMyData));
+            } else {
+                throw ex;
             }
-            throw ex;
         }
         return result;
     }
@@ -264,6 +271,25 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         else
             invList = utilityManager.getAllInvestigationsInServerAndInstrument(getSessionId(), node.getFacility(),
                     node.getInstrumentName());
+        for (TInvestigation inv : invList) {
+            ICATNode tnode = new ICATNode();
+            tnode.setNode(ICATNodeType.INVESTIGATION, inv.getInvestigationId(),
+                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:" + inv.getVisitId() + ")");
+            tnode.setFacility(node.getFacility());
+            tnode.setTitle(inv.getTitle());
+            result.add(tnode);
+        }
+        return result;
+    }
+
+    private ArrayList<ICATNode> createInvestigationNodesInFacility(ICATNode node, boolean isMyData)
+            throws TopcatException {
+        ArrayList<ICATNode> result = new ArrayList<ICATNode>();
+        List<TInvestigation> invList;
+        if (isMyData)
+            invList = utilityManager.getMyInvestigationsInServer(getSessionId(), node.getFacility());
+        else
+            invList = utilityManager.getAllInvestigationsInServer(getSessionId(), node.getFacility());
         for (TInvestigation inv : invList) {
             ICATNode tnode = new ICATNode();
             tnode.setNode(ICATNodeType.INVESTIGATION, inv.getInvestigationId(),
@@ -685,9 +711,10 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * @param facilityName
      *            a string containing the facility name
      * @return a list of <code>TInvestigation</code> containing investigations
+     * @throws TopcatException
      */
     @Override
-    public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName) {
+    public List<TInvestigation> getMyInvestigationsInServer(String facilityName) throws TopcatException {
         return utilityManager.getMyInvestigationsInServer(getSessionId(), facilityName);
     }
 
@@ -799,11 +826,11 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     }
 
     @Override
-    public List<AuthenticationModel> getAuthenticationTypes(String facilityName) {
-        List<String> types = utilityManager.getAuthenticationTypes(facilityName);
+    public List<AuthenticationModel> getAuthenticationDetails(String facilityName) {
+        List<TAuthentication> authentications = utilityManager.getAuthenticationDetails(facilityName);
         List<AuthenticationModel> models = new ArrayList<AuthenticationModel>();
-        for (String type : types) {
-            models.add(new AuthenticationModel(facilityName, type, ""));
+        for (TAuthentication authentication : authentications) {
+            models.add(new AuthenticationModel(authentication));
         }
         return models;
     }

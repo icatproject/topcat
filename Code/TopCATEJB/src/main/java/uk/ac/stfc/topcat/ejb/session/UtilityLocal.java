@@ -29,7 +29,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.exception.ICATMethodNotFoundException;
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -64,7 +64,9 @@ public interface UtilityLocal {
     List<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
             throws TopcatException;
 
-    ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName);
+    List<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName) throws TopcatException;
+
+    List<TInvestigation> getAllInvestigationsInServer(String sessionId, String serverName) throws TopcatException;
 
     ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName,
             String instrumentName) throws TopcatException;
@@ -112,7 +114,7 @@ public interface UtilityLocal {
 
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
-    List<String> getAuthenticationTypes(String facilityName);
+    List<TAuthentication> getAuthenticationDetails(String facilityName);
 
     List<TDatafileFormat> getDatafileFormats(String sessionId, String facilityName) throws TopcatException;
 

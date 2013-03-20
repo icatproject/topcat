@@ -195,8 +195,9 @@ public interface UtilityService extends RemoteService {
      * @param facilityName
      *            a string containing the facility name
      * @return a list of <code>TInvestigation</code> containing investigations
+     * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getMyInvestigationsInServer(String facilityName);
+    public List<TInvestigation> getMyInvestigationsInServer(String facilityName) throws TopcatException;
 
     /**
      * Get additional details about an investigation.
@@ -292,7 +293,7 @@ public interface UtilityService extends RemoteService {
      * @return a list of authentication models containing the authentication
      *         types
      */
-    public List<AuthenticationModel> getAuthenticationTypes(String facilityName);
+    public List<AuthenticationModel> getAuthenticationDetails(String facilityName);
 
     /**
      * Get a list of data set types for a given facility.

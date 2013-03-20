@@ -219,7 +219,7 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
             List<Dataset> dList = resultInv.getDatasetCollection();
             for (Dataset dataset : dList) {
                 datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
-                                .getDescription(), dataset.getDatasetType(), dataset.getDatasetStatus()));
+                        .getDescription(), dataset.getDatasetType(), dataset.getDatasetStatus()));
             }
         } catch (InsufficientPrivilegesException_Exception ex) {
         } catch (NoSuchObjectFoundException_Exception ex) {
@@ -236,7 +236,6 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
                     DatasetInclude.DATASET_PARAMETERS_ONLY);
             List<DatasetParameter> dsList = ds.getDatasetParameterCollection();
             for (DatasetParameter dsParam : dsList) {
-                System.out.println("parameter type: " + dsParam.getValueType());
                 if (dsParam.getValueType() == ParameterValueType.NUMERIC) {
                     result.add(new TDatasetParameter(dsParam.getDatasetParameterPK().getName(), dsParam
                             .getDatasetParameterPK().getUnits(), dsParam.getNumericValue().toString()));
@@ -474,7 +473,8 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
             createDate = datafile.getDatafileCreateTime().toGregorianCalendar().getTime();
         }
         return new TDatafile(serverName, datafile.getId().toString(), datafile.getName(), null, datafile.getFileSize()
-                        .longValue(), null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(), null);
+                .longValue(), null, format, null, formatVersion, formatType, createDate, null, datafile.getLocation(),
+                null);
     }
 
     private TPublication copyPublicationToTPublication(Publication pub) {

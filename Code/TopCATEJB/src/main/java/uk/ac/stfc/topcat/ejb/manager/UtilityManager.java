@@ -33,6 +33,7 @@ import javax.persistence.EntityManager;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -283,9 +284,10 @@ public class UtilityManager {
      * @param sessionId
      * @param serverName
      * @return
+     * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getMyInvestigationsInServer(EntityManager manager, String sessionId,
-            String serverName) {
+    public List<TInvestigation> getMyInvestigationsInServer(EntityManager manager, String sessionId, String serverName)
+            throws TopcatException {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
@@ -304,8 +306,10 @@ public class UtilityManager {
      * @param sessionId
      * @param server
      * @return
+     * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, TopcatIcatServer server) {
+    private List<TInvestigation> getMyInvestigationsInServer(String sessionId, TopcatIcatServer server)
+            throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
@@ -313,7 +317,48 @@ public class UtilityManager {
         } catch (MalformedURLException ex) {
             logger.warning("getMyInvestigationsInServer: " + ex.getMessage());
         }
+        return new ArrayList<TInvestigation>();
+    }
 
+    /**
+     * This method returns all the investigations from a given server.
+     * 
+     * @param manager
+     * @param sessionId
+     * @param serverName
+     * @return
+     * @throws TopcatException
+     */
+    public List<TInvestigation> getAllInvestigationsInServer(EntityManager manager, String sessionId, String serverName)
+            throws TopcatException {
+        try {
+            TopcatUserSession userSession = (TopcatUserSession) manager
+                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
+                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .getSingleResult();
+            return getAllInvestigationsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
+        } catch (javax.persistence.NoResultException ex) {
+        }
+        return new ArrayList<TInvestigation>();
+    }
+
+    /**
+     * This method returns all the investigations from given input server name.
+     * 
+     * @param sessionId
+     * @param server
+     * @return
+     * @throws TopcatException
+     */
+    private List<TInvestigation> getAllInvestigationsInServer(String sessionId, TopcatIcatServer server)
+            throws TopcatException {
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
+                    server.getVersion(), server.getServerUrl());
+            return service.getAllInvestigations(sessionId);
+        } catch (MalformedURLException ex) {
+            logger.warning("getAllInvestigationsInServer: " + ex.getMessage());
+        }
         return new ArrayList<TInvestigation>();
     }
 
@@ -967,21 +1012,24 @@ public class UtilityManager {
     }
 
     /**
-     * Get a list of authentication types for a facility.
+     * Get a list of authentication details for a facility.
      * 
      * @param manager
      * @param facilityName
      *            a string containing the facility name
-     * @return a list of authentication types
+     * @return a list of TAuthentication
      */
-    public List<String> getAuthenticationTypes(EntityManager manager, String facilityName) {
-        List<String> authenticationTypes = new ArrayList<String>();
+    public List<TAuthentication> getAuthenticationDetails(EntityManager manager, String facilityName) {
+        List<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
+
         List<?> icatAuthentications = manager.createNamedQuery("IcatAuthentication.findByServerName")
                 .setParameter("serverName", facilityName).getResultList();
         for (Object icatAuthentication : icatAuthentications) {
-            authenticationTypes.add(((IcatAuthentication) icatAuthentication).getAuthenticationType());
+            authenticationDetails.add(new TAuthentication(facilityName, ((IcatAuthentication) icatAuthentication)
+                    .getPluginName(), ((IcatAuthentication) icatAuthentication).getAuthenticationServiceUrl(),
+                    ((IcatAuthentication) icatAuthentication).getAuthenticationType()));
         }
-        return authenticationTypes;
+        return authenticationDetails;
     }
 
     /**

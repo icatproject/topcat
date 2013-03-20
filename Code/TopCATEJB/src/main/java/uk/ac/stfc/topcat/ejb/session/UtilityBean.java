@@ -31,6 +31,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
@@ -89,8 +90,14 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public ArrayList<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName) {
+    public List<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName) throws TopcatException {
         return utilManager.getMyInvestigationsInServer(manager, sessionId, serverName);
+    }
+
+    @Override
+    public List<TInvestigation> getAllInvestigationsInServer(String sessionId, String serverName)
+            throws TopcatException {
+        return utilManager.getAllInvestigationsInServer(manager, sessionId, serverName);
     }
 
     @Override
@@ -195,8 +202,8 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public List<String> getAuthenticationTypes(String facilityName) {
-        return utilManager.getAuthenticationTypes(manager, facilityName);
+    public List<TAuthentication> getAuthenticationDetails(String facilityName) {
+        return utilManager.getAuthenticationDetails(manager, facilityName);
 
     }
 

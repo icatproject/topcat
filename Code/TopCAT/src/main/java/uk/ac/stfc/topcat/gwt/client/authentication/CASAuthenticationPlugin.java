@@ -25,48 +25,51 @@ package uk.ac.stfc.topcat.gwt.client.authentication;
 /**
  * Imports
  */
-import java.util.ArrayList;
-import java.util.HashMap;
+import uk.ac.stfc.topcat.gwt.client.LoginInterface;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
+
+import com.extjs.gxt.ui.client.widget.Composite;
+import com.google.gwt.core.client.GWT;
 
 /**
- * This is Authentication Plugin Factory which holds all the plugins that are
- * available in TopCAT.
- * 
+ * CAS plugin for authentication.
  */
-public class AuthenticationPluginFactory {
-    private static AuthenticationPluginFactory pluginFactory = new AuthenticationPluginFactory();
-    // With out these GWT will not compile the plugins and add them to AJAX code
-    private static DefaultAuthenticationPlugin defaultPlugin = DefaultAuthenticationPlugin.getInstance();
-    @SuppressWarnings("unused")
-    private static CASAuthenticationPlugin casPlugin = CASAuthenticationPlugin.getInstance();
+public class CASAuthenticationPlugin extends AuthenticationPlugin {
 
-    private HashMap<String, AuthenticationPlugin> authenticationPluginMap;
+    private static CASAuthenticationPlugin casAuthentication = GWT.create(CASAuthenticationPlugin.class);
+    CASAuthenticationWidget widget;
 
-    private AuthenticationPluginFactory() {
-        authenticationPluginMap = new HashMap<String, AuthenticationPlugin>();
+    private CASAuthenticationPlugin() {
+        super();
+        widget = new CASAuthenticationWidget();
     }
 
-    public static AuthenticationPluginFactory getInstance() {
-        return pluginFactory;
+    @Override
+    public Composite getWidget() {
+        return widget;
     }
 
-    public void registerPlugin(String pluginName, AuthenticationPlugin plugin) {
-        authenticationPluginMap.put(pluginName, plugin);
+    public static CASAuthenticationPlugin getInstance() {
+        return casAuthentication;
     }
 
-    public AuthenticationPlugin getPlugin(String pluginName) {
-        AuthenticationPlugin plugin = authenticationPluginMap.get(pluginName);
-
-        if (plugin == null)
-            plugin = defaultPlugin;
-        return plugin;
+    @Override
+    public void setAuthenticationModel(AuthenticationModel authenticationModel) {
+        widget.setAuthenticationModel(authenticationModel);
     }
 
-    public int getNumberOfPlugins() {
-        return authenticationPluginMap.size();
+    @Override
+    public void setLoginHandler(LoginInterface loginHandler) {
     }
 
-    public ArrayList<String> getPluginNames() {
-        return new ArrayList<String>(authenticationPluginMap.keySet());
+    @Override
+    public boolean showable() {
+        return false;
     }
+
+    @Override
+    public void authenticate() {
+        widget.authenticate();
+    }
+
 }

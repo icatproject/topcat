@@ -185,7 +185,7 @@ public interface UtilityServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    public void getMyInvestigationsInServer(String facilityName, AsyncCallback<ArrayList<TInvestigation>> asyncCallback);
+    public void getMyInvestigationsInServer(String facilityName, AsyncCallback<List<TInvestigation>> asyncCallback);
 
     /**
      * Get additional details about an investigation.
@@ -284,7 +284,7 @@ public interface UtilityServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    public void getAuthenticationTypes(String facilityName, AsyncCallback<List<AuthenticationModel>> callback);
+    public void getAuthenticationDetails(String facilityName, AsyncCallback<List<AuthenticationModel>> callback);
 
     /**
      * Get a list of data set types for a given facility.

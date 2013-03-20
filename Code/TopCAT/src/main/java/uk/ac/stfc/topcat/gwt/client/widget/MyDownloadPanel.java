@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -39,6 +39,7 @@ import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddMyDownloadEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
 import com.extjs.gxt.ui.client.Style;
@@ -120,7 +121,7 @@ public class MyDownloadPanel extends Composite {
                     @Override
                     public void componentSelected(ButtonEvent ce) {
                         if (model.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
-                            eventBus.download(model.getFacilityName(), model.getUrl());
+                            DownloadManager.getInstance().download(model.getFacilityName(), model.getUrl());
                         }
                     }
                 });

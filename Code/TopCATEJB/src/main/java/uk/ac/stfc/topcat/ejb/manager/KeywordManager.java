@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -167,8 +167,7 @@ public class KeywordManager {
                 if (resultKeywords == null) {
                     return;
                 }
-                System.out.println("resultKeywords: " + session.getUserId().getServerId().getServerUrl() + "  : "
-                        + resultKeywords.size());
+
                 int count = 0;
                 // Update the database
                 for (String key : resultKeywords) {

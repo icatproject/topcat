@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -28,6 +28,7 @@ package uk.ac.stfc.topcat.gwt.client;
 import java.util.List;
 
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.widget.FooterPanel;
 import uk.ac.stfc.topcat.gwt.client.widget.HeaderPanel;
 import uk.ac.stfc.topcat.gwt.client.widget.MainPanel;
@@ -93,7 +94,8 @@ public class TOPCATOnline implements EntryPoint {
         eventPipeLine.setLoginPanel(headerPanel.getLoginPanel());
         eventPipeLine.setMainWindow(this);
         // This is to handle a call back from an authentication service
-        eventPipeLine.setAuthentication(Window.Location.getParameter("facilityName"), Window.Location.getHash());
+        eventPipeLine.setAuthentication(Window.Location.getParameter("facilityName"),
+                Window.Location.getParameter("authenticationType"), Window.Location.getHash());
         // Initialise
         eventPipeLine.getLogoURL();
         eventPipeLine.getLinks();
@@ -118,6 +120,10 @@ public class TOPCATOnline implements EntryPoint {
                 resizePanels(event.getWidth());
             }
         });
+
+        // Create a DownloadManager
+        DownloadManager.getInstance();
+
         // process url
         eventPipeLine.getHistoryManager().processHistory(History.getToken());
         eventPipeLine.initDownloadParameter();

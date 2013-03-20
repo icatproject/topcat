@@ -184,7 +184,7 @@ def install_props_file():
     dest_dir = path.join(CONF_PROPS_TOPCAT["glassfish"], "glassfish", "domains",
                      CONF_PROPS_TOPCAT["domain"], "lib", "classes")
     if not path.exists(dest_dir):
-        print "ERROR Cannot find the directory" + dest_dir
+        print "ERROR Cannot find the directory " + dest_dir
         exit(1)
     dest = path.join(dest_dir, "topcat.properties")
         

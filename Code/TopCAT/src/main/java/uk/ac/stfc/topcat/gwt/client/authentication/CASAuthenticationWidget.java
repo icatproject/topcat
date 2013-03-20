@@ -25,48 +25,34 @@ package uk.ac.stfc.topcat.gwt.client.authentication;
 /**
  * Imports
  */
-import java.util.ArrayList;
-import java.util.HashMap;
+import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
+
+import com.extjs.gxt.ui.client.widget.Composite;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Window;
 
 /**
- * This is Authentication Plugin Factory which holds all the plugins that are
- * available in TopCAT.
- * 
+ * This is a widget, a default authentication widget that gets the user name and
+ * password.
  */
-public class AuthenticationPluginFactory {
-    private static AuthenticationPluginFactory pluginFactory = new AuthenticationPluginFactory();
-    // With out these GWT will not compile the plugins and add them to AJAX code
-    private static DefaultAuthenticationPlugin defaultPlugin = DefaultAuthenticationPlugin.getInstance();
-    @SuppressWarnings("unused")
-    private static CASAuthenticationPlugin casPlugin = CASAuthenticationPlugin.getInstance();
+public class CASAuthenticationWidget extends Composite {
+    private AuthenticationModel authenticationModel;
 
-    private HashMap<String, AuthenticationPlugin> authenticationPluginMap;
-
-    private AuthenticationPluginFactory() {
-        authenticationPluginMap = new HashMap<String, AuthenticationPlugin>();
+    public CASAuthenticationWidget() {
     }
 
-    public static AuthenticationPluginFactory getInstance() {
-        return pluginFactory;
+    public void setAuthenticationModel(AuthenticationModel authenticationModel) {
+        this.authenticationModel = authenticationModel;
     }
 
-    public void registerPlugin(String pluginName, AuthenticationPlugin plugin) {
-        authenticationPluginMap.put(pluginName, plugin);
-    }
-
-    public AuthenticationPlugin getPlugin(String pluginName) {
-        AuthenticationPlugin plugin = authenticationPluginMap.get(pluginName);
-
-        if (plugin == null)
-            plugin = defaultPlugin;
-        return plugin;
-    }
-
-    public int getNumberOfPlugins() {
-        return authenticationPluginMap.size();
-    }
-
-    public ArrayList<String> getPluginNames() {
-        return new ArrayList<String>(authenticationPluginMap.keySet());
+    public void authenticate() {
+        if (authenticationModel != null) {
+            UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+            urlBuilder.setParameter("facilityName", authenticationModel.getFacilityName());
+            urlBuilder.setParameter("authenticationType", authenticationModel.getType());
+            String url = EventPipeLine.getInstance().encodeUrlDelimiters(urlBuilder.buildString());
+            Window.Location.assign(authenticationModel.getUrl() + url);
+        }
     }
 }

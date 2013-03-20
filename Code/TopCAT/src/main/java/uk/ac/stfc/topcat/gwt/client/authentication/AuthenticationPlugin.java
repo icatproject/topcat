@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -43,4 +43,8 @@ public abstract class AuthenticationPlugin {
     public abstract void setAuthenticationModel(AuthenticationModel authenticationModel);
 
     public abstract void setLoginHandler(LoginInterface loginHandler);
+
+    public abstract boolean showable();
+
+    public abstract void authenticate();
 }

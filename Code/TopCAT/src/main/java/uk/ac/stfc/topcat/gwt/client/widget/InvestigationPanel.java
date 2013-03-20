@@ -94,10 +94,12 @@ public class InvestigationPanel extends Composite {
         addInvDetailsTab();
 
         // Associated Software Tab
-        // TODO addAssociatedSoftwareTab();
+        // TODO
+        addAssociatedSoftwareTab();
 
         // Upload Dataset Tab
-        // TODO addUploadDatasetTab();
+        // TODO
+        addUploadDatasetTab();
 
         mainPanel.add(tabPanel);
         initComponent(mainContainer);
@@ -124,7 +126,8 @@ public class InvestigationPanel extends Composite {
      */
     protected void reset() {
         invDetailPanel.reset();
-        // TODO uploadDatasetPanel.reset();
+        // TODO
+        uploadDatasetPanel.reset();
     }
 
     /**
@@ -136,7 +139,8 @@ public class InvestigationPanel extends Composite {
     protected void setInvestigation(TInvestigation inv) {
         mainPanel.setHeading("Investigation: " + inv.getTitle());
         invDetailPanel.setInvestigation(inv);
-        // TODO uploadDatasetPanel.setInvestigation(inv);
+        // TODO
+        uploadDatasetPanel.setInvestigation(inv);
     }
 
     private ToolBar getToolBar() {

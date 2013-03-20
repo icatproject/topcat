@@ -78,6 +78,7 @@ The keys in this file are:
 	topcatProperties
 	glassfish
 	port (optional)
+	domain (optional)
 
 A) dbType (optional, default:derby) - The type of database to use, i.e.:
 	derby
@@ -105,6 +106,9 @@ C) topcatProperties - The topcat connection properties, e.g.
 D) glassfish - The Glassfish home directory, must contain "glassfish/domains"
 
 E) port (optional, default:4848) - The port for glassfish admin calls (normally 4848)
+
+F) domain (optional, default:domain1) - The domain within glassfish to use.
+    This domain must already exist.
 
 
 

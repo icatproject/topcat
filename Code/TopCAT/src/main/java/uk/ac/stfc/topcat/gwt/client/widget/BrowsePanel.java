@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
@@ -36,10 +38,12 @@ import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
+import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
-import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
+import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 
@@ -98,15 +102,86 @@ public class BrowsePanel extends Composite {
 
     public BrowsePanel() {
 
-        LayoutContainer layoutContainer = new LayoutContainer();
-        layoutContainer.setLayout(new RowLayout(Orientation.VERTICAL));
+        LayoutContainer mainContainer = new LayoutContainer();
+        mainContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
         ContentPanel contentPanel = new ContentPanel();
         contentPanel.setHeaderVisible(false);
         contentPanel.setCollapsible(true);
         contentPanel.setLayout(new RowLayout(Orientation.VERTICAL));
+        contentPanel.setTopComponent(getToolBar());
 
-        // ToolBar with ButtonBar with download button
+        // Add Treepanel
+        RpcProxy<ArrayList<ICATNode>> proxy = getProxy();
+        loader = getLoader(proxy);
+        TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
+        tree = new TreePanel<ICATNode>(store);
+
+        // Add tree listeners and menu
+        addExpandListener();
+        addBeforeCheckChangeListener();
+        addSingleClickListener();
+        addDoubleClickListener();
+        addContextMenu();
+
+        tree.setCaching(true);
+        tree.setDisplayProperty("name");
+        tree.setCheckable(true);
+        tree.setCheckStyle(CheckCascade.CHILDREN);
+        tree.setAutoHeight(true);
+
+        VerticalPanel bodyPanel = new VerticalPanel();
+        bodyPanel.add(tree);
+        bodyPanel.setLayoutOnChange(true);
+        bodyPanel.setScrollMode(Scroll.AUTO);
+        bodyPanel.setHeight("600px");
+        VBoxLayout layout = new VBoxLayout();
+        layout.setPadding(new Padding(10));
+        layout.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
+        bodyPanel.setLayout(layout);
+        contentPanel.add(bodyPanel);
+
+        mainContainer.add(contentPanel);
+
+        // Investigation detail
+        investigationPanel = new InvestigationPanel(SOURCE);
+        investigationPanel.hide();
+        mainContainer.add(investigationPanel);
+
+        initComponent(mainContainer);
+        setMonitorWindowResize(true);
+
+        // Add listeners
+        createAddInvestigationDetailsHandler();
+        createLoginHandler();
+        createLogoutHandler();
+    }
+
+    /**
+     * Get a base tree loader that uses the given proxy.
+     * 
+     * @param proxy
+     * @return a BaseTreeLoader
+     */
+    private BaseTreeLoader<ICATNode> getLoader(RpcProxy<ArrayList<ICATNode>> proxy) {
+        BaseTreeLoader<ICATNode> loader = new BaseTreeLoader<ICATNode>(proxy) {
+            @Override
+            public boolean hasChildren(ICATNode parent) {
+                // treeGrid.getStore().getChildCount(parent) !=0
+                return logfilesMap.get(parent.getFacility() + parent.getDatafileId()) != null
+                        || parent.getNodeType() != ICATNodeType.DATAFILE
+                        && parent.getNodeType() != ICATNodeType.UNKNOWN;
+            }
+        };
+        return loader;
+    }
+
+    /**
+     * Get a ToolBar with a ButtonBar with a download button.
+     * 
+     * @return a ToolBar
+     */
+    private ToolBar getToolBar() {
         ToolBar toolBar = new ToolBar();
         ButtonBar buttonBar = new ButtonBar();
         DownloadButton btnDownload = new DownloadButton();
@@ -118,13 +193,17 @@ public class BrowsePanel extends Composite {
         });
         buttonBar.add(btnDownload);
         toolBar.add(buttonBar);
-        contentPanel.setTopComponent(toolBar);
+        return toolBar;
+    }
 
-        // Add Treepanel
-        // This is RPC proxy to get the information from the server using
-        // GWT-RPC AJAX calls each time the user expands the tree to browse.
+    /**
+     * Get the RPC proxy which will get the information from the server using
+     * GWT-RPC AJAX calls each time the user expands the tree to browse.
+     * 
+     * @return a RpcProxy
+     */
+    private RpcProxy<ArrayList<ICATNode>> getProxy() {
         RpcProxy<ArrayList<ICATNode>> proxy = new RpcProxy<ArrayList<ICATNode>>() {
-
             // Get the nodes from the server using GWT-RPC. For the datafiles
             // grouped under datafiles get it from the cache.
             @Override
@@ -142,12 +221,23 @@ public class BrowsePanel extends Composite {
 
                             @Override
                             public void onFailure(Throwable caught) {
-                                if (caught instanceof SessionException) {
-                                    // session has probably expired, check all
-                                    // sessions to be safe
-                                    EventPipeLine.getInstance().checkStillLoggedIn();
+                                if (caught instanceof TopcatException) {
+                                    if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
+                                        EventPipeLine.getInstance().checkStillLoggedIn();
+                                    } else if (((TopcatException) caught).getType()
+                                            .equals(TopcatExceptionType.INTERNAL)) {
+                                        EventPipeLine
+                                                .getInstance()
+                                                .showErrorDialog(
+                                                        "An internal error occured on the server, please see the server logs for more details.");
+                                    } else {
+                                        EventPipeLine.getInstance().showErrorDialog(
+                                                "Error retrieving data from server. " + caught.getMessage());
+                                    }
                                 }
                                 callback.onFailure(caught);
+                                // TODO This is not working properly, the circle
+                                // over the node does not disappear
                             }
 
                             @Override
@@ -164,21 +254,13 @@ public class BrowsePanel extends Composite {
                         });
             }
         };
+        return proxy;
+    }
 
-        loader = new BaseTreeLoader<ICATNode>(proxy) {
-            @Override
-            public boolean hasChildren(ICATNode parent) {
-                // treeGrid.getStore().getChildCount(parent) !=0
-                return logfilesMap.get(parent.getFacility() + parent.getDatafileId()) != null
-                        || parent.getNodeType() != ICATNodeType.DATAFILE
-                        && parent.getNodeType() != ICATNodeType.UNKNOWN;
-            }
-        };
-
-        TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
-
-        tree = new TreePanel<ICATNode>(store);
-
+    /**
+     * Add an Expand Listener to the tree.
+     */
+    private void addExpandListener() {
         // This handler calls the reloading of the tree if the children are
         // none. Useful when the session expires or user hasn't logged in.
         tree.addListener(Events.Expand, new Listener<TreePanelEvent<ICATNode>>() {
@@ -186,12 +268,16 @@ public class BrowsePanel extends Composite {
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
-
                 if (!node.isLeaf() && node.getItemCount() == 0)
                     loader.loadChildren(be.getItem());
             }
         });
+    }
 
+    /**
+     * Add a BeforeCheckChange Listener to the tree.
+     */
+    private void addBeforeCheckChangeListener() {
         // This is to check the RAW Datafile checked and check all the children
         tree.addListener(Events.BeforeCheckChange, new Listener<TreePanelEvent<ICATNode>>() {
             @Override
@@ -211,7 +297,31 @@ public class BrowsePanel extends Composite {
                 }
             }
         });
+    }
 
+    /**
+     * Add an OnClick Listener to the tree.
+     */
+    private void addSingleClickListener() {
+        // On click show investigation details
+        tree.addListener(Events.OnClick, new Listener<TreePanelEvent<ICATNode>>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                TreePanel<ICATNode>.TreeNode node = be.getNode();
+                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
+                    ICATNode icatnode = node.getModel();
+                    EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
+                            icatnode.getInvestigationId(), SOURCE);
+                }
+            }
+        });
+    }
+
+    /**
+     * Add an OnDoubleClick Listener to the tree.
+     */
+    private void addDoubleClickListener() {
         // On double click on datafile node show a parameter window
         tree.sinkEvents(Events.OnDoubleClick.getEventCode());
         tree.addListener(Events.OnDoubleClick, new Listener<TreePanelEvent<ICATNode>>() {
@@ -234,21 +344,12 @@ public class BrowsePanel extends Composite {
                 }
             }
         });
+    }
 
-        // On click show investigation details
-        tree.addListener(Events.OnClick, new Listener<TreePanelEvent<ICATNode>>() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void handleEvent(TreePanelEvent<ICATNode> be) {
-                TreePanel<ICATNode>.TreeNode node = be.getNode();
-                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
-                    ICATNode icatnode = node.getModel();
-                    EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
-                            icatnode.getInvestigationId(), SOURCE);
-                }
-            }
-        });
-
+    /**
+     * Add a ContextMenu to the tree.
+     */
+    private void addContextMenu() {
         // Context Menu
         tree.setContextMenu(new Menu());
         tree.addListener(Events.ContextMenu, new Listener<TreePanelEvent<ICATNode>>() {
@@ -267,37 +368,6 @@ public class BrowsePanel extends Composite {
                 }
             }
         });
-
-        tree.setCaching(true);
-        tree.setDisplayProperty("name");
-        tree.setCheckable(true);
-        tree.setCheckStyle(CheckCascade.CHILDREN);
-        tree.setAutoHeight(true);
-
-        VerticalPanel bodyPanel = new VerticalPanel();
-        bodyPanel.add(tree);
-        bodyPanel.setLayoutOnChange(true);
-        bodyPanel.setScrollMode(Scroll.AUTO);
-        bodyPanel.setHeight("600px");
-        VBoxLayout layout = new VBoxLayout();
-        layout.setPadding(new Padding(10));
-        layout.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
-        bodyPanel.setLayout(layout);
-        contentPanel.add(bodyPanel);
-
-        layoutContainer.add(contentPanel);
-
-        // mainContainer.add(contentPanel);
-
-        // Investigation detail
-        investigationPanel = new InvestigationPanel(SOURCE);
-        investigationPanel.hide();
-        layoutContainer.add(investigationPanel);
-
-        initComponent(layoutContainer);
-
-        createAddInvestigationDetailsHandler();
-        createLogoutHandler();
     }
 
     /**
@@ -428,12 +498,12 @@ public class BrowsePanel extends Composite {
             for (Long id : idList) {
                 batchCount = batchCount + 1;
                 if (requiredBatches == 1) {
-                    EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName);
+                    DownloadManager.getInstance().downloadDataset(facility, id, downloadName);
                 } else {
                     if (batchCount < 10) {
-                        EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-0" + batchCount);
+                        DownloadManager.getInstance().downloadDataset(facility, id, downloadName + "-0" + batchCount);
                     } else {
-                        EventPipeLine.getInstance().downloadDatasets(facility, id, downloadName + "-" + batchCount);
+                        DownloadManager.getInstance().downloadDataset(facility, id, downloadName + "-" + batchCount);
                     }
                 }
             }
@@ -445,12 +515,12 @@ public class BrowsePanel extends Composite {
             batchCount = batchCount + 1;
             List<Long> idList = dfMap.get(facility);
             if (requiredBatches == 1) {
-                EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName);
+                DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName);
             } else {
                 if (batchCount < 10) {
-                    EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-0" + batchCount);
+                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-0" + batchCount);
                 } else {
-                    EventPipeLine.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
+                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
                 }
             }
         }
@@ -493,13 +563,41 @@ public class BrowsePanel extends Composite {
     }
 
     /**
+     * Setup a handler to react to Login events.
+     */
+    private void createLoginHandler() {
+        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
+            @Override
+            public void login(LoginEvent event) {
+                List<ICATNode> nodes = tree.getStore().findModels("type", ICATNodeType.FACILITY);
+                for (ICATNode node : nodes) {
+                    if (node.getFacility().equalsIgnoreCase(event.getFacilityName())) {
+                        loader.loadChildren(node);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
      * Setup a handler to react to Logout events.
      */
     private void createLogoutHandler() {
         LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
             @Override
             public void logout(LogoutEvent event) {
-                // TODO close tree
+                // Close the tree and remove the children for the logged out
+                // facility
+                List<ICATNode> nodes = tree.getStore().findModels("type", ICATNodeType.FACILITY);
+                for (ICATNode node : nodes) {
+                    if (node.getFacility().equalsIgnoreCase(event.getFacilityName())) {
+                        tree.setExpanded(node, false);
+                        tree.getStore().removeAll(node);
+                    }
+                }
+
+                // Hide the investigation details if it is an investigation of
+                // the logged out facility
                 String invDetailsFacility = investigationPanel.getFacilityName();
                 if (!(invDetailsFacility == null) && invDetailsFacility.equalsIgnoreCase(event.getFacilityName())) {
                     investigationPanel.hide();

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -62,6 +62,15 @@ public class DefaultAuthenticationPlugin extends AuthenticationPlugin {
     @Override
     public void setLoginHandler(LoginInterface loginHandler) {
         widget.setLoginHandler(loginHandler);
+    }
+
+    @Override
+    public boolean showable() {
+        return true;
+    }
+
+    @Override
+    public void authenticate() {
     }
 
 }

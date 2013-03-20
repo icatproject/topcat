@@ -22,6 +22,7 @@
  */
 package uk.ac.stfc.topcat.ejb.webservice;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.ejb.EJB;
@@ -33,6 +34,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.xml.ws.RequestWrapper;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
+import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
@@ -99,12 +102,13 @@ public class TOPCAT {
 
     /**
      * Web service operation
+     * @throws TopcatException 
      */
     @WebMethod(operationName = "getMyInvestigationsInServer")
     public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> getMyInvestigationsInServer(
             @WebParam(name = "topcatSessionId") String topcatSessionId, 
-            @WebParam(name = "serverName") String serverName) {
-        return utility.getMyInvestigationsInServer(topcatSessionId, serverName);
+            @WebParam(name = "serverName") String serverName) throws TopcatException {
+        return (ArrayList<TInvestigation>) utility.getMyInvestigationsInServer(topcatSessionId, serverName);
     }
 
     /**

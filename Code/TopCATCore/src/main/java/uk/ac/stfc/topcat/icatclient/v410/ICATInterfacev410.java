@@ -251,7 +251,6 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             }
         } catch (IcatException_Exception ex) {
             // TODO check type
-            System.out.println("ERROR - getDatasetsInInvestigation: " + ex.getMessage());
         }
         return datasetList;
     }
@@ -276,7 +275,6 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             }
         } catch (IcatException_Exception e) {
             // TODO check type
-            System.out.println("ERROR - getParametersInDataset: " + e.getMessage());
         }
         return result;
     }
@@ -288,7 +286,6 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             return ds.getName();
         } catch (IcatException_Exception e) {
             // TODO check type
-            System.out.println("ERROR - getParametersInDataset: " + e.getMessage());
         }
         return "";
     }
@@ -304,7 +301,6 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             }
         } catch (IcatException_Exception ex) {
             // TODO check type
-            System.out.println("ERROR - getDatafilesInDataset: " + ex.getMessage());
         }
         return datafileList;
     }
@@ -408,7 +404,6 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
                             + startRunNumber + " AND " + endRunNumber + "]");
         } catch (IcatException_Exception ex) {
             // TODO check type
-            System.out.println("ERROR - searchByRunNumber: " + ex.getMessage());
         }
         for (Object datafile : resultDatafiles) {
             returnTDatafiles.add(copyDatafileToTDatafile(serverName, (Datafile) datafile));
@@ -471,7 +466,6 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
 
     private void convertToTopcatException(IcatException_Exception e) throws TopcatException {
         IcatException ue = e.getFaultInfo();
-        System.out.println("ERROR - throwTopcatException: " + ue.getType() + " ~ " + e.getMessage());
         if (ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
             throw new TopcatException(e.getMessage(), TopcatExceptionType.BAD_PARAMETER);
         } else if (ue.getType().equals(IcatExceptionType.INSUFFICIENT_PRIVILEGES)) {

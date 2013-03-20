@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -38,7 +38,6 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
 import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
-import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
@@ -53,7 +52,6 @@ import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInstrumentEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
-import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginCheckCompleteEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
@@ -69,7 +67,6 @@ import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
-import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
@@ -88,8 +85,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -121,6 +116,7 @@ public class EventPipeLine implements LoginInterface {
     private Set<String> loggedInFacilities = new HashSet<String>();
     private TopcatEvents tcEvents;
     private String authFacilityName;
+    private String authType;
     private String authHash;
 
     /** Keep a track of outstanding call backs to check login status. */
@@ -130,10 +126,7 @@ public class EventPipeLine implements LoginInterface {
     private LoginWidget loginWidget;
     private WaitDialog retrievingDataDialog;
     private WaitDialog waitDialog;
-    private int downloadCount = 0;
     private int retrievingDataDialogCount = 0;
-    /** Items waiting to be down loaded. */
-    private Set<DownloadModel> downloadQueue = new HashSet<DownloadModel>();
 
     // Panels from Main Window
     TOPCATOnline mainWindow = null;
@@ -161,11 +154,6 @@ public class EventPipeLine implements LoginInterface {
         facilitiesToLogOn = new HashSet<String>();
         // Initialise
         loginWidget.setLoginHandler(this);
-
-        // Create a new timer that calls getDownloadStatus() on the server.
-        Timer t = getDownloadStatusTimer();
-        // Schedule the timer to run every 5 seconds.
-        t.scheduleRepeating(5000);
 
         // Setup handlers
         createLoginHandler();
@@ -284,7 +272,7 @@ public class EventPipeLine implements LoginInterface {
         // an external auth service
         for (TFacility facility : facilities) {
             if (facility.getName().equalsIgnoreCase(authFacilityName)) {
-                logonWithTicket(facility.getAuthenticationServiceType(), facility.getAuthenticationServiceUrl());
+                logonWithTicket(authType, facility.getAuthenticationServiceUrl());
                 return;
             }
         }
@@ -306,49 +294,51 @@ public class EventPipeLine implements LoginInterface {
         }
     }
 
-    private void logonWithTicket(String authServiceType, String authServiceUrl) {
+    private void logonWithTicket(String authType, String authServiceUrl) {
+        if (!authType.equalsIgnoreCase("CAS")) {
+            return;
+        }
         waitDialog.setMessage(" Logging In...");
         waitDialog.show();
-        if (authServiceType.equalsIgnoreCase("CAS")) {
-            // Login to the given facility using ticketId
-            String href = Window.Location.getHref();
-            String[] urlBits = href.split(HistoryManager.seperatorToken + "ticket=", 2);
-            final String url = encodeUrlDelimiters(urlBits[0]) + "?ticket=" + urlBits[1];
-            loginService.loginWithTicket(authFacilityName, authServiceUrl, url, new AsyncCallback<String>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    waitDialog.hide();
-                    UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-                    urlBuilder.removeParameter("facilityName");
-                    urlBuilder.removeParameter("ticket");
-                    if (authHash.equals("#") || authHash.isEmpty()) {
-                        authHash = "#view";
-                    }
-                    // remove cas ticket which, if in the hash, will be at the
-                    // end
-                    String[] hashSplit = authHash.split(HistoryManager.seperatorToken + "ticket");
-                    String hash = hashSplit[0] + HistoryManager.seperatorModel + HistoryManager.seperatorToken
-                            + HistoryManager.logonError + HistoryManager.seperatorKeyValues + authFacilityName;
-                    urlBuilder.setHash(hash);
-                    Window.Location.assign(urlBuilder.buildString());
+        // Login to the given facility using ticketId
+        String href = Window.Location.getHref();
+        String[] urlBits = href.split(HistoryManager.seperatorToken + "ticket=", 2);
+        final String ticket = encodeUrlDelimiters(urlBits[0]) + "?ticket=" + urlBits[1];
+        loginService.loginWithTicket(authFacilityName, authServiceUrl, ticket, new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                waitDialog.hide();
+                UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+                urlBuilder.removeParameter("facilityName");
+                urlBuilder.removeParameter("authenticationType");
+                urlBuilder.removeParameter("ticket");
+                if (authHash.equals("#") || authHash.isEmpty()) {
+                    authHash = "#view";
                 }
+                // remove cas ticket which, if in the hash, will be at the
+                // end
+                String[] hashSplit = authHash.split(HistoryManager.seperatorToken + "ticket");
+                String hash = hashSplit[0] + HistoryManager.seperatorModel + HistoryManager.seperatorToken
+                        + HistoryManager.logonError + HistoryManager.seperatorKeyValues + authFacilityName;
+                urlBuilder.setHash(hash);
+                Window.Location.assign(urlBuilder.buildString());
+            }
 
-                @Override
-                public void onSuccess(String result) {
-                    waitDialog.hide();
-                    UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-                    urlBuilder.removeParameter("facilityName");
-                    urlBuilder.removeParameter("ticket");
-                    // remove cas ticket which, if in the hash, will be at the
-                    // end
-                    String[] hashSplit = authHash.split(HistoryManager.seperatorToken + "ticket");
-                    urlBuilder.setHash(hashSplit[0]);
-                    Window.Location.assign(urlBuilder.buildString());
-                }
-            });
-        } else {
-            waitDialog.hide();
-        }
+            @Override
+            public void onSuccess(String result) {
+                waitDialog.hide();
+                UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+                urlBuilder.removeParameter("facilityName");
+                urlBuilder.removeParameter("authenticationType");
+                urlBuilder.removeParameter("ticket");
+                // remove cas ticket which, if in the hash, will be at the
+                // end
+                String[] hashSplit = authHash.split(HistoryManager.seperatorToken + "ticket");
+                urlBuilder.setHash(hashSplit[0]);
+                Window.Location.assign(urlBuilder.buildString());
+            }
+        });
+
     }
 
     public String encodeUrlDelimiters(String s) {
@@ -445,8 +435,7 @@ public class EventPipeLine implements LoginInterface {
      */
     public void showLoginWidget(String facilityName) {
         if (!loginWidget.isVisible()) {
-            loginWidget.setFacilityName(facilityName);
-            loginWidget.show();
+            loginWidget.show(facilityName);
         }
     }
 
@@ -659,80 +648,6 @@ public class EventPipeLine implements LoginInterface {
      */
     public void showMessageDialog(String msg) {
         MessageBox.info("Information", msg, null);
-    }
-
-    /**
-     * Download all the datafiles from the facility for the given ids.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datafileList
-     *            a list containing data file ids
-     */
-    public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName) {
-        utilityService.getDatafilesDownloadURL(facilityName, (ArrayList<Long>) datafileList, downloadName,
-                new AsyncCallback<DownloadModel>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        showErrorDialog("Error retrieving data from server");
-                    }
-
-                    @Override
-                    public void onSuccess(DownloadModel result) {
-                        mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
-                        if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
-                            downloadQueue.add(result);
-                        } else {
-                            download(facilityName, result.getUrl());
-                        }
-                    }
-                });
-    }
-
-    /**
-     * Download the dataset from the facility.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datasetId
-     *            the data set id
-     * @param downloadName
-     *            a string containing a user defined name
-     */
-    public void downloadDatasets(final String facilityName, final Long datasetId, final String downloadName) {
-        utilityService.getDatasetDownloadURL(facilityName, datasetId, downloadName, new AsyncCallback<DownloadModel>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                showErrorDialog("Error retrieving data from server");
-            }
-
-            @Override
-            public void onSuccess(DownloadModel result) {
-                mainWindow.getMainPanel().getMyDownloadPanel().addDownload(result);
-                if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
-                    downloadQueue.add(result);
-                } else {
-                    download(facilityName, result.getUrl());
-                }
-            }
-        });
-    }
-
-    /**
-     * Download the url in a separate window.
-     * 
-     * @param url
-     */
-    public void download(String facilityName, final String url) {
-        if (!loggedInFacilities.contains(facilityName)) {
-            // session logged out so do not download
-            return;
-        }
-        DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", url);
-        downloadCount = downloadCount + 1;
-        if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES - 1)) {
-            downloadCount = 0;
-        }
     }
 
     /**
@@ -1006,75 +921,13 @@ public class EventPipeLine implements LoginInterface {
      * Set the authentication details returned by the authentication service
      * 
      * @param facilityName
-     * @param ticketId
+     * @param type
+     * @param hash
      */
-    public void setAuthentication(String facilityName, String hash) {
+    public void setAuthentication(String facilityName, String type, String hash) {
         authFacilityName = facilityName;
+        authType = type;
         authHash = hash;
-    }
-
-    /**
-     * Create a new timer that calls getDownloadStatus() on the server.
-     * 
-     * @return a timer that call getDownloadStatus on the server
-     */
-    private Timer getDownloadStatusTimer() {
-        Timer t = new Timer() {
-            @Override
-            public void run() {
-                // remove items if we have logged out of the facility
-                for (Iterator<DownloadModel> it = downloadQueue.iterator(); it.hasNext();) {
-                    if (!loggedInFacilities.contains(it.next().getFacilityName())) {
-                        it.remove();
-                    }
-                }
-                if (downloadQueue.size() == 0) {
-                    // nothing to check
-                    return;
-                }
-
-                // call the server which will call the download service
-                utilityService.getDownloadStatus(downloadQueue, new AsyncCallback<List<DownloadModel>>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        // remove items if we have logged out of the facility
-                        for (Iterator<DownloadModel> it = downloadQueue.iterator(); it.hasNext();) {
-                            if (!loggedInFacilities.contains(it.next().getFacilityName())) {
-                                it.remove();
-                            }
-                        }
-                        if (downloadQueue.size() > 0) {
-                            showErrorDialog("Error retrieving data from server while trying to get download status");
-                        }
-                    }
-
-                    @Override
-                    public void onSuccess(List<DownloadModel> finalStateReached) {
-                        boolean refresh = false;
-                        for (DownloadModel download : finalStateReached) {
-                            // remove done item from the list
-                            downloadQueue.remove(download);
-                            if (!loggedInFacilities.contains(download.getFacilityName())) {
-                                // session logged out so do not process this
-                                // download
-                                continue;
-                            }
-                            if (download.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
-                                download(download.getFacilityName(), download.getUrl());
-                            } else if (download.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
-                                showErrorDialog("Error retrieving data from server for download "
-                                        + download.getDownloadName());
-                            }
-                            refresh = true;
-                        }
-                        if (refresh) {
-                            mainWindow.getMainPanel().getMyDownloadPanel().refresh();
-                        }
-                    }
-                });
-            }
-        };
-        return t;
     }
 
     /**
@@ -1084,15 +937,22 @@ public class EventPipeLine implements LoginInterface {
      */
     public void addMyInvestigations(final String facilityName) {
         showRetrievingData();
-        utilityService.getMyInvestigationsInServer(facilityName, new AsyncCallback<ArrayList<TInvestigation>>() {
+        utilityService.getMyInvestigationsInServer(facilityName, new AsyncCallback<List<TInvestigation>>() {
             @Override
             public void onFailure(Throwable caught) {
                 hideRetrievingData();
-                showErrorDialog("Error retrieving investigation data from server for " + facilityName);
+                if (caught instanceof TopcatException) {
+                    if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
+                        checkStillLoggedIn();
+                    } else {
+                        showErrorDialog("Error retrieving data from " + facilityName);
+                    }
+                    showErrorDialog("Error retrieving investigation data from server for " + facilityName);
+                }
             }
 
             @Override
-            public void onSuccess(ArrayList<TInvestigation> result) {
+            public void onSuccess(List<TInvestigation> result) {
                 ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
                 if (result != null) {
                     for (TInvestigation inv : result)
@@ -1102,40 +962,6 @@ public class EventPipeLine implements LoginInterface {
                 }
                 getEventBus().fireEventFromSource(new AddMyInvestigationEvent(facilityName, invList), facilityName);
                 hideRetrievingData();
-            }
-        });
-    }
-
-    /**
-     * Get the download names for the facility belonging to the user.
-     * 
-     * @param facilityName
-     */
-    private void addMyDownloads(final String facilityName) {
-        showRetrievingData();
-        Set<String> facilityNames = new HashSet<String>();
-        facilityNames.add(facilityName);
-        utilityService.getMyDownloadList(facilityNames, new AsyncCallback<ArrayList<DownloadModel>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                hideRetrievingData();
-                showMessageDialog("Error retrieving download history from server for " + facilityName);
-            }
-
-            @Override
-            public void onSuccess(ArrayList<DownloadModel> result) {
-                getEventBus().fireEventFromSource(new AddMyDownloadEvent(facilityName, result), facilityName);
-                hideRetrievingData();
-                // Check for downloads that are 'in progress' as we need to add
-                // them to the downlod queue
-                for (Iterator<DownloadModel> it = result.iterator(); it.hasNext();) {
-                    if (!it.next().getStatus().equals(Constants.STATUS_IN_PROGRESS)) {
-                        it.remove();
-                    }
-                }
-                if (result.size() > 0) {
-                    downloadQueue.addAll(result);
-                }
             }
         });
     }
@@ -1237,7 +1063,6 @@ public class EventPipeLine implements LoginInterface {
             public void login(final LoginEvent event) {
                 loggedInFacilities.add(event.getFacilityName());
                 addMyInvestigations(event.getFacilityName());
-                addMyDownloads(event.getFacilityName());
                 addInstruments(event.getFacilityName());
                 addInvestigations(event.getFacilityName());
                 historyManager.updateHistory();
@@ -1259,13 +1084,6 @@ public class EventPipeLine implements LoginInterface {
                 ListStore<Instrument> fInstruments = getFacilityInstruments(event.getFacilityName());
                 fInstruments.removeAll();
                 loggedInFacilities.remove(event.getFacilityName());
-
-                // remove items from the download queue
-                for (Iterator<DownloadModel> it = downloadQueue.iterator(); it.hasNext();) {
-                    if (it.next().getFacilityName().equals(event.getFacilityName())) {
-                        it.remove();
-                    }
-                }
             }
         });
     }

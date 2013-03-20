@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -27,11 +27,12 @@ package uk.ac.stfc.topcat.gwt.client.model;
  */
 import java.io.Serializable;
 
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
  * This class is a datamodel to hold authentication information
- * <p>
  * 
  */
 @SuppressWarnings("serial")
@@ -41,44 +42,70 @@ public class AuthenticationModel extends BaseModelData implements Serializable {
 
     }
 
-    public AuthenticationModel(String facilityName, String authenticationType, String authenticationPluginName) {
+    public AuthenticationModel(String facilityName, String authenticationType, String authenticationPluginName,
+            String authenticationServiceUrl) {
         setFacilityName(facilityName);
-        setAuthenticationType(authenticationType);
-        setAuthenticationPluginName(authenticationPluginName);
+        setType(authenticationType);
+        setPluginName(authenticationPluginName);
+        setUrl(authenticationServiceUrl);
+    }
+
+    public AuthenticationModel(TAuthentication tAuthentication) {
+        setFacilityName(tAuthentication.getFacilityName());
+        setType(tAuthentication.getType());
+        setPluginName(tAuthentication.getPluginName());
+        setUrl(tAuthentication.getUrl());
     }
 
     /**
      * @return authentication plugin name
      */
-    public String getAuthenticationPluginName() {
-        return get("authenticationPluginName");
+    public String getPluginName() {
+        return get("pluginName");
 
     }
 
     /**
-     * Set authentication plugin name
+     * Set plugin name
      * 
-     * @param authenticationPluginName
+     * @param pluginName
      */
-    public void setAuthenticationPluginName(String authenticationPluginName) {
-        set("authenticationPluginName", authenticationPluginName);
+    public void setPluginName(String pluginName) {
+        set("pluginName", pluginName);
+    }
+
+    /**
+     * @return authentication service url
+     */
+    public String getUrl() {
+        return get("url");
+
+    }
+
+    /**
+     * Set authentication service url
+     * 
+     * @param url
+     */
+    public void setUrl(String url) {
+        set("url", url);
     }
 
     /**
      * @return authentication type
      */
-    public String getAuthenticationType() {
-        return get("authenticationType");
+    public String getType() {
+        return get("type");
 
     }
 
     /**
      * Set authentication type
      * 
-     * @param authenticationType
+     * @param type
      */
-    public void setAuthenticationType(String authenticationType) {
-        set("authenticationType", authenticationType);
+    public void setType(String type) {
+        set("type", type);
     }
 
     /**
