@@ -15,7 +15,7 @@ from sys import exit
 import re
 from os import getcwd
 
-#Variables 
+# Variables 
 ICAT_DIR = "icats.d"
 TOPCAT_PROPS_FILE = "glassfish.props"
 
@@ -171,7 +171,7 @@ def create(conf_props):
     command = (ASADMIN + " create-jdbc-resource --connectionpoolid " + 
                  CONNECTION_POOL_ID + " " + "jdbc/" + 
                  CONNECTION_POOL_ID)
-    retcode =  call(command, shell=True)
+    retcode = call(command, shell=True)
     if retcode > 0:
         print "ERROR creating jdbc resource"
         exit(1)
@@ -254,9 +254,92 @@ def undeploy():
         exit(1)
 
 
+def status(conf_props):
+    """
+    display the status as reported by asadmin
+    """
+    list_asadmin_bits(conf_props)
+    list_icat_servers(conf_props)
+
+
+def list_asadmin_bits(conf_props):  
+    """
+    display the status as reported by asadmin
+    """
+    print "\nDomains"
+    command = ASADMIN + " list-domains"
+    retcode = call(command, shell=True)    
+    if retcode > 0:
+        print "ERROR listing domains"
+        exit(1)
+    print "\nComponents"
+    command = ASADMIN + " list-components"
+    retcode = call(command, shell=True)    
+    if retcode > 0:
+        print "ERROR listing components"
+        exit(1)
+    print "\nJDBC connection pools"
+    command = ASADMIN + " list-jdbc-connection-pools"
+    retcode = call(command, shell=True)    
+    if retcode > 0:
+        print "ERROR listing jdbc connection pools"
+        exit(1)        
+    print "\nJDBC resources"
+    command = ASADMIN + " list-jdbc-resources"
+    retcode = call(command, shell=True)    
+    if retcode > 0:
+        print "ERROR listing jdbc resources"
+        exit(1)
+        
+        
+def list_icat_servers(conf_props):  
+    """
+    List the ICAT servers in the database
+    """
+    db_props = extract_db_props(conf_props['topcatProperties'])
+    sql_command = get_sql_command(conf_props, db_props)
+    select = ("SELECT SERVER_URL FROM  TOPCAT_ICAT_SERVER \n;\n")
+    urls = get_value_from_database(conf_props, sql_command, db_props, select)   
+    if conf_props['dbType'].upper() == "DERBY":
+        index = 6
+        stop = len(urls) - 5
+    elif conf_props['dbType'].upper() == "ORACLE":
+        index = 12
+        stop = len(urls) - 4
+    elif conf_props['dbType'].upper() == "MYSQL":
+        index = 1
+        stop = len(urls)  
+    print "\nUsing " + str(conf_props['dbType'].upper()) + " database\n"
+    print "ICAT WSDL URLS: "
+    while index < stop:
+        print " " + str(urls[index]).strip()
+        index = index + 1
+    print
+
+            
 def add_icat(conf_props):
     """
     Set up TopCAT to point to one or more ICATs
+    """
+    if  not path.exists(ICAT_DIR):    
+        print ('There is no ' + ICAT_DIR + " directory")
+        exit(1)
+    db_props = extract_db_props(conf_props['topcatProperties'])
+    sql_command = get_sql_command(conf_props, db_props)
+    dir_list = listdir(ICAT_DIR)
+    pattern = re.compile("\.icat$")
+    icat_id = get_next_server_id(conf_props, sql_command, db_props)
+    auth_id = get_next_auth_id(conf_props, sql_command, db_props)
+    for fname in dir_list:
+        if pattern.search(fname) != None:
+            auth_id = add_icat_entry(conf_props, ICAT_DIR + "/" + fname,
+                                      icat_id, auth_id, sql_command, db_props)
+            icat_id = icat_id + 1      
+
+
+def upgrade(conf_props):
+    """
+    Upgrage the database
     """
     if  not path.exists(ICAT_DIR):    
         print ('There is no ' + ICAT_DIR + " directory")
@@ -279,15 +362,32 @@ def add_icat(conf_props):
         sql_command = (MYSQL + " -u " + db_props['user'] + " -p" + 
                        db_props['password'] + " " + db_props['databaseName'] + 
                        "<")
-    dir_list = listdir(ICAT_DIR)
-    pattern = re.compile("\.icat$")
-    icat_id = get_next_server_id(conf_props, sql_command, db_props)
-    auth_id = get_next_auth_id(conf_props, sql_command, db_props)
-    for fname in dir_list:
-        if pattern.search(fname) != None:
-            auth_id = add_icat_entry(conf_props, ICAT_DIR + "/" + fname,
-                                      icat_id, auth_id, sql_command, db_props)
-            icat_id = icat_id + 1      
+        
+    upgrade_db(conf_props, sql_command, db_props)
+
+
+def get_sql_command(conf_props, db_props):
+    """
+    Get the sql command to use based on the type of database
+    """
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_command = IJ
+        start_derby()
+    elif conf_props['dbType'].upper() == "ORACLE":
+        try:
+            db_props['oracleHome'] = environ['ORACLE_HOME']
+        except KeyError:
+            print "ERROR - Please set ORACLE_HOME"
+            exit(1)
+        sqlplus = path.join(db_props['oracleHome'], "bin", "sqlplus")
+        sql_command = (sqlplus + " " + db_props['user'] + "/" + 
+                       db_props['password'] + "@" + 
+                       db_props['hostname'] + " @")
+    elif conf_props['dbType'].upper() == "MYSQL":
+        sql_command = (MYSQL + " -u " + db_props['user'] + " -p" + 
+                       db_props['password'] + " " + db_props['databaseName'] + 
+                       "<")
+    return sql_command
 
 
 def get_next_server_id(conf_props, sql_command, db_props):
@@ -295,8 +395,8 @@ def get_next_server_id(conf_props, sql_command, db_props):
     Get the next server id to use
     """
     select = "SELECT MAX(ID) FROM TOPCAT_ICAT_SERVER\n;\n"
-    current_id = (get_value_from_database(conf_props, sql_command, db_props,
-                                          select))
+    current_id = (get_single_value_from_database(conf_props, sql_command,
+                                           db_props, select))
     try:
         return int(current_id) + 1
     except ValueError:
@@ -308,8 +408,8 @@ def get_next_auth_id(conf_props, sql_command, db_props):
     Get the next auth id to use
     """
     select = "SELECT MAX(ID) FROM  ICAT_AUTHENTICATION\n;\n"
-    current_id = (get_value_from_database(conf_props, sql_command, db_props,
-                                          select))
+    current_id = (get_single_value_from_database(conf_props, sql_command,
+                                          db_props, select))
     try:
         return int(current_id) + 1
     except ValueError:
@@ -322,7 +422,8 @@ def check_icat_name_exists(conf_props, sql_command, db_props, name):
     """
     select = ("SELECT COUNT(*) FROM  TOPCAT_ICAT_SERVER WHERE NAME='" + name + 
               "'\n;\n")
-    count = get_value_from_database(conf_props, sql_command, db_props, select)
+    count = get_single_value_from_database(conf_props, sql_command, db_props,
+                                            select)
     try:
         count = int(count)
     except ValueError:
@@ -333,6 +434,42 @@ def check_icat_name_exists(conf_props, sql_command, db_props, name):
     else:
         return False
        
+
+def get_single_value_from_database(conf_props, sql_command, db_props, select):
+    """
+    Get an int from the database in response to the given query
+    """
+
+    if conf_props['dbType'].upper() == "ORACLE":
+        sql_file = NamedTemporaryFile(dir=getcwd(), suffix='.sql')
+    else:
+        sql_file = NamedTemporaryFile()
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_file.write("connect 'jdbc:derby://" + db_props['serverName'] + 
+                       ":1527/" + db_props['DatabaseName'] + "';")
+    sql_file.write(select)
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_file.write("disconnect;")
+    sql_file.write("exit\n;")
+    command = sql_command + " " + sql_file.name
+    sql_file.seek(0)
+    out_file = TemporaryFile()
+    retcode = call(command, shell=True, stdout=out_file) 
+    if retcode > 0:
+        print "ERROR getting data from database"
+        exit(1)
+    out_file.seek(0)
+    lines = out_file.readlines()
+    print lines
+    if conf_props['dbType'].upper() == "DERBY":
+        ret_value = lines[6].strip()
+    elif conf_props['dbType'].upper() == "ORACLE":
+        ret_value = lines[12].strip()
+    elif conf_props['dbType'].upper() == "MYSQL":
+        ret_value = lines[1].strip()
+    out_file.close()
+    sql_file.close()
+    return ret_value
 
 def get_value_from_database(conf_props, sql_command, db_props, select):
     """
@@ -358,16 +495,10 @@ def get_value_from_database(conf_props, sql_command, db_props, select):
         print "ERROR getting data from database"
         exit(1)
     out_file.seek(0)
-    if conf_props['dbType'].upper() == "DERBY":
-        ret_value = out_file.readlines()[6].strip()
-    elif conf_props['dbType'].upper() == "ORACLE":
-        ret_value = out_file.readlines()[12].strip()
-    elif conf_props['dbType'].upper() == "MYSQL":
-        ret_value = out_file.readlines()[1].strip()
+    lines = out_file.readlines()
     out_file.close()
     sql_file.close()
-    return ret_value
-
+    return lines
 
 
 def add_icat_entry(conf_props, fname, icat_id, auth_id, sql_command, db_props):
@@ -426,11 +557,38 @@ def add_icat_entry(conf_props, fname, icat_id, auth_id, sql_command, db_props):
     return auth_id
 
 
+def upgrade_db(conf_props, sql_command, db_props):
+    """
+    Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER
+    """
+    if conf_props['dbType'].upper() == "ORACLE":
+        sql_file = NamedTemporaryFile(dir=getcwd(), suffix='.sql')
+    else:
+        sql_file = NamedTemporaryFile()
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_file.write("connect 'jdbc:derby://" + db_props['serverName'] + 
+                       ":1527/" + db_props['DatabaseName'] + "';")
+    sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER ")
+    sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR2(255)\n;\n")
+           
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_file.write("disconnect;")
+    sql_file.write("exit\n;")
+    command = sql_command + " " + sql_file.name
+    sql_file.seek(0)
+    retcode = call(command, shell=True, stdout=TemporaryFile())
+    if retcode > 0:
+        print "ERROR updating table"
+        exit(1)
+    sql_file.close()
+    return
+
+
 CONF_PROPS_TOPCAT = get_and_validate_props(TOPCAT_PROPS_FILE, REQ_VALUES_TOPCAT)
 CONF_PROPS_TOPCAT = add_optional_props(CONF_PROPS_TOPCAT)
 
 ASADMIN = path.join(CONF_PROPS_TOPCAT["glassfish"], "bin", "asadmin")
-#if windows:
+# if windows:
 #    ASADMIN = ASADMIN + ".bat"
 ASADMIN = ASADMIN + " --port " + CONF_PROPS_TOPCAT["port"]
 
@@ -453,6 +611,12 @@ PARSER.add_option("--undeploy", dest="undeploy",
 PARSER.add_option("--addICAT", dest="addICAT",
                   help="Adds the ICATs described in the .icat files to TopCAT",
                   action="store_true")
+PARSER.add_option("--status", dest="status",
+                  help="Display status information",
+                  action="store_true")
+PARSER.add_option("--upgrade", dest="upgrade",
+                  help="Upgrade the database for the migration between 1.7 and 1.9",
+                  action="store_true")
 
 (OPTIONS, ARGS) = PARSER.parse_args()
 
@@ -466,6 +630,10 @@ elif OPTIONS.undeploy:
     undeploy()
 elif OPTIONS.addICAT:
     add_icat(CONF_PROPS_TOPCAT)
+elif OPTIONS.status:
+    status(CONF_PROPS_TOPCAT)
+elif OPTIONS.upgrade:
+    upgrade(CONF_PROPS_TOPCAT)
 else:
     print ("You must provide an arg")
     exit(1)
