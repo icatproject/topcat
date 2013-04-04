@@ -18,8 +18,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
+import uk.ac.stfc.topcat.core.gwt.module.exception.NotSupportedException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 /**
  * 
@@ -51,22 +51,20 @@ public class ICATWebInterfaceBase {
     }
 
     public List<TDatafileFormat> listDatafileFormats(String sessionId) throws TopcatException {
-        throw new TopcatException("listDatafileFormats is not supported", TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("listDatafileFormats is not supported");
     }
 
     public List<String> listDatasetTypes(String sessionId) throws TopcatException {
-        throw new TopcatException("listDatasetTypes is not supported", TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("listDatasetTypes is not supported");
     }
 
     public List<TFacilityCycle> listFacilityCycles(String sessionId) throws TopcatException {
-        throw new TopcatException("listFacilityCycles is not supported by this server",
-                TopcatExceptionType.NOT_SUPPORTED);
+        throw new TopcatException("listFacilityCycles is not supported by this server");
     }
 
     public List<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
             throws TopcatException {
-        throw new TopcatException("listFacilityCyclesForInstrument is not supported by this server",
-                TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("listFacilityCyclesForInstrument is not supported by this server");
     }
 
     public List<TInvestigation> getMyInvestigations(String sessionId) throws TopcatException {
@@ -84,12 +82,11 @@ public class ICATWebInterfaceBase {
 
     public ArrayList<TDatafile> searchDatafilesByParameter(String sessionId, TAdvancedSearchDetails details)
             throws TopcatException {
-        throw new TopcatException("Parameter searching is not currently supported by this server",
-                TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("Parameter searching is not currently supported by this server");
     }
 
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
-            throws AuthenticationException {
+            throws AuthenticationException, TopcatException {
         return new TInvestigation();
     }
 
@@ -114,15 +111,15 @@ public class ICATWebInterfaceBase {
     }
 
     public ArrayList<String> getParameterNames(String sessionId) throws TopcatException {
-        throw new TopcatException("getParameterNames is not supported", TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("getParameterNames is not supported");
     }
 
     public ArrayList<String> getParameterUnits(String sessionId, String name) throws TopcatException {
-        throw new TopcatException("getParameterUnits is not supported", TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("getParameterUnits is not supported");
     }
 
     public ArrayList<String> getParameterTypes(String sessionId, String name, String units) throws TopcatException {
-        throw new TopcatException("getParameterType is not supported", TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("getParameterType is not supported");
     }
 
     public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
@@ -163,7 +160,7 @@ public class ICATWebInterfaceBase {
     }
 
     public Long createDataSet(String sessionId, TDataset dataset) throws TopcatException {
-        throw new TopcatException("createDataSet is not supported", TopcatExceptionType.NOT_SUPPORTED);
+        throw new NotSupportedException("createDataSet is not supported");
     }
 
 }

@@ -1,17 +1,20 @@
-package uk.ac.stfc.topcat.core.gwt.module;
+package uk.ac.stfc.topcat.core.gwt.module.exception;
 
 @SuppressWarnings("serial")
 public class TopcatException extends Exception {
 
     /**
-     * Java type that goes as soapenv:Fault detail element.
+     * Fault detail element.
      * 
      */
     private TopcatException faultInfo;
-    private TopcatExceptionType type;
 
     public TopcatException() {
         super();
+    }
+
+    public TopcatException(String msg) {
+        super(msg);
     }
 
     /**
@@ -22,11 +25,6 @@ public class TopcatException extends Exception {
     public TopcatException(String message, TopcatException faultInfo) {
         super(message);
         this.faultInfo = faultInfo;
-    }
-
-    public TopcatException(String message, TopcatExceptionType type) {
-        super(message);
-        this.type = type;
     }
 
     /**
@@ -47,14 +45,6 @@ public class TopcatException extends Exception {
      */
     public TopcatException getFaultInfo() {
         return faultInfo;
-    }
-
-    /**
-     * 
-     * @return returns type
-     */
-    public TopcatExceptionType getType() {
-        return type;
     }
 
 }

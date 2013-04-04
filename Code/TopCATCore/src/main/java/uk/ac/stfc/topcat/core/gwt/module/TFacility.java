@@ -34,6 +34,7 @@ import java.io.Serializable;
  */
 public class TFacility implements Serializable {
     private String downloadPluginName;
+    private String downloadServiceUrl;
     private String name;
     private String pluginName;
     private String url;
@@ -43,9 +44,10 @@ public class TFacility implements Serializable {
     public TFacility() {
     }
 
-    public TFacility(String name, String url, String pluginName, String downloadPluginName,
+    public TFacility(String name, String url, String pluginName, String downloadPluginName, String downloadServiceUrl,
             String authenticationServiceUrl, String authenticationServiceType) {
         this.downloadPluginName = downloadPluginName;
+        this.downloadServiceUrl = downloadServiceUrl;
         this.name = name;
         this.pluginName = pluginName;
         this.url = url;
@@ -59,6 +61,14 @@ public class TFacility implements Serializable {
 
     public void setDownloadPluginName(String downloadPluginName) {
         this.downloadPluginName = downloadPluginName;
+    }
+
+    public String getDownloadServiceUrl() {
+        return downloadServiceUrl;
+    }
+
+    public void setDownloadServiceUrl(String downloadServiceUrl) {
+        this.downloadServiceUrl = downloadServiceUrl;
     }
 
     public String getName() {
