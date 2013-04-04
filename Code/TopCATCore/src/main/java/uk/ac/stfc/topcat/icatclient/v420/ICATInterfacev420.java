@@ -35,8 +35,14 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
+import uk.ac.stfc.topcat.core.gwt.module.exception.BadParameterException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InsufficientPrivilegesException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.NoSuchObjectException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.ObjectAlreadyExistsException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.ValidationException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.icatclient.v420.Login.Credentials;
 import uk.ac.stfc.topcat.icatclient.v420.Login.Credentials.Entry;
@@ -126,9 +132,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             convertToTopcatException(e, "getUserName");
         } catch (Throwable e) {
             logger.severe("getUserName caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, getUserName threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, getUserName threw an unexpected exception, see server logs for details");
         }
         return name;
     }
@@ -147,26 +152,25 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             convertToTopcatException(e, "listDatafileFormats");
         } catch (Throwable e) {
             logger.severe("listDatafileFormats caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, listDatafileFormats caught an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, listDatafileFormats caught an unexpected exception, see server logs for details");
         }
         return formatList;
     }
 
     @Override
     public List<String> listDatasetTypes(String sessionId) throws TopcatException {
-        return searchList(sessionId, "DISTINCT DatasetType.name");
+        return searchList(sessionId, "DISTINCT DatasetType.name", "listDatasetTypes");
     }
 
     @Override
     public ArrayList<String> listInstruments(String sessionId) throws TopcatException {
-        return searchList(sessionId, "DISTINCT Instrument.fullName");
+        return searchList(sessionId, "DISTINCT Instrument.fullName", "listInstruments");
     }
 
     @Override
     public ArrayList<String> listInvestigationTypes(String sessionId) throws TopcatException {
-        return searchList(sessionId, "DISTINCT InvestigationType.name");
+        return searchList(sessionId, "DISTINCT InvestigationType.name", "listInvestigationTypes");
     }
 
     @Override
@@ -181,7 +185,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             convertToTopcatException(ex, "listFacilityCycles");
         } catch (Throwable e) {
             logger.warning("listFacilityCycles: " + e.getMessage());
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.INTERNAL);
+            throw new InternalException(e.getMessage());
         }
         return facilityCycles;
     }
@@ -208,9 +212,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             // instrument
         } catch (Throwable e) {
             logger.severe("listFacilityCyclesForInstrument caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, listFacilityCyclesForInstrument threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, listFacilityCyclesForInstrument threw an unexpected exception, see server logs for details");
         }
         Collections.sort(facilityCycles);
         return facilityCycles;
@@ -245,7 +248,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     @Override
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
-            throws AuthenticationException {
+            throws TopcatException {
         TInvestigation ti = new TInvestigation();
         try {
             Investigation resultInv = (Investigation) service
@@ -285,12 +288,14 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             for (InvestigationParameter param : params) {
                 parameterList.add(copyParameterToTParameter(param));
             }
-            ti.setParameters(parameterList);
-        } catch (IcatException_Exception ex) {
-            // TODO check type
-            throw new AuthenticationException(ex.getMessage());
-        }
-        return ti;
+            ti.setParameters(parameterList);      
+            } catch (IcatException_Exception e) {
+                convertToTopcatException(e, "getInvestigationDetails");
+            } catch (Throwable e) {
+                logger.severe("getInvestigationDetails caught an unexpected exception: " + e.toString());
+                throw new InternalException(
+                        "Internal error, getInvestigationDetails threw an unexpected exception, see server logs for details");
+            }  return ti;
     }
 
     private TParameter copyParameterToTParameter(InvestigationParameter param) {
@@ -319,9 +324,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             convertToTopcatException(e, "searchByAdvancedPagination");
         } catch (Throwable e) {
             logger.severe("searchByAdvancedPagination caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, searchByAdvancedPagination threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, searchByAdvancedPagination threw an unexpected exception, see server logs for details");
         }
         for (Object inv : resultInv) {
             investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
@@ -456,7 +460,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     @Override
     public ArrayList<String> getKeywordsForUser(String sessionId) throws TopcatException {
-        return searchList(sessionId, "DISTINCT Keyword.name");
+        return searchList(sessionId, "DISTINCT Keyword.name", "getKeywordsForUser");
     }
 
     @Override
@@ -542,9 +546,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             convertToTopcatException(e, "searchDatafilesByParameter");
         } catch (Throwable e) {
             logger.severe("searchDatafilesByParameter caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, searchDatafilesByParameter threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, searchDatafilesByParameter threw an unexpected exception, see server logs for details");
         }
         for (Object df : resultDf) {
             datafileList.add(copyDatafileToTDatafile(serverName, (Datafile) df));
@@ -554,14 +557,15 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     @Override
     public ArrayList<String> getParameterNames(String sessionId) throws TopcatException {
-        ArrayList<String> names = searchList(sessionId, "DISTINCT ParameterType.name");
+        ArrayList<String> names = searchList(sessionId, "DISTINCT ParameterType.name", "getParameterNames");
         Collections.sort(names);
         return names;
     }
 
     @Override
     public ArrayList<String> getParameterUnits(String sessionId, String name) throws TopcatException {
-        ArrayList<String> units = searchList(sessionId, "DISTINCT ParameterType.units [name = '" + name + "']");
+        ArrayList<String> units = searchList(sessionId, "DISTINCT ParameterType.units [name = '" + name + "']",
+                "getParameterUnits");
         Collections.sort(units);
         return units;
     }
@@ -594,9 +598,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             logger.warning("createDataSet, cannot get DatasetType: " + e.getMessage());
         } catch (Throwable e) {
             logger.severe("createDataSet caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, createDataSet threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, createDataSet threw an unexpected exception, see server logs for details");
         }
         try {
             ds.setInvestigation((Investigation) service.get(sessionId, "Investigation",
@@ -606,9 +609,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             logger.warning("createDataSet, cannot get Investigation: " + e.getMessage());
         } catch (Throwable e) {
             logger.severe("createDataSet caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, createDataSet threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, createDataSet threw an unexpected exception, see server logs for details");
         }
         ds.setDescription(dataset.getDescription());
         ds.setName(dataset.getName());
@@ -619,9 +621,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             convertToTopcatException(e, "createDataSet");
         } catch (Throwable e) {
             logger.severe("createDataSet caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, createDataSet threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, createDataSet threw an unexpected exception, see server logs for details");
         }
         return null;
     }
@@ -630,19 +631,19 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         IcatException ue = e.getFaultInfo();
         logger.warning(callingMethod + ": IcatException: " + ue.getType() + " ~ " + e.getMessage());
         if (ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.BAD_PARAMETER);
+            throw new BadParameterException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.INSUFFICIENT_PRIVILEGES)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.INSUFFICIENT_PRIVILEGES);
+            throw new InsufficientPrivilegesException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.INTERNAL)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.INTERNAL);
+            throw new InternalException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.NO_SUCH_OBJECT_FOUND)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.NO_SUCH_OBJECT_FOUND);
+            throw new NoSuchObjectException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.OBJECT_ALREADY_EXISTS)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.OBJECT_ALREADY_EXISTS);
+            throw new ObjectAlreadyExistsException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.SESSION)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.SESSION);
+            throw new SessionException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.VALIDATION)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.VALIDATION);
+            throw new ValidationException(e.getMessage());
         }
     }
 
@@ -786,9 +787,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 convertToTopcatException(e, "getParameterQuery");
             } catch (Throwable e) {
                 logger.severe("getParameterQuery caught an unexpected exception: " + e.toString());
-                throw new TopcatException(
-                        "Internal error, getParameterQuery threw an unexpected exception, see server logs for details",
-                        TopcatExceptionType.INTERNAL);
+                throw new InternalException(
+                        "Internal error, getParameterQuery threw an unexpected exception, see server logs for details");
             }
             if (entityName.equalsIgnoreCase("Investigation")) {
                 query.append("<-> InvestigationUser <-> User[name='" + name + "']");
@@ -903,17 +903,16 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             if (!ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
                 convertToTopcatException(e, "getParameterTypesFormService");
             } else {
-                throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
+                throw new BadParameterException("Parameter name/units not found");
             }
         } catch (Throwable e) {
             logger.severe("getParameterTypesFormService caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, getParameterTypesFormService threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, getParameterTypesFormService threw an unexpected exception, see server logs for details");
         }
         if (types.size() == 0) {
             // Parameter not found
-            throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
+            throw new BadParameterException("Parameter name/units not found");
         }
         return types;
     }
@@ -1004,10 +1003,13 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
      * @param sessionId
      * @param query
      *            a string containing the query to pass to icat
+     * @param a
+     *            string containing a message to be prefixed to TopcatException
+     *            if it is thrown
      * @return a list of strings
      * @throws TopcatException
      */
-    private ArrayList<String> searchList(String sessionId, String query) throws TopcatException {
+    private ArrayList<String> searchList(String sessionId, String query, String message) throws TopcatException {
         ArrayList<String> returnList = new ArrayList<String>();
         try {
             List<Object> results = service.search(sessionId, query);
@@ -1016,12 +1018,11 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             }
         } catch (java.lang.NullPointerException ex) {
         } catch (IcatException_Exception e) {
-            convertToTopcatException(e, "searchList");
+            convertToTopcatException(e, message);
         } catch (Throwable e) {
             logger.severe("searchList caught an unexpected exception: " + e.toString());
-            throw new TopcatException(
-                    "Internal error, searchList threw an unexpected exception, see server logs for details",
-                    TopcatExceptionType.INTERNAL);
+            throw new InternalException(
+                    "Internal error, searchList threw an unexpected exception, see server logs for details");
         }
         return returnList;
     }

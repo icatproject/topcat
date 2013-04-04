@@ -29,8 +29,14 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
+import uk.ac.stfc.topcat.core.gwt.module.exception.BadParameterException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InsufficientPrivilegesException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.NoSuchObjectException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.ObjectAlreadyExistsException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.ValidationException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -467,19 +473,19 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
     private void convertToTopcatException(IcatException_Exception e) throws TopcatException {
         IcatException ue = e.getFaultInfo();
         if (ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.BAD_PARAMETER);
+            throw new BadParameterException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.INSUFFICIENT_PRIVILEGES)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.INSUFFICIENT_PRIVILEGES);
+            throw new InsufficientPrivilegesException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.INTERNAL)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.INTERNAL);
+            throw new InternalException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.NO_SUCH_OBJECT_FOUND)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.NO_SUCH_OBJECT_FOUND);
+            throw new NoSuchObjectException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.OBJECT_ALREADY_EXISTS)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.OBJECT_ALREADY_EXISTS);
+            throw new ObjectAlreadyExistsException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.SESSION)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.SESSION);
+            throw new SessionException(e.getMessage());
         } else if (ue.getType().equals(IcatExceptionType.VALIDATION)) {
-            throw new TopcatException(e.getMessage(), TopcatExceptionType.VALIDATION);
+            throw new ValidationException(e.getMessage());
         }
     }
 
@@ -656,12 +662,12 @@ public class ICATInterfacev410 extends ICATWebInterfaceBase {
             if (!ue.getType().equals(IcatExceptionType.BAD_PARAMETER)) {
                 convertToTopcatException(e);
             } else {
-                throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
+                throw new BadParameterException("Parameter name/units not found");
             }
         }
         if (types.size() == 0) {
             // Parameter not found
-            throw new TopcatException("Parameter name/units not found", TopcatExceptionType.BAD_PARAMETER);
+            throw new BadParameterException("Parameter name/units not found");
         }
         return types;
     }
