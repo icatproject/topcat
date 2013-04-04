@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -24,49 +24,49 @@ package uk.ac.stfc.topcat.gwt.client.event;
 
 import java.util.ArrayList;
 
-import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationTypeEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class AddInvestigationEvent extends GwtEvent<AddInvestigationEventHandler> {
+public class AddInvestigationTypeEvent extends GwtEvent<AddInvestigationTypeEventHandler> {
 
-    public static Type<AddInvestigationEventHandler> TYPE = new Type<AddInvestigationEventHandler>();
+    public static Type<AddInvestigationTypeEventHandler> TYPE = new Type<AddInvestigationTypeEventHandler>();
 
-    public static HandlerRegistration register(final EventBus eventBus, final AddInvestigationEventHandler handler) {
-        return eventBus.addHandler(AddInvestigationEvent.TYPE, handler);
+    public static HandlerRegistration register(final EventBus eventBus, final AddInvestigationTypeEventHandler handler) {
+        return eventBus.addHandler(AddInvestigationTypeEvent.TYPE, handler);
     }
 
     public static HandlerRegistration registerToSource(final EventBus eventBus, Object source,
-            final AddInvestigationEventHandler handler) {
-        return eventBus.addHandlerToSource(AddInvestigationEvent.TYPE, source, handler);
+            final AddInvestigationTypeEventHandler handler) {
+        return eventBus.addHandlerToSource(AddInvestigationTypeEvent.TYPE, source, handler);
     }
 
     private final String facilityName;
-    private final ArrayList<InvestigationType> investigations;
+    private final ArrayList<InvestigationType> investigationTypes;
 
-    public AddInvestigationEvent(final String facilityName, final ArrayList<InvestigationType> investigations) {
+    public AddInvestigationTypeEvent(final String facilityName, final ArrayList<InvestigationType> investigationTypes) {
         this.facilityName = facilityName;
-        this.investigations = investigations;
+        this.investigationTypes = investigationTypes;
     }
 
     public String getFacilityName() {
         return this.facilityName;
     }
 
-    public ArrayList<InvestigationType> getInvestigations() {
-        return this.investigations;
+    public ArrayList<InvestigationType> getInvestigationTypes() {
+        return this.investigationTypes;
     }
 
     @Override
-    public Type<AddInvestigationEventHandler> getAssociatedType() {
-        return AddInvestigationEvent.TYPE;
+    public Type<AddInvestigationTypeEventHandler> getAssociatedType() {
+        return AddInvestigationTypeEvent.TYPE;
     }
 
     @Override
-    protected void dispatch(final AddInvestigationEventHandler handler) {
-        handler.addInvestigations(this);
+    protected void dispatch(final AddInvestigationTypeEventHandler handler) {
+        handler.addInvestigationTypes(this);
     }
 }

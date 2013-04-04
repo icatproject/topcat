@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -30,6 +30,7 @@ import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TConstants;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
@@ -364,8 +365,12 @@ public class ParameterSearchSubPanel extends Composite {
                 @Override
                 public void onFailure(Throwable caught) {
                     EventPipeLine.getInstance().hideRetrievingData();
-                    EventPipeLine.getInstance().showErrorDialog(
-                            "Error retrieving parameter names from " + facility.getFacilityName());
+                    if (caught instanceof SessionException) {
+                        EventPipeLine.getInstance().checkStillLoggedIn();
+                    } else {
+                        EventPipeLine.getInstance().showErrorDialog(
+                                "Error retrieving parameter names from " + facility.getFacilityName());
+                    }
                 }
             });
         }
@@ -432,8 +437,12 @@ public class ParameterSearchSubPanel extends Composite {
                 @Override
                 public void onFailure(Throwable caught) {
                     EventPipeLine.getInstance().hideRetrievingData();
-                    EventPipeLine.getInstance()
-                            .showErrorDialog("Error retrieving parameter units from " + facilityName);
+                    if (caught instanceof SessionException) {
+                        EventPipeLine.getInstance().checkStillLoggedIn();
+                    } else {
+                        EventPipeLine.getInstance().showErrorDialog(
+                                "Error retrieving parameter units from " + facilityName);
+                    }
                 }
             });
         }
@@ -488,8 +497,12 @@ public class ParameterSearchSubPanel extends Composite {
                         @Override
                         public void onFailure(Throwable caught) {
                             EventPipeLine.getInstance().hideRetrievingData();
-                            EventPipeLine.getInstance().showErrorDialog(
-                                    "Error retrieving parameter type from " + facilityName);
+                            if (caught instanceof SessionException) {
+                                EventPipeLine.getInstance().checkStillLoggedIn();
+                            } else {
+                                EventPipeLine.getInstance().showErrorDialog(
+                                        "Error retrieving parameter type from " + facilityName);
+                            }
                         }
                     });
         }

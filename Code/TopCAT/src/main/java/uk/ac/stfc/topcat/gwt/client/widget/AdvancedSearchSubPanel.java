@@ -33,11 +33,11 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.callback.InvestigationSearchCallback;
 import uk.ac.stfc.topcat.gwt.client.event.AddInstrumentEvent;
-import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationTypeEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInstrumentEventHandler;
-import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationTypeEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.Facility;
@@ -225,7 +225,7 @@ public class AdvancedSearchSubPanel extends Composite {
 
         createLoginHandler();
         createAddInstrumentHandler();
-        createAddInvestigationHandler();
+        createAddInvestigationTypeHandler();
         createLogoutHandler();
     }
 
@@ -371,14 +371,14 @@ public class AdvancedSearchSubPanel extends Composite {
     }
 
     /**
-     * Setup a handler to react to AddInvestigation events.
+     * Setup a handler to react to AddInvestigationType events.
      */
-    private void createAddInvestigationHandler() {
-        // react to a new set of investigations being added
-        AddInvestigationEvent.register(EventPipeLine.getEventBus(), new AddInvestigationEventHandler() {
+    private void createAddInvestigationTypeHandler() {
+        // react to a new set of investigation types being added
+        AddInvestigationTypeEvent.register(EventPipeLine.getEventBus(), new AddInvestigationTypeEventHandler() {
             @Override
-            public void addInvestigations(AddInvestigationEvent event) {
-                investigationTypeList.put(event.getFacilityName(), event.getInvestigations());
+            public void addInvestigationTypes(AddInvestigationTypeEvent event) {
+                investigationTypeList.put(event.getFacilityName(), event.getInvestigationTypes());
                 updateListWidgets();
             }
         });

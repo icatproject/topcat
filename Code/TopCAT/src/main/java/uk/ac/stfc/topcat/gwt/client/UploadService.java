@@ -23,7 +23,8 @@
 package uk.ac.stfc.topcat.gwt.client;
 
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

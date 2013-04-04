@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -22,12 +22,12 @@
  */
 package uk.ac.stfc.topcat.gwt.client.eventHandler;
 
-import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationTypeEvent;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface AddInvestigationEventHandler extends EventHandler {
+public interface AddInvestigationTypeEventHandler extends EventHandler {
 
-    void addInvestigations(AddInvestigationEvent event);
+    void addInvestigationTypes(AddInvestigationTypeEvent event);
 
 }

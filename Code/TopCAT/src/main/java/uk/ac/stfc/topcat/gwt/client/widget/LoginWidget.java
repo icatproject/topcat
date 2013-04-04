@@ -108,17 +108,26 @@ public class LoginWidget extends Window {
 
     @Override
     public void show() {
-        if (authTypesBox.getStore().getCount() > 1) {
-            super.show();
-        } else {
+        if (authTypesBox.getStore().getCount() == 1) {
             if (plugin != null) {
                 if (plugin.showable()) {
                     super.show();
+                    setFocusWidget(plugin.getWidget());
+                } else {
+                    plugin.authenticate();
                 }
             }
+        } else if (authTypesBox.getStore().getCount() > 1) {
+            super.show();
         }
     }
 
+    /**
+     * Show the login widget with the corresponding auth methods for the given
+     * facility.
+     * 
+     * @param facilityName
+     */
     public void show(String facilityName) {
         this.facilityName = facilityName;
         setHeading("Login to " + facilityName);
@@ -179,12 +188,14 @@ public class LoginWidget extends Window {
                 EventPipeLine.getInstance().hideRetrievingData();
                 authTypesBox.getStore().add(result);
                 if (result.size() > 1) {
-                    show();
-                    authTypeContainer.show();
-                    authTypesBox.focus();
+                    // there is more than one type so the user will have to
+                    // select one
+                    showAuthSelectionBox();
                 } else if (result.size() == 1) {
+                    // there is only one so we will use it
                     showPlugin(result.get(0));
                 } else {
+                    // oops no results
                     hide();
                     EventPipeLine.getInstance().showErrorDialog(
                             "Error no authentication types found for " + facilityName);
@@ -201,7 +212,16 @@ public class LoginWidget extends Window {
     }
 
     /**
-     * If user name exists focus on password.
+     * Show the widget with the auth selection box
+     */
+    private void showAuthSelectionBox() {
+        show();
+        authTypeContainer.show();
+        authTypesBox.focus();
+    }
+
+    /**
+     * Show the widget with the selected auth plugin.
      * 
      * @param model
      */
@@ -213,6 +233,7 @@ public class LoginWidget extends Window {
         }
 
         authenticationWidget.removeAll();
+        // get the required auth plugin
         plugin = AuthenticationPluginFactory.getInstance().getPlugin(model.getPluginName());
         plugin.setAuthenticationModel(model);
         if (plugin.showable()) {

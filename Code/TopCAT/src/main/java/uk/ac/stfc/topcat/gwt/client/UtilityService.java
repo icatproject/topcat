@@ -33,8 +33,7 @@ import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
@@ -104,10 +103,9 @@ public interface UtilityService extends RemoteService {
      * @param node
      * @return a map with the key as a string containing TODO and the value as a
      *         list of <code>ICATNode</code>
-     * @throws SessionException
      * @throws TopcatException
      */
-    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws SessionException,
+    public HashMap<String, ArrayList<ICATNode>> getAllICATNodeDatafiles(ICATNode node) throws TopcatException,
             TopcatException;
 
     /**
@@ -120,8 +118,10 @@ public interface UtilityService extends RemoteService {
      *            a string containing the data file id
      * @return a list of <code>ParameterModel</code> which contain parameter
      *         names and corresponding values
+     * @throws TopcatException
      */
-    public ArrayList<ParameterModel> getDatafileParameters(String facilityName, String datafileId);
+    public ArrayList<ParameterModel> getDatafileParameters(String facilityName, String datafileId)
+            throws TopcatException;
 
     /**
      * Get a list of data sets for the given facility and investigation.
@@ -132,10 +132,10 @@ public interface UtilityService extends RemoteService {
      *            a string containing the investigation id
      * @return a list of <code>DatasetModel</code> containing data set
      *         information
-     * @throws SessionException
+     * @throws TopcatException
      */
     public ArrayList<DatasetModel> getDatasetsInInvestigations(String facilityName, String investigationId)
-            throws SessionException;
+            throws TopcatException;
 
     /**
      * Get a list of parameter models which have parameter names and
@@ -147,8 +147,9 @@ public interface UtilityService extends RemoteService {
      *            a string containing the data set id
      * @return a list of <code>ParameterModel</code> which contain parameter
      *         names and corresponding values
+     * @throws TopcatException
      */
-    public ArrayList<ParameterModel> getDatasetParameters(String facilityName, String datasetId);
+    public ArrayList<ParameterModel> getDatasetParameters(String facilityName, String datasetId) throws TopcatException;
 
     /**
      * Get a list of data files information corresponding to the given list of
@@ -157,8 +158,9 @@ public interface UtilityService extends RemoteService {
      * @param datasets
      *            a list of <code>DatasetModel</code>
      * @return a list of <code>DatafileModel</code> containing data files
+     * @throws TopcatException
      */
-    public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets);
+    public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets) throws TopcatException;
 
     /**
      * Get the URL of a file that contains all the requested data files for the
@@ -171,8 +173,10 @@ public interface UtilityService extends RemoteService {
      * @param downloadName
      *            a string containing a user defined name
      * @return a DownloadModel
+     * @throws TopcatException
      */
-    public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName);
+    public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName)
+            throws TopcatException;
 
     /**
      * Get the URL of a file that contains the requested data set for the given
@@ -185,8 +189,10 @@ public interface UtilityService extends RemoteService {
      * @param downloadName
      *            a string containing a user defined name
      * @return a DownloadModel
+     * @throws TopcatException
      */
-    public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName);
+    public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName)
+            throws TopcatException;
 
     /**
      * Get a list of investigations for the given facility that belong to the
@@ -207,9 +213,9 @@ public interface UtilityService extends RemoteService {
      * @param investigationId
      *            the investigation id
      * @return a <code>TInvestigation</code> containing additional data
-     * @throws SessionException
+     * @throws TopcatException
      */
-    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws SessionException;
+    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws TopcatException;
 
     /**
      * This method returns the server logo URL
@@ -232,8 +238,9 @@ public interface UtilityService extends RemoteService {
      *            a set containing the facility names
      * 
      * @return a list of <code>DownloadModel</code>
+     * @throws TopcatException
      */
-    public ArrayList<DownloadModel> getMyDownloadList(Set<String> facilities);
+    public ArrayList<DownloadModel> getMyDownloadList(Set<String> facilities) throws TopcatException;
 
     /**
      * Check all of the models for a final status, 'available' or 'ERROR', from
@@ -245,7 +252,7 @@ public interface UtilityService extends RemoteService {
      * @return a list of <code>DownloadModel</code> that do NOT have a final
      *         status
      */
-    public List<DownloadModel> getDownloadStatus(Set<DownloadModel> downloadQueue);
+    public List<DownloadModel> getDownloadStatus(Set<DownloadModel> downloadQueue) throws TopcatException;
 
     /**
      * Get a list of parameter names known to a facility.
@@ -314,4 +321,21 @@ public interface UtilityService extends RemoteService {
      * @throws TopcatException
      */
     public List<DatafileFormatModel> getDatafileFormats(String facilityName) throws TopcatException;
+
+    /**
+     * Contact the I.D.S. and prepare the download of the given data objects.
+     * 
+     * @param dataType
+     *            the type of the data object to be downloaded
+     * @param facility
+     *            the facility data
+     * @param dataObjectList
+     *            a list of data object ids
+     * @param downloadName
+     *            the name to give the down load file
+     * @throws TopcatException
+     */
+    public DownloadModel prepareDataObjectsForDownload(String dataType, TFacility facility, List<Long> dataObjectList,
+            String downloadName) throws TopcatException;
+
 }

@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -330,7 +331,11 @@ public class MyDownloadPanel extends Composite {
             @Override
             public void onFailure(Throwable caught) {
                 waitDialog.hide();
-                EventPipeLine.getInstance().showMessageDialog("Error retrieving fresh data from server");
+                if (caught instanceof SessionException) {
+                    EventPipeLine.getInstance().checkStillLoggedIn();
+                } else {
+                    EventPipeLine.getInstance().showMessageDialog("Error retrieving fresh data from server");
+                }
             }
         });
     }

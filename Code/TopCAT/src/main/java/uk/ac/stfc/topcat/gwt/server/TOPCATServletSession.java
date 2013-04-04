@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.server;
+
 /**
  * Imports
  */
@@ -37,50 +38,55 @@ import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
  * This Class is used to manage sessions for TOPCAT servlets
  * 
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class TOPCATServletSession implements HttpSessionListener {
-	// Session bean for managing user session
-	private UserManagementBeanLocal userManager = null;
-	/**
-	 * Constructor for initialising user sessions.
-	 */
-	public TOPCATServletSession(){
-		try{
-			//create initial context
-			Context ctx = new InitialContext();
-			userManager = (UserManagementBeanLocal) ctx.lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-		}catch(NamingException ex){
-			ex.printStackTrace();
-		}		
-	}
-	
-	/**
-	 * This method is override method called when a new session need to be created.
-	 */
-	@Override
-	public void sessionCreated(HttpSessionEvent event) {
-		// TODO Auto-generated method stub
-		System.out.println("Session Created"+event.getSession().getId());
-	}
+    // Session bean for managing user session
+    private UserManagementBeanLocal userManager = null;
 
-	/**
-	 * This method is override method called when a session expires and needs destroying
-	 */
-	@Override
-	public void sessionDestroyed(HttpSessionEvent event) {
-		// TODO Auto-generated method stub
-		System.out.println("Session Expired "+event.getSession().getId());
-		if(event.getSession().getAttribute("SESSION_ID")!=null){ //logout of TOPCAT
-			try {
-				userManager.logout((String) event.getSession().getAttribute("SESSION_ID"));
-			} catch (AuthenticationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+    /**
+     * Constructor for initialising user sessions.
+     */
+    public TOPCATServletSession() {
+        try {
+            // create initial context
+            Context ctx = new InitialContext();
+            userManager = (UserManagementBeanLocal) ctx
+                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * This method is override method called when a new session need to be
+     * created.
+     */
+    @Override
+    public void sessionCreated(HttpSessionEvent event) {
+        // TODO Auto-generated method stub
+        System.out.println("Session Created" + event.getSession().getId());
+    }
+
+    /**
+     * This method is override method called when a session expires and needs
+     * destroying
+     */
+    @Override
+    public void sessionDestroyed(HttpSessionEvent event) {
+        // TODO Auto-generated method stub
+        System.out.println("Session Expired " + event.getSession().getId());
+        if (event.getSession().getAttribute("SESSION_ID") != null) { // logout
+                                                                     // of
+                                                                     // TOPCAT
+            try {
+                userManager.logout((String) event.getSession().getAttribute("SESSION_ID"));
+            } catch (AuthenticationException e) {
+            }
+        }
+    }
 
 }

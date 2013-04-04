@@ -32,7 +32,8 @@ import javax.servlet.http.HttpSession;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.gwt.client.UploadService;
@@ -75,8 +76,9 @@ public class UploadServiceImpl extends RemoteServiceServlet implements UploadSer
      * This method returns session id from the session information.
      * 
      * @return user session id
+     * @throws SessionException
      */
-    private String getSessionId() {
+    private String getSessionId() throws SessionException {
         HttpServletRequest request = this.getThreadLocalRequest();
         HttpSession session = request.getSession();
         String sessionId = null;
@@ -85,8 +87,7 @@ public class UploadServiceImpl extends RemoteServiceServlet implements UploadSer
                 sessionId = userManager.login();
                 session.setAttribute("SESSION_ID", sessionId);
             } catch (AuthenticationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new SessionException("Invalid topcat session id");
             }
         } else {
             sessionId = (String) session.getAttribute("SESSION_ID");

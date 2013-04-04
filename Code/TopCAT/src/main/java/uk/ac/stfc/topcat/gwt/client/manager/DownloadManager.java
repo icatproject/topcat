@@ -38,6 +38,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.gwt.user.client.ui.RootPanel;
 
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -94,6 +97,85 @@ public class DownloadManager {
      *            file
      */
     public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName) {
+        ArrayList<TFacility> facilities = eventPipeLine.getFacilityNames();
+        for (TFacility facility : facilities) {
+            if (facility.getName().equalsIgnoreCase(facilityName)) {
+                if (facility.getDownloadPluginName() != null
+                        && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
+                    prepareDataObjectsForDownload(Constants.DATA_FILE, facility, datafileList, downloadName);
+                } else {
+                    downloadDatafilesClassic(facilityName, datafileList, downloadName);
+                }
+
+            }
+        }
+    }
+
+    /**
+     * Down load the data set from the facility.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param datasetId
+     *            the data set id
+     * @param downloadName
+     *            a string containing a user defined name to give the down load
+     *            file
+     */
+    public void downloadDataset(final String facilityName, final List<Long> datasetList, final String downloadName) {
+
+        ArrayList<TFacility> facilities = eventPipeLine.getFacilityNames();
+        for (TFacility facility : facilities) {
+            if (facility.getName().equalsIgnoreCase(facilityName)) {
+                if (facility.getDownloadPluginName() != null
+                        && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
+                    prepareDataObjectsForDownload(Constants.DATA_SET, facility, datasetList, downloadName);
+                } else {
+                    downloadDatasetsClassic(facilityName, datasetList.get(0), downloadName);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Contact the I.D.S. and prepare the download of the given data objects.
+     * 
+     * @param dataType
+     *            the type of the data object to be downloaded
+     * @param facility
+     *            the facility data
+     * @param dataObjectList
+     *            a list of data object ids
+     * @param downloadName
+     *            the name to give the down load file
+     */
+    private void prepareDataObjectsForDownload(final String dataType, final TFacility facility,
+            final List<Long> dataObjectList, final String downloadName) {
+        utilityService.prepareDataObjectsForDownload(dataType, facility, dataObjectList, downloadName,
+                new AsyncCallback<DownloadModel>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        if (caught instanceof SessionException) {
+                            eventPipeLine.checkLoginStatus();
+                        } else if (caught instanceof InternalException) {
+                            showErrorDialog(caught.getMessage());
+                        } else {
+                            showErrorDialog("Error requesing the download. " + caught.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(DownloadModel result) {
+                        eventPipeLine.getMainWindow().getMainPanel().getMyDownloadPanel().addDownload(result);
+                        downloadQueue.add(result);
+                    }
+                });
+    }
+
+    @Deprecated
+    private void downloadDatafilesClassic(final String facilityName, final List<Long> datafileList,
+            final String downloadName) {
         utilityService.getDatafilesDownloadURL(facilityName, (ArrayList<Long>) datafileList, downloadName,
                 new AsyncCallback<DownloadModel>() {
                     @Override
@@ -113,18 +195,8 @@ public class DownloadManager {
                 });
     }
 
-    /**
-     * Down load the data set from the facility.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datasetId
-     *            the data set id
-     * @param downloadName
-     *            a string containing a user defined name to give the down load
-     *            file
-     */
-    public void downloadDataset(final String facilityName, final Long datasetId, final String downloadName) {
+    @Deprecated
+    private void downloadDatasetsClassic(final String facilityName, Long datasetId, String downloadName) {
         utilityService.getDatasetDownloadURL(facilityName, datasetId, downloadName, new AsyncCallback<DownloadModel>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -192,6 +264,13 @@ public class DownloadManager {
                             // server, 200 was not returned. As this is on a
                             // timer we do not want to keep on spamming the user
                             // with error messages every n seconds.
+                            return;
+                        }
+                        if (caught instanceof InternalException) {
+                            // There were problems communicating with the
+                            // server. As this is on a timer we do not want to
+                            // keep on spamming the user with error messages
+                            // every n seconds.
                             return;
                         }
 

@@ -24,10 +24,11 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
+import uk.ac.stfc.topcat.core.gwt.module.exception.NotSupportedException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.UploadService;
@@ -36,7 +37,6 @@ import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.event.UploadAuthorisationEvent;
-import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
@@ -625,15 +625,11 @@ public class UploadDatasetPanel extends Composite {
             @Override
             public void onFailure(Throwable caught) {
                 EventPipeLine.getInstance().hideRetrievingData();
-                if (caught instanceof TopcatException) {
-                    if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
-                        EventPipeLine.getInstance().checkStillLoggedIn();
-                    } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.NOT_SUPPORTED)) {
-                        EventPipeLine.getEventBus().fireEventFromSource(new UploadAuthorisationEvent(facility, false),
-                                SOURCE);
-                    } else {
-                        EventPipeLine.getInstance().showErrorDialog("Error retrieving data set types from " + facility);
-                    }
+                if (caught instanceof SessionException) {
+                    EventPipeLine.getInstance().checkStillLoggedIn();
+                } else if (caught instanceof NotSupportedException) {
+                    EventPipeLine.getEventBus().fireEventFromSource(new UploadAuthorisationEvent(facility, false),
+                            SOURCE);
                 } else {
                     EventPipeLine.getInstance().showErrorDialog("Error retrieving data set types from " + facility);
                 }
@@ -667,15 +663,10 @@ public class UploadDatasetPanel extends Composite {
             @Override
             public void onFailure(Throwable caught) {
                 EventPipeLine.getInstance().hideRetrievingData();
-                if (caught instanceof TopcatException) {
-                    if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
-                        EventPipeLine.getInstance().checkStillLoggedIn();
-                    } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.NOT_SUPPORTED)) {
-                        // skip, will be picked up by setDSTypes
-                    } else {
-                        EventPipeLine.getInstance().showErrorDialog(
-                                "Error retrieving data file formats from " + facility);
-                    }
+                if (caught instanceof SessionException) {
+                    EventPipeLine.getInstance().checkStillLoggedIn();
+                } else if (caught instanceof NotSupportedException) {
+                    // skip, will be picked up by setDSTypes
                 } else {
                     EventPipeLine.getInstance().showErrorDialog("Error retrieving data file formats from " + facility);
                 }

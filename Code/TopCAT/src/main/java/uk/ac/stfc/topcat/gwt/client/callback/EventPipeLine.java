@@ -36,8 +36,10 @@ import java.util.Set;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
+import uk.ac.stfc.topcat.core.gwt.module.exception.BadParameterException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InsufficientPrivilegesException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.NotSupportedException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
@@ -51,7 +53,7 @@ import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.event.AddFacilityEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInstrumentEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
-import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationTypeEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyInvestigationEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginCheckCompleteEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
@@ -61,7 +63,6 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginCheckCompleteEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.WindowLogoutEventHandler;
-import uk.ac.stfc.topcat.gwt.client.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.exception.WindowsNotAvailableExcecption;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
@@ -524,16 +525,12 @@ public class EventPipeLine implements LoginInterface {
                     @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
-                        if (caught instanceof TopcatException) {
-                            if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
-                                checkStillLoggedIn();
-                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.BAD_PARAMETER)) {
-                                showErrorDialog("Error " + ((TopcatException) caught).getMessage());
-                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.NOT_SUPPORTED)) {
-                                showErrorDialog("Error " + ((TopcatException) caught).getMessage());
-                            } else {
-                                showErrorDialog("Error retrieving data from server");
-                            }
+                        if (caught instanceof SessionException) {
+                            checkStillLoggedIn();
+                        } else if (caught instanceof BadParameterException) {
+                            showErrorDialog("Error " + ((BadParameterException) caught).getMessage());
+                        } else if (caught instanceof NotSupportedException) {
+                            showErrorDialog("Error " + ((NotSupportedException) caught).getMessage());
                         } else {
                             showErrorDialog("Error retrieving data from server");
                         }
@@ -601,7 +598,11 @@ public class EventPipeLine implements LoginInterface {
                     @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
-                        showErrorDialog("Error retrieving data from server");
+                        if (caught instanceof SessionException) {
+                            checkStillLoggedIn();
+                        } else {
+                            showErrorDialog("Error retrieving data from server");
+                        }
                     }
 
                     @Override
@@ -667,17 +668,13 @@ public class EventPipeLine implements LoginInterface {
                     @Override
                     public void onFailure(Throwable caught) {
                         waitDialog.hide();
-                        if (caught instanceof TopcatException) {
-                            if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
-                                checkStillLoggedIn();
-                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.BAD_PARAMETER)) {
-                                showErrorDialog("Error from " + facilityName + ". "
-                                        + ((TopcatException) caught).getMessage());
-                            } else if (((TopcatException) caught).getType().equals(TopcatExceptionType.NOT_SUPPORTED)) {
-                                showErrorDialog("Error " + ((TopcatException) caught).getMessage());
-                            } else {
-                                showErrorDialog("Error retrieving data from " + facilityName);
-                            }
+                        if (caught instanceof SessionException) {
+                            checkStillLoggedIn();
+                        } else if (caught instanceof BadParameterException) {
+                            showErrorDialog("Error from " + facilityName + ". "
+                                    + ((BadParameterException) caught).getMessage());
+                        } else if (caught instanceof NotSupportedException) {
+                            showErrorDialog("Error " + ((NotSupportedException) caught).getMessage());
                         } else {
                             showErrorDialog("Error retrieving data from " + facilityName);
                         }
@@ -941,12 +938,9 @@ public class EventPipeLine implements LoginInterface {
             @Override
             public void onFailure(Throwable caught) {
                 hideRetrievingData();
-                if (caught instanceof TopcatException) {
-                    if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
-                        checkStillLoggedIn();
-                    } else {
-                        showErrorDialog("Error retrieving data from " + facilityName);
-                    }
+                if (caught instanceof SessionException) {
+                    checkStillLoggedIn();
+                } else {
                     showErrorDialog("Error retrieving investigation data from server for " + facilityName);
                 }
             }
@@ -977,7 +971,14 @@ public class EventPipeLine implements LoginInterface {
             @Override
             public void onFailure(Throwable caught) {
                 hideRetrievingData();
-                showMessageDialog("Error retrieving instrument names from server for " + facilityName);
+                if (caught instanceof SessionException) {
+                    checkStillLoggedIn();
+                } else if (caught instanceof InsufficientPrivilegesException) {
+                    showErrorDialog("Your user has insufficient privileges to get the instrument names for "
+                            + facilityName);
+                } else {
+                    showErrorDialog("Error retrieving instrument names from server for " + facilityName);
+                }
             }
 
             @Override
@@ -997,27 +998,34 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Get the investigations names for the facility.
+     * Get the investigations types for the facility.
      * 
      * @param facilityName
      */
-    private void addInvestigations(final String facilityName) {
+    private void addInvestigationTypes(final String facilityName) {
         showRetrievingData();
         utilityService.getInvestigationTypes(facilityName, new AsyncCallback<ArrayList<String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 hideRetrievingData();
-                showMessageDialog("Error retrieving investigation names from server for " + facilityName);
+                if (caught instanceof SessionException) {
+                    checkStillLoggedIn();
+                }else if (caught instanceof InsufficientPrivilegesException) {
+                    showErrorDialog("Your user has insufficient privileges to get the investigation types for "
+                            + facilityName);
+                } else {
+                    showErrorDialog("Error retrieving investigation types from server for " + facilityName);
+                }
             }
 
             @Override
             public void onSuccess(ArrayList<String> investigationTypeList) {
-                ArrayList<InvestigationType> investigations = new ArrayList<InvestigationType>();
+                ArrayList<InvestigationType> investigationTypes = new ArrayList<InvestigationType>();
                 for (String investigationType : investigationTypeList) {
-                    investigations.add(new InvestigationType(facilityName, investigationType));
+                    investigationTypes.add(new InvestigationType(facilityName, investigationType));
                 }
                 getEventBus()
-                        .fireEventFromSource(new AddInvestigationEvent(facilityName, investigations), facilityName);
+                        .fireEventFromSource(new AddInvestigationTypeEvent(facilityName, investigationTypes), facilityName);
                 hideRetrievingData();
             }
         });
@@ -1064,7 +1072,7 @@ public class EventPipeLine implements LoginInterface {
                 loggedInFacilities.add(event.getFacilityName());
                 addMyInvestigations(event.getFacilityName());
                 addInstruments(event.getFacilityName());
-                addInvestigations(event.getFacilityName());
+                addInvestigationTypes(event.getFacilityName());
                 historyManager.updateHistory();
                 if (!facilitiesToLogOn.isEmpty()) {
                     checkLoginWidgetStatus();

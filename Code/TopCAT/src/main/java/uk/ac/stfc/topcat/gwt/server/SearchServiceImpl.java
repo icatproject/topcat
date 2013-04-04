@@ -41,7 +41,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.KeywordManagementLocal;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
@@ -102,7 +103,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
      */
     @Override
     public List<String> getKeywordsFromServer(String sessionId, String facilityName, String partialKey,
-            int numberOfKeywords) {
+            int numberOfKeywords) throws TopcatException {
         if (sessionId == null)
             sessionId = getSessionId();
         List<String> results = keywordManager.getKeywordsWithPrefix(sessionId, facilityName, partialKey,
@@ -120,7 +121,8 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
      * java.util.List)
      */
     @Override
-    public List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords) {
+    public List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords)
+            throws TopcatException {
         if (sessionId == null)
             sessionId = getSessionId();
         List<TInvestigation> investigationList = searchManager
@@ -203,8 +205,9 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
      * ***WARNING: only works if the user browser cookies are enable ***
      * 
      * @return
+     * @throws SessionException
      */
-    private String getSessionId() {
+    private String getSessionId() throws SessionException {
         HttpServletRequest request = this.getThreadLocalRequest();
         HttpSession session = request.getSession();
         String sessionId = null;
@@ -213,8 +216,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
                 sessionId = userManager.login();
                 session.setAttribute("SESSION_ID", sessionId);
             } catch (AuthenticationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new SessionException("Invalid topcat session id");
             }
         } else {
             sessionId = (String) session.getAttribute("SESSION_ID");

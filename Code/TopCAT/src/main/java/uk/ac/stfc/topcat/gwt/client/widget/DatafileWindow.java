@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
@@ -597,10 +598,14 @@ public class DatafileWindow extends Window {
             @Override
             public void onFailure(Throwable caught) {
                 EventPipeLine.getInstance().hideRetrievingData();
-                EventPipeLine.getInstance().showErrorDialog("Error retrieving datafiles");
                 hide();
                 reset();
                 loadingData = false;
+                if (caught instanceof SessionException) {
+                    EventPipeLine.getInstance().checkStillLoggedIn();
+                } else {
+                    EventPipeLine.getInstance().showErrorDialog("Error retrieving datafiles");
+                }
             }
         });
     }

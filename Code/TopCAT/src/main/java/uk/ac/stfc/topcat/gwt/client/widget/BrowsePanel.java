@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
@@ -221,19 +221,16 @@ public class BrowsePanel extends Composite {
 
                             @Override
                             public void onFailure(Throwable caught) {
-                                if (caught instanceof TopcatException) {
-                                    if (((TopcatException) caught).getType().equals(TopcatExceptionType.SESSION)) {
-                                        EventPipeLine.getInstance().checkStillLoggedIn();
-                                    } else if (((TopcatException) caught).getType()
-                                            .equals(TopcatExceptionType.INTERNAL)) {
-                                        EventPipeLine
-                                                .getInstance()
-                                                .showErrorDialog(
-                                                        "An internal error occured on the server, please see the server logs for more details.");
-                                    } else {
-                                        EventPipeLine.getInstance().showErrorDialog(
-                                                "Error retrieving data from server. " + caught.getMessage());
-                                    }
+                                if (caught instanceof SessionException) {
+                                    EventPipeLine.getInstance().checkStillLoggedIn();
+                                } else if (caught instanceof InternalException) {
+                                    EventPipeLine
+                                            .getInstance()
+                                            .showErrorDialog(
+                                                    "An internal error occured on the server, please see the server logs for more details.");
+                                } else {
+                                    EventPipeLine.getInstance().showErrorDialog(
+                                            "Error retrieving data from server. " + caught.getMessage());
                                 }
                                 callback.onFailure(caught);
                                 // TODO This is not working properly, the circle
@@ -497,13 +494,18 @@ public class BrowsePanel extends Composite {
             List<Long> idList = dsMap.get(facility);
             for (Long id : idList) {
                 batchCount = batchCount + 1;
+                // TODO the nxt two lines where added as a temporary measure
+                // until all downloads are via the I.D.S. At which point all of
+                // the code needs reviewing.
+                List<Long> ids = new ArrayList<Long>(1);
+                ids.add(id);
                 if (requiredBatches == 1) {
-                    DownloadManager.getInstance().downloadDataset(facility, id, downloadName);
+                    DownloadManager.getInstance().downloadDataset(facility, ids, downloadName);
                 } else {
                     if (batchCount < 10) {
-                        DownloadManager.getInstance().downloadDataset(facility, id, downloadName + "-0" + batchCount);
+                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-0" + batchCount);
                     } else {
-                        DownloadManager.getInstance().downloadDataset(facility, id, downloadName + "-" + batchCount);
+                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-" + batchCount);
                     }
                 }
             }

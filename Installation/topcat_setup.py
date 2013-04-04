@@ -145,6 +145,8 @@ def extract_db_props(topcat_properties):
         except ValueError:
             if prop.startswith('@//'):
                 props_dict['hostname'] = prop.split('@//', 1)[1]
+            elif prop.startswith('@'):
+                props_dict['hostname'] = prop.split('@', 1)[1]
     return props_dict
  
                 
@@ -296,6 +298,7 @@ def list_icat_servers(conf_props):
     """
     List the ICAT servers in the database
     """
+    print "\nUsing " + str(conf_props['dbType'].upper()) + " database\n"
     db_props = extract_db_props(conf_props['topcatProperties'])
     sql_command = get_sql_command(conf_props, db_props)
     select = ("SELECT SERVER_URL FROM  TOPCAT_ICAT_SERVER \n;\n")
@@ -309,7 +312,6 @@ def list_icat_servers(conf_props):
     elif conf_props['dbType'].upper() == "MYSQL":
         index = 1
         stop = len(urls)  
-    print "\nUsing " + str(conf_props['dbType'].upper()) + " database\n"
     print "ICAT WSDL URLS: "
     while index < stop:
         print " " + str(urls[index]).strip()
@@ -339,7 +341,7 @@ def add_icat(conf_props):
 
 def upgrade(conf_props):
     """
-    Upgrage the database
+    Upgrade the database
     """
     if  not path.exists(ICAT_DIR):    
         print ('There is no ' + ICAT_DIR + " directory")
@@ -380,10 +382,30 @@ def get_sql_command(conf_props, db_props):
             print "ERROR - Please set ORACLE_HOME"
             exit(1)
         sqlplus = path.join(db_props['oracleHome'], "bin", "sqlplus")
+        try:
+            db_props['password']
+        except KeyError:
+            print "ERROR - Unable to extract DB password from topcatProperties in glassfish.props"
+            exit(1)
+        try:
+            db_props['hostname']
+        except KeyError:
+            print "ERROR - Unable to extract DB hostname from topcatProperties in glassfish.props"
+            exit(1)
         sql_command = (sqlplus + " " + db_props['user'] + "/" + 
                        db_props['password'] + "@" + 
                        db_props['hostname'] + " @")
     elif conf_props['dbType'].upper() == "MYSQL":
+        try:
+            db_props['password']
+        except KeyError:
+            print "ERROR - Unable to extract DB password from topcatProperties in glassfish.props"
+            exit(1)
+        try:
+            db_props['databaseName']
+        except KeyError:
+            print "ERROR - Unable to extract DB databaseName from topcatProperties in glassfish.props"
+            exit(1)        
         sql_command = (MYSQL + " -u " + db_props['user'] + " -p" + 
                        db_props['password'] + " " + db_props['databaseName'] + 
                        "<")
@@ -560,6 +582,7 @@ def add_icat_entry(conf_props, fname, icat_id, auth_id, sql_command, db_props):
 def upgrade_db(conf_props, sql_command, db_props):
     """
     Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER
+    Add the column PREPARED_ID to the table TOPCAT_USER_DOWNLOAD
     """
     if conf_props['dbType'].upper() == "ORACLE":
         sql_file = NamedTemporaryFile(dir=getcwd(), suffix='.sql')
@@ -570,7 +593,8 @@ def upgrade_db(conf_props, sql_command, db_props):
                        ":1527/" + db_props['DatabaseName'] + "';")
     sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER ")
     sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR2(255)\n;\n")
-           
+    sql_file.write("ALTER TABLE TOPCAT_USER_DOWNLOAD ")
+    sql_file.write("ADD PREPARED_ID VARCHAR2(255)\n;\n")
     if conf_props['dbType'].upper() == "DERBY":
         sql_file.write("disconnect;")
     sql_file.write("exit\n;")
@@ -581,6 +605,7 @@ def upgrade_db(conf_props, sql_command, db_props):
         print "ERROR updating table"
         exit(1)
     sql_file.close()
+    print "updated tables TOPCAT_ICAT_SERVER and TOPCAT_USER_DOWNLOAD"
     return
 
 

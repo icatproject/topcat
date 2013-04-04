@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -30,7 +30,7 @@ import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
@@ -62,9 +62,11 @@ public interface SearchService extends RemoteService {
      * @param numberOfKeywords
      *            the maximum number of keywords to return
      * @return a list of strings containing keywords
+     * @throws TopcatException
      * 
      */
-    List<String> getKeywordsFromServer(String sessionId, String facilityName, String partialKey, int numberOfKeywords);
+    List<String> getKeywordsFromServer(String sessionId, String facilityName, String partialKey, int numberOfKeywords)
+            throws TopcatException;
 
     /**
      * Get a list of investigations that have the given input keywords and are
@@ -76,8 +78,9 @@ public interface SearchService extends RemoteService {
      * @param keywords
      *            a list of strings containing keywords to search on
      * @return a list of <code>TInvestigation</code> containing investigations
+     * @throws TopcatException
      */
-    List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords);
+    List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords) throws TopcatException;
 
     /**
      * Get a list of investigations matching the criteria given in the search

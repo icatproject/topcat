@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -43,14 +43,14 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
-     * Constructor to set dataset information
+     * Constructor to set download information.
      * 
      * @param facilityName
-     *            facility name
-     * @param id
-     *            id
+     * @param submitTime
+     * @param downloadName
+     * @param status
+     * @param expiryTime
      * @param url
-     *            url
      */
     public DownloadModel(String facilityName, Date submitTime, String downloadName, String status, Date expiryTime,
             String url) {
@@ -61,6 +61,34 @@ public class DownloadModel extends BaseModelData implements Serializable {
         setExpiryTime(expiryTime);
         setUrl(url);
         setTimeRemaining(expiryTime);
+        m_ulr = url;
+    }
+
+    /**
+     * Constructor to set download information.
+     * 
+     * @param facilityName
+     *            facility name
+     * @param url
+     *            url of the download service
+     * @param preparedId
+     *            id of the download on the download service
+     * @param downloadName
+     *            the name given by the user
+     * @param submitTime
+     *            the time the download was requested
+     * @param status
+     *            the status of the download from the server
+     */
+    public DownloadModel(String facilityName, String url, String preparedId, String downloadName, Date submitTime,
+            String status) {
+        setFacilityName(facilityName);
+        setUrl(url);
+        setPreparedId(preparedId);
+        setDownloadName(downloadName);
+        setSubmitTime(submitTime);
+        setStatus(status);
+        setUrl(url);
         m_ulr = url;
     }
 
@@ -83,6 +111,13 @@ public class DownloadModel extends BaseModelData implements Serializable {
      */
     public String getFacilityName() {
         return get("facilityName");
+    }
+
+    /**
+     * @return preparedId
+     */
+    public String getPreparedId() {
+        return get("preparedId");
     }
 
     /**
@@ -145,6 +180,15 @@ public class DownloadModel extends BaseModelData implements Serializable {
      */
     public void setFacilityName(String facilityName) {
         set("facilityName", facilityName);
+    }
+
+    /**
+     * Set preparedId
+     * 
+     * @param preparedId
+     */
+    public void setPreparedId(String preparedId) {
+        set("preparedId", preparedId);
     }
 
     /**

@@ -27,7 +27,7 @@ package uk.ac.stfc.topcat.gwt.client;
  */
 import java.util.Map;
 
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.exception.LoginException;
 
 import com.google.gwt.core.client.GWT;

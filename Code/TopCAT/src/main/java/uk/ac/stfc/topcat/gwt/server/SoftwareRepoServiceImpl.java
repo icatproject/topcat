@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -22,7 +22,7 @@
  */
 package uk.ac.stfc.topcat.gwt.server;
 
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.SoftwareRepoService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

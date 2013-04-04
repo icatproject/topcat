@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -48,6 +47,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
@@ -149,7 +149,7 @@ public class CopyDataToCSVFile extends HttpServlet {
             try {
                 inv = utilityManager.getInvestigationDetails(sessionId, facilityName, dataId);
             } catch (NumberFormatException e) {
-            } catch (AuthenticationException e) {
+            } catch (TopcatException e) {
             }
             if (inv == null)
                 return result;
@@ -188,7 +188,11 @@ public class CopyDataToCSVFile extends HttpServlet {
             }
 
         } else if (dataType.equals(Constants.DATA_SET)) {
-            ArrayList<TDatasetParameter> ds = utilityManager.getDatasetInfoInServer(sessionId, facilityName, dataId);
+            ArrayList<TDatasetParameter> ds = null;
+            try {
+                ds = utilityManager.getDatasetInfoInServer(sessionId, facilityName, dataId);
+            } catch (TopcatException e) {
+            }
             if (ds == null)
                 return result;
             for (TDatasetParameter dsParam : ds) {
@@ -196,7 +200,11 @@ public class CopyDataToCSVFile extends HttpServlet {
             }
 
         } else if (dataType.equals(Constants.DATA_FILE)) {
-            ArrayList<TDatafileParameter> df = utilityManager.getDatafileInfoInServer(sessionId, facilityName, dataId);
+            ArrayList<TDatafileParameter> df = null;
+            try {
+                df = utilityManager.getDatafileInfoInServer(sessionId, facilityName, dataId);
+            } catch (TopcatException e) {
+            }
             if (df == null)
                 return result;
             for (TDatafileParameter dfParam : df) {
