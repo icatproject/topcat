@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -75,6 +75,8 @@ public class TopcatIcatServer implements Serializable {
     private String defaultPassword;
     @Column(name = "DOWNLOAD_PLUGIN_NAME")
     private String downloadPluginName;
+    @Column(name = "DOWNLOAD_SERVICE_URL")
+    private String downloadServiceUrl;
     @Column(name = "PLUGIN_NAME")
     private String pluginName;
     @Column(name = "AUTHENTICATION_SERVICE_URL")
@@ -144,6 +146,14 @@ public class TopcatIcatServer implements Serializable {
 
     public void setDownloadPluginName(String downloadPluginName) {
         this.downloadPluginName = downloadPluginName;
+    }
+
+    public String getDownloadServiceUrl() {
+        return downloadServiceUrl;
+    }
+
+    public void setDownloadServiceUrl(String downloadServiceUrl) {
+        this.downloadServiceUrl = downloadServiceUrl;
     }
 
     public String getPluginName() {

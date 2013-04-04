@@ -30,7 +30,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
@@ -40,7 +39,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
@@ -128,33 +127,36 @@ public class UtilityBean implements UtilityLocal {
 
     @Override
     public TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId)
-            throws AuthenticationException {
+            throws TopcatException {
         return utilManager.getInvestigationDetails(manager, sessionId, serverName, investigationId);
     }
 
     @Override
     public ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId)
-            throws AuthenticationException {
+            throws TopcatException {
         return utilManager.getDatasetsInServer(manager, sessionId, serverName, investigationId);
     }
 
     @Override
-    public String getDatasetName(String sessionId, String serverName, String datasetId) {
+    public String getDatasetName(String sessionId, String serverName, String datasetId) throws TopcatException {
         return utilManager.getDatasetName(manager, sessionId, serverName, datasetId);
     }
 
     @Override
-    public ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId) {
+    public ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId)
+            throws TopcatException {
         return utilManager.getDatafilesInServer(manager, sessionId, serverName, datasetId);
     }
 
     @Override
-    public ArrayList<TDatasetParameter> getDatasetInfoInServer(String sessionId, String serverName, String datasetId) {
+    public ArrayList<TDatasetParameter> getDatasetInfoInServer(String sessionId, String serverName, String datasetId)
+            throws TopcatException {
         return utilManager.getDatasetInfo(manager, sessionId, serverName, datasetId);
     }
 
     @Override
-    public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId, String serverName, String datafileId) {
+    public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId, String serverName, String datafileId)
+            throws TopcatException {
         return utilManager.getDatafileInfo(manager, sessionId, serverName, datafileId);
     }
 
@@ -176,24 +178,26 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds) {
+    public String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds)
+            throws TopcatException {
         return utilManager.getDatafilesDownloadURL(manager, sessionId, serverName, datafileIds);
     }
 
     @Override
-    public String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) {
+    public String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) throws TopcatException {
         return utilManager.getDatasetDownloadURL(manager, sessionId, serverName, datasetId);
     }
 
     @Override
-    public List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName) {
+    public List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName) throws TopcatException {
         return utilManager.getMyDownloadList(manager, sessionId, serverName);
     }
 
     @Override
     public void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName,
-            String status, Date expiryTime, String url) {
-        utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName, status, expiryTime, url);
+            String status, Date expiryTime, String url, String preparedId) throws TopcatException {
+        utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName, status, expiryTime, url,
+                preparedId);
     }
 
     @Override

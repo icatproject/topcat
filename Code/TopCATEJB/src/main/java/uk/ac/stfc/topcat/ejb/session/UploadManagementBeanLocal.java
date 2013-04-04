@@ -25,7 +25,7 @@ package uk.ac.stfc.topcat.ejb.session;
 import javax.ejb.Local;
 
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 /**
  * This is local interface to the upload bean.

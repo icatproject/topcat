@@ -31,7 +31,7 @@ import javax.persistence.EntityManager;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatKeywords;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
@@ -301,9 +301,10 @@ public class KeywordManager {
      *            : number of keywords to return
      * @return: list of keywords at the maximum number given by the
      *          maxResultKeywords
+     * @throws TopcatException
      */
     public ArrayList<String> getKeywordsWithPrefix(EntityManager manager, String sessionId, String serverName,
-            String partialKey, int numberOfKeywords) {
+            String partialKey, int numberOfKeywords) throws TopcatException {
 
         // Check the configuration setting for cache
         if (Configuration.INSTANCE.isKeywordsCached()) {
@@ -326,9 +327,10 @@ public class KeywordManager {
      *            : number of keywords to return
      * @return if there is valid session id then it will return all the keywords
      *         the user have access to.
+     * @throws TopcatException
      */
     public ArrayList<String> getKeywordsWithPrefixFromWebservice(EntityManager manager, String sessionId,
-            String serverName, String partialKey, int numberOfKeywords) {
+            String serverName, String partialKey, int numberOfKeywords) throws TopcatException {
         ArrayList<String> keywords = new ArrayList<String>();
         // Get the user session id from the topcat session id
         logger.finest("getKeywordsWithPrefixFromWebservice: TopcatSessionId (" + sessionId + ") serverName ("

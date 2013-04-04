@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -33,7 +33,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 

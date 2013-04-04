@@ -45,6 +45,9 @@ public class TopcatUserDownload implements Serializable {
     @Column(name = "URL")
     private String url;
 
+    @Column(name = "PREPARED_ID")
+    private String preparedId;
+
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     @ManyToOne(optional = true)
     private TopcatUser userId;
@@ -74,6 +77,14 @@ public class TopcatUserDownload implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPreparedId() {
+        return preparedId;
+    }
+
+    public void setPreparedId(String preparedId) {
+        this.preparedId = preparedId;
     }
 
     public String getStatus() {

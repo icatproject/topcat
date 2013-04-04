@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -31,7 +31,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 /**
  * This is local interface to the search management stateless session bean
@@ -48,12 +48,12 @@ public interface SearchManagementBeanLocal {
             ArrayList<String> keywords);
 
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords);
+            String serverName, ArrayList<String> keywords) throws TopcatException;
 
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId, List<String> keywords);
 
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords);
+            String serverName, ArrayList<String> keywords) throws TopcatException;
 
     public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,
             TAdvancedSearchDetails searchDetails) throws TopcatException;

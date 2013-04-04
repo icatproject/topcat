@@ -35,7 +35,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.xml.ws.RequestWrapper;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
@@ -90,35 +90,39 @@ public class TOPCAT {
 
     /**
      * Web service operation
+     * 
+     * @throws TopcatException
      */
     @WebMethod(operationName = "searchBasicInvestigationByKeywordsInServer")
     public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> searchBasicInvestigationByKeywordsInServer(
             @WebParam(name = "topcatSessionId") String topcatSessionId,
             @WebParam(name = "serverName") String serverName,
-            @WebParam(name = "keywords") java.util.ArrayList<java.lang.String> keywords) {
+            @WebParam(name = "keywords") java.util.ArrayList<java.lang.String> keywords) throws TopcatException {
         // TODO write your implementation code here:
         return searchManagement.searchBasicInvestigationByKeywordsInServer(topcatSessionId, serverName, keywords);
     }
 
     /**
      * Web service operation
-     * @throws TopcatException 
+     * 
+     * @throws TopcatException
      */
     @WebMethod(operationName = "getMyInvestigationsInServer")
     public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> getMyInvestigationsInServer(
-            @WebParam(name = "topcatSessionId") String topcatSessionId, 
-            @WebParam(name = "serverName") String serverName) throws TopcatException {
+            @WebParam(name = "topcatSessionId") String topcatSessionId, @WebParam(name = "serverName") String serverName)
+            throws TopcatException {
         return (ArrayList<TInvestigation>) utility.getMyInvestigationsInServer(topcatSessionId, serverName);
     }
 
     /**
      * Web service operation
+     * 
+     * @throws TopcatException
      */
     @WebMethod(operationName = "getDatafilesDownloadURL")
-    public String getDatafilesDownloadURL(
-            @WebParam(name = "topcatSessionId") String topcatSessionId,
+    public String getDatafilesDownloadURL(@WebParam(name = "topcatSessionId") String topcatSessionId,
             @WebParam(name = "serverName") String serverName,
-            @WebParam(name = "datafileIds") java.util.ArrayList<java.lang.Long> datafileIds) {
+            @WebParam(name = "datafileIds") java.util.ArrayList<java.lang.Long> datafileIds) throws TopcatException {
         return utility.getDatafilesDownloadURL(topcatSessionId, serverName, datafileIds);
     }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -23,16 +23,20 @@
 package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.manager.KeywordManager;
 
 /**
  * This is stateless bean which manages keywords for TopCAT.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 
@@ -44,20 +48,20 @@ public class KeywordManagementBean implements KeywordManagementLocal {
     private KeywordManager keywordManager;
 
     public KeywordManagementBean() {
-        keywordManager=new KeywordManager();
+        keywordManager = new KeywordManager();
     }
 
     protected KeywordManagementBean(EntityManager manager) {
         this.manager = manager;
         keywordManager = new KeywordManager();
     }
-    
+
     public void updateAllKeywords() {
         keywordManager.UpdateKeywordsFromAll(manager);
     }
 
-    public ArrayList<String> getKeywordsWithPrefix(String sessionId,
-            String serverName, String partialKey, int numberOfKeywords) {
+    public ArrayList<String> getKeywordsWithPrefix(String sessionId, String serverName, String partialKey,
+            int numberOfKeywords) throws TopcatException {
         return keywordManager.getKeywordsWithPrefix(manager, sessionId, serverName, partialKey, numberOfKeywords);
     }
 }

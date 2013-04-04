@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -37,7 +37,8 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUser;
@@ -435,9 +436,10 @@ public class UserManager {
      * @param topcatSessionId
      * @param serverName
      * @return
+     * @throws SessionException
      */
     public static TopcatUserSession getValidUserSessionByTopcatSessionAndServerName(EntityManager manager,
-            String topcatSessionId, String serverName) {
+            String topcatSessionId, String serverName) throws SessionException {
         // Find the TopcatUserSession corresponding to topcatSessionId and
         // serverName
         // Check whether the session has expired, if expired then get the
@@ -457,13 +459,14 @@ public class UserManager {
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
                         .setParameter("serverName", serverName).getSingleResult();
             } catch (NoResultException ex) {
+                throw new SessionException("Invalid topcat session id");
             }
         }
         return userSession;
     }
 
     /**
-     * This does anonymouse login update for all the icat servers
+     * This does anonymous login update for all the icat servers
      * 
      * @param manager
      */
@@ -539,9 +542,15 @@ public class UserManager {
      * @throws TopcatException
      */
     public String getIcatSessionId(EntityManager manager, String sessionId, String facilityName) throws TopcatException {
-        TopcatUserSession userSession = (TopcatUserSession) manager
-                .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                .setParameter("topcatSessionId", sessionId).setParameter("serverName", facilityName).getSingleResult();
+        TopcatUserSession userSession = null;
+        try {
+            userSession = (TopcatUserSession) manager
+                    .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
+                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", facilityName)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            throw new SessionException("Invalid topcat session id");
+        }
         return userSession.getIcatSessionId();
     }
 

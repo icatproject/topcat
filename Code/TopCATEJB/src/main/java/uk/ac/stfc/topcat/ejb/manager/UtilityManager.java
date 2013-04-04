@@ -42,7 +42,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.IcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
@@ -82,8 +83,8 @@ public class UtilityManager {
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
         for (TopcatIcatServer icatServer : servers) {
             facilityNames.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(),
-                    icatServer.getPluginName(), icatServer.getDownloadPluginName(), icatServer
-                            .getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
+                    icatServer.getPluginName(), icatServer.getDownloadPluginName(), icatServer.getDownloadServiceUrl(),
+                    icatServer.getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
         }
         return facilityNames;
     }
@@ -592,17 +593,17 @@ public class UtilityManager {
      * @param serverName
      * @param investigationId
      * @return
-     * @throws AuthenticationException
+     * @throws TopcatException
      */
     public TInvestigation getInvestigationDetails(EntityManager manager, String sessionId, String serverName,
-            String investigationId) throws AuthenticationException {
+            String investigationId) throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
             return getInvestigationDetails(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationId);
         } catch (javax.persistence.NoResultException ex) {
-            throw new AuthenticationException("Could not find session information");
+            throw new SessionException("Invalid topcat session id");
         }
     }
 
@@ -614,15 +615,18 @@ public class UtilityManager {
      * @param server
      * @param investigationId
      * @return
+     * @throws TopcatException
      */
     public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, String investigationId)
-            throws AuthenticationException {
+            throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
             return service.getInvestigationDetails(sessionId, Long.valueOf(investigationId));
         } catch (MalformedURLException ex) {
             logger.warning("getInvestigationDetails: " + ex.getMessage());
+        } catch (AuthenticationException ex) {
+            throw new SessionException("Invalid topcat session id");
         }
         return new TInvestigation();
     }
@@ -636,17 +640,17 @@ public class UtilityManager {
      * @param serverName
      * @param investigationNumber
      * @return
-     * @throws AuthenticationException
+     * @throws TopcatException
      */
     public ArrayList<TDataset> getDatasetsInServer(EntityManager manager, String sessionId, String serverName,
-            String investigationNumber) throws AuthenticationException {
+            String investigationNumber) throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
             return getDatasetsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationNumber);
         } catch (javax.persistence.NoResultException ex) {
-            throw new AuthenticationException("Could not find session information");
+            throw new SessionException("Invalid topcat session id");
         }
     }
 
@@ -682,9 +686,10 @@ public class UtilityManager {
      * @param serverName
      * @param datasetId
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TDatasetParameter> getDatasetInfo(EntityManager manager, String sessionId, String serverName,
-            String datasetId) {
+            String datasetId) throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
@@ -723,8 +728,10 @@ public class UtilityManager {
      * @param serverName
      * @param datasetId
      * @return
+     * @throws TopcatException
      */
-    public String getDatasetName(EntityManager manager, String sessionId, String serverName, String datasetId) {
+    public String getDatasetName(EntityManager manager, String sessionId, String serverName, String datasetId)
+            throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
@@ -763,9 +770,10 @@ public class UtilityManager {
      * @param serverName
      * @param datasetId
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TDatafile> getDatafilesInServer(EntityManager manager, String sessionId, String serverName,
-            String datasetId) {
+            String datasetId) throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
@@ -805,9 +813,10 @@ public class UtilityManager {
      * @param serverName
      * @param datafileId
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TDatafileParameter> getDatafileInfo(EntityManager manager, String sessionId, String serverName,
-            String datafileId) {
+            String datafileId) throws TopcatException {
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     sessionId, serverName);
@@ -938,7 +947,7 @@ public class UtilityManager {
     }
 
     public String getDatafilesDownloadURL(EntityManager manager, String sessionId, String serverName,
-            ArrayList<Long> datafileIds) {
+            ArrayList<Long> datafileIds) throws TopcatException {
         String result = "";
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
@@ -965,8 +974,10 @@ public class UtilityManager {
      * @param datasetId
      *            the data set id
      * @return a string containing a URL
+     * @throws TopcatException
      */
-    public String getDatasetDownloadURL(EntityManager manager, String sessionId, String facilityName, Long datasetId) {
+    public String getDatasetDownloadURL(EntityManager manager, String sessionId, String facilityName, Long datasetId)
+            throws TopcatException {
         String result = "";
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
@@ -981,7 +992,8 @@ public class UtilityManager {
         return result;
     }
 
-    public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String sessionId, String facilityName) {
+    public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String sessionId, String facilityName)
+            throws TopcatException {
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
                 facilityName);
         manager.createNamedQuery("TopcatUserDownload.cleanup").executeUpdate();
@@ -991,12 +1003,13 @@ public class UtilityManager {
     }
 
     public void addMyDownload(EntityManager manager, String sessionId, String facilityName, Date submitTime,
-            String downloadName, String status, Date expiryTime, String url) {
+            String downloadName, String status, Date expiryTime, String url, String preparedId) throws TopcatException {
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
                 facilityName);
         TopcatUserDownload download = new TopcatUserDownload();
         download.setName(downloadName);
         download.setUrl(url);
+        download.setPreparedId(preparedId);
         download.setStatus(status);
         download.setSubmitTime(submitTime);
         download.setUserId(userSession.getUserId());

@@ -33,7 +33,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.manager.AdvancedSearchManager;
 import uk.ac.stfc.topcat.ejb.manager.BasicSearchManager;
 
@@ -67,14 +67,14 @@ public class SearchManagementBean implements SearchManagementBeanLocal {
 
     @Override
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords) {
+            String serverName, ArrayList<String> keywords) throws TopcatException {
         return basicSearchManager.searchBasicInvestigationByKeywordsInServer(manager, topcatSessionId, serverName,
                 keywords);
     }
 
     @Override
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords) {
+            String serverName, ArrayList<String> keywords) throws TopcatException {
         return basicSearchManager.searchBasicMyInvestigationByKeywordsInServer(manager, topcatSessionId, serverName,
                 keywords);
     }

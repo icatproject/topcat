@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -23,13 +23,17 @@
 package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
+
 import javax.ejb.Local;
+
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 /**
  * This is local interface to statless bean for keyword management
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 
@@ -38,7 +42,7 @@ public interface KeywordManagementLocal {
 
     void updateAllKeywords();
 
-    ArrayList<String> getKeywordsWithPrefix(String sessionId,
-            String serverName, String partialKey, int numberOfKeywords);
-    
+    ArrayList<String> getKeywordsWithPrefix(String sessionId, String serverName, String partialKey, int numberOfKeywords)
+            throws TopcatException;
+
 }

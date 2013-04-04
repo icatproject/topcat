@@ -28,7 +28,6 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafileFormat;
@@ -38,7 +37,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 
 /**
@@ -81,20 +80,21 @@ public interface UtilityLocal {
             String instrumentName, TFacilityCycle cycle) throws TopcatException;
 
     TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId)
-            throws AuthenticationException;
+            throws TopcatException;
 
     ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId)
-            throws AuthenticationException;
+            throws TopcatException;
 
-    String getDatasetName(String sessionId, String serverName, String datasetId);
+    String getDatasetName(String sessionId, String serverName, String datasetId) throws TopcatException;
 
-    ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId);
+    ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId)
+            throws TopcatException;
 
     ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String serverName,
-            java.lang.String datasetId);
+            java.lang.String datasetId) throws TopcatException;
 
     ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName,
-            java.lang.String datafileId);
+            java.lang.String datafileId) throws TopcatException;
 
     ArrayList<String> getParameterNames(String sessionId, String facilityName) throws TopcatException;
 
@@ -103,14 +103,15 @@ public interface UtilityLocal {
     ArrayList<String> getParameterTypes(String sessionId, String facilityName, String name, String units)
             throws TopcatException;
 
-    String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds);
+    String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds)
+            throws TopcatException;
 
-    String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId);
+    String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) throws TopcatException;
 
-    List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName);
+    List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName) throws TopcatException;
 
     void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
-            Date expiryTime, String url);
+            Date expiryTime, String url, String preparedId) throws TopcatException;
 
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
