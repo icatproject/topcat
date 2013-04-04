@@ -29,8 +29,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigator;
 import uk.ac.stfc.topcat.core.gwt.module.TPublication;
 import uk.ac.stfc.topcat.core.gwt.module.TShift;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatException;
-import uk.ac.stfc.topcat.core.gwt.module.TopcatExceptionType;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
 /**
@@ -132,7 +132,7 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
         } catch (SessionException_Exception ex) {
         } catch (java.lang.NullPointerException ex) {
         } catch (Exception ex) {
-            throw new TopcatException(ex.getMessage(), TopcatExceptionType.INTERNAL);
+            throw new InternalException(ex.getMessage());
         }
         return facilityCycles;
     }
