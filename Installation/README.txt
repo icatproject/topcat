@@ -30,34 +30,59 @@ INSTALLATION
 ############
 
 1) customise glassfish.props
+
 2) create and customise topcat.properties using topcat.properties.example as a
    template
+   
 3) add a .icat file to the icats.d directory for every icat you wish to be able
    to access via topcat, using my.icat.example as a template. The setup script 
    looks for all .icat files in the icats.d directory.
+   
 4) create the connection pool, recourses and copy the topcat.properties file 
    into place (only if it does not already exist) using:
 > ./topcat_setup.py --create
+
 5) Deploy topcat to Glassfish using:
 > ./topcat_setup.py --deploy
+
 6) Initialise the database with data about icat using:
 > ./topcat_setup.py --addICAT
+
 7) If the icats you are connecting to are using non standard certificates you
    will need to add them to the Glassfish trust store:
 > openssl s_client -showcerts -connect <HOST>:<PORT> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > <GLASSFISH_HOME>/glassfish/domains/domain1/config/facility.cert
 > keytool -import -noprompt -alias <ALIAS> -file <GLASSFISH_HOME>/glassfish/domains/domain1/config/facility.cert -keystore <GLASSFISH_HOME>/glassfish/domains/domain1/config/cacerts.jks --storepass changeit 
+
 8) If you added certificates to the trust store you must restart glassfish:
 > asadmin restart-domain
 
-UPGRADING
-#########
+UPGRADING to 1.9
+################
 
 1) Undeploy topcat from Glassfish using:
 > ./topcat_setup.py --undeploy
-2) Deploy topcat to Glassfish using:
+
+2) Upgrade the database schema
+> ./topcat_setup.py --upgrade
+
+3) Deploy topcat to Glassfish using:
 > ./topcat_setup.py --deploy
-3) Manually update the database table ICAT_AUTHENTICATION with entries for the
-   authentication plugin
+
+4) If upgrading from 1.6 use your favourite database GUI or CLI to update your 
+   database. You will need to add data to the table ICAT_AUTHENTICATION. First
+   find the out the server id:
+SELECT ID, NAME FROM TOPCAT_ICAT_SERVER;
+   Then add one or more rows e.g.:
+INSERT INTO ICAT_AUTHENTICATION (SERVER_ID, AUTHENTICATION_TYPE) VALUES (1, 'ldap');
+
+
+CONNECTING TO AN ICAT DATA SERVICE
+##################################
+
+Currently this has to be carried out using your favourite database GUI or CLI
+to update your database. You will need to add data to the table 
+TOPCAT_ICAT_SERVER. For example:
+UPDATE TOPCAT_ICAT_SERVER SET DOWNLOAD_PLUGIN_NAME='IDS', DOWNLOAD_SERVICE_URL='http://examle.com/DownloadManager/' WHERE NAME = 'myFacility';
 
 
 LOG FILE

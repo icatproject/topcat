@@ -154,6 +154,8 @@ def create(conf_props):
     """
     Create the database connection pool and resource
     """
+    if VERBOSE > 0:
+        print "Create the database connection pool and resource"
     install_props_file()
     if conf_props['dbType'].upper() == "DERBY":
         start_derby()
@@ -164,6 +166,8 @@ def create(conf_props):
                  " --steadypoolsize 2 --maxpoolsize 8 --ping" + 
                  " --property " + conf_props["topcatProperties"] + " " + 
                  CONNECTION_POOL_ID)          
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)
     if retcode > 0:
         print "ERROR creating database connection pool"
@@ -173,6 +177,8 @@ def create(conf_props):
     command = (ASADMIN + " create-jdbc-resource --connectionpoolid " + 
                  CONNECTION_POOL_ID + " " + "jdbc/" + 
                  CONNECTION_POOL_ID)
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)
     if retcode > 0:
         print "ERROR creating jdbc resource"
@@ -190,33 +196,49 @@ def install_props_file():
         exit(1)
     dest = path.join(dest_dir, "topcat.properties")
         
-    if not path.exists(dest):
-        if not  path.exists('topcat.properties'):
+    if path.exists(dest):
+        print "found existing topcat.properties in " + str(dest_dir) + " new file not copied"
+    else:
+        if not path.exists('topcat.properties'):
             print "ERROR Cannot find topcat.properties in the current directory"
             exit(1)
         copyfile('topcat.properties', dest)
+        if VERBOSE > 0:
+            print "copied topcat.properties to " + str(dest)
         
         
 def start_derby():
     """
-    Ensure the dearby database is running
+    Ensure the derby database is running
     """
+    return
+    if VERBOSE > 0:
+        print "Ensure the derby database is running"
     command = ASADMIN + " start-database --dbhost 127.0.0.1"
-    out_file = TemporaryFile()
-    retcode = call(command, shell=True, stdout=out_file) 
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        out_file = TemporaryFile()
+        retcode = call(command, shell=True, stdout=out_file) 
     if retcode > 0:
         print "ERROR starting Derby database"
         exit(1)
-    out_file.close()
+#    out_file.close()
 
 
 def delete():
     """
     Delete the database connection pool and resource
     """
+    if VERBOSE > 0:
+        print "Delete the database connection pool and resource"
     error = False
     command = (ASADMIN + " " + 
     "delete-jdbc-resource jdbc/" + CONNECTION_POOL_ID)
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)     
     if retcode > 0:
         print "ERROR deleting jdbc resource"
@@ -224,6 +246,8 @@ def delete():
 
     command = (ASADMIN + " " + 
     "delete-jdbc-connection-pool " + CONNECTION_POOL_ID) 
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)    
     if retcode > 0:
         print "ERROR deleting database connection pool"
@@ -237,9 +261,16 @@ def deploy():
     """
     Deploy the TopCAT application
     """
+    if VERBOSE > 0:
+        print "Deploy the TopCAT application"
     command = ASADMIN + " deploy TopCAT.war"
-    out_file = TemporaryFile()
-    retcode = call(command, shell=True, stdout=out_file) 
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        out_file = TemporaryFile()
+        retcode = call(command, shell=True, stdout=out_file)
     if retcode > 0:
         print "ERROR deploying TopCAT"
         exit(1)
@@ -249,7 +280,11 @@ def undeploy():
     """
     Un-deploy the TopCAT application
     """
+    if VERBOSE > 0:
+        print "Undeploy the TopCAT application"
     command = ASADMIN + " undeploy TopCAT"
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)    
     if retcode > 0:
         print "ERROR un-deploying TopCAT"
@@ -323,6 +358,8 @@ def add_icat(conf_props):
     """
     Set up TopCAT to point to one or more ICATs
     """
+    if VERBOSE > 0:
+        print "Set up TopCAT to point to one or more ICATs"
     if  not path.exists(ICAT_DIR):    
         print ('There is no ' + ICAT_DIR + " directory")
         exit(1)
@@ -535,7 +572,7 @@ def add_icat_entry(conf_props, fname, icat_id, auth_id, sql_command, db_props):
         print ("WARNING The database already contains an entry for " + 
                icat_props['facilityName'] + ", data NOT added for " + 
                icat_props['facilityName'])
-        return
+        return auth_id
     if conf_props['dbType'].upper() == "ORACLE":
         sql_file = NamedTemporaryFile(dir=getcwd(), suffix='.sql')
     else:
@@ -570,8 +607,13 @@ def add_icat_entry(conf_props, fname, icat_id, auth_id, sql_command, db_props):
         sql_file.write("disconnect;")
     sql_file.write("exit\n;")
     command = sql_command + " " + sql_file.name
+    if VERBOSE > 1:
+        print command
     sql_file.seek(0)
-    retcode = call(command, shell=True, stdout=TemporaryFile())
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:    
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR writing icat data to database"
         exit(1)
@@ -592,15 +634,26 @@ def upgrade_db(conf_props, sql_command, db_props):
         sql_file.write("connect 'jdbc:derby://" + db_props['serverName'] + 
                        ":1527/" + db_props['DatabaseName'] + "';")
     sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER ")
-    sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR2(255)\n;\n")
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR(255)\n;\n")
+    else:
+        sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR2(255)\n;\n")
     sql_file.write("ALTER TABLE TOPCAT_USER_DOWNLOAD ")
-    sql_file.write("ADD PREPARED_ID VARCHAR2(255)\n;\n")
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_file.write("ADD PREPARED_ID VARCHAR(255)\n;\n")
+    else:
+        sql_file.write("ADD PREPARED_ID VARCHAR2(255)\n;\n")
     if conf_props['dbType'].upper() == "DERBY":
         sql_file.write("disconnect;")
     sql_file.write("exit\n;")
     command = sql_command + " " + sql_file.name
+    if VERBOSE > 1:
+        print command
     sql_file.seek(0)
-    retcode = call(command, shell=True, stdout=TemporaryFile())
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR updating table"
         exit(1)
@@ -642,8 +695,12 @@ PARSER.add_option("--status", dest="status",
 PARSER.add_option("--upgrade", dest="upgrade",
                   help="Upgrade the database for the migration between 1.7 and 1.9",
                   action="store_true")
+PARSER.add_option("-v", "--verbose", action="count", default=0,
+                    help="increase output verbosity")
 
 (OPTIONS, ARGS) = PARSER.parse_args()
+
+VERBOSE = 0
 
 if OPTIONS.create:
     create(CONF_PROPS_TOPCAT)
