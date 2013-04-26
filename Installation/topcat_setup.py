@@ -32,6 +32,17 @@ SUPPORTED_ICATS = {"v420":''}
 # Do NOT change, this value is required by TopCAT
 CONNECTION_POOL_ID = 'TopCATDB'
 
+
+def get_and_validate_props(file_name, req_values):
+    """
+    The get_and_validate_props function gets the properties and validate them
+    by calling the get_props and check_keys functions.
+    """
+    props_dict = get_props(file_name)
+    check_keys(props_dict, req_values, file_name)
+    return props_dict
+
+
 def get_props(file_name):
     """
     The get_props function checks if the TOPCAT_PROPS_FILE file exists and then puts it
@@ -41,6 +52,8 @@ def get_props(file_name):
     if  not  path.exists(file_name):
         print ("There is no file " + file_name)
         exit(1)
+    elif VERBOSE > 1:
+        print ("Reading props from " + str(file_name))
     try:
         file_handle = open(file_name, 'r')
         for line in file_handle:
@@ -49,11 +62,13 @@ def get_props(file_name):
                 continue
             key, value = line.split("=", 1)
             props_dict[key] = value
+            if VERBOSE > 2:
+                print ("prop " + str(key) + "=" + str(value))
     finally:
         file_handle.close()
     return props_dict     
     
-
+    
 def check_keys(props_dict, required_keys, file_name):
     """
     The check_keys function checks if the properties have all been configured
@@ -65,16 +80,6 @@ def check_keys(props_dict, required_keys, file_name):
             exit(1)
     return
 
-     
-def get_and_validate_props(file_name, req_values):
-    """
-    The get_and_validate_props function gets the properties and validate them
-    by calling the get_props and check_keys functions.
-    """
-    props_dict = get_props(file_name)
-    check_keys(props_dict, req_values, file_name)
-    return props_dict
-        
         
 def add_optional_props(props_dict):
     """
@@ -83,10 +88,16 @@ def add_optional_props(props_dict):
     """   
     if not props_dict.has_key("domain"):
         props_dict["domain"] = 'domain1'
+        if VERBOSE > 2:
+            print ("Set domain to " + str(props_dict["domain"]))
     if not props_dict.has_key("port"):
         props_dict["port"] = 4848
+        if VERBOSE > 2:
+            print ("Set port to " + str(props_dict["port"]))
     if not props_dict.has_key("dbType"):
         props_dict["dbType"] = 'DERBY'
+        if VERBOSE > 2:
+            print ("Set dbType to " + str(props_dict["dbType"]))
     if not SUPPORTED_DATABASES.has_key(props_dict["dbType"].upper()):
         print ("ERROR " + props_dict["dbType"] + 
                " not supported. Supported databases are: ")
@@ -113,9 +124,11 @@ def get_authentication_props(file_name):
     can be zero or more authentication_props parameters.
     """
     props_list = []
-    if  not  path.exists(file_name):
+    if not path.exists(file_name):
         print ("There is no file " + file_name)
         exit(1)
+    elif VERBOSE > 1:
+        print ("Reading props from " + str(file_name))
     try:
         file_handle = open(file_name)
         for line in file_handle:
@@ -127,6 +140,8 @@ def get_authentication_props(file_name):
             for prop in bits:
                 key, value = prop.split("=", 1)
                 props_dict[key] = value
+                if VERBOSE > 2:
+                    print ("prop " + str(key) + "=" + str(value))
             props_list.append(props_dict)
     finally:
         file_handle.close()
@@ -143,11 +158,17 @@ def extract_db_props(topcat_properties):
         try:
             key, value = prop.split("=", 1)
             props_dict[key] = value
+            if VERBOSE > 2:
+                print ("prop " + str(key) + "=" + str(value))
         except ValueError:
             if prop.startswith('@//'):
                 props_dict['hostname'] = prop.split('@//', 1)[1]
+                if VERBOSE > 2:
+                    print ("prop hostname=" + str(prop.split('@//', 1)[1]))
             elif prop.startswith('@'):
                 props_dict['hostname'] = prop.split('@', 1)[1]
+                if VERBOSE > 2:
+                    print ("prop hostname=" + str(prop.split('@', 1)[1]))
     return props_dict
  
                 
@@ -169,7 +190,10 @@ def create(conf_props):
                  CONNECTION_POOL_ID)          
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
     if retcode > 0:
         print "ERROR creating database connection pool"
         exit(1)
@@ -180,7 +204,10 @@ def create(conf_props):
                  CONNECTION_POOL_ID)
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
     if retcode > 0:
         print "ERROR creating jdbc resource"
         exit(1)
@@ -198,7 +225,7 @@ def install_props_file():
     dest = path.join(dest_dir, "topcat.properties")
         
     if path.exists(dest):
-        print ("found existing topcat.properties in " + str(dest_dir) 
+        print ("Found existing topcat.properties in " + str(dest_dir) 
                + " new file not copied")
     else:
         if not path.exists('topcat.properties'):
@@ -239,7 +266,10 @@ def delete():
     "delete-jdbc-resource jdbc/" + CONNECTION_POOL_ID)
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)     
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
     if retcode > 0:
         print "ERROR deleting jdbc resource"
         error = True
@@ -248,7 +278,10 @@ def delete():
     "delete-jdbc-connection-pool " + CONNECTION_POOL_ID) 
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)    
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
     if retcode > 0:
         print "ERROR deleting database connection pool"
         error = True
@@ -297,6 +330,7 @@ def status(conf_props):
     """
     display the status as reported by asadmin
     """
+    print ("\nStatus")
     list_asadmin_bits()
     list_icat_servers(conf_props)
 
@@ -365,6 +399,8 @@ def add_icat(conf_props):
     if  not path.exists(ICAT_DIR):    
         print ('There is no ' + ICAT_DIR + " directory")
         exit(1)
+    elif VERBOSE > 1:
+        print ("Reading props from " + str(conf_props))
     db_props = extract_db_props(conf_props['topcatProperties'])
     sql_command = get_sql_command(conf_props, db_props)
     dir_list = listdir(ICAT_DIR)
@@ -385,6 +421,8 @@ def upgrade(conf_props):
     if  not path.exists(ICAT_DIR):    
         print ('There is no ' + ICAT_DIR + " directory")
         exit(1)
+    elif VERBOSE > 1:
+        print ("Reading props from " + str(conf_props))
     db_props = extract_db_props(conf_props['topcatProperties'])
     if conf_props['dbType'].upper() == "DERBY":
         sql_command = IJ
@@ -517,6 +555,10 @@ def get_single_value_from_database(conf_props, sql_command, db_props, select):
         sql_file.write("disconnect;")
     sql_file.write("exit\n;")
     command = sql_command + " " + sql_file.name
+    if VERBOSE > 1:
+        print sql_command
+        sql_file.seek(0)
+        print sql_file.readlines()
     sql_file.seek(0)
     out_file = TemporaryFile()
     retcode = call(command, shell=True, stdout=out_file) 
@@ -525,7 +567,8 @@ def get_single_value_from_database(conf_props, sql_command, db_props, select):
         exit(1)
     out_file.seek(0)
     lines = out_file.readlines()
-    print lines
+    if VERBOSE > 2:
+        print lines
     if conf_props['dbType'].upper() == "DERBY":
         ret_value = lines[6].strip()
     elif conf_props['dbType'].upper() == "ORACLE":
@@ -554,6 +597,10 @@ def get_value_from_database(conf_props, sql_command, db_props, select):
         sql_file.write("disconnect;")
     sql_file.write("exit\n;")
     command = sql_command + " " + sql_file.name
+    if VERBOSE > 1:
+        print sql_command
+        sql_file.seek(0)
+        print sql_file.readlines()
     sql_file.seek(0)
     out_file = TemporaryFile()
     retcode = call(command, shell=True, stdout=out_file) 
@@ -562,6 +609,8 @@ def get_value_from_database(conf_props, sql_command, db_props, select):
         exit(1)
     out_file.seek(0)
     lines = out_file.readlines()
+    if VERBOSE > 2:
+        print lines
     out_file.close()
     sql_file.close()
     return lines
