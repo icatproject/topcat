@@ -27,6 +27,7 @@ OPT_VALUES_ICAT = ["defaultUser", "defaultPassword", "pluginName",
                    "downloadPluginName"]
 
 SUPPORTED_DATABASES = {"DERBY":'', "MYSQL":'', "ORACLE":''}
+SUPPORTED_ICATS = {"v420":''}
 
 # Do NOT change, this value is required by TopCAT
 CONNECTION_POOL_ID = 'TopCATDB'
@@ -197,7 +198,8 @@ def install_props_file():
     dest = path.join(dest_dir, "topcat.properties")
         
     if path.exists(dest):
-        print "found existing topcat.properties in " + str(dest_dir) + " new file not copied"
+        print ("found existing topcat.properties in " + str(dest_dir) 
+               + " new file not copied")
     else:
         if not path.exists('topcat.properties'):
             print "ERROR Cannot find topcat.properties in the current directory"
@@ -211,7 +213,6 @@ def start_derby():
     """
     Ensure the derby database is running
     """
-    return
     if VERBOSE > 0:
         print "Ensure the derby database is running"
     command = ASADMIN + " start-database --dbhost 127.0.0.1"
@@ -220,8 +221,7 @@ def start_derby():
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        out_file = TemporaryFile()
-        retcode = call(command, shell=True, stdout=out_file) 
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
     if retcode > 0:
         print "ERROR starting Derby database"
         exit(1)
@@ -269,8 +269,7 @@ def deploy():
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        out_file = TemporaryFile()
-        retcode = call(command, shell=True, stdout=out_file)
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR deploying TopCAT"
         exit(1)
@@ -285,7 +284,10 @@ def undeploy():
     command = ASADMIN + " undeploy TopCAT"
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)    
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())    
     if retcode > 0:
         print "ERROR un-deploying TopCAT"
         exit(1)
@@ -295,11 +297,11 @@ def status(conf_props):
     """
     display the status as reported by asadmin
     """
-    list_asadmin_bits(conf_props)
+    list_asadmin_bits()
     list_icat_servers(conf_props)
 
 
-def list_asadmin_bits(conf_props):  
+def list_asadmin_bits():  
     """
     display the status as reported by asadmin
     """
@@ -422,12 +424,14 @@ def get_sql_command(conf_props, db_props):
         try:
             db_props['password']
         except KeyError:
-            print "ERROR - Unable to extract DB password from topcatProperties in glassfish.props"
+            print ("ERROR - Unable to extract DB password from" 
+                   + " topcatProperties in glassfish.props")
             exit(1)
         try:
             db_props['hostname']
         except KeyError:
-            print "ERROR - Unable to extract DB hostname from topcatProperties in glassfish.props"
+            print ("ERROR - Unable to extract DB hostname from"
+                   + " topcatProperties in glassfish.props")
             exit(1)
         sql_command = (sqlplus + " " + db_props['user'] + "/" + 
                        db_props['password'] + "@" + 
@@ -436,12 +440,14 @@ def get_sql_command(conf_props, db_props):
         try:
             db_props['password']
         except KeyError:
-            print "ERROR - Unable to extract DB password from topcatProperties in glassfish.props"
+            print ("ERROR - Unable to extract DB password from" 
+                   + " topcatProperties in glassfish.props")
             exit(1)
         try:
             db_props['databaseName']
         except KeyError:
-            print "ERROR - Unable to extract DB databaseName from topcatProperties in glassfish.props"
+            print ("ERROR - Unable to extract DB databaseName from" 
+                   + " topcatProperties in glassfish.props")
             exit(1)        
         sql_command = (MYSQL + " -u " + db_props['user'] + " -p" + 
                        db_props['password'] + " " + db_props['databaseName'] + 
@@ -530,6 +536,7 @@ def get_single_value_from_database(conf_props, sql_command, db_props, select):
     sql_file.close()
     return ret_value
 
+
 def get_value_from_database(conf_props, sql_command, db_props, select):
     """
     Get an int from the database in response to the given query
@@ -566,6 +573,7 @@ def add_icat_entry(conf_props, fname, icat_id, auth_id, sql_command, db_props):
     """
     icat_props = get_and_validate_props(fname, REQ_VALUES_ICAT)
     icat_props = add_icat_optional_props(icat_props)
+    validate_version(icat_props)
     authentication_props = get_authentication_props(fname)
     if check_icat_name_exists(conf_props, sql_command, db_props,
                               icat_props['facilityName']):
@@ -621,6 +629,19 @@ def add_icat_entry(conf_props, fname, icat_id, auth_id, sql_command, db_props):
     return auth_id
 
 
+def validate_version(icat_props):
+    """
+    Check that the version number supplied is one that is know to Topcat
+    """
+    if not SUPPORTED_ICATS.has_key(icat_props["icatVersion"]):
+        print ("ERROR " + icat_props["icatVersion"] + 
+               " not supported. Supported versions are: ")
+        for key in SUPPORTED_ICATS.keys():
+            print "    " + key
+        print ("N.B. Please use v420 for all 4.2.n icats")
+        exit(1)
+
+
 def upgrade_db(conf_props, sql_command, db_props):
     """
     Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER
@@ -661,15 +682,15 @@ def upgrade_db(conf_props, sql_command, db_props):
     print "updated tables TOPCAT_ICAT_SERVER and TOPCAT_USER_DOWNLOAD"
     return
 
-
+ 
 CONF_PROPS_TOPCAT = get_and_validate_props(TOPCAT_PROPS_FILE, REQ_VALUES_TOPCAT)
 CONF_PROPS_TOPCAT = add_optional_props(CONF_PROPS_TOPCAT)
-
+ 
 ASADMIN = path.join(CONF_PROPS_TOPCAT["glassfish"], "bin", "asadmin")
 # if windows:
 #    ASADMIN = ASADMIN + ".bat"
 ASADMIN = ASADMIN + " --port " + CONF_PROPS_TOPCAT["port"]
-
+ 
 IJ = path.join(CONF_PROPS_TOPCAT["glassfish"], "javadb", "bin", "ij")
 MYSQL = "mysql"
 
@@ -699,8 +720,7 @@ PARSER.add_option("-v", "--verbose", action="count", default=0,
                     help="increase output verbosity")
 
 (OPTIONS, ARGS) = PARSER.parse_args()
-
-VERBOSE = 0
+VERBOSE = OPTIONS.verbose
 
 if OPTIONS.create:
     create(CONF_PROPS_TOPCAT)
