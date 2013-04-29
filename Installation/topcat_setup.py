@@ -57,10 +57,14 @@ def get_props(file_name):
     try:
         file_handle = open(file_name, 'r')
         for line in file_handle:
-            line = line.strip() 
+            line = line.strip()
             if line.startswith("#") or line == "":
                 continue
-            key, value = line.split("=", 1)
+            try:
+                key, value = line.split("=", 1)
+            except ValueError:
+                print ("WARNING skipping value in " + str(file_name)
+                       + " value:" + line)
             props_dict[key] = value
             if VERBOSE > 2:
                 print ("prop " + str(key) + "=" + str(value))
@@ -341,28 +345,32 @@ def list_asadmin_bits():
     """
     print "\nDomains"
     command = ASADMIN + " list-domains"
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)    
     if retcode > 0:
         print "ERROR listing domains"
-        exit(1)
     print "\nComponents"
     command = ASADMIN + " list-components"
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)    
     if retcode > 0:
         print "ERROR listing components"
-        exit(1)
     print "\nJDBC connection pools"
     command = ASADMIN + " list-jdbc-connection-pools"
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)    
     if retcode > 0:
         print "ERROR listing jdbc connection pools"
-        exit(1)        
     print "\nJDBC resources"
     command = ASADMIN + " list-jdbc-resources"
+    if VERBOSE > 1:
+        print command
     retcode = call(command, shell=True)    
     if retcode > 0:
         print "ERROR listing jdbc resources"
-        exit(1)
         
         
 def list_icat_servers(conf_props):  
@@ -418,6 +426,8 @@ def upgrade(conf_props):
     """
     Upgrade the database
     """
+    if VERBOSE > 0:
+        print "Upgrade database"
     if  not path.exists(ICAT_DIR):    
         print ('There is no ' + ICAT_DIR + " directory")
         exit(1)
@@ -501,8 +511,13 @@ def get_next_server_id(conf_props, sql_command, db_props):
     current_id = (get_single_value_from_database(conf_props, sql_command,
                                            db_props, select))
     try:
-        return int(current_id) + 1
+        next_id = int(current_id) + 1
+        if VERBOSE > 2:
+            print ("Next server id:" + str(next_id))
+        return next_id
     except ValueError:
+        if VERBOSE > 2:
+            print ("Next server id:1")
         return 1
 
 
@@ -514,8 +529,13 @@ def get_next_auth_id(conf_props, sql_command, db_props):
     current_id = (get_single_value_from_database(conf_props, sql_command,
                                           db_props, select))
     try:
-        return int(current_id) + 1
+        next_id = int(current_id) + 1
+        if VERBOSE > 2:
+            print ("Next auth id:" + str(next_id))
+        return next_id
     except ValueError:
+        if VERBOSE > 2:
+            print ("Next auth id:1")
         return 1
 
 
@@ -533,8 +553,12 @@ def check_icat_name_exists(conf_props, sql_command, db_props, name):
         print "ERROR getting data from database"
         exit(1)
     if count > 0:
+        if VERBOSE > 2:
+            print (str(name) + " already in database")
         return True
     else:
+        if VERBOSE > 2:
+            print (str(name) + " not in database")
         return False
        
 
@@ -568,7 +592,13 @@ def get_single_value_from_database(conf_props, sql_command, db_props, select):
     out_file.seek(0)
     lines = out_file.readlines()
     if VERBOSE > 2:
-        print lines
+        for line in lines:
+            print line
+    for line in lines:
+        if line.find("ERROR") > -1:
+            print line
+            print "ERROR getting data from database"
+            exit(1)
     if conf_props['dbType'].upper() == "DERBY":
         ret_value = lines[6].strip()
     elif conf_props['dbType'].upper() == "ORACLE":
@@ -582,7 +612,7 @@ def get_single_value_from_database(conf_props, sql_command, db_props, select):
 
 def get_value_from_database(conf_props, sql_command, db_props, select):
     """
-    Get an int from the database in response to the given query
+    Get the results from the database in response to the given query
     """
 
     if conf_props['dbType'].upper() == "ORACLE":
@@ -607,10 +637,17 @@ def get_value_from_database(conf_props, sql_command, db_props, select):
     if retcode > 0:
         print "ERROR getting data from database"
         exit(1)
+    print "rt " + str(retcode)
     out_file.seek(0)
     lines = out_file.readlines()
     if VERBOSE > 2:
-        print lines
+        for line in lines:
+            print line
+    for line in lines:
+        if line.find("ERROR") > -1:
+            print line
+            print "ERROR getting data from database"
+            exit(1)
     out_file.close()
     sql_file.close()
     return lines
@@ -682,6 +719,12 @@ def validate_version(icat_props):
     """
     Check that the version number supplied is one that is know to Topcat
     """
+    if VERBOSE > 1:
+        print "Checking icat version"
+    if VERBOSE > 1:
+        print "Supported versions are: "
+        for key in SUPPORTED_ICATS.keys():
+            print "    " + key
     if not SUPPORTED_ICATS.has_key(icat_props["icatVersion"]):
         print ("ERROR " + icat_props["icatVersion"] + 
                " not supported. Supported versions are: ")
@@ -731,17 +774,6 @@ def upgrade_db(conf_props, sql_command, db_props):
     print "updated tables TOPCAT_ICAT_SERVER and TOPCAT_USER_DOWNLOAD"
     return
 
- 
-CONF_PROPS_TOPCAT = get_and_validate_props(TOPCAT_PROPS_FILE, REQ_VALUES_TOPCAT)
-CONF_PROPS_TOPCAT = add_optional_props(CONF_PROPS_TOPCAT)
- 
-ASADMIN = path.join(CONF_PROPS_TOPCAT["glassfish"], "bin", "asadmin")
-# if windows:
-#    ASADMIN = ASADMIN + ".bat"
-ASADMIN = ASADMIN + " --port " + CONF_PROPS_TOPCAT["port"]
- 
-IJ = path.join(CONF_PROPS_TOPCAT["glassfish"], "javadb", "bin", "ij")
-MYSQL = "mysql"
 
 PARSER = OptionParser()
 PARSER.add_option("--create", dest="create",
@@ -763,13 +795,24 @@ PARSER.add_option("--status", dest="status",
                   help="Display status information",
                   action="store_true")
 PARSER.add_option("--upgrade", dest="upgrade",
-                  help="Upgrade the database for the migration between 1.7 and 1.9",
-                  action="store_true")
+                  help=("Upgrade the database for the migration between 1.7"
+                        + " and 1.9"), action="store_true")
 PARSER.add_option("-v", "--verbose", action="count", default=0,
                     help="increase output verbosity")
 
 (OPTIONS, ARGS) = PARSER.parse_args()
 VERBOSE = OPTIONS.verbose
+
+CONF_PROPS_TOPCAT = get_and_validate_props(TOPCAT_PROPS_FILE, REQ_VALUES_TOPCAT)
+CONF_PROPS_TOPCAT = add_optional_props(CONF_PROPS_TOPCAT)
+ 
+ASADMIN = path.join(CONF_PROPS_TOPCAT["glassfish"], "bin", "asadmin")
+# if windows:
+#    ASADMIN = ASADMIN + ".bat"
+ASADMIN = ASADMIN + " --port " + CONF_PROPS_TOPCAT["port"]
+ 
+IJ = path.join(CONF_PROPS_TOPCAT["glassfish"], "javadb", "bin", "ij")
+MYSQL = "mysql"
 
 if OPTIONS.create:
     create(CONF_PROPS_TOPCAT)
