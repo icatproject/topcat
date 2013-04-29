@@ -36,7 +36,7 @@ import uk.ac.stfc.topcat.ejb.manager.KeywordManager;
  * <p>
  * 
  * @author Mr. Srikanth Nagella
- * @version 1.0, &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2013
  * @since iCAT Version 3.3
  */
 
@@ -56,7 +56,7 @@ public class KeywordManagementBean implements KeywordManagementLocal {
         keywordManager = new KeywordManager();
     }
 
-    public void updateAllKeywords() {
+    public void updateAllKeywords() throws TopcatException {
         keywordManager.UpdateKeywordsFromAll(manager);
     }
 

@@ -19,6 +19,8 @@ import java.util.logging.Logger;
  */
 public enum Configuration {
     INSTANCE;
+    private static final String LOGO_URL = "LOGO_URL";
+    private static final String MESSAGE = "MESSAGE";
     private static final String ACCESSIBILITY = "ACCESSIBILITY";
     private static final String COMPLAINTS_PROCEDURE = "COMPLAINTS_PROCEDURE";
     private static final String DATA_POLICY = "DATA_POLICY";
@@ -26,8 +28,7 @@ public enum Configuration {
     private static final String PRIVACY_POLICY = "PRIVACY_POLICY";
     private static final String TERMS_OF_USE = "TERMS_OF_USE";
     private boolean keywordsCached;
-    private String logoURL;
-    private Map<String, String> links;
+    private Map<String, String> properties;
 
     private Configuration() {
         try {
@@ -41,34 +42,37 @@ public enum Configuration {
 
     private void loadProperties(Properties prop) {
         keywordsCached = Boolean.parseBoolean(prop.getProperty("KEYWORDS_CACHED"));
+        properties = new HashMap<String, String>(8);
         // defaults to logo.jpg
-        logoURL = prop.getProperty("LOGO_URL", "images/logo.jpg");
-        links = new HashMap<String, String>(6);
-        links.put(ACCESSIBILITY, prop.getProperty(ACCESSIBILITY));
-        links.put(COMPLAINTS_PROCEDURE, prop.getProperty(COMPLAINTS_PROCEDURE));
-        links.put(DATA_POLICY, prop.getProperty(DATA_POLICY));
-        links.put(FEEDBACK, prop.getProperty(FEEDBACK));
-        links.put(PRIVACY_POLICY, prop.getProperty(PRIVACY_POLICY));
-        links.put(TERMS_OF_USE, prop.getProperty(TERMS_OF_USE));
+        properties.put(LOGO_URL, prop.getProperty("LOGO_URL", "images/logo.jpg"));
+        properties.put(MESSAGE, prop.getProperty("MESSAGE", ""));
+        // links
+        properties.put(ACCESSIBILITY, prop.getProperty(ACCESSIBILITY));
+        properties.put(COMPLAINTS_PROCEDURE, prop.getProperty(COMPLAINTS_PROCEDURE));
+        properties.put(DATA_POLICY, prop.getProperty(DATA_POLICY));
+        properties.put(FEEDBACK, prop.getProperty(FEEDBACK));
+        properties.put(PRIVACY_POLICY, prop.getProperty(PRIVACY_POLICY));
+        properties.put(TERMS_OF_USE, prop.getProperty(TERMS_OF_USE));
     }
 
     /**
      * This method returns whether the keywords should be read from local cache
-     * in database or use webservice.
-     * import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
-
+     * in database or use webservice. import
+     * uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+     * 
      * @return true to use local db cache / false for webservice
      */
     public boolean isKeywordsCached() {
         return keywordsCached;
     }
 
-    public String getLogoURL() {
-        return logoURL;
-    }
-
-    public Map<String, String> getLinks() {
-        return links;
+    /**
+     * This method returns the information from the topcat.properties file.
+     * 
+     * @return a map of properties
+     */
+    public Map<String, String> getTopcatProperties() {
+        return properties;
     }
 
 }

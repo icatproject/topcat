@@ -26,6 +26,12 @@ public class Constants {
     /** Name of property from properties file. */
     public static final String FEEDBACK = "FEEDBACK";
 
+    /** Name of property from properties file. */
+    public static final String LOGO_URL = "LOGO_URL";
+
+    /** Name of property from properties file. */
+    public static final String MESSAGE = "MESSAGE";
+
     /** Download status */
     public static final String STATUS_IN_PROGRESS = "in progress";
 
@@ -40,7 +46,7 @@ public class Constants {
 
     /** Investigation **/
     public static final String INVESTIGATION = "INVESTIGATION";
-    
+
     /** Data set **/
     public static final String DATA_SET = "DATA_SET";
 

@@ -160,21 +160,25 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     @Override
     public List<String> listDatasetTypes(String sessionId) throws TopcatException {
+        logger.finer("listDatasetTypes(sessionId)");
         return searchList(sessionId, "DISTINCT DatasetType.name", "listDatasetTypes");
     }
 
     @Override
     public ArrayList<String> listInstruments(String sessionId) throws TopcatException {
+        logger.finer("listInstruments(sessionId)");
         return searchList(sessionId, "DISTINCT Instrument.fullName", "listInstruments");
     }
 
     @Override
     public ArrayList<String> listInvestigationTypes(String sessionId) throws TopcatException {
+        logger.finer("listInvestigationTypes(sessionId)");
         return searchList(sessionId, "DISTINCT InvestigationType.name", "listInvestigationTypes");
     }
 
     @Override
     public ArrayList<TFacilityCycle> listFacilityCycles(String sessionId) throws TopcatException {
+        logger.finer("listFacilityCycles(sessionId)");
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
         try {
             List<Object> resultCycle = service.search(sessionId, "FacilityCycle");
@@ -185,7 +189,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             convertToTopcatException(ex, "listFacilityCycles");
         } catch (Throwable e) {
             logger.warning("listFacilityCycles: " + e.getMessage());
-            throw new InternalException(e.getMessage());
+            throw new InternalException(
+                    "Internal error, listFacilityCycles threw an unexpected exception, see server logs for details");
         }
         return facilityCycles;
     }
@@ -193,6 +198,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     @Override
     public ArrayList<TFacilityCycle> listFacilityCyclesForInstrument(String sessionId, String instrument)
             throws TopcatException {
+        logger.finer("listFacilityCyclesForInstrument(sessionId, " + instrument + ")");
         ArrayList<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
         try {
             String invStartDate = getDate((XMLGregorianCalendar) service.search(sessionId,
@@ -230,7 +236,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TInvestigation> getMyInvestigations(String sessionId) {
+    public ArrayList<TInvestigation> getMyInvestigations(String sessionId) throws TopcatException {
+        logger.finer("getMyInvestigations(sessionId)");
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
             String name = service.getUserName(sessionId);
@@ -240,15 +247,20 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
         } catch (IcatException_Exception ex) {
-            // TODO check type
+            convertToTopcatException(ex, "getMyInvestigations");
+        } catch (Throwable e) {
+            logger.warning("getMyInvestigations: " + e.getMessage());
+            throw new InternalException(
+                    "Internal error, getMyInvestigations threw an unexpected exception, see server logs for details");
+
         }
         Collections.sort(investigationList);
         return investigationList;
     }
 
     @Override
-    public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
-            throws TopcatException {
+    public TInvestigation getInvestigationDetails(String sessionId, Long investigationId) throws TopcatException {
+        logger.finer("getInvestigationDetails(sessionId, " + investigationId + ")");
         TInvestigation ti = new TInvestigation();
         try {
             Investigation resultInv = (Investigation) service
@@ -288,14 +300,15 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             for (InvestigationParameter param : params) {
                 parameterList.add(copyParameterToTParameter(param));
             }
-            ti.setParameters(parameterList);      
-            } catch (IcatException_Exception e) {
-                convertToTopcatException(e, "getInvestigationDetails");
-            } catch (Throwable e) {
-                logger.severe("getInvestigationDetails caught an unexpected exception: " + e.toString());
-                throw new InternalException(
-                        "Internal error, getInvestigationDetails threw an unexpected exception, see server logs for details");
-            }  return ti;
+            ti.setParameters(parameterList);
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "getInvestigationDetails");
+        } catch (Throwable e) {
+            logger.severe("getInvestigationDetails caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getInvestigationDetails threw an unexpected exception, see server logs for details");
+        }
+        return ti;
     }
 
     private TParameter copyParameterToTParameter(InvestigationParameter param) {
@@ -315,6 +328,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     @Override
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
             int start, int end) throws TopcatException {
+        logger.finer("searchByAdvancedPagination(sessionId, details, " + start + ", " + end + ")");
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         String query = getAdvancedQuery(sessionId, details);
         List<Object> resultInv = null;
@@ -335,7 +349,9 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId) {
+    public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId)
+            throws TopcatException {
+        logger.finer("getDatasetsInInvestigation(sessionId, " + investigationId + ")");
         ArrayList<TDataset> datasetList = new ArrayList<TDataset>();
         try {
             Investigation resultInv = (Investigation) service.get(sessionId,
@@ -351,15 +367,19 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
                         .getDescription(), dataset.getType().getName(), status));
             }
-        } catch (IcatException_Exception ex) {
-            // TODO check type
-            logger.warning("getDatasetsInInvestigation: " + ex.getMessage());
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "getDatasetsInInvestigation");
+        } catch (Throwable e) {
+            logger.severe("getDatasetsInInvestigation caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getDatasetsInInvestigation threw an unexpected exception, see server logs for details");
         }
         return datasetList;
     }
 
     @Override
-    public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
+    public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) throws TopcatException {
+        logger.finer("getParametersInDataset(sessionId, " + datasetId + ")");
         ArrayList<TDatasetParameter> result = new ArrayList<TDatasetParameter>();
         try {
             Dataset ds = (Dataset) service.get(sessionId, "Dataset INCLUDE DatasetParameter, ParameterType", datasetId);
@@ -377,26 +397,34 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 }
             }
         } catch (IcatException_Exception e) {
-            // TODO check type
-            logger.warning("getParametersInDataset: " + e.getMessage());
+            convertToTopcatException(e, "getParametersInDataset");
+        } catch (Throwable e) {
+            logger.severe("getParametersInDataset caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getParametersInDataset threw an unexpected exception, see server logs for details");
         }
         return result;
     }
 
     @Override
-    public String getDatasetName(String sessionId, Long datasetId) {
+    public String getDatasetName(String sessionId, Long datasetId) throws TopcatException {
+        logger.finer("getDatasetName(sessionId, " + datasetId + ")");
         try {
             Dataset ds = (Dataset) service.get(sessionId, "Dataset", datasetId);
             return ds.getName();
         } catch (IcatException_Exception e) {
-            // TODO check type
-            logger.warning("getDatasetName: " + e.getMessage());
+            convertToTopcatException(e, "getDatasetName");
+        } catch (Throwable e) {
+            logger.severe("getDatasetName caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getDatasetName threw an unexpected exception, see server logs for details");
         }
         return "";
     }
 
     @Override
-    public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {
+    public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) throws TopcatException {
+        logger.finer("getDatafilesInDataset(sessionId, " + datasetId + ")");
         ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
         try {
             Dataset resultInv = (Dataset) service.get(sessionId, "Dataset INCLUDE Datafile, DatafileFormat", datasetId);
@@ -405,14 +433,19 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 datafileList.add(copyDatafileToTDatafile(serverName, datafile));
             }
         } catch (IcatException_Exception e) {
-            // TODO check type
-            logger.warning("getDatafilesInDataset: " + e.getMessage());
+            convertToTopcatException(e, "getDatafilesInDataset");
+        } catch (Throwable e) {
+            logger.severe("getDatafilesInDataset caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getDatafilesInDataset threw an unexpected exception, see server logs for details");
         }
         return datafileList;
     }
 
     @Override
-    public ArrayList<TDatafileParameter> getParametersInDatafile(String sessionId, Long datafileId) {
+    public ArrayList<TDatafileParameter> getParametersInDatafile(String sessionId, Long datafileId)
+            throws TopcatException {
+        logger.finer("getParametersInDatafile(sessionId, " + datafileId + ")");
         ArrayList<TDatafileParameter> result = new ArrayList<TDatafileParameter>();
         try {
             Datafile df = (Datafile) service.get(sessionId, "Datafile INCLUDE DatafileParameter, ParameterType",
@@ -430,8 +463,12 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                             dfParam.getDateTimeValue().toString()));
                 }
             }
-        } catch (IcatException_Exception ex) {
-            // TODO check type
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "getParametersInDatafile");
+        } catch (Throwable e) {
+            logger.severe("getParametersInDatafile caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getParametersInDatafile threw an unexpected exception, see server logs for details");
         }
         return result;
     }
@@ -439,32 +476,24 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     @Override
     public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
         String result = "";
-        // try {
-        // result = service.downloadDatafiles(sessionId, datafileIds);
-        // } catch (IcatException_Exception ex) {
-        // // TODO check type
-        // }
         return result;
     }
 
     @Override
     public String downloadDataset(String sessionId, Long datasetId) {
         String result = "";
-        // try {
-        // result = service.downloadDataset(sessionId, datasetId);
-        // } catch (IcatException_Exception ex) {
-        // // TODO check type
-        // }
         return result;
     }
 
     @Override
     public ArrayList<String> getKeywordsForUser(String sessionId) throws TopcatException {
+        logger.finer("getKeywordsForUser(sessionId)");
         return searchList(sessionId, "DISTINCT Keyword.name", "getKeywordsForUser");
     }
 
     @Override
-    public ArrayList<String> getKeywordsInInvestigation(String sessionId, Long investigationId) {
+    public ArrayList<String> getKeywordsInInvestigation(String sessionId, Long investigationId) throws TopcatException {
+        logger.finer("getKeywordsInInvestigation(sessionId, " + investigationId + ")");
         ArrayList<String> keywords = new ArrayList<String>();
         try {
             Investigation inv = (Investigation) service
@@ -473,14 +502,20 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             for (Keyword key : resultKeywords) {
                 keywords.add(key.getName());
             }
-        } catch (IcatException_Exception ex) {
-            // TODO check type
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "getKeywordsInInvestigation");
+        } catch (Throwable e) {
+            logger.severe("getKeywordsInInvestigation caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getKeywordsInInvestigation threw an unexpected exception, see server logs for details");
         }
         return keywords;
     }
 
     @Override
-    public ArrayList<TInvestigation> searchByKeywords(String sessionId, ArrayList<String> keywords) {
+    public ArrayList<TInvestigation> searchByKeywords(String sessionId, ArrayList<String> keywords)
+            throws TopcatException {
+        logger.finer("searchByKeywords(sessionId, keywords)");
         // call the search using keyword method
         List<Object> resultInvestigations = null;
         ArrayList<TInvestigation> returnTInvestigations = new ArrayList<TInvestigation>();
@@ -490,8 +525,12 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             for (Object inv : resultInvestigations) {
                 returnTInvestigations.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
-        } catch (IcatException_Exception ex) {
-            // TODO check type
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "searchByKeywords");
+        } catch (Throwable e) {
+            logger.severe("searchByKeywords caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, searchByKeywords threw an unexpected exception, see server logs for details");
         }
         Collections.sort(returnTInvestigations);
         return returnTInvestigations;
@@ -499,7 +538,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     @Override
     public ArrayList<TDatafile> searchDatafilesByRunNumber(String sessionId, ArrayList<String> instruments,
-            float startRunNumber, float endRunNumber) {
+            float startRunNumber, float endRunNumber) throws TopcatException {
+        logger.finer("searchDatafilesByRunNumber(sessionId, instruments," + startRunNumber + ", " + endRunNumber + ")");
         List<Object> resultDatafiles = null;
         ArrayList<TDatafile> returnTDatafiles = new ArrayList<TDatafile>();
         try {
@@ -509,8 +549,11 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                             + "] <-> DatafileParameter[type.name='run_number' AND numericValue BETWEEN "
                             + startRunNumber + " AND " + endRunNumber + "]");
         } catch (IcatException_Exception e) {
-            // TODO check type
-            logger.warning("searchDatafilesByRunNumber: " + e.getMessage());
+            convertToTopcatException(e, "searchDatafilesByRunNumber");
+        } catch (Throwable e) {
+            logger.severe("searchDatafilesByRunNumber caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, searchDatafilesByRunNumber threw an unexpected exception, see server logs for details");
         }
         for (Object datafile : resultDatafiles) {
             returnTDatafiles.add(copyDatafileToTDatafile(serverName, (Datafile) datafile));
@@ -519,7 +562,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public ArrayList<String> getKeywordsForUserWithStartMax(String sessionId, String partialKey, int numberOfKeywords) {
+    public ArrayList<String> getKeywordsForUserWithStartMax(String sessionId, String partialKey, int numberOfKeywords)
+            throws TopcatException {
 
         ArrayList<String> resultKeywords = new ArrayList<String>();
         try {
@@ -528,8 +572,12 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             for (Object keyword : results) {
                 resultKeywords.add((String) keyword);
             }
-        } catch (IcatException_Exception ex) {
-            // TODO check type
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "getKeywordsForUserWithStartMax");
+        } catch (Throwable e) {
+            logger.severe("getKeywordsForUserWithStartMax caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getKeywordsForUserWithStartMax threw an unexpected exception, see server logs for details");
         }
         return resultKeywords;
     }
@@ -594,8 +642,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             List<Object> datasetType = service.search(sessionId, "DatasetType [name='" + dataset.getType() + "']");
             ds.setType((DatasetType) datasetType.get(0));
         } catch (IcatException_Exception e) {
-            // TODO
             logger.warning("createDataSet, cannot get DatasetType: " + e.getMessage());
+            convertToTopcatException(e, "createDataSet");
         } catch (Throwable e) {
             logger.severe("createDataSet caught an unexpected exception: " + e.toString());
             throw new InternalException(
@@ -605,8 +653,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             ds.setInvestigation((Investigation) service.get(sessionId, "Investigation",
                     Long.valueOf(dataset.getInvestigationId())));
         } catch (IcatException_Exception e) {
-            // TODO
             logger.warning("createDataSet, cannot get Investigation: " + e.getMessage());
+            convertToTopcatException(e, "createDataSet");
         } catch (Throwable e) {
             logger.severe("createDataSet caught an unexpected exception: " + e.toString());
             throw new InternalException(
@@ -687,7 +735,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                 query.append(" [");
                 addAnd = true;
             }
-            query.append(" title='" + details.getPropostaltitle() + "'");
+            query.append(" title LIKE '%" + details.getPropostaltitle() + "%'");
         }
 
         // Visit Id

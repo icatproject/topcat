@@ -90,23 +90,25 @@ public class ICATWebInterfaceBase {
         return new TInvestigation();
     }
 
-    public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId) {
+    public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId)
+            throws TopcatException {
         return new ArrayList<TDataset>();
     }
 
-    public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) {
+    public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) throws TopcatException {
         return new ArrayList<TDatasetParameter>();
     }
 
-    public String getDatasetName(String sessionId, Long datasetId) {
+    public String getDatasetName(String sessionId, Long datasetId) throws TopcatException {
         return "";
     }
 
-    public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) {
+    public ArrayList<TDatafile> getDatafilesInDataset(String sessionId, Long datasetId) throws TopcatException {
         return new ArrayList<TDatafile>();
     }
 
-    public ArrayList<TDatafileParameter> getParametersInDatafile(String sessionId, Long datafileId) {
+    public ArrayList<TDatafileParameter> getParametersInDatafile(String sessionId, Long datafileId)
+            throws TopcatException {
         return new ArrayList<TDatafileParameter>();
     }
 
@@ -134,20 +136,22 @@ public class ICATWebInterfaceBase {
         return new ArrayList<String>();
     }
 
-    public ArrayList<String> getKeywordsInInvestigation(String sessionId, Long investigationId) {
+    public ArrayList<String> getKeywordsInInvestigation(String sessionId, Long investigationId) throws TopcatException {
         return new ArrayList<String>();
     }
 
-    public ArrayList<TInvestigation> searchByKeywords(String sessionId, ArrayList<String> keywords) {
+    public ArrayList<TInvestigation> searchByKeywords(String sessionId, ArrayList<String> keywords)
+            throws TopcatException {
         return new ArrayList<TInvestigation>();
     }
 
     public ArrayList<TDatafile> searchDatafilesByRunNumber(String sessionId, ArrayList<String> instruments,
-            float startRunNumber, float endRunNumber) {
+            float startRunNumber, float endRunNumber) throws TopcatException {
         return new ArrayList<TDatafile>();
     }
 
-    public ArrayList<String> getKeywordsForUserWithStartMax(String sessionId, String partialKey, int numberOfKeywords) {
+    public ArrayList<String> getKeywordsForUserWithStartMax(String sessionId, String partialKey, int numberOfKeywords)
+            throws TopcatException {
         return new ArrayList<String>();
     }
 

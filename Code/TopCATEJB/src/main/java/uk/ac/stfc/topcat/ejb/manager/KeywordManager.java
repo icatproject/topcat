@@ -66,7 +66,7 @@ public class KeywordManager {
      * @return : list of keywords
      * @throws TopcatException
      */
-    public List<String> getKeywordsFromServer(String sessionId, String serverName, String serverVersion,
+    private List<String> getKeywordsFromServer(String sessionId, String serverName, String serverVersion,
             String serverURL) throws TopcatException {
         List<String> resultKeywords = null;
         try {
@@ -124,9 +124,10 @@ public class KeywordManager {
      * @param inv
      *            : investigation information
      * @return : keywords corresponding to input investigation
+     * @throws TopcatException
      */
     private ArrayList<String> getKeywordsOfInvestigations(String sessionId, String serverName, String serverVersion,
-            String serverURL, TInvestigation inv) {
+            String serverURL, TInvestigation inv) throws TopcatException {
         logger.finest("getKeywordsOfInvestigations: from server " + serverURL + " with iCAT sessionId: " + sessionId);
         ArrayList<String> resultKeywords = null;
         try {
@@ -147,8 +148,10 @@ public class KeywordManager {
      * 
      * @param manager
      * @param session
+     * @throws TopcatException
      */
-    public void UpdateKeywordsFromServerUsingInvestigations(EntityManager manager, TopcatUserSession session) {
+    private void UpdateKeywordsFromServerUsingInvestigations(EntityManager manager, TopcatUserSession session)
+            throws TopcatException {
         int pageSize = 200;
         // This is a complex bit of getting the loop of investigation by pagning
         // through all public investigations
@@ -207,7 +210,7 @@ public class KeywordManager {
      *            local cache
      * @throws TopcatException
      */
-    public void UpdateKeywordsFromServer(EntityManager manager, TopcatUserSession session) throws TopcatException {
+    private void UpdateKeywordsFromServer(EntityManager manager, TopcatUserSession session) throws TopcatException {
         // Get all the keywords from the server
         List<String> resultKeywords = getKeywordsFromServer(session.getIcatSessionId(), session.getUserId()
                 .getServerId().getName(), session.getUserId().getServerId().getVersion(), session.getUserId()
@@ -241,8 +244,9 @@ public class KeywordManager {
      * multiple icat servers and then updates all the keywords to local cache.
      * 
      * @param manager
+     * @throws TopcatException
      */
-    public void UpdateKeywordsFromAll(EntityManager manager) {
+    public void UpdateKeywordsFromAll(EntityManager manager) throws TopcatException {
         // Get all the server info
         List<TopcatUserSession> sessionList = manager.createNamedQuery("TopcatUserSession.findByAnonymous")
                 .getResultList();
@@ -268,7 +272,7 @@ public class KeywordManager {
      * @return: list of keywords at the maximum number given by the
      *          maxResultKeywords
      */
-    public ArrayList<String> getKeywordsWithPrefixFromLocalCache(EntityManager manager, String prefix) {
+    private ArrayList<String> getKeywordsWithPrefixFromLocalCache(EntityManager manager, String prefix) {
         ArrayList<String> keywords = new ArrayList<String>();
         String prefixString = prefix.toLowerCase() + "%";
         manager.createNativeQuery("alter session set NLS_COMP=LINGUISTIC").executeUpdate();
@@ -329,7 +333,7 @@ public class KeywordManager {
      *         the user have access to.
      * @throws TopcatException
      */
-    public ArrayList<String> getKeywordsWithPrefixFromWebservice(EntityManager manager, String sessionId,
+    private ArrayList<String> getKeywordsWithPrefixFromWebservice(EntityManager manager, String sessionId,
             String serverName, String partialKey, int numberOfKeywords) throws TopcatException {
         ArrayList<String> keywords = new ArrayList<String>();
         // Get the user session id from the topcat session id

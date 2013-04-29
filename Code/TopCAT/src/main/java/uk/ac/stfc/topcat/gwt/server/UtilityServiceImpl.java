@@ -746,13 +746,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     }
 
     @Override
-    public String getLogoURL() {
-        return Configuration.INSTANCE.getLogoURL();
-    }
-
-    @Override
-    public Map<String, String> getLinks() {
-        return Configuration.INSTANCE.getLinks();
+    public Map<String, String> getTopcatProperties() {
+        return Configuration.INSTANCE.getTopcatProperties();
     }
 
     @Override
@@ -936,8 +931,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             String downloadName) throws TopcatException {
         String sessionId = userManager.getIcatSessionId(getSessionId(), facility.getName());
         Date submitTime = new Date(System.currentTimeMillis());
-        System.out.println("prepareDataObjectsForDownload: " + facility.getName() + " - "
-                + facility.getDownloadServiceUrl());
         Client ids;
         try {
             ids = new Client(facility.getDownloadServiceUrl());
@@ -949,27 +942,21 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         String preparedId = "";
         try {
             if (dataType.equalsIgnoreCase(Constants.DATA_FILE)) {
-                System.out.println("prepareDataObjectsForDownload: DATA_FILE" + dataObjectList.get(0));
                 preparedId = ids.prepareDatafiles(sessionId, dataObjectList, false, null);
             } else if (dataType.equalsIgnoreCase(Constants.DATA_SET)) {
-                System.out.println("prepareDataObjectsForDownload: DATA_SET" + dataObjectList.get(0));
                 preparedId = ids.prepareDatasets(sessionId, dataObjectList, false, null);
             }
         } catch (ForbiddenException e) {
-            System.out.println("prepareDataObjectsForDownload: ForbiddenException: " + e.getMessage());
             throw new SessionException();
         } catch (IDSException e) {
-            System.out.println("prepareDataObjectsForDownload: IDSException: " + e.getMessage());
             throw new InternalException("Error returned from the download service. " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("prepareDataObjectsForDownload: IOException: " + e.getMessage());
             throw new InternalException("Error trying to contact the download service. " + e.getMessage());
         }
         DownloadModel dm = new DownloadModel(facility.getName(), facility.getDownloadServiceUrl(), preparedId,
                 downloadName, submitTime, Constants.STATUS_IN_PROGRESS);
         utilityManager.addMyDownload(getSessionId(), facility.getName(), submitTime, downloadName,
                 Constants.STATUS_IN_PROGRESS, null, facility.getDownloadServiceUrl(), preparedId);
-        System.out.println("prepareDataObjectsForDownload: OK");
         return dm;
     }
 

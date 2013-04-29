@@ -201,19 +201,12 @@ public interface UtilityServiceAsync {
             AsyncCallback<TInvestigation> asyncCallback);
 
     /**
-     * Get the server logo URL
-     * 
-     * @param asyncCallback
-     */
-    public void getLogoURL(AsyncCallback<String> asyncCallback);
-
-    /**
-     * This method returns the links to be used at the bottom of the page.
+     * This method returns the information from the topcat.properties file.
      * 
      * @param callback
      *            object to be called on completion
      */
-    public void getLinks(AsyncCallback<Map<String, String>> asyncCallback);
+    public void getTopcatProperties(AsyncCallback<Map<String, String>> asyncCallback);
 
     /**
      * Get a list of downloads for the user.

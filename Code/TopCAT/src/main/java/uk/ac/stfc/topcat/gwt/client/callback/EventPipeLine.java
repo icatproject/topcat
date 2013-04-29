@@ -38,8 +38,10 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.BadParameterException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.InsufficientPrivilegesException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.NotSupportedException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
+import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
@@ -360,29 +362,12 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * This method invokes the AJAX call to get the server logo.
+     * This method invokes the AJAX call to get the information from the
+     * topcat.properties file. This is used to set data in the header and the
+     * footer.
      */
-    public void getLogoURL() {
-        utilityService.getLogoURL(new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                mainWindow.getHeaderPanel().setLogoURL(result);
-            }
-        });
-    }
-
-    /**
-     * This method invokes the AJAX call to get the links for the footer.
-     */
-    public void getLinks() {
-        utilityService.getLinks(new AsyncCallback<Map<String, String>>() {
-
+    public void getTopcatProperties() {
+        utilityService.getTopcatProperties(new AsyncCallback<Map<String, String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 throw new UnsupportedOperationException("Not supported yet.");
@@ -390,6 +375,8 @@ public class EventPipeLine implements LoginInterface {
 
             @Override
             public void onSuccess(Map<String, String> result) {
+                mainWindow.getHeaderPanel().setLogoURL(result.get(Constants.LOGO_URL));
+                mainWindow.getHeaderPanel().setMessage(result.get(Constants.MESSAGE));
                 mainWindow.getFooterPanel().setLinks(result);
             }
         });
@@ -940,6 +927,8 @@ public class EventPipeLine implements LoginInterface {
                 hideRetrievingData();
                 if (caught instanceof SessionException) {
                     checkStillLoggedIn();
+                } else if (caught instanceof InternalException) {
+                    showErrorDialog(caught.getMessage());
                 } else {
                     showErrorDialog("Error retrieving investigation data from server for " + facilityName);
                 }
@@ -1010,7 +999,7 @@ public class EventPipeLine implements LoginInterface {
                 hideRetrievingData();
                 if (caught instanceof SessionException) {
                     checkStillLoggedIn();
-                }else if (caught instanceof InsufficientPrivilegesException) {
+                } else if (caught instanceof InsufficientPrivilegesException) {
                     showErrorDialog("Your user has insufficient privileges to get the investigation types for "
                             + facilityName);
                 } else {
@@ -1024,8 +1013,8 @@ public class EventPipeLine implements LoginInterface {
                 for (String investigationType : investigationTypeList) {
                     investigationTypes.add(new InvestigationType(facilityName, investigationType));
                 }
-                getEventBus()
-                        .fireEventFromSource(new AddInvestigationTypeEvent(facilityName, investigationTypes), facilityName);
+                getEventBus().fireEventFromSource(new AddInvestigationTypeEvent(facilityName, investigationTypes),
+                        facilityName);
                 hideRetrievingData();
             }
         });

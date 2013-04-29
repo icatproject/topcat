@@ -218,18 +218,11 @@ public interface UtilityService extends RemoteService {
     public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws TopcatException;
 
     /**
-     * This method returns the server logo URL
+     * This method returns the information from the topcat.properties file.
      * 
-     * @return
+     * @return a map of properties
      */
-    public String getLogoURL();
-
-    /**
-     * This method returns the links to be used at the bottom of the page.
-     * 
-     * @return a map of link name, link
-     */
-    public Map<String, String> getLinks();
+    public Map<String, String> getTopcatProperties();
 
     /**
      * Get a list of downloads for the user.

@@ -228,9 +228,10 @@ public class BasicSearchManager {
      * @param partialKey
      * @param numberOfKeywords
      * @return
+     * @throws TopcatException
      */
     private List<String> getKeywordsFromServerWithMatchedKey(TopcatUserSession session, String partialKey,
-            int numberOfKeywords) {
+            int numberOfKeywords) throws TopcatException {
         // Get the ICAT Service url
         // call the get keywords method.
         logger.finest("getKeywordsFromServerWithMatchedKey: getting keywords with the matched key " + partialKey);

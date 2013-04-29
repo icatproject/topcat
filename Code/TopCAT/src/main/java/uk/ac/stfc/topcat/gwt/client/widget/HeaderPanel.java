@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -28,6 +28,9 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableRowLayout;
 import com.google.gwt.user.client.ui.Image;
@@ -45,6 +48,8 @@ public class HeaderPanel extends Composite {
 
     private LoginPanel loginPanel;
     private Image image;
+    private VerticalPanel messagePanel;
+    private Text message;
 
     public HeaderPanel() {
 
@@ -57,6 +62,14 @@ public class HeaderPanel extends Composite {
         TableData td_image = new TableData();
         td_image.setPadding(2);
         layoutContainer.add(image, td_image);
+
+        messagePanel = new VerticalPanel();
+        messagePanel.add(new LabelField("Announcement"));
+        message = new Text();
+        message.setWidth("450px");
+        messagePanel.add(message);
+        layoutContainer.add(messagePanel);
+        messagePanel.hide();
 
         loginPanel = new LoginPanel();
         loginPanel.getVerticalPanel().setSize("100%", "100%");
@@ -79,5 +92,12 @@ public class HeaderPanel extends Composite {
 
     public void setLogoURL(String url) {
         image.setUrl(url);
+    }
+
+    public void setMessage(String message) {
+        if (!message.isEmpty()) {
+            this.message.setText(message);
+            messagePanel.show();
+        }
     }
 }

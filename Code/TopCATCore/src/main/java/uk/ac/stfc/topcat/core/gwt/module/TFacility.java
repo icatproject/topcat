@@ -38,19 +38,21 @@ public class TFacility implements Serializable {
     private String name;
     private String pluginName;
     private String url;
+    private String version;
     private String authenticationServiceUrl;
     private String authenticationServiceType;
 
     public TFacility() {
     }
 
-    public TFacility(String name, String url, String pluginName, String downloadPluginName, String downloadServiceUrl,
-            String authenticationServiceUrl, String authenticationServiceType) {
+    public TFacility(String name, String url, String version, String pluginName, String downloadPluginName,
+            String downloadServiceUrl, String authenticationServiceUrl, String authenticationServiceType) {
         this.downloadPluginName = downloadPluginName;
         this.downloadServiceUrl = downloadServiceUrl;
         this.name = name;
         this.pluginName = pluginName;
         this.url = url;
+        this.version = version;
         this.authenticationServiceUrl = authenticationServiceUrl;
         this.authenticationServiceType = authenticationServiceType;
     }
@@ -93,6 +95,14 @@ public class TFacility implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getAuthenticationServiceUrl() {

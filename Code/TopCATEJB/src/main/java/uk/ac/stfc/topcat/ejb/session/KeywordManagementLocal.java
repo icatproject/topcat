@@ -40,7 +40,7 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 @Local
 public interface KeywordManagementLocal {
 
-    void updateAllKeywords();
+    void updateAllKeywords() throws TopcatException;
 
     ArrayList<String> getKeywordsWithPrefix(String sessionId, String serverName, String partialKey, int numberOfKeywords)
             throws TopcatException;

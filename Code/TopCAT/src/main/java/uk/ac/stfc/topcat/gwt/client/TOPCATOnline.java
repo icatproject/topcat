@@ -93,12 +93,13 @@ public class TOPCATOnline implements EntryPoint {
         eventPipeLine = EventPipeLine.getInstance();
         eventPipeLine.setLoginPanel(headerPanel.getLoginPanel());
         eventPipeLine.setMainWindow(this);
+        
         // This is to handle a call back from an authentication service
         eventPipeLine.setAuthentication(Window.Location.getParameter("facilityName"),
                 Window.Location.getParameter("authenticationType"), Window.Location.getHash());
+        
         // Initialise
-        eventPipeLine.getLogoURL();
-        eventPipeLine.getLinks();
+        eventPipeLine.getTopcatProperties();
         eventPipeLine.loadFacilityNames();
 
         // Set Event pipeline

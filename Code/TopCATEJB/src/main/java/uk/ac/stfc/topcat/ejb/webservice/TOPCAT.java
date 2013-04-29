@@ -23,6 +23,7 @@
 package uk.ac.stfc.topcat.ejb.webservice;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
@@ -34,6 +35,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.xml.ws.RequestWrapper;
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
@@ -124,6 +127,42 @@ public class TOPCAT {
             @WebParam(name = "serverName") String serverName,
             @WebParam(name = "datafileIds") java.util.ArrayList<java.lang.Long> datafileIds) throws TopcatException {
         return utility.getDatafilesDownloadURL(topcatSessionId, serverName, datafileIds);
+    }
+
+    /**
+     * Web service operation
+     * 
+     * @throws TopcatException
+     */
+    @WebMethod(operationName = "getStatus")
+    public String getStatus() {
+        StringBuilder output = new StringBuilder();
+        try {
+            ArrayList<TFacility> fs = utility.getFacilities();
+            output.append("OK").append("\n\n");
+            output.append("Topcat server version: 1.9-SNAPSHOT").append("\n\n");
+            for (TFacility f : fs) {
+                output.append("Facility: ").append(f.getName()).append("\n");
+                output.append("Version: ").append(f.getVersion()).append("\n");
+                output.append("URL: ").append(f.getUrl()).append("\n");
+                output.append("Search plugin: ").append(f.getPluginName()).append("\n");
+                output.append("Download plugin: ").append(f.getDownloadPluginName()).append("\n");
+                output.append("Download service: ").append(f.getDownloadServiceUrl()).append("\n");
+                List<TAuthentication> auths = utility.getAuthenticationDetails(f.getName());
+                for (TAuthentication auth : auths) {
+                    output.append("Authentication type: ").append(auth.getType()).append("\n");
+                    output.append("Authentication service: ").append(auth.getUrl()).append("\n");
+                    output.append("Authentication plugin: ").append(auth.getPluginName()).append("\n");
+                }
+                output.append("\n");
+            }
+        } catch (Throwable e) {
+            output = new StringBuilder();
+            output.append("ERROR").append("\n\n");
+            output.append("Topcat server version: 1.9-snap").append("\n\n");
+            output.append(e.getMessage()).append("\n\n");
+        }
+        return output.toString();
     }
 
 }

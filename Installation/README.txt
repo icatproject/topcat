@@ -155,6 +155,7 @@ C) icatVersion - The name of the plugin in topcat to be used with this icat,
    N.B. for any 4.2.n icat please use 'v420'. In a future release the '0' will be
    dropped as now it is guaranteed that the icat api will not change between minor
    versions.
+   
 D) authenticationProperties - The properties for the authentication plugin
    There can be multiple authenticationProperties entries. The components are:
 		url -    The url of the authentication service, NOT currently used
@@ -181,22 +182,26 @@ A) KEYWORDS_CACHED - Boolean flag, 'true' or 'false'
 B) LOGO_URL - The location of an image to display in the header of topcat. The
    value should be a path/file name relative to the 
    <GLASSFISH_HOME>glassfish/domains/domain1/applications/TopCAT/ directory.
+   
+C) MESSAGE - This message will be displayed at the top of the web page. It is
+   intended for use by sys admins so that they can inform users of up coming
+   down times. If you change it then you will need to reload the application.
 
-C) ACCESSIBILITY - The URL for an accessibility web page, a link to this is
+D) ACCESSIBILITY - The URL for an accessibility web page, a link to this is
    included in the topcat footer
 
-D) PRIVACY_POLICY - The URL for a privacy policy web page, a link to this is
+E) PRIVACY_POLICY - The URL for a privacy policy web page, a link to this is
    included in the topcat footer
 
-E) DATA_POLICY - The URL for a data policy web page, a link to this is included
+F) DATA_POLICY - The URL for a data policy web page, a link to this is included
    in the topcat footer
 
-F) TERMS_OF_USE - The URL for a terms of use web page, a link to this is
+G) TERMS_OF_USE - The URL for a terms of use web page, a link to this is
    included in the topcat footer
 
-G) COMPLAINTS_PROCEDURE - The URL for a complaints web page, a link to this is
+H) COMPLAINTS_PROCEDURE - The URL for a complaints web page, a link to this is
    included in the topcat footer
 
-H) FEEDBACK - The URL for a mailto link, a link to this is included in the
+I) FEEDBACK - The URL for a mailto link, a link to this is included in the
    topcat footer
 

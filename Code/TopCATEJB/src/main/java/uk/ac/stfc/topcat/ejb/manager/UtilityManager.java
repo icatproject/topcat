@@ -79,14 +79,14 @@ public class UtilityManager {
     }
 
     public ArrayList<TFacility> getAllFacilities(EntityManager manager) {
-        ArrayList<TFacility> facilityNames = new ArrayList<TFacility>();
+        ArrayList<TFacility> facilities = new ArrayList<TFacility>();
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
         for (TopcatIcatServer icatServer : servers) {
-            facilityNames.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(),
+            facilities.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(), icatServer.getVersion(),
                     icatServer.getPluginName(), icatServer.getDownloadPluginName(), icatServer.getDownloadServiceUrl(),
                     icatServer.getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
         }
-        return facilityNames;
+        return facilities;
     }
 
     /**
@@ -400,7 +400,7 @@ public class UtilityManager {
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId,
+    private ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId,
             TopcatIcatServer server, String userName, String userSurname, String instrumentName) throws TopcatException {
         logger.finest("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
                 + server.getName() + " username:" + userName + " instrument:" + instrumentName);
@@ -452,7 +452,7 @@ public class UtilityManager {
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId,
+    private ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId,
             TopcatIcatServer server, String userName, String instrumentName) throws TopcatException {
         try {
             TAdvancedSearchDetails details = new TAdvancedSearchDetails();
@@ -507,7 +507,7 @@ public class UtilityManager {
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getMyInvestigationsInServeInstrumentAndCycle(String sessionId,
+    private ArrayList<TInvestigation> getMyInvestigationsInServeInstrumentAndCycle(String sessionId,
             TopcatIcatServer server, String userName, String userSurname, String instrumentName,
             TFacilityCycle facilityCycle) throws TopcatException {
         logger.finest("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
@@ -566,7 +566,7 @@ public class UtilityManager {
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId,
+    private ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId,
             TopcatIcatServer server, String userName, String instrumentName, TFacilityCycle facilityCycle)
             throws TopcatException {
         try {
@@ -617,7 +617,7 @@ public class UtilityManager {
      * @return
      * @throws TopcatException
      */
-    public TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, String investigationId)
+    private TInvestigation getInvestigationDetails(String sessionId, TopcatIcatServer server, String investigationId)
             throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
@@ -662,8 +662,10 @@ public class UtilityManager {
      * @param server
      * @param investigationNumber
      * @return
+     * @throws TopcatException
      */
-    public ArrayList<TDataset> getDatasetsInServer(String sessionId, TopcatIcatServer server, String investigationNumber) {
+    private ArrayList<TDataset> getDatasetsInServer(String sessionId, TopcatIcatServer server,
+            String investigationNumber) throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
@@ -707,8 +709,10 @@ public class UtilityManager {
      * @param server
      * @param datasetId
      * @return
+     * @throws TopcatException
      */
-    public ArrayList<TDatasetParameter> getDatasetInfo(String sessionId, TopcatIcatServer server, String datasetId) {
+    private ArrayList<TDatasetParameter> getDatasetInfo(String sessionId, TopcatIcatServer server, String datasetId)
+            throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
@@ -749,8 +753,9 @@ public class UtilityManager {
      * @param server
      * @param datasetId
      * @return
+     * @throws TopcatException
      */
-    public String getDatasetName(String sessionId, TopcatIcatServer server, String datasetId) {
+    private String getDatasetName(String sessionId, TopcatIcatServer server, String datasetId) throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
@@ -792,8 +797,10 @@ public class UtilityManager {
      * @param server
      * @param datasetId
      * @return
+     * @throws TopcatException
      */
-    public ArrayList<TDatafile> getDatafilesInServer(String sessionId, TopcatIcatServer server, String datasetId) {
+    private ArrayList<TDatafile> getDatafilesInServer(String sessionId, TopcatIcatServer server, String datasetId)
+            throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
@@ -834,8 +841,10 @@ public class UtilityManager {
      * @param server
      * @param datafileId
      * @return
+     * @throws TopcatException
      */
-    private ArrayList<TDatafileParameter> getDatafileInfo(String sessionId, TopcatIcatServer server, String datafileId) {
+    private ArrayList<TDatafileParameter> getDatafileInfo(String sessionId, TopcatIcatServer server, String datafileId)
+            throws TopcatException {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
