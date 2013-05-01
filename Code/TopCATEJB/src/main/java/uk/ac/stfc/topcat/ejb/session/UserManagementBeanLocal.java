@@ -48,9 +48,6 @@ public interface UserManagementBeanLocal {
 
     public Boolean isSessionValid(String sessionId, String serverName);
 
-    public void loginWithTicket(String sessionId, String serverName, String authenticationServiceUrl, String ticket,
-            long hours) throws AuthenticationException;
-
     public String getIcatSessionId(String sessionId, String facilityName) throws TopcatException;
 
 }

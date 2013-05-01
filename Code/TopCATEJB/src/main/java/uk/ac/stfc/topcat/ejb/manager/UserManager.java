@@ -86,46 +86,6 @@ public class UserManager {
     }
 
     /**
-     * This method login to icat server with CAS ticketId.
-     * 
-     * @param manager
-     * @param sessionId
-     * @param serverName
-     * @param authenticationServiceUrl
-     * @param ticket
-     * @param hours
-     */
-    public void loginWithTicket(EntityManager manager, String topcatSessionId, String serverName,
-            String authenticationServiceUrl, String ticket, long hours) throws AuthenticationException {
-        // Process
-        // 1) Get the icat server
-        // 2) Login to the ICAT Server using user name and password
-        // 3) if the server login fails then throw exception and return.
-
-        // Get the icat server
-        TopcatIcatServer icatServer = findTopcatIcatServerByName(manager, serverName);
-        logger.log(Level.SEVERE, "login:" + icatServer.getServerUrl() + " ticket: " + ticket);
-        // Login to the icat server
-        try {
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
-                    icatServer.getVersion(), icatServer.getServerUrl());
-            String icatSessionId = service.loginWithTicket(authenticationServiceUrl, ticket);
-            String username = service.getUserName(icatSessionId);
-            loginUpdate(manager, service, topcatSessionId, icatServer, username, icatSessionId, hours);
-        } catch (MalformedURLException ex) {
-            logger.warning("UserManager (login): " + ex.getMessage());
-            throw new AuthenticationException("ICAT URL is not valid");
-        } catch (javax.xml.ws.WebServiceException ex) {
-            logger.warning("UserManager (login): " + ex.getMessage());
-            throw new AuthenticationException("ICAT Server not available");
-        } catch (UnsupportedOperationException ex) {
-            throw new AuthenticationException("ICAT Server is not supported for CAS ticket authentication");
-        } catch (TopcatException e) {
-            throw new AuthenticationException("Unable to get surname");
-        }
-    }
-
-    /**
      * This method login to a requested ICAT Server.
      * 
      * @param manager

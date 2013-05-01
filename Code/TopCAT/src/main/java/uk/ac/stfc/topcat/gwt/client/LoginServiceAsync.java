@@ -76,21 +76,6 @@ public interface LoginServiceAsync {
     public void isUserLoggedIn(String facilityName, AsyncCallback<Boolean> callback);
 
     /**
-     * Use the CAS ticket to log in to a iCat server.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param authenticationServiceUrl
-     *            a string containing the authentication service url
-     * @param ticket
-     *            a string containing the authentication ticket
-     * @param callback
-     *            object to be called on completion
-     */
-    public void loginWithTicket(String facilityName, String authenticationServiceUrl, String ticket,
-            AsyncCallback<String> callback);
-
-    /**
      * Get the ICAT current session id for the given facility.
      * 
      * @param facilityName

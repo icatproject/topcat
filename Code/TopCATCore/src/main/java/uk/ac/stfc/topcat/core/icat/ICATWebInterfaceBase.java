@@ -155,10 +155,6 @@ public class ICATWebInterfaceBase {
         return new ArrayList<String>();
     }
 
-    public String loginWithTicket(String authenticationServiceUrl, String ticket) throws AuthenticationException {
-        throw new UnsupportedOperationException();
-    }
-
     public String getUserName(String icatSessionId) throws TopcatException {
         throw new UnsupportedOperationException();
     }

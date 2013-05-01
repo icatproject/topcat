@@ -157,7 +157,7 @@ public class DownloadManager {
                     @Override
                     public void onFailure(Throwable caught) {
                         if (caught instanceof SessionException) {
-                            eventPipeLine.checkLoginStatus();
+                            eventPipeLine.checkStillLoggedIn();
                         } else if (caught instanceof InternalException) {
                             showErrorDialog(caught.getMessage());
                         } else {

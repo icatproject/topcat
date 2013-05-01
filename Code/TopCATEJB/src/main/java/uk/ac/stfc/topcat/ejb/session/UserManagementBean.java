@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -102,15 +102,6 @@ public class UserManagementBean implements UserManagementBeanLocal {
     public void login(String sessionId, String serverName, String authenticationType, Map<String, String> parameters)
             throws AuthenticationException {
         userManager.login(manager, sessionId, serverName, authenticationType, parameters);
-    }
-
-    /**
-     * This method login to server with CAS server
-     */
-    @Override
-    public void loginWithTicket(String sessionId, String serverName, String authenticationServiceUrl, String ticket,
-            long hours) throws AuthenticationException {
-        userManager.loginWithTicket(manager, sessionId, serverName, authenticationServiceUrl, ticket, hours);
     }
 
     /**

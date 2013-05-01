@@ -125,21 +125,6 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     }
 
     @Override
-    public String loginWithTicket(String facilityName, String authenticationServiceUrl, String ticket)
-            throws LoginException {
-        String topcatSessionId = getTopcatSessionId();
-        try {
-            // TODO Remove hard coded hours
-            long sessionDuration = 2;
-            userManager.loginWithTicket(topcatSessionId, facilityName, authenticationServiceUrl, ticket,
-                    sessionDuration);
-        } catch (AuthenticationException e) {
-            throw (new LoginException(e.getMessage()));
-        }
-        return topcatSessionId;
-    }
-
-    @Override
     public String getSessionId(String facilityName) throws TopcatException {
         return userManager.getIcatSessionId(getTopcatSessionId(), facilityName);
     }

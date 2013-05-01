@@ -51,23 +51,14 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
             throws AuthenticationException {
         String result = new String();
         try {
-            result = service.loginLifetime(parameters.get("username"), parameters.get("password"), hours);
+            if (authenticationType.equalsIgnoreCase("CAS")) {
+                result = service.loginWithCredentials(parameters.get("ticket"));
+            } else {
+                result = service.loginLifetime(parameters.get("username"), parameters.get("password"), hours);
+            }
         } catch (SessionException_Exception ex) {
             throw new AuthenticationException("ICAT Server not available");
         } catch (javax.xml.ws.WebServiceException ex) {
-            throw new AuthenticationException("ICAT Server not available");
-        }
-        return result;
-    }
-
-    @Override
-    public String loginWithTicket(String authenticationServiceUrl, String ticket) throws AuthenticationException {
-        String result = new String();
-        try {
-            result = service.loginWithCredentials(ticket);
-        } catch (javax.xml.ws.WebServiceException e) {
-            throw new AuthenticationException("ICAT Server not available");
-        } catch (SessionException_Exception e) {
             throw new AuthenticationException("ICAT Server not available");
         }
         return result;

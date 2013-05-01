@@ -22,11 +22,9 @@
  */
 package uk.ac.stfc.topcat.gwt.client;
 
-/**
- * Imports
- */
 import java.util.List;
 
+import uk.ac.stfc.topcat.gwt.client.authentication.LoginAfterRedirect;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.widget.FooterPanel;
@@ -65,69 +63,12 @@ public class TOPCATOnline implements EntryPoint {
     private EventPipeLine eventPipeLine;
 
     public void onModuleLoad() {
-        rootPanel = RootPanel.get("one");
-        VerticalPanel verticalPanel = new VerticalPanel();
-        verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        rootPanel.add(verticalPanel);
-
-        headerPanel = new HeaderPanel();
-        verticalPanel.add(headerPanel);
-        verticalPanel.setCellHorizontalAlignment(headerPanel, HasHorizontalAlignment.ALIGN_CENTER);
-        headerPanel.setAutoHeight(true);
-        headerPanel.setAutoWidth(true);
-
-        mainPanel = new MainPanel();
-        verticalPanel.add(mainPanel);
-        verticalPanel.setCellHorizontalAlignment(mainPanel, HasHorizontalAlignment.ALIGN_CENTER);
-        mainPanel.setAutoHeight(true);
-        mainPanel.setAutoWidth(true);
-        mainPanel.setWidth("1260px");
-
-        footerPanel = new FooterPanel();
-        verticalPanel.add(footerPanel);
-        verticalPanel.setCellHorizontalAlignment(footerPanel, HasHorizontalAlignment.ALIGN_CENTER);
-        footerPanel.setAutoHeight(true);
-        footerPanel.setAutoWidth(true);
-
-        // Initialize event pipeline
-        eventPipeLine = EventPipeLine.getInstance();
-        eventPipeLine.setLoginPanel(headerPanel.getLoginPanel());
-        eventPipeLine.setMainWindow(this);
-        
-        // This is to handle a call back from an authentication service
-        eventPipeLine.setAuthentication(Window.Location.getParameter("facilityName"),
-                Window.Location.getParameter("authenticationType"), Window.Location.getHash());
-        
-        // Initialise
-        eventPipeLine.getTopcatProperties();
-        eventPipeLine.loadFacilityNames();
-
-        // Set Event pipeline
-        mainPanel.getSearchPanel().setEventBus(eventPipeLine);
-        mainPanel.getMyDataPanel().setEventBus(eventPipeLine);
-        mainPanel.getMyDownloadPanel().setEventBus(eventPipeLine);
-
-        eventPipeLine.getTcEvents().addListener(Events.Resize, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent tpe) {
-                resizePanels(Window.getClientWidth());
-            }
-        });
-
-        resizePanels(Window.getClientWidth());
-        Window.addResizeHandler(new ResizeHandler() {
-            @Override
-            public void onResize(ResizeEvent event) {
-                resizePanels(event.getWidth());
-            }
-        });
-
-        // Create a DownloadManager
-        DownloadManager.getInstance();
-
-        // process url
-        eventPipeLine.getHistoryManager().processHistory(History.getToken());
-        eventPipeLine.initDownloadParameter();
+        if (Window.Location.getParameter("authenticationType") != null) {
+            // This is to handle a call back from an authentication service
+            loginAfterRedirect();
+        } else {
+            init();
+        }
     }
 
     public void resizePanels(int width) {
@@ -159,4 +100,70 @@ public class TOPCATOnline implements EntryPoint {
         return footerPanel;
     }
 
+    private void loginAfterRedirect() {
+        LoginAfterRedirect lar = new LoginAfterRedirect();
+        lar.login();
+    }
+
+    private void init() {
+        rootPanel = RootPanel.get("one");
+        VerticalPanel verticalPanel = new VerticalPanel();
+        verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        rootPanel.add(verticalPanel);
+
+        headerPanel = new HeaderPanel();
+        verticalPanel.add(headerPanel);
+        verticalPanel.setCellHorizontalAlignment(headerPanel, HasHorizontalAlignment.ALIGN_CENTER);
+        headerPanel.setAutoHeight(true);
+        headerPanel.setAutoWidth(true);
+
+        mainPanel = new MainPanel();
+        verticalPanel.add(mainPanel);
+        verticalPanel.setCellHorizontalAlignment(mainPanel, HasHorizontalAlignment.ALIGN_CENTER);
+        mainPanel.setAutoHeight(true);
+        mainPanel.setAutoWidth(true);
+        mainPanel.setWidth("1260px");
+
+        footerPanel = new FooterPanel();
+        verticalPanel.add(footerPanel);
+        verticalPanel.setCellHorizontalAlignment(footerPanel, HasHorizontalAlignment.ALIGN_CENTER);
+        footerPanel.setAutoHeight(true);
+        footerPanel.setAutoWidth(true);
+
+        // Initialize event pipeline
+        eventPipeLine = EventPipeLine.getInstance();
+        eventPipeLine.setLoginPanel(headerPanel.getLoginPanel());
+        eventPipeLine.setMainWindow(this);
+
+        // Initialise
+        eventPipeLine.getTopcatProperties();
+        eventPipeLine.loadFacilityNames();
+
+        // Set Event pipeline
+        mainPanel.getSearchPanel().setEventBus(eventPipeLine);
+        mainPanel.getMyDataPanel().setEventBus(eventPipeLine);
+        mainPanel.getMyDownloadPanel().setEventBus(eventPipeLine);
+
+        eventPipeLine.getTcEvents().addListener(Events.Resize, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent tpe) {
+                resizePanels(Window.getClientWidth());
+            }
+        });
+
+        resizePanels(Window.getClientWidth());
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                resizePanels(event.getWidth());
+            }
+        });
+
+        // Create a DownloadManager
+        DownloadManager.getInstance();
+
+        // process url
+        eventPipeLine.getHistoryManager().processHistory(History.getToken());
+        eventPipeLine.initDownloadParameter();
+    }
 }

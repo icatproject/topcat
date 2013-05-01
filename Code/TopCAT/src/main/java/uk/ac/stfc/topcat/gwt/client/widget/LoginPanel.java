@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -37,9 +37,9 @@ import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 
 /**
- * This is a widget that holds a LoginInfoPanel for each facility (ICAT instance).
- * It is created dynamically while the TopCAT is loading in the browser by
- * querying the server to get the list of facilities.
+ * This is a widget that holds a LoginInfoPanel for each facility (ICAT
+ * instance). It is created dynamically while the TopCAT is loading in the
+ * browser by querying the server to get the list of facilities.
  * <p>
  * 
  * @author Mr. Srikanth Nagella
@@ -82,7 +82,7 @@ public class LoginPanel extends Composite {
                     verticalPanel.add(infoPanel);
                 }
                 verticalPanel.layout();
-                EventPipeLine.getInstance().checkLoginStatus();
+                EventPipeLine.getInstance().checkInitialLoginStatus();
             }
         });
     }

@@ -87,8 +87,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -118,9 +116,6 @@ public class EventPipeLine implements LoginInterface {
      */
     private Set<String> loggedInFacilities = new HashSet<String>();
     private TopcatEvents tcEvents;
-    private String authFacilityName;
-    private String authType;
-    private String authHash;
 
     /** Keep a track of outstanding call backs to check login status. */
     private int facilitiesToCheck = 0;
@@ -270,15 +265,7 @@ public class EventPipeLine implements LoginInterface {
      * facilities. If the user is logged in then a login event for that facility
      * will be fired.
      */
-    public void checkLoginStatus() {
-        // check if we have just been redirected back to topcat after going to
-        // an external auth service
-        for (TFacility facility : facilities) {
-            if (facility.getName().equalsIgnoreCase(authFacilityName)) {
-                logonWithTicket(authType, facility.getAuthenticationServiceUrl());
-                return;
-            }
-        }
+    public void checkInitialLoginStatus() {
         for (TFacility facility : facilities) {
             // Keep a track of the number of outstanding callbacks
             facilitiesToCheck = facilitiesToCheck + 1;
@@ -295,53 +282,6 @@ public class EventPipeLine implements LoginInterface {
             facilitiesToCheck = facilitiesToCheck + 1;
             loginService.isUserLoggedIn(facilityName, new LoginValidCallback(facilityName, false));
         }
-    }
-
-    private void logonWithTicket(String authType, String authServiceUrl) {
-        if (!authType.equalsIgnoreCase("CAS")) {
-            return;
-        }
-        waitDialog.setMessage(" Logging In...");
-        waitDialog.show();
-        // Login to the given facility using ticketId
-        String href = Window.Location.getHref();
-        String[] urlBits = href.split(HistoryManager.seperatorToken + "ticket=", 2);
-        final String ticket = encodeUrlDelimiters(urlBits[0]) + "?ticket=" + urlBits[1];
-        loginService.loginWithTicket(authFacilityName, authServiceUrl, ticket, new AsyncCallback<String>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                waitDialog.hide();
-                UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-                urlBuilder.removeParameter("facilityName");
-                urlBuilder.removeParameter("authenticationType");
-                urlBuilder.removeParameter("ticket");
-                if (authHash.equals("#") || authHash.isEmpty()) {
-                    authHash = "#view";
-                }
-                // remove cas ticket which, if in the hash, will be at the
-                // end
-                String[] hashSplit = authHash.split(HistoryManager.seperatorToken + "ticket");
-                String hash = hashSplit[0] + HistoryManager.seperatorModel + HistoryManager.seperatorToken
-                        + HistoryManager.logonError + HistoryManager.seperatorKeyValues + authFacilityName;
-                urlBuilder.setHash(hash);
-                Window.Location.assign(urlBuilder.buildString());
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                waitDialog.hide();
-                UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-                urlBuilder.removeParameter("facilityName");
-                urlBuilder.removeParameter("authenticationType");
-                urlBuilder.removeParameter("ticket");
-                // remove cas ticket which, if in the hash, will be at the
-                // end
-                String[] hashSplit = authHash.split(HistoryManager.seperatorToken + "ticket");
-                urlBuilder.setHash(hashSplit[0]);
-                Window.Location.assign(urlBuilder.buildString());
-            }
-        });
-
     }
 
     public String encodeUrlDelimiters(String s) {
@@ -899,19 +839,6 @@ public class EventPipeLine implements LoginInterface {
      */
     public TopcatEvents getTcEvents() {
         return tcEvents;
-    }
-
-    /**
-     * Set the authentication details returned by the authentication service
-     * 
-     * @param facilityName
-     * @param type
-     * @param hash
-     */
-    public void setAuthentication(String facilityName, String type, String hash) {
-        authFacilityName = facilityName;
-        authType = type;
-        authHash = hash;
     }
 
     /**
