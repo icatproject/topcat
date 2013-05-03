@@ -24,6 +24,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 
 import java.util.List;
 
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
@@ -33,6 +34,7 @@ import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -64,7 +66,7 @@ public class LoginWidget extends Window {
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private LoginInterface loginHandler = null;
     private LayoutContainer authTypeContainer = new LayoutContainer();
-    private String facilityName;
+    private TFacility facility;
     private ComboBox<AuthenticationModel> authTypesBox;
     private LayoutContainer authenticationWidget;
     private AuthenticationPlugin plugin;
@@ -126,16 +128,16 @@ public class LoginWidget extends Window {
      * Show the login widget with the corresponding auth methods for the given
      * facility.
      * 
-     * @param facilityName
+     * @param facility
      */
-    public void show(String facilityName) {
-        this.facilityName = facilityName;
-        setHeading("Login to " + facilityName);
-        getAuthenticationTypes(facilityName);
+    public void show(TFacility facility) {
+        this.facility = facility;
+        setHeading("Login to " + facility.getName());
+        getAuthenticationTypes(facility.getName());
     }
 
     public String getFacilityName() {
-        return facilityName;
+        return facility.getName();
     }
 
     /**
@@ -190,6 +192,7 @@ public class LoginWidget extends Window {
                 if (result.size() > 1) {
                     // there is more than one type so the user will have to
                     // select one
+                    authTypesBox.getStore().sort("authenticationType", SortDir.ASC);
                     showAuthSelectionBox();
                 } else if (result.size() == 1) {
                     // there is only one so we will use it
@@ -236,9 +239,10 @@ public class LoginWidget extends Window {
         // get the required auth plugin
         plugin = AuthenticationPluginFactory.getInstance().getPlugin(model.getPluginName());
         plugin.setAuthenticationModel(model);
+        plugin.setFacility(facility);
+        plugin.setLoginHandler(loginHandler);
         if (plugin.showable()) {
             super.show();
-            plugin.setLoginHandler(loginHandler);
             authenticationWidget.add(plugin.getWidget());
             authenticationWidget.layout(true);
             setFocusWidget(plugin.getWidget());

@@ -219,14 +219,14 @@ public class KeywordsSuggestOracle extends SuggestOracle {
 		requestInProgress = true;
                 suggestionList.clear();
 
-                ArrayList<TFacility> serverNames = EventPipeLine.getInstance().getFacilityNames();
+                ArrayList<TFacility> serverNames = EventPipeLine.getInstance().getFacilities();
                 //Make multiple requests to each server to get the keywords
                 for(TFacility serverName:serverNames){
                     searchServce.getKeywordsFromServer(this.sessionId, serverName.getName(), request
 				.getQuery(), 500, new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable caught) {
                                 requestCount++;
-                                if(requestCount==EventPipeLine.getInstance().getFacilityNames().size()){
+                                if(requestCount==EventPipeLine.getInstance().getFacilities().size()){
                                     requestInProgress = false;
                                     requestCount=0;
                                 }
@@ -235,7 +235,7 @@ public class KeywordsSuggestOracle extends SuggestOracle {
 			@Override
 			public void onSuccess(List<String> result) {
                                 requestCount++;
-                                if(requestCount==EventPipeLine.getInstance().getFacilityNames().size()){
+                                if(requestCount==EventPipeLine.getInstance().getFacilities().size()){
                                     requestInProgress = false;
                                     requestCount=0;
                                 }

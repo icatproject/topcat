@@ -25,33 +25,58 @@ package uk.ac.stfc.topcat.gwt.client.authentication;
 /**
  * Imports
  */
-import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
 import com.extjs.gxt.ui.client.widget.Composite;
-import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
 
 /**
- * This is an authentication widget that uses CAS.
+ * Anonymous plugin for authentication.
  */
-public class CASAuthenticationWidget extends Composite {
-    private AuthenticationModel authenticationModel;
+public class AnonymousAuthenticationPlugin extends AuthenticationPlugin {
 
-    public CASAuthenticationWidget() {
+    private static AnonymousAuthenticationPlugin anonAuthentication = GWT.create(AnonymousAuthenticationPlugin.class);
+    AnonymousAuthenticationWidget widget;
+
+    private AnonymousAuthenticationPlugin() {
+        super();
+        widget = new AnonymousAuthenticationWidget();
     }
 
+    @Override
+    public Composite getWidget() {
+        return widget;
+    }
+
+    public static AnonymousAuthenticationPlugin getInstance() {
+        return anonAuthentication;
+    }
+
+    @Override
     public void setAuthenticationModel(AuthenticationModel authenticationModel) {
-        this.authenticationModel = authenticationModel;
+        widget.setAuthenticationModel(authenticationModel);
     }
 
-    public void authenticate() {
-        if (authenticationModel != null) {
-            UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-            urlBuilder.setParameter("facilityName", authenticationModel.getFacilityName());
-            urlBuilder.setParameter("authenticationType", authenticationModel.getType());
-            String url = EventPipeLine.getInstance().encodeUrlDelimiters(urlBuilder.buildString());
-            Window.Location.assign(authenticationModel.getUrl() + url);
-        }
+    @Override
+    public void setFacility(TFacility facility) {
+        widget.setFacility(facility);
     }
+
+    @Override
+    public void setLoginHandler(LoginInterface loginHandler) {
+        widget.setLoginHandler(loginHandler);
+    }
+
+    @Override
+    public boolean showable() {
+        return false;
+    }
+
+    @Override
+    public void authenticate() {
+        widget.authenticate();
+    }
+
 }

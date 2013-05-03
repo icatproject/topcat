@@ -52,7 +52,7 @@ public class AddFacilityEvent extends GwtEvent<AddFacilityEventHandler> {
         this.tFacilities = tFacilities;
         facilities = new ArrayList<Facility>();
         for (TFacility facility : tFacilities) {
-            facilities.add(new Facility(facility.getName(), facility.getPluginName()));
+            facilities.add(new Facility(facility.getName(), facility.getSearchPluginName()));
         }
     }
 

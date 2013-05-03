@@ -84,7 +84,8 @@ public class UtilityManager {
         for (TopcatIcatServer icatServer : servers) {
             facilities.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(), icatServer.getVersion(),
                     icatServer.getPluginName(), icatServer.getDownloadPluginName(), icatServer.getDownloadServiceUrl(),
-                    icatServer.getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType()));
+                    icatServer.getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType(), icatServer
+                            .getDefaultUser(), icatServer.getDefaultPassword()));
         }
         return facilities;
     }

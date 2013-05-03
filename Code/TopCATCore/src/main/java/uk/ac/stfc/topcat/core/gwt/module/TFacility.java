@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -36,25 +36,30 @@ public class TFacility implements Serializable {
     private String downloadPluginName;
     private String downloadServiceUrl;
     private String name;
-    private String pluginName;
+    private String searchPluginName;
     private String url;
     private String version;
     private String authenticationServiceUrl;
     private String authenticationServiceType;
+    private String defaultUser;
+    private String defaultPassword;
 
     public TFacility() {
     }
 
-    public TFacility(String name, String url, String version, String pluginName, String downloadPluginName,
-            String downloadServiceUrl, String authenticationServiceUrl, String authenticationServiceType) {
+    public TFacility(String name, String url, String version, String searchPluginName, String downloadPluginName,
+            String downloadServiceUrl, String authenticationServiceUrl, String authenticationServiceType,
+            String defaultUser, String defaultPassword) {
         this.downloadPluginName = downloadPluginName;
         this.downloadServiceUrl = downloadServiceUrl;
         this.name = name;
-        this.pluginName = pluginName;
+        this.searchPluginName = searchPluginName;
         this.url = url;
         this.version = version;
         this.authenticationServiceUrl = authenticationServiceUrl;
         this.authenticationServiceType = authenticationServiceType;
+        this.defaultUser = defaultUser;
+        this.defaultPassword = defaultPassword;
     }
 
     public String getDownloadPluginName() {
@@ -81,12 +86,12 @@ public class TFacility implements Serializable {
         this.name = name;
     }
 
-    public String getPluginName() {
-        return pluginName;
+    public String getSearchPluginName() {
+        return searchPluginName;
     }
 
-    public void setPluginName(String pluginName) {
-        this.pluginName = pluginName;
+    public void setSearchPluginName(String searchPluginName) {
+        this.searchPluginName = searchPluginName;
     }
 
     public String getUrl() {
@@ -119,5 +124,21 @@ public class TFacility implements Serializable {
 
     public void setAuthenticationServiceType(String authenticationServiceType) {
         this.authenticationServiceType = authenticationServiceType;
+    }
+
+    public String getDefaultUser() {
+        return defaultUser;
+    }
+
+    public void setDefaultUser(String defaultUser) {
+        this.defaultUser = defaultUser;
+    }
+
+    public String getDefaultPassword() {
+        return defaultPassword;
+    }
+
+    public void setDefaultPassword(String defaultPassword) {
+        this.defaultPassword = defaultPassword;
     }
 }

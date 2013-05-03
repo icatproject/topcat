@@ -25,6 +25,7 @@ package uk.ac.stfc.topcat.gwt.client.authentication;
 /**
  * Imports
  */
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
@@ -57,6 +58,10 @@ public class DefaultAuthenticationPlugin extends AuthenticationPlugin {
     @Override
     public void setAuthenticationModel(AuthenticationModel authenticationModel) {
         widget.setAuthenticationModel(authenticationModel);
+    }
+
+    @Override
+    public void setFacility(TFacility facility) {
     }
 
     @Override

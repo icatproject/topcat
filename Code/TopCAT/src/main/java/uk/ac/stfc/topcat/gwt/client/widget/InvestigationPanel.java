@@ -95,11 +95,11 @@ public class InvestigationPanel extends Composite {
 
         // Associated Software Tab
         // TODO
-        addAssociatedSoftwareTab();
+        // addAssociatedSoftwareTab();
 
         // Upload Dataset Tab
         // TODO
-        addUploadDatasetTab();
+        // addUploadDatasetTab();
 
         mainPanel.add(tabPanel);
         initComponent(mainContainer);
@@ -127,7 +127,7 @@ public class InvestigationPanel extends Composite {
     protected void reset() {
         invDetailPanel.reset();
         // TODO
-        uploadDatasetPanel.reset();
+        // uploadDatasetPanel.reset();
     }
 
     /**
@@ -140,7 +140,7 @@ public class InvestigationPanel extends Composite {
         mainPanel.setHeading("Investigation: " + inv.getTitle());
         invDetailPanel.setInvestigation(inv);
         // TODO
-        uploadDatasetPanel.setInvestigation(inv);
+        // uploadDatasetPanel.setInvestigation(inv);
     }
 
     private ToolBar getToolBar() {

@@ -25,12 +25,16 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 /**
  * Imports
  */
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableRowLayout;
 import com.google.gwt.user.client.ui.Image;
@@ -48,7 +52,7 @@ public class HeaderPanel extends Composite {
 
     private LoginPanel loginPanel;
     private Image image;
-    private VerticalPanel messagePanel;
+    private LayoutContainer messageContainer;
     private Text message;
 
     public HeaderPanel() {
@@ -62,14 +66,15 @@ public class HeaderPanel extends Composite {
         TableData td_image = new TableData();
         td_image.setPadding(2);
         layoutContainer.add(image, td_image);
-
-        messagePanel = new VerticalPanel();
-        messagePanel.add(new LabelField("Announcement"));
+    
+        messageContainer = new LayoutContainer();
+        messageContainer.setLayout(new RowLayout(Orientation.VERTICAL));
+        messageContainer.setWidth("500px");
+        messageContainer.add(new LabelField("Announcement"), new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(10, 30, 5, 30)));
         message = new Text();
-        message.setWidth("450px");
-        messagePanel.add(message);
-        layoutContainer.add(messagePanel);
-        messagePanel.hide();
+        messageContainer.add(message, new RowData(Style.DEFAULT, Style.DEFAULT, new Margins(5, 30, 5, 30)));
+        layoutContainer.add(messageContainer);
+        messageContainer.hide();
 
         loginPanel = new LoginPanel();
         loginPanel.getVerticalPanel().setSize("100%", "100%");
@@ -97,7 +102,7 @@ public class HeaderPanel extends Composite {
     public void setMessage(String message) {
         if (!message.isEmpty()) {
             this.message.setText(message);
-            messagePanel.show();
+            messageContainer.show();
         }
     }
 }

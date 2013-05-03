@@ -48,8 +48,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
- * This is a widget, a default authentication widget that gets the user name and
- * password.
+ * This is an authentication widget that gets the user name and password.
  */
 public class DefaultAuthenticationWidget extends Composite {
     private LoginInterface loginHandler = null;

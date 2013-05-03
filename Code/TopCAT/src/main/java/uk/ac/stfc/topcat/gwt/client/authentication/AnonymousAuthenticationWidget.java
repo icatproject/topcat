@@ -25,33 +25,46 @@ package uk.ac.stfc.topcat.gwt.client.authentication;
 /**
  * Imports
  */
-import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import java.util.HashMap;
+import java.util.Map;
+
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
 import com.extjs.gxt.ui.client.widget.Composite;
-import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.Window;
 
 /**
- * This is an authentication widget that uses CAS.
+ * This is an authentication widget that uses the anonymous user name and
+ * password.
  */
-public class CASAuthenticationWidget extends Composite {
+public class AnonymousAuthenticationWidget extends Composite {
     private AuthenticationModel authenticationModel;
+    private TFacility facility = null;
+    private LoginInterface loginHandler = null;
 
-    public CASAuthenticationWidget() {
+    public AnonymousAuthenticationWidget() {
     }
 
     public void setAuthenticationModel(AuthenticationModel authenticationModel) {
         this.authenticationModel = authenticationModel;
     }
 
+    public void setFacility(TFacility facility) {
+        this.facility = facility;
+    }
+
+    public void setLoginHandler(LoginInterface loginHandler) {
+        this.loginHandler = loginHandler;
+    }
+
     public void authenticate() {
-        if (authenticationModel != null) {
-            UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-            urlBuilder.setParameter("facilityName", authenticationModel.getFacilityName());
-            urlBuilder.setParameter("authenticationType", authenticationModel.getType());
-            String url = EventPipeLine.getInstance().encodeUrlDelimiters(urlBuilder.buildString());
-            Window.Location.assign(authenticationModel.getUrl() + url);
+        if (facility != null && loginHandler != null) {
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("username", facility.getDefaultUser());
+            parameters.put("password", facility.getDefaultPassword());
+            // TODO remove hard coded db
+            loginHandler.onLoginOk(authenticationModel.getFacilityName(), "db", parameters);
         }
     }
 }

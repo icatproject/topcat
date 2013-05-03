@@ -97,7 +97,7 @@ public class DownloadManager {
      *            file
      */
     public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName) {
-        ArrayList<TFacility> facilities = eventPipeLine.getFacilityNames();
+        ArrayList<TFacility> facilities = eventPipeLine.getFacilities();
         for (TFacility facility : facilities) {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
@@ -124,7 +124,7 @@ public class DownloadManager {
      */
     public void downloadDataset(final String facilityName, final List<Long> datasetList, final String downloadName) {
 
-        ArrayList<TFacility> facilities = eventPipeLine.getFacilityNames();
+        ArrayList<TFacility> facilities = eventPipeLine.getFacilities();
         for (TFacility facility : facilities) {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null

@@ -39,6 +39,8 @@ public class AuthenticationPluginFactory {
     private static DefaultAuthenticationPlugin defaultPlugin = DefaultAuthenticationPlugin.getInstance();
     @SuppressWarnings("unused")
     private static CASAuthenticationPlugin casPlugin = CASAuthenticationPlugin.getInstance();
+    @SuppressWarnings("unused")
+    private static AnonymousAuthenticationPlugin anonPlugin = AnonymousAuthenticationPlugin.getInstance();
 
     private HashMap<String, AuthenticationPlugin> authenticationPluginMap;
 

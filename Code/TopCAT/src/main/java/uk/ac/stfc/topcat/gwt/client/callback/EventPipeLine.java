@@ -337,8 +337,8 @@ public class EventPipeLine implements LoginInterface {
         for (Iterator<String> it = facilitiesToLogOn.iterator(); it.hasNext();) {
             String facility = it.next();
             if (!loginPanel.getFacilityLoginInfoPanel(facility).isValidLogin()) {
-                showLoginWidget(facility);
                 it.remove();
+                showLoginWidget(facility);
                 return;
             }
         }
@@ -363,7 +363,7 @@ public class EventPipeLine implements LoginInterface {
      */
     public void showLoginWidget(String facilityName) {
         if (!loginWidget.isVisible()) {
-            loginWidget.show(facilityName);
+            loginWidget.show(getFacility(facilityName));
         }
     }
 
@@ -824,11 +824,25 @@ public class EventPipeLine implements LoginInterface {
     }
 
     /**
-     * Get the facility names.
+     * Get the facility for the given facility name.
      * 
-     * @return a list of facility names
+     * @return a facility
      */
-    public ArrayList<TFacility> getFacilityNames() {
+    private TFacility getFacility(String facilityName) {
+        for (TFacility facility : facilities) {
+            if (facility.getName().equalsIgnoreCase(facilityName)) {
+                return facility;
+            }
+        }
+        return new TFacility();
+    }
+
+    /**
+     * Get the facilities.
+     * 
+     * @return a list of facilities
+     */
+    public ArrayList<TFacility> getFacilities() {
         return facilities;
     }
 

@@ -145,7 +145,7 @@ public class TOPCAT {
                 output.append("Facility: ").append(f.getName()).append("\n");
                 output.append("Version: ").append(f.getVersion()).append("\n");
                 output.append("URL: ").append(f.getUrl()).append("\n");
-                output.append("Search plugin: ").append(f.getPluginName()).append("\n");
+                output.append("Search plugin: ").append(f.getSearchPluginName()).append("\n");
                 output.append("Download plugin: ").append(f.getDownloadPluginName()).append("\n");
                 output.append("Download service: ").append(f.getDownloadServiceUrl()).append("\n");
                 List<TAuthentication> auths = utility.getAuthenticationDetails(f.getName());

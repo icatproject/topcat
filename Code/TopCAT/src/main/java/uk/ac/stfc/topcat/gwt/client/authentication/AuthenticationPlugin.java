@@ -22,6 +22,7 @@
  */
 package uk.ac.stfc.topcat.gwt.client.authentication;
 
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
@@ -42,6 +43,8 @@ public abstract class AuthenticationPlugin {
 
     public abstract void setAuthenticationModel(AuthenticationModel authenticationModel);
 
+    public abstract void setFacility(TFacility facility);
+    
     public abstract void setLoginHandler(LoginInterface loginHandler);
 
     public abstract boolean showable();
