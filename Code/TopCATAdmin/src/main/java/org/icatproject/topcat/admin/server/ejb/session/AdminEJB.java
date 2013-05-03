@@ -1,19 +1,32 @@
 package org.icatproject.topcat.admin.server.ejb.session;
 
+
+import java.util.ArrayList;
+
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.icatproject.topcat.admin.shared.ServerException;
+import org.icatproject.topcat.admin.shared.SessionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
+import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
+import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
+
 @Stateless
 public class AdminEJB {
-
+	
+	
 	final static Logger logger = LoggerFactory.getLogger(AdminEJB.class);
 
-	@PersistenceContext(unitName = "topcat_admin")
+	@PersistenceContext(unitName = "TopCATEJBPU")
 	private EntityManager entityManager;
 
 	@PostConstruct
@@ -26,5 +39,44 @@ public class AdminEJB {
 			throw new RuntimeException(msg);
 		}
 	}
+	
+	public void printTopcatIcatServerDetails() {
+		@SuppressWarnings("unchecked")
+		List<TopcatIcatServer> servers = entityManager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
+		for (TopcatIcatServer icatServer : servers) {
+			logger.debug(	icatServer.getId() + " " +
+							icatServer.getName() + " " +
+							icatServer.getServerUrl() + " " +
+							icatServer.getVersion());
+		}  
+	}
+	
+	public ArrayList<TFacility> getAllFacilities() {
+		UtilityManager utilityManager = new UtilityManager();
+		ArrayList<TFacility> allFacilities = utilityManager.getAllFacilities(entityManager);
+		for ( TFacility facility : allFacilities ) {
+			logger.debug( facility.getAuthenticationServiceType() + " " +
+					facility.getAuthenticationServiceUrl() + " " +
+					facility.getDownloadPluginName() + " " +
+					facility.getName()	+ " " +
+					facility.getPluginName()
+					);
+		}
+		return allFacilities;
+	}
+	
 
+	public void addIcatServer(TFacility facility) throws TopcatException {
+		logger.debug("addIcatServer - facility name:" + facility.getName());
+		TopcatIcatServer tiServer = new TopcatIcatServer();
+		tiServer.setName(facility.getName());
+		tiServer.setVersion(facility.getVersion());
+		tiServer.setServerUrl(facility.getUrl());
+		tiServer.setPluginName(facility.getPluginName());
+		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
+		tiServer.setDownloadServiceUrl(facility.getAuthenticationServiceUrl());
+		entityManager.persist(tiServer);
+
+    }
+	
 }

@@ -11,4 +11,36 @@
   <welcome-file-list>
     <welcome-file>topcat_admin.html</welcome-file>
   </welcome-file-list>
+  
+  
+  
+  
+  
+  
+      <security-constraint>
+        <display-name>DOIWebserviceSecurity</display-name>
+        <web-resource-collection>
+            <web-resource-name>DOIWebservice</web-resource-name>
+            <description>DOI Webservices can only be accessed from admin</description>
+            <url-pattern>/topcat_admin</url-pattern>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>topcatAdmin</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>file</realm-name>
+    </login-config>
+    <security-role>
+        <description/>
+        <role-name>topcatAdmin</role-name>
+    </security-role>
+  
+  
 </web-app>

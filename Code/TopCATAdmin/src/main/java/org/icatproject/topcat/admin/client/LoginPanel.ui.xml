@@ -1,6 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 	<g:HTMLPanel>
+
 		<table>
 			<tr>
 				<td>
@@ -27,6 +28,11 @@
 			<tr>
 				<td colspan="2" align="center">
 					<g:Button ui:field="login" text="login" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					<g:Button ui:field="test" text="test" />
 				</td>
 			</tr>
 		</table>

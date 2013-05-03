@@ -58,7 +58,11 @@
             <artifactId>javaee-api</artifactId>
             <version>6.0</version>
         </dependency>
-
+		<dependency>
+			<groupId>uk.ac.stfc</groupId>
+			<artifactId>TopCATEJB</artifactId>
+			<version>1.9-SNAPSHOT</version>
+		</dependency>
     </dependencies>
 
     <build>

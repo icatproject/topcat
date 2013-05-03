@@ -4,5 +4,5 @@
 
 	<g:TabLayoutPanel ui:field='tabLayoutPanel' barHeight='1.5' barUnit='EM'>
 	</g:TabLayoutPanel>			
-
+	
 </ui:UiBinder>

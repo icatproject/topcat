@@ -7,7 +7,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -21,6 +20,8 @@ public class AdminEntryPoint implements EntryPoint {
 	TabLayoutPanel tabLayoutPanel;
 
 	LoginPanel loginPanel = new LoginPanel();
+	AdminUI adminUI = new AdminUI();
+	
 	
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
@@ -29,6 +30,7 @@ public class AdminEntryPoint implements EntryPoint {
 		RootLayoutPanel.get().add(uiBinder.createAndBindUi(this));
 
 		tabLayoutPanel.add(loginPanel, "Login");
+		tabLayoutPanel.add(adminUI, "UI");
 
 	}
 
