@@ -85,7 +85,7 @@ public class LoginPanel extends Composite {
 	    						facility.getAuthenticationServiceUrl() + " " +
 	    						facility.getDownloadPluginName() + " " +
 	    						facility.getName()	+ " " +
-	    						facility.getPluginName() ;
+	    						facility.getSearchPluginName() ;
 	    		}
 	    		message += " \n";
 	    		Window.alert(message);

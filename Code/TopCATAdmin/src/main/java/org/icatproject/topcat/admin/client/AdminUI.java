@@ -59,19 +59,20 @@ public class AdminUI extends Composite {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		TableCall();
+		
 
 	}
 
 	private void DisplayTable(List<TFacility> result) {
 		int c, r = 1;
-
+		
 		// header section, columns width are equal to the second flextable
-		table.getCellFormatter().setWidth(0, 0, "120px");
-		table.getCellFormatter().setWidth(0, 1, "120px");
-		table.getCellFormatter().setWidth(0, 2, "400px");
-		table.getCellFormatter().setWidth(0, 3, "220px");
-		table.getCellFormatter().setWidth(0, 4, "150px");
-		table.getCellFormatter().setWidth(0, 5, "190px");
+		table.getColumnFormatter().setWidth(0, "150px");
+		table.getColumnFormatter().setWidth(1, "120px");
+		table.getColumnFormatter().setWidth(2, "400px");
+		table.getColumnFormatter().setWidth(3, "220px");
+		table.getColumnFormatter().setWidth(4, "150px");
+		table.getColumnFormatter().setWidth(5, "190px");
 
 		table.setText(0, 0, Constants.NAME);
 		table.setText(0, 1, Constants.VERSION);
@@ -83,24 +84,13 @@ public class AdminUI extends Composite {
 		// with the use of a second flextable the for loop display the content
 		// of the TOPCAT_ICAT_SERVER
 		for (TFacility facility : result) {
-			c = 0;
+			c = 0;	
 
-			table.getCellFormatter().setWidth(r, c, "120px");
-			table.setText(r, c++, facility.getName());
-
-			table.getCellFormatter().setWidth(r, c, "120px");
+			table.setText(r, c++ , facility.getName());
 			table.setText(r, c++, facility.getVersion());
-
-			table.getCellFormatter().setWidth(r, c, "400px");
 			table.setText(r, c++, facility.getUrl());
-
-			table.getCellFormatter().setWidth(r, c, "220px");
-			table.setText(r, c++, facility.getPluginName());
-
-			table.getCellFormatter().setWidth(r, c, "150px");
+			table.setText(r, c++, facility.getSearchPluginName());
 			table.setText(r, c++, facility.getDownloadPluginName());
-
-			table.getCellFormatter().setWidth(r, c, "190px");
 			table.setText(r++, c++, facility.getDownloadServiceUrl());
 		}
 
@@ -158,14 +148,15 @@ public class AdminUI extends Composite {
 		txtPluginName.insertItem("", "", 0);
 		txtPluginName.insertItem("uk.ac.stfc.topcat.gwt.client.facility.ISISPlugin", 1);
 		txtPluginName.insertItem("uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin",	2);
+		
 
-		if (menu.equals(MENU_ADD) || table.getText(row, 3).equals("<null>")) {
+		if (menu.equals(MENU_ADD) || table.getText(row, 3).equals(null)) {
 			txtPluginName.setItemSelected(0, true);
 		} 
 		else if (table.getText(row, 3).equals(txtPluginName.getItemText(1))) {
 			txtPluginName.setItemSelected(1, true);
 		} 
-		else if (table.getText(row, 3).equals(txtPluginName.getItemText(1))) {
+		else if (table.getText(row, 3).equals(txtPluginName.getItemText(2))) {
 			txtPluginName.setItemSelected(2, true);
 		}
 
@@ -173,7 +164,7 @@ public class AdminUI extends Composite {
 		txtDownloadPluginName.insertItem("", "", 0);
 		txtDownloadPluginName.insertItem("IDS", 1);
 
-		if (menu.equals(MENU_ADD) || table.getText(row, 4).equals("<null>")) {
+		if (menu.equals(MENU_ADD) || table.getText(row, 4).equals(null)) {
 			txtDownloadPluginName.setItemSelected(0, true);
 		} 
 		else if (table.getText(row, 4).equals(txtDownloadPluginName.getItemText(1))) {
@@ -205,16 +196,28 @@ public class AdminUI extends Composite {
 		dataService.getAllFacilities(callback);
 	}
 
-	public void addRowToTable(TFacility facility) {
+	public void addRowToTable() {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 
 			public void onSuccess(String result) {
-				Window.alert("Should add row");
+				//Window.alert(result);
+				TableCall();
+				dialogWindow.hide();
 			}
 		};
+		
+				
+		TFacility facility = new TFacility();
+		facility.setName(txtName.getText());
+		facility.setVersion(txtVersion.getItemText(txtVersion.getSelectedIndex()));
+		facility.setUrl(txtServerUrl.getText());
+		facility.setSearchPluginName(txtPluginName.getItemText(txtPluginName.getSelectedIndex()));
+		facility.setDownloadPluginName((txtDownloadPluginName.getItemText(txtDownloadPluginName.getSelectedIndex())));
+		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
+		
 		//make the call to the server
 		System.out.println("LoginPanel: making call to DataService");
 		dataService.addIcatServer(facility, callback);
@@ -226,12 +229,14 @@ public class AdminUI extends Composite {
 		Cell cell = table.getCellForEvent(e);
 		int row = cell.getRowIndex();
 		int column = cell.getCellIndex();
+		
+		//Window.alert("row: "+ row + " column: " + column);
 
 		if (column == 7) {
 			handleAddNEditButton(row, column, MENU_EDIT);
 		}
 
-		else if (column == 8)
+		else if (column == 8)					
 			handleDeleteButton(row, column);
 	}
 
@@ -243,14 +248,7 @@ public class AdminUI extends Composite {
 
 	@UiHandler("btnCancel")
 	void HandleCloseButtonClick(ClickEvent e) {
-		txtDownloadPluginName.clear();
-		txtPluginName.clear();
-		txtVersion.clear();
-		txtDownloadServiceUrl.setText(null);
-		txtName.setText(null);
-		txtServerUrl.setText(null);
-		dialogWindow.setVisible(false);
-		dialogWindow.setModal(false);
+		ClearDialogBoxFields();
 	}
 
 	@UiHandler("btnNo")
@@ -261,7 +259,21 @@ public class AdminUI extends Composite {
 	}
 
 	@UiHandler("btnSave")
-	void HandleSaveButton(ClickEvent e) {
-		//addRowToTable(null);
+	void HandleSaveButton(ClickEvent e) {	
+		addRowToTable();
+		ClearDialogBoxFields();
+	}
+	
+	private void ClearDialogBoxFields(){
+		
+		txtDownloadPluginName.clear();
+		txtPluginName.clear();
+		txtVersion.clear();
+		txtDownloadServiceUrl.setText(null);
+		txtName.setText(null);
+		txtServerUrl.setText(null);
+		dialogWindow.setVisible(false);
+		dialogWindow.setModal(false);
+		
 	}
 }

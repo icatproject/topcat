@@ -55,28 +55,27 @@ public class AdminEJB {
 		UtilityManager utilityManager = new UtilityManager();
 		ArrayList<TFacility> allFacilities = utilityManager.getAllFacilities(entityManager);
 		for ( TFacility facility : allFacilities ) {
-			logger.debug( facility.getAuthenticationServiceType() + " " +
-					facility.getAuthenticationServiceUrl() + " " +
-					facility.getDownloadPluginName() + " " +
-					facility.getName()	+ " " +
-					facility.getPluginName()
-					);
+			logger.debug( "getAllFacility :" + 
+					" Name: " +	facility.getName()	+ 
+					" PluginName:  " + facility.getUrl() + 
+					" Version: " +	facility.getVersion());
+					
 		}
 		return allFacilities;
 	}
 	
 
 	public void addIcatServer(TFacility facility) throws TopcatException {
-		logger.debug("addIcatServer - facility name:" + facility.getName());
+		logger.debug("executing adicatserver in adminejb class");
+
 		TopcatIcatServer tiServer = new TopcatIcatServer();
 		tiServer.setName(facility.getName());
 		tiServer.setVersion(facility.getVersion());
 		tiServer.setServerUrl(facility.getUrl());
-		tiServer.setPluginName(facility.getPluginName());
+		tiServer.setPluginName(facility.getSearchPluginName());
 		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
-		tiServer.setDownloadServiceUrl(facility.getAuthenticationServiceUrl());
+		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
 		entityManager.persist(tiServer);
-
     }
 	
 }
