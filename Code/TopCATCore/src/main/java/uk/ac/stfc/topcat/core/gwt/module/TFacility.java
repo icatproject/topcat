@@ -149,7 +149,8 @@ public class TFacility implements Serializable {
         message.append("downloadServiceUrl:").append(downloadServiceUrl).append("\n");
         message.append("authenticationServiceType:").append(authenticationServiceType).append("\n");
         message.append("authenticationServiceUrl:").append(authenticationServiceUrl).append("\n");
-        message.append("defaultUser:").append(defaultUser).append("\n");
+        message.append("defaultUser:").append(defaultUser);
         return message.toString();
     }
+
 }
