@@ -32,7 +32,7 @@
 
 
 					<g:HorizontalPanel ui:field="hPanel0">
-		 				<g:Button ui:field="btnSave" styleName="{style.button-spacing}">save</g:Button>
+		 				<g:Button ui:field="btnSave" styleName="{style.button-spacing}"></g:Button>
 						<g:Button ui:field="btnCancel" styleName="{style.button-spacing}">cancel</g:Button>
 					</g:HorizontalPanel>
 					

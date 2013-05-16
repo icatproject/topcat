@@ -81,11 +81,21 @@ public class UtilityManager {
     public ArrayList<TFacility> getAllFacilities(EntityManager manager) {
         ArrayList<TFacility> facilities = new ArrayList<TFacility>();
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
+        
         for (TopcatIcatServer icatServer : servers) {
-            facilities.add(new TFacility(icatServer.getName(), icatServer.getServerUrl(), icatServer.getVersion(),
-                    icatServer.getPluginName(), icatServer.getDownloadPluginName(), icatServer.getDownloadServiceUrl(),
-                    icatServer.getAuthenticationServiceUrl(), icatServer.getAuthenticationServiceType(), icatServer
-                            .getDefaultUser(), icatServer.getDefaultPassword()));
+        	TFacility tFacility = new TFacility();
+        	tFacility.setName(icatServer.getName());
+        	tFacility.setUrl(icatServer.getServerUrl());
+        	tFacility.setVersion(icatServer.getVersion());
+        	tFacility.setSearchPluginName(icatServer.getPluginName());
+        	tFacility.setDownloadPluginName(icatServer.getDownloadPluginName());
+        	tFacility.setDownloadServiceUrl(icatServer.getDownloadServiceUrl());
+        	tFacility.setId(icatServer.getId());
+        	tFacility.setAuthenticationServiceType(icatServer.getAuthenticationServiceType());
+        	tFacility.setAuthenticationServiceUrl(icatServer.getAuthenticationServiceUrl());
+        	tFacility.setDefaultUser(icatServer.getDefaultUser());
+        	tFacility.setDefaultPassword(icatServer.getDefaultPassword());
+        	facilities.add(tFacility);
         }
         return facilities;
     }

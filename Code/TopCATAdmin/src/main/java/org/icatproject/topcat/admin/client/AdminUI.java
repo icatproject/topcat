@@ -1,5 +1,6 @@
 package org.icatproject.topcat.admin.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.icatproject.topcat.admin.shared.Constants;
@@ -37,7 +38,10 @@ public class AdminUI extends Composite {
 
 	private static final String MENU_ADD = "ADD";
 	private static final String MENU_EDIT = "EDIT";
-
+	private static int row;
+	private static int column;
+	
+	ArrayList<Long> idArray  = new ArrayList<Long>();
 	Constants headerNames = new Constants();
 	
 	@UiField
@@ -54,17 +58,19 @@ public class AdminUI extends Composite {
 	ListBox txtPluginName, txtDownloadPluginName, txtVersion;
 	@UiField
 	HorizontalPanel hPanel0;
-
+	
+	
+	
+	
 	public AdminUI() {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		TableCall();
-		
-
 	}
 
 	private void DisplayTable(List<TFacility> result) {
 		int c, r = 1;
+		
 		
 		// header section, columns width are equal to the second flextable
 		table.getColumnFormatter().setWidth(0, "150px");
@@ -93,7 +99,14 @@ public class AdminUI extends Composite {
 			table.setText(r, c++, facility.getDownloadPluginName());
 			table.setText(r++, c++, facility.getDownloadServiceUrl());
 		}
-
+		
+		idArray.clear();
+		idArray.add(null); // The first elementis populated with a null so that the index correspond with the rows
+		
+		for (TFacility facility : result) {
+			idArray.add(facility.getId()); 
+		}
+		
 		// counts the numbers of columns available and adds a delete and a edit
 		// button
 		Button[] deleteBtn = new Button[r];
@@ -108,7 +121,7 @@ public class AdminUI extends Composite {
 		}
 	}
 
-	public void handleAddNEditButton(int row, int column, String menu) {
+	private void handleAddNEditButton(String menu) {
 	// EVERYTING IN HERE IS IN THE DIALOG BOX
 
 		// LABELS FOR EACH ROW IN THE DIALOG BOX
@@ -171,17 +184,25 @@ public class AdminUI extends Composite {
 			txtDownloadPluginName.setItemSelected(1, true);
 		}
 		
+		if(menu.equals(MENU_EDIT)){
+			btnSave.setText("update");
+		}
+		else{
+			btnSave.setText("save");
+		}
+		
 		dialogWindow.setText(menu + " MENU");
 		dialogWindow.center();
 		dialogWindow.setVisible(true);
 	}
 
-	public void handleDeleteButton(int row, int column) {
+	private void handleDeleteButton() {
 		alertDialogBox.setVisible(true);
 		alertDialogBox.center();
 	}
 
-	public void TableCall() {
+	private void TableCall() {
+		
 		AsyncCallback<List<TFacility>> callback = new AsyncCallback<List<TFacility>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
@@ -189,6 +210,7 @@ public class AdminUI extends Composite {
 
 			public void onSuccess(List<TFacility> result) {
 				DisplayTable(result);
+				
 			}
 		};
 		// make the call to the server
@@ -196,21 +218,50 @@ public class AdminUI extends Composite {
 		dataService.getAllFacilities(callback);
 	}
 
-	public void addRowToTable() {
+	private void addRowToTable() {
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+			public void onSuccess(String result) {
+				TableCall();
+				dialogWindow.hide();
+			}
+		};
+			
+		
+		TFacility facility = new TFacility();
+		EntitiySetter(facility, MENU_ADD);
+		
+		//make the call to the server
+		System.out.println("LoginPanel: making call to DataService");
+		dataService.addIcatServer(facility, callback);
+	}
+
+	private void updateRowInTable(){
+		
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 
 			public void onSuccess(String result) {
-				//Window.alert(result);
 				TableCall();
 				dialogWindow.hide();
 			}
 		};
+			
 		
-				
 		TFacility facility = new TFacility();
+		EntitiySetter(facility, MENU_EDIT);
+	
+		//make the call to the server
+		System.out.println("LoginPanel: making call to DataService");
+		dataService.updateIcatServer(facility, callback);
+	}
+	
+	private TFacility EntitiySetter(TFacility facility, String action){
+		
 		facility.setName(txtName.getText());
 		facility.setVersion(txtVersion.getItemText(txtVersion.getSelectedIndex()));
 		facility.setUrl(txtServerUrl.getText());
@@ -218,32 +269,32 @@ public class AdminUI extends Composite {
 		facility.setDownloadPluginName((txtDownloadPluginName.getItemText(txtDownloadPluginName.getSelectedIndex())));
 		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
 		
-		//make the call to the server
-		System.out.println("LoginPanel: making call to DataService");
-		dataService.addIcatServer(facility, callback);
+		if(action.equals(MENU_EDIT))
+			facility.setId(idArray.get(row));
+		
+		return facility;
+		
 	}
-
+	
 	@UiHandler("table")
-	void HandleEditeNDelteButtonClick(ClickEvent e) {
+ 	void HandleEditeNDelteButtonClick(ClickEvent e) {
 
 		Cell cell = table.getCellForEvent(e);
-		int row = cell.getRowIndex();
-		int column = cell.getCellIndex();
-		
-		//Window.alert("row: "+ row + " column: " + column);
+		row = cell.getRowIndex();
+		column = cell.getCellIndex();
 
 		if (column == 7) {
-			handleAddNEditButton(row, column, MENU_EDIT);
+			handleAddNEditButton(MENU_EDIT);
 		}
 
 		else if (column == 8)					
-			handleDeleteButton(row, column);
+			handleDeleteButton();
 	}
 
 	@UiHandler("btnAdd")
 	void HandleAddButtonClick(ClickEvent e) {
 
-		handleAddNEditButton(0, 0, MENU_ADD);
+		handleAddNEditButton(MENU_ADD);
 	}
 
 	@UiHandler("btnCancel")
@@ -253,15 +304,25 @@ public class AdminUI extends Composite {
 
 	@UiHandler("btnNo")
 	void HandleNoButton(ClickEvent e) {
-		alertDialogBox.setVisible(false);
-		alertDialogBox.setModal(false);
-
+		ClearDialogBoxFields();
 	}
 
 	@UiHandler("btnSave")
 	void HandleSaveButton(ClickEvent e) {	
-		addRowToTable();
+
+		if(btnSave.getText() == "save"){
+			addRowToTable();
+		}
+		else if (btnSave.getText() == "update"){
+			updateRowInTable();	
+		}
+		
 		ClearDialogBoxFields();
+	}
+	
+	@UiHandler("btnYes")
+	void HandleYesButton(ClickEvent e){
+//		DelteRowInTable();
 	}
 	
 	private void ClearDialogBoxFields(){
@@ -269,11 +330,13 @@ public class AdminUI extends Composite {
 		txtDownloadPluginName.clear();
 		txtPluginName.clear();
 		txtVersion.clear();
+		btnSave.setText("save");
 		txtDownloadServiceUrl.setText(null);
 		txtName.setText(null);
 		txtServerUrl.setText(null);
 		dialogWindow.setVisible(false);
 		dialogWindow.setModal(false);
-		
+		alertDialogBox.setVisible(false);
+		alertDialogBox.setModal(false);
 	}
 }

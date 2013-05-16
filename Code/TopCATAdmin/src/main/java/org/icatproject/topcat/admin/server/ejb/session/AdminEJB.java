@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 
 import org.icatproject.topcat.admin.shared.ServerException;
@@ -66,7 +67,7 @@ public class AdminEJB {
 	
 
 	public void addIcatServer(TFacility facility) throws TopcatException {
-		logger.debug("executing adicatserver in adminejb class");
+		logger.debug("executing addIcatServer()");
 
 		TopcatIcatServer tiServer = new TopcatIcatServer();
 		tiServer.setName(facility.getName());
@@ -77,5 +78,22 @@ public class AdminEJB {
 		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
 		entityManager.persist(tiServer);
     }
+
+	public void updateIcatServer(TFacility facility) {
+		logger.debug("executing updateIcatServer()");
+		logger.debug("ID" + facility.getId());
+		
+		TopcatIcatServer tiServer = new TopcatIcatServer();
+		tiServer = entityManager.find(TopcatIcatServer.class, facility.getId());
+		tiServer.setName(facility.getName());
+		tiServer.setVersion(facility.getVersion());
+		tiServer.setServerUrl(facility.getUrl());
+		tiServer.setPluginName(facility.getSearchPluginName());
+		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
+		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());		
+		entityManager.merge(tiServer);		
+
+		
+	}
 	
 }

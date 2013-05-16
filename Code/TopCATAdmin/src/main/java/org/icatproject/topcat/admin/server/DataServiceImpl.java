@@ -53,6 +53,12 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String addIcatServer(TFacility facility) throws TopcatException {
 		adminEJB.addIcatServer(facility);
-		return "New row has been added " + "        " + facility.getDownloadPluginName();
+		return "New row has been added ";
+	}
+	
+	@Override
+	public String updateIcatServer(TFacility facility) throws TopcatException{
+		adminEJB.updateIcatServer(facility);
+		return "Row has been Updated";
 	}
 }

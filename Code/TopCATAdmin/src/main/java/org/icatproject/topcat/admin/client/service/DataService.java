@@ -7,7 +7,6 @@ import org.icatproject.topcat.admin.shared.SessionException;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -21,4 +20,6 @@ public interface DataService extends RemoteService {
 
 	String addIcatServer(TFacility facility) throws TopcatException;
 
+	String updateIcatServer(TFacility facility) throws TopcatException;
+		
 }

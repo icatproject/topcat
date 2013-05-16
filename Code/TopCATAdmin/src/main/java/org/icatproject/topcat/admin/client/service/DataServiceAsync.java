@@ -21,4 +21,6 @@ public interface DataServiceAsync {
 	 */
 	void addIcatServer(TFacility facility, AsyncCallback<String> callback);
 
+	void updateIcatServer(TFacility facility, AsyncCallback<String> callback);
+
 }

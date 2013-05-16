@@ -43,23 +43,9 @@ public class TFacility implements Serializable {
     private String authenticationServiceType;
     private String defaultUser;
     private String defaultPassword;
+    private Long id;
 
     public TFacility() {
-    }
-
-    public TFacility(String name, String url, String version, String searchPluginName, String downloadPluginName,
-            String downloadServiceUrl, String authenticationServiceUrl, String authenticationServiceType,
-            String defaultUser, String defaultPassword) {
-        this.downloadPluginName = downloadPluginName;
-        this.downloadServiceUrl = downloadServiceUrl;
-        this.name = name;
-        this.searchPluginName = searchPluginName;
-        this.url = url;
-        this.version = version;
-        this.authenticationServiceUrl = authenticationServiceUrl;
-        this.authenticationServiceType = authenticationServiceType;
-        this.defaultUser = defaultUser;
-        this.defaultPassword = defaultPassword;
     }
 
     public String getDownloadPluginName() {
@@ -141,4 +127,12 @@ public class TFacility implements Serializable {
     public void setDefaultPassword(String defaultPassword) {
         this.defaultPassword = defaultPassword;
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }
