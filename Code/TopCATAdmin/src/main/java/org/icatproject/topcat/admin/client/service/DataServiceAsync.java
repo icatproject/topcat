@@ -16,11 +16,14 @@ public interface DataServiceAsync {
 	 * Add an entry for the given facility.
 	 * 
 	 * @param facility
-	 *            a <code>TFacility</code> object containing details about an ICAT server
+	 *            a <code>TFacility</code> object containing details about an
+	 *            ICAT server
 	 * @param callback
 	 */
 	void addIcatServer(TFacility facility, AsyncCallback<String> callback);
 
 	void updateIcatServer(TFacility facility, AsyncCallback<String> callback);
+
+	void removeIcatServer(Long id, AsyncCallback<String> callback);
 
 }

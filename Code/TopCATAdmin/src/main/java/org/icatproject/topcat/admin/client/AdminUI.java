@@ -32,7 +32,6 @@ public class AdminUI extends Composite {
 	interface adminUIUiBinder extends UiBinder<Widget, AdminUI> {
 	}
 
-
 	private static adminUIUiBinder uiBinder = GWT.create(adminUIUiBinder.class);
 	private DataServiceAsync dataService = GWT.create(DataService.class);
 
@@ -40,10 +39,10 @@ public class AdminUI extends Composite {
 	private static final String MENU_EDIT = "EDIT";
 	private static int row;
 	private static int column;
-	
-	ArrayList<Long> idArray  = new ArrayList<Long>();
+
+	ArrayList<Long> idArray = new ArrayList<Long>();
 	Constants headerNames = new Constants();
-	
+
 	@UiField
 	FlexTable table, editMenu;
 	@UiField
@@ -58,10 +57,7 @@ public class AdminUI extends Composite {
 	ListBox txtPluginName, txtDownloadPluginName, txtVersion;
 	@UiField
 	HorizontalPanel hPanel0;
-	
-	
-	
-	
+
 	public AdminUI() {
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -69,9 +65,9 @@ public class AdminUI extends Composite {
 	}
 
 	private void DisplayTable(List<TFacility> result) {
+		table.removeAllRows();
+
 		int c, r = 1;
-		
-		
 		// header section, columns width are equal to the second flextable
 		table.getColumnFormatter().setWidth(0, "150px");
 		table.getColumnFormatter().setWidth(1, "120px");
@@ -90,23 +86,24 @@ public class AdminUI extends Composite {
 		// with the use of a second flextable the for loop display the content
 		// of the TOPCAT_ICAT_SERVER
 		for (TFacility facility : result) {
-			c = 0;	
+			c = 0;
 
-			table.setText(r, c++ , facility.getName());
+			table.setText(r, c++, facility.getName());
 			table.setText(r, c++, facility.getVersion());
 			table.setText(r, c++, facility.getUrl());
 			table.setText(r, c++, facility.getSearchPluginName());
 			table.setText(r, c++, facility.getDownloadPluginName());
 			table.setText(r++, c++, facility.getDownloadServiceUrl());
 		}
-		
+
 		idArray.clear();
-		idArray.add(null); // The first elementis populated with a null so that the index correspond with the rows
-		
+		idArray.add(null); // The first elementis populated with a null so that
+							// the index correspond with the rows
+
 		for (TFacility facility : result) {
-			idArray.add(facility.getId()); 
+			idArray.add(facility.getId());
 		}
-		
+
 		// counts the numbers of columns available and adds a delete and a edit
 		// button
 		Button[] deleteBtn = new Button[r];
@@ -122,7 +119,7 @@ public class AdminUI extends Composite {
 	}
 
 	private void handleAddNEditButton(String menu) {
-	// EVERYTING IN HERE IS IN THE DIALOG BOX
+		// EVERYTING IN HERE IS IN THE DIALOG BOX
 
 		// LABELS FOR EACH ROW IN THE DIALOG BOX
 		editMenu.setText(0, 0, Constants.NAME + ":");
@@ -159,17 +156,17 @@ public class AdminUI extends Composite {
 
 		// THESE ARE THE ITEMS IN THE PLUGIN_NAME LISTBOX
 		txtPluginName.insertItem("", "", 0);
-		txtPluginName.insertItem("uk.ac.stfc.topcat.gwt.client.facility.ISISPlugin", 1);
-		txtPluginName.insertItem("uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin",	2);
-		
+		txtPluginName.insertItem(
+				"uk.ac.stfc.topcat.gwt.client.facility.ISISPlugin", 1);
+		txtPluginName.insertItem(
+				"uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin",
+				2);
 
 		if (menu.equals(MENU_ADD) || table.getText(row, 3).equals(null)) {
 			txtPluginName.setItemSelected(0, true);
-		} 
-		else if (table.getText(row, 3).equals(txtPluginName.getItemText(1))) {
+		} else if (table.getText(row, 3).equals(txtPluginName.getItemText(1))) {
 			txtPluginName.setItemSelected(1, true);
-		} 
-		else if (table.getText(row, 3).equals(txtPluginName.getItemText(2))) {
+		} else if (table.getText(row, 3).equals(txtPluginName.getItemText(2))) {
 			txtPluginName.setItemSelected(2, true);
 		}
 
@@ -179,18 +176,17 @@ public class AdminUI extends Composite {
 
 		if (menu.equals(MENU_ADD) || table.getText(row, 4).equals(null)) {
 			txtDownloadPluginName.setItemSelected(0, true);
-		} 
-		else if (table.getText(row, 4).equals(txtDownloadPluginName.getItemText(1))) {
+		} else if (table.getText(row, 4).equals(
+				txtDownloadPluginName.getItemText(1))) {
 			txtDownloadPluginName.setItemSelected(1, true);
 		}
-		
-		if(menu.equals(MENU_EDIT)){
+
+		if (menu.equals(MENU_EDIT)) {
 			btnSave.setText("update");
-		}
-		else{
+		} else {
 			btnSave.setText("save");
 		}
-		
+
 		dialogWindow.setText(menu + " MENU");
 		dialogWindow.center();
 		dialogWindow.setVisible(true);
@@ -202,7 +198,6 @@ public class AdminUI extends Composite {
 	}
 
 	private void TableCall() {
-		
 		AsyncCallback<List<TFacility>> callback = new AsyncCallback<List<TFacility>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
@@ -210,11 +205,10 @@ public class AdminUI extends Composite {
 
 			public void onSuccess(List<TFacility> result) {
 				DisplayTable(result);
-				
+
 			}
 		};
 		// make the call to the server
-		System.out.println("LoginPanel: making call to DataService");
 		dataService.getAllFacilities(callback);
 	}
 
@@ -223,23 +217,21 @@ public class AdminUI extends Composite {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
+
 			public void onSuccess(String result) {
 				TableCall();
 				dialogWindow.hide();
 			}
 		};
-			
-		
+
 		TFacility facility = new TFacility();
-		EntitiySetter(facility, MENU_ADD);
-		
-		//make the call to the server
-		System.out.println("LoginPanel: making call to DataService");
+		entitiySetter(facility, null);
+
+		// make the call to the server
 		dataService.addIcatServer(facility, callback);
 	}
 
-	private void updateRowInTable(){
-		
+	private void updateRowInTable() {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
@@ -250,34 +242,51 @@ public class AdminUI extends Composite {
 				dialogWindow.hide();
 			}
 		};
-			
-		
+
 		TFacility facility = new TFacility();
-		EntitiySetter(facility, MENU_EDIT);
-	
-		//make the call to the server
-		System.out.println("LoginPanel: making call to DataService");
+		entitiySetter(facility, MENU_EDIT);
+
+		// make the call to the server
 		dataService.updateIcatServer(facility, callback);
 	}
-	
-	private TFacility EntitiySetter(TFacility facility, String action){
-		
-		facility.setName(txtName.getText());
-		facility.setVersion(txtVersion.getItemText(txtVersion.getSelectedIndex()));
-		facility.setUrl(txtServerUrl.getText());
-		facility.setSearchPluginName(txtPluginName.getItemText(txtPluginName.getSelectedIndex()));
-		facility.setDownloadPluginName((txtDownloadPluginName.getItemText(txtDownloadPluginName.getSelectedIndex())));
-		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
-		
-		if(action.equals(MENU_EDIT))
-			facility.setId(idArray.get(row));
-		
-		return facility;
-		
+
+	private void removeRowFromTable() {
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+
+			public void onSuccess(String result) {
+				TableCall();
+				alertDialogBox.hide();
+			}
+		};
+
+		// make the call to the server
+		dataService.removeIcatServer(idArray.get(row), callback);
 	}
-	
+
+	private TFacility entitiySetter(TFacility facility, String action) {
+
+		facility.setName(txtName.getText());
+		facility.setVersion(txtVersion.getItemText(txtVersion
+				.getSelectedIndex()));
+		facility.setUrl(txtServerUrl.getText());
+		facility.setSearchPluginName(txtPluginName.getItemText(txtPluginName
+				.getSelectedIndex()));
+		facility.setDownloadPluginName((txtDownloadPluginName
+				.getItemText(txtDownloadPluginName.getSelectedIndex())));
+		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
+
+		if (action.equals(MENU_EDIT))
+			facility.setId(idArray.get(row));
+
+		return facility;
+
+	}
+
 	@UiHandler("table")
- 	void HandleEditeNDelteButtonClick(ClickEvent e) {
+	void handleEditeNDelteButtonClick(ClickEvent e) {
 
 		Cell cell = table.getCellForEvent(e);
 		row = cell.getRowIndex();
@@ -287,46 +296,45 @@ public class AdminUI extends Composite {
 			handleAddNEditButton(MENU_EDIT);
 		}
 
-		else if (column == 8)					
+		else if (column == 8)
 			handleDeleteButton();
 	}
 
 	@UiHandler("btnAdd")
-	void HandleAddButtonClick(ClickEvent e) {
+	void handleAddButtonClick(ClickEvent e) {
 
 		handleAddNEditButton(MENU_ADD);
 	}
 
 	@UiHandler("btnCancel")
-	void HandleCloseButtonClick(ClickEvent e) {
+	void handleCloseButtonClick(ClickEvent e) {
 		ClearDialogBoxFields();
 	}
 
 	@UiHandler("btnNo")
-	void HandleNoButton(ClickEvent e) {
+	void handleNoButton(ClickEvent e) {
 		ClearDialogBoxFields();
 	}
 
 	@UiHandler("btnSave")
-	void HandleSaveButton(ClickEvent e) {	
+	void handleSaveButton(ClickEvent e) {
 
-		if(btnSave.getText() == "save"){
+		if (btnSave.getText() == "save") {
 			addRowToTable();
+		} else if (btnSave.getText() == "update") {
+			updateRowInTable();
 		}
-		else if (btnSave.getText() == "update"){
-			updateRowInTable();	
-		}
-		
+
 		ClearDialogBoxFields();
 	}
-	
+
 	@UiHandler("btnYes")
-	void HandleYesButton(ClickEvent e){
-//		DelteRowInTable();
+	void handleYesButton(ClickEvent e) {
+		removeRowFromTable();
 	}
-	
-	private void ClearDialogBoxFields(){
-		
+
+	private void ClearDialogBoxFields() {
+
 		txtDownloadPluginName.clear();
 		txtPluginName.clear();
 		txtVersion.clear();

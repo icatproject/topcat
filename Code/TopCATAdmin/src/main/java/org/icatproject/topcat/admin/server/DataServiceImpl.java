@@ -55,10 +55,16 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		adminEJB.addIcatServer(facility);
 		return "New row has been added ";
 	}
-	
+
 	@Override
-	public String updateIcatServer(TFacility facility) throws TopcatException{
+	public String updateIcatServer(TFacility facility) throws TopcatException {
 		adminEJB.updateIcatServer(facility);
 		return "Row has been Updated";
+	}
+
+	@Override
+	public String removeIcatServer(Long id) throws TopcatException {
+		adminEJB.removeIcatServer(id);
+		return "The Row with the ID: " + id + " has been Removed";
 	}
 }

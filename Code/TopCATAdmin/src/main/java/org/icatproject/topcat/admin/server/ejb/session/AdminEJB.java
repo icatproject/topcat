@@ -1,6 +1,5 @@
 package org.icatproject.topcat.admin.server.ejb.session;
 
-
 import java.util.ArrayList;
 
 import java.util.List;
@@ -23,8 +22,7 @@ import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
 @Stateless
 public class AdminEJB {
-	
-	
+
 	final static Logger logger = LoggerFactory.getLogger(AdminEJB.class);
 
 	@PersistenceContext(unitName = "TopCATEJBPU")
@@ -40,34 +38,31 @@ public class AdminEJB {
 			throw new RuntimeException(msg);
 		}
 	}
-	
+
 	public void printTopcatIcatServerDetails() {
 		@SuppressWarnings("unchecked")
-		List<TopcatIcatServer> servers = entityManager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
+		List<TopcatIcatServer> servers = entityManager.createNamedQuery(
+				"TopcatIcatServer.findAll").getResultList();
 		for (TopcatIcatServer icatServer : servers) {
-			logger.debug(	icatServer.getId() + " " +
-							icatServer.getName() + " " +
-							icatServer.getServerUrl() + " " +
-							icatServer.getVersion());
-		}  
+			logger.debug(icatServer.getId() + " " + icatServer.getName() + " "
+					+ icatServer.getServerUrl() + " " + icatServer.getVersion());
+		}
 	}
-	
+
 	public ArrayList<TFacility> getAllFacilities() {
 		UtilityManager utilityManager = new UtilityManager();
-		ArrayList<TFacility> allFacilities = utilityManager.getAllFacilities(entityManager);
-		for ( TFacility facility : allFacilities ) {
-			logger.debug( "getAllFacility :" + 
-					" Name: " +	facility.getName()	+ 
-					" PluginName:  " + facility.getUrl() + 
-					" Version: " +	facility.getVersion());
-					
+		ArrayList<TFacility> allFacilities = utilityManager
+				.getAllFacilities(entityManager);
+		for (TFacility facility : allFacilities) {
+			logger.debug("getAllFacility :" + " Name: " + facility.getName()
+					+ " PluginName:  " + facility.getUrl() + " Version: "
+					+ facility.getVersion());
+
 		}
 		return allFacilities;
 	}
-	
 
 	public void addIcatServer(TFacility facility) throws TopcatException {
-		logger.debug("executing addIcatServer()");
 
 		TopcatIcatServer tiServer = new TopcatIcatServer();
 		tiServer.setName(facility.getName());
@@ -77,12 +72,12 @@ public class AdminEJB {
 		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
 		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
 		entityManager.persist(tiServer);
-    }
+
+		logger.debug("A new row has been added");
+	}
 
 	public void updateIcatServer(TFacility facility) {
-		logger.debug("executing updateIcatServer()");
-		logger.debug("ID" + facility.getId());
-		
+
 		TopcatIcatServer tiServer = new TopcatIcatServer();
 		tiServer = entityManager.find(TopcatIcatServer.class, facility.getId());
 		tiServer.setName(facility.getName());
@@ -90,10 +85,18 @@ public class AdminEJB {
 		tiServer.setServerUrl(facility.getUrl());
 		tiServer.setPluginName(facility.getSearchPluginName());
 		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
-		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());		
-		entityManager.merge(tiServer);		
+		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
+		entityManager.merge(tiServer);
 
-		
+		logger.debug("The Row with the ID: " + facility.getId()
+				+ " has been Removed");
 	}
-	
+
+	public void removeIcatServer(Long id) {
+		TopcatIcatServer tiServer = entityManager.find(TopcatIcatServer.class,
+				id);
+		entityManager.remove(tiServer);
+
+	}
+
 }

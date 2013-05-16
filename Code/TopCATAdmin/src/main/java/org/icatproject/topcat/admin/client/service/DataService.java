@@ -21,5 +21,7 @@ public interface DataService extends RemoteService {
 	String addIcatServer(TFacility facility) throws TopcatException;
 
 	String updateIcatServer(TFacility facility) throws TopcatException;
-		
+
+	String removeIcatServer(Long id) throws TopcatException;
+
 }
