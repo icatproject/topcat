@@ -128,11 +128,28 @@ public class TFacility implements Serializable {
         this.defaultPassword = defaultPassword;
     }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder message = new StringBuilder();
+        message.append("TFacility\n");
+        message.append("id:").append(id).append("\n");
+        message.append("name:").append(name).append("\n");
+        message.append("url:").append(url).append("\n");
+        message.append("version:").append(version).append("\n");
+        message.append("searchPluginName:").append(searchPluginName).append("\n");
+        message.append("downloadPluginName:").append(downloadPluginName).append("\n");
+        message.append("downloadServiceUrl:").append(downloadServiceUrl).append("\n");
+        message.append("authenticationServiceType:").append(authenticationServiceType).append("\n");
+        message.append("authenticationServiceUrl:").append(authenticationServiceUrl).append("\n");
+        message.append("defaultUser:").append(defaultUser).append("\n");
+        return message.toString();
+    }
 }
