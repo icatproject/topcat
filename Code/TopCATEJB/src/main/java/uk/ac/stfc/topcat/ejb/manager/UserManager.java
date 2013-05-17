@@ -175,7 +175,7 @@ public class UserManager {
         }
         List<TopcatUserSession> sessionList = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                 .getResultList();
         if (sessionList == null) {
             return;
@@ -205,7 +205,7 @@ public class UserManager {
         }
         List<TopcatUserSession> sessionList = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                 .getResultList();
         if (sessionList == null) {
             return Boolean.FALSE;
@@ -331,7 +331,7 @@ public class UserManager {
         try {
             TopcatUser user = (TopcatUser) manager
                     .createNamedQuery("TopcatUser.findByNameAndServerAndHomeNotAnonymous")
-                    .setParameter("userName", username).setParameter("facilityName", facilityName).getSingleResult();
+                    .setParameter("userName", username).setParameter("serverName", facilityName).getSingleResult();
             return user;
         } catch (NoResultException ex) {
         }
@@ -417,7 +417,7 @@ public class UserManager {
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
         } catch (NoResultException ex) {
         }
@@ -426,7 +426,7 @@ public class UserManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("facilityName", facilityName).getSingleResult();
+                        .setParameter("serverName", facilityName).getSingleResult();
             } catch (NoResultException ex) {
                 throw new SessionException("Invalid topcat session id");
             }
@@ -475,7 +475,7 @@ public class UserManager {
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                    .setParameter("facilityName", facilityName).getSingleResult();
+                    .setParameter("serverName", facilityName).getSingleResult();
         } catch (NoResultException ex) {
         }
         if (userSession != null) {
@@ -517,7 +517,7 @@ public class UserManager {
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
         } catch (NoResultException ex) {
             throw new SessionException("Invalid topcat session id");

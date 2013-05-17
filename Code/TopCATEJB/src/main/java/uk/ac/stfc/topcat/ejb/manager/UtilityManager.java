@@ -126,7 +126,7 @@ public class UtilityManager {
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
             instrumentNames.addAll(getInstrumentNames(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId()));
@@ -134,7 +134,7 @@ public class UtilityManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("facilityName", facilityName).getSingleResult();
+                        .setParameter("serverName", facilityName).getSingleResult();
                 instrumentNames.addAll(getInstrumentNames(userSession.getIcatSessionId(), userSession.getUserId()
                         .getServerId()));
             } catch (javax.persistence.NoResultException exinnex) {
@@ -182,7 +182,7 @@ public class UtilityManager {
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
             investigationTypes.addAll(getInvestigationTypes(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId()));
@@ -190,7 +190,7 @@ public class UtilityManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("facilityName", facilityName).getSingleResult();
+                        .setParameter("serverName", facilityName).getSingleResult();
                 investigationTypes.addAll(getInvestigationTypes(userSession.getIcatSessionId(), userSession.getUserId()
                         .getServerId()));
             } catch (javax.persistence.NoResultException exinnex) {
@@ -240,7 +240,7 @@ public class UtilityManager {
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
             return getFacilityCyclesWithInstrument(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId(), instrument);
@@ -248,7 +248,7 @@ public class UtilityManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("facilityName", facilityName).getSingleResult();
+                        .setParameter("serverName", facilityName).getSingleResult();
                 return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
             } catch (javax.persistence.NoResultException exinnex) {
             }
@@ -319,7 +319,7 @@ public class UtilityManager {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
             return getMyInvestigationsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
@@ -364,7 +364,7 @@ public class UtilityManager {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
             return getAllInvestigationsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
@@ -410,7 +410,7 @@ public class UtilityManager {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
             return getMyInvestigationsInServerAndInstrument(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId(), userSession.getUserId().getName(), userSession.getUserId().getUserSurname(),
@@ -522,7 +522,7 @@ public class UtilityManager {
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
             return getMyInvestigationsInServeInstrumentAndCycle(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId(), userSession.getUserId().getName(), userSession.getUserId().getUserSurname(),
@@ -1113,7 +1113,7 @@ public class UtilityManager {
         List<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
 
         List<?> icatAuthentications = manager.createNamedQuery("IcatAuthentication.findByServerName")
-                .setParameter("facilityName", facilityName).getResultList();
+                .setParameter("serverName", facilityName).getResultList();
         for (Object icatAuthentication : icatAuthentications) {
             authenticationDetails.add(new TAuthentication(facilityName, ((IcatAuthentication) icatAuthentication)
                     .getPluginName(), ((IcatAuthentication) icatAuthentication).getAuthenticationServiceUrl(),
