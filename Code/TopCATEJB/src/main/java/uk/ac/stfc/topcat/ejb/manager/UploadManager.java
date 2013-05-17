@@ -23,9 +23,10 @@
 package uk.ac.stfc.topcat.ejb.manager;
 
 import java.net.MalformedURLException;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+
+import org.apache.log4j.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
@@ -45,29 +46,35 @@ public class UploadManager {
      * Create a new dataset.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      * @param dataset
      * @return the dataset id
      * @throws TopcatException
      */
-    public Long createDataSet(EntityManager manager, String sessionId, TDataset dataset) throws TopcatException {
+    public Long createDataSet(EntityManager manager, String topcatSessionId, TDataset dataset) throws TopcatException {
+        logger.info("searchAdvancedDatafilesInServer: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                + dataset.getFacilityName() + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, dataset.getFacilityName());
+                    topcatSessionId, dataset.getFacilityName());
             return createDataSet(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), dataset);
         } catch (javax.persistence.NoResultException ex) {
-            logger.warning("createDataSet: " + ex.getMessage());
+            logger.warn("createDataSet: " + ex.getMessage());
         }
         return null;
     }
 
-    private Long createDataSet(String sessionId, TopcatIcatServer server, TDataset dataset) throws TopcatException {
+    private Long createDataSet(String icatSessionId, TopcatIcatServer server, TDataset dataset) throws TopcatException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("searchAdvancedDatafilesInServer: icatSessionId (" + icatSessionId + "), facilityName ("
+                    + dataset.getFacilityName() + ")");
+        }
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
-            return service.createDataSet(sessionId, dataset);
+            return service.createDataSet(icatSessionId, dataset);
         } catch (MalformedURLException ex) {
-            logger.warning("createDataSet: " + ex.getMessage());
+            logger.warn("createDataSet: " + ex.getMessage());
         }
         return null;
     }

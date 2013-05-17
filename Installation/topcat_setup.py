@@ -829,7 +829,8 @@ elif OPTIONS.status:
 elif OPTIONS.upgrade:
     upgrade(CONF_PROPS_TOPCAT)
 else:
-    print ("You must provide an arg")
+    print ("\nYou must provide an option\n")
+    print PARSER.print_help()
     exit(1)
     
 print ('All done')

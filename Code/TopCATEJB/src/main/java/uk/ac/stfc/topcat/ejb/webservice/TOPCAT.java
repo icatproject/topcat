@@ -87,7 +87,7 @@ public class TOPCAT {
     @WebMethod(operationName = "searchBasicInvestigationByKeywords")
     public java.util.ArrayList<uk.ac.stfc.topcat.core.gwt.module.TInvestigation> searchBasicInvestigationByKeywords(
             @WebParam(name = "topcatSessionId") String topcatSessionId,
-            @WebParam(name = "keywords") java.util.ArrayList<java.lang.String> keywords) {
+            @WebParam(name = "keywords") java.util.ArrayList<java.lang.String> keywords) throws TopcatException {
         return searchManagement.searchBasicInvestigationByKeywords(topcatSessionId, keywords);
     }
 

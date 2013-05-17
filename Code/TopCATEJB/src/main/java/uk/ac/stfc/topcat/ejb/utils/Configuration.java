@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * This is configuration file reader.
@@ -36,7 +36,7 @@ public enum Configuration {
             prop.load(Configuration.class.getClassLoader().getResourceAsStream("topcat.properties"));
             loadProperties(prop);
         } catch (IOException ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Configuration.class.getName()).fatal("Problem with topcat.properties " + ex.getMessage());
         }
     }
 

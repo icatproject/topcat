@@ -30,18 +30,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+
+import org.apache.log4j.Logger;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUser;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
 /**
@@ -67,6 +68,7 @@ public class UserManager {
      * @return Anonymous user
      */
     public TopcatUserInfo getDefaultUser(EntityManager manager) {
+        logger.info("getDefaultUser");
         TopcatUserInfo defaultUser = (TopcatUserInfo) manager.createNamedQuery("TopcatUserInfo.findAnonymousUser")
                 .getSingleResult();
         return defaultUser;
@@ -80,6 +82,7 @@ public class UserManager {
      * @return a Unique string.
      */
     public String login(EntityManager manager) {
+        logger.info("login");
         // create UUID for session
         String sid = UUID.randomUUID().toString();
         return sid;
@@ -90,13 +93,14 @@ public class UserManager {
      * 
      * @param manager
      * @param topcatSessionId
-     * @param serverName
+     * @param facilityName
      * @param authenticationType
-     * @throws MalformedURLException
-     * @throws SessionException_Exception
+     * @throws AuthenticationException
      */
-    public void login(EntityManager manager, String topcatSessionId, String serverName, String authenticationType,
+    public void login(EntityManager manager, String topcatSessionId, String facilityName, String authenticationType,
             Map<String, String> parameters) throws AuthenticationException {
+        logger.info("login: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), authenticationType (" + authenticationType + "), number of parameters " + parameters.size());
         long hours = 2;
         // Process
         // 1) Get the icat server
@@ -104,8 +108,10 @@ public class UserManager {
         // 3) if the server login fails then throw exception and return.
 
         // Get the icat server
-        TopcatIcatServer icatServer = findTopcatIcatServerByName(manager, serverName);
-        logger.finest("login:" + icatServer.getServerUrl());
+        TopcatIcatServer icatServer = findTopcatIcatServerByName(manager, facilityName);
+        if (logger.isTraceEnabled()) {
+            logger.trace("login: " + icatServer.getServerUrl());
+        }
         // Login to the icat server
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
@@ -120,10 +126,10 @@ public class UserManager {
             loginUpdate(manager, service, topcatSessionId, icatServer, username, icatSessionId, hours);
 
         } catch (MalformedURLException ex) {
-            logger.warning("UserManager (login): " + ex.getMessage());
+            logger.error("UserManager (login): " + ex.getMessage());
             throw new AuthenticationException("ICAT URL is not valid");
         } catch (javax.xml.ws.WebServiceException ex) {
-            logger.warning("UserManager (login): " + ex.getMessage());
+            logger.warn("UserManager (login): " + ex.getMessage());
             throw new AuthenticationException("ICAT Server not available");
         } catch (TopcatException e) {
             throw new AuthenticationException("Unable to get surname");
@@ -138,7 +144,7 @@ public class UserManager {
      * @param topcatSessionId
      */
     public void logout(EntityManager manager, String topcatSessionId) {
-        logger.finest("logout: topcat session id" + topcatSessionId);
+        logger.info("logout: topcatSessionId (" + topcatSessionId + ")");
         if (topcatSessionId == null) {
             return;
         }
@@ -160,16 +166,16 @@ public class UserManager {
      * 
      * @param manager
      * @param topcatSessionId
-     * @param serverName
+     * @param facilityName
      */
-    public void logout(EntityManager manager, String topcatSessionId, String serverName) {
-        logger.finest("logout: topcat session Id" + topcatSessionId + " serverName:" + serverName);
+    public void logout(EntityManager manager, String topcatSessionId, String facilityName) {
+        logger.info("logout: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
         if (topcatSessionId == null) {
             return;
         }
         List<TopcatUserSession> sessionList = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", serverName)
+                .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                 .getResultList();
         if (sessionList == null) {
             return;
@@ -189,17 +195,17 @@ public class UserManager {
      * 
      * @param manager
      * @param sessionId
-     * @param serverName
+     * @param facilityName
      * @return
      */
-    public Boolean isSessionValid(EntityManager manager, String topcatSessionId, String serverName) {
-        logger.finest("isSessionValid: topcat session Id" + topcatSessionId + " serverName:" + serverName);
+    public Boolean isSessionValid(EntityManager manager, String topcatSessionId, String facilityName) {
+        logger.info("isSessionValid: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
         if (topcatSessionId == null) {
             return Boolean.FALSE;
         }
         List<TopcatUserSession> sessionList = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", serverName)
+                .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                 .getResultList();
         if (sessionList == null) {
             return Boolean.FALSE;
@@ -213,7 +219,7 @@ public class UserManager {
                         icatServer.getName(), icatServer.getVersion(), icatServer.getServerUrl());
                 return service.isSessionValid(tus.getIcatSessionId());
             } catch (MalformedURLException ex) {
-                Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error("isSessionValid:" + ex.getMessage());
             }
         }
         return Boolean.FALSE;
@@ -242,8 +248,7 @@ public class UserManager {
         TopcatUserSession session = null;
         TopcatUserInfo userInfo = null;
 
-        List<TopcatUserSession> resultSessions = (List<TopcatUserSession>) manager
-                .createNamedQuery("TopcatUserSession.findByTopcatSessionId")
+        List<TopcatUserSession> resultSessions = manager.createNamedQuery("TopcatUserSession.findByTopcatSessionId")
                 .setParameter("topcatSessionId", topcatSessionId).getResultList();
         if (resultSessions != null && resultSessions.size() != 0) {
             userInfo = resultSessions.get(0).getUserId().getTopcatUserId();
@@ -317,16 +322,16 @@ public class UserManager {
      * @param manager
      * @param username
      *            ICAT Server username
-     * @param serverName
+     * @param facilityName
      *            ICAT Server
      * @return: User
      */
-    private TopcatUser findUserFromUsernameAndServer(EntityManager manager, String username, String serverName) {
+    private TopcatUser findUserFromUsernameAndServer(EntityManager manager, String username, String facilityName) {
         // Find the User with the user name and server id
         try {
             TopcatUser user = (TopcatUser) manager
                     .createNamedQuery("TopcatUser.findByNameAndServerAndHomeNotAnonymous")
-                    .setParameter("userName", username).setParameter("serverName", serverName).getSingleResult();
+                    .setParameter("userName", username).setParameter("facilityName", facilityName).getSingleResult();
             return user;
         } catch (NoResultException ex) {
         }
@@ -334,17 +339,18 @@ public class UserManager {
     }
 
     /**
-     * This gets the user corresponding to username and server in the userInfo.
+     * This gets the user corresponding to username and facility in the
+     * userInfo.
      * 
      * @param userInfo
      * @param username
-     * @param serverName
+     * @param facilityName
      * @return
      */
-    private TopcatUser findUserFromUsernameAndServer(TopcatUserInfo userInfo, String username, String serverName) {
+    private TopcatUser findUserFromUsernameAndServer(TopcatUserInfo userInfo, String username, String facilityName) {
         List<TopcatUser> userList = userInfo.getTopcatUserList();
         for (TopcatUser user : userList) {
-            if (user.getServerId().getName().equals(serverName) && user.getName().equals(username)) {
+            if (user.getServerId().getName().equals(facilityName) && user.getName().equals(username)) {
                 return user; // found the user
             }
         }
@@ -352,16 +358,16 @@ public class UserManager {
     }
 
     /**
-     * This method finds the ICAT server using the server name.
+     * This method finds the ICAT server using the facility name.
      * 
      * @param manager
-     * @param serverName
+     * @param facilityName
      * @return
      */
-    private TopcatIcatServer findTopcatIcatServerByName(EntityManager manager, String serverName) {
-        // Find the ICAT Server from serverName
+    private TopcatIcatServer findTopcatIcatServerByName(EntityManager manager, String facilityName) {
+        // Find the ICAT Server from facilityName
         TopcatIcatServer icatServer = (TopcatIcatServer) manager.createNamedQuery("TopcatIcatServer.findByName")
-                .setParameter("name", serverName).getSingleResult();
+                .setParameter("name", facilityName).getSingleResult();
         if (icatServer == null) {
             return null; // TODO: Instead throw server not found exception
         }
@@ -378,37 +384,40 @@ public class UserManager {
      */
     public static List<TopcatUserSession> getValidUserSessionByTopcatSession(EntityManager manager,
             String topcatSessionId) {
+        logger.info("getValidUserSessionByTopcatSession: topcatSessionId (" + topcatSessionId + ")");
         // First find all the user sessions corresponding to the TopcatSessionId
         // Get all the Anonymous user sessions for the servers that user doesn't
         // have logins
         // This is done in one query.
-        List<TopcatUserSession> userSessionsWithValidAuth = (List<TopcatUserSession>) manager
+        List<TopcatUserSession> userSessionsWithValidAuth = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
                 .setParameter("topcatSessionId", topcatSessionId).getResultList();
         return userSessionsWithValidAuth;
     }
 
     /**
-     * This method gets valid icat user session for the given server and topcat
-     * session.
+     * This method gets valid icat user session for the given facility and
+     * topcat session.
      * 
      * @param manager
      * @param topcatSessionId
-     * @param serverName
+     * @param facilityName
      * @return
      * @throws SessionException
      */
     public static TopcatUserSession getValidUserSessionByTopcatSessionAndServerName(EntityManager manager,
-            String topcatSessionId, String serverName) throws SessionException {
+            String topcatSessionId, String facilityName) throws SessionException {
+        logger.info("getValidUserSessionByTopcatSessionAndServerName: topcatSessionId (" + topcatSessionId
+                + "), facilityName (" + facilityName + ")");
         // Find the TopcatUserSession corresponding to topcatSessionId and
-        // serverName
+        // facilityName
         // Check whether the session has expired, if expired then get the
         // Anonymous user session for that server
         TopcatUserSession userSession = null;
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
         } catch (NoResultException ex) {
         }
@@ -417,7 +426,7 @@ public class UserManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("serverName", serverName).getSingleResult();
+                        .setParameter("facilityName", facilityName).getSingleResult();
             } catch (NoResultException ex) {
                 throw new SessionException("Invalid topcat session id");
             }
@@ -431,6 +440,7 @@ public class UserManager {
      * @param manager
      */
     public void anonymousUserLogin(EntityManager manager) {
+        logger.info("anonymousUserLogin");
         // Get all the servers
         // for each server do anonymous login
 
@@ -438,13 +448,12 @@ public class UserManager {
         // anonymous login
         // after 5mins.
         try {
-            List<TopcatIcatServer> servers = (List<TopcatIcatServer>) manager.createNamedQuery(
-                    "TopcatIcatServer.findAll").getResultList();
+            List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
             for (TopcatIcatServer server : servers) {
                 try {
                     anonymousUserLoginToServer(manager, server.getName());
                 } catch (AuthenticationException ex) {
-                    Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.error("anonymousUserLogin:" + ex.getMessage());
                     // TODO: create a timer to login to this server again.
                 }
             }
@@ -453,20 +462,20 @@ public class UserManager {
     }
 
     /**
-     * This method does a anonymous user login for a given server and update the
-     * icat session information to be used in anonymous topcat logins.
+     * This method does a anonymous user login for a given facility and update
+     * the icat session information to be used in anonymous topcat logins.
      * 
      * @param manager
-     * @param serverName
+     * @param facilityName
      * @throws AuthenticationException
      */
-    private void anonymousUserLoginToServer(EntityManager manager, String serverName) throws AuthenticationException {
+    private void anonymousUserLoginToServer(EntityManager manager, String facilityName) throws AuthenticationException {
         // Get the anonymous User session for the server
         TopcatUserSession userSession = null;
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                    .setParameter("serverName", serverName).getSingleResult();
+                    .setParameter("facilityName", facilityName).getSingleResult();
         } catch (NoResultException ex) {
         }
         if (userSession != null) {
@@ -485,7 +494,7 @@ public class UserManager {
                 userSession.setIcatSessionId(icatSessionId);
                 manager.persist(userSession);
             } catch (MalformedURLException ex) {
-                Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error("anonymousUserLoginToServer:" + ex.getMessage());
                 throw new AuthenticationException("ICAT Login to " + server.getName() + " Failed");
             }
         }
@@ -496,17 +505,19 @@ public class UserManager {
      * facility.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      * @param facilityName
      * @return ICAT session id
      * @throws TopcatException
      */
-    public String getIcatSessionId(EntityManager manager, String sessionId, String facilityName) throws TopcatException {
+    public String getIcatSessionId(EntityManager manager, String topcatSessionId, String facilityName)
+            throws TopcatException {
+        logger.info("getIcatSessionId: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
         TopcatUserSession userSession = null;
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", facilityName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
         } catch (NoResultException ex) {
             throw new SessionException("Invalid topcat session id");

@@ -60,8 +60,8 @@ public class KeywordManagementBean implements KeywordManagementLocal {
         keywordManager.UpdateKeywordsFromAll(manager);
     }
 
-    public ArrayList<String> getKeywordsWithPrefix(String sessionId, String serverName, String partialKey,
+    public ArrayList<String> getKeywordsWithPrefix(String sessionId, String facilityName, String partialKey,
             int numberOfKeywords) throws TopcatException {
-        return keywordManager.getKeywordsWithPrefix(manager, sessionId, serverName, partialKey, numberOfKeywords);
+        return keywordManager.getKeywordsWithPrefix(manager, sessionId, facilityName, partialKey, numberOfKeywords);
     }
 }

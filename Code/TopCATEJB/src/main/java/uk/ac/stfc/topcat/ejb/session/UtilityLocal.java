@@ -56,44 +56,44 @@ public interface UtilityLocal {
 
     ArrayList<String> getFacilityNames();
 
-    ArrayList<String> getInstrumentNames(String sessionId, String serverName) throws TopcatException;
+    ArrayList<String> getInstrumentNames(String sessionId, String facilityName) throws TopcatException;
 
-    ArrayList<String> getInvestigationTypes(String sessionId, String serverName) throws TopcatException;
+    ArrayList<String> getInvestigationTypes(String sessionId, String facilityName) throws TopcatException;
 
-    List<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
+    List<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String facilityName, String instrument)
             throws TopcatException;
 
-    List<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName) throws TopcatException;
+    List<TInvestigation> getMyInvestigationsInServer(String sessionId, String facilityName) throws TopcatException;
 
-    List<TInvestigation> getAllInvestigationsInServer(String sessionId, String serverName) throws TopcatException;
+    List<TInvestigation> getAllInvestigationsInServer(String sessionId, String facilityName) throws TopcatException;
 
-    ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName,
+    ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String facilityName,
             String instrumentName) throws TopcatException;
 
-    ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName,
+    ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String facilityName,
             String instrumentName) throws TopcatException;
 
-    ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName,
+    ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String facilityName,
             String instrumentName, TFacilityCycle cycle) throws TopcatException;
 
-    ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName,
+    ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId, String facilityName,
             String instrumentName, TFacilityCycle cycle) throws TopcatException;
 
-    TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId)
+    TInvestigation getInvestigationDetails(String sessionId, String facilityName, String investigationId)
             throws TopcatException;
 
-    ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId)
+    ArrayList<TDataset> getDatasetsInServer(String sessionId, String facilityName, String investigationId)
             throws TopcatException;
 
-    String getDatasetName(String sessionId, String serverName, String datasetId) throws TopcatException;
+    String getDatasetName(String sessionId, String facilityName, String datasetId) throws TopcatException;
 
-    ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId)
+    ArrayList<TDatafile> getDatafilesInServer(String sessionId, String facilityName, String datasetId)
             throws TopcatException;
 
-    ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String serverName,
+    ArrayList<TDatasetParameter> getDatasetInfoInServer(java.lang.String sessionId, java.lang.String facilityName,
             java.lang.String datasetId) throws TopcatException;
 
-    ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String serverName,
+    ArrayList<TDatafileParameter> getDatafileInfoInServer(java.lang.String sessionId, java.lang.String facilityName,
             java.lang.String datafileId) throws TopcatException;
 
     ArrayList<String> getParameterNames(String sessionId, String facilityName) throws TopcatException;
@@ -103,12 +103,12 @@ public interface UtilityLocal {
     ArrayList<String> getParameterTypes(String sessionId, String facilityName, String name, String units)
             throws TopcatException;
 
-    String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds)
+    String getDatafilesDownloadURL(String sessionId, String facilityName, ArrayList<Long> datafileIds)
             throws TopcatException;
 
-    String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) throws TopcatException;
+    String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException;
 
-    List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName) throws TopcatException;
+    List<TopcatUserDownload> getMyDownloadList(String sessionId, String facilityName) throws TopcatException;
 
     void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
             Date expiryTime, String url, String preparedId) throws TopcatException;

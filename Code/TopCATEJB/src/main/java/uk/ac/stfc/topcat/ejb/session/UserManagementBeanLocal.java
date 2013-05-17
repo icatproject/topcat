@@ -39,14 +39,14 @@ public interface UserManagementBeanLocal {
 
     public String login() throws AuthenticationException;
 
-    public void login(String sessionId, String serverName, String authenticationType, Map<String, String> parameters)
+    public void login(String sessionId, String facilityName, String authenticationType, Map<String, String> parameters)
             throws AuthenticationException;
 
     public void logout(String sessionId) throws AuthenticationException;
 
-    public void logout(String sessionId, String serverName) throws AuthenticationException;
+    public void logout(String sessionId, String facilityName) throws AuthenticationException;
 
-    public Boolean isSessionValid(String sessionId, String serverName);
+    public Boolean isSessionValid(String sessionId, String facilityName);
 
     public String getIcatSessionId(String sessionId, String facilityName) throws TopcatException;
 

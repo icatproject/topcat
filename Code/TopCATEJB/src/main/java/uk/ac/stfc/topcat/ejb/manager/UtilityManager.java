@@ -26,10 +26,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+
+import org.apache.log4j.Logger;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
@@ -70,6 +70,7 @@ public class UtilityManager {
      * @return
      */
     public ArrayList<String> getAllFacilityNames(EntityManager manager) {
+        logger.info("getAllFacilityNames");
         ArrayList<String> facilityNames = new ArrayList<String>();
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
         for (TopcatIcatServer icatServer : servers) {
@@ -79,23 +80,30 @@ public class UtilityManager {
     }
 
     public ArrayList<TFacility> getAllFacilities(EntityManager manager) {
+        logger.info("getAllFacilities");
         ArrayList<TFacility> facilities = new ArrayList<TFacility>();
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
-        
+
         for (TopcatIcatServer icatServer : servers) {
-        	TFacility tFacility = new TFacility();
-        	tFacility.setName(icatServer.getName());
-        	tFacility.setUrl(icatServer.getServerUrl());
-        	tFacility.setVersion(icatServer.getVersion());
-        	tFacility.setSearchPluginName(icatServer.getPluginName());
-        	tFacility.setDownloadPluginName(icatServer.getDownloadPluginName());
-        	tFacility.setDownloadServiceUrl(icatServer.getDownloadServiceUrl());
-        	tFacility.setId(icatServer.getId());
-        	tFacility.setAuthenticationServiceType(icatServer.getAuthenticationServiceType());
-        	tFacility.setAuthenticationServiceUrl(icatServer.getAuthenticationServiceUrl());
-        	tFacility.setDefaultUser(icatServer.getDefaultUser());
-        	tFacility.setDefaultPassword(icatServer.getDefaultPassword());
-        	facilities.add(tFacility);
+            TFacility tFacility = new TFacility();
+            tFacility.setName(icatServer.getName());
+            tFacility.setUrl(icatServer.getServerUrl());
+            tFacility.setVersion(icatServer.getVersion());
+            tFacility.setSearchPluginName(icatServer.getPluginName());
+            tFacility.setDownloadPluginName(icatServer.getDownloadPluginName());
+            tFacility.setDownloadServiceUrl(icatServer.getDownloadServiceUrl());
+            tFacility.setId(icatServer.getId());
+            tFacility.setAuthenticationServiceType(icatServer.getAuthenticationServiceType());
+            tFacility.setAuthenticationServiceUrl(icatServer.getAuthenticationServiceUrl());
+            tFacility.setDefaultUser(icatServer.getDefaultUser());
+            tFacility.setDefaultPassword(icatServer.getDefaultPassword());
+            facilities.add(tFacility);
+            if (logger.isTraceEnabled()) {
+                logger.trace(tFacility.toString());
+            }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("getAllFacilities facilities.size (" + facilities.size() + ")");
         }
         return facilities;
     }
@@ -104,19 +112,21 @@ public class UtilityManager {
      * This method returns all the instrument names from a given server
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @return
      * @throws TopcatException
      */
-    public ArrayList<String> getInstrumentNames(EntityManager manager, String sessionId, String serverName)
+    public ArrayList<String> getInstrumentNames(EntityManager manager, String topcatSessionId, String facilityName)
             throws TopcatException {
+        logger.info("getInstrumentNames: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + ")");
         ArrayList<String> instrumentNames = new ArrayList<String>();
         TopcatUserSession userSession = null;
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
             instrumentNames.addAll(getInstrumentNames(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId()));
@@ -124,7 +134,7 @@ public class UtilityManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("serverName", serverName).getSingleResult();
+                        .setParameter("facilityName", facilityName).getSingleResult();
                 instrumentNames.addAll(getInstrumentNames(userSession.getIcatSessionId(), userSession.getUserId()
                         .getServerId()));
             } catch (javax.persistence.NoResultException exinnex) {
@@ -149,7 +159,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.listInstruments(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getInstrumentNames: " + ex.getMessage());
+            logger.error("getInstrumentNames: " + ex.getMessage());
         }
         return new ArrayList<String>();
     }
@@ -158,19 +168,21 @@ public class UtilityManager {
      * This method returns all the investigation types from a given server
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @return
      * @throws TopcatException
      */
-    public ArrayList<String> getInvestigationTypes(EntityManager manager, String sessionId, String serverName)
+    public ArrayList<String> getInvestigationTypes(EntityManager manager, String topcatSessionId, String facilityName)
             throws TopcatException {
+        logger.info("getInvestigationTypes: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + ")");
         ArrayList<String> investigationTypes = new ArrayList<String>();
         TopcatUserSession userSession = null;
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
             investigationTypes.addAll(getInvestigationTypes(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId()));
@@ -178,7 +190,7 @@ public class UtilityManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("serverName", serverName).getSingleResult();
+                        .setParameter("facilityName", facilityName).getSingleResult();
                 investigationTypes.addAll(getInvestigationTypes(userSession.getIcatSessionId(), userSession.getUserId()
                         .getServerId()));
             } catch (javax.persistence.NoResultException exinnex) {
@@ -203,30 +215,32 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.listInvestigationTypes(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getInvestigationTypes: " + ex.getMessage());
+            logger.error("getInvestigationTypes: " + ex.getMessage());
         } catch (java.lang.NullPointerException ex) {
-            logger.warning("getInvestigationTypes: " + ex.getMessage());
+            logger.error("getInvestigationTypes: " + ex.getMessage());
         }
         return new ArrayList<String>();
     }
 
     /**
-     * Get all of the facility cycles from a given server and instrument.
+     * Get all of the facility cycles from a given facility and instrument.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param instrument
      * @return a list of <code>TFacilityCycle</code>
      * @throws TopcatException
      */
-    public List<TFacilityCycle> getFacilityCyclesWithInstrument(EntityManager manager, String sessionId,
-            String serverName, String instrument) throws TopcatException {
+    public List<TFacilityCycle> getFacilityCyclesWithInstrument(EntityManager manager, String topcatSessionId,
+            String facilityName, String instrument) throws TopcatException {
+        logger.info("getFacilityCyclesWithInstrument: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                + facilityName + "), instrument (" + instrument + ")");
         TopcatUserSession userSession = null;
         try {
             userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
             return getFacilityCyclesWithInstrument(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId(), instrument);
@@ -234,7 +248,7 @@ public class UtilityManager {
             try {
                 userSession = (TopcatUserSession) manager
                         .createNamedQuery("TopcatUserSession.findByAnonymousAndServerName")
-                        .setParameter("serverName", serverName).getSingleResult();
+                        .setParameter("facilityName", facilityName).getSingleResult();
                 return getFacilityCycles(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
             } catch (javax.persistence.NoResultException exinnex) {
             }
@@ -259,9 +273,9 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.listFacilityCyclesForInstrument(sessionId, instrument);
         } catch (MalformedURLException ex) {
-            logger.warning("getFacilityCyclesWithInstrument: " + ex.getMessage());
+            logger.error("getFacilityCyclesWithInstrument: " + ex.getMessage());
         } catch (java.lang.NullPointerException ex) {
-            logger.warning("getFacilityCyclesWithInstrument: " + ex.getMessage());
+            logger.error("getFacilityCyclesWithInstrument: " + ex.getMessage());
         }
         return new ArrayList<TFacilityCycle>();
     }
@@ -281,9 +295,9 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.listFacilityCycles(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getFacilityCycles: " + ex.getMessage());
+            logger.error("getFacilityCycles: " + ex.getMessage());
         } catch (java.lang.NullPointerException ex) {
-            logger.warning("getFacilityCycles: " + ex.getMessage());
+            logger.error("getFacilityCycles: " + ex.getMessage());
         }
         return new ArrayList<TFacilityCycle>();
     }
@@ -293,17 +307,19 @@ public class UtilityManager {
      * investigator from a given server.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @return
      * @throws TopcatException
      */
-    public List<TInvestigation> getMyInvestigationsInServer(EntityManager manager, String sessionId, String serverName)
-            throws TopcatException {
+    public List<TInvestigation> getMyInvestigationsInServer(EntityManager manager, String topcatSessionId,
+            String facilityName) throws TopcatException {
+        logger.info("getMyInvestigationsInServer: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                + facilityName + ")");
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
             return getMyInvestigationsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
@@ -327,7 +343,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getMyInvestigations(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getMyInvestigationsInServer: " + ex.getMessage());
+            logger.error("getMyInvestigationsInServer: " + ex.getMessage());
         }
         return new ArrayList<TInvestigation>();
     }
@@ -336,17 +352,19 @@ public class UtilityManager {
      * This method returns all the investigations from a given server.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @return
      * @throws TopcatException
      */
-    public List<TInvestigation> getAllInvestigationsInServer(EntityManager manager, String sessionId, String serverName)
-            throws TopcatException {
+    public List<TInvestigation> getAllInvestigationsInServer(EntityManager manager, String topcatSessionId,
+            String facilityName) throws TopcatException {
+        logger.info("getAllInvestigationsInServer: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                + facilityName + ")");
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
             return getAllInvestigationsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
@@ -369,28 +387,30 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getAllInvestigations(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getAllInvestigationsInServer: " + ex.getMessage());
+            logger.error("getAllInvestigationsInServer: " + ex.getMessage());
         }
         return new ArrayList<TInvestigation>();
     }
 
     /**
      * This method returns all user investigations of which the user is
-     * investigator from a given server and instrument name.
+     * investigator from a given facility and instrument name.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param instrumentName
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(EntityManager manager, String sessionId,
-            String serverName, String instrumentName) throws TopcatException {
+    public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(EntityManager manager,
+            String topcatSessionId, String facilityName, String instrumentName) throws TopcatException {
+        logger.info("getMyInvestigationsInServerAndInstrument: topcatSessionId (" + topcatSessionId
+                + "), facilityName (" + facilityName + "), instrumentName (" + instrumentName + ")");
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
             return getMyInvestigationsInServerAndInstrument(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId(), userSession.getUserId().getName(), userSession.getUserId().getUserSurname(),
@@ -413,8 +433,10 @@ public class UtilityManager {
      */
     private ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId,
             TopcatIcatServer server, String userName, String userSurname, String instrumentName) throws TopcatException {
-        logger.finest("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
-                + server.getName() + " username:" + userName + " instrument:" + instrumentName);
+        if (logger.isDebugEnabled()) {
+            logger.debug("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
+                    + server.getName() + " username:" + userName + " instrument:" + instrumentName);
+        }
         try {
             TAdvancedSearchDetails details = new TAdvancedSearchDetails();
             details.getInstrumentList().add(instrumentName);
@@ -423,7 +445,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.searchByAdvancedPagination(sessionId, details, 0, 200);
         } catch (MalformedURLException ex) {
-            logger.warning("getMyInvestigationsInServerAndInstrument: " + ex.getMessage());
+            logger.error("getMyInvestigationsInServerAndInstrument: " + ex.getMessage());
         }
 
         return new ArrayList<TInvestigation>();
@@ -434,17 +456,19 @@ public class UtilityManager {
      * and the given instrument.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param instrumentName
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(EntityManager manager, String sessionId,
-            String serverName, String instrumentName) throws TopcatException {
+    public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(EntityManager manager,
+            String topcatSessionId, String facilityName, String instrumentName) throws TopcatException {
+        logger.info("getAllInvestigationsInServerAndInstrument: topcatSessionId (" + topcatSessionId
+                + "), facilityName (" + facilityName + "), instrumentName (" + instrumentName + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getAllInvestigationsInServerAndInstrument(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId(), userSession.getUserId().getName(), instrumentName);
         } catch (javax.persistence.NoResultException ex) {
@@ -472,7 +496,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.searchByAdvancedPagination(sessionId, details, 0, 200);
         } catch (MalformedURLException ex) {
-            logger.warning("getAllInvestigationsInServerAndInstrument: " + ex.getMessage());
+            logger.error("getAllInvestigationsInServerAndInstrument: " + ex.getMessage());
         }
 
         return new ArrayList<TInvestigation>();
@@ -480,23 +504,25 @@ public class UtilityManager {
 
     /**
      * This method returns all user investigations of which the user is
-     * investigator from a given server instrument name and facility cycle.
+     * investigator from a given facility instrument name and facility cycle.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param instrumentName
      * @param facilityCycle
      * @return
      * @throws TopcatException
      */
     public ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(EntityManager manager,
-            String sessionId, String serverName, String instrumentName, TFacilityCycle facilityCycle)
+            String topcatSessionId, String facilityName, String instrumentName, TFacilityCycle facilityCycle)
             throws TopcatException {
+        logger.info("getMyInvestigationsInServerInstrumentAndCycle: topcatSessionId (" + topcatSessionId
+                + "), facilityName (" + facilityName + "), instrumentName (" + instrumentName + ")");
         try {
             TopcatUserSession userSession = (TopcatUserSession) manager
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
-                    .setParameter("topcatSessionId", sessionId).setParameter("serverName", serverName)
+                    .setParameter("topcatSessionId", topcatSessionId).setParameter("facilityName", facilityName)
                     .getSingleResult();
             return getMyInvestigationsInServeInstrumentAndCycle(userSession.getIcatSessionId(), userSession.getUserId()
                     .getServerId(), userSession.getUserId().getName(), userSession.getUserId().getUserSurname(),
@@ -521,9 +547,11 @@ public class UtilityManager {
     private ArrayList<TInvestigation> getMyInvestigationsInServeInstrumentAndCycle(String sessionId,
             TopcatIcatServer server, String userName, String userSurname, String instrumentName,
             TFacilityCycle facilityCycle) throws TopcatException {
-        logger.finest("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
-                + server.getName() + " username:" + userName + " instrument:" + instrumentName + " facilityCycle:"
-                + facilityCycle);
+        if (logger.isDebugEnabled()) {
+            logger.debug("getMyInvestigationsInServerAndInstrument: Searching for investigation in server:"
+                    + server.getName() + " username:" + userName + " instrument:" + instrumentName + " facilityCycle:"
+                    + facilityCycle);
+        }
         try {
             TAdvancedSearchDetails details = new TAdvancedSearchDetails();
             details.getInstrumentList().add(instrumentName);
@@ -534,7 +562,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.searchByAdvancedPagination(sessionId, details, 0, 200);
         } catch (MalformedURLException ex) {
-            logger.warning("getMyInvestigationsInServeInstrumentAndCycle: " + ex.getMessage());
+            logger.error("getMyInvestigationsInServeInstrumentAndCycle: " + ex.getMessage());
         }
 
         return new ArrayList<TInvestigation>();
@@ -545,19 +573,21 @@ public class UtilityManager {
      * the given instrument and facility cycle.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param instrumentName
      * @param facilityCycle
      * @return
      * @throws TopcatException
      */
     public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(EntityManager manager,
-            String sessionId, String serverName, String instrumentName, TFacilityCycle facilityCycle)
+            String topcatSessionId, String facilityName, String instrumentName, TFacilityCycle facilityCycle)
             throws TopcatException {
+        logger.info("getAllInvestigationsInServerInstrumentAndCycle: topcatSessionId (" + topcatSessionId
+                + "), facilityName (" + facilityName + "), instrumentName (" + instrumentName + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getAllInvestigationsInServerInstrumentAndCycle(userSession.getIcatSessionId(), userSession
                     .getUserId().getServerId(), userSession.getUserId().getName(), instrumentName, facilityCycle);
         } catch (javax.persistence.NoResultException ex) {
@@ -589,28 +619,30 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.searchByAdvancedPagination(sessionId, details, 0, 200);
         } catch (MalformedURLException ex) {
-            logger.warning("getAllInvestigationsInServerInstrumentAndCycle: " + ex.getMessage());
+            logger.error("getAllInvestigationsInServerInstrumentAndCycle: " + ex.getMessage());
         }
 
         return new ArrayList<TInvestigation>();
     }
 
     /**
-     * This method returns the investigation details from the given server for
+     * This method returns the investigation details from the given facility for
      * the given investigation id.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param investigationId
      * @return
      * @throws TopcatException
      */
-    public TInvestigation getInvestigationDetails(EntityManager manager, String sessionId, String serverName,
+    public TInvestigation getInvestigationDetails(EntityManager manager, String topcatSessionId, String facilityName,
             String investigationId) throws TopcatException {
+        logger.info("getInvestigationDetails: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), investigationId (" + investigationId + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getInvestigationDetails(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationId);
         } catch (javax.persistence.NoResultException ex) {
@@ -635,7 +667,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getInvestigationDetails(sessionId, Long.valueOf(investigationId));
         } catch (MalformedURLException ex) {
-            logger.warning("getInvestigationDetails: " + ex.getMessage());
+            logger.error("getInvestigationDetails: " + ex.getMessage());
         } catch (AuthenticationException ex) {
             throw new SessionException("Invalid topcat session id");
         }
@@ -647,17 +679,19 @@ public class UtilityManager {
      * input server
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param investigationNumber
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TDataset> getDatasetsInServer(EntityManager manager, String sessionId, String serverName,
+    public ArrayList<TDataset> getDatasetsInServer(EntityManager manager, String topcatSessionId, String facilityName,
             String investigationNumber) throws TopcatException {
+        logger.info("getDatasetsInServer: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), investigationNumber (" + investigationNumber + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getDatasetsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     investigationNumber);
         } catch (javax.persistence.NoResultException ex) {
@@ -682,10 +716,9 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getDatasetsInInvestigation(sessionId, Long.valueOf(investigationNumber));
         } catch (MalformedURLException ex) {
-            logger.warning("getDatasetsInServer: " + ex.getMessage());
-
+            logger.error("getDatasetsInServer: " + ex.getMessage());
         } catch (NullPointerException ex) {
-            logger.warning("getDatasetsInServer: " + ex.getMessage());
+            logger.error("getDatasetsInServer: " + ex.getMessage());
         }
         return new ArrayList<TDataset>();
     }
@@ -695,17 +728,19 @@ public class UtilityManager {
      * the given server.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param datasetId
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TDatasetParameter> getDatasetInfo(EntityManager manager, String sessionId, String serverName,
-            String datasetId) throws TopcatException {
+    public ArrayList<TDatasetParameter> getDatasetInfo(EntityManager manager, String topcatSessionId,
+            String facilityName, String datasetId) throws TopcatException {
+        logger.info("getDatasetInfo: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), datasetId (" + datasetId + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getDatasetInfo(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), datasetId);
         } catch (javax.persistence.NoResultException ex) {
         }
@@ -729,7 +764,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getParametersInDataset(sessionId, Long.valueOf(datasetId));
         } catch (MalformedURLException ex) {
-            logger.warning("getDatasetInfo: " + ex.getMessage());
+            logger.error("getDatasetInfo: " + ex.getMessage());
         }
         return new ArrayList<TDatasetParameter>();
     }
@@ -739,17 +774,19 @@ public class UtilityManager {
      * in a given input server
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param datasetId
      * @return
      * @throws TopcatException
      */
-    public String getDatasetName(EntityManager manager, String sessionId, String serverName, String datasetId)
+    public String getDatasetName(EntityManager manager, String topcatSessionId, String facilityName, String datasetId)
             throws TopcatException {
+        logger.info("getDatasetName: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), datasetId (" + datasetId + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getDatasetName(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), datasetId);
         } catch (javax.persistence.NoResultException ex) {
         }
@@ -772,7 +809,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getDatasetName(sessionId, Long.valueOf(datasetId));
         } catch (MalformedURLException ex) {
-            logger.warning("getDatasetName: " + ex.getMessage());
+            logger.error("getDatasetName: " + ex.getMessage());
         }
         return "";
     }
@@ -782,17 +819,19 @@ public class UtilityManager {
      * given input server
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param datasetId
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TDatafile> getDatafilesInServer(EntityManager manager, String sessionId, String serverName,
-            String datasetId) throws TopcatException {
+    public ArrayList<TDatafile> getDatafilesInServer(EntityManager manager, String topcatSessionId,
+            String facilityName, String datasetId) throws TopcatException {
+        logger.info("getDatafilesInServer: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), datasetId (" + datasetId + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getDatafilesInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId(),
                     datasetId);
         } catch (javax.persistence.NoResultException ex) {
@@ -817,7 +856,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getDatafilesInDataset(sessionId, Long.valueOf(datasetId));
         } catch (MalformedURLException ex) {
-            logger.warning("getDatafilesInServer: " + ex.getMessage());
+            logger.error("getDatafilesInServer: " + ex.getMessage());
         }
         return new ArrayList<TDatafile>();
     }
@@ -827,17 +866,19 @@ public class UtilityManager {
      * the given server.
      * 
      * @param manager
-     * @param sessionId
-     * @param serverName
+     * @param topcatSessionId
+     * @param facilityName
      * @param datafileId
      * @return
      * @throws TopcatException
      */
-    public ArrayList<TDatafileParameter> getDatafileInfo(EntityManager manager, String sessionId, String serverName,
-            String datafileId) throws TopcatException {
+    public ArrayList<TDatafileParameter> getDatafileInfo(EntityManager manager, String topcatSessionId,
+            String facilityName, String datafileId) throws TopcatException {
+        logger.info("getDatafileInfo: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), datafileId (" + datafileId + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
+                    topcatSessionId, facilityName);
             return getDatafileInfo(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), datafileId);
         } catch (javax.persistence.NoResultException ex) {
         }
@@ -861,7 +902,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getParametersInDatafile(sessionId, Long.valueOf(datafileId));
         } catch (MalformedURLException ex) {
-            logger.warning("getDatafileInfo: " + ex.getMessage());
+            logger.error("getDatafileInfo: " + ex.getMessage());
         }
         return new ArrayList<TDatafileParameter>();
     }
@@ -870,16 +911,17 @@ public class UtilityManager {
      * Get a list of parameter names known to a facility.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      * @param facilityName
      * @return
      * @throws TopcatException
      */
-    public ArrayList<String> getParameterNames(EntityManager manager, String sessionId, String facilityName)
+    public ArrayList<String> getParameterNames(EntityManager manager, String topcatSessionId, String facilityName)
             throws TopcatException {
+        logger.info("getParameterNames: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, facilityName);
+                    topcatSessionId, facilityName);
             return getParameterNames(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
         }
@@ -892,7 +934,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getParameterNames(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getParameterNames: " + ex.getMessage());
+            logger.error("getParameterNames: " + ex.getMessage());
         }
         return new ArrayList<String>();
     }
@@ -901,17 +943,19 @@ public class UtilityManager {
      * Get a list of parameter units for the given facility and parameter name.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      * @param facilityName
      * @param name
      * @return
      * @throws TopcatException
      */
-    public ArrayList<String> getParameterUnits(EntityManager manager, String sessionId, String facilityName, String name)
-            throws TopcatException {
+    public ArrayList<String> getParameterUnits(EntityManager manager, String topcatSessionId, String facilityName,
+            String name) throws TopcatException {
+        logger.info("getParameterUnits: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), name (" + name + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, facilityName);
+                    topcatSessionId, facilityName);
             return getParameterUnits(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), name);
         } catch (javax.persistence.NoResultException ex) {
         }
@@ -925,7 +969,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getParameterUnits(sessionId, name);
         } catch (MalformedURLException ex) {
-            logger.warning("getParameterUnits: " + ex.getMessage());
+            logger.error("getParameterUnits: " + ex.getMessage());
         }
         return new ArrayList<String>();
     }
@@ -936,18 +980,20 @@ public class UtilityManager {
      * return types for all units.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      * @param facilityName
      * @param name
      * @param units
      * @return
      * @throws TopcatException
      */
-    public ArrayList<String> getParameterTypes(EntityManager manager, String sessionId, String facilityName,
+    public ArrayList<String> getParameterTypes(EntityManager manager, String topcatSessionId, String facilityName,
             String name, String units) throws TopcatException {
+        logger.info("getParameterTypes: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), name (" + name + "), units (" + units + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, facilityName);
+                    topcatSessionId, facilityName);
             return getParameterTypes(userSession.getIcatSessionId(), userSession.getUserId().getServerId(), name, units);
         } catch (javax.persistence.NoResultException ex) {
         }
@@ -961,23 +1007,25 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.getParameterTypes(sessionId, name, units);
         } catch (MalformedURLException ex) {
-            logger.warning("getParameterTypes: " + ex.getMessage());
+            logger.error("getParameterTypes: " + ex.getMessage());
         }
         return null;
     }
 
-    public String getDatafilesDownloadURL(EntityManager manager, String sessionId, String serverName,
+    public String getDatafilesDownloadURL(EntityManager manager, String topcatSessionId, String facilityName,
             ArrayList<Long> datafileIds) throws TopcatException {
+        logger.info("getDatafilesDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), datafileIds.size (" + datafileIds.size() + ")");
         String result = "";
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, serverName);
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(serverName,
+                    topcatSessionId, facilityName);
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
                     userSession.getUserId().getServerId().getVersion(),
                     userSession.getUserId().getServerId().getServerUrl());
             return service.downloadDatafiles(userSession.getIcatSessionId(), datafileIds);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(UtilityManager.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("getDatafilesDownloadURL: " + ex.getMessage());
         }
         return result;
     }
@@ -987,7 +1035,7 @@ public class UtilityManager {
      * facility.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      *            a string containing the session id
      * @param facilityName
      *            a string containing the facility name
@@ -996,36 +1044,42 @@ public class UtilityManager {
      * @return a string containing a URL
      * @throws TopcatException
      */
-    public String getDatasetDownloadURL(EntityManager manager, String sessionId, String facilityName, Long datasetId)
-            throws TopcatException {
+    public String getDatasetDownloadURL(EntityManager manager, String topcatSessionId, String facilityName,
+            Long datasetId) throws TopcatException {
+        logger.info("getDatasetDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), datasetId (" + datasetId + ")");
         String result = "";
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, facilityName);
+                    topcatSessionId, facilityName);
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
                     userSession.getUserId().getServerId().getVersion(),
                     userSession.getUserId().getServerId().getServerUrl());
             return service.downloadDataset(userSession.getIcatSessionId(), datasetId);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(UtilityManager.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("getDatasetDownloadURL: " + ex.getMessage());
         }
         return result;
     }
 
-    public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String sessionId, String facilityName)
+    public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String topcatSessionId, String facilityName)
             throws TopcatException {
-        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
-                facilityName);
+        logger.info("getMyDownloadList: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
+        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                topcatSessionId, facilityName);
         manager.createNamedQuery("TopcatUserDownload.cleanup").executeUpdate();
         List<TopcatUserDownload> userDownloads = manager.createNamedQuery("TopcatUserDownload.findByUserId")
                 .setParameter("userId", userSession.getUserId()).getResultList();
         return userDownloads;
     }
 
-    public void addMyDownload(EntityManager manager, String sessionId, String facilityName, Date submitTime,
+    public void addMyDownload(EntityManager manager, String topcatSessionId, String facilityName, Date submitTime,
             String downloadName, String status, Date expiryTime, String url, String preparedId) throws TopcatException {
-        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
-                facilityName);
+        logger.info("addMyDownload: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), downloadName (" + downloadName + "), status (" + status + "), url (" + url + "), preparedId ("
+                + preparedId + ")");
+        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                topcatSessionId, facilityName);
         TopcatUserDownload download = new TopcatUserDownload();
         download.setName(downloadName);
         download.setUrl(url);
@@ -1037,8 +1091,10 @@ public class UtilityManager {
         manager.persist(download);
     }
 
-    public void updateDownloadStatus(EntityManager manager, String sessionId, String facilityName, String url,
+    public void updateDownloadStatus(EntityManager manager, String topcatSessionId, String facilityName, String url,
             String updatedUrl, String status) {
+        logger.info("updateDownloadStatus: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), url (" + url + "), updatedUrl (" + updatedUrl + "), status (" + status + ")");
         manager.createNamedQuery("TopcatUserDownload.updateStatus").setParameter("url", url)
                 .setParameter("updatedUrl", updatedUrl).setParameter("status", status).executeUpdate();
         manager.flush();
@@ -1053,10 +1109,11 @@ public class UtilityManager {
      * @return a list of TAuthentication
      */
     public List<TAuthentication> getAuthenticationDetails(EntityManager manager, String facilityName) {
+        logger.info("getAuthenticationDetails: facilityName (" + facilityName + ")");
         List<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
 
         List<?> icatAuthentications = manager.createNamedQuery("IcatAuthentication.findByServerName")
-                .setParameter("serverName", facilityName).getResultList();
+                .setParameter("facilityName", facilityName).getResultList();
         for (Object icatAuthentication : icatAuthentications) {
             authenticationDetails.add(new TAuthentication(facilityName, ((IcatAuthentication) icatAuthentication)
                     .getPluginName(), ((IcatAuthentication) icatAuthentication).getAuthenticationServiceUrl(),
@@ -1069,19 +1126,21 @@ public class UtilityManager {
      * Get the data file formats for the given facility.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      * @param facilityName
      * @return
      * @throws TopcatException
      */
-    public List<TDatafileFormat> getDatafileFormats(EntityManager manager, String sessionId, String facilityName)
+    public List<TDatafileFormat> getDatafileFormats(EntityManager manager, String topcatSessionId, String facilityName)
             throws TopcatException {
+        logger.info("getDatafileFormats: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, facilityName);
+                    topcatSessionId, facilityName);
             return getDatafileFormats(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
-            logger.warning("getDatafileFormats: " + ex.getMessage());
+            logger.error("getDatafileFormats: " + ex.getMessage());
         }
         return null;
     }
@@ -1092,7 +1151,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.listDatafileFormats(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getDatafileFormats: " + ex.getMessage());
+            logger.error("getDatafileFormats: " + ex.getMessage());
         }
         return null;
     }
@@ -1101,19 +1160,20 @@ public class UtilityManager {
      * Get the data set types for the given facility.
      * 
      * @param manager
-     * @param sessionId
+     * @param topcatSessionId
      * @param facilityName
      * @return
      * @throws TopcatException
      */
-    public List<String> getDatasetTypes(EntityManager manager, String sessionId, String facilityName)
+    public List<String> getDatasetTypes(EntityManager manager, String topcatSessionId, String facilityName)
             throws TopcatException {
+        logger.info("getDatasetTypes: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    sessionId, facilityName);
+                    topcatSessionId, facilityName);
             return getDatasetTypes(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
-            logger.warning("getDatasetTypes: " + ex.getMessage());
+            logger.error("getDatasetTypes: " + ex.getMessage());
         }
         return null;
     }
@@ -1124,7 +1184,7 @@ public class UtilityManager {
                     server.getVersion(), server.getServerUrl());
             return service.listDatasetTypes(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getDatasetTypes: " + ex.getMessage());
+            logger.error("getDatasetTypes: " + ex.getMessage());
         }
         return null;
     }

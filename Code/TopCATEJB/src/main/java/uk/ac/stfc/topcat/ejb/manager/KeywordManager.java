@@ -25,9 +25,10 @@ package uk.ac.stfc.topcat.ejb.manager;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+
+import org.apache.log4j.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -60,21 +61,21 @@ public class KeywordManager {
      * of keywords in icat server.
      * 
      * @param sessionId
-     *            : Sesssion id for the icat server.
+     *            : Session id for the icat server.
      * @param serverURL
      *            : icat server URL.
      * @return : list of keywords
      * @throws TopcatException
      */
-    private List<String> getKeywordsFromServer(String sessionId, String serverName, String serverVersion,
+    private List<String> getKeywordsFromServer(String sessionId, String facilityName, String serverVersion,
             String serverURL) throws TopcatException {
         List<String> resultKeywords = null;
         try {
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(serverName,
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
                     serverVersion, serverURL);
             resultKeywords = service.getKeywordsForUser(sessionId);
         } catch (MalformedURLException ex) {
-            logger.warning("getKeywordsFromServer: " + ex.getMessage());
+            logger.error("getKeywordsFromServer: " + ex.getMessage());
         }
         return resultKeywords;
     }
@@ -93,22 +94,22 @@ public class KeywordManager {
      *            : number of investigations to return
      * @return: list of investigations.
      */
-    private List<TInvestigation> getInvestigationsFromServer(String sessionId, String serverName, String serverVersion,
-            String serverURL, int startIndex, int count) {
-        logger.finest("getInvestigationsFromServer: from Server " + serverURL + " iCAT sessionId " + sessionId
+    private List<TInvestigation> getInvestigationsFromServer(String sessionId, String facilityName,
+            String serverVersion, String serverURL, int startIndex, int count) {
+        logger.debug("getInvestigationsFromServer: from Server " + serverURL + " iCAT sessionId " + sessionId
                 + " startIndex: " + startIndex + " count:" + count);
         List<TInvestigation> resultInvestigations = null;
         try {
             TAdvancedSearchDetails details = new TAdvancedSearchDetails();
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(serverName,
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
                     serverVersion, serverURL);
             return service.searchByAdvancedPagination(sessionId, details, startIndex, count);
         } catch (MalformedURLException ex) {
-            logger.warning("getInvestigationsFromServer: " + ex.getMessage());
+            logger.error("getInvestigationsFromServer: " + ex.getMessage());
         } catch (javax.xml.ws.WebServiceException ex) {
-            logger.warning("getInvestigationsFromServer: " + ex.getMessage());
+            logger.warn("getInvestigationsFromServer: " + ex.getMessage());
         } catch (TopcatException ex) {
-            logger.warning("getInvestigationsFromServer: " + ex.getMessage());
+            logger.warn("getInvestigationsFromServer: " + ex.getMessage());
         }
         return resultInvestigations;
     }
@@ -126,16 +127,16 @@ public class KeywordManager {
      * @return : keywords corresponding to input investigation
      * @throws TopcatException
      */
-    private ArrayList<String> getKeywordsOfInvestigations(String sessionId, String serverName, String serverVersion,
+    private ArrayList<String> getKeywordsOfInvestigations(String sessionId, String facilityName, String serverVersion,
             String serverURL, TInvestigation inv) throws TopcatException {
-        logger.finest("getKeywordsOfInvestigations: from server " + serverURL + " with iCAT sessionId: " + sessionId);
+        logger.debug("getKeywordsOfInvestigations: from server " + serverURL + " with iCAT sessionId: " + sessionId);
         ArrayList<String> resultKeywords = null;
         try {
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(serverName,
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
                     serverVersion, serverURL);
             return service.getKeywordsInInvestigation(sessionId, Long.valueOf(inv.getInvestigationId()));
         } catch (MalformedURLException ex) {
-            logger.warning("getKeywordsOfInvestigations: " + ex.getMessage());
+            logger.error("getKeywordsOfInvestigations: " + ex.getMessage());
         }
         return resultKeywords;
     }
@@ -153,7 +154,7 @@ public class KeywordManager {
     private void UpdateKeywordsFromServerUsingInvestigations(EntityManager manager, TopcatUserSession session)
             throws TopcatException {
         int pageSize = 200;
-        // This is a complex bit of getting the loop of investigation by pagning
+        // This is a complex bit of getting the loop of investigation by paging
         // through all public investigations
         for (int invCount = 0;; invCount += pageSize) {
             List<TInvestigation> allPublicInvestigations = getInvestigationsFromServer(session.getIcatSessionId(),
@@ -247,6 +248,7 @@ public class KeywordManager {
      * @throws TopcatException
      */
     public void UpdateKeywordsFromAll(EntityManager manager) throws TopcatException {
+        logger.info("UpdateKeywordsFromAll");
         // Get all the server info
         List<TopcatUserSession> sessionList = manager.createNamedQuery("TopcatUserSession.findByAnonymous")
                 .getResultList();
@@ -295,9 +297,9 @@ public class KeywordManager {
      * 
      * @param manager
      *            : entity manager for the icat server.
-     * @param sessionId
+     * @param topcatSessionId
      *            : Topcat session id
-     * @param ServerName
+     * @param facilityName
      *            : icat Server name
      * @param partialKey
      *            : partial keyword
@@ -307,23 +309,25 @@ public class KeywordManager {
      *          maxResultKeywords
      * @throws TopcatException
      */
-    public ArrayList<String> getKeywordsWithPrefix(EntityManager manager, String sessionId, String serverName,
+    public ArrayList<String> getKeywordsWithPrefix(EntityManager manager, String topcatSessionId, String facilityName,
             String partialKey, int numberOfKeywords) throws TopcatException {
-
+        logger.info("getKeywordsWithPrefix: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), partialKey (" + partialKey + "), numberOfKeywords (" + numberOfKeywords + ")");
         // Check the configuration setting for cache
         if (Configuration.INSTANCE.isKeywordsCached()) {
             return getKeywordsWithPrefixFromLocalCache(manager, partialKey);
         } else {
-            return getKeywordsWithPrefixFromWebservice(manager, sessionId, serverName, partialKey, numberOfKeywords);
+            return getKeywordsWithPrefixFromWebservice(manager, topcatSessionId, facilityName, partialKey,
+                    numberOfKeywords);
         }
     }
 
     /**
      * This method gets the keywords from the webservice.
      * 
-     * @param sessionId
+     * @param topcatSessionId
      *            : Topcat session id
-     * @param ServerName
+     * @param facilityName
      *            : icat Server name
      * @param partialKey
      *            : partial keyword
@@ -333,14 +337,14 @@ public class KeywordManager {
      *         the user have access to.
      * @throws TopcatException
      */
-    private ArrayList<String> getKeywordsWithPrefixFromWebservice(EntityManager manager, String sessionId,
-            String serverName, String partialKey, int numberOfKeywords) throws TopcatException {
+    private ArrayList<String> getKeywordsWithPrefixFromWebservice(EntityManager manager, String topcatSessionId,
+            String facilityName, String partialKey, int numberOfKeywords) throws TopcatException {
         ArrayList<String> keywords = new ArrayList<String>();
         // Get the user session id from the topcat session id
-        logger.finest("getKeywordsWithPrefixFromWebservice: TopcatSessionId (" + sessionId + ") serverName ("
-                + serverName + ")");
-        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager, sessionId,
-                serverName);
+        logger.debug("getKeywordsWithPrefixFromWebservice: topcatSessionId (" + topcatSessionId + ") facilityName ("
+                + facilityName + ")");
+        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                topcatSessionId, facilityName);
         if (userSession != null) {
             try {
                 ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(
@@ -350,7 +354,7 @@ public class KeywordManager {
                 keywords = service.getKeywordsForUserWithStartMax(userSession.getIcatSessionId(), partialKey,
                         numberOfKeywords);
             } catch (MalformedURLException ex) {
-                logger.warning("getKeywordsWithPrefixFromWebservice: " + ex.getMessage());
+                logger.error("getKeywordsWithPrefixFromWebservice: " + ex.getMessage());
             }
         }
         return keywords;

@@ -73,91 +73,92 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public ArrayList<String> getInstrumentNames(String sessionId, String serverName) throws TopcatException {
-        return utilManager.getInstrumentNames(manager, sessionId, serverName);
+    public ArrayList<String> getInstrumentNames(String sessionId, String facilityName) throws TopcatException {
+        return utilManager.getInstrumentNames(manager, sessionId, facilityName);
     }
 
     @Override
-    public ArrayList<String> getInvestigationTypes(String sessionId, String serverName) throws TopcatException {
-        return utilManager.getInvestigationTypes(manager, sessionId, serverName);
+    public ArrayList<String> getInvestigationTypes(String sessionId, String facilityName) throws TopcatException {
+        return utilManager.getInvestigationTypes(manager, sessionId, facilityName);
     }
 
     @Override
-    public List<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String serverName, String instrument)
+    public List<TFacilityCycle> getFacilityCyclesWithInstrument(String sessionId, String facilityName, String instrument)
             throws TopcatException {
-        return utilManager.getFacilityCyclesWithInstrument(manager, sessionId, serverName, instrument);
+        return utilManager.getFacilityCyclesWithInstrument(manager, sessionId, facilityName, instrument);
     }
 
     @Override
-    public List<TInvestigation> getMyInvestigationsInServer(String sessionId, String serverName) throws TopcatException {
-        return utilManager.getMyInvestigationsInServer(manager, sessionId, serverName);
-    }
-
-    @Override
-    public List<TInvestigation> getAllInvestigationsInServer(String sessionId, String serverName)
+    public List<TInvestigation> getMyInvestigationsInServer(String sessionId, String facilityName)
             throws TopcatException {
-        return utilManager.getAllInvestigationsInServer(manager, sessionId, serverName);
+        return utilManager.getMyInvestigationsInServer(manager, sessionId, facilityName);
     }
 
     @Override
-    public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String serverName,
+    public List<TInvestigation> getAllInvestigationsInServer(String sessionId, String facilityName)
+            throws TopcatException {
+        return utilManager.getAllInvestigationsInServer(manager, sessionId, facilityName);
+    }
+
+    @Override
+    public ArrayList<TInvestigation> getMyInvestigationsInServerAndInstrument(String sessionId, String facilityName,
             String instrumentName) throws TopcatException {
-        return utilManager.getMyInvestigationsInServerAndInstrument(manager, sessionId, serverName, instrumentName);
+        return utilManager.getMyInvestigationsInServerAndInstrument(manager, sessionId, facilityName, instrumentName);
     }
 
     @Override
-    public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String serverName,
+    public ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId, String facilityName,
             String instrumentName) throws TopcatException {
-        return utilManager.getAllInvestigationsInServerAndInstrument(manager, sessionId, serverName, instrumentName);
+        return utilManager.getAllInvestigationsInServerAndInstrument(manager, sessionId, facilityName, instrumentName);
     }
 
     @Override
-    public ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId, String serverName,
-            String instrumentName, TFacilityCycle cycle) throws TopcatException {
-        return utilManager.getMyInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName,
+    public ArrayList<TInvestigation> getMyInvestigationsInServerInstrumentAndCycle(String sessionId,
+            String facilityName, String instrumentName, TFacilityCycle cycle) throws TopcatException {
+        return utilManager.getMyInvestigationsInServerInstrumentAndCycle(manager, sessionId, facilityName,
                 instrumentName, cycle);
     }
 
     @Override
     public ArrayList<TInvestigation> getAllInvestigationsInServerInstrumentAndCycle(String sessionId,
-            String serverName, String instrumentName, TFacilityCycle cycle) throws TopcatException {
-        return utilManager.getAllInvestigationsInServerInstrumentAndCycle(manager, sessionId, serverName,
+            String facilityName, String instrumentName, TFacilityCycle cycle) throws TopcatException {
+        return utilManager.getAllInvestigationsInServerInstrumentAndCycle(manager, sessionId, facilityName,
                 instrumentName, cycle);
     }
 
     @Override
-    public TInvestigation getInvestigationDetails(String sessionId, String serverName, String investigationId)
+    public TInvestigation getInvestigationDetails(String sessionId, String facilityName, String investigationId)
             throws TopcatException {
-        return utilManager.getInvestigationDetails(manager, sessionId, serverName, investigationId);
+        return utilManager.getInvestigationDetails(manager, sessionId, facilityName, investigationId);
     }
 
     @Override
-    public ArrayList<TDataset> getDatasetsInServer(String sessionId, String serverName, String investigationId)
+    public ArrayList<TDataset> getDatasetsInServer(String sessionId, String facilityName, String investigationId)
             throws TopcatException {
-        return utilManager.getDatasetsInServer(manager, sessionId, serverName, investigationId);
+        return utilManager.getDatasetsInServer(manager, sessionId, facilityName, investigationId);
     }
 
     @Override
-    public String getDatasetName(String sessionId, String serverName, String datasetId) throws TopcatException {
-        return utilManager.getDatasetName(manager, sessionId, serverName, datasetId);
+    public String getDatasetName(String sessionId, String facilityName, String datasetId) throws TopcatException {
+        return utilManager.getDatasetName(manager, sessionId, facilityName, datasetId);
     }
 
     @Override
-    public ArrayList<TDatafile> getDatafilesInServer(String sessionId, String serverName, String datasetId)
+    public ArrayList<TDatafile> getDatafilesInServer(String sessionId, String facilityName, String datasetId)
             throws TopcatException {
-        return utilManager.getDatafilesInServer(manager, sessionId, serverName, datasetId);
+        return utilManager.getDatafilesInServer(manager, sessionId, facilityName, datasetId);
     }
 
     @Override
-    public ArrayList<TDatasetParameter> getDatasetInfoInServer(String sessionId, String serverName, String datasetId)
+    public ArrayList<TDatasetParameter> getDatasetInfoInServer(String sessionId, String facilityName, String datasetId)
             throws TopcatException {
-        return utilManager.getDatasetInfo(manager, sessionId, serverName, datasetId);
+        return utilManager.getDatasetInfo(manager, sessionId, facilityName, datasetId);
     }
 
     @Override
-    public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId, String serverName, String datafileId)
-            throws TopcatException {
-        return utilManager.getDatafileInfo(manager, sessionId, serverName, datafileId);
+    public ArrayList<TDatafileParameter> getDatafileInfoInServer(String sessionId, String facilityName,
+            String datafileId) throws TopcatException {
+        return utilManager.getDatafileInfo(manager, sessionId, facilityName, datafileId);
     }
 
     @Override
@@ -178,19 +179,19 @@ public class UtilityBean implements UtilityLocal {
     }
 
     @Override
-    public String getDatafilesDownloadURL(String sessionId, String serverName, ArrayList<Long> datafileIds)
+    public String getDatafilesDownloadURL(String sessionId, String facilityName, ArrayList<Long> datafileIds)
             throws TopcatException {
-        return utilManager.getDatafilesDownloadURL(manager, sessionId, serverName, datafileIds);
+        return utilManager.getDatafilesDownloadURL(manager, sessionId, facilityName, datafileIds);
     }
 
     @Override
-    public String getDatasetDownloadURL(String sessionId, String serverName, Long datasetId) throws TopcatException {
-        return utilManager.getDatasetDownloadURL(manager, sessionId, serverName, datasetId);
+    public String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException {
+        return utilManager.getDatasetDownloadURL(manager, sessionId, facilityName, datasetId);
     }
 
     @Override
-    public List<TopcatUserDownload> getMyDownloadList(String sessionId, String serverName) throws TopcatException {
-        return utilManager.getMyDownloadList(manager, sessionId, serverName);
+    public List<TopcatUserDownload> getMyDownloadList(String sessionId, String facilityName) throws TopcatException {
+        return utilManager.getMyDownloadList(manager, sessionId, facilityName);
     }
 
     @Override

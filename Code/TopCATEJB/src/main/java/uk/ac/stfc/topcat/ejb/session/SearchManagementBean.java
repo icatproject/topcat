@@ -61,26 +61,27 @@ public class SearchManagementBean implements SearchManagementBeanLocal {
 
     @Override
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywords(String topcatSessionId,
-            ArrayList<String> keywords) {
+            ArrayList<String> keywords) throws TopcatException {
         return basicSearchManager.searchBasicInvestigationByKeywords(manager, topcatSessionId, keywords);
     }
 
     @Override
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords) throws TopcatException {
-        return basicSearchManager.searchBasicInvestigationByKeywordsInServer(manager, topcatSessionId, serverName,
+            String facilityName, ArrayList<String> keywords) throws TopcatException {
+        return basicSearchManager.searchBasicInvestigationByKeywordsInServer(manager, topcatSessionId, facilityName,
                 keywords);
     }
 
     @Override
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords) throws TopcatException {
-        return basicSearchManager.searchBasicMyInvestigationByKeywordsInServer(manager, topcatSessionId, serverName,
+            String facilityName, ArrayList<String> keywords) throws TopcatException {
+        return basicSearchManager.searchBasicMyInvestigationByKeywordsInServer(manager, topcatSessionId, facilityName,
                 keywords);
     }
 
     @Override
-    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId, List<String> keywords) {
+    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId, List<String> keywords)
+            throws TopcatException {
         return basicSearchManager.searchBasicMyInvestigationByKeywords(manager, topcatSessionId, keywords);
     }
 
@@ -91,9 +92,9 @@ public class SearchManagementBean implements SearchManagementBeanLocal {
     }
 
     @Override
-    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String serverName,
+    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
-        return advancedSearchManager.searchAdvancedInvestigationInServer(manager, topcatSessionId, serverName,
+        return advancedSearchManager.searchAdvancedInvestigationInServer(manager, topcatSessionId, facilityName,
                 searchDetails);
     }
 
@@ -105,9 +106,9 @@ public class SearchManagementBean implements SearchManagementBeanLocal {
     }
 
     @Override
-    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String serverName,
+    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
-        return advancedSearchManager.searchAdvancedDatafilesInServer(manager, topcatSessionId, serverName,
+        return advancedSearchManager.searchAdvancedDatafilesInServer(manager, topcatSessionId, facilityName,
                 searchDetails);
     }
 

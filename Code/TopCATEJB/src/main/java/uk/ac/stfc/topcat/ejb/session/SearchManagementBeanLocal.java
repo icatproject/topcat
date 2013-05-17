@@ -45,26 +45,27 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 @Local
 public interface SearchManagementBeanLocal {
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywords(String topcatSessionId,
-            ArrayList<String> keywords);
+            ArrayList<String> keywords) throws TopcatException;
 
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords) throws TopcatException;
+            String facilityName, ArrayList<String> keywords) throws TopcatException;
 
-    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId, List<String> keywords);
+    public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(String topcatSessionId, List<String> keywords)
+            throws TopcatException;
 
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(String topcatSessionId,
-            String serverName, ArrayList<String> keywords) throws TopcatException;
+            String facilityName, ArrayList<String> keywords) throws TopcatException;
 
     public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
 
-    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String serverName,
+    public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
 
     public ArrayList<TDataset> searchForDatasetsByParameter(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
 
-    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String serverName,
+    public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
 
 }

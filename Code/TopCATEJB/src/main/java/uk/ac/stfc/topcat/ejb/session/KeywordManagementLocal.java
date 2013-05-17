@@ -42,7 +42,7 @@ public interface KeywordManagementLocal {
 
     void updateAllKeywords() throws TopcatException;
 
-    ArrayList<String> getKeywordsWithPrefix(String sessionId, String serverName, String partialKey, int numberOfKeywords)
-            throws TopcatException;
+    ArrayList<String> getKeywordsWithPrefix(String sessionId, String facilityName, String partialKey,
+            int numberOfKeywords) throws TopcatException;
 
 }

@@ -25,9 +25,10 @@ package uk.ac.stfc.topcat.ejb.manager;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+
+import org.apache.log4j.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -36,7 +37,7 @@ import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
 /**
- * This class is the manager for basic search of mulitple icat's.
+ * This class is the manager for basic search of multiple icat's.
  * <p>
  * 
  * @author Mr. Srikanth Nagella
@@ -57,13 +58,14 @@ public class BasicSearchManager {
      * @param topcatSessionId
      * @param keywords
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywords(EntityManager manager, String topcatSessionId,
-            ArrayList<String> keywords) {
+            ArrayList<String> keywords) throws TopcatException {
+        logger.info("searchBasicInvestigationByKeywords: topcatSessionId (" + topcatSessionId
+                + "), number of keywords " + keywords.size());
         // Get the list of valid sessions using topcatSessionId
         // Go through each icat session and gather the results.
-        logger.finest("searchBasicInvestigationByKeywords: using topcatSessionId: (" + topcatSessionId
-                + ") Number of keywords:(" + keywords.size() + ")");
         ArrayList<TInvestigation> resultInvestigations = null;
         List<TopcatUserSession> userSessions = UserManager.getValidUserSessionByTopcatSession(manager, topcatSessionId);
         for (int i = 0; i < userSessions.size(); i++) {
@@ -86,10 +88,11 @@ public class BasicSearchManager {
      * @param session
      * @param keywords
      * @return
+     * @throws TopcatException
      */
     private ArrayList<TInvestigation> searchBasicInvestigationByKeywordsUsingICATSession(TopcatUserSession session,
-            ArrayList<String> keywords) {
-        logger.finest("searchBasicInvestigationByKeywordsUsingICATSession: Searching server "
+            ArrayList<String> keywords) throws TopcatException {
+        logger.debug("searchBasicInvestigationByKeywordsUsingICATSession: Searching server "
                 + session.getUserId().getServerId().getServerUrl() + "  with iCAT session id "
                 + session.getIcatSessionId());
         // Get the ICAT Service url
@@ -100,33 +103,36 @@ public class BasicSearchManager {
                     session.getUserId().getServerId().getName(), session.getUserId().getServerId().getVersion(),
                     session.getUserId().getServerId().getServerUrl());
             return service.searchByKeywords(session.getIcatSessionId(), keywords);
+        } catch (TopcatException e) {
+            throw e;
         } catch (MalformedURLException ex) {
-            logger.warning("searchBasicInvestigationByKeywordsUsingICATSession: " + ex.getMessage());
+            logger.error("searchBasicInvestigationByKeywordsUsingICATSession: " + ex.getMessage());
         } catch (Exception ex) {
-            logger.warning("searchBasicInvestigationByKeywordsUsingICATSession: (Unknown expetion)" + ex.getMessage());
+            logger.error("searchBasicInvestigationByKeywordsUsingICATSession: (Unknown expetion)" + ex.getMessage());
         }
         return returnTInvestigations;
     }
 
     /**
-     * This method returns all investigations in a given server having keywords.
+     * This method returns all investigations in a given facility having
+     * keywords.
      * 
      * @param manager
      * @param topcatSessionId
-     * @param serverName
+     * @param facilityName
      * @param keywords
      * @return
      * @throws TopcatException
      */
     public ArrayList<TInvestigation> searchBasicInvestigationByKeywordsInServer(EntityManager manager,
-            String topcatSessionId, String serverName, ArrayList<String> keywords) throws TopcatException {
-        // Get the valid session using topcatSessionId for a serverName
+            String topcatSessionId, String facilityName, ArrayList<String> keywords) throws TopcatException {
+        logger.info("searchBasicInvestigationByKeywordsInServer: topcatSessionId (" + topcatSessionId
+                + "), facilityName " + facilityName + "), number of keywords " + keywords.size());
+        // Get the valid session using topcatSessionId for a facilityName
         // send request to icat server and gather the investigation results.
-        logger.finest("searchBasicInvestigationByKeywordsInServer: Searching server " + serverName
-                + "  with topcat session id " + topcatSessionId + "number of keywords " + keywords.size());
         ArrayList<TInvestigation> resultInvestigations = null;
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                topcatSessionId, serverName);
+                topcatSessionId, facilityName);
         if (userSession != null) {
             resultInvestigations = searchBasicInvestigationByKeywordsUsingICATSession(userSession, keywords);
         }
@@ -141,13 +147,14 @@ public class BasicSearchManager {
      * @param topcatSessionId
      * @param keywords
      * @return
+     * @throws TopcatException
      */
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywords(EntityManager manager,
-            String topcatSessionId, List<String> keywords) {
+            String topcatSessionId, List<String> keywords) throws TopcatException {
+        logger.info("searchBasicMyInvestigationByKeywords: topcatsessionId (" + topcatSessionId
+                + "), number of keywords " + keywords.size());
         // Get the list of valid sessions using topcatSessionId
         // Go through each icat session and gather the results.
-        logger.finest("searchBasicMyInvestigationByKeywords: with topcatsessionId" + topcatSessionId
-                + " number of keywords " + keywords.size());
         ArrayList<TInvestigation> resultInvestigations = null;
         List<TopcatUserSession> userSessions = UserManager.getValidUserSessionByTopcatSession(manager, topcatSessionId);
         for (int i = 0; i < userSessions.size(); i++) {
@@ -164,25 +171,25 @@ public class BasicSearchManager {
     }
 
     /**
-     * This method returns all investigations in a given server having keywords.
-     * only gets the investigation that belongs to user.
+     * This method returns all investigations in a given facility having
+     * keywords. only gets the investigation that belongs to user.
      * 
      * @param manager
      * @param topcatSessionId
-     * @param serverName
+     * @param facilityName
      * @param keywords
      * @return
      * @throws TopcatException
      */
     public ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsInServer(EntityManager manager,
-            String topcatSessionId, String serverName, List<String> keywords) throws TopcatException {
-        // Get the valid session using topcatSessionId for a serverName
+            String topcatSessionId, String facilityName, List<String> keywords) throws TopcatException {
+        logger.info("searchBasicMyInvestigationByKeywordsInServer: topcatSessionId (" + topcatSessionId
+                + "), facilityName " + facilityName + "), number of keywords " + keywords.size());
+        // Get the valid session using topcatSessionId for a facilityName
         // send request to icat server and gather the investigation results.
-        logger.finest("searchBasicMyInvestigationByKeywordsInServer: Searching server " + serverName
-                + " with topcatSessionId (" + topcatSessionId + ") number of keywords" + keywords.size());
         ArrayList<TInvestigation> resultInvestigations = null;
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                topcatSessionId, serverName);
+                topcatSessionId, facilityName);
         if (userSession != null) {
             resultInvestigations = searchBasicMyInvestigationByKeywordsUsingICATSession(userSession, keywords);
         }
@@ -196,13 +203,14 @@ public class BasicSearchManager {
      * @param session
      * @param keywords
      * @return
+     * @throws TopcatException
      */
     private ArrayList<TInvestigation> searchBasicMyInvestigationByKeywordsUsingICATSession(TopcatUserSession session,
-            List<String> keywords) {
+            List<String> keywords) throws TopcatException {
+        logger.debug("searchBasicMyInvestigationByKeywordsUsingICATSession: Searching server "
+                + session.getUserId().getServerId().getServerUrl() + "  with session id " + session.getIcatSessionId());
         // Get the ICAT Service url
         // call the search using keyword method
-        logger.finest("searchBasicMyInvestigationByKeywordsUsingICATSession: Searching server "
-                + session.getUserId().getServerId().getServerUrl() + "  with session id " + session.getIcatSessionId());
         ArrayList<TInvestigation> returnTInvestigations = new ArrayList<TInvestigation>();
         try {
             TAdvancedSearchDetails details = new TAdvancedSearchDetails();
@@ -212,16 +220,18 @@ public class BasicSearchManager {
                     session.getUserId().getServerId().getName(), session.getUserId().getServerId().getVersion(),
                     session.getUserId().getServerId().getServerUrl());
             return service.searchByAdvancedPagination(session.getIcatSessionId(), details, 0, 200);
+        } catch (TopcatException e) {
+            throw e;
         } catch (MalformedURLException ex) {
-            logger.warning("searchBasicMyInvestigationByKeywordsUsingICATSession: " + ex.getMessage());
+            logger.error("searchBasicMyInvestigationByKeywordsUsingICATSession: " + ex.getMessage());
         } catch (Exception ex) {
-            logger.warning("searchBasicMyInvestigationByKeywordsUsingICATSession: (Unknown expetion)" + ex.getMessage());
+            logger.error("searchBasicMyInvestigationByKeywordsUsingICATSession: (Unknown expetion)" + ex.getMessage());
         }
         return returnTInvestigations;
     }
 
     /**
-     * This method returns keywords that mactch the partial key using iCAT
+     * This method returns keywords that match the partial key using iCAT
      * webservice from each server
      * 
      * @param session
@@ -232,17 +242,21 @@ public class BasicSearchManager {
      */
     private List<String> getKeywordsFromServerWithMatchedKey(TopcatUserSession session, String partialKey,
             int numberOfKeywords) throws TopcatException {
+        logger.debug("getKeywordsFromServerWithMatchedKey: getting keywords with the matched key " + partialKey);
         // Get the ICAT Service url
         // call the get keywords method.
-        logger.finest("getKeywordsFromServerWithMatchedKey: getting keywords with the matched key " + partialKey);
         List<String> resultKeywords = null;
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(
                     session.getUserId().getServerId().getName(), session.getUserId().getServerId().getVersion(),
                     session.getUserId().getServerId().getServerUrl());
             return service.getKeywordsForUserWithStartMax(session.getIcatSessionId(), partialKey, numberOfKeywords);
+        } catch (TopcatException e) {
+            throw e;
         } catch (MalformedURLException ex) {
-            logger.warning("getKeywordsFromServerWithMatchedKey: " + ex.getMessage());
+            logger.error("getKeywordsFromServerWithMatchedKey: " + ex.getMessage());
+        } catch (Exception ex) {
+            logger.error("getKeywordsFromServerWithMatchedKey: (Unknown expetion)" + ex.getMessage());
         }
         return resultKeywords;
     }

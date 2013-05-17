@@ -865,9 +865,9 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         } catch (NotFoundException e) {
             // assume this one is finished, possibly expired
             System.out.println("updateDownloadStatus: NotFoundException: " + e.getMessage());
-            downloadModel.setStatus(Constants.STATUS_ERROR);
+            downloadModel.setStatus(Constants.STATUS_EXPIRED);
             utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                    downloadModel.getUrl(), downloadModel.getUrl(), Constants.STATUS_ERROR);
+                    downloadModel.getUrl(), downloadModel.getUrl(), Constants.STATUS_EXPIRED);
             return downloadModel;
         } catch (IDSException e) {
             // something has gone wrong

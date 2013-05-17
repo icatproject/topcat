@@ -73,10 +73,10 @@ public class UserManagementBean implements UserManagementBeanLocal {
     /**
      * This method logs out user from a server
      * @param sessionId : Session id used for communicating with TopCAT
-     * @param serverName : iCAT Server name
+     * @param facilityName : iCAT facility name
      */
-    public void logout(String sessionId, String serverName) throws AuthenticationException {
-        userManager.logout(manager, sessionId, serverName);
+    public void logout(String sessionId, String facilityName) throws AuthenticationException {
+        userManager.logout(manager, sessionId, facilityName);
     }
 
     @Override
@@ -94,14 +94,14 @@ public class UserManagementBean implements UserManagementBeanLocal {
      * This method authenticates and authorises a user with session id to an ICAT server so that the
      * further operation with TopCAT will uses this new credential rather than anonymous user login to icat server.
      * @param sessionId : sessionId used to communicate with TopCAT
-     * @param serverName: ICAT Server name to authenticate with
+     * @param facilityName: ICAT facility name to authenticate with
      * @param authenticationType: a string containing the authentication type
      * @param parameters: a map of parameters that are specific to the authenticationType
      * @param hours: number of hours the authentication to be valid
      */
-    public void login(String sessionId, String serverName, String authenticationType, Map<String, String> parameters)
+    public void login(String sessionId, String facilityName, String authenticationType, Map<String, String> parameters)
             throws AuthenticationException {
-        userManager.login(manager, sessionId, serverName, authenticationType, parameters);
+        userManager.login(manager, sessionId, facilityName, authenticationType, parameters);
     }
 
     /**
@@ -109,12 +109,12 @@ public class UserManagementBean implements UserManagementBeanLocal {
      * 
      * @param sessionId
      *            sessionId used to communicate with TopCAT
-     * @param serverName
-     *            ICAT Server name to check with
+     * @param facilityName
+     *            ICAT facility name to check with
      */
     @Override
-    public Boolean isSessionValid(String sessionId, String serverName) {
-        return userManager.isSessionValid(manager, sessionId, serverName);
+    public Boolean isSessionValid(String sessionId, String facilityName) {
+        return userManager.isSessionValid(manager, sessionId, facilityName);
     }
 
     @Override

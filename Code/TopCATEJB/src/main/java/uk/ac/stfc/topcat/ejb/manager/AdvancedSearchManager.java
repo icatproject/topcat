@@ -25,9 +25,10 @@ package uk.ac.stfc.topcat.ejb.manager;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+
+import org.apache.log4j.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
@@ -51,25 +52,25 @@ public class AdvancedSearchManager {
     private final static Logger logger = Logger.getLogger(AdvancedSearchManager.class.getName());
 
     /**
-     * This method returns all investigations in a given server that meets the
+     * This method returns all investigations in a given facility that meets the
      * AdvancedSearch details.
      * 
      * @param manager
      * @param topcatSessionId
-     * @param serverName
+     * @param facilityName
      * @param searchDetails
      * @return
      * @throws TopcatException
      */
     public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(EntityManager manager, String topcatSessionId,
-            String serverName, TAdvancedSearchDetails searchDetails) throws TopcatException {
-        // Get the valid session using topcatSessionId for a serverName
+            String facilityName, TAdvancedSearchDetails searchDetails) throws TopcatException {
+        logger.info("searchAdvancedInvestigationInServer: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                + facilityName + ")");
+        // Get the valid session using topcatSessionId for a facilityName
         // send request to icat server and gather the investigation results.
         ArrayList<TInvestigation> resultInvestigations = null;
-        logger.finest("SearchAdvancedInvestigationInServer: TopcatSessionId (" + topcatSessionId + ") serverName ("
-                + serverName + ")");
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                topcatSessionId, serverName);
+                topcatSessionId, facilityName);
         if (userSession != null) {
             resultInvestigations = searchAdvancedInvestigationUsingICATSession(userSession, searchDetails);
         }
@@ -88,9 +89,9 @@ public class AdvancedSearchManager {
      */
     public ArrayList<TInvestigation> searchAdvancedInvestigation(EntityManager manager, String topcatSessionId,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
+        logger.info("searchAdvancedInvestigation: topcatSessionId (" + topcatSessionId + ")");
         // Get the list of valid sessions using topcatSessionId
         // Go through each icat session and gather the results.
-        logger.finest("searchAdvancedInvestigation: TopcatSessionId (" + topcatSessionId + ")");
         ArrayList<TInvestigation> resultInvestigations = null;
         List<TopcatUserSession> userSessions = null;
         if (searchDetails.getFacilityList().size() == 0) {
@@ -132,14 +133,14 @@ public class AdvancedSearchManager {
      */
     private ArrayList<TInvestigation> searchAdvancedInvestigationUsingICATSession(TopcatUserSession session,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
-        logger.fine("searchAdvancedInvestigationUsingICATSession: Searching server "
+        logger.debug("searchAdvancedInvestigationUsingICATSession: Searching server "
                 + session.getUserId().getServerId().getServerUrl() + "  with icat session id "
                 + session.getIcatSessionId());
         // Get the ICAT Service url
         // call the search using keyword method
         ArrayList<TInvestigation> returnTInvestigations = new ArrayList<TInvestigation>();
         try {
-            logger.fine(session.getUserId().getServerId().getName() + " Version:"
+            logger.trace(session.getUserId().getServerId().getName() + " Version:"
                     + session.getUserId().getServerId().getVersion() + "  URL: "
                     + session.getUserId().getServerId().getServerUrl());
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(
@@ -149,9 +150,9 @@ public class AdvancedSearchManager {
         } catch (TopcatException e) {
             throw e;
         } catch (MalformedURLException ex) {
-            logger.warning("searchAdvancedInvestigationUsingICATSession:" + ex.getMessage());
+            logger.error("searchAdvancedInvestigationUsingICATSession:" + ex.getMessage());
         } catch (Exception ex) {
-            logger.warning("searchAdvancedInvestigationUsingICATSession: (Unknown expetion)" + ex.getMessage());
+            logger.error("searchAdvancedInvestigationUsingICATSession: (Unknown expetion)" + ex.getMessage());
         }
         return returnTInvestigations;
     }
@@ -162,20 +163,20 @@ public class AdvancedSearchManager {
      * 
      * @param manager
      * @param topcatSessionId
-     * @param serverName
+     * @param facilityName
      * @param searchDetails
      * @return
      * @throws TopcatException
      */
     public ArrayList<TDatafile> searchAdvancedDatafilesInServer(EntityManager manager, String topcatSessionId,
-            String serverName, TAdvancedSearchDetails searchDetails) throws TopcatException {
-        // Get the valid session using topcatSessionId for a serverName
+            String facilityName, TAdvancedSearchDetails searchDetails) throws TopcatException {
+        logger.info("searchAdvancedDatafilesInServer: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                + facilityName + ")");
+        // Get the valid session using topcatSessionId for a facilityName
         // send request to icat server and gather the investigation results.
         ArrayList<TDatafile> resultDatafiles = null;
-        logger.finest("searchAdvancedDatafilesInServer: TopcatSessionId (" + topcatSessionId + ") serverName ("
-                + serverName + ")");
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                topcatSessionId, serverName);
+                topcatSessionId, facilityName);
         if (userSession != null) {
             if (searchDetails.getParameterName() != null) {
                 resultDatafiles = searchDatafilesByParameterUsingICATSession(userSession, searchDetails);
@@ -197,10 +198,10 @@ public class AdvancedSearchManager {
      */
     private ArrayList<TDatafile> searchDatafilesByParameterUsingICATSession(TopcatUserSession session,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
-        logger.fine("searchDatafilesByParameterUsingICATSession: Searching server "
+        logger.debug("searchDatafilesByParameterUsingICATSession: Searching server "
                 + session.getUserId().getServerId().getServerUrl() + "  with icat session id "
                 + session.getIcatSessionId());
-        logger.fine("Search Details: Parameter name" + searchDetails.getParameterName() + "  Parameter vale:"
+        logger.trace("Search Details: Parameter name" + searchDetails.getParameterName() + "  Parameter vale:"
                 + searchDetails.getParameterValue() + "  Parameter units:" + searchDetails.getParameterUnits());
         ArrayList<TDatafile> returnTDatafiles = new ArrayList<TDatafile>();
         try {
@@ -211,9 +212,9 @@ public class AdvancedSearchManager {
         } catch (TopcatException e) {
             throw e;
         } catch (MalformedURLException ex) {
-            logger.warning("searchDatafilesByParameterUsingICATSession:" + ex.getMessage());
+            logger.error("searchDatafilesByParameterUsingICATSession:" + ex.getMessage());
         } catch (Exception ex) {
-            logger.warning("searchDatafilesByParameterUsingICATSession: (Unknown expetion)" + ex.getMessage());
+            logger.error("searchDatafilesByParameterUsingICATSession: (Unknown expetion)" + ex.getMessage());
             ex.printStackTrace();
         }
         return returnTDatafiles;
@@ -226,13 +227,14 @@ public class AdvancedSearchManager {
      * @param session
      * @param searchDetails
      * @return
+     * @throws TopcatException
      */
     private ArrayList<TDatafile> searchDatafilesByRunnoUsingICATSession(TopcatUserSession session,
-            TAdvancedSearchDetails searchDetails) {
-        logger.fine("searchDatafilesByRunnoUsingICATSession: Searching server "
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        logger.debug("searchDatafilesByRunnoUsingICATSession: Searching server "
                 + session.getUserId().getServerId().getServerUrl() + "  with icat session id "
                 + session.getIcatSessionId());
-        logger.fine("Search Details: RunNumber Start" + searchDetails.getRbNumberStart() + "  RunNumber End:"
+        logger.trace("Search Details: RunNumber Start" + searchDetails.getRbNumberStart() + "  RunNumber End:"
                 + searchDetails.getRbNumberEnd());
         ArrayList<TDatafile> returnTDatafiles = new ArrayList<TDatafile>();
         try {
@@ -249,11 +251,12 @@ public class AdvancedSearchManager {
                     session.getUserId().getServerId().getServerUrl());
             return service.searchDatafilesByRunNumber(session.getIcatSessionId(), searchDetails.getInstrumentList(),
                     startRun, endRun);
-
+        } catch (TopcatException e) {
+            throw e;
         } catch (MalformedURLException ex) {
-            logger.warning("searchDatafilesByRunnoUsingICATSession:" + ex.getMessage());
+            logger.error("searchDatafilesByRunnoUsingICATSession:" + ex.getMessage());
         } catch (Exception ex) {
-            logger.warning("searchDatafilesByRunnoUsingICATSession: (Unknown expetion)" + ex.getMessage());
+            logger.error("searchDatafilesByRunnoUsingICATSession: (Unknown expetion)" + ex.getMessage());
             ex.printStackTrace();
         }
         return returnTDatafiles;
