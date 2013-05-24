@@ -26,4 +26,6 @@ public interface DataServiceAsync {
 
 	void removeIcatServer(Long id, AsyncCallback<String> callback);
 
+	void rowCall(Long id, AsyncCallback<TFacility> callback);
+
 }

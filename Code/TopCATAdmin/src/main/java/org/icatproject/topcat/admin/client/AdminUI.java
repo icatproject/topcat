@@ -3,6 +3,7 @@ package org.icatproject.topcat.admin.client;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.icatproject.topcat.admin.shared.Constants;
 import org.icatproject.topcat.admin.client.service.DataService;
 import org.icatproject.topcat.admin.client.service.DataServiceAsync;
@@ -19,8 +20,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.CustomButton.Face;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -38,71 +41,87 @@ public class AdminUI extends Composite {
 
 	private static final String MENU_ADD = "ADD";
 	private static final String MENU_EDIT = "EDIT";
-	private static boolean nameFlag = false;
-	private static boolean ServerURlFlag = false;
-	private static boolean downloadServiceUrlFlag = false;
-	private static int row;
-	private static int column;
+	private static int table0Row, table0Column, table1Column, table1Row;
+	private static double authID; 
+	
+	public enum validationMessages{
+		//TODO Come up with better messages
+		facilityName("* Please provide a valid Facility name to proceed ! e.g. ISIS"),
+		icatURL("* Please provide a valid ICat URL to proceed ! e.g. ....."),
+		downloadServicURL("* Please provide a valid Download Service URL to proceed ! e.g. ....");
+		
+		
+		private validationMessages(final String text) {
+			this.text = text;
+		}
+
+		private final String text;
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+	
+	
 	
 	ArrayList<Long> idArray  = new ArrayList<Long>();
 	Constants headerNames = new Constants();
 	
 	@UiField
-	FlexTable table, editMenu;
+	FlexTable table0, table1, editMenu, editMenu1;
 	@UiField
 	VerticalPanel vPanel;
 	@UiField
-	Button btnSave, btnCancel, btnYes, btnNo, btnAdd;
+	Button btnSave, btnCancel, btnYes, btnNo, btnAdd, btnSave1, btnCancel1;
 	@UiField
-	DialogBox dialogWindow, alertDialogBox;
+	DialogBox dialogWindow, alertDialogBox, authEditWindow;
 	@UiField
-	TextBox txtName, txtServerUrl, txtDownloadServiceUrl;
+	TextBox txtName, txtServerUrl, txtDownloadServiceUrl, txtAuthURL;
 	@UiField
-	ListBox txtPluginName, txtDownloadPluginName, txtVersion;
+	ListBox txtPluginName, txtDownloadPluginName, txtVersion, txtAuthType, txtAuthPluginName;
 	@UiField
-	HorizontalPanel hPanel0;
-	
-	
-	
+	HorizontalPanel hPanel0,hPanel1;
+	@UiField
+	Label lbl1;
 	
 	public AdminUI() {
-
 		initWidget(uiBinder.createAndBindUi(this));
 		TableCall();
+	//	Window.alert(" "+ table0.getOffsetHeight( ));
 	}
 
 	private void DisplayTable(List<TFacility> result) {
-		table.removeAllRows();
+
+		table0.removeAllRows();
 		int c, r = 1;
 		
-		table.getRowFormatter().addStyleName(0, "stylye");
-		
 		// header section, columns width are equal to the second flextable
-		table.getColumnFormatter().setWidth(0, "150px");
-		table.getColumnFormatter().setWidth(1, "80px");
-		table.getColumnFormatter().setWidth(2, "400px");
-		table.getColumnFormatter().setWidth(3, "220px");
-		table.getColumnFormatter().setWidth(4, "150px");
-		table.getColumnFormatter().setWidth(5, "190px");
+		table0.getColumnFormatter().setWidth(0, "150px");
+		table0.getColumnFormatter().setWidth(1, "80px");
+		table0.getColumnFormatter().setWidth(2, "220px");
+		table0.getColumnFormatter().setWidth(3, "220px");
+		table0.getColumnFormatter().setWidth(4, "150px");
+		table0.getColumnFormatter().setWidth(5, "190px");
 
-		table.setText(0, 0, Constants.NAME);
-		table.setText(0, 1, Constants.VERSION);
-		table.setText(0, 2, Constants.SERVER_URL);
-		table.setText(0, 3, Constants.PLUGIN_NAME);
-		table.setText(0, 4, Constants.DOWNLOAD_PLUGIN_NAME);
-		table.setText(0, 5, Constants.DOWNLOAD_SERVICE_URL);
+		table0.setText(0, 0, Constants.NAME);
+		table0.setText(0, 1, Constants.VERSION);
+		table0.setText(0, 2, Constants.SERVER_URL);
+		table0.setText(0, 3, Constants.PLUGIN_NAME);
+		table0.setText(0, 4, Constants.DOWNLOAD_PLUGIN_NAME);
+		table0.setText(0, 5, Constants.DOWNLOAD_SERVICE_URL);
+		
 
 		// with the use of a second flextable the for loop display the content
 		// of the TOPCAT_ICAT_SERVER
 		for (TFacility facility : result) {
 			c = 0;	
 
-			table.setText(r, c++ , facility.getName());
-			table.setText(r, c++, facility.getVersion());
-			table.setText(r, c++, facility.getUrl());
-			table.setText(r, c++, facility.getSearchPluginName());
-			table.setText(r, c++, facility.getDownloadPluginName());
-			table.setText(r++, c++, facility.getDownloadServiceUrl());
+			table0.setText(r, c++ , facility.getName());
+			table0.setText(r, c++, facility.getVersion());
+			table0.setText(r, c++, facility.getUrl());
+			table0.setText(r, c++, facility.getSearchPluginName());
+			table0.setText(r, c++, facility.getDownloadPluginName());
+			table0.setText(r++, c++, facility.getDownloadServiceUrl());
 		}
 		
 		idArray.clear();
@@ -116,16 +135,49 @@ public class AdminUI extends Composite {
 		// button
 		Button[] deleteBtn = new Button[r];
 		Button[] editBtn = new Button[r];
-
+		Button[] pingICatBtn = new Button[r];
+		Button[] pingDSBtn = new Button[r];
+		Button[] authbtn = new Button[r];
+		
 		for (int i = 1; i < r; i++) {
-
-			deleteBtn[i] = new Button("delete");
-			table.setWidget(i, 8, deleteBtn[i]);
+			
 			editBtn[i] = new Button("edit");
-			table.setWidget(i, 7, editBtn[i]);
+			table0.setWidget(i, 7, editBtn[i]);
+			deleteBtn[i] = new Button("delete");
+			table0.setWidget(i, 8, deleteBtn[i]);
+			pingICatBtn[i] = new Button("ping Icat");
+			table0.setWidget(i, 9, pingICatBtn[i]);
+			pingDSBtn[i] = new Button("ping Download Service");
+			table0.setWidget(i, 10, pingDSBtn[i]);
+			authbtn[i] = new Button("Authentication Details");
+			table0.setWidget(i, 11, authbtn[i]);
 		}
 	}
+	
+	private void handleAuthDetailsButton(TFacility result){
+		
+		table1.getColumnFormatter().setWidth(0, "200px");
+		table1.getColumnFormatter().setWidth(1, "200px");
+		table1.getColumnFormatter().setWidth(2, "220px");
 
+		table1.setText(0, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
+		table1.setText(0, 1, "Plugin Name");
+		table1.setText(0, 2, Constants.AUTHENTICATION_URL);
+	
+		
+		table1.setText(1, 0, result.getAuthenticationServiceType());
+		table1.setText(1, 1, "Empty");
+		table1.setText(1, 2, result.getAuthenticationServiceUrl());
+		
+				
+		Button authEditButton = new Button("edit");
+		Button authDeleteButton = new Button("delete");
+		table1.setWidget(1, 3, authEditButton);
+		table1.setWidget(1, 4, authDeleteButton);	
+		
+		authID = result.getId();
+	}
+	
 	private void handleAddNEditButton(String menu) {
 	// EVERYTING IN HERE IS IN THE DIALOG BOX
 
@@ -137,6 +189,8 @@ public class AdminUI extends Composite {
 		editMenu.setText(4, 0, Constants.DOWNLOAD_PLUGIN_NAME + ":");
 		editMenu.setText(5, 0, Constants.DOWNLOAD_SERVICE_URL + ":");
 
+		editMenu.getColumnFormatter().setWidth(0, "170px");
+		editMenu.getColumnFormatter().setWidth(2, "355px");
 		// CREATES A SPACE BETTWEEN THE LABELS AND THE WIDGETS
 		editMenu.getColumnFormatter().setWidth(1, "5px");
 
@@ -147,18 +201,19 @@ public class AdminUI extends Composite {
 		editMenu.setWidget(3, 2, txtPluginName);
 		editMenu.setWidget(4, 2, txtDownloadPluginName);
 		editMenu.setWidget(5, 2, txtDownloadServiceUrl);
-		editMenu.setWidget(7, 0, hPanel0);
+		editMenu.setWidget(6, 0, hPanel0);
+		editMenu.setWidget(6, 2, lbl1);
 
 		// SETTING THE TEXT IN THE
 		if (menu.equals(MENU_EDIT)) {
-			txtName.setText(table.getText(row, 0));
-			txtServerUrl.setText(table.getText(row, 2));
-			txtDownloadServiceUrl.setText(table.getText(row, 5));
+			txtName.setText(table0.getText(table0Row, 0));
+			txtServerUrl.setText(table0.getText(table0Row, 2));
+			txtDownloadServiceUrl.setText(table0.getText(table0Row, 5));
 		}
 
 		// THESE ARE THE ITEMS IN THE VERSION LISTBOX
 		txtVersion.insertItem("v420", "v420", 0);
-		if (menu.equals(MENU_ADD) || table.getText(row, 1).equals("v420")) {
+		if (menu.equals(MENU_ADD) || table0.getText(table0Row, 1).trim().equals("v420")) {
 			txtVersion.setItemSelected(0, true);
 		}
 
@@ -168,13 +223,13 @@ public class AdminUI extends Composite {
 		txtPluginName.insertItem("uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin",	2);
 		
 
-		if (menu.equals(MENU_ADD) || table.getText(row, 3).equals(null)) {
+		if (menu.equals(MENU_ADD) || table0.getText(table0Row, 3).trim().equals(null)) {
 			txtPluginName.setItemSelected(0, true);
 		} 
-		else if (table.getText(row, 3).equals(txtPluginName.getItemText(1))) {
+		else if (table0.getText(table0Row, 3).trim().equals(txtPluginName.getItemText(1))) {
 			txtPluginName.setItemSelected(1, true);
 		} 
-		else if (table.getText(row, 3).equals(txtPluginName.getItemText(2))) {
+		else if (table0.getText(table0Row, 3).trim().equals(txtPluginName.getItemText(2))) {
 			txtPluginName.setItemSelected(2, true);
 		}
 
@@ -182,10 +237,10 @@ public class AdminUI extends Composite {
 		txtDownloadPluginName.insertItem("", "", 0);
 		txtDownloadPluginName.insertItem("IDS", 1);
 
-		if (menu.equals(MENU_ADD) || table.getText(row, 4).equals(null)) {
+		if (menu.equals(MENU_ADD) || table0.getText(table0Row, 4).trim().trim().equals(null)) {
 			txtDownloadPluginName.setItemSelected(0, true);
 		} 
-		else if (table.getText(row, 4).equals(txtDownloadPluginName.getItemText(1))) {
+		else if (table0.getText(table0Row, 4).trim().trim().equals(txtDownloadPluginName.getItemText(1))) {
 			txtDownloadPluginName.setItemSelected(1, true);
 		}
 		
@@ -214,7 +269,6 @@ public class AdminUI extends Composite {
 
 			public void onSuccess(List<TFacility> result) {
 				DisplayTable(result);
-				
 			}
 		};
 		// make the call to the server
@@ -273,7 +327,21 @@ public class AdminUI extends Composite {
 		};
 			
 		//make the call to the server
-		dataService.removeIcatServer(idArray.get(row), callback);
+		dataService.removeIcatServer(idArray.get(table0Row), callback);
+	}
+
+	private void rowCall(){
+		AsyncCallback<TFacility> callback = new AsyncCallback<TFacility>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+			public void onSuccess(TFacility result){
+				handleAuthDetailsButton(result);
+			}
+		};
+			
+		//make the call to the server
+		dataService.rowCall(idArray.get(table0Row), callback);
 	}
 	
 	private TFacility entitiySetter(TFacility facility, String action){
@@ -286,7 +354,7 @@ public class AdminUI extends Composite {
 		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
 		
 		if(action.equals(MENU_EDIT))
-			facility.setId(idArray.get(row));
+			facility.setId(idArray.get(table0Row));
 		
 		return facility;
 		
@@ -297,59 +365,124 @@ public class AdminUI extends Composite {
 		txtDownloadPluginName.clear();
 		txtPluginName.clear();
 		txtVersion.clear();
+		txtAuthPluginName.clear();
+		txtAuthType.clear();
 		btnSave.setText("save");
 		txtDownloadServiceUrl.setText(null);
 		txtName.setText(null);
 		txtServerUrl.setText(null);
+		authEditWindow.setVisible(false);
 		dialogWindow.setVisible(false);
-		dialogWindow.setModal(false);
 		alertDialogBox.setVisible(false);
+		authEditWindow.setModal(false);
+		dialogWindow.setModal(false);
 		alertDialogBox.setModal(false);
+		lbl1.setText(null);
 	}	
 	
 	private boolean validationCheck(){
-		int invalid = 0;
+		boolean invalid = false;
+
+		//TODO Come up with a way of showing multiple validation messages if more than 1 input 
+		//are invalid. 
 		
 		if (txtName.getText().trim().isEmpty()){
-			txtName.setText("e.g. ISIS");
-			nameFlag = true;
-			invalid++;
+			lbl1.setText(validationMessages.facilityName.toString());
+			invalid=true;
 		}
-
 		if (txtServerUrl.getText().trim().isEmpty()){
-			txtServerUrl.setText("e.g. com.example");
-			// TODO provide better example for this field 
-			ServerURlFlag = true;
-			invalid++;
+			lbl1.setText(validationMessages.icatURL.toString());
+			invalid=true;
 		}
 		if (txtDownloadServiceUrl.getText().trim().isEmpty()){
-			txtDownloadServiceUrl.setText("e.g. ");
-			// TODO provide better example for this field
-			downloadServiceUrlFlag = true;
-			invalid++;
+			lbl1.setText(validationMessages.downloadServicURL.toString());
+			invalid=true;
 		}
-		
-		if(invalid > 0){
-				Window.alert("Please dont leave any Black spaces");
-				return false;
-		}
-			
-		return true;
+		if (invalid == false)
+			return true;
+		else
+			return false;
 	}
 	
-	@UiHandler("table")
- 	void handleEditeNDelteButtonClick(ClickEvent e) {
+	@UiHandler("table0")
+ 	void handleTable0ButtonsClick(ClickEvent e) {
 
-		Cell cell = table.getCellForEvent(e);
-		row = cell.getRowIndex();
-		column = cell.getCellIndex();
+		Cell cell = table0.getCellForEvent(e);
+		table0Row = cell.getRowIndex();
+		table0Column = cell.getCellIndex();
 
-		if (column == 7) 
-			handleAddNEditButton(MENU_EDIT);
-		
-		else if (column == 8)					
-			handleDeleteButton();
+		switch(table0Column){
+		case 7:	handleAddNEditButton(MENU_EDIT);
+				break;
+		case 8:	handleDeleteButton();
+				break;
+		case 9:	Window.alert("Will ping ICat");
+				break;
+		case 10:Window.alert("Will ping the Download Service");
+				break;
+		case 11:rowCall();
+				break;
+		}
 	}
+
+	@UiHandler("table1")
+	void handleTable1Butonsclick(ClickEvent e){
+		Cell cell = table1.getCellForEvent(e);
+		table1Row = cell.getRowIndex();
+		table1Column = cell.getCellIndex();
+		
+		if(table1Column == 3){
+			handleAuthEditButton();
+		}
+		else if(table1Column == 4){
+			//handleAuthDeleteButton()
+			Window.alert("Delete");
+		}
+	}
+	
+	private void handleAuthEditButton() {
+		editMenu1.setText(0, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
+		editMenu1.setText(1, 0, "Plugin Name");
+		editMenu1.setText(2, 0, Constants.AUTHENTICATION_URL);
+		
+		editMenu1.setWidget(0, 1, txtAuthType);
+		editMenu1.setWidget(1, 1, txtAuthPluginName);
+		editMenu1.setWidget(2, 1, txtAuthURL);
+		
+
+		// Initialising Plugin Name ListBox
+		txtAuthPluginName.insertItem("User/Password", 0);
+		txtAuthPluginName.insertItem("CAS",	1);
+		txtAuthPluginName.insertItem("Anonymous", 2);
+		
+		if (table1.getText(table1Row, 1).trim().equals(txtAuthPluginName.getItemText(0))) {
+			txtAuthPluginName.setItemSelected(0, true);
+		} 
+		else if (table1.getText(table1Row, 1).trim().equals(txtAuthPluginName.getItemText(1))) {
+			txtAuthPluginName.setItemSelected(1, true);
+		} 
+		else if (table1.getText(table1Row, 1).trim().equals(txtAuthPluginName.getItemText(2))) {
+			txtAuthPluginName.setItemSelected(2, true);
+		}
+		
+		// Initialising Plugin Name ListBox
+		txtAuthType.insertItem("LDUP", 0);
+		txtAuthType.insertItem("DB", 1);
+		
+		if (table1.getText(table1Row, 0).trim().equals(txtAuthType.getItemText(0))) {
+			txtAuthType.setItemSelected(0, true);
+		} 
+		else if (table1.getText(table1Row, 0).trim().equals(txtAuthType.getItemText(1))) {
+			txtAuthType.setItemSelected(1, true);
+		} 
+		
+		txtAuthURL.setText(table1.getText(table1Row, 2).trim());
+		
+		authEditWindow.center();
+		authEditWindow.setVisible(true);
+		
+	}
+	
 
 	@UiHandler("btnAdd")
 	void handleAddButtonClick(ClickEvent e) {
@@ -357,8 +490,8 @@ public class AdminUI extends Composite {
 		handleAddNEditButton(MENU_ADD);
 	}
 
-	@UiHandler("btnCancel")
-	void handleCloseButtonClick(ClickEvent e) {
+	@UiHandler(value={"btnCancel", "btnCancel1"})
+	void handleCancelButtonClick(ClickEvent e) {
 		ClearDialogBoxFields();
 	}
 
@@ -387,72 +520,11 @@ public class AdminUI extends Composite {
 		removeRowFromTable();
 	}
 	
-	@UiHandler("txtName")
-	void handleNameFieldClick(ClickEvent e){
-		if(nameFlag == true){
-			txtName.setText("");
-			txtName.setFocus(true);
-			nameFlag=false;
-		}
-		
-		if(ServerURlFlag == true){
-			txtServerUrl.setText("");
-			txtServerUrl.setFocus(true);
-			ServerURlFlag=false;
-		}
-		
-		if (downloadServiceUrlFlag == true){
-			txtDownloadServiceUrl.setText("");
-			txtDownloadServiceUrl.setFocus(true);
-			downloadServiceUrlFlag=false;
-		}
-			
-	}
 	
-	@UiHandler("txtServerUrl")
-	void handleServerUrlFieldClick(ClickEvent e){
-		if(nameFlag == true){
-			txtName.setText("");
-			txtName.setFocus(true);
-			nameFlag=false;
-		}
-		
-		if(ServerURlFlag == true){
-			txtServerUrl.setText("");
-			txtServerUrl.setFocus(true);
-			ServerURlFlag=false;
-		}
-		
-		if (downloadServiceUrlFlag == true){
-			txtDownloadServiceUrl.setText("");
-			txtDownloadServiceUrl.setFocus(true);
-			downloadServiceUrlFlag=false;
-		}
-			
-	}
+	void handloeautheditButton(ClickEvent e){
 	
-	@UiHandler("txtDownloadServiceUrl")
-	void handleDownloadServiceUrlFieldClick(ClickEvent e){
-		if(nameFlag == true){
-			txtName.setText("");
-			txtName.setFocus(true);
-			nameFlag=false;
-		}
-		
-		if(ServerURlFlag == true){
-			txtServerUrl.setText("");
-			txtServerUrl.setFocus(true);
-			ServerURlFlag=false;
-		}
-		
-		if (downloadServiceUrlFlag == true){
-			txtDownloadServiceUrl.setText("");
-			txtDownloadServiceUrl.setFocus(true);
-			downloadServiceUrlFlag=false;
-		}
-	}		
-}
-		
+	}
+}		
 	
 	
 

@@ -67,4 +67,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		adminEJB.removeIcatServer(id);
 		return "The Row with the ID: " + id + " has been Removed";
 	}
+	
+	@Override
+	public TFacility rowCall(Long id){
+		return adminEJB.rowCall(id);
+	}
 }

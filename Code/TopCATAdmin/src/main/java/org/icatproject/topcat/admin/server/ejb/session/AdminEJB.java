@@ -15,6 +15,8 @@ import org.icatproject.topcat.admin.shared.SessionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.net.ssl.internal.ssl.Debug;
+
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
@@ -96,7 +98,24 @@ public class AdminEJB {
 		TopcatIcatServer tiServer = entityManager.find(TopcatIcatServer.class,
 				id);
 		entityManager.remove(tiServer);
-
 	}
 
+	public TFacility rowCall(Long id){
+		TFacility facility = new TFacility();
+		TopcatIcatServer tiServer = new TopcatIcatServer();
+		tiServer = entityManager.find(TopcatIcatServer.class, id);
+		facility.setName(tiServer.getName());
+		facility.setVersion(tiServer.getVersion());
+		facility.setUrl(tiServer.getServerUrl());
+		facility.setSearchPluginName(tiServer.getPluginName());
+		facility.setDownloadPluginName(tiServer.getDownloadPluginName());
+		facility.setDownloadServiceUrl(tiServer.getDownloadServiceUrl());
+		facility.setAuthenticationServiceType(tiServer.getAuthenticationServiceType());
+		facility.setAuthenticationServiceUrl(tiServer.getAuthenticationServiceUrl());
+		facility.setVersion(tiServer.getVersion());
+		
+		return facility;
+		
+	}
+		
 }

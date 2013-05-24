@@ -18,9 +18,12 @@ public class AdminEntryPoint implements EntryPoint {
 
 	@UiField
 	TabLayoutPanel tabLayoutPanel;
-
+	
+	
 	LoginPanel loginPanel = new LoginPanel();
 	AdminUI adminUI = new AdminUI();
+	Test testUi = new Test();
+	
 	
 	
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -31,7 +34,7 @@ public class AdminEntryPoint implements EntryPoint {
 
 		tabLayoutPanel.add(loginPanel, "Login");
 		tabLayoutPanel.add(adminUI, "UI");
+		tabLayoutPanel.add(testUi, "Test UI");
 
 	}
-
 }
