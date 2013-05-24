@@ -72,4 +72,10 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	public TFacility rowCall(Long id){
 		return adminEJB.rowCall(id);
 	}
+	
+	@Override
+	public String updateAuthDetails(TFacility facility, long authID){
+		adminEJB.updateAuthDetails(facility, authID);
+		return "Authentication Details have been updated";
+	}
 }

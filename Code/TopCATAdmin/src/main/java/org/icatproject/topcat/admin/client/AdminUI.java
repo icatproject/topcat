@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.CustomButton.Face;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -42,8 +41,8 @@ public class AdminUI extends Composite {
 	private static final String MENU_ADD = "ADD";
 	private static final String MENU_EDIT = "EDIT";
 	private static int table0Row, table0Column, table1Column, table1Row;
-	private static double authID; 
-	
+	private static long authID; 
+		
 	public enum validationMessages{
 		//TODO Come up with better messages
 		facilityName("* Please provide a valid Facility name to proceed ! e.g. ISIS"),
@@ -154,7 +153,7 @@ public class AdminUI extends Composite {
 		}
 	}
 	
-	private void handleAuthDetailsButton(TFacility result){
+	private void DisplayAuthTable(TFacility result){
 		
 		table1.getColumnFormatter().setWidth(0, "200px");
 		table1.getColumnFormatter().setWidth(1, "200px");
@@ -275,7 +274,7 @@ public class AdminUI extends Composite {
 		dataService.getAllFacilities(callback);
 	}
 
-	private void addRowToTable() {
+	private void addRowToTable(TFacility facility) {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
@@ -286,15 +285,13 @@ public class AdminUI extends Composite {
 			}
 		};
 			
-		
-		TFacility facility = new TFacility();
-		entitiySetter(facility, null);
+		entitiySetter(facility, MENU_ADD);
 		
 		//make the call to the server
 		dataService.addIcatServer(facility, callback);
 	}
 
-	private void updateRowInTable(){
+	private void updateRowInTable(TFacility facility, String edit){
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
@@ -305,10 +302,7 @@ public class AdminUI extends Composite {
 				dialogWindow.hide();
 			}
 		};
-			
-		
-		TFacility facility = new TFacility();
-		entitiySetter(facility, MENU_EDIT);
+		entitiySetter(facility, edit);
 	
 		//make the call to the server
 		dataService.updateIcatServer(facility, callback);
@@ -336,15 +330,17 @@ public class AdminUI extends Composite {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 			public void onSuccess(TFacility result){
-				handleAuthDetailsButton(result);
+				DisplayAuthTable(result);
 			}
 		};
 			
+	//	authID = idArray.get(table0Row);
 		//make the call to the server
 		dataService.rowCall(idArray.get(table0Row), callback);
 	}
 	
 	private TFacility entitiySetter(TFacility facility, String action){
+		
 		
 		facility.setName(txtName.getText());
 		facility.setVersion(txtVersion.getItemText(txtVersion.getSelectedIndex()));
@@ -353,8 +349,10 @@ public class AdminUI extends Composite {
 		facility.setDownloadPluginName((txtDownloadPluginName.getItemText(txtDownloadPluginName.getSelectedIndex())));
 		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
 		
-		if(action.equals(MENU_EDIT))
+		if(action.equals(MENU_EDIT) && (facility.getId() == null))
 			facility.setId(idArray.get(table0Row));
+		
+		
 		
 		return facility;
 		
@@ -502,28 +500,56 @@ public class AdminUI extends Composite {
 
 	@UiHandler("btnSave")
 	void handleSaveButton(ClickEvent e) {	
-
+		TFacility facility = new TFacility();
+		
 		if(validationCheck() == true){
-			
+						
 			if(btnSave.getText() == "save"){
-				addRowToTable();
+				addRowToTable(facility);
 			}
 			else if (btnSave.getText() == "update"){
-				updateRowInTable();	
+				updateRowInTable(facility, MENU_EDIT);	
 			}
+			
 		ClearDialogBoxFields();
 		}
 	}
 	
+	@UiHandler("btnSave1")
+	void handleSaveButton2(ClickEvent e){
+		TFacility facility = new TFacility();
+		
+		facility.setAuthenticationServiceType(txtAuthType.getItemText(txtAuthType.getSelectedIndex()));
+		facility.setAuthenticationServiceUrl(txtAuthURL.getText().trim());
+		facility.setId(authID);
+		//TODO FOUND OUT ABOUT THE AUTHENTICATION PLUGIN NAME COLUMN IN THE TOPCAT-ICAT-SERVER TABLE
+		
+		 updateAuth(facility);
+		 rowCall();
+		
+		ClearDialogBoxFields();
+	}
+	
+	private void updateAuth(TFacility facility) {
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+			public void onSuccess(String result){
+				rowCall();
+			}
+		};
+			
+		authID = idArray.get(table0Row);
+		//make the call to the server
+		dataService.updateAuthDetails(facility, authID, callback);
+	}
+
 	@UiHandler("btnYes")
 	void handleYesButton(ClickEvent e){
 		removeRowFromTable();
 	}
 	
-	
-	void handloeautheditButton(ClickEvent e){
-	
-	}
 }		
 	
 	

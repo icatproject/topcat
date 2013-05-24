@@ -22,7 +22,7 @@ public class AdminEntryPoint implements EntryPoint {
 	
 	LoginPanel loginPanel = new LoginPanel();
 	AdminUI adminUI = new AdminUI();
-	Test testUi = new Test();
+	
 	
 	
 	
@@ -34,7 +34,6 @@ public class AdminEntryPoint implements EntryPoint {
 
 		tabLayoutPanel.add(loginPanel, "Login");
 		tabLayoutPanel.add(adminUI, "UI");
-		tabLayoutPanel.add(testUi, "Test UI");
 
 	}
 }

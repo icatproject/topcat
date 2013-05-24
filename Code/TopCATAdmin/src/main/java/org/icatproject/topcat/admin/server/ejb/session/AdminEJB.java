@@ -114,8 +114,15 @@ public class AdminEJB {
 		facility.setAuthenticationServiceUrl(tiServer.getAuthenticationServiceUrl());
 		facility.setVersion(tiServer.getVersion());
 		
-		return facility;
-		
+		return facility;	
+	}
+
+	public void updateAuthDetails(TFacility facility, long id) {
+		TopcatIcatServer tiServer = new TopcatIcatServer(); 
+		tiServer = entityManager.find(TopcatIcatServer.class, id);
+		tiServer.setAuthenticationServiceType(facility.getAuthenticationServiceType());
+		tiServer.setAuthenticationServiceUrl(facility.getAuthenticationServiceUrl());
+		entityManager.merge(tiServer);
 	}
 		
 }
