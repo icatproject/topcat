@@ -1,85 +1,134 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:p="urn:import:javax.persistence" xmlns:i="urn:import:com.sun.rowset.internal" xmlns:H="urn:import:com.google.gwt.user.client.ui.HTMLTable" xmlns:d="urn:import:com.google.gwt.dom.client" xmlns:a="urn:import:java.awt" xmlns:asm="urn:import:com.google.gwt.dev.asm" xmlns:S="urn:import:sun.java2d.pipe.SpanShapeRenderer">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:p="urn:import:javax.persistence"
+	xmlns:i="urn:import:com.sun.rowset.internal" xmlns:H="urn:import:com.google.gwt.user.client.ui.HTMLTable"
+	xmlns:d="urn:import:com.google.gwt.dom.client" xmlns:a="urn:import:java.awt"
+	xmlns:asm="urn:import:com.google.gwt.dev.asm" xmlns:S="urn:import:sun.java2d.pipe.SpanShapeRenderer">
 	<ui:style>
-	
-		.head-style{background-color: #ececec;}
-		.font{color: red}
-		.spacing{margin-left: 3px;}
-		.mainBody{background-color: #C5DEE6; font: bold;}
-		.button-spacing{margin-right: 5px;}
-		.alertTextBody{margin-top: 20px;}
-		.alertMainBody{background-color: #C5DEE6;}
-		.titleText{margin-left:5px; font-size: 20px;}
-		.header{font-size: 30px;}
-		.center{margin-left: auto;
-				margin-right: auto;}
+		.head-style {
+			background-color: #ececec;
+		}
+		
+		.font {
+			color: red
+		}
+		
+		.spacing {
+			margin-left: 3px;
+		}
+		
+		.mainBody {
+			background-color: #C5DEE6;
+			font: bold;
+		}
+		
+		.button-spacing {
+			margin-right: 5px;
+		}
+		
+		.alertTextBody {
+			margin-top: 20px;
+		}
+		
+		.alertMainBody {
+			background-color: #C5DEE6;
+		}
+		
+		.titleText {
+			margin-left: 5px;
+			font-size: 20px;
+		}
+		
+		.Table0Header {
+			font-size: 30px;
+		}
+		
+		.Table1Header {
+			font-size: 20px;
+		}
+		
+		.center {
+			margin-left: auto;
+			margin-right: auto;
+		}
 	</ui:style>
+
+
 	<g:DockLayoutPanel>
 		<g:north size="50">
-			<g:FlowPanel styleName="{style.center}">
-				<g:Label styleName="{style.header}">Topcat Admin Consol</g:Label>
+			<g:FlowPanel>
+				<g:Label styleName="{style.Table0Header}">Topcat Admin Consol</g:Label>
 			</g:FlowPanel>
 		</g:north>
+		
 		<g:center>
-		<g:HTMLPanel>
+			<g:HTMLPanel>
 
-			<g:FlexTable ui:field="table0"></g:FlexTable>
-			<g:Button ui:field="btnAdd" text="+"></g:Button>
-			<g:SimplePanel><g:FlexTable ui:field="table1"></g:FlexTable></g:SimplePanel>
-			
+				<g:FlexTable ui:field="table0"></g:FlexTable>
+				<g:Button ui:field="btnAdd" text="+"></g:Button>
 				
-		</g:HTMLPanel>
+				<g:FlowPanel styleName="{style.center}">
+				<g:Label styleName="{style.Table1Header}" ui:field="lblAuth" visible="false">Topcat Admin Consol</g:Label>
+				</g:FlowPanel>
+				
+				<g:SimplePanel>
+					<g:FlexTable ui:field="table1"></g:FlexTable>
+				</g:SimplePanel>
+
+
+			</g:HTMLPanel>
 		</g:center>
 		<g:south size="1">
 			<g:FlowPanel>
-					<g:SimplePanel>
-						<g:DialogBox ui:field="dialogWindow"  modal="true" glassEnabled="true" visible="false" > 
-							<g:VerticalPanel ui:field="vPanel">
-								<g:FlexTable ui:field="editMenu" styleName="{style.mainBody}"></g:FlexTable>
-								<g:TextBox ui:field="txtName" title="This will be the name that is presented to users"></g:TextBox>
-								<g:ListBox ui:field="txtVersion" ></g:ListBox>
-								<g:TextBox ui:field="txtServerUrl" title="This should be the URL of the WSDL, e.g. https://example.com/ICATService/ICAT?wsdl"></g:TextBox>
-								<g:ListBox ui:field="txtPluginName"  ></g:ListBox>
-								<g:ListBox ui:field="txtDownloadPluginName" ></g:ListBox>
-								<g:TextBox ui:field="txtDownloadServiceUrl" title="This is the URL of the download service that will be used by the selected download plugin"></g:TextBox>
-								<g:HorizontalPanel ui:field="hPanel0" styleName="{style.mainBody}">
-			 						<g:Button ui:field="btnSave" styleName="{style.button-spacing}"></g:Button>
-									<g:Button ui:field="btnCancel" styleName="{style.button-spacing}">cancel</g:Button>
-								</g:HorizontalPanel>
-								<g:Label ui:field="lbl1" styleName="{style.font}"></g:Label>
-							</g:VerticalPanel>
-						</g:DialogBox>					
-					</g:SimplePanel>
-					<g:SimplePanel>
-					<g:DialogBox ui:field="alertDialogBox"  modal="true" glassEnabled="true" text="Warning" visible="false" >
+				<g:SimplePanel>
+					<g:DialogBox ui:field="dialogWindow" modal="true" glassEnabled="true" visible="false">
+						<g:VerticalPanel ui:field="vPanel">
+							<g:FlexTable ui:field="editMenu" styleName="{style.mainBody}"></g:FlexTable>
+							<g:TextBox ui:field="txtName" title="This will be the name that is presented to users"></g:TextBox>
+							<g:ListBox ui:field="txtVersion"></g:ListBox>
+							<g:TextBox ui:field="txtServerUrl" title="This should be the URL of the WSDL, e.g. https://example.com/ICATService/ICAT?wsdl"></g:TextBox>
+							<g:ListBox ui:field="txtPluginName"></g:ListBox>
+							<g:ListBox ui:field="txtDownloadPluginName"></g:ListBox>
+							<g:TextBox ui:field="txtDownloadServiceUrl" title="This is the URL of the download service that will be used by the selected download plugin"></g:TextBox>
+							<g:HorizontalPanel ui:field="hPanel0" styleName="{style.mainBody}">
+								<g:Button ui:field="btnSave" styleName="{style.button-spacing}"></g:Button>
+								<g:Button ui:field="btnCancel" styleName="{style.button-spacing}">cancel</g:Button>
+							</g:HorizontalPanel>
+							<g:Label ui:field="lbl1" styleName="{style.font}"></g:Label>
+						</g:VerticalPanel>
+					</g:DialogBox>
+				</g:SimplePanel>
+				<g:SimplePanel>
+					<g:DialogBox ui:field="alertDialogBox" modal="true" glassEnabled="true" text="Warning" visible="false">
 						<g:VerticalPanel styleName="{style.alertMainBody}">
 							<g:Label ui:field="lbl0" text="The selected row will be deleted. Would you like to continue?"></g:Label>
-							<g:HorizontalPanel ui:field="hPanel1" styleName="{style.alertTextBody}" >
+							<g:HorizontalPanel ui:field="hPanel1" styleName="{style.alertTextBody}">
 								<g:Button ui:field="btnYes" styleName="{style.button-spacing}">Yes</g:Button>
 								<g:Button ui:field="btnNo" styleName="{style.button-spacing}">No</g:Button>
 							</g:HorizontalPanel>
 						</g:VerticalPanel>
 					</g:DialogBox>
-					</g:SimplePanel>
+				</g:SimplePanel>
+				<g:HorizontalPanel>
 					<g:SimplePanel>
-						<g:DialogBox ui:field="authEditWindow"  modal="true" glassEnabled="true" visible="false" text="Authentication Details Menu"> 
+						<g:DialogBox ui:field="authEditWindow" modal="true" glassEnabled="true" visible="false" text="Authentication Details Menu">
 							<g:VerticalPanel styleName="{style.mainBody}">
 								<g:FlexTable ui:field="editMenu1" styleName="{style.mainBody}"></g:FlexTable>
 								<g:ListBox ui:field="txtAuthType"></g:ListBox>
 								<g:ListBox ui:field="txtAuthPluginName"></g:ListBox>
 								<g:TextBox ui:field="txtAuthURL"></g:TextBox>
-								<g:HorizontalPanel ui:field="hPanel2" >
-			 						<g:Button ui:field="btnSave1" styleName="{style.button-spacing}">save</g:Button>
+								<g:HorizontalPanel ui:field="hPanel2">
+									<g:Button ui:field="btnSave1" styleName="{style.button-spacing}">save</g:Button>
 									<g:Button ui:field="btnCancel1" styleName="{style.button-spacing}">cancel</g:Button>
 								</g:HorizontalPanel>
 							</g:VerticalPanel>
-						</g:DialogBox>					
+						</g:DialogBox>
 					</g:SimplePanel>
-				</g:FlowPanel>
+				</g:HorizontalPanel>
+			</g:FlowPanel>
 		</g:south>
-		
-	</g:DockLayoutPanel>	
+
+	</g:DockLayoutPanel>
 </ui:UiBinder>
 
 

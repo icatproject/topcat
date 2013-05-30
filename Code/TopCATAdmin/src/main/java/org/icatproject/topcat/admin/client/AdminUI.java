@@ -1,8 +1,5 @@
 package org.icatproject.topcat.admin.client;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +11,6 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -25,6 +21,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -83,7 +80,7 @@ public class AdminUI extends Composite {
 	@UiField
 	HorizontalPanel hPanel0, hPanel1;
 	@UiField
-	Label lbl1;
+	Label lbl1, lblAuth;
 
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -201,8 +198,8 @@ public class AdminUI extends Composite {
 		editMenu.setWidget(3, 2, txtPluginName);
 		editMenu.setWidget(4, 2, txtDownloadPluginName);
 		editMenu.setWidget(5, 2, txtDownloadServiceUrl);
-		editMenu.setWidget(6, 0, hPanel0);
 		editMenu.setWidget(6, 2, lbl1);
+		editMenu.setWidget(6, 0, hPanel0);
 
 		// SETTING THE TEXT IN THE
 		if (menu.equals(MENU_EDIT)) {
@@ -337,11 +334,14 @@ public class AdminUI extends Composite {
 			}
 
 			public void onSuccess(TFacility result) {
+
+				lblAuth.setText(table0.getText(table0Row, 0)
+						+ " Authentication Details");
+				lblAuth.setVisible(true);
 				DisplayAuthTable(result);
 			}
 		};
 
-		// authID = idArray.get(table0Row);
 		// make the call to the server
 		dataService.rowCall(idArray.get(table0Row), callback);
 	}
@@ -367,6 +367,9 @@ public class AdminUI extends Composite {
 
 	private void ClearDialogBoxFields() {
 
+		editMenu.clearCell(0, 1);
+		editMenu.clearCell(2, 1);
+		editMenu.clearCell(5, 1);
 		txtDownloadPluginName.clear();
 		txtPluginName.clear();
 		txtVersion.clear();
@@ -388,20 +391,27 @@ public class AdminUI extends Composite {
 	private boolean validationCheck() {
 		boolean invalid = false;
 
-		// TODO Come up with a way of showing multiple validation messages if
-		// more than 1 input
-		// are invalid.
+		Image img = new Image();
+		img.setUrl("/TopCATAdmin/src/main/resources/img/exclamation-icon.png");
+
+		// TODO Find a way of showing the images
 
 		if (txtName.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.facilityName.toString());
+			editMenu.setWidget(0, 1, img);
+			img.setVisibleRect(0, 0, 16, 16);
 			invalid = true;
 		}
 		if (txtServerUrl.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.icatURL.toString());
+			editMenu.setWidget(0, 1, img);
+			img.setVisibleRect(0, 0, 16, 16);
 			invalid = true;
 		}
 		if (txtDownloadServiceUrl.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.downloadServicURL.toString());
+			editMenu.setWidget(0, 1, img);
+			img.setVisibleRect(0, 0, 16, 16);
 			invalid = true;
 		}
 		if (invalid == false)
@@ -584,7 +594,6 @@ public class AdminUI extends Composite {
 				Window.alert(result);
 			}
 		};
-		Window.alert("URL: " + url + " Selection: " + urlSelection);
 		// make the call to the server
 		dataService.ping(url, urlSelection, callback);
 
