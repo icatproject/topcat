@@ -28,6 +28,9 @@ public interface DataServiceAsync {
 
 	void rowCall(Long id, AsyncCallback<TFacility> callback);
 
-	void updateAuthDetails(TFacility facility, long authID,	AsyncCallback<String> callback);
+	void updateAuthDetails(TFacility facility, long authID,
+			AsyncCallback<String> callback);
+
+	void ping(String url, String urlSelection, AsyncCallback<String> callback);
 
 }

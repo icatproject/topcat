@@ -67,15 +67,38 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		adminEJB.removeIcatServer(id);
 		return "The Row with the ID: " + id + " has been Removed";
 	}
-	
+
 	@Override
-	public TFacility rowCall(Long id){
+	public TFacility rowCall(Long id) {
 		return adminEJB.rowCall(id);
 	}
-	
+
 	@Override
-	public String updateAuthDetails(TFacility facility, long authID){
+	public String updateAuthDetails(TFacility facility, long authID) {
 		adminEJB.updateAuthDetails(facility, authID);
 		return "Authentication Details have been updated";
+	}
+
+	@Override
+	public String ping(String url, String urlSelection) {
+		String status = urlSelection + " URL pinged ";
+		try {
+			Runtime r = Runtime.getRuntime();
+			Process ping = r.exec("ping -c1 " + url);
+
+			ping.waitFor();
+			int val = ping.exitValue();
+
+			if (val == 0)
+				status += "successfully";
+
+			else
+				status += "unsuccessful";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
+
 	}
 }

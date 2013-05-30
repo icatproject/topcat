@@ -7,15 +7,10 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 
-import org.icatproject.topcat.admin.shared.ServerException;
-import org.icatproject.topcat.admin.shared.SessionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.net.ssl.internal.ssl.Debug;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
@@ -100,7 +95,7 @@ public class AdminEJB {
 		entityManager.remove(tiServer);
 	}
 
-	public TFacility rowCall(Long id){
+	public TFacility rowCall(Long id) {
 		TFacility facility = new TFacility();
 		TopcatIcatServer tiServer = new TopcatIcatServer();
 		tiServer = entityManager.find(TopcatIcatServer.class, id);
@@ -110,19 +105,23 @@ public class AdminEJB {
 		facility.setSearchPluginName(tiServer.getPluginName());
 		facility.setDownloadPluginName(tiServer.getDownloadPluginName());
 		facility.setDownloadServiceUrl(tiServer.getDownloadServiceUrl());
-		facility.setAuthenticationServiceType(tiServer.getAuthenticationServiceType());
-		facility.setAuthenticationServiceUrl(tiServer.getAuthenticationServiceUrl());
+		facility.setAuthenticationServiceType(tiServer
+				.getAuthenticationServiceType());
+		facility.setAuthenticationServiceUrl(tiServer
+				.getAuthenticationServiceUrl());
 		facility.setVersion(tiServer.getVersion());
-		
-		return facility;	
+
+		return facility;
 	}
 
 	public void updateAuthDetails(TFacility facility, long id) {
-		TopcatIcatServer tiServer = new TopcatIcatServer(); 
+		TopcatIcatServer tiServer = new TopcatIcatServer();
 		tiServer = entityManager.find(TopcatIcatServer.class, id);
-		tiServer.setAuthenticationServiceType(facility.getAuthenticationServiceType());
-		tiServer.setAuthenticationServiceUrl(facility.getAuthenticationServiceUrl());
+		tiServer.setAuthenticationServiceType(facility
+				.getAuthenticationServiceType());
+		tiServer.setAuthenticationServiceUrl(facility
+				.getAuthenticationServiceUrl());
 		entityManager.merge(tiServer);
 	}
-		
+
 }
