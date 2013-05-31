@@ -48,17 +48,17 @@
 		}
 		
 		.center {
-			margin-left: auto;
-			margin-right: auto;
+			margin: 0px auto;
+			width: 100%;
 		}
 	</ui:style>
 
 
 	<g:DockLayoutPanel>
 		<g:north size="50">
-			<g:FlowPanel>
+			<g:SimplePanel styleName="{style.center">
 				<g:Label styleName="{style.Table0Header}">Topcat Admin Consol</g:Label>
-			</g:FlowPanel>
+			</g:SimplePanel>
 		</g:north>
 		
 		<g:center>

@@ -45,9 +45,9 @@ public class AdminUI extends Composite {
 	public enum validationMessages {
 		// TODO Come up with better messages
 		facilityName(
-				"* Please provide a valid Facility name to proceed ! e.g. ISIS"), icatURL(
-				"* Please provide a valid ICat URL to proceed ! e.g. ....."), downloadServicURL(
-				"* Please provide a valid Download Service URL to proceed ! e.g. ....");
+				"Please provide a valid Facility name to proceed ! e.g. ISIS"), icatURL(
+				"Please provide a valid ICat URL to proceed ! e.g. ....."), downloadServicURL(
+				"Please provide a valid Download Service URL to proceed ! e.g. ....");
 
 		private validationMessages(final String text) {
 			this.text = text;
@@ -389,32 +389,34 @@ public class AdminUI extends Composite {
 	}
 
 	private boolean validationCheck() {
-		boolean invalid = false;
+		boolean invalidName = false;
+		boolean invalidSUrl = false; 
+		boolean invalidDSUrl = false;
 
-		Image img = new Image();
-		img.setUrl("/TopCATAdmin/src/main/resources/img/exclamation-icon.png");
+		editMenu.clearCell(0, 1);
+		editMenu.clearCell(2, 1);
+		editMenu.clearCell(5, 1);
+		
+		
 
 		// TODO Find a way of showing the images
 
 		if (txtName.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.facilityName.toString());
-			editMenu.setWidget(0, 1, img);
-			img.setVisibleRect(0, 0, 16, 16);
-			invalid = true;
+			editMenu.setWidget(0, 1, new Image("images/exclamation-icon.png"));
+			invalidName = true;
 		}
 		if (txtServerUrl.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.icatURL.toString());
-			editMenu.setWidget(0, 1, img);
-			img.setVisibleRect(0, 0, 16, 16);
-			invalid = true;
+			editMenu.setWidget(2, 1,  new Image("images/exclamation-icon.png"));
+			invalidSUrl = true;
 		}
 		if (txtDownloadServiceUrl.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.downloadServicURL.toString());
-			editMenu.setWidget(0, 1, img);
-			img.setVisibleRect(0, 0, 16, 16);
-			invalid = true;
+			editMenu.setWidget(5, 1,  new Image("images/exclamation-icon.png"));
+			invalidDSUrl = true;
 		}
-		if (invalid == false)
+		if ((invalidName || invalidSUrl || invalidDSUrl) == false)
 			return true;
 		else
 			return false;

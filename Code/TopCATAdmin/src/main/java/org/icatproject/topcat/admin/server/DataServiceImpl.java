@@ -1,5 +1,9 @@
 package org.icatproject.topcat.admin.server;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -81,24 +85,18 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public String ping(String url, String urlSelection) {
-		String status = urlSelection + " URL pinged ";
+
+		String status = urlSelection + " pinged ";
+
 		try {
-			Runtime r = Runtime.getRuntime();
-			Process ping = r.exec("ping -c1 " + url);
-
-			ping.waitFor();
-			int val = ping.exitValue();
-
-			if (val == 0)
-				status += "successfully";
-
-			else
-				status += "unsuccessful";
-
+			URLConnection currentUrl = new URL(url).openConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
+			return status += "unsuccessfully";
+
 		}
-		return status;
+
+		return status += "successfully";
 
 	}
 }
