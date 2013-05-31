@@ -2,6 +2,7 @@ package org.icatproject.topcat.admin.client.service;
 
 import java.util.List;
 
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -26,9 +27,9 @@ public interface DataServiceAsync {
 
 	void removeIcatServer(Long id, AsyncCallback<String> callback);
 
-	void rowCall(Long id, AsyncCallback<TFacility> callback);
+	void authDetailsCall(Long id, AsyncCallback<List<TAuthentication>> callback);
 
-	void updateAuthDetails(TFacility facility, long authID,
+	void updateAuthDetails(TAuthentication authentication, long authID,
 			AsyncCallback<String> callback);
 
 	void ping(String url, String urlSelection, AsyncCallback<String> callback);

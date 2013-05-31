@@ -7,6 +7,7 @@ import org.icatproject.topcat.admin.shared.Constants;
 import org.icatproject.topcat.admin.client.service.DataService;
 import org.icatproject.topcat.admin.client.service.DataServiceAsync;
 
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 
 import com.google.gwt.core.client.GWT;
@@ -40,7 +41,6 @@ public class AdminUI extends Composite {
 	private static final String MENU_ADD = "ADD";
 	private static final String MENU_EDIT = "EDIT";
 	private static int table0Row, table0Column, table1Column, table1Row;
-	private static long authID;
 
 	public enum validationMessages {
 		// TODO Come up with better messages
@@ -61,7 +61,8 @@ public class AdminUI extends Composite {
 		}
 	}
 
-	ArrayList<Long> idArray = new ArrayList<Long>();
+	ArrayList<Long> idArrayTable0 = new ArrayList<Long>();
+	ArrayList<Long> idArrayTable1 = new ArrayList<Long>();
 	Constants headerNames = new Constants();
 
 	@UiField
@@ -84,11 +85,11 @@ public class AdminUI extends Composite {
 
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
-		TableCall();
+		tableCall();
 		// Window.alert(" "+ table0.getOffsetHeight( ));
 	}
 
-	private void DisplayTable(List<TFacility> result) {
+	private void displayTable(List<TFacility> result) {
 
 		table0.removeAllRows();
 		int c, r = 1;
@@ -108,6 +109,11 @@ public class AdminUI extends Composite {
 		table0.setText(0, 4, Constants.DOWNLOAD_PLUGIN_NAME);
 		table0.setText(0, 5, Constants.DOWNLOAD_SERVICE_URL);
 
+		idArrayTable0.clear();
+		idArrayTable0.add(null);
+		// The first elementis populated with a null so that index correspond
+		// with the rows
+
 		// with the use of a second flextable the for loop display the content
 		// of the TOPCAT_ICAT_SERVER
 		for (TFacility facility : result) {
@@ -119,16 +125,9 @@ public class AdminUI extends Composite {
 			table0.setText(r, c++, facility.getSearchPluginName());
 			table0.setText(r, c++, facility.getDownloadPluginName());
 			table0.setText(r++, c++, facility.getDownloadServiceUrl());
+			idArrayTable0.add(facility.getId());
+
 		}
-
-		idArray.clear();
-		idArray.add(null); // The first elementis populated with a null so that
-							// the index correspond with the rows
-
-		for (TFacility facility : result) {
-			idArray.add(facility.getId());
-		}
-
 		// counts the numbers of columns available and adds a delete and a edit
 		// button
 		Button[] deleteBtn = new Button[r];
@@ -152,27 +151,50 @@ public class AdminUI extends Composite {
 		}
 	}
 
-	private void DisplayAuthTable(TFacility result) {
+	private void displayAuthTable(List<TAuthentication> result) {
+		int c, r = 1;
+		table1.removeAllRows();
+
+		lblAuth.setText(table0.getText(table0Row, 0)
+				+ " Authentication Details");
+		lblAuth.setVisible(true);
 
 		table1.getColumnFormatter().setWidth(0, "200px");
 		table1.getColumnFormatter().setWidth(1, "200px");
 		table1.getColumnFormatter().setWidth(2, "220px");
 
-		table1.setText(0, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
+		table1.setText(0, 0, "Service Type");
 		table1.setText(0, 1, "Plugin Name");
-		table1.setText(0, 2, Constants.AUTHENTICATION_URL);
+		table1.setText(0, 2, "URL");
 
-		table1.setText(1, 0, result.getAuthenticationServiceType());
-		table1.setText(1, 1, "Empty");
-		table1.setText(1, 2, result.getAuthenticationServiceUrl());
+		idArrayTable1.clear();
+		idArrayTable1.add(null);
 
-		Button authEditButton = new Button("edit");
-		Button authDeleteButton = new Button("delete");
-		Button authPingButton = new Button("ping");
-		table1.setWidget(1, 3, authEditButton);
-		table1.setWidget(1, 4, authDeleteButton);
-		table1.setWidget(1, 5, authPingButton);
-		authID = result.getId();
+		for (TAuthentication autheticationDetails : result) {
+			c = 0;
+			table1.setText(r, c++, autheticationDetails.getType());
+			table1.setText(r, c++, autheticationDetails.getPluginName());
+			table1.setText(r++, c++, autheticationDetails.getUrl());
+			idArrayTable1.add(autheticationDetails.getId());
+		}
+
+		if (result.size() > 0) {
+			Button[] authEditButton = new Button[r];
+			new Button("edit");
+			Button[] authDeleteButton = new Button[r];
+			new Button("delete");
+			Button[] authPingButton = new Button[r];
+			new Button("ping");
+
+			for (int i = 1; i < r; i++) {
+				authEditButton[i] = new Button("edit");
+				table1.setWidget(i, 3, authEditButton[i]);
+				authDeleteButton[i] = new Button("delete");
+				table1.setWidget(i, 4, authDeleteButton[i]);
+				authPingButton[i] = new Button("ping");
+				table1.setWidget(i, 5, authPingButton[i]);
+			}
+		}
 	}
 
 	private void handleAddNEditButton(String menu) {
@@ -262,14 +284,14 @@ public class AdminUI extends Composite {
 		alertDialogBox.center();
 	}
 
-	private void TableCall() {
+	private void tableCall() {
 		AsyncCallback<List<TFacility>> callback = new AsyncCallback<List<TFacility>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 
 			public void onSuccess(List<TFacility> result) {
-				DisplayTable(result);
+				displayTable(result);
 			}
 		};
 		// make the call to the server
@@ -283,7 +305,7 @@ public class AdminUI extends Composite {
 			}
 
 			public void onSuccess(String result) {
-				TableCall();
+				tableCall();
 				dialogWindow.hide();
 			}
 		};
@@ -301,7 +323,7 @@ public class AdminUI extends Composite {
 			}
 
 			public void onSuccess(String result) {
-				TableCall();
+				tableCall();
 				dialogWindow.hide();
 			}
 		};
@@ -318,32 +340,28 @@ public class AdminUI extends Composite {
 			}
 
 			public void onSuccess(String result) {
-				TableCall();
+				tableCall();
 				alertDialogBox.hide();
 			}
 		};
 
 		// make the call to the server
-		dataService.removeIcatServer(idArray.get(table0Row), callback);
+		dataService.removeIcatServer(idArrayTable0.get(table0Row), callback);
 	}
 
-	private void rowCall() {
-		AsyncCallback<TFacility> callback = new AsyncCallback<TFacility>() {
+	private void authTableCall() {
+		AsyncCallback<List<TAuthentication>> callback = new AsyncCallback<List<TAuthentication>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 
-			public void onSuccess(TFacility result) {
-
-				lblAuth.setText(table0.getText(table0Row, 0)
-						+ " Authentication Details");
-				lblAuth.setVisible(true);
-				DisplayAuthTable(result);
+			public void onSuccess(List<TAuthentication> result) {
+				displayAuthTable(result);
 			}
 		};
 
 		// make the call to the server
-		dataService.rowCall(idArray.get(table0Row), callback);
+		dataService.authDetailsCall(idArrayTable0.get(table0Row), callback);
 	}
 
 	private TFacility entitiySetter(TFacility facility, String action) {
@@ -359,13 +377,13 @@ public class AdminUI extends Composite {
 		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
 
 		if (action.equals(MENU_EDIT) && (facility.getId() == null))
-			facility.setId(idArray.get(table0Row));
+			facility.setId(idArrayTable0.get(table0Row));
 
 		return facility;
 
 	}
 
-	private void ClearDialogBoxFields() {
+	private void clearDialogBoxFields() {
 
 		editMenu.clearCell(0, 1);
 		editMenu.clearCell(2, 1);
@@ -390,14 +408,12 @@ public class AdminUI extends Composite {
 
 	private boolean validationCheck() {
 		boolean invalidName = false;
-		boolean invalidSUrl = false; 
+		boolean invalidSUrl = false;
 		boolean invalidDSUrl = false;
 
 		editMenu.clearCell(0, 1);
 		editMenu.clearCell(2, 1);
 		editMenu.clearCell(5, 1);
-		
-		
 
 		// TODO Find a way of showing the images
 
@@ -408,12 +424,12 @@ public class AdminUI extends Composite {
 		}
 		if (txtServerUrl.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.icatURL.toString());
-			editMenu.setWidget(2, 1,  new Image("images/exclamation-icon.png"));
+			editMenu.setWidget(2, 1, new Image("images/exclamation-icon.png"));
 			invalidSUrl = true;
 		}
 		if (txtDownloadServiceUrl.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.downloadServicURL.toString());
-			editMenu.setWidget(5, 1,  new Image("images/exclamation-icon.png"));
+			editMenu.setWidget(5, 1, new Image("images/exclamation-icon.png"));
 			invalidDSUrl = true;
 		}
 		if ((invalidName || invalidSUrl || invalidDSUrl) == false)
@@ -446,7 +462,7 @@ public class AdminUI extends Composite {
 			handlePingButtons(url, "Downlaod Service");
 			break;
 		case 11:
-			rowCall();
+			authTableCall();
 			break;
 		}
 	}
@@ -456,6 +472,7 @@ public class AdminUI extends Composite {
 		Cell cell = table1.getCellForEvent(e);
 		table1Row = cell.getRowIndex();
 		table1Column = cell.getCellIndex();
+
 		String url = table1.getText(table1Row, 2);
 
 		switch (table1Column) {
@@ -524,12 +541,12 @@ public class AdminUI extends Composite {
 
 	@UiHandler(value = { "btnCancel", "btnCancel1" })
 	void handleCancelButtonClick(ClickEvent e) {
-		ClearDialogBoxFields();
+		clearDialogBoxFields();
 	}
 
 	@UiHandler("btnNo")
 	void handleNoButton(ClickEvent e) {
-		ClearDialogBoxFields();
+		clearDialogBoxFields();
 	}
 
 	@UiHandler("btnSave")
@@ -544,41 +561,43 @@ public class AdminUI extends Composite {
 				updateRowInTable(facility, MENU_EDIT);
 			}
 
-			ClearDialogBoxFields();
+			clearDialogBoxFields();
 		}
 	}
 
 	@UiHandler("btnSave1")
 	void handleSaveButton2(ClickEvent e) {
-		TFacility facility = new TFacility();
 
-		facility.setAuthenticationServiceType(txtAuthType
-				.getItemText(txtAuthType.getSelectedIndex()));
-		facility.setAuthenticationServiceUrl(txtAuthURL.getText().trim());
-		facility.setId(authID);
+		TAuthentication authentication = new TAuthentication();
+
+		authentication.setType(txtAuthType.getItemText(txtAuthType
+				.getSelectedIndex()));
+		authentication.setUrl(txtAuthURL.getText().trim());
+		authentication.setId(idArrayTable1.get(table1Row));
+
 		// TODO FOUND OUT ABOUT THE AUTHENTICATION PLUGIN NAME COLUMN IN THE
 		// TOPCAT-ICAT-SERVER TABLE
 
-		updateAuth(facility);
-		rowCall();
+		updateAuth(authentication);
 
-		ClearDialogBoxFields();
+		clearDialogBoxFields();
 	}
 
-	private void updateAuth(TFacility facility) {
+	private void updateAuth(TAuthentication authentication) {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 
 			public void onSuccess(String result) {
-				rowCall();
+
+				authTableCall();
 			}
 		};
 
-		authID = idArray.get(table0Row);
 		// make the call to the server
-		dataService.updateAuthDetails(facility, authID, callback);
+		dataService.updateAuthDetails(authentication,
+				idArrayTable0.get(table1Row), callback);
 	}
 
 	@UiHandler("btnYes")

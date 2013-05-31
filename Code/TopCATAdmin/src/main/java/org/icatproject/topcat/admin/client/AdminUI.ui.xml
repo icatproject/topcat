@@ -68,7 +68,7 @@
 				<g:Button ui:field="btnAdd" text="+"></g:Button>
 				
 				<g:FlowPanel styleName="{style.center}">
-				<g:Label styleName="{style.Table1Header}" ui:field="lblAuth" visible="false">Topcat Admin Consol</g:Label>
+				<g:Label styleName="{style.Table1Header}" ui:field="lblAuth" visible="false">Topcat Admin Console</g:Label>
 				</g:FlowPanel>
 				
 				<g:SimplePanel>

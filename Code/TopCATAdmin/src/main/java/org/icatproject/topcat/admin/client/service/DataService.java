@@ -5,6 +5,7 @@ import java.util.List;
 import org.icatproject.topcat.admin.shared.ServerException;
 import org.icatproject.topcat.admin.shared.SessionException;
 
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
@@ -19,7 +20,7 @@ public interface DataService extends RemoteService {
 
 	List<TFacility> getAllFacilities();
 
-	TFacility rowCall(Long id);
+	List<TAuthentication> authDetailsCall(Long id);
 
 	String addIcatServer(TFacility facility) throws TopcatException;
 
@@ -27,7 +28,7 @@ public interface DataService extends RemoteService {
 
 	String removeIcatServer(Long id) throws TopcatException;
 
-	String updateAuthDetails(TFacility facility, long authID)
+	String updateAuthDetails(TAuthentication authentication, long authID)
 			throws TopcatException;
 
 	String ping(String url, String urlSelection) throws TopcatException;

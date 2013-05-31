@@ -16,6 +16,7 @@ import org.icatproject.topcat.admin.shared.SessionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
@@ -73,13 +74,14 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public TFacility rowCall(Long id) {
-		return adminEJB.rowCall(id);
+	public List<TAuthentication> authDetailsCall(Long id) {
+		return adminEJB.authCall(id);
 	}
 
 	@Override
-	public String updateAuthDetails(TFacility facility, long authID) {
-		adminEJB.updateAuthDetails(facility, authID);
+	public String updateAuthDetails(TAuthentication authentication, long authID) {
+		logger.debug("Update");
+		adminEJB.updateAuthDetails(authentication, authID);
 		return "Authentication Details have been updated";
 	}
 
