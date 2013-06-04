@@ -637,7 +637,6 @@ def get_value_from_database(conf_props, sql_command, db_props, select):
     if retcode > 0:
         print "ERROR getting data from database"
         exit(1)
-    print "rt " + str(retcode)
     out_file.seek(0)
     lines = out_file.readlines()
     if VERBOSE > 2:
@@ -736,8 +735,11 @@ def validate_version(icat_props):
 
 def upgrade_db(conf_props, sql_command, db_props):
     """
+    Drop the columns AUTHENTICATION_SERVICE_URL and AUTHENTICATION_SERVICE_TYPE from TOPCAT_ICAT_SERVER
     Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER
     Add the column PREPARED_ID to the table TOPCAT_USER_DOWNLOAD
+    Add the column DISPLAY_NAME to the table ICAT_AUTHENTICATION
+    Rename the table ICAT_AUTHENTICATION to TOPCAT_ICAT_AUTHENTICATION
     """
     if conf_props['dbType'].upper() == "ORACLE":
         sql_file = NamedTemporaryFile(dir=getcwd(), suffix='.sql')
@@ -746,32 +748,62 @@ def upgrade_db(conf_props, sql_command, db_props):
     if conf_props['dbType'].upper() == "DERBY":
         sql_file.write("connect 'jdbc:derby://" + db_props['serverName'] + 
                        ":1527/" + db_props['DatabaseName'] + "';")
+        
+    sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER DROP COLUMN "
+                   "AUTHENTICATION_SERVICE_URL\n;\n")
+    sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER DROP COLUMN "
+                   "AUTHENTICATION_SERVICE_TYPE\n;\n")
+
     sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER ")
     if conf_props['dbType'].upper() == "DERBY":
         sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR(255)\n;\n")
     else:
         sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR2(255)\n;\n")
+        
     sql_file.write("ALTER TABLE TOPCAT_USER_DOWNLOAD ")
     if conf_props['dbType'].upper() == "DERBY":
         sql_file.write("ADD PREPARED_ID VARCHAR(255)\n;\n")
     else:
         sql_file.write("ADD PREPARED_ID VARCHAR2(255)\n;\n")
+    
+    sql_file.write("ALTER TABLE ICAT_AUTHENTICATION ")
+    if conf_props['dbType'].upper() == "DERBY":
+        sql_file.write("ADD DISPLAY_NAME VARCHAR(255)\n;\n")
+    else:
+        sql_file.write("ADD DISPLAY_NAME VARCHAR2(255)\n;\n")
+    
+    sql_file.write("RENAME ICAT_AUTHENTICATION TO "
+                   "TOPCAT_ICAT_AUTHENTICATION\n;\n")
+
     if conf_props['dbType'].upper() == "DERBY":
         sql_file.write("disconnect;")
     sql_file.write("exit\n;")
     command = sql_command + " " + sql_file.name
     if VERBOSE > 1:
-        print command
+        print sql_command
+        sql_file.seek(0)
+        print sql_file.readlines()
     sql_file.seek(0)
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
+    out_file = TemporaryFile()
+    retcode = call(command, shell=True, stdout=out_file) 
     if retcode > 0:
         print "ERROR updating table"
         exit(1)
-    sql_file.close()
-    print "updated tables TOPCAT_ICAT_SERVER and TOPCAT_USER_DOWNLOAD"
+    out_file.seek(0)
+    lines = out_file.readlines()
+    if VERBOSE > 2:
+        for line in lines:
+            print line
+    for line in lines:
+        if line.find("ERROR") > -1:
+            print "ERROR updating table"
+            for lin in lines:
+                print lin
+            exit(1)
+    out_file.close()
+    sql_file.close() 
+    print ("updated tables TOPCAT_ICAT_SERVER, TOPCAT_USER_DOWNLOAD and " 
+           "ICAT_AUTHENTICATION")
     return
 
 

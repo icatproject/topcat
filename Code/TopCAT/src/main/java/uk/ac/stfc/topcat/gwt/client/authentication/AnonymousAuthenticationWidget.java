@@ -61,10 +61,7 @@ public class AnonymousAuthenticationWidget extends Composite {
     public void authenticate() {
         if (facility != null && loginHandler != null) {
             Map<String, String> parameters = new HashMap<String, String>();
-            parameters.put("username", facility.getDefaultUser());
-            parameters.put("password", facility.getDefaultPassword());
-            // TODO remove hard coded db
-            loginHandler.onLoginOk(authenticationModel.getFacilityName(), "db", parameters);
+            loginHandler.onLoginOk(authenticationModel.getFacilityName(), authenticationModel.getType(), parameters);
         }
     }
 }

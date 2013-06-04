@@ -39,18 +39,10 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 public class AuthenticationModel extends BaseModelData implements Serializable {
 
     public AuthenticationModel() {
-
-    }
-
-    public AuthenticationModel(String facilityName, String authenticationType, String authenticationPluginName,
-            String authenticationServiceUrl) {
-        setFacilityName(facilityName);
-        setType(authenticationType);
-        setPluginName(authenticationPluginName);
-        setUrl(authenticationServiceUrl);
     }
 
     public AuthenticationModel(TAuthentication tAuthentication) {
+        setDisplayName(tAuthentication.getDisplayName());
         setFacilityName(tAuthentication.getFacilityName());
         setType(tAuthentication.getType());
         setPluginName(tAuthentication.getPluginName());
@@ -58,11 +50,26 @@ public class AuthenticationModel extends BaseModelData implements Serializable {
     }
 
     /**
+     * @return display name
+     */
+    public String getDisplayName() {
+        return get("displayName");
+    }
+
+    /**
+     * Set displayName
+     * 
+     * @param displayName
+     */
+    public void setDisplayName(String displayName) {
+        set("displayName", displayName);
+    }
+
+    /**
      * @return authentication plugin name
      */
     public String getPluginName() {
         return get("pluginName");
-
     }
 
     /**

@@ -29,6 +29,7 @@ import java.io.Serializable;
  * 
  */
 public class TAuthentication implements Serializable {
+    private String displayName;
     private String facilityName;
     private String pluginName;
     private String url;
@@ -37,11 +38,12 @@ public class TAuthentication implements Serializable {
     public TAuthentication() {
     }
 
-    public TAuthentication(String facilityName, String pluginName, String url, String type) {
-        this.facilityName = facilityName;
-        this.pluginName = pluginName;
-        this.url = url;
-        this.type = type;
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getFacilityName() {
@@ -74,5 +76,17 @@ public class TAuthentication implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder message = new StringBuilder();
+        message.append("TAuthentication\n");
+        message.append("displayName:").append(displayName).append("\n");
+        message.append("facilityName:").append(facilityName).append("\n");
+        message.append("pluginName:").append(pluginName).append("\n");
+        message.append("url:").append(url).append("\n");
+        message.append("type:").append(type);
+        return message.toString();
     }
 }

@@ -43,8 +43,6 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
@@ -91,13 +89,8 @@ public class LoginInfoPanel extends Composite {
         btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (validLogin)
+                if (validLogin) {
                     eventPipeLine.facilityLogout(facility.getName());
-                else if (facility.getAuthenticationServiceUrl() != null) {
-                    UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-                    urlBuilder.setParameter("facilityName", facility.getName());
-                    String url = eventPipeLine.encodeUrlDelimiters(urlBuilder.buildString());
-                    Window.Location.assign(facility.getAuthenticationServiceUrl() + url);
                 } else {
                     eventPipeLine.showLoginWidget(facility.getName());
                 }

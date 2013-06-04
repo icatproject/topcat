@@ -39,10 +39,6 @@ public class TFacility implements Serializable {
     private String searchPluginName;
     private String url;
     private String version;
-    private String authenticationServiceUrl;
-    private String authenticationServiceType;
-    private String defaultUser;
-    private String defaultPassword;
     private Long id;
 
     public TFacility() {
@@ -96,38 +92,6 @@ public class TFacility implements Serializable {
         this.version = version;
     }
 
-    public String getAuthenticationServiceUrl() {
-        return authenticationServiceUrl;
-    }
-
-    public void setAuthenticationServiceUrl(String authenticationServiceUrl) {
-        this.authenticationServiceUrl = authenticationServiceUrl;
-    }
-
-    public String getAuthenticationServiceType() {
-        return authenticationServiceType;
-    }
-
-    public void setAuthenticationServiceType(String authenticationServiceType) {
-        this.authenticationServiceType = authenticationServiceType;
-    }
-
-    public String getDefaultUser() {
-        return defaultUser;
-    }
-
-    public void setDefaultUser(String defaultUser) {
-        this.defaultUser = defaultUser;
-    }
-
-    public String getDefaultPassword() {
-        return defaultPassword;
-    }
-
-    public void setDefaultPassword(String defaultPassword) {
-        this.defaultPassword = defaultPassword;
-    }
-
     public Long getId() {
         return id;
     }
@@ -146,10 +110,7 @@ public class TFacility implements Serializable {
         message.append("version:").append(version).append("\n");
         message.append("searchPluginName:").append(searchPluginName).append("\n");
         message.append("downloadPluginName:").append(downloadPluginName).append("\n");
-        message.append("downloadServiceUrl:").append(downloadServiceUrl).append("\n");
-        message.append("authenticationServiceType:").append(authenticationServiceType).append("\n");
-        message.append("authenticationServiceUrl:").append(authenticationServiceUrl).append("\n");
-        message.append("defaultUser:").append(defaultUser);
+        message.append("downloadServiceUrl:").append(downloadServiceUrl);
         return message.toString();
     }
 

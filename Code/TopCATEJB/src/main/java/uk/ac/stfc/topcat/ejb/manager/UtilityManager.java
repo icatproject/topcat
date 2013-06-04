@@ -45,7 +45,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
-import uk.ac.stfc.topcat.ejb.entity.IcatAuthentication;
+import uk.ac.stfc.topcat.ejb.entity.TopcatIcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
@@ -93,10 +93,6 @@ public class UtilityManager {
             tFacility.setDownloadPluginName(icatServer.getDownloadPluginName());
             tFacility.setDownloadServiceUrl(icatServer.getDownloadServiceUrl());
             tFacility.setId(icatServer.getId());
-            tFacility.setAuthenticationServiceType(icatServer.getAuthenticationServiceType());
-            tFacility.setAuthenticationServiceUrl(icatServer.getAuthenticationServiceUrl());
-            tFacility.setDefaultUser(icatServer.getDefaultUser());
-            tFacility.setDefaultPassword(icatServer.getDefaultPassword());
             facilities.add(tFacility);
             if (logger.isTraceEnabled()) {
                 logger.trace(tFacility.toString());
@@ -1112,12 +1108,22 @@ public class UtilityManager {
         logger.info("getAuthenticationDetails: facilityName (" + facilityName + ")");
         List<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
 
-        List<?> icatAuthentications = manager.createNamedQuery("IcatAuthentication.findByServerName")
+        List<?> icatAuthentications = manager.createNamedQuery("TopcatIcatAuthentication.findByServerName")
                 .setParameter("serverName", facilityName).getResultList();
         for (Object icatAuthentication : icatAuthentications) {
-            authenticationDetails.add(new TAuthentication(facilityName, ((IcatAuthentication) icatAuthentication)
-                    .getPluginName(), ((IcatAuthentication) icatAuthentication).getAuthenticationServiceUrl(),
-                    ((IcatAuthentication) icatAuthentication).getAuthenticationType()));
+            TAuthentication tAuthentication = new TAuthentication();
+            tAuthentication.setFacilityName(facilityName);
+            tAuthentication.setDisplayName(((TopcatIcatAuthentication) icatAuthentication).getDisplayName());
+            tAuthentication.setPluginName(((TopcatIcatAuthentication) icatAuthentication).getPluginName());
+            tAuthentication.setType(((TopcatIcatAuthentication) icatAuthentication).getAuthenticationType());
+            tAuthentication.setUrl(((TopcatIcatAuthentication) icatAuthentication).getAuthenticationServiceUrl());
+            authenticationDetails.add(tAuthentication);
+            if (logger.isTraceEnabled()) {
+                logger.trace(tAuthentication.toString());
+            }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("getAuthenticationDetails: returning " + authenticationDetails.size() + " results");
         }
         return authenticationDetails;
     }

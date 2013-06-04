@@ -154,7 +154,7 @@ public class LoginWidget extends Window {
             }
         });
         authTypesBox.setStore(new ListStore<AuthenticationModel>());
-        authTypesBox.setDisplayField("type");
+        authTypesBox.setDisplayField("displayName");
         authTypesBox.setTypeAhead(true);
         authTypesBox.setTriggerAction(TriggerAction.ALL);
         authTypesBox.addListener(Events.Expand, new Listener<ComponentEvent>() {
@@ -192,7 +192,7 @@ public class LoginWidget extends Window {
                 if (result.size() > 1) {
                     // there is more than one type so the user will have to
                     // select one
-                    authTypesBox.getStore().sort("authenticationType", SortDir.ASC);
+                    authTypesBox.getStore().sort("displayName", SortDir.ASC);
                     showAuthSelectionBox();
                 } else if (result.size() == 1) {
                     // there is only one so we will use it

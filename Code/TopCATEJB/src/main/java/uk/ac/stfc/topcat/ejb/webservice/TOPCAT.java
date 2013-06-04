@@ -142,17 +142,10 @@ public class TOPCAT {
             output.append("OK").append("\n\n");
             output.append("Topcat server version: 1.9-SNAPSHOT").append("\n\n");
             for (TFacility f : fs) {
-                output.append("Facility: ").append(f.getName()).append("\n");
-                output.append("Version: ").append(f.getVersion()).append("\n");
-                output.append("URL: ").append(f.getUrl()).append("\n");
-                output.append("Search plugin: ").append(f.getSearchPluginName()).append("\n");
-                output.append("Download plugin: ").append(f.getDownloadPluginName()).append("\n");
-                output.append("Download service: ").append(f.getDownloadServiceUrl()).append("\n");
+                output.append(f.toString()).append("\n");
                 List<TAuthentication> auths = utility.getAuthenticationDetails(f.getName());
                 for (TAuthentication auth : auths) {
-                    output.append("Authentication type: ").append(auth.getType()).append("\n");
-                    output.append("Authentication service: ").append(auth.getUrl()).append("\n");
-                    output.append("Authentication plugin: ").append(auth.getPluginName()).append("\n");
+                    output.append(auth.toString()).append("\n");
                 }
                 output.append("\n");
             }

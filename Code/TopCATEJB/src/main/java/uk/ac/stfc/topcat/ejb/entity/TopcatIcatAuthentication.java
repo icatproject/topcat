@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -44,13 +44,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @Entity
-@Table(name = "ICAT_AUTHENTICATION")
+@Table(name = "TOPCAT_ICAT_AUTHENTICATION")
 @NamedQueries({
-        @NamedQuery(name = "IcatAuthentication.findAll", query = "SELECT t FROM IcatAuthentication t"),
-        @NamedQuery(name = "IcatAuthentication.findById", query = "SELECT t FROM IcatAuthentication t WHERE t.id = :id"),
-        @NamedQuery(name = "IcatAuthentication.findByServerName", query = "SELECT t FROM IcatAuthentication t WHERE t.serverId.name=:serverName") })
+        @NamedQuery(name = "TopcatIcatAuthentication.findAll", query = "SELECT t FROM TopcatIcatAuthentication t"),
+        @NamedQuery(name = "TopcatIcatAuthentication.findById", query = "SELECT t FROM TopcatIcatAuthentication t WHERE t.id = :id"),
+        @NamedQuery(name = "TopcatIcatAuthentication.findByServerName", query = "SELECT t FROM TopcatIcatAuthentication t WHERE t.serverId.name=:serverName") })
 @XmlRootElement
-public class IcatAuthentication implements Serializable {
+public class TopcatIcatAuthentication implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,6 +58,10 @@ public class IcatAuthentication implements Serializable {
     @Column(name = "ID")
     private Long id;
 
+    @Basic(optional = false)
+    @Column(name = "DISPLAY_NAME")
+    private String displayName;
+    
     @Basic(optional = false)
     @Column(name = "AUTHENTICATION_TYPE")
     private String authenticationType;
@@ -74,19 +78,11 @@ public class IcatAuthentication implements Serializable {
     @ManyToOne(optional = false)
     private TopcatIcatServer serverId;
 
-    public IcatAuthentication() {
+    public TopcatIcatAuthentication() {
     }
 
-    public IcatAuthentication(Long id) {
+    public TopcatIcatAuthentication(Long id) {
         this.id = id;
-    }
-
-    public IcatAuthentication(TopcatIcatServer serverId, String authenticationType, String pluginName,
-            String authenticationServiceUrl) {
-        this.serverId = serverId;
-        this.authenticationType = authenticationType;
-        this.pluginName = pluginName;
-        this.authenticationServiceUrl = authenticationServiceUrl;
     }
 
     public Long getId() {
@@ -95,6 +91,14 @@ public class IcatAuthentication implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getAuthenticationType() {
@@ -140,10 +144,10 @@ public class IcatAuthentication implements Serializable {
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are
         // not set
-        if (!(object instanceof IcatAuthentication)) {
+        if (!(object instanceof TopcatIcatAuthentication)) {
             return false;
         }
-        IcatAuthentication other = (IcatAuthentication) object;
+        TopcatIcatAuthentication other = (TopcatIcatAuthentication) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -152,7 +156,7 @@ public class IcatAuthentication implements Serializable {
 
     @Override
     public String toString() {
-        return "uk.ac.stfc.topcat.ejb.entity.IcatAuthentication[id=" + id + "]";
+        return "uk.ac.stfc.topcat.ejb.entity.TopcatIcatAuthentication[id=" + id + "]";
     }
 
 }
