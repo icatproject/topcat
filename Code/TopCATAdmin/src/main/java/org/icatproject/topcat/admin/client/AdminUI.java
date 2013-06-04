@@ -9,6 +9,7 @@ import org.icatproject.topcat.admin.client.service.DataServiceAsync;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.ejb.entity.IcatAuthentication;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -70,18 +71,18 @@ public class AdminUI extends Composite {
 	@UiField
 	VerticalPanel vPanel;
 	@UiField
-	Button btnSave, btnCancel, btnYes, btnNo, btnAdd, btnSave1, btnCancel1;
+	Button btnSave, btnCancel, btnYes, btnNo, btnAdd, btnSave1, btnCancel1, btnOk, btnAddAuth;
 	@UiField
-	DialogBox dialogWindow, alertDialogBox, authEditWindow;
+	DialogBox dialogWindow, alertDialogBox, authEditWindow,PingDialogBox;
 	@UiField
 	TextBox txtName, txtServerUrl, txtDownloadServiceUrl, txtAuthURL;
 	@UiField
 	ListBox txtPluginName, txtDownloadPluginName, txtVersion, txtAuthType,
 			txtAuthPluginName;
 	@UiField
-	HorizontalPanel hPanel0, hPanel1;
+	HorizontalPanel hPanel0;
 	@UiField
-	Label lbl1, lblAuth;
+	Label lbl1,lbl2, lblAuth;
 
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -195,6 +196,7 @@ public class AdminUI extends Composite {
 				table1.setWidget(i, 5, authPingButton[i]);
 			}
 		}
+		btnAddAuth.setVisible(true);
 	}
 
 	private void inititialiseMenuBox(String menu) {
@@ -279,6 +281,60 @@ public class AdminUI extends Composite {
 		dialogWindow.setVisible(true);
 	}
 
+	private void initialiseAuthMenuBox(String menuType) {
+		editMenu1.setText(0, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
+		editMenu1.setText(1, 0, "Plugin Name");
+		editMenu1.setText(2, 0, Constants.AUTHENTICATION_URL);
+
+		editMenu1.setWidget(0, 1, txtAuthType);
+		editMenu1.setWidget(1, 1, txtAuthPluginName);
+		editMenu1.setWidget(2, 1, txtAuthURL);
+
+		// Initialising Plugin Name ListBox
+		txtAuthPluginName.insertItem("User/Password", 0);
+		txtAuthPluginName.insertItem("CAS", 1);
+		txtAuthPluginName.insertItem("Anonymous", 2);
+
+		if (table1.getText(table1Row, 1).trim()
+				.equals(txtAuthPluginName.getItemText(0)) && menuType.equals(MENU_EDIT)) {
+			txtAuthPluginName.setItemSelected(0, true);
+		} else if (table1.getText(table1Row, 1).trim()
+				.equals(txtAuthPluginName.getItemText(1)) && menuType.equals(MENU_EDIT)) {
+			txtAuthPluginName.setItemSelected(1, true);
+		} else if (table1.getText(table1Row, 1).trim()
+				.equals(txtAuthPluginName.getItemText(2)) && menuType.equals(MENU_EDIT)) {
+			txtAuthPluginName.setItemSelected(2, true);
+		}
+
+		// Initialising Plugin Name ListBox
+		txtAuthType.insertItem("LDUP", 0);
+		txtAuthType.insertItem("DB", 1);
+
+		if (table1.getText(table1Row, 0).trim()
+				.equals(txtAuthType.getItemText(0)) && menuType.equals(MENU_EDIT)) {
+			txtAuthType.setItemSelected(0, true);
+		} else if (table1.getText(table1Row, 0).trim()
+				.equals(txtAuthType.getItemText(1)) && menuType.equals(MENU_EDIT)) {
+			txtAuthType.setItemSelected(1, true);
+		}
+		
+		if (menuType.equals(MENU_EDIT)){
+			txtAuthURL.setText(table1.getText(table1Row, 2).trim());
+		}
+		
+		if (menuType.equals(MENU_EDIT))
+			btnSave1.setText("update");
+		else
+			btnSave1.setText("save");
+		
+		
+		authEditWindow.setText("AUTHETICATION " + menuType + " MENU");
+		
+		
+		authEditWindow.center();
+		authEditWindow.setVisible(true);
+	}
+	
 	private TFacility entitiySetter(TFacility facility, String action) {
 
 		facility.setName(txtName.getText());
@@ -303,14 +359,12 @@ public class AdminUI extends Composite {
 		editMenu.clearCell(0, 1);
 		editMenu.clearCell(2, 1);
 		editMenu.clearCell(5, 1);
-
 		btnSave.setText("save");
 		txtName.setText(null);
 		txtServerUrl.setText(null);
 		txtDownloadServiceUrl.setText(null);
-
+		txtPluginName.clear();
 		txtDownloadPluginName.clear();
-
 		txtVersion.clear();
 		dialogWindow.setVisible(false);
 
@@ -322,6 +376,7 @@ public class AdminUI extends Composite {
 		txtAuthPluginName.clear();
 		txtPluginName.clear();
 		txtAuthType.clear();
+		//btnSave1.setText("save");
 		authEditWindow.setVisible(false);
 		authEditWindow.setModal(false);
 	}
@@ -356,50 +411,6 @@ public class AdminUI extends Composite {
 			return true;
 		else
 			return false;
-	}
-
-	private void initialiseAuthMenuBox() {
-		editMenu1.setText(0, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
-		editMenu1.setText(1, 0, "Plugin Name");
-		editMenu1.setText(2, 0, Constants.AUTHENTICATION_URL);
-
-		editMenu1.setWidget(0, 1, txtAuthType);
-		editMenu1.setWidget(1, 1, txtAuthPluginName);
-		editMenu1.setWidget(2, 1, txtAuthURL);
-
-		// Initialising Plugin Name ListBox
-		txtAuthPluginName.insertItem("User/Password", 0);
-		txtAuthPluginName.insertItem("CAS", 1);
-		txtAuthPluginName.insertItem("Anonymous", 2);
-
-		if (table1.getText(table1Row, 1).trim()
-				.equals(txtAuthPluginName.getItemText(0))) {
-			txtAuthPluginName.setItemSelected(0, true);
-		} else if (table1.getText(table1Row, 1).trim()
-				.equals(txtAuthPluginName.getItemText(1))) {
-			txtAuthPluginName.setItemSelected(1, true);
-		} else if (table1.getText(table1Row, 1).trim()
-				.equals(txtAuthPluginName.getItemText(2))) {
-			txtAuthPluginName.setItemSelected(2, true);
-		}
-
-		// Initialising Plugin Name ListBox
-		txtAuthType.insertItem("LDUP", 0);
-		txtAuthType.insertItem("DB", 1);
-
-		if (table1.getText(table1Row, 0).trim()
-				.equals(txtAuthType.getItemText(0))) {
-			txtAuthType.setItemSelected(0, true);
-		} else if (table1.getText(table1Row, 0).trim()
-				.equals(txtAuthType.getItemText(1))) {
-			txtAuthType.setItemSelected(1, true);
-		}
-
-		txtAuthURL.setText(table1.getText(table1Row, 2).trim());
-
-		authEditWindow.center();
-		authEditWindow.setVisible(true);
-
 	}
 
 	/*
@@ -503,14 +514,14 @@ public class AdminUI extends Composite {
 		dataService.authDetailsCall(table0.getText(table0Row, 0), callback);
 	}
 
-	void handlePingButtonEvent(String url, String urlSelection) {
+	private void handlePingButtonEvent(String url, String urlSelection) {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 
 			public void onSuccess(String result) {
-				Window.alert(result);
+				handlePingButtonEvent(result);
 			}
 		};
 		// make the call to the server
@@ -518,14 +529,43 @@ public class AdminUI extends Composite {
 
 	}
 
+	private void removeRowFromAuthTable() {
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+
+			public void onSuccess(String result) {
+				authTableCall();
+				alertDialogBox.hide();
+			}
+		};
+
+		// make the call to the server
+		dataService.removeAuthenticationDetails(idArrayTable1.get(table1Row), callback);
+	}
+	
+	private void addRowToAuthTable(TAuthentication authentication){
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+
+			public void onSuccess(String result) {
+				authTableCall();
+				authEditWindow.hide();
+			}
+		};
+
+
+		// make the call to the server
+		dataService.addAuthDetails(authentication, callback);
+	}
+	
+	
 	/*
 	 * ################### Event handlers ##################
 	 */
-
-	private void handleDeleteButton() {
-		alertDialogBox.setVisible(true);
-		alertDialogBox.center();
-	}
 
 	@UiHandler("table0")
 	void handleTable0ButtonsClick(ClickEvent e) {
@@ -540,7 +580,7 @@ public class AdminUI extends Composite {
 			inititialiseMenuBox(MENU_EDIT);
 			break;
 		case 8:
-			handleDeleteButton();
+			handleDeleteButtonEvent("ICAT_TABLE");
 			break;
 		case 9:
 			url = table0.getText(table0Row, 2);
@@ -566,11 +606,10 @@ public class AdminUI extends Composite {
 
 		switch (table1Column) {
 		case 3:
-			initialiseAuthMenuBox();
+			initialiseAuthMenuBox(MENU_EDIT);
 			break;
 		case 4:
-			// handleAuthDeleteButton()
-			Window.alert("Delete");
+			handleDeleteButtonEvent("AUTH_TABLE");
 			break;
 		case 5:
 			handlePingButtonEvent(url, "Authentication");
@@ -596,30 +635,41 @@ public class AdminUI extends Composite {
 
 	@UiHandler("btnSave1")
 	void handleSaveButton2(ClickEvent e) {
-
 		TAuthentication authentication = new TAuthentication();
-
 		authentication.setType(txtAuthType.getItemText(txtAuthType
 				.getSelectedIndex()));
 		authentication.setPluginName(txtAuthPluginName
 				.getItemText(txtAuthPluginName.getSelectedIndex()));
 		authentication.setUrl(txtAuthURL.getText().trim());
-		authentication.setId(idArrayTable1.get(table1Row));
-
-		// TODO FOUND OUT ABOUT THE AUTHENTICATION PLUGIN NAME COLUMN IN THE
-		// TOPCAT-ICAT-SERVER TABLE
-
-		updateAuth(authentication);
-
+		authentication.setId(idArrayTable0.get(table0Row));
+		
+		Window.alert(""+ authentication.getId());
+		if (btnSave1.getText() == "save") {
+			Window.alert("SAVE");
+			addRowToAuthTable(authentication);
+		} 
+		else if(btnSave1.getText() == "update"){
+			updateAuth(authentication);
+		}
 		clearAuthMenu();
 	}
 
 	@UiHandler("btnYes")
 	void handleYesButton(ClickEvent e) {
-		removeRowFromTable();
+		String table = alertDialogBox.getTitle();
+		
+		if (table == "AUTH_TABLE")
+			removeRowFromAuthTable();
+		else
+			removeRowFromTable();
 	}
+	
 
 	@UiHandler("btnNo")
+	
+	
+	
+	
 	void handleNoButton(ClickEvent e) {
 		alertDialogBox.setVisible(false);
 		alertDialogBox.setModal(false);
@@ -627,7 +677,7 @@ public class AdminUI extends Composite {
 	}
 
 	@UiHandler("btnSave")
-	void handleSaveButton(ClickEvent e) {
+	void handleSaveUpdateButton(ClickEvent e) {
 		TFacility facility = new TFacility();
 
 		if (validationCheck() == true) {
@@ -640,6 +690,29 @@ public class AdminUI extends Composite {
 
 			clearMenuBox();
 		}
-
+	}
+	
+	@UiHandler("btnOk")
+	void handleOkButtonClick(ClickEvent e){
+		PingDialogBox.setModal(false);
+		PingDialogBox.setVisible(false);
+	}
+	
+	@UiHandler("btnAddAuth")
+	void handleAddAuthButtonClick(ClickEvent e){
+		initialiseAuthMenuBox(MENU_ADD);
+	}
+	
+	void handleDeleteButtonEvent(String table) {
+		alertDialogBox.setTitle(table);
+		alertDialogBox.setVisible(true);
+		alertDialogBox.center();
+	}
+	
+	void handlePingButtonEvent(String result){
+		lbl2.setText(result);
+		PingDialogBox.center();
+		PingDialogBox.setVisible(true);
 	}
 }
+

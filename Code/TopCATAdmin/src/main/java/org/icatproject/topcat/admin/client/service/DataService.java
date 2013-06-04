@@ -33,4 +33,7 @@ public interface DataService extends RemoteService {
 
 	String ping(String url, String urlSelection) throws TopcatException;
 
+	String removeAuthenticationDetails(Long id) throws TopcatException;
+
+	String addAuthDetails(TAuthentication authentication);
 }

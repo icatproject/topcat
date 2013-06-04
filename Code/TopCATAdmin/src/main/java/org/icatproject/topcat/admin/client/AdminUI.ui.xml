@@ -65,16 +65,17 @@
 			<g:HTMLPanel>
 
 				<g:FlexTable ui:field="table0"></g:FlexTable>
-				<g:Button ui:field="btnAdd" text="+"></g:Button>
+				<g:Button ui:field="btnAdd" text="add"></g:Button>
 				
-				<g:FlowPanel styleName="{style.center}">
+				
+				<g:FlowPanel styleName="{style.center}" >
 				<g:Label styleName="{style.Table1Header}" ui:field="lblAuth" visible="false">Topcat Admin Console</g:Label>
 				</g:FlowPanel>
-				
+								
 				<g:SimplePanel>
 					<g:FlexTable ui:field="table1"></g:FlexTable>
 				</g:SimplePanel>
-
+				<g:Button ui:field="btnAddAuth" text="add" visible="false"></g:Button>
 
 			</g:HTMLPanel>
 		</g:center>
@@ -109,22 +110,30 @@
 						</g:VerticalPanel>
 					</g:DialogBox>
 				</g:SimplePanel>
-				<g:HorizontalPanel>
-					<g:SimplePanel>
-						<g:DialogBox ui:field="authEditWindow" modal="true" glassEnabled="true" visible="false" text="Authentication Details Menu">
-							<g:VerticalPanel styleName="{style.mainBody}">
-								<g:FlexTable ui:field="editMenu1" styleName="{style.mainBody}"></g:FlexTable>
-								<g:ListBox ui:field="txtAuthType"></g:ListBox>
-								<g:ListBox ui:field="txtAuthPluginName"></g:ListBox>
-								<g:TextBox ui:field="txtAuthURL"></g:TextBox>
-								<g:HorizontalPanel ui:field="hPanel2">
-									<g:Button ui:field="btnSave1" styleName="{style.button-spacing}">save</g:Button>
-									<g:Button ui:field="btnCancel1" styleName="{style.button-spacing}">cancel</g:Button>
-								</g:HorizontalPanel>
-							</g:VerticalPanel>
-						</g:DialogBox>
-					</g:SimplePanel>
-				</g:HorizontalPanel>
+				<g:SimplePanel>
+					<g:DialogBox ui:field="authEditWindow" modal="true" glassEnabled="true" visible="false">
+						<g:VerticalPanel styleName="{style.mainBody}">
+							<g:FlexTable ui:field="editMenu1" styleName="{style.mainBody}"></g:FlexTable>
+							<g:ListBox ui:field="txtAuthType"></g:ListBox>
+							<g:ListBox ui:field="txtAuthPluginName"></g:ListBox>
+							<g:TextBox ui:field="txtAuthURL"></g:TextBox>
+							<g:HorizontalPanel ui:field="hPanel2">
+								<g:Button ui:field="btnSave1" styleName="{style.button-spacing}"></g:Button>
+								<g:Button ui:field="btnCancel1" styleName="{style.button-spacing}">cancel</g:Button>
+							</g:HorizontalPanel>
+						</g:VerticalPanel>
+					</g:DialogBox>
+				</g:SimplePanel>
+				<g:SimplePanel>
+					<g:DialogBox ui:field="PingDialogBox" modal="true" glassEnabled="true" text="Ping Status" visible="false">
+						<g:VerticalPanel styleName="{style.alertMainBody}" spacing="2">
+							<g:Label ui:field="lbl2"></g:Label>
+							<g:HorizontalPanel styleName="{style.alertTextBody}" horizontalAlignment="center">
+								<g:Button ui:field="btnOk" styleName="{style.button-spacing}">ok</g:Button>
+							</g:HorizontalPanel>
+						</g:VerticalPanel>
+					</g:DialogBox>
+				</g:SimplePanel>
 			</g:FlowPanel>
 		</g:south>
 

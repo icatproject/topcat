@@ -34,4 +34,11 @@ public interface DataServiceAsync {
 
 	void ping(String url, String urlSelection, AsyncCallback<String> callback);
 
+	void removeAuthenticationDetails(Long id, AsyncCallback<String> callback);
+
+	void addAuthDetails(TAuthentication authentication,
+			AsyncCallback<String> callback);
+
+	
+
 }

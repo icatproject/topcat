@@ -99,17 +99,19 @@ public class AdminEJB {
 
 	public List<TAuthentication> authCall(String serverName) {
 		ArrayList<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
-		List<IcatAuthentication> authenDetails = entityManager.createNamedQuery("IcatAuthentication.findByServerName").setParameter("serverName", serverName).getResultList();
-		for (IcatAuthentication authentication : authenDetails){
+		List<IcatAuthentication> authenDetails = entityManager
+				.createNamedQuery("IcatAuthentication.findByServerName")
+				.setParameter("serverName", serverName).getResultList();
+		for (IcatAuthentication authentication : authenDetails) {
 			TAuthentication tAuthentication = new TAuthentication();
-			
 			tAuthentication.setType(authentication.getAuthenticationType());
 			tAuthentication.setPluginName(authentication.getPluginName());
-			tAuthentication.setUrl(authentication.getAuthenticationServiceUrl());
-			
+			tAuthentication
+					.setUrl(authentication.getAuthenticationServiceUrl());
+			tAuthentication.setId(authentication.getId());
 			authenticationDetails.add(tAuthentication);
 		}
-		 
+
 		return authenticationDetails;
 	}
 
@@ -121,6 +123,24 @@ public class AdminEJB {
 		tiServer.setAuthenticationServiceUrl(authentication.getUrl());
 		tiServer.setPluginName(authentication.getPluginName());
 		entityManager.merge(tiServer);
+	}
+
+	public void removeRowFromAuthTable(Long id) {
+		IcatAuthentication authonticationDetails = entityManager.find(IcatAuthentication.class,
+				id);
+		entityManager.remove(authonticationDetails);
+	}
+
+	public void addRowToAuthTable(TAuthentication authentication) {
+		IcatAuthentication authenticationDetails = new IcatAuthentication();
+		authenticationDetails.setAuthenticationType((authentication.getType()));
+		authenticationDetails.setAuthenticationServiceUrl((authentication.getUrl()));
+		authenticationDetails.setPluginName((authentication.getPluginName()));
+		logger.debug(" "+ authentication.getId());
+		authenticationDetails.setServerId(entityManager.find(TopcatIcatServer.class, authentication.getId()));
+		entityManager.persist(authenticationDetails);
+
+		
 	}
 
 }

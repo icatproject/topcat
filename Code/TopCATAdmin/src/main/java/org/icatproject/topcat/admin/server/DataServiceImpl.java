@@ -20,6 +20,7 @@ import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
@@ -58,19 +59,19 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String addIcatServer(TFacility facility) throws TopcatException {
 		adminEJB.addIcatServer(facility);
-		return "New row has been added ";
+		return "New row has been added to TopcatIcatServer Table";
 	}
 
 	@Override
 	public String updateIcatServer(TFacility facility) throws TopcatException {
 		adminEJB.updateIcatServer(facility);
-		return "Row has been Updated";
+		return "Row has been updated to TopcatIcatServer Table";
 	}
 
 	@Override
 	public String removeIcatServer(Long id) throws TopcatException {
 		adminEJB.removeIcatServer(id);
-		return "The Row with the ID: " + id + " has been Removed";
+		return "The Row with the ID: " + id + " has been Removed from the to TopcatIcatServer Table";
 	}
 
 	@Override
@@ -89,7 +90,6 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	public String ping(String url, String urlSelection) {
 
 		String status = urlSelection + " pinged ";
-
 		try {
 			URLConnection currentUrl = new URL(url).openConnection();
 		} catch (Exception e) {
@@ -101,4 +101,16 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		return status += "successfully";
 
 	}
+
+	public String removeAuthenticationDetails(Long id){
+		adminEJB.removeRowFromAuthTable(id);
+		return "The Row with the ID: " + id + "  has been Removed from the IcatAuthetication Table" ;
+	}
+	public String addAuthDetails(TAuthentication authentication){
+		adminEJB.addRowToAuthTable(authentication);
+		return "New row has been added to IcatAuthetication Table";
+		
+	}
+
 }
+
