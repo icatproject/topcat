@@ -361,7 +361,7 @@ public class AdminUI extends Composite {
 		};
 
 		// make the call to the server
-		dataService.authDetailsCall(idArrayTable0.get(table0Row), callback);
+		dataService.authDetailsCall(table0.getText(table0Row, 0), callback);
 	}
 
 	private TFacility entitiySetter(TFacility facility, String action) {
@@ -383,26 +383,23 @@ public class AdminUI extends Composite {
 
 	}
 
-	private void clearDialogBoxFields() {
+	private void initialiseDialogBox() {
 
 		editMenu.clearCell(0, 1);
 		editMenu.clearCell(2, 1);
 		editMenu.clearCell(5, 1);
-		txtDownloadPluginName.clear();
-		txtPluginName.clear();
-		txtVersion.clear();
-		txtAuthPluginName.clear();
-		txtAuthType.clear();
+
 		btnSave.setText("save");
-		txtDownloadServiceUrl.setText(null);
 		txtName.setText(null);
 		txtServerUrl.setText(null);
-		authEditWindow.setVisible(false);
+		txtDownloadServiceUrl.setText(null);
+
+		txtDownloadPluginName.clear();
+
+		txtVersion.clear();
 		dialogWindow.setVisible(false);
-		alertDialogBox.setVisible(false);
-		authEditWindow.setModal(false);
+
 		dialogWindow.setModal(false);
-		alertDialogBox.setModal(false);
 		lbl1.setText(null);
 	}
 
@@ -539,14 +536,29 @@ public class AdminUI extends Composite {
 		handleAddNEditButton(MENU_ADD);
 	}
 
-	@UiHandler(value = { "btnCancel", "btnCancel1" })
+	@UiHandler("btnCancel")
 	void handleCancelButtonClick(ClickEvent e) {
-		clearDialogBoxFields();
+		initialiseDialogBox();
+	}
+
+	@UiHandler("btnCancel1")
+	void handleAuthCancelButton(ClickEvent e) {
+		initialiseAuthMenu();
+	}
+
+	void initialiseAuthMenu() {
+		txtAuthPluginName.clear();
+		txtPluginName.clear();
+		txtAuthType.clear();
+		authEditWindow.setVisible(false);
+		authEditWindow.setModal(false);
 	}
 
 	@UiHandler("btnNo")
 	void handleNoButton(ClickEvent e) {
-		clearDialogBoxFields();
+		alertDialogBox.setVisible(false);
+		alertDialogBox.setModal(false);
+		alertDialogBox.setGlassEnabled(false);
 	}
 
 	@UiHandler("btnSave")
@@ -561,8 +573,9 @@ public class AdminUI extends Composite {
 				updateRowInTable(facility, MENU_EDIT);
 			}
 
-			clearDialogBoxFields();
+			initialiseDialogBox();
 		}
+
 	}
 
 	@UiHandler("btnSave1")
@@ -572,6 +585,8 @@ public class AdminUI extends Composite {
 
 		authentication.setType(txtAuthType.getItemText(txtAuthType
 				.getSelectedIndex()));
+		authentication.setPluginName(txtAuthPluginName
+				.getItemText(txtAuthPluginName.getSelectedIndex()));
 		authentication.setUrl(txtAuthURL.getText().trim());
 		authentication.setId(idArrayTable1.get(table1Row));
 
@@ -580,7 +595,7 @@ public class AdminUI extends Composite {
 
 		updateAuth(authentication);
 
-		clearDialogBoxFields();
+		initialiseAuthMenu();
 	}
 
 	private void updateAuth(TAuthentication authentication) {

@@ -32,7 +32,7 @@ public class AdminEntryPoint implements EntryPoint {
 
 		RootLayoutPanel.get().add(uiBinder.createAndBindUi(this));
 
-		tabLayoutPanel.add(loginPanel, "Login");
+	//	tabLayoutPanel.add(loginPanel, "Login");
 		tabLayoutPanel.add(adminUI, "UI");
 
 	}

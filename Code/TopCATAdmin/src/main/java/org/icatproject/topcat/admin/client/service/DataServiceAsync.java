@@ -27,7 +27,7 @@ public interface DataServiceAsync {
 
 	void removeIcatServer(Long id, AsyncCallback<String> callback);
 
-	void authDetailsCall(Long id, AsyncCallback<List<TAuthentication>> callback);
+	void authDetailsCall(String serverName, AsyncCallback<List<TAuthentication>> callback);
 
 	void updateAuthDetails(TAuthentication authentication, long authID,
 			AsyncCallback<String> callback);

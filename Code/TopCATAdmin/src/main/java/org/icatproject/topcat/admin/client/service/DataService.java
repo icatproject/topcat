@@ -20,7 +20,7 @@ public interface DataService extends RemoteService {
 
 	List<TFacility> getAllFacilities();
 
-	List<TAuthentication> authDetailsCall(Long id);
+	List<TAuthentication> authDetailsCall(String serverName);
 
 	String addIcatServer(TFacility facility) throws TopcatException;
 

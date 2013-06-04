@@ -97,13 +97,13 @@ public class AdminEJB {
 		entityManager.remove(tiServer);
 	}
 
-	public List<TAuthentication> authCall(Long id) {
+	public List<TAuthentication> authCall(String serverName) {
 		ArrayList<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
-		List<IcatAuthentication> authenDetails = entityManager.createNamedQuery("IcatAuthentication.findById").setParameter("id", id).getResultList();
+		List<IcatAuthentication> authenDetails = entityManager.createNamedQuery("IcatAuthentication.findByServerName").setParameter("serverName", serverName).getResultList();
 		for (IcatAuthentication authentication : authenDetails){
 			TAuthentication tAuthentication = new TAuthentication();
 			
-			tAuthentication.setType(authentication.getAuthenticationServiceUrl());
+			tAuthentication.setType(authentication.getAuthenticationType());
 			tAuthentication.setPluginName(authentication.getPluginName());
 			tAuthentication.setUrl(authentication.getAuthenticationServiceUrl());
 			

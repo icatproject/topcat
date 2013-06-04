@@ -74,8 +74,8 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public List<TAuthentication> authDetailsCall(Long id) {
-		return adminEJB.authCall(id);
+	public List<TAuthentication> authDetailsCall(String serverName) {
+		return adminEJB.authCall(serverName);
 	}
 
 	@Override
