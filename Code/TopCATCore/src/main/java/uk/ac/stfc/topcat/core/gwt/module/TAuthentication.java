@@ -34,6 +34,7 @@ public class TAuthentication implements Serializable {
     private String pluginName;
     private String url;
     private String type;
+    private Long id;
 
     public TAuthentication() {
     }
@@ -77,6 +78,14 @@ public class TAuthentication implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
     @Override
     public String toString() {
