@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
-import uk.ac.stfc.topcat.ejb.entity.IcatAuthentication;
+import uk.ac.stfc.topcat.ejb.entity.TopcatIcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
@@ -99,16 +99,17 @@ public class AdminEJB {
 
 	public List<TAuthentication> authCall(String serverName) {
 		ArrayList<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
-		List<IcatAuthentication> authenDetails = entityManager
-				.createNamedQuery("IcatAuthentication.findByServerName")
+		List<TopcatIcatAuthentication> authenDetails = entityManager
+				.createNamedQuery("TopcatIcatAuthentication.findByServerName")
 				.setParameter("serverName", serverName).getResultList();
-		for (IcatAuthentication authentication : authenDetails) {
+		for (TopcatIcatAuthentication authentication : authenDetails) {
 			TAuthentication tAuthentication = new TAuthentication();
 			tAuthentication.setType(authentication.getAuthenticationType());
 			tAuthentication.setPluginName(authentication.getPluginName());
 			tAuthentication
 					.setUrl(authentication.getAuthenticationServiceUrl());
 			tAuthentication.setId(authentication.getId());
+			tAuthentication.setDisplayName(authentication.getDisplayName());
 			authenticationDetails.add(tAuthentication);
 		}
 
@@ -117,22 +118,23 @@ public class AdminEJB {
 
 	public void updateAuthDetails(TAuthentication authentication, long id) {
 		logger.debug("its updating");
-		IcatAuthentication tiServer = new IcatAuthentication();
-		tiServer = entityManager.find(IcatAuthentication.class, id);
+		TopcatIcatAuthentication tiServer = new TopcatIcatAuthentication();
+		tiServer = entityManager.find(TopcatIcatAuthentication.class, id);
 		tiServer.setAuthenticationType(authentication.getType());
 		tiServer.setAuthenticationServiceUrl(authentication.getUrl());
 		tiServer.setPluginName(authentication.getPluginName());
+		tiServer.setDisplayName(authentication.getDisplayName());
 		entityManager.merge(tiServer);
 	}
 
 	public void removeRowFromAuthTable(Long id) {
-		IcatAuthentication authonticationDetails = entityManager.find(IcatAuthentication.class,
+		TopcatIcatAuthentication authonticationDetails = entityManager.find(TopcatIcatAuthentication.class,
 				id);
 		entityManager.remove(authonticationDetails);
 	}
 
 	public void addRowToAuthTable(TAuthentication authentication) {
-		IcatAuthentication authenticationDetails = new IcatAuthentication();
+		TopcatIcatAuthentication authenticationDetails = new TopcatIcatAuthentication();
 		authenticationDetails.setAuthenticationType((authentication.getType()));
 		authenticationDetails.setAuthenticationServiceUrl((authentication.getUrl()));
 		authenticationDetails.setPluginName((authentication.getPluginName()));

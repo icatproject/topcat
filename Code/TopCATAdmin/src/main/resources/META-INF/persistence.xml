@@ -6,7 +6,7 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>jdbc/__default</jta-data-source>
         
-        <!-- class>org.icatproject.topcat.admin.server.ejb.entity.IcatAuthentication</class>
+        <!-- class>org.icatproject.topcat.admin.server.ejb.entity.TopcatIcatAuthentication</class>
         <class>org.icatproject.topcat.admin.server.ejb.entity.TopcatIcatServer</class>
         <class>org.icatproject.topcat.admin.server.ejb.entity.TopcatKeywords</class>
         <class>org.icatproject.topcat.admin.server.ejb.entity.TopcatUser</class>

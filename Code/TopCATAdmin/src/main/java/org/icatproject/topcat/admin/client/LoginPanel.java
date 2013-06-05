@@ -81,10 +81,10 @@ public class LoginPanel extends Composite {
 	    	public void onSuccess(List<TFacility> result) {
 	    		String message = "";
 	    		for ( TFacility facility : result ) {
-	    			message +=	facility.getAuthenticationServiceType() + " " +
-	    						facility.getAuthenticationServiceUrl() + " " +
-	    						facility.getDownloadPluginName() + " " +
-	    						facility.getName()	+ " " +
+//	    			message +=	facility.getAuthenticationServiceType() + " " +
+//	    						facility.getAuthenticationServiceUrl() + " " +
+//	    						facility.getDownloadPluginName() + " " +
+//	    						facility.getName()	+ " " +
 	    						facility.getSearchPluginName() ;
 	    		}
 	    		message += " \n";
