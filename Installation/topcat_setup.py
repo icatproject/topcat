@@ -18,7 +18,8 @@ ICAT_DIR = "icats.d"
 GLASSFISH_PROPS_FILE = "glassfish.props"
 TOPCAT_PROPS_FILE = "topcat.properties"
 
-REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish"]
+REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish", 
+                     "topcatAdminUser", "topcatAdminPassword"]
 
 SUPPORTED_DATABASES = {"DERBY":'', "MYSQL":'', "ORACLE":''}
 
@@ -137,7 +138,15 @@ def create(conf_props):
     install_props_file()
     if conf_props['dbType'].upper() == "DERBY":
         start_derby()
-    # Set up connection pool
+    create_connection_pool(conf_props)     
+    create_jdbc_resource()
+    create_topcat_admin(conf_props)
+    
+    
+def create_connection_pool(conf_props):
+    """
+    Set up connection pool
+    """
     command = (ASADMIN + " create-jdbc-connection-pool" + 
                  " --datasourceclassname " + conf_props["driver"] + 
                  " --restype javax.sql.DataSource --failconnection=true"
@@ -153,11 +162,32 @@ def create(conf_props):
     if retcode > 0:
         print "ERROR creating database connection pool"
         exit(1)
-            
-    # Set up jdbc resource
+
+
+def create_jdbc_resource():
+    """
+    Set up jdbc resource
+    """
     command = (ASADMIN + " create-jdbc-resource --connectionpoolid " + 
                  CONNECTION_POOL_ID + " " + "jdbc/" + 
                  CONNECTION_POOL_ID)
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+    if retcode > 0:
+        print "ERROR creating jdbc resource"
+        exit(1)        
+        
+def create_topcat_admin(conf_props):
+    """
+    Set up topcat admin user
+    """
+    user = conf_props['topcatAdminUser']
+    password = conf_props['topcatAdminPassword']
+    command = (ASADMIN + "TODO" + user + password)
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:

@@ -18,3 +18,10 @@ glassfish=/opt/glassfish3
 
 # Glassfish admin port (default 4848)
 port=4848
+
+# A Glassfish user used to access the topcat admin service
+topcatAdminUser=topcatadmin
+
+# Password for the topcatAdminUser
+# Please change this value
+topcatAdminPassword=topcatadmin
