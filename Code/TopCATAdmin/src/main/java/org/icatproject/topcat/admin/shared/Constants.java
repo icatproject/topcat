@@ -11,5 +11,6 @@ public class Constants {
 	public static final String DOWNLOAD_PLUGIN_NAME = "Download Plugin" ;
 	public static final String DOWNLOAD_SERVICE_URL = "Download Service URL" ;
 	public static final String TOPCAT_ICAT_SERVER = "TOPCAT_ICAT_SERVER";
+	public static final String DISPLAY_NAME = "Display Name";
 	
 }

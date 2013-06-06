@@ -1,12 +1,12 @@
 package org.icatproject.topcat.admin.client;
 
+import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.icatproject.topcat.admin.shared.Constants;
 import org.icatproject.topcat.admin.client.service.DataService;
 import org.icatproject.topcat.admin.client.service.DataServiceAsync;
-import org.omg.CORBA.CTX_RESTRICT_SCOPE;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -84,13 +85,14 @@ public class AdminUI extends Composite {
 			txtAuthPluginName;
 	@UiField
 	HorizontalPanel hPanel0, hPanel2;
+
 	@UiField
 	Label lbl1, lbl2, lbl3, lblAuth;
+	
 
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
 		tableCall();
-		// Window.alert(" "+ table0.getOffsetHeight( ));
 	}
 
 	private void displayTable(List<TFacility> result) {
@@ -102,8 +104,8 @@ public class AdminUI extends Composite {
 		table0.getColumnFormatter().setWidth(0, "130px");
 		table0.getColumnFormatter().setWidth(1, "100px");
 		table0.getColumnFormatter().setWidth(2, "220px");
-		table0.getColumnFormatter().setWidth(3, "220px");
-		table0.getColumnFormatter().setWidth(4, "100px");
+		table0.getColumnFormatter().setWidth(3, "230px");
+		table0.getColumnFormatter().setWidth(4, "190px");
 		table0.getColumnFormatter().setWidth(5, "190px");
 
 		table0.setText(0, 0, Constants.NAME);
@@ -146,11 +148,11 @@ public class AdminUI extends Composite {
 			table0.setWidget(i, 7, editBtn[i]);
 			deleteBtn[i] = new Button("delete");
 			table0.setWidget(i, 8, deleteBtn[i]);
-			pingICatBtn[i] = new Button("ping Icat");
+			pingICatBtn[i] = new Button("ping ICAT");
 			table0.setWidget(i, 9, pingICatBtn[i]);
-			pingDSBtn[i] = new Button("ping Download Service");
+			pingDSBtn[i] = new Button("ping D. S");
 			table0.setWidget(i, 10, pingDSBtn[i]);
-			authbtn[i] = new Button("Authentication Details");
+			authbtn[i] = new Button("Show Auth. Details");
 			table0.setWidget(i, 11, authbtn[i]);
 		}
 	}
@@ -168,7 +170,7 @@ public class AdminUI extends Composite {
 		table1.getColumnFormatter().setWidth(2, "200px");
 		table1.getColumnFormatter().setWidth(3, "220px");
 
-		table1.setText(0, 0, "Display Name");
+		table1.setText(0, 0, Constants.DISPLAY_NAME);
 		table1.setText(0, 1, "Type");
 		table1.setText(0, 2, "Plugin Name");
 		table1.setText(0, 3, "URL");
@@ -288,49 +290,50 @@ public class AdminUI extends Composite {
 	}
 
 	private void initialiseAuthMenu(String menuType) {
-
-		editMenu1.setText(0, 0, "Display Name");
+		editMenu1.setText(0, 0, Constants.DISPLAY_NAME);
 		editMenu1.setText(1, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
-		editMenu1.setText(2, 0, "Plugin Name");
 		editMenu1.setText(3, 0, Constants.AUTHENTICATION_URL);
 
 		editMenu1.setWidget(0, 2, txtDisplayName);
 		editMenu1.setWidget(1, 2, txtAuthType);
-		editMenu1.setWidget(2, 2, txtAuthPluginName);
 		editMenu1.setWidget(3, 2, txtAuthURL);
 		editMenu1.setWidget(4, 2, lbl3);
 		editMenu1.setWidget(4, 0, hPanel2);
 
 		// Initialising Plugin Name ListBox
-		txtAuthPluginName.insertItem("user/password", 0);
+		txtAuthPluginName.insertItem("anonymous", 0);
 		txtAuthPluginName.insertItem("cas", 1);
-		txtAuthPluginName.insertItem("anonymous", 2);
+		txtAuthPluginName.insertItem("user/password", 2);
 
 		// Initialising Typ ListBox
-		txtAuthType.insertItem("ldub", 0);
-		txtAuthType.insertItem("db", 1);
-		txtAuthType.insertItem("uows", 2);
+		txtAuthType.insertItem("anonymous", 0);
+		txtAuthType.insertItem("cas", 1);
+		txtAuthType.insertItem("db", 2);
+		txtAuthType.insertItem("ldab", 3);
+		txtAuthType.insertItem("uows", 4);
 
-		// Initialisin Display Name textbox
 		if (menuType.equals(MENU_EDIT)) {
+
 			txtDisplayName.setText(table1.getText(table1Row, 0).trim());
-		}
 
-	if (menuType.equals(MENU_EDIT)) {
-
-			if (table1.getText(table1Row, 2).trim()
-					.equals(txtAuthPluginName.getItemText(0))
-					&& menuType.equals(MENU_EDIT)) {
-				txtAuthPluginName.setItemSelected(0, true);
-			} else if (table1.getText(table1Row, 2).trim()
-					.equals(txtAuthPluginName.getItemText(1))
-					&& menuType.equals(MENU_EDIT)) {
-				txtAuthPluginName.setItemSelected(1, true);
-			} else if (table1.getText(table1Row, 2).trim()
-					.equals(txtAuthPluginName.getItemText(2))
-					&& menuType.equals(MENU_EDIT)) {
-				txtAuthPluginName.setItemSelected(2, true);
-			}
+			/*
+			 * editMenu1.setText(2, 0, "Plugin Name");
+			 * 
+			 * editMenu1.setWidget(2, 2, txtAuthPluginName);
+			 * 
+			 * if (table1.getText(table1Row, 2).trim()
+			 * .equals(txtAuthPluginName.getItemText(0)) &&
+			 * menuType.equals(MENU_EDIT)) {
+			 * txtAuthPluginName.setItemSelected(0, true); } else if
+			 * (table1.getText(table1Row, 2).trim()
+			 * .equals(txtAuthPluginName.getItemText(1)) &&
+			 * menuType.equals(MENU_EDIT)) {
+			 * txtAuthPluginName.setItemSelected(1, true); } else if
+			 * (table1.getText(table1Row, 2).trim()
+			 * .equals(txtAuthPluginName.getItemText(2)) &&
+			 * menuType.equals(MENU_EDIT)) {
+			 * txtAuthPluginName.setItemSelected(2, true); }
+			 */
 
 			if (table1.getText(table1Row, 1).trim()
 					.equals(txtAuthType.getItemText(0))
@@ -344,6 +347,15 @@ public class AdminUI extends Composite {
 					.equals(txtAuthType.getItemText(2))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(2, true);
+			} else if (table1.getText(table1Row, 1).trim()
+					.equals(txtAuthType.getItemText(3))
+					&& menuType.equals(MENU_EDIT)) {
+				txtAuthType.setItemSelected(3, true);
+			} else if (table1.getText(table1Row, 1).trim()
+					.equals(txtAuthType.getItemText(4))
+					&& menuType.equals(MENU_EDIT)) {
+				txtAuthType.setItemSelected(4, true);
+
 			}
 
 			if (menuType.equals(MENU_EDIT)) {
@@ -381,6 +393,7 @@ public class AdminUI extends Composite {
 
 	}
 
+	
 	private void clearMenuBox() {
 
 		editMenu.clearCell(0, 1);
@@ -399,7 +412,6 @@ public class AdminUI extends Composite {
 
 		alertDialogBox.setModal(false);
 		alertDialogBox.setVisible(false);
-
 	}
 
 	private void clearAuthMenu() {
@@ -446,6 +458,7 @@ public class AdminUI extends Composite {
 			return false;
 	}
 
+	
 	private boolean AuthMenuValidation() {
 
 		editMenu1.clearCell(0, 1);
@@ -648,7 +661,7 @@ public class AdminUI extends Composite {
 		table1Column = cell.getCellIndex();
 
 		String url = table1.getText(table1Row, 3);
-//		Window.alert("Row: " + table1Row + " Column: " + table1Column);
+		// Window.alert("Row: " + table1Row + " Column: " + table1Column);
 
 		switch (table1Column) {
 		case 4:
@@ -681,12 +694,20 @@ public class AdminUI extends Composite {
 
 	@UiHandler("btnSave1")
 	void handleAuthSaveButton(ClickEvent e) {
+
 		TAuthentication authentication = new TAuthentication();
+
+		if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "anonymous") {
+			authentication.setPluginName("anonymous");
+		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "cas") {
+			authentication.setPluginName("cas");
+		} else {
+			authentication.setPluginName("user/password");
+		}
+
 		authentication.setType(txtAuthType.getItemText(txtAuthType
 				.getSelectedIndex()));
 		authentication.setDisplayName(txtDisplayName.getText());
-		authentication.setPluginName(txtAuthPluginName
-				.getItemText(txtAuthPluginName.getSelectedIndex()));
 		authentication.setUrl(txtAuthURL.getText().trim());
 		authentication.setId(idArrayTable0.get(table0Row));
 
@@ -717,7 +738,6 @@ public class AdminUI extends Composite {
 	void handleNoButton(ClickEvent e) {
 		alertDialogBox.setVisible(false);
 		alertDialogBox.setModal(false);
-		alertDialogBox.setGlassEnabled(false);
 	}
 
 	@UiHandler("btnSave")
@@ -754,6 +774,14 @@ public class AdminUI extends Composite {
 
 	void handlePingButtonEvent(String result) {
 		lbl2.setText(result);
+		
+		if (result == "Icat pinged successfully"){
+			PingDialogBox.setText("Ping Status");
+		}
+		else{
+			PingDialogBox.setText("Warning");
+		}
+		
 		PingDialogBox.center();
 		PingDialogBox.setVisible(true);
 	}

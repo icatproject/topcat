@@ -28,6 +28,7 @@
 		
 		.alertTextBody {
 			margin-top: 20px;
+			margin: 0px auto;
 		}
 		
 		.alertMainBody {
@@ -48,7 +49,6 @@
 		}
 		
 		.center {
-			margin: 0px auto;
 			width: 100%;
 		}
 	</ui:style>
@@ -56,14 +56,18 @@
 
 	<g:DockLayoutPanel>
 		<g:north size="50">
-			<g:SimplePanel styleName="{style.center">
+				<g:SimplePanel >
 				<g:Label styleName="{style.Table0Header}">Topcat Admin Consol</g:Label>
-			</g:SimplePanel>
+				</g:SimplePanel>
 		</g:north>
 		
 		<g:center>
 			<g:HTMLPanel>
-
+				
+				<g:SimplePanel >
+				<g:Label styleName="{style.Table1Header}">ICAT Servers</g:Label>
+				</g:SimplePanel>
+				
 				<g:FlexTable ui:field="table0"></g:FlexTable>
 				<g:Button ui:field="btnAdd" text="add"></g:Button>
 				
@@ -116,7 +120,7 @@
 							<g:FlexTable ui:field="editMenu1" styleName="{style.mainBody}"></g:FlexTable>
 							<g:TextBox ui:field="txtDisplayName"></g:TextBox>
 							<g:ListBox ui:field="txtAuthType"></g:ListBox>
-							<g:ListBox ui:field="txtAuthPluginName"></g:ListBox>
+							<g:ListBox ui:field="txtAuthPluginName" visible="false"></g:ListBox>
 							<g:TextBox ui:field="txtAuthURL"></g:TextBox>
 							<g:HorizontalPanel ui:field="hPanel2" styleName="{style.mainBody}">
 								<g:Button ui:field="btnSave1" styleName="{style.button-spacing}"></g:Button>
@@ -127,11 +131,13 @@
 					</g:DialogBox>
 				</g:SimplePanel>
 				<g:SimplePanel>
-					<g:DialogBox ui:field="PingDialogBox" modal="true" glassEnabled="true" text="Ping Status" visible="false">
+					<g:DialogBox ui:field="PingDialogBox" modal="true" glassEnabled="true" visible="false">
 						<g:VerticalPanel styleName="{style.alertMainBody}" spacing="2">
 							<g:Label ui:field="lbl2"></g:Label>
-							<g:HorizontalPanel styleName="{style.alertTextBody}" horizontalAlignment="center">
-								<g:Button ui:field="btnOk" styleName="{style.button-spacing}">ok</g:Button>
+							
+							<g:HorizontalPanel styleName="{style.alertTextBody}" >
+								<g:Image ui:field="img"></g:Image>
+								<g:Button ui:field="btnOk">ok</g:Button>
 							</g:HorizontalPanel>
 						</g:VerticalPanel>
 					</g:DialogBox>
