@@ -15,11 +15,11 @@ from os import getcwd
 
 # Variables 
 ICAT_DIR = "icats.d"
-GLASSFISH_PROPS_FILE = "glassfish.props"
+GLASSFISH_PROPS_FILE = "topcat_glassfish.props"
 TOPCAT_PROPS_FILE = "topcat.properties"
 
-REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish", 
-                     "topcatAdminUser", "topcatAdminPassword"]
+REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish",
+                     "topcatAdminUser"]
 
 SUPPORTED_DATABASES = {"DERBY":'', "MYSQL":'', "ORACLE":''}
 
@@ -135,7 +135,7 @@ def create(conf_props):
     """
     if VERBOSE > 0:
         print "Create the database connection pool and resource"
-    install_props_file()
+    install_props_file(conf_props)
     if conf_props['dbType'].upper() == "DERBY":
         start_derby()
     create_connection_pool(conf_props)     
@@ -180,7 +180,8 @@ def create_jdbc_resource():
     if retcode > 0:
         print "ERROR creating jdbc resource"
         exit(1)        
-        
+
+
 def create_topcat_admin(conf_props):
     """
     Set up topcat admin user
@@ -199,12 +200,12 @@ def create_topcat_admin(conf_props):
         exit(1)
 
 
-def install_props_file():
+def install_props_file(conf_props):
     """
     Copy the TOPCAT_PROPS_FILE file
     """
-    dest_dir = path.join(CONF_PROPS["glassfish"], "glassfish", "domains",
-                     CONF_PROPS["domain"], "lib", "classes")
+    dest_dir = path.join(conf_props["glassfish"], "glassfish", "domains",
+                     conf_props["domain"], "lib", "classes")
     if not path.exists(dest_dir):
         print "ERROR Cannot find the directory " + dest_dir
         exit(1)
@@ -312,19 +313,11 @@ def undeploy():
         exit(1)
 
 
-def status(conf_props):
+def status():
     """
     display the status as reported by asadmin
     """
-    print ("\nStatus")
-    list_asadmin_bits()
-    list_icat_servers(conf_props)
-
-
-def list_asadmin_bits():  
-    """
-    display the status as reported by asadmin
-    """
+    print "\nStatus"
     print "\nDomains"
     command = ASADMIN + " list-domains"
     if VERBOSE > 1:
@@ -354,30 +347,18 @@ def list_asadmin_bits():
     if retcode > 0:
         print "ERROR listing jdbc resources"
         
-        
-def list_icat_servers(conf_props):  
+
+def upgrade(conf_props):
     """
-    List the ICAT servers in the database
+    Upgrade the database
     """
-    print "\nUsing " + str(conf_props['dbType'].upper()) + " database\n"
+    if VERBOSE > 0:
+        print "Upgrade database"
+    elif VERBOSE > 1:
+        print ("Reading props from " + str(conf_props))
     db_props = extract_db_props(conf_props['topcatProperties'])
     sql_command = get_sql_command(conf_props, db_props)
-    select = ("SELECT SERVER_URL FROM  TOPCAT_ICAT_SERVER \n;\n")
-    urls = get_value_from_database(conf_props, sql_command, db_props, select)   
-    if conf_props['dbType'].upper() == "DERBY":
-        index = 6
-        stop = len(urls) - 5
-    elif conf_props['dbType'].upper() == "ORACLE":
-        index = 12
-        stop = len(urls) - 4
-    elif conf_props['dbType'].upper() == "MYSQL":
-        index = 1
-        stop = len(urls)  
-    print "ICAT WSDL URLS: "
-    while index < stop:
-        print " " + str(urls[index]).strip()
-        index = index + 1
-    print
+    upgrade_db(conf_props, sql_command, db_props)
 
 
 def get_sql_command(conf_props, db_props):
@@ -426,78 +407,6 @@ def get_sql_command(conf_props, db_props):
                        db_props['password'] + " " + db_props['databaseName'] + 
                        "<")
     return sql_command
-
-
-def get_value_from_database(conf_props, sql_command, db_props, select):
-    """
-    Get the results from the database in response to the given query
-    """
-
-    if conf_props['dbType'].upper() == "ORACLE":
-        sql_file = NamedTemporaryFile(dir=getcwd(), suffix='.sql')
-    else:
-        sql_file = NamedTemporaryFile()
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("connect 'jdbc:derby://" + db_props['serverName'] + 
-                       ":1527/" + db_props['DatabaseName'] + "';")
-    sql_file.write(select)
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("disconnect;")
-    sql_file.write("exit\n;")
-    command = sql_command + " " + sql_file.name
-    if VERBOSE > 1:
-        print sql_command
-        sql_file.seek(0)
-        print sql_file.readlines()
-    sql_file.seek(0)
-    out_file = TemporaryFile()
-    retcode = call(command, shell=True, stdout=out_file) 
-    if retcode > 0:
-        print "ERROR getting data from database"
-        exit(1)
-    out_file.seek(0)
-    lines = out_file.readlines()
-    if VERBOSE > 2:
-        for line in lines:
-            print line
-    for line in lines:
-        if line.find("ERROR") > -1:
-            print line
-            print "ERROR getting data from database"
-            exit(1)
-    out_file.close()
-    sql_file.close()
-    return lines
-
-
-def upgrade(conf_props):
-    """
-    Upgrade the database
-    """
-    if VERBOSE > 0:
-        print "Upgrade database"
-    elif VERBOSE > 1:
-        print ("Reading props from " + str(conf_props))
-    db_props = extract_db_props(conf_props['topcatProperties'])
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_command = IJ
-        start_derby()
-    elif conf_props['dbType'].upper() == "ORACLE":
-        try:
-            db_props['oracleHome'] = environ['ORACLE_HOME']
-        except KeyError:
-            print "ERROR - Please set ORACLE_HOME"
-            exit(1)
-        sqlplus = path.join(db_props['oracleHome'], "bin", "sqlplus")
-        sql_command = (sqlplus + " " + db_props['user'] + "/" + 
-                       db_props['password'] + "@" + 
-                       db_props['hostname'] + " @")
-    elif conf_props['dbType'].upper() == "MYSQL":
-        sql_command = (MYSQL + " -u " + db_props['user'] + " -p" + 
-                       db_props['password'] + " " + db_props['databaseName'] + 
-                       "<")
-        
-    upgrade_db(conf_props, sql_command, db_props)
 
 
 def upgrade_db(conf_props, sql_command, db_props):
@@ -623,7 +532,7 @@ elif OPTIONS.deploy:
 elif OPTIONS.undeploy:
     undeploy()
 elif OPTIONS.status:
-    status(CONF_PROPS)
+    status()
 elif OPTIONS.upgrade:
     upgrade(CONF_PROPS)
 else:

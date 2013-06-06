@@ -1,3 +1,13 @@
+bug fixes
+Added MESSAGE to topcat.properties, the message gets displayed by topcat
+Added verbose option to setup script
+schema changes:
+Drop the columns AUTHENTICATION_SERVICE_URL and AUTHENTICATION_SERVICE_TYPE from TOPCAT_ICAT_SERVER
+Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER
+Add the column PREPARED_ID to the table TOPCAT_USER_DOWNLOAD
+Add the column DISPLAY_NAME to the table ICAT_AUTHENTICATION
+Rename the table ICAT_AUTHENTICATION to TOPCAT_ICAT_AUTHENTICATION
+    
 Release 1.8 17/01/13
 ~~~~~~~~~~~~~~~~~~~~
 This is a bug fix release for sites still running ICAT 3.4
