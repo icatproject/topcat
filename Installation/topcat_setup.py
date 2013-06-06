@@ -187,18 +187,14 @@ def create_topcat_admin(conf_props):
     Set up topcat admin user
     """
     user = conf_props['topcatAdminUser']
-    password = conf_props['topcatAdminPassword']
-    command = (ASADMIN + "TODO" + user + password)
+    print "\nCreating TopCAT Admin User. Please enter new password:"
+    command = (ASADMIN + " create-file-user --groups topcatAdmin " + user)
     if VERBOSE > 1:
         print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+    retcode = call(command, shell=True)
     if retcode > 0:
-        print "ERROR creating jdbc resource"
+        print "ERROR creating user " + user
         exit(1)
-
 
 def install_props_file(conf_props):
     """
