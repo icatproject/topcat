@@ -138,6 +138,7 @@ public class AdminEJB {
 		authenticationDetails.setAuthenticationType((authentication.getType()));
 		authenticationDetails.setAuthenticationServiceUrl((authentication.getUrl()));
 		authenticationDetails.setPluginName((authentication.getPluginName()));
+		authenticationDetails.setDisplayName(authentication.getDisplayName());
 		logger.debug(" "+ authentication.getId());
 		authenticationDetails.setServerId(entityManager.find(TopcatIcatServer.class, authentication.getId()));
 		entityManager.persist(authenticationDetails);

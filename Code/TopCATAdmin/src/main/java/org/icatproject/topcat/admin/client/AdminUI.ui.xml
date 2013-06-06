@@ -82,7 +82,7 @@
 		<g:south size="1">
 			<g:FlowPanel>
 				<g:SimplePanel>
-					<g:DialogBox ui:field="dialogWindow" modal="true" glassEnabled="true" visible="false">
+					<g:DialogBox ui:field="tableMenu" modal="true" glassEnabled="true" visible="false" >
 						<g:VerticalPanel ui:field="vPanel">
 							<g:FlexTable ui:field="editMenu" styleName="{style.mainBody}"></g:FlexTable>
 							<g:TextBox ui:field="txtName" title="This will be the name that is presented to users"></g:TextBox>
@@ -112,13 +112,13 @@
 				</g:SimplePanel>
 				<g:SimplePanel>
 					<g:DialogBox ui:field="authMenu" modal="true" glassEnabled="true" visible="false">
-						<g:VerticalPanel styleName="{style.mainBody}">
+						<g:VerticalPanel>
 							<g:FlexTable ui:field="editMenu1" styleName="{style.mainBody}"></g:FlexTable>
 							<g:TextBox ui:field="txtDisplayName"></g:TextBox>
 							<g:ListBox ui:field="txtAuthType"></g:ListBox>
 							<g:ListBox ui:field="txtAuthPluginName"></g:ListBox>
 							<g:TextBox ui:field="txtAuthURL"></g:TextBox>
-							<g:HorizontalPanel ui:field="hPanel2">
+							<g:HorizontalPanel ui:field="hPanel2" styleName="{style.mainBody}">
 								<g:Button ui:field="btnSave1" styleName="{style.button-spacing}"></g:Button>
 								<g:Button ui:field="btnCancel1" styleName="{style.button-spacing}">cancel</g:Button>
 							</g:HorizontalPanel>

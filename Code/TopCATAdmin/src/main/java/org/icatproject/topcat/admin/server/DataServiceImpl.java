@@ -95,17 +95,15 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		} catch (Exception e) {
 			e.printStackTrace();
 			return status += "unsuccessfully";
-
 		}
-
 		return status += "successfully";
-
 	}
 
 	public String removeAuthenticationDetails(Long id){
 		adminEJB.removeRowFromAuthTable(id);
 		return "The Row with the ID: " + id + "  has been Removed from the IcatAuthetication Table" ;
 	}
+	
 	public String addAuthDetails(TAuthentication authentication){
 		adminEJB.addRowToAuthTable(authentication);
 		return "New row has been added to IcatAuthetication Table";
