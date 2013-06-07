@@ -32,12 +32,5 @@
 				<include>topcat.properties.example</include>
 			</includes>
 		</fileSet>
-		<fileSet>
-			<outputDirectory>topcat.${project.version}/icats.d</outputDirectory>
-			<directory>${project.basedir}/../../Installation/etc/icats.d/</directory>
-			<includes>
-				<include>my.icat.example</include>
-			</includes>
-		</fileSet>
 	</fileSets>
 </assembly>
