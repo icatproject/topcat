@@ -89,14 +89,13 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String ping(String url, String urlSelection) {
 
-		String status = urlSelection + " pinged ";
 		try {
 			URLConnection currentUrl = new URL(url).openConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return status += "unsuccessfully";
+			return "unsuccessfully";
 		}
-		return status += "successfully";
+		return "successfully";
 	}
 
 	public String removeAuthenticationDetails(Long id){

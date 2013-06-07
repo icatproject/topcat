@@ -7,6 +7,7 @@ import java.util.List;
 import org.icatproject.topcat.admin.shared.Constants;
 import org.icatproject.topcat.admin.client.service.DataService;
 import org.icatproject.topcat.admin.client.service.DataServiceAsync;
+import org.omg.PortableInterceptor.SUCCESSFUL;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
@@ -150,7 +151,7 @@ public class AdminUI extends Composite {
 			table0.setWidget(i, 8, deleteBtn[i]);
 			pingICatBtn[i] = new Button("ping ICAT");
 			table0.setWidget(i, 9, pingICatBtn[i]);
-			pingDSBtn[i] = new Button("ping D. S");
+			pingDSBtn[i] = new Button("ping D.S.");
 			table0.setWidget(i, 10, pingDSBtn[i]);
 			authbtn[i] = new Button("Show Auth. Details");
 			table0.setWidget(i, 11, authbtn[i]);
@@ -309,7 +310,7 @@ public class AdminUI extends Composite {
 		txtAuthType.insertItem("anonymous", 0);
 		txtAuthType.insertItem("cas", 1);
 		txtAuthType.insertItem("db", 2);
-		txtAuthType.insertItem("ldab", 3);
+		txtAuthType.insertItem("ldap", 3);
 		txtAuthType.insertItem("uows", 4);
 
 		if (menuType.equals(MENU_EDIT)) {
@@ -590,14 +591,14 @@ public class AdminUI extends Composite {
 		dataService.authDetailsCall(table0.getText(table0Row, 0), callback);
 	}
 
-	private void handlePingButtonEvent(String url, String urlSelection) {
+	private void handlePingButtonClick(String url, final String urlSelection) {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
 			}
 
-			public void onSuccess(String result) {
-				handlePingButtonEvent(result);
+			public void onSuccess(String result ) {
+				handlePingButtonEvent(result, urlSelection);
 			}
 		};
 		// make the call to the server
@@ -642,11 +643,11 @@ public class AdminUI extends Composite {
 			break;
 		case 9:
 			url = table0.getText(table0Row, 2);
-			handlePingButtonEvent(url, "Icat");
+			handlePingButtonClick(url, "ICAT");
 			break;
 		case 10:
 			url = table0.getText(table0Row, 5);
-			handlePingButtonEvent(url, "Downlaod Service");
+			handlePingButtonClick(url, "Download Service");
 			break;
 		case 11:
 			authTableCall();
@@ -671,7 +672,7 @@ public class AdminUI extends Composite {
 			handleDeleteButtonEvent("AUTH_TABLE");
 			break;
 		case 6:
-			handlePingButtonEvent(url, "Authentication");
+			handlePingButtonClick(url, "Authentication Service");
 			break;
 		}
 	}
@@ -772,15 +773,15 @@ public class AdminUI extends Composite {
 		alertDialogBox.center();
 	}
 
-	void handlePingButtonEvent(String result) {
-		lbl2.setText(result);
+	void handlePingButtonEvent(String result, String urlSelection) {
 		
-		if (result == "Icat pinged successfully"){
-			PingDialogBox.setText("Ping Status");
-		}
-		else{
+		if(result == "successfully"){
+			PingDialogBox.setText("Ping Status");	
+		}else{
 			PingDialogBox.setText("Warning");
-		}
+		}	
+		lbl2.setText(urlSelection + " pinged " + result);
+			
 		
 		PingDialogBox.center();
 		PingDialogBox.setVisible(true);
