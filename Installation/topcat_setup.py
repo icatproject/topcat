@@ -238,10 +238,11 @@ def start_derby():
         exit(1)
 
 
-def delete():
+def delete(conf_props):
     """
     Delete the database connection pool and resource
     """
+    user = conf_props['topcatAdminUser']
     if VERBOSE > 0:
         print "Delete the database connection pool and resource"
     error = False
@@ -256,6 +257,19 @@ def delete():
     if retcode > 0:
         print "ERROR deleting jdbc resource"
         error = True
+
+
+    command = (ASADMIN + " delete-file-user " + user)
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+    if retcode > 0:
+        print "ERROR deleting user file"
+        error = True
+    
 
     command = (ASADMIN + " " + 
     "delete-jdbc-connection-pool " + CONNECTION_POOL_ID) 
@@ -522,7 +536,7 @@ MYSQL = "mysql"
 if OPTIONS.create:
     create(CONF_PROPS)
 elif OPTIONS.delete:
-    delete()
+    delete(CONF_PROPS)
 elif OPTIONS.deploy:
     deploy()
 elif OPTIONS.undeploy:
