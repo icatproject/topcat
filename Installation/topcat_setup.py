@@ -289,7 +289,7 @@ def delete(conf_props):
 
 def deploy():
     """
-    Deploy the TopCAT application
+    Deploy the TopCAT application and the Admin Consol
     """
     if VERBOSE > 0:
         print "Deploy the TopCAT application"
@@ -303,15 +303,29 @@ def deploy():
     if retcode > 0:
         print "ERROR deploying TopCAT"
         exit(1)
+    
+#     if VERBOSE > 0:
+#         print "Deploy the TopCATAdmin Consol"
+#     command = ASADMIN + " deploy --contextroot  TopCATAdmin --name TopCATAdmin TopCATAdmin-1.0.0-SNAPSHOT.war"
+#     if VERBOSE > 1:
+#         print command
+#     if VERBOSE > 2:
+#         retcode = call(command, shell=True)
+#     else:
+#         retcode = call(command, shell=True, stdout=TemporaryFile())
+#     if retcode > 0:
+#         print "ERROR deploying TopCATAdmin Consol"
+#         exit(1)
 
+     
 
 def undeploy():
     """
-    Un-deploy the TopCAT application
+    Un-deploy the TopCAT application & the TopCATAdmin Consol
     """
     if VERBOSE > 0:
-        print "Undeploy the TopCAT application"
-    command = ASADMIN + " undeploy TopCAT"
+        print "Un-deploy the TopCAT application"
+    command = ASADMIN + " un-deploy TopCAT"
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:
@@ -321,6 +335,20 @@ def undeploy():
     if retcode > 0:
         print "ERROR un-deploying TopCAT"
         exit(1)
+
+
+#     if VERBOSE > 0:
+#         print "Undeploy the TopCATAdmin Consol"
+#     command = ASADMIN + " un-deploy TopCATAdmin"
+#     if VERBOSE > 1:
+#         print command
+#     if VERBOSE > 2:
+#         retcode = call(command, shell=True)
+#     else:
+#         retcode = call(command, shell=True, stdout=TemporaryFile())    
+#     if retcode > 0:
+#         print "ERROR un-deploying TopCATAdmin Consol"
+#         exit(1)
 
 
 def status():
