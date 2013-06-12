@@ -141,7 +141,7 @@ def create(conf_props):
     create_connection_pool(conf_props)     
     create_jdbc_resource()
     create_topcat_admin(conf_props)
-    
+    enable_default_principal_to_role_Manager()
     
 def create_connection_pool(conf_props):
     """
@@ -195,6 +195,23 @@ def create_topcat_admin(conf_props):
     if retcode > 0:
         print "ERROR creating user " + user
         exit(1)
+        
+        
+def enable_default_principal_to_role_Manager():
+    if VERBOSE > 0:
+        print "Enable Default Principal to role Manger"
+    command = ASADMIN + " set server-config.security-service.activate-default-principal-to-role-mapping=true"
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
+    if retcode > 0:
+        print "ERROR enabling Default Principal to role Manger"        
+        exit(1)
+        
+
 
 def install_props_file(conf_props):
     """
@@ -282,9 +299,25 @@ def delete(conf_props):
     if retcode > 0:
         print "ERROR deleting database connection pool"
         error = True
+    
+    if VERBOSE > 0:
+        print "Disable Default Principal to role Manger"
+    command = ASADMIN + " set server-config.security-service.activate-default-principal-to-role-mapping=false"
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
+    if retcode > 0:
+        print "ERROR disabling Default Principal to role Manger"        
+        exit(1)
+    
+    
         
     if error:
         exit(1)
+        
 
 
 def deploy():
@@ -302,8 +335,7 @@ def deploy():
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR deploying TopCAT"
-        exit(1)
-    
+        exit(1) 
 #     if VERBOSE > 0:
 #         print "Deploy the TopCATAdmin Consol"
 #     command = ASADMIN + " deploy --contextroot  TopCATAdmin --name TopCATAdmin TopCATAdmin-1.0.0-SNAPSHOT.war"
@@ -317,7 +349,7 @@ def deploy():
 #         print "ERROR deploying TopCATAdmin Consol"
 #         exit(1)
 
-     
+        
 
 def undeploy():
     """
