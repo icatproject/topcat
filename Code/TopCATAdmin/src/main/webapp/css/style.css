@@ -1,0 +1,72 @@
+/* 
+	Icat Sevrvers Table 
+ */
+.header{
+	
+	color: white;
+	font-weight: bold;
+	background-color: #295380;
+	
+}
+
+.table_style{
+	background-color: #ececec;
+}
+
+.selected{
+	background-color: #A9C0D6;
+}
+
+.test{
+	border: 1px solid;
+}
+.centerObject {
+	
+	padding-top: 20px;
+	text-align: center;
+	
+}
+
+.font {
+	color: red
+}
+
+.spacing {
+	margin-left: 3px;
+}
+
+.mainBody{
+	background-color: #A9C0D6;
+	font: bold;
+}
+
+.button-spacing {
+	margin-right: 5px;
+}
+
+.centerBodyContent {
+	margin-top: 20px;
+	margin: 0px auto;
+}
+
+.alertMainBody {
+	background-color: #A9C0D6;
+}
+
+.MainTitle {
+	color: #295380;
+	margin-top: auto;
+	margin-bottom: auto;
+	font-size: 30px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.TableHeader {
+	font-size: 20px;
+	text-decoration: underline;
+}
+
+.border{
+	border: 1px solid;
+}

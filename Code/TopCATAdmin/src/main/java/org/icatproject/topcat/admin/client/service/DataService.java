@@ -26,7 +26,7 @@ public interface DataService extends RemoteService {
 
 	String updateIcatServer(TFacility facility) throws TopcatException;
 
-	String removeIcatServer(Long id) throws TopcatException;
+	String removeIcatServer(Long id, String facilityName) throws TopcatException;
 
 	String updateAuthDetails(TAuthentication authentication, long authID)
 			throws TopcatException;

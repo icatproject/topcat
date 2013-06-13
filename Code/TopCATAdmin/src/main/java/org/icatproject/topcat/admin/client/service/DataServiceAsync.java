@@ -25,7 +25,7 @@ public interface DataServiceAsync {
 
 	void updateIcatServer(TFacility facility, AsyncCallback<String> callback);
 
-	void removeIcatServer(Long id, AsyncCallback<String> callback);
+	void removeIcatServer(Long id, String facilityName, AsyncCallback<String> callback);
 
 	void authDetailsCall(String serverName, AsyncCallback<List<TAuthentication>> callback);
 

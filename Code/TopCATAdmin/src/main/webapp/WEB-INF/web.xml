@@ -18,27 +18,33 @@
   
   
       <security-constraint>
-        <display-name>DOIWebserviceSecurity</display-name>
+        <display-name>TopCATAdminWebserviceSecurity</display-name>
+    
         <web-resource-collection>
-            <web-resource-name>DOIWebservice</web-resource-name>
-            <description>DOI Webservices can only be accessed from admin</description>
-            <url-pattern>/topcat_admin</url-pattern>
+            <web-resource-name>TopCATAdmin</web-resource-name>
+            <description>TopCATAdmin Webservices can only be accessed from admin</description>
+            <url-pattern>/*</url-pattern>
+            <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
+        
         <auth-constraint>
             <description/>
             <role-name>topcatAdmin</role-name>
         </auth-constraint>
+        
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
+    
     </security-constraint>
+   
     <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>file</realm-name>
     </login-config>
+    
     <security-role>
-        <description/>
         <role-name>topcatAdmin</role-name>
     </security-role>
   

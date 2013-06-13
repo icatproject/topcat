@@ -25,7 +25,6 @@ public class AdminEntryPoint implements EntryPoint {
 	
 	
 	
-	
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	public void onModuleLoad() {

@@ -91,10 +91,22 @@ public class AdminEJB {
 				+ " has been Removed");
 	}
 
-	public void removeIcatServer(Long id) {
+	public void removeIcatServer(Long id, String facilityName) {
+
+		List<TopcatIcatAuthentication> authenDetails = entityManager
+				.createNamedQuery("TopcatIcatAuthentication.findByServerName")
+				.setParameter("serverName", facilityName).getResultList();
+
+		if (!authenDetails.isEmpty()) {
+			for (TopcatIcatAuthentication authDetatils : authenDetails) {
+				entityManager.remove(authDetatils);
+			}
+		}
+
 		TopcatIcatServer tiServer = entityManager.find(TopcatIcatServer.class,
 				id);
 		entityManager.remove(tiServer);
+
 	}
 
 	public List<TAuthentication> authCall(String serverName) {
@@ -128,22 +140,23 @@ public class AdminEJB {
 	}
 
 	public void removeRowFromAuthTable(Long id) {
-		TopcatIcatAuthentication authonticationDetails = entityManager.find(TopcatIcatAuthentication.class,
-				id);
+		TopcatIcatAuthentication authonticationDetails = entityManager.find(
+				TopcatIcatAuthentication.class, id);
 		entityManager.remove(authonticationDetails);
 	}
 
 	public void addRowToAuthTable(TAuthentication authentication) {
 		TopcatIcatAuthentication authenticationDetails = new TopcatIcatAuthentication();
 		authenticationDetails.setAuthenticationType((authentication.getType()));
-		authenticationDetails.setAuthenticationServiceUrl((authentication.getUrl()));
+		authenticationDetails.setAuthenticationServiceUrl((authentication
+				.getUrl()));
 		authenticationDetails.setPluginName((authentication.getPluginName()));
 		authenticationDetails.setDisplayName(authentication.getDisplayName());
-		logger.debug(" "+ authentication.getId());
-		authenticationDetails.setServerId(entityManager.find(TopcatIcatServer.class, authentication.getId()));
+		logger.debug(" " + authentication.getId());
+		authenticationDetails.setServerId(entityManager.find(
+				TopcatIcatServer.class, authentication.getId()));
 		entityManager.persist(authenticationDetails);
 
-		
 	}
 
 }
