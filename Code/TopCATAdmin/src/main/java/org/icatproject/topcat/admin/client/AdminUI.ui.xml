@@ -14,7 +14,7 @@
 		
 		<g:center>
 			<g:SplitLayoutPanel ui:field="sPanel">
-				<g:east size="1"> 
+				<g:east size="30"> 
 					<g:FlowPanel styleName="table_style">
 						<g:Label>Help</g:Label>
 						<g:VerticalPanel spacing="5">

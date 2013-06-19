@@ -9,6 +9,7 @@ import org.icatproject.topcat.admin.client.service.DataServiceAsync;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -102,8 +103,16 @@ public class AdminUI extends Composite {
 		tableCall();
 	}
 
+	
 	private void displayTable(List<TFacility> result) {
-
+		 /**
+	     * Recreates/Creates a new ICAT server table and populates it with ICATs and their information.  
+	     * 
+	     * @param a list of <code>TFacilities</code>
+	     * @return 
+	     * @throws 
+	     */
+ 
 		table0.removeAllRows();
 		int c, r = 1;
 
@@ -173,6 +182,14 @@ public class AdminUI extends Composite {
 	}
 
 	private void displayAuthTable(List<TAuthentication> result) {
+		 /**
+	     * Recreates/Creates a new Authentication Details table and populates it with an ICAT's associated authentication details  
+	     * 
+	     * @param a list of <code>TAuthentication</code>
+	     * @return 
+	     * @throws 
+	     */
+		
 		int c, r = 1;
 		table1.removeAllRows();
 
@@ -235,8 +252,16 @@ public class AdminUI extends Composite {
 
 	}
 
-	private void inititialiseMenu(String menu) {
-		if (menu.equals(MENU_EDIT)) {
+	private void inititialiseMenu(String menuType) {
+		 /**
+	     * Initialise the the Add/Edit Menu for the ICAT Server Table and sets it Visible
+	     * 
+	     * @param menuType
+	     * @return 
+	     * @throws 
+	     */
+		
+		if (menuType.equals(MENU_EDIT)) {
 			handleRowSelection("table0");
 		}
 		// EVERYTING IN HERE IS IN THE DIALOG BOX
@@ -265,7 +290,7 @@ public class AdminUI extends Composite {
 		editMenu.setWidget(6, 0, hPanel0);
 
 		// SETTING THE TEXT IN THE
-		if (menu.equals(MENU_EDIT)) {
+		if (menuType.equals(MENU_EDIT)) {
 			txtName.setText(table0.getText(table0Row, 0));
 			txtServerUrl.setText(table0.getText(table0Row, 2));
 			txtDownloadServiceUrl.setText(table0.getText(table0Row, 5));
@@ -273,7 +298,7 @@ public class AdminUI extends Composite {
 
 		// THESE ARE THE ITEMS IN THE VERSION LISTBOX
 		txtVersion.insertItem("v420", "v420", 0);
-		if (menu.equals(MENU_ADD)
+		if (menuType.equals(MENU_ADD)
 				|| table0.getText(table0Row, 1).trim().equals("v420")) {
 			txtVersion.setItemSelected(0, true);
 		}
@@ -286,7 +311,7 @@ public class AdminUI extends Composite {
 				"uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin",
 				2);
 
-		if (menu.equals(MENU_ADD)
+		if (menuType.equals(MENU_ADD)
 				|| table0.getText(table0Row, 3).trim().equals(null)) {
 			txtPluginName.setItemSelected(0, true);
 		} else if (table0.getText(table0Row, 3).trim()
@@ -301,7 +326,7 @@ public class AdminUI extends Composite {
 		txtDownloadPluginName.insertItem("", "", 0);
 		txtDownloadPluginName.insertItem("ids", 1);
 
-		if (menu.equals(MENU_ADD)
+		if (menuType.equals(MENU_ADD)
 				|| table0.getText(table0Row, 4).trim().equals(null)) {
 			txtDownloadPluginName.setItemSelected(0, true);
 		} else if (table0.getText(table0Row, 4).trim().trim()
@@ -309,18 +334,26 @@ public class AdminUI extends Composite {
 			txtDownloadPluginName.setItemSelected(1, true);
 		}
 
-		if (menu.equals(MENU_EDIT)) {
+		if (menuType.equals(MENU_EDIT)) {
 			btnSave.setText("update");
 		} else {
 			btnSave.setText("save");
 		}
 
-		tableMenu.setText(menu + " MENU");
+		tableMenu.setText(menuType + " MENU");
 		tableMenu.center();
 		tableMenu.setVisible(true);
 	}
 
 	private void initialiseAuthMenu(String menuType) {
+		 /**
+	     * Initialise the the Add/Edit Menu for the Authentication Details Table and sets it Visible
+	     * 
+	     * @param menuType
+	     * @return 
+	     * @throws 
+	     */
+		
 		if (menuType.equals(MENU_EDIT)) {
 			handleRowSelection("table1");
 		}
@@ -784,7 +817,8 @@ public class AdminUI extends Composite {
 	void handleNoButton(ClickEvent e) {
 		alertDialogBox.setVisible(false);
 		alertDialogBox.setModal(false);
-		handleRowUnselection("table0");
+		
+		//handleRowUnselection("table0");
 	}
 
 	@UiHandler("btnSave")
@@ -815,7 +849,12 @@ public class AdminUI extends Composite {
 	}
 
 	void handleDeleteButtonEvent(String table) {
-		handleRowSelection("table0");
+		if(table == "AUTH_TABLE"){
+			handleRowSelection("table1");
+		}else{
+			handleRowSelection("table0");
+		}
+		
 		alertDialogBox.setTitle(table);
 		alertDialogBox.setVisible(true);
 		alertDialogBox.center();
