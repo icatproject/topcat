@@ -9,7 +9,6 @@ import org.icatproject.topcat.admin.client.service.DataServiceAsync;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
-import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -21,11 +20,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -92,7 +94,16 @@ public class AdminUI extends Composite {
 	Label lbl1, lbl2, lbl3, lblAuth;
 
 	@UiField
+	ScrollPanel scrollPanel;
+
+	@UiField
 	SplitLayoutPanel sPanel;
+
+	@UiField
+	HTMLPanel htmlPanel;
+
+	@UiField
+	SimplePanel simplePanel0;
 
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -103,16 +114,18 @@ public class AdminUI extends Composite {
 		tableCall();
 	}
 
-	
 	private void displayTable(List<TFacility> result) {
-		 /**
-	     * Recreates/Creates a new ICAT server table and populates it with ICATs and their information.  
-	     * 
-	     * @param a list of <code>TFacilities</code>
-	     * @return 
-	     * @throws 
-	     */
- 
+		
+		/**
+		 * Recreates/Creates a new ICAT server table and populates it with ICATs
+		 * and their information.
+		 * 
+		 * @param a
+		 *            list of <code>TFacilities</code>
+		 * @return
+		 * @throws
+		 */
+
 		table0.removeAllRows();
 		int c, r = 1;
 
@@ -179,17 +192,20 @@ public class AdminUI extends Composite {
 			table0.setWidget(i, 10, authbtn[i]);
 
 		}
+		setSplitterPosition();
 	}
 
 	private void displayAuthTable(List<TAuthentication> result) {
-		 /**
-	     * Recreates/Creates a new Authentication Details table and populates it with an ICAT's associated authentication details  
-	     * 
-	     * @param a list of <code>TAuthentication</code>
-	     * @return 
-	     * @throws 
-	     */
-		
+		/**
+		 * Recreates/Creates a new Authentication Details table and populates it
+		 * with an ICAT's associated authentication details
+		 * 
+		 * @param a
+		 *            list of <code>TAuthentication</code>
+		 * @return
+		 * @throws
+		 */
+
 		int c, r = 1;
 		table1.removeAllRows();
 
@@ -253,14 +269,15 @@ public class AdminUI extends Composite {
 	}
 
 	private void inititialiseMenu(String menuType) {
-		 /**
-	     * Initialise the the Add/Edit Menu for the ICAT Server Table and sets it Visible
-	     * 
-	     * @param menuType
-	     * @return 
-	     * @throws 
-	     */
-		
+		/**
+		 * Initialise the the Add/Edit Menu for the ICAT Server Table and sets
+		 * it Visible
+		 * 
+		 * @param menuType
+		 * @return
+		 * @throws
+		 */
+
 		if (menuType.equals(MENU_EDIT)) {
 			handleRowSelection("table0");
 		}
@@ -346,14 +363,15 @@ public class AdminUI extends Composite {
 	}
 
 	private void initialiseAuthMenu(String menuType) {
-		 /**
-	     * Initialise the the Add/Edit Menu for the Authentication Details Table and sets it Visible
-	     * 
-	     * @param menuType
-	     * @return 
-	     * @throws 
-	     */
-		
+		/**
+		 * Initialise the the Add/Edit Menu for the Authentication Details Table
+		 * and sets it Visible
+		 * 
+		 * @param menuType
+		 * @return
+		 * @throws
+		 */
+
 		if (menuType.equals(MENU_EDIT)) {
 			handleRowSelection("table1");
 		}
@@ -817,8 +835,8 @@ public class AdminUI extends Composite {
 	void handleNoButton(ClickEvent e) {
 		alertDialogBox.setVisible(false);
 		alertDialogBox.setModal(false);
-		
-		//handleRowUnselection("table0");
+
+		// handleRowUnselection("table0");
 	}
 
 	@UiHandler("btnSave")
@@ -849,12 +867,12 @@ public class AdminUI extends Composite {
 	}
 
 	void handleDeleteButtonEvent(String table) {
-		if(table == "AUTH_TABLE"){
+		if (table == "AUTH_TABLE") {
 			handleRowSelection("table1");
-		}else{
+		} else {
 			handleRowSelection("table0");
 		}
-		
+
 		alertDialogBox.setTitle(table);
 		alertDialogBox.setVisible(true);
 		alertDialogBox.center();
@@ -871,5 +889,12 @@ public class AdminUI extends Composite {
 
 		PingDialogBox.center();
 		PingDialogBox.setVisible(true);
+	}
+
+	void setSplitterPosition(){
+		long height = htmlPanel.getOffsetHeight() + 10;
+		sPanel.clear();
+		sPanel.addNorth(scrollPanel, height);
+		sPanel.add(simplePanel0);
 	}
 }

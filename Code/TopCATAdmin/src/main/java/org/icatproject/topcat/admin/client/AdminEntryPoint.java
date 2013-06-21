@@ -15,9 +15,6 @@ public class AdminEntryPoint implements EntryPoint {
 	// @UiTemplate("AdminEntryPoint.ui.xml")
 	interface MyUiBinder extends UiBinder<Widget, AdminEntryPoint> {
 	}
-
-	@UiField
-	TabLayoutPanel tabLayoutPanel;
 	
 	
 	LoginPanel loginPanel = new LoginPanel();
@@ -28,11 +25,9 @@ public class AdminEntryPoint implements EntryPoint {
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	public void onModuleLoad() {
-
-		RootLayoutPanel.get().add(uiBinder.createAndBindUi(this));
-
-	//	tabLayoutPanel.add(loginPanel, "Login");
-		tabLayoutPanel.add(adminUI, "UI");
-
+		RootLayoutPanel rp = RootLayoutPanel.get();
+		rp.add(uiBinder.createAndBindUi(this));
+		rp.add(adminUI);
+		
 	}
 }

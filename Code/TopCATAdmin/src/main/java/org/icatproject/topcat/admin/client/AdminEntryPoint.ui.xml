@@ -2,7 +2,9 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-	<g:TabLayoutPanel ui:field='tabLayoutPanel' barHeight='1.5' barUnit='EM'>
-	</g:TabLayoutPanel>			
+<!-- 	<g:TabLayoutPanel ui:field='tabLayoutPanel' barHeight='1.5' barUnit='EM'>
+	</g:TabLayoutPanel>			 -->
+	<g:HTMLPanel>
+	</g:HTMLPanel>
 	
 </ui:UiBinder>

@@ -6,15 +6,15 @@
 
 	<g:DockLayoutPanel styleName="centerBodyContent">
 
-		<g:north size="80.0">
+		<g:north size="81.0">
 			<g:SimplePanel styleName="centerObject" height="80px">
 				<g:Label styleName="MainTitle">Topcat Admin Console</g:Label>
 			</g:SimplePanel>
 		</g:north>
 		
 		<g:center>
-			<g:SplitLayoutPanel ui:field="sPanel">
-				<g:east size="30"> 
+			<g:SplitLayoutPanel ui:field="sPanel" height="" width="">
+				<!-- <g:east size="30"> 
 					<g:FlowPanel styleName="table_style">
 						<g:Label>Help</g:Label>
 						<g:VerticalPanel spacing="5">
@@ -22,30 +22,32 @@
 							<g:Label>..</g:Label>	
 						</g:VerticalPanel>
 					</g:FlowPanel>
-				</g:east>
+				</g:east> -->
 
 				<g:north size="200.0">
-					<g:ScrollPanel>
-						<g:SimplePanel>
-							<g:FlowPanel>
-								<g:Label styleName="TableHeader">ICAT Servers</g:Label>
+					<g:ScrollPanel ui:field="scrollPanel">
+						<g:SimplePanel width="100%">
+							<g:HTMLPanel width="" styleName="mergeAuto" ui:field="htmlPanel">
+								<g:Label styleName="TableHeader" width="">ICAT Servers</g:Label>
 								<g:FlexTable ui:field="tableHeader" styleName="header"></g:FlexTable>
-								<g:SimplePanel>
-									<g:FlexTable ui:field="table0"></g:FlexTable>
+								<g:FlexTable ui:field="table0"></g:FlexTable>
+								<g:SimplePanel width="40px">
+									<g:Button ui:field="btnAdd" text="add" width="" height=""></g:Button>
 								</g:SimplePanel>
-								<g:Button ui:field="btnAdd" text="add"></g:Button>
-							</g:FlowPanel>
-						</g:SimplePanel>
+							</g:HTMLPanel>
+						</g:SimplePanel>		
 					</g:ScrollPanel>
 				</g:north>
 
 				<g:center>
-					<g:FlowPanel>
-						<g:Label styleName="TableHeader" ui:field="lblAuth"
+					<g:SimplePanel width="100%" ui:field="simplePanel0">
+						<g:HTMLPanel styleName="mergeAuto">
+							<g:Label styleName="TableHeader" ui:field="lblAuth"
 							visible="false"></g:Label>
-						<g:FlexTable ui:field="table1" cellPadding="1"></g:FlexTable>
-						<g:Button ui:field="btnAddAuth" text="add" visible="false"></g:Button>
-					</g:FlowPanel>
+							<g:FlexTable ui:field="table1" cellPadding="1"></g:FlexTable>
+							<g:Button ui:field="btnAddAuth" text="add" visible="false"></g:Button>
+						</g:HTMLPanel>
+					</g:SimplePanel>	
 				</g:center>
 			</g:SplitLayoutPanel>
 		</g:center>
@@ -122,7 +124,7 @@
 				</g:SimplePanel>
 			</g:FlowPanel>
 		</g:south>
-
+	
 	</g:DockLayoutPanel>
 </ui:UiBinder>
 

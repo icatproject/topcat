@@ -2,10 +2,6 @@
 ####################################################
 To do for TopCATAdmin Project 
 ###################################################
-1. Put Version & Plugin Name option into a List
-2. Styling of tables
-3. Set title for the labels on the left in edit Menu
 4. Validation on Textboxes (URL- uses url class; facility name no blank)
-5. Add two buttons to each row in the Table viewer (Button 1: pings to the Download Service url/pings to icat Icat url)
 6. add a javadoc to to all methods created by my so that people know what the methods do (eclipse shortcut SHIFT + ALT + J)  
 7. Another tab 
