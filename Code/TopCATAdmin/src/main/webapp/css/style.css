@@ -17,8 +17,10 @@
 	background-color: #A9C0D6;
 }
 
-.test{
-	border: 1px solid;
+.mergeAuto{
+	max-width: 1540px;
+	margin-right: auto;
+	margin-left: auto;
 }
 .centerObject {
 	
@@ -63,10 +65,19 @@
 }
 
 .TableHeader {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-stretch: normal;
 	font-size: 20px;
-	text-decoration: underline;
+	font-family: cursive, @Arial Unicode MS;
+	font-weight: bold;
+
 }
 
 .border{
 	border: 1px solid;
+}
+
+examples {
+	border: 5px solid;
 }
