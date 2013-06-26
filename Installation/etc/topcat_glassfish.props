@@ -20,7 +20,7 @@ glassfish=/opt/glassfish3
 port=4848
 
 # Glassfish domain (default domain1)
-port=domain1
+domain=domain1
 
 # Name of the TOPCat war file
 topcatWar = TopCAT-1.9-SNAPSHOT.war
