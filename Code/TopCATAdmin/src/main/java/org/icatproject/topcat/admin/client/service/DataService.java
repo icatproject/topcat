@@ -1,5 +1,6 @@
 package org.icatproject.topcat.admin.client.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.icatproject.topcat.admin.shared.ServerException;
@@ -31,9 +32,12 @@ public interface DataService extends RemoteService {
 	String updateAuthDetails(TAuthentication authentication, long authID)
 			throws TopcatException;
 
-	String ping(String url, String urlSelection) throws TopcatException;
+	String ping(String url, String urlSelection) throws  Exception;
 
 	String removeAuthenticationDetails(Long id) throws TopcatException;
 
-	String addAuthDetails(TAuthentication authentication);
+	String addAuthDetails(TAuthentication authentication) throws TopcatException;
+
+	ArrayList<Integer> authCount() throws TopcatException;
+
 }

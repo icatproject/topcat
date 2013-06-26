@@ -1,12 +1,16 @@
 package org.icatproject.topcat.admin.server;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.UnavailableException;
 
 import org.icatproject.topcat.admin.client.service.DataService;
@@ -20,6 +24,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
+import com.google.gwt.core.client.JavaScriptException;
+import com.google.gwt.rpc.client.ast.ReturnCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -69,11 +75,13 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public String removeIcatServer(Long id, String facilityName) throws TopcatException {
-		if(!adminEJB.authCall(facilityName).isEmpty()){
+	public String removeIcatServer(Long id, String facilityName)
+			throws TopcatException {
+		if (!adminEJB.authCall(facilityName).isEmpty()) {
 		}
 		adminEJB.removeIcatServer(id, facilityName);
-		return "The Row with the ID: " + id + " has been Removed from the to TopcatIcatServer Table";
+		return "The Row with the ID: " + id
+				+ " has been Removed from the to TopcatIcatServer Table";
 	}
 
 	@Override
@@ -91,25 +99,65 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String ping(String url, String urlSelection) {
 
+		int code = 0;
+		HttpURLConnection connection = null;
+		URL address = null;
+		
 		try {
-			URLConnection currentUrl = new URL(url).openConnection();
-		} catch (Exception e) {
+			address = new URL(url);
+			if (address.getProtocol().equalsIgnoreCase("http")) {
+				connection = (HttpURLConnection) address.openConnection();
+			}else if (address.getProtocol().equalsIgnoreCase("https")) {
+				connection = (HttpsURLConnection) address.openConnection();
+			}
+			code = connection.getResponseCode();
+
+		}catch (MalformedURLException e) {
+			String msg = "The URL '" + url.toString() + "' is invalid";
 			e.printStackTrace();
-			return "unsuccessfully";
+			return "unsuccessfully: " + msg;
+
+		}catch (UnknownHostException e) {
+			String msg = "Server '"+ address.getHost() + "' does not exist";
+			logger.debug(msg);
+			return "unsuccessfully: " + msg;
+			
 		}
-		return "successfully";
+		catch (IOException e) {
+			return e.getMessage();
+		}		
+		switch (code) {			case 401:
+			return "successfully, but URL requires login";
+		case 404:
+			return "unsuccessfully. The requested resource does not exist"; 
+		default:
+			return "successfully";
+		}
+	}
+	
+
+	public String removeAuthenticationDetails(Long id) {
+		adminEJB.removeRowFromAuthTable(id);
+		return "The Row with the ID: " + id
+				+ "  has been Removed from the IcatAuthetication Table";
 	}
 
-	public String removeAuthenticationDetails(Long id){
-		adminEJB.removeRowFromAuthTable(id);
-		return "The Row with the ID: " + id + "  has been Removed from the IcatAuthetication Table" ;
-	}
-	
-	public String addAuthDetails(TAuthentication authentication){
+	public String addAuthDetails(TAuthentication authentication) {
 		adminEJB.addRowToAuthTable(authentication);
 		return "New row has been added to IcatAuthetication Table";
-		
+
 	}
 
-}
+	public ArrayList<Integer> authCount() {
+		List<TFacility> result = adminEJB.getAllFacilities();
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		list.add(null);
 
+		for (TFacility facility : result) {
+			facility.getName();
+			list.add(adminEJB.icatAssociatedAuthCount(facility.getName()));
+		}
+
+		return list;
+	}
+}

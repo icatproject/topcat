@@ -1,5 +1,6 @@
 package org.icatproject.topcat.admin.client.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
@@ -38,6 +39,8 @@ public interface DataServiceAsync {
 
 	void addAuthDetails(TAuthentication authentication,
 			AsyncCallback<String> callback);
+
+	void authCount(AsyncCallback<ArrayList<Integer>> callback);
 
 	
 

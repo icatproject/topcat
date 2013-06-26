@@ -4,17 +4,22 @@
 .header{
 	
 	color: white;
+	margin-top: 5px;
+	margin-bottom: 10px;
 	font-weight: bold;
+	text-align: center;
 	background-color: #295380;
 	
 }
 
 .table_style{
 	background-color: #ececec;
+	font: black
 }
 
-.selected{
+.selected {
 	background-color: #A9C0D6;
+	font: black;
 }
 
 .mergeAuto{
@@ -71,13 +76,22 @@
 	font-size: 20px;
 	font-family: cursive, @Arial Unicode MS;
 	font-weight: bold;
-
 }
 
-.border{
-	border: 1px solid;
+.incompleteSetting{
+	background-color: #AD3131;
+	font: white;
+}
+buttonSpacing{
+	margin-bottom: 5px;
 }
 
-examples {
-	border: 5px solid;
+.pingDialog-style{
+	max-width: 350px;
 }
+.margin-top {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	}
+
+

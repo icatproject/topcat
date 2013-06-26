@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:p="urn:import:javax.persistence"
 	xmlns:i="urn:import:com.sun.rowset.internal" xmlns:d="urn:import:com.google.gwt.dom.client"
-	xmlns:a="urn:import:java.awt" xmlns:asm="urn:import:com.google.gwt.dev.asm">
+	xmlns:a="urn:import:java.awt" xmlns:asm="urn:import:com.google.gwt.dev.asm" xmlns:p1="urn:import:com.google.gwt.user.cellview.client">
 
 	<g:DockLayoutPanel styleName="centerBodyContent">
 
@@ -13,26 +13,31 @@
 		</g:north>
 		
 		<g:center>
-			<g:SplitLayoutPanel ui:field="sPanel" height="" width="">
-				<!-- <g:east size="30"> 
-					<g:FlowPanel styleName="table_style">
+			<g:SplitLayoutPanel ui:field="sPanel">
+				
+				<g:east size="30"> 
+					<g:FlowPanel styleName="table_style" ui:field="flowPanel">
 						<g:Label>Help</g:Label>
 						<g:VerticalPanel spacing="5">
+							
+							
 							<g:Label>..</g:Label>
 							<g:Label>..</g:Label>	
+							
+							
 						</g:VerticalPanel>
 					</g:FlowPanel>
-				</g:east> -->
+				</g:east> 
 
 				<g:north size="200.0">
 					<g:ScrollPanel ui:field="scrollPanel">
 						<g:SimplePanel width="100%">
 							<g:HTMLPanel width="" styleName="mergeAuto" ui:field="htmlPanel">
-								<g:Label styleName="TableHeader" width="">ICAT Servers</g:Label>
+								<g:Label styleName="TableHeader" width="" >ICAT Servers</g:Label>
 								<g:FlexTable ui:field="tableHeader" styleName="header"></g:FlexTable>
-								<g:FlexTable ui:field="table0"></g:FlexTable>
-								<g:SimplePanel width="40px">
-									<g:Button ui:field="btnAdd" text="add" width="" height=""></g:Button>
+								<g:FlexTable ui:field="table0" styleName="buttonSpacing"></g:FlexTable>
+								<g:SimplePanel styleName="margin-top">
+									<g:Button ui:field="btnAdd" text="add" ></g:Button>
 								</g:SimplePanel>
 							</g:HTMLPanel>
 						</g:SimplePanel>		
@@ -44,8 +49,10 @@
 						<g:HTMLPanel styleName="mergeAuto">
 							<g:Label styleName="TableHeader" ui:field="lblAuth"
 							visible="false"></g:Label>
-							<g:FlexTable ui:field="table1" cellPadding="1"></g:FlexTable>
-							<g:Button ui:field="btnAddAuth" text="add" visible="false"></g:Button>
+							<g:FlexTable ui:field="table1" styleName="buttonSpacing"></g:FlexTable>
+							<g:SimplePanel styleName="margin-top">
+								<g:Button ui:field="btnAddAuth" text="add" visible="false" ></g:Button>
+							</g:SimplePanel>
 						</g:HTMLPanel>
 					</g:SimplePanel>	
 				</g:center>

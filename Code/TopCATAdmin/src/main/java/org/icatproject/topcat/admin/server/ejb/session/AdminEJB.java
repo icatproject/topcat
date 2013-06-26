@@ -12,6 +12,8 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gwt.rpc.client.ast.ReturnCommand;
+
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
@@ -157,6 +159,13 @@ public class AdminEJB {
 				TopcatIcatServer.class, authentication.getId()));
 		entityManager.persist(authenticationDetails);
 
+	}
+
+	public int icatAssociatedAuthCount(String serverName) {
+		int count = entityManager
+				.createNamedQuery("TopcatIcatAuthentication.findByServerName")
+				.setParameter("serverName", serverName).getResultList().size();
+		return count;
 	}
 
 }

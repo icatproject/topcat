@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -33,6 +34,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.DataGrid;
 
 public class AdminUI extends Composite {
 
@@ -70,6 +73,7 @@ public class AdminUI extends Composite {
 
 	ArrayList<Long> idArrayTable0 = new ArrayList<Long>();
 	ArrayList<Long> idArrayTable1 = new ArrayList<Long>();
+	ArrayList<Integer> numberOfAuthDetails = new ArrayList<Integer>();
 	Constants headerNames = new Constants();
 
 	@UiField
@@ -105,6 +109,9 @@ public class AdminUI extends Composite {
 	@UiField
 	SimplePanel simplePanel0;
 
+	@UiField
+	FlowPanel flowPanel;
+
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
 		OnModuleLoad();
@@ -115,7 +122,7 @@ public class AdminUI extends Composite {
 	}
 
 	private void displayTable(List<TFacility> result) {
-		
+
 		/**
 		 * Recreates/Creates a new ICAT server table and populates it with ICATs
 		 * and their information.
@@ -193,6 +200,8 @@ public class AdminUI extends Composite {
 
 		}
 		setSplitterPosition();
+		checkIncompleteIcat();
+
 	}
 
 	private void displayAuthTable(List<TAuthentication> result) {
@@ -314,7 +323,7 @@ public class AdminUI extends Composite {
 		}
 
 		// THESE ARE THE ITEMS IN THE VERSION LISTBOX
-		txtVersion.insertItem("v420", "v420", 0);
+		txtVersion.insertItem("v42", "v42", 0);
 		if (menuType.equals(MENU_ADD)
 				|| table0.getText(table0Row, 1).trim().equals("v420")) {
 			txtVersion.setItemSelected(0, true);
@@ -537,6 +546,27 @@ public class AdminUI extends Composite {
 		}
 	}
 
+	void setSplitterPosition() {
+		long height = htmlPanel.getOffsetHeight() + 25;
+		sPanel.clear();
+		sPanel.addEast(flowPanel, 30);
+		sPanel.addNorth(scrollPanel, height);
+		sPanel.add(simplePanel0);
+	}
+
+	private void handleInCompleteICat() {
+
+		for (int i = 1; i < numberOfAuthDetails.size(); i++) {
+			if (numberOfAuthDetails.get(i) == 0) {
+				table0.getRowFormatter().removeStyleName(i, "table_style");
+				table0.getRowFormatter().addStyleName(i, "incompleteSetting");
+
+			}
+
+		}
+
+	}
+
 	/*
 	 * ################### Server Calls ##################
 	 */
@@ -581,6 +611,7 @@ public class AdminUI extends Composite {
 			public void onSuccess(String result) {
 				tableCall();
 				tableMenu.hide();
+				addNewRowSelect();
 			}
 		};
 
@@ -599,6 +630,7 @@ public class AdminUI extends Composite {
 			public void onSuccess(String result) {
 				authTableCall();
 				authMenu.hide();
+				checkIncompleteIcat();
 			}
 		};
 
@@ -688,6 +720,22 @@ public class AdminUI extends Composite {
 
 	}
 
+	private void checkIncompleteIcat() {
+		AsyncCallback<ArrayList<Integer>> callback = new AsyncCallback<ArrayList<Integer>>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+
+			public void onSuccess(ArrayList<Integer> result) {
+				numberOfAuthDetails = result;
+				handleInCompleteICat();
+			}
+		};
+
+		// make the call to the server
+		dataService.authCount(callback);
+	}
+
 	/*
 	 * ################### Event handlers ##################
 	 */
@@ -752,7 +800,13 @@ public class AdminUI extends Composite {
 	void handleRowUnselection(String table) {
 		if (table == "table0") {
 			for (int i = 1; i < table0.getRowCount(); i++) {
-				table0.getRowFormatter().setStyleName(i, "table_style");
+
+				if (numberOfAuthDetails.get(i) != 0) {
+					table0.getRowFormatter().setStyleName(i, "table_style");
+				} else {
+					table0.getRowFormatter().setStyleName(i,
+							"incompleteSetting");
+				}
 			}
 		} else {
 			for (int i = 1; i < table1.getRowCount(); i++) {
@@ -765,10 +819,30 @@ public class AdminUI extends Composite {
 		if (table == "table0") {
 			handleRowUnselection("table0");
 			table0.getRowFormatter().setStyleName(table0Row, "selected");
+
 		} else {
 			handleRowUnselection("table1");
 			table1.getRowFormatter().setStyleName(table1Row, "selected");
 		}
+
+		// if (table == "table0") {
+		// handleRowUnselection("table0");
+		// // checkIncompleteIcat();
+		// table0.getRowFormatter().setStyleName(table0Row, "selected");
+		//
+		// for (int i = 1; i < table0.getRowCount(); i++) {
+		// rowAlert.get(i)
+		//
+		// else if(!(table0.getRowFormatter().getStyleName(i) ==
+		// "incompleteSetting")) {
+		//
+		// }
+		//
+		// Window.alert(table0.getRowFormatter().getStyleName(1));
+		// } else {
+		// handleRowUnselection("table1");
+		// table1.getRowFormatter().setStyleName(table1Row, "selected");
+		// }
 	}
 
 	@UiHandler("btnAdd")
@@ -828,7 +902,7 @@ public class AdminUI extends Composite {
 		} else if (table == "ICAT_TABLE") {
 			removeRowFromTable();
 		}
-
+		checkIncompleteIcat();
 	}
 
 	@UiHandler("btnNo")
@@ -887,14 +961,19 @@ public class AdminUI extends Composite {
 		}
 		lbl2.setText(urlSelection + " pinged " + result);
 
+		if (lbl2.getElement().getClientWidth() > 350) {
+			PingDialogBox.setWidth("350px");
+		} else {
+			PingDialogBox.setWidth("");
+		}
+
 		PingDialogBox.center();
 		PingDialogBox.setVisible(true);
 	}
 
-	void setSplitterPosition(){
-		long height = htmlPanel.getOffsetHeight() + 10;
-		sPanel.clear();
-		sPanel.addNorth(scrollPanel, height);
-		sPanel.add(simplePanel0);
+	void addNewRowSelect(){
+//		table0Row = table0.getRowCount() + 1;
+//		table0.
+//		
 	}
 }
