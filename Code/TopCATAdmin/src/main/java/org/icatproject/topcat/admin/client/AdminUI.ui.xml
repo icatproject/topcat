@@ -39,9 +39,13 @@
 							<g:HTMLPanel width="" styleName="mergeAuto" ui:field="htmlPanel">
 								<g:Label styleName="TableHeader" width="" >ICAT Servers</g:Label>
 								<g:FlexTable ui:field="tableHeader" styleName="header"></g:FlexTable>
-								<g:FlexTable ui:field="table0" styleName="buttonSpacing"></g:FlexTable>
+								<g:FlexTable ui:field="table0"></g:FlexTable>
 								<g:SimplePanel styleName="margin-top">
-									<g:Button ui:field="btnAdd" text="add" ></g:Button>
+									<g:HorizontalPanel >
+										<g:Button ui:field="btnAdd" text="add" ></g:Button>
+										<g:HorizontalPanel ui:field="hPanel4" width="" height="30" verticalAlignment="ALIGN_MIDDLE" spacing="5">
+										</g:HorizontalPanel>
+									</g:HorizontalPanel>
 								</g:SimplePanel>
 							</g:HTMLPanel>
 						</g:SimplePanel>		

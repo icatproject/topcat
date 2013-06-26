@@ -14,12 +14,12 @@
 
 .table_style{
 	background-color: #ececec;
-	font: black
+	color: black;
 }
 
 .selected {
 	background-color: #A9C0D6;
-	font: black;
+	color: black;
 }
 
 .mergeAuto{
@@ -79,11 +79,8 @@
 }
 
 .incompleteSetting{
+	color: White;
 	background-color: #AD3131;
-	font: white;
-}
-buttonSpacing{
-	margin-bottom: 5px;
 }
 
 .pingDialog-style{
@@ -104,5 +101,6 @@ buttonSpacing{
 .helpSubHeader {
 	font-weight: bold;
 }
-
-
+.keySection {
+	margin-left:5px;
+}

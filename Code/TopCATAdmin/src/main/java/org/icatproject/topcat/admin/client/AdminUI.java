@@ -92,7 +92,7 @@ public class AdminUI extends Composite {
 	ListBox txtPluginName, txtDownloadPluginName, txtVersion, txtAuthType,
 			txtAuthPluginName;
 	@UiField
-	HorizontalPanel hPanel0, hPanel2;
+	HorizontalPanel hPanel0, hPanel2, hPanel4; 
 
 	@UiField
 	Label lbl1, lbl2, lbl3, lblAuth;
@@ -111,6 +111,7 @@ public class AdminUI extends Composite {
 
 	@UiField
 	FlowPanel flowPanel;
+	
 
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -189,16 +190,32 @@ public class AdminUI extends Composite {
 
 			editBtn[i] = new Button("edit");
 			table0.setWidget(i, 6, editBtn[i]);
+			editBtn[i].setTitle("");
 			deleteBtn[i] = new Button("delete");
 			table0.setWidget(i, 7, deleteBtn[i]);
+			deleteBtn[i].setTitle("");
 			pingICatBtn[i] = new Button("ping ICAT");
 			table0.setWidget(i, 8, pingICatBtn[i]);
+			pingICatBtn[i].setTitle("This button pings the ICAT URL");
 			pingDSBtn[i] = new Button("ping D.S.");
 			table0.setWidget(i, 9, pingDSBtn[i]);
+			pingDSBtn[i].setTitle("This Button pings the Download Service URL");
 			authbtn[i] = new Button("Show Auth. Details");
 			table0.setWidget(i, 10, authbtn[i]);
+			authbtn[i].setTitle("This button shows the Authetication Details associated with this ICAT");
 
 		}
+		Image img = new Image("images/blue.png");
+		Image img1 = new Image("images/red.png");
+		img.setPixelSize(20, 20);
+		img1.setPixelSize(20, 20);
+		
+		hPanel4.add(img);
+		hPanel4.add(new Label(" = This row is currently selected"));
+		hPanel4.add(img1);
+		hPanel4.add(new Label("   = No authentication associated to this ICAT"));
+		
+	
 		setSplitterPosition();
 		checkIncompleteIcat();
 
