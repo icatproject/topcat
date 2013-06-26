@@ -93,5 +93,16 @@ buttonSpacing{
 	margin-top: 15px;
 	margin-bottom: 15px;
 	}
+.helpHeader {
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+}
+.italic {
+	font-style: italic;
+}
+.helpSubHeader {
+	font-weight: bold;
+}
 
 
