@@ -344,7 +344,7 @@ public class ICATInterfacev340 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
+    public String downloadDatafiles(String sessionId, List<Long> datafileIds) {
         String result = "";
         try {
             result = service.downloadDatafiles(sessionId, datafileIds);

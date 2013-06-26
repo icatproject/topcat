@@ -17,7 +17,8 @@ import java.util.Date;
         @NamedQuery(name = "TopcatUserDownload.findById", query = "SELECT t FROM TopcatUserDownload t WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.findByUserId", query = "SELECT t FROM TopcatUserDownload t WHERE t.userId = :userId"),
         @NamedQuery(name = "TopcatUserDownload.updateStatus", query = "UPDATE TopcatUserDownload t SET t.url = :updatedUrl, t.status = :status WHERE t.url = :url"),
-        @NamedQuery(name = "TopcatUserDownload.cleanupByUserId", query = "DELETE from TopcatUserDownload t where t.expiryTime is NULL AND t.userId = :userId"),
+        @NamedQuery(name = "TopcatUserDownload.updateStatusById", query = "UPDATE TopcatUserDownload t SET t.url = :url, t.status = :status WHERE t.id = :id"),
+        @NamedQuery(name = "TopcatUserDownload.cleanupById", query = "DELETE from TopcatUserDownload t where t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.cleanup", query = "DELETE from TopcatUserDownload t where CURRENT_TIMESTAMP > t.expiryTime") })
 @XmlRootElement
 public class TopcatUserDownload implements Serializable {

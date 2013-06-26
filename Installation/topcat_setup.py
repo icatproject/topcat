@@ -5,21 +5,17 @@ Set up TopCAT
 
 from subprocess import call
 from os import path
-from os import environ
-from tempfile import NamedTemporaryFile
 from tempfile import TemporaryFile
 from shutil import copyfile
 from optparse import OptionParser
 from sys import exit
-from os import getcwd
 
-# Variables 
-ICAT_DIR = "icats.d"
+# Variables
 GLASSFISH_PROPS_FILE = "topcat_glassfish.props"
 TOPCAT_PROPS_FILE = "topcat.properties"
 
-REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish",
-                     "topcatAdminUser"]
+REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish", "topcatWar",
+                     "topcatAdminWar", "topcatAdminUser"]
 
 SUPPORTED_DATABASES = {"DERBY":'', "MYSQL":'', "ORACLE":''}
 
@@ -39,9 +35,9 @@ def get_and_validate_props(file_name, req_values):
 
 def get_props(file_name):
     """
-    The get_props function checks if the GLASSFISH_PROPS_FILE file exists and then puts it
-    into a Dictionary 
-    """ 
+    The get_props function checks if the GLASSFISH_PROPS_FILE file exists and 
+    then puts it into a Dictionary
+    """
     props_dict = {}
     if  not  path.exists(file_name):
         print ("There is no file " + file_name)
@@ -64,7 +60,7 @@ def get_props(file_name):
                 print ("prop " + str(key) + "=" + str(value))
     finally:
         file_handle.close()
-    return props_dict     
+    return props_dict
     
     
 def check_keys(props_dict, required_keys, file_name):
@@ -83,7 +79,7 @@ def add_optional_props(props_dict):
     """
     The add_optional_props function checks if optional properties have been
     configured, if not then they're set with the default values.
-    """   
+    """
     if not props_dict.has_key("domain"):
         props_dict["domain"] = 'domain1'
         if VERBOSE > 2:
@@ -127,22 +123,24 @@ def extract_db_props(topcat_properties):
                 if VERBOSE > 2:
                     print ("prop hostname=" + str(prop.split('@', 1)[1]))
     return props_dict
- 
-                
+
+
 def create(conf_props):
     """
-    Create the database connection pool and resource
+    Create the jdbc connection pool and resource, and the topcat admin user and
+    enable the principal to role Manager
     """
     if VERBOSE > 0:
         print "Create the database connection pool and resource"
     install_props_file(conf_props)
     if conf_props['dbType'].upper() == "DERBY":
         start_derby()
-    create_connection_pool(conf_props)     
+    create_connection_pool(conf_props)
     create_jdbc_resource()
     create_topcat_admin(conf_props)
-    enable_default_principal_to_role_Manager()
-    
+    enable_principal_to_role_mng()
+
+
 def create_connection_pool(conf_props):
     """
     Set up connection pool
@@ -152,15 +150,15 @@ def create_connection_pool(conf_props):
                  " --restype javax.sql.DataSource --failconnection=true"
                  " --steadypoolsize 2 --maxpoolsize 8 --ping" + 
                  " --property " + conf_props["topcatProperties"] + " " + 
-                 CONNECTION_POOL_ID)          
+                 CONNECTION_POOL_ID)
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR creating database connection pool"
+        print "ERROR creating jdbc connection pool"
         exit(1)
 
 
@@ -176,10 +174,10 @@ def create_jdbc_resource():
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR creating jdbc resource"
-        exit(1)        
+        exit(1)
 
 
 def create_topcat_admin(conf_props):
@@ -187,7 +185,8 @@ def create_topcat_admin(conf_props):
     Set up topcat admin user
     """
     user = conf_props['topcatAdminUser']
-    print "\nCreating TopCAT Admin User. Please enter new password:"
+    print ("\nCreating TopCAT Admin User '" + user + 
+           "'. Please enter new password:")
     command = (ASADMIN + " create-file-user --groups topcatAdmin " + user)
     if VERBOSE > 1:
         print command
@@ -195,12 +194,16 @@ def create_topcat_admin(conf_props):
     if retcode > 0:
         print "ERROR creating user " + user
         exit(1)
-        
-        
-def enable_default_principal_to_role_Manager():
+
+
+def enable_principal_to_role_mng():
+    """
+    Enable default principal to role manager
+    """
     if VERBOSE > 0:
-        print "Enable Default Principal to role Manger"
-    command = ASADMIN + " set server-config.security-service.activate-default-principal-to-role-mapping=true"
+        print "Enable Default Principal to role Manager"
+    command = (ASADMIN + " set server-config.security-service.activate" + 
+               "-default-principal-to-role-mapping=true")
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:
@@ -208,9 +211,8 @@ def enable_default_principal_to_role_Manager():
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR enabling Default Principal to role Manger"        
+        print "ERROR enabling Default Principal to role Manager"
         exit(1)
-        
 
 
 def install_props_file(conf_props):
@@ -225,7 +227,7 @@ def install_props_file(conf_props):
     dest = path.join(dest_dir, TOPCAT_PROPS_FILE)
         
     if path.exists(dest):
-        print ("Found existing " + TOPCAT_PROPS_FILE + " in " + str(dest_dir) 
+        print ("Found existing " + TOPCAT_PROPS_FILE + " in " + str(dest_dir)
                + " new file not copied")
     else:
         if not path.exists(TOPCAT_PROPS_FILE):
@@ -235,8 +237,8 @@ def install_props_file(conf_props):
         copyfile(TOPCAT_PROPS_FILE, dest)
         if VERBOSE > 0:
             print "copied " + TOPCAT_PROPS_FILE + " to " + str(dest)
-        
-        
+
+
 def start_derby():
     """
     Ensure the derby database is running
@@ -249,7 +251,7 @@ def start_derby():
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR starting Derby database"
         exit(1)
@@ -270,11 +272,10 @@ def delete(conf_props):
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR deleting jdbc resource"
         error = True
-
 
     command = (ASADMIN + " delete-file-user " + user)
     if VERBOSE > 1:
@@ -282,27 +283,13 @@ def delete(conf_props):
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR deleting user file"
+        print "ERROR deleting topcat admin user"
         error = True
-    
 
     command = (ASADMIN + " " + 
-    "delete-jdbc-connection-pool " + CONNECTION_POOL_ID) 
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile()) 
-    if retcode > 0:
-        print "ERROR deleting database connection pool"
-        error = True
-    
-    if VERBOSE > 0:
-        print "Disable Default Principal to role Manger"
-    command = ASADMIN + " set server-config.security-service.activate-default-principal-to-role-mapping=false"
+    "delete-jdbc-connection-pool " + CONNECTION_POOL_ID)
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:
@@ -310,23 +297,36 @@ def delete(conf_props):
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR disabling Default Principal to role Manger"        
+        print "ERROR deleting jdbc connection pool"
+        error = True
+
+    if VERBOSE > 0:
+        print "Disable Default Principal to role Manger"
+    command = (ASADMIN + " set server-config.security-service.activate-" + 
+               "default-principal-to-role-mapping=false")
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
+    if retcode > 0:
+        print "ERROR disabling Default Principal to role Manger"
         exit(1)
-    
-    
-        
+
     if error:
         exit(1)
-        
 
 
-def deploy():
+def deploy(conf_props):
     """
     Deploy the TopCAT application and the Admin Consol
     """
+    # TOPCat
     if VERBOSE > 0:
         print "Deploy the TopCAT application"
-    command = ASADMIN + " deploy TopCAT.war"
+    command = (ASADMIN + " deploy --contextroot TopCAT --name TopCAT "
+               + conf_props['topcatWar'])
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:
@@ -335,26 +335,29 @@ def deploy():
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR deploying TopCAT"
-        exit(1) 
-#     if VERBOSE > 0:
-#         print "Deploy the TopCATAdmin Consol"
-#     command = ASADMIN + " deploy --contextroot  TopCATAdmin --name TopCATAdmin TopCATAdmin-1.0.0-SNAPSHOT.war"
-#     if VERBOSE > 1:
-#         print command
-#     if VERBOSE > 2:
-#         retcode = call(command, shell=True)
-#     else:
-#         retcode = call(command, shell=True, stdout=TemporaryFile())
-#     if retcode > 0:
-#         print "ERROR deploying TopCATAdmin Consol"
-#         exit(1)
-
+        exit(1)
         
+    # TOPCatAdmin
+    if VERBOSE > 0:
+        print "Deploy the TopCATAdmin Consol"
+    command = (ASADMIN + " deploy --contextroot TopCATAdmin --name TopCATAdmin "
+               + conf_props['topcatAdminWar'])
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
+    if retcode > 0:
+        print "ERROR deploying TopCATAdmin Consol"
+        exit(1)
+
 
 def undeploy():
     """
     Un-deploy the TopCAT application & the TopCATAdmin Consol
     """
+    # TOPCatAdmin
     if VERBOSE > 0:
         print "Un-deploy the TopCAT application"
     command = ASADMIN + " un-deploy TopCAT"
@@ -363,24 +366,24 @@ def undeploy():
     if VERBOSE > 2:
         retcode = call(command, shell=True)
     else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())    
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
         print "ERROR un-deploying TopCAT"
         exit(1)
 
-
-#     if VERBOSE > 0:
-#         print "Undeploy the TopCATAdmin Consol"
-#     command = ASADMIN + " un-deploy TopCATAdmin"
-#     if VERBOSE > 1:
-#         print command
-#     if VERBOSE > 2:
-#         retcode = call(command, shell=True)
-#     else:
-#         retcode = call(command, shell=True, stdout=TemporaryFile())    
-#     if retcode > 0:
-#         print "ERROR un-deploying TopCATAdmin Consol"
-#         exit(1)
+    # TOPCatAdmin
+    if VERBOSE > 0:
+        print "Undeploy the TopCATAdmin Consol"
+    command = ASADMIN + " un-deploy TopCATAdmin"
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
+    if retcode > 0:
+        print "ERROR un-deploying TopCATAdmin Consol"
+        exit(1)
 
 
 def status():
@@ -392,190 +395,48 @@ def status():
     command = ASADMIN + " list-domains"
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)    
+    retcode = call(command, shell=True)
     if retcode > 0:
         print "ERROR listing domains"
     print "\nComponents"
     command = ASADMIN + " list-components"
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)    
+    retcode = call(command, shell=True)
     if retcode > 0:
         print "ERROR listing components"
     print "\nJDBC connection pools"
     command = ASADMIN + " list-jdbc-connection-pools"
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)    
+    retcode = call(command, shell=True)
     if retcode > 0:
         print "ERROR listing jdbc connection pools"
     print "\nJDBC resources"
     command = ASADMIN + " list-jdbc-resources"
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)    
+    retcode = call(command, shell=True)
     if retcode > 0:
         print "ERROR listing jdbc resources"
-        
-
-def upgrade(conf_props):
-    """
-    Upgrade the database
-    """
-    if VERBOSE > 0:
-        print "Upgrade database"
-    elif VERBOSE > 1:
-        print ("Reading props from " + str(conf_props))
-    db_props = extract_db_props(conf_props['topcatProperties'])
-    sql_command = get_sql_command(conf_props, db_props)
-    upgrade_db(conf_props, sql_command, db_props)
-
-
-def get_sql_command(conf_props, db_props):
-    """
-    Get the sql command to use based on the type of database
-    """
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_command = IJ
-        start_derby()
-    elif conf_props['dbType'].upper() == "ORACLE":
-        try:
-            db_props['oracleHome'] = environ['ORACLE_HOME']
-        except KeyError:
-            print "ERROR - Please set ORACLE_HOME"
-            exit(1)
-        sqlplus = path.join(db_props['oracleHome'], "bin", "sqlplus")
-        try:
-            db_props['password']
-        except KeyError:
-            print ("ERROR - Unable to extract DB password from" 
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)
-        try:
-            db_props['hostname']
-        except KeyError:
-            print ("ERROR - Unable to extract DB hostname from"
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)
-        sql_command = (sqlplus + " " + db_props['user'] + "/" + 
-                       db_props['password'] + "@" + 
-                       db_props['hostname'] + " @")
-    elif conf_props['dbType'].upper() == "MYSQL":
-        try:
-            db_props['password']
-        except KeyError:
-            print ("ERROR - Unable to extract DB password from" 
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)
-        try:
-            db_props['databaseName']
-        except KeyError:
-            print ("ERROR - Unable to extract DB databaseName from" 
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)        
-        sql_command = (MYSQL + " -u " + db_props['user'] + " -p" + 
-                       db_props['password'] + " " + db_props['databaseName'] + 
-                       "<")
-    return sql_command
-
-
-def upgrade_db(conf_props, sql_command, db_props):
-    """
-    Drop the columns AUTHENTICATION_SERVICE_URL and AUTHENTICATION_SERVICE_TYPE from TOPCAT_ICAT_SERVER
-    Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER
-    Add the column PREPARED_ID to the table TOPCAT_USER_DOWNLOAD
-    Add the column DISPLAY_NAME to the table ICAT_AUTHENTICATION
-    Rename the table ICAT_AUTHENTICATION to TOPCAT_ICAT_AUTHENTICATION
-    """
-    if conf_props['dbType'].upper() == "ORACLE":
-        sql_file = NamedTemporaryFile(dir=getcwd(), suffix='.sql')
-    else:
-        sql_file = NamedTemporaryFile()
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("connect 'jdbc:derby://" + db_props['serverName'] + 
-                       ":1527/" + db_props['DatabaseName'] + "';")
-        
-    sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER DROP COLUMN "
-                   "AUTHENTICATION_SERVICE_URL\n;\n")
-    sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER DROP COLUMN "
-                   "AUTHENTICATION_SERVICE_TYPE\n;\n")
-
-    sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER ")
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR(255)\n;\n")
-    else:
-        sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR2(255)\n;\n")
-        
-    sql_file.write("ALTER TABLE TOPCAT_USER_DOWNLOAD ")
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("ADD PREPARED_ID VARCHAR(255)\n;\n")
-    else:
-        sql_file.write("ADD PREPARED_ID VARCHAR2(255)\n;\n")
-    
-    sql_file.write("ALTER TABLE ICAT_AUTHENTICATION ")
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("ADD DISPLAY_NAME VARCHAR(255)\n;\n")
-    else:
-        sql_file.write("ADD DISPLAY_NAME VARCHAR2(255)\n;\n")
-
-    if conf_props['dbType'].upper() == "ORACLE":
-        sql_file.write("RENAME ICAT_AUTHENTICATION TO "
-                       "TOPCAT_ICAT_AUTHENTICATION\n;\n")
-    else:
-        sql_file.write("RENAME TABLE ICAT_AUTHENTICATION TO "
-                       "TOPCAT_ICAT_AUTHENTICATION\n;\n")
-        
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("disconnect;")
-    sql_file.write("exit\n;")
-    command = sql_command + " " + sql_file.name
-    if VERBOSE > 1:
-        print sql_command
-        sql_file.seek(0)
-        print sql_file.readlines()
-    sql_file.seek(0)
-    out_file = TemporaryFile()
-    retcode = call(command, shell=True, stdout=out_file) 
-    if retcode > 0:
-        print "ERROR updating table"
-        exit(1)
-    out_file.seek(0)
-    lines = out_file.readlines()
-    if VERBOSE > 2:
-        for line in lines:
-            print line
-    for line in lines:
-        if line.find("ERROR") > -1:
-            print "ERROR updating table"
-            for lin in lines:
-                print lin
-            exit(1)
-    out_file.close()
-    sql_file.close() 
-    print ("updated tables TOPCAT_ICAT_SERVER, TOPCAT_USER_DOWNLOAD and " 
-           "ICAT_AUTHENTICATION")
-    return
 
 
 PARSER = OptionParser()
-PARSER.add_option("--create", dest="create",
-                  help="Creates the database connection pool",
+PARSER.add_option("--install", dest="install",
+                  help=("create the jdbc connection pool and resource, " + 
+                        "and the topcat admin user and enable the " + 
+                        "principal to role manager. Deploy the topcat and " + 
+                        "topcat admin applications to Glassfish"),
                   action="store_true")
-PARSER.add_option("--delete", dest="delete",
-                  help="Deletes the database connection pool",
-                  action="store_true")
-PARSER.add_option("--deploy", dest="deploy",
-                  help="Deploys the TOPCat application to Glassfish",
-                  action="store_true")
-PARSER.add_option("--undeploy", dest="undeploy",
-                  help="Undeploys the TOPCat application from Glassfish",
+PARSER.add_option("--uninstall", dest="uninstall",
+                  help=("delete the jdbc connection pool and resource, " + 
+                        "and the topcat admin user and disable the " + 
+                        "principal to role manager. Undeploy the topcat and " + 
+                        "topcat admin applications from Glassfish"),
                   action="store_true")
 PARSER.add_option("--status", dest="status",
-                  help="Display status information",
+                  help="display status information",
                   action="store_true")
-PARSER.add_option("--upgrade", dest="upgrade",
-                  help=("Upgrade the database for the migration between 1.7"
-                        + " and 1.9"), action="store_true")
 PARSER.add_option("-v", "--verbose", action="count", default=0,
                     help="increase output verbosity")
 
@@ -584,32 +445,26 @@ VERBOSE = OPTIONS.verbose
 
 CONF_PROPS = get_and_validate_props(GLASSFISH_PROPS_FILE, REQ_VALUES_TOPCAT)
 CONF_PROPS = add_optional_props(CONF_PROPS)
- 
+
 ASADMIN = path.join(CONF_PROPS["glassfish"], "bin", "asadmin")
 # if windows:
 #    ASADMIN = ASADMIN + ".bat"
 ASADMIN = ASADMIN + " --port " + CONF_PROPS["port"]
- 
+
 IJ = path.join(CONF_PROPS["glassfish"], "javadb", "bin", "ij")
 MYSQL = "mysql"
 
-if OPTIONS.create:
+if OPTIONS.install:
     create(CONF_PROPS)
-elif OPTIONS.delete:
-    delete(CONF_PROPS)
-elif OPTIONS.deploy:
-    deploy()
-elif OPTIONS.undeploy:
+    deploy(CONF_PROPS)
+elif OPTIONS.uninstall:
     undeploy()
+    delete(CONF_PROPS)
 elif OPTIONS.status:
     status()
-elif OPTIONS.upgrade:
-    upgrade(CONF_PROPS)
 else:
     print ("\nYou must provide an option\n")
     print PARSER.print_help()
     exit(1)
-    
-print ('All done')
-exit(0)
 
+exit(0)

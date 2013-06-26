@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -21,6 +21,7 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.facility;
+
 /**
  * Imports
  */
@@ -30,35 +31,40 @@ import com.extjs.gxt.ui.client.widget.Composite;
 import com.google.gwt.core.client.GWT;
 
 /**
- * This is Diamond Facility Plugin. 
+ * This is Diamond Facility Plugin.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class DiamondFacilityPlugin extends FacilityPlugin {
 
-	private static DiamondFacilityPlugin diamondFacility = GWT.create(DiamondFacilityPlugin.class);
-	DiamondSearchWidget widget;
-	private DiamondFacilityPlugin(){
-		super();
-		widget = new DiamondSearchWidget(EventPipeLine.getInstance());				
-	}
-	/* (non-Javadoc)
-	 * @see uk.ac.stfc.topcat.gwt.client.facility.FacilityPlugin#getGUI()
-	 */
-	@Override
-	public Composite getGUI() {
-		// TODO Auto-generated method stub
-		return widget;
-	}
+    private static DiamondFacilityPlugin diamondFacility = GWT.create(DiamondFacilityPlugin.class);
+    DiamondSearchWidget widget;
 
-	public static DiamondFacilityPlugin getInstance(){
-		return diamondFacility;
-	}
-	@Override
-	public void setFacilityName(String facilityName) {
-		widget.setFacilityName(facilityName);
-		
-	}	
+    private DiamondFacilityPlugin() {
+        super();
+        widget = new DiamondSearchWidget(EventPipeLine.getInstance());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see uk.ac.stfc.topcat.gwt.client.facility.FacilityPlugin#getGUI()
+     */
+    @Override
+    public Composite getGUI() {
+        return widget;
+    }
+
+    public static DiamondFacilityPlugin getInstance() {
+        return diamondFacility;
+    }
+
+    @Override
+    public void setFacilityName(String facilityName) {
+        widget.setFacilityName(facilityName);
+
+    }
 }

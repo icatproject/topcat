@@ -19,5 +19,14 @@ glassfish=/opt/glassfish3
 # Glassfish admin port (default 4848)
 port=4848
 
+# Glassfish domain (default domain1)
+port=domain1
+
+# Name of the TOPCat war file
+topcatWar = TopCAT-1.9-SNAPSHOT.war
+
+# Name of the TOPCatAdmin war file
+topcatAdminWar = TopCATAdmin-1.9-SNAPSHOT.war
+
 # A Glassfish user used to access the topcat admin service
 topcatAdminUser=topcatadmin

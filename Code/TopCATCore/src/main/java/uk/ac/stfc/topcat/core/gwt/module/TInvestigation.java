@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -37,19 +37,20 @@ import java.util.List;
  * @since iCAT Version 3.3
  */
 public class TInvestigation implements Serializable, Comparable<TInvestigation> {
-    String investigationId = null;
-    String investigationName = null;
-    String serverName = null;
-    Date startDate = null;
-    Date endDate = null;
-    String title = null;
-    String visitId = null;
-    String instrument = null;
-    String proposal = null;
-    List<TParameter> parameters = null;
-    List<TPublication> publications = null;
-    List<TInvestigator> investigators = null;
-    List<TShift> shifts = null;
+    private static final long serialVersionUID = 1L;
+    private String investigationId = null;
+    private String investigationName = null;
+    private String serverName = null;
+    private Date startDate = null;
+    private Date endDate = null;
+    private String title = null;
+    private String visitId = null;
+    private String instrument = null;
+    private String proposal = null;
+    private List<TParameter> parameters = null;
+    private List<TPublication> publications = null;
+    private List<TInvestigator> investigators = null;
+    private List<TShift> shifts = null;
 
     public TInvestigation() {
     }

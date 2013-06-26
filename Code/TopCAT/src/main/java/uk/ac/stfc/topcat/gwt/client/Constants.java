@@ -53,4 +53,10 @@ public class Constants {
     /** Data file **/
     public static final String DATA_FILE = "DATA_FILE";
 
+    /** ICAT Data Service */
+    public static final String IDS = "IDS";
+
+    /** Old download service */
+    @Deprecated
+    public static final String RESTFUL_DOWNLOAD = "restfulDownload";
 }

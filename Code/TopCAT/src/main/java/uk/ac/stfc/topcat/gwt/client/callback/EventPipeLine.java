@@ -826,9 +826,11 @@ public class EventPipeLine implements LoginInterface {
     /**
      * Get the facility for the given facility name.
      * 
+     * @param a
+     *            string containing the facility name
      * @return a facility
      */
-    private TFacility getFacility(String facilityName) {
+    public TFacility getFacility(String facilityName) {
         for (TFacility facility : facilities) {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 return facility;

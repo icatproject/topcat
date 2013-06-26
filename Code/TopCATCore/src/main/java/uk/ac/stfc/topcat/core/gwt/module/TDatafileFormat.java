@@ -29,13 +29,13 @@ import java.io.Serializable;
  * This is shared with GWT for data file information.
  */
 public class TDatafileFormat implements Serializable {
-
-    String serverName;
-    String format;
-    String formatId;
-    String formatDescription;
-    String formatVersion;
-    String formatType;
+    private static final long serialVersionUID = 1L;
+    protected String serverName;
+    private String format;
+    private String formatId;
+    private String formatDescription;
+    private String formatVersion;
+    private String formatType;
 
     public TDatafileFormat(String serverName, String formatId, String format, String formatDescription,
             String formatVersion, String formatType) {

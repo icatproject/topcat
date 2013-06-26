@@ -24,7 +24,6 @@ package uk.ac.stfc.topcat.ejb.manager;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -47,7 +46,6 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
 /**
@@ -72,6 +70,7 @@ public class UtilityManager {
     public ArrayList<String> getAllFacilityNames(EntityManager manager) {
         logger.info("getAllFacilityNames");
         ArrayList<String> facilityNames = new ArrayList<String>();
+        @SuppressWarnings("unchecked")
         List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
         for (TopcatIcatServer icatServer : servers) {
             facilityNames.add(icatServer.getName());
@@ -82,17 +81,17 @@ public class UtilityManager {
     public ArrayList<TFacility> getAllFacilities(EntityManager manager) {
         logger.info("getAllFacilities");
         ArrayList<TFacility> facilities = new ArrayList<TFacility>();
-        List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
+        List<?> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
 
-        for (TopcatIcatServer icatServer : servers) {
+        for (Object icatServer : servers) {
             TFacility tFacility = new TFacility();
-            tFacility.setName(icatServer.getName());
-            tFacility.setUrl(icatServer.getServerUrl());
-            tFacility.setVersion(icatServer.getVersion());
-            tFacility.setSearchPluginName(icatServer.getPluginName());
-            tFacility.setDownloadPluginName(icatServer.getDownloadPluginName());
-            tFacility.setDownloadServiceUrl(icatServer.getDownloadServiceUrl());
-            tFacility.setId(icatServer.getId());
+            tFacility.setName(((TopcatIcatServer) icatServer).getName());
+            tFacility.setUrl(((TopcatIcatServer) icatServer).getServerUrl());
+            tFacility.setVersion(((TopcatIcatServer) icatServer).getVersion());
+            tFacility.setSearchPluginName(((TopcatIcatServer) icatServer).getPluginName());
+            tFacility.setDownloadPluginName(((TopcatIcatServer) icatServer).getDownloadPluginName());
+            tFacility.setDownloadServiceUrl(((TopcatIcatServer) icatServer).getDownloadServiceUrl());
+            tFacility.setId(((TopcatIcatServer) icatServer).getId());
             facilities.add(tFacility);
             if (logger.isTraceEnabled()) {
                 logger.trace(tFacility.toString());
@@ -1006,94 +1005,6 @@ public class UtilityManager {
             logger.error("getParameterTypes: " + ex.getMessage());
         }
         return null;
-    }
-
-    public String getDatafilesDownloadURL(EntityManager manager, String topcatSessionId, String facilityName,
-            ArrayList<Long> datafileIds) throws TopcatException {
-        logger.info("getDatafilesDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), datafileIds.size (" + datafileIds.size() + ")");
-        String result = "";
-        try {
-            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    topcatSessionId, facilityName);
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
-                    userSession.getUserId().getServerId().getVersion(),
-                    userSession.getUserId().getServerId().getServerUrl());
-            return service.downloadDatafiles(userSession.getIcatSessionId(), datafileIds);
-        } catch (MalformedURLException ex) {
-            logger.error("getDatafilesDownloadURL: " + ex.getMessage());
-        }
-        return result;
-    }
-
-    /**
-     * Get the URL of a file that contains the requested data set for the given
-     * facility.
-     * 
-     * @param manager
-     * @param topcatSessionId
-     *            a string containing the session id
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datasetId
-     *            the data set id
-     * @return a string containing a URL
-     * @throws TopcatException
-     */
-    public String getDatasetDownloadURL(EntityManager manager, String topcatSessionId, String facilityName,
-            Long datasetId) throws TopcatException {
-        logger.info("getDatasetDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), datasetId (" + datasetId + ")");
-        String result = "";
-        try {
-            TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                    topcatSessionId, facilityName);
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(facilityName,
-                    userSession.getUserId().getServerId().getVersion(),
-                    userSession.getUserId().getServerId().getServerUrl());
-            return service.downloadDataset(userSession.getIcatSessionId(), datasetId);
-        } catch (MalformedURLException ex) {
-            logger.error("getDatasetDownloadURL: " + ex.getMessage());
-        }
-        return result;
-    }
-
-    public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String topcatSessionId, String facilityName)
-            throws TopcatException {
-        logger.info("getMyDownloadList: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
-        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                topcatSessionId, facilityName);
-        manager.createNamedQuery("TopcatUserDownload.cleanup").executeUpdate();
-        List<TopcatUserDownload> userDownloads = manager.createNamedQuery("TopcatUserDownload.findByUserId")
-                .setParameter("userId", userSession.getUserId()).getResultList();
-        return userDownloads;
-    }
-
-    public void addMyDownload(EntityManager manager, String topcatSessionId, String facilityName, Date submitTime,
-            String downloadName, String status, Date expiryTime, String url, String preparedId) throws TopcatException {
-        logger.info("addMyDownload: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), downloadName (" + downloadName + "), status (" + status + "), url (" + url + "), preparedId ("
-                + preparedId + ")");
-        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                topcatSessionId, facilityName);
-        TopcatUserDownload download = new TopcatUserDownload();
-        download.setName(downloadName);
-        download.setUrl(url);
-        download.setPreparedId(preparedId);
-        download.setStatus(status);
-        download.setSubmitTime(submitTime);
-        download.setUserId(userSession.getUserId());
-        download.setExpiryTime(expiryTime);
-        manager.persist(download);
-    }
-
-    public void updateDownloadStatus(EntityManager manager, String topcatSessionId, String facilityName, String url,
-            String updatedUrl, String status) {
-        logger.info("updateDownloadStatus: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), url (" + url + "), updatedUrl (" + updatedUrl + "), status (" + status + ")");
-        manager.createNamedQuery("TopcatUserDownload.updateStatus").setParameter("url", url)
-                .setParameter("updatedUrl", updatedUrl).setParameter("status", status).executeUpdate();
-        manager.flush();
     }
 
     /**

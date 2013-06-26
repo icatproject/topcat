@@ -31,6 +31,8 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.apache.log4j.Logger;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 
@@ -46,6 +48,7 @@ import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 public class TOPCATServletSession implements HttpSessionListener {
     // Session bean for managing user session
     private UserManagementBeanLocal userManager = null;
+    private final static Logger logger = Logger.getLogger(TOPCATServletSession.class.getName());
 
     /**
      * Constructor for initialising user sessions.
@@ -67,8 +70,9 @@ public class TOPCATServletSession implements HttpSessionListener {
      */
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        // TODO Auto-generated method stub
-        System.out.println("Session Created" + event.getSession().getId());
+        if (logger.isInfoEnabled()) {
+            logger.info("sessionCreated: id (" + event.getSession().getId() + ")");
+        }
     }
 
     /**
@@ -77,11 +81,11 @@ public class TOPCATServletSession implements HttpSessionListener {
      */
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
-        // TODO Auto-generated method stub
-        System.out.println("Session Expired " + event.getSession().getId());
-        if (event.getSession().getAttribute("SESSION_ID") != null) { // logout
-                                                                     // of
-                                                                     // TOPCAT
+        if (logger.isInfoEnabled()) {
+            logger.info("sessionDestroyed: id (" + event.getSession().getId() + ")");
+        }
+        // logout of TOPCAT
+        if (event.getSession().getAttribute("SESSION_ID") != null) {
             try {
                 userManager.logout((String) event.getSession().getAttribute("SESSION_ID"));
             } catch (AuthenticationException e) {

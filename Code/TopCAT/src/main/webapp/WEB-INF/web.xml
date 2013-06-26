@@ -11,6 +11,10 @@
 		<servlet-class>uk.ac.stfc.topcat.gwt.server.SearchServiceImpl</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>DownloadService</servlet-name>
+		<servlet-class>uk.ac.stfc.topcat.gwt.server.DownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>LoginService</servlet-name>
 		<servlet-class>uk.ac.stfc.topcat.gwt.server.LoginServiceImpl</servlet-class>
 	</servlet>
@@ -33,6 +37,10 @@
 	<servlet-mapping>
 		<servlet-name>searchServlet</servlet-name>
 		<url-pattern>/topcatweb/search</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DownloadService</servlet-name>
+		<url-pattern>/topcatweb/DownloadService</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>LoginService</servlet-name>

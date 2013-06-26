@@ -33,6 +33,7 @@ import java.io.Serializable;
  * @since iCAT Version 3.3
  */
 public class TFacility implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String downloadPluginName;
     private String downloadServiceUrl;
     private String name;

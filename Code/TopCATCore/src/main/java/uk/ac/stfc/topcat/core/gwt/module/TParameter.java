@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -29,9 +29,10 @@ import java.io.Serializable;
  * <p>
  */
 public class TParameter implements Serializable {
-    String name;
-    String units;
-    String value;
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private String units;
+    private String value;
 
     public TParameter() {
     }

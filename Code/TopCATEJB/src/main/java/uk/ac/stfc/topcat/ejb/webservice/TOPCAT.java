@@ -27,20 +27,21 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebService;
 import javax.xml.ws.RequestWrapper;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
+import uk.ac.stfc.topcat.ejb.session.DownloadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal;
-import uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 
@@ -61,7 +62,7 @@ public class TOPCAT {
     @EJB
     private SearchManagementBeanLocal searchManagement;
     @EJB
-    private UploadManagementBeanLocal uploadManagement;
+    private DownloadManagementBeanLocal downloadManagement;
     @EJB
     private UtilityLocal utility;
 
@@ -126,7 +127,7 @@ public class TOPCAT {
     public String getDatafilesDownloadURL(@WebParam(name = "topcatSessionId") String topcatSessionId,
             @WebParam(name = "serverName") String serverName,
             @WebParam(name = "datafileIds") java.util.ArrayList<java.lang.Long> datafileIds) throws TopcatException {
-        return utility.getDatafilesDownloadURL(topcatSessionId, serverName, datafileIds);
+        return downloadManagement.getDatafilesDownloadURL(topcatSessionId, serverName, datafileIds);
     }
 
     /**

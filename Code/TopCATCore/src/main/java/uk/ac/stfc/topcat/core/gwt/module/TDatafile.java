@@ -35,15 +35,15 @@ import java.util.Date;
  * @since iCAT Version 3.3
  */
 public class TDatafile extends TDatafileFormat implements Serializable {
-
-    String id;
-    String name;
-    String description;
-    Long size;
-    Date createTime;
-    Date modTime;
-    String location;
-    String doi;
+    private static final long serialVersionUID = 1L;
+    private String id;
+    private String name;
+    private String description;
+    private Long size;
+    private Date createTime;
+    private Date modTime;
+    private String location;
+    private String doi;
 
     public TDatafile(String serverName, String id, String name, String description, Long size, String formatId,
             String format, String formatDescription, String formatVersion, String formatType, Date createTime,

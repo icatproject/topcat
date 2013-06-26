@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -20,51 +20,40 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
-package uk.ac.stfc.topcat.core.gwt.module;
+package uk.ac.stfc.topcat.ejb.session;
 
-import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import javax.ejb.Local;
+
+import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 
 /**
- * This is shared with GWT for dataset parameters information.
- * <p>
+ * This is local interface to the upload bean.
  */
-public class TDatasetParameter implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private String name;
-    private String units;
-    private String value;
 
-    public TDatasetParameter() {
-    }
+@Local
+public interface DownloadManagementBeanLocal {
 
-    public TDatasetParameter(String name, String units, String value) {
-        this.name = name;
-        this.units = units;
-        this.value = value;
-    }
+    List<TopcatUserDownload> getMyDownloadList(String sessionId, String facilityName) throws TopcatException;
 
-    public String getName() {
-        return name;
-    }
+    Long addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
+            Date expiryTime, String url, String preparedId) throws TopcatException;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    void removeDownload(String sessionId, Long id);
 
-    public String getUnits() {
-        return units;
-    }
+    void updateStatus(String sessionId, Long id, String url, String status);
 
-    public void setUnits(String units) {
-        this.units = units;
-    }
+    @Deprecated
+    void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
-    public String getValue() {
-        return value;
-    }
+    @Deprecated
+    String getDatafilesDownloadURL(String sessionId, String facilityName, List<Long> datafileIds)
+            throws TopcatException;
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+    @Deprecated
+    String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException;
 
 }

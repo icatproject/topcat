@@ -250,6 +250,7 @@ public class KeywordManager {
     public void UpdateKeywordsFromAll(EntityManager manager) throws TopcatException {
         logger.info("UpdateKeywordsFromAll");
         // Get all the server info
+        @SuppressWarnings("unchecked")
         List<TopcatUserSession> sessionList = manager.createNamedQuery("TopcatUserSession.findByAnonymous")
                 .getResultList();
         if (sessionList == null) {
@@ -279,6 +280,7 @@ public class KeywordManager {
         String prefixString = prefix.toLowerCase() + "%";
         manager.createNativeQuery("alter session set NLS_COMP=LINGUISTIC").executeUpdate();
         manager.createNativeQuery("alter session set NLS_SORT=BINARY_CI").executeUpdate();
+        @SuppressWarnings("unchecked")
         List<TopcatKeywords> keywordList = manager.createNamedQuery("TopcatKeywords.findByPrefix")
                 .setParameter("prefix", prefixString).setMaxResults(maxResultKeywords).getResultList();
         if (keywordList == null) {

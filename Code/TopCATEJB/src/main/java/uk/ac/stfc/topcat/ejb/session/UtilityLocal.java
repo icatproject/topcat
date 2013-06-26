@@ -23,7 +23,6 @@
 package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -38,7 +37,6 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 
 /**
  * This is local interface to utility bean
@@ -102,18 +100,6 @@ public interface UtilityLocal {
 
     ArrayList<String> getParameterTypes(String sessionId, String facilityName, String name, String units)
             throws TopcatException;
-
-    String getDatafilesDownloadURL(String sessionId, String facilityName, ArrayList<Long> datafileIds)
-            throws TopcatException;
-
-    String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException;
-
-    List<TopcatUserDownload> getMyDownloadList(String sessionId, String facilityName) throws TopcatException;
-
-    void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
-            Date expiryTime, String url, String preparedId) throws TopcatException;
-
-    void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
     List<TAuthentication> getAuthenticationDetails(String facilityName);
 

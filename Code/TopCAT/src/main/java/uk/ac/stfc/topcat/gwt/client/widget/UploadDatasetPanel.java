@@ -89,7 +89,7 @@ public class UploadDatasetPanel extends Composite {
     private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private final LoginServiceAsync loginService = GWT.create(LoginService.class);
     private FormPanel datasetPanel;
-    private String facility = "";
+    private String facilityName = "";
     private String investigationId;
     private ListStore<DatafileModel> uploadFileList = new ListStore<DatafileModel>();
     private List<DatafileFormatModel> datafileFormats = new ArrayList<DatafileFormatModel>();
@@ -140,12 +140,11 @@ public class UploadDatasetPanel extends Composite {
      */
     protected void setInvestigation(TInvestigation inv) {
         clear();
-        if (!facility.equals(inv.getServerName())) {
-            facility = inv.getServerName();
-            setDSTypes(facility);
-            setDFFormats(facility);
-            // TODO get URL from database
-            idsUrl = "https://hostname.domain.example";
+        if (!facilityName.equals(inv.getServerName())) {
+            facilityName = inv.getServerName();
+            setDSTypes(facilityName);
+            setDFFormats(facilityName);
+            idsUrl = EventPipeLine.getInstance().getFacility(facilityName).getDownloadServiceUrl();
             setIdsUrl(idsUrl);
         }
         investigationId = inv.getInvestigationId();
@@ -472,7 +471,7 @@ public class UploadDatasetPanel extends Composite {
                 .getValue().getFormatId();
 
         // add details to the grid
-        uploadFileList.add(new DatafileModel(facility, "datasetId", "datasetName", localId.toString(), name,
+        uploadFileList.add(new DatafileModel(facilityName, "datasetId", "datasetName", localId.toString(), name,
                 description, "fileSize", "doi", "", "formatId", formatName, "formatDescription", "formatVersion",
                 "formatType", null, null));
 
@@ -538,7 +537,7 @@ public class UploadDatasetPanel extends Composite {
         String description = ((TextField<String>) datasetPanel.getItemByItemId("datasetDescription")).getValue();
         @SuppressWarnings("unchecked")
         String type = ((ComboBox<DatasetModel>) datasetPanel.getItemByItemId("datasetType")).getValue().getType();
-        TDataset dataset = new TDataset(facility, investigationId, "", name, description, type, "");
+        TDataset dataset = new TDataset(facilityName, investigationId, "", name, description, type, "");
         uploadService.createDataSet(dataset, new AsyncCallback<Long>() {
             @Override
             public void onSuccess(Long result) {
@@ -563,7 +562,7 @@ public class UploadDatasetPanel extends Composite {
      */
     @SuppressWarnings("unchecked")
     private void uploadData(final Long datasetId, final String datasetName) {
-        loginService.getSessionId(facility, new AsyncCallback<String>() {
+        loginService.getSessionId(facilityName, new AsyncCallback<String>() {
             @Override
             public void onSuccess(String sessionId) {
                 int fileCount = datafilePanel.getItemCount() - 1;
@@ -720,7 +719,7 @@ public class UploadDatasetPanel extends Composite {
         ((ComboBox<DatasetModel>) datasetPanel.getItemByItemId("datasetType")).getStore().removeAll();
         ((ComboBox<DatafileFormatModel>) (getForm()).getItemByItemId("datafileFormat")).getStore().removeAll();
         datafileFormats.clear();
-        facility = "";
+        facilityName = "";
         idsUrl = "";
     }
 }

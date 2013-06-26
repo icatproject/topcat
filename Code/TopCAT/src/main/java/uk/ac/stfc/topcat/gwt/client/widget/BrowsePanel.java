@@ -494,7 +494,7 @@ public class BrowsePanel extends Composite {
             List<Long> idList = dsMap.get(facility);
             for (Long id : idList) {
                 batchCount = batchCount + 1;
-                // TODO the nxt two lines where added as a temporary measure
+                // TODO the next two lines where added as a temporary measure
                 // until all downloads are via the I.D.S. At which point all of
                 // the code needs reviewing.
                 List<Long> ids = new ArrayList<Long>(1);

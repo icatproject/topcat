@@ -148,12 +148,13 @@ public class UserManager {
         if (topcatSessionId == null) {
             return;
         }
+        @SuppressWarnings("unchecked")
         List<TopcatUserSession> sessionList = manager.createNamedQuery("TopcatUserSession.findByTopcatSessionId")
                 .setParameter("topcatSessionId", topcatSessionId).getResultList();
         if (sessionList == null) {
             return;
         }
-        Iterator it = sessionList.iterator();
+        Iterator<TopcatUserSession> it = sessionList.iterator();
         while (it.hasNext()) {
             TopcatUserSession tus = (TopcatUserSession) it.next();
             manager.remove(tus);
@@ -173,6 +174,7 @@ public class UserManager {
         if (topcatSessionId == null) {
             return;
         }
+        @SuppressWarnings("unchecked")
         List<TopcatUserSession> sessionList = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
                 .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
@@ -180,7 +182,7 @@ public class UserManager {
         if (sessionList == null) {
             return;
         }
-        Iterator it = sessionList.iterator();
+        Iterator<TopcatUserSession> it = sessionList.iterator();
         while (it.hasNext()) {
             TopcatUserSession tus = (TopcatUserSession) it.next();
             manager.remove(tus);
@@ -203,6 +205,7 @@ public class UserManager {
         if (topcatSessionId == null) {
             return Boolean.FALSE;
         }
+        @SuppressWarnings("unchecked")
         List<TopcatUserSession> sessionList = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
                 .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
@@ -210,7 +213,7 @@ public class UserManager {
         if (sessionList == null) {
             return Boolean.FALSE;
         }
-        Iterator it = sessionList.iterator();
+        Iterator<TopcatUserSession> it = sessionList.iterator();
         while (it.hasNext()) {
             TopcatUserSession tus = (TopcatUserSession) it.next();
             TopcatIcatServer icatServer = tus.getUserId().getServerId();
@@ -248,6 +251,7 @@ public class UserManager {
         TopcatUserSession session = null;
         TopcatUserInfo userInfo = null;
 
+        @SuppressWarnings("unchecked")
         List<TopcatUserSession> resultSessions = manager.createNamedQuery("TopcatUserSession.findByTopcatSessionId")
                 .setParameter("topcatSessionId", topcatSessionId).getResultList();
         if (resultSessions != null && resultSessions.size() != 0) {
@@ -389,6 +393,7 @@ public class UserManager {
         // Get all the Anonymous user sessions for the servers that user doesn't
         // have logins
         // This is done in one query.
+        @SuppressWarnings("unchecked")
         List<TopcatUserSession> userSessionsWithValidAuth = manager
                 .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndAnonymous")
                 .setParameter("topcatSessionId", topcatSessionId).getResultList();
@@ -448,6 +453,7 @@ public class UserManager {
         // anonymous login
         // after 5mins.
         try {
+            @SuppressWarnings("unchecked")
             List<TopcatIcatServer> servers = manager.createNamedQuery("TopcatIcatServer.findAll").getResultList();
             for (TopcatIcatServer server : servers) {
                 try {

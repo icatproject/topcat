@@ -26,20 +26,16 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
-import uk.ac.stfc.topcat.gwt.client.UtilityService;
-import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.UpdateDownloadStatusEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddMyDownloadEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.UpdateDownloadStatusEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
@@ -71,9 +67,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * This widget displays the download requests.
@@ -82,13 +76,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class MyDownloadPanel extends Composite {
     private TabPanel mainPanel;
     private TabItem myDownloadTab;
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
     private Grid<DownloadModel> grid;
     private PagingModelMemoryProxy proxy = new PagingModelMemoryProxy(new ArrayList<DownloadModel>());
     private PagingToolBar toolBar = null;
     private EventPipeLine eventBus;
-    private WaitDialog waitDialog;
     private PagingLoader<PagingLoadResult<DownloadModel>> loader;
+    private boolean remoteRefresh = false;
 
     public MyDownloadPanel(TabPanel tabPanel, TabItem myDownloadTabItem) {
         myDownloadTab = myDownloadTabItem;
@@ -129,9 +122,6 @@ public class MyDownloadPanel extends Composite {
                 if (model.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
                     b.setEnabled(true);
                     b.setText("re-download");
-                } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED)) {
-                    b.setEnabled(false);
-                    b.setText(Constants.STATUS_EXPIRED);
                 } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
                     b.setEnabled(false);
                     b.setText(Constants.STATUS_ERROR);
@@ -145,8 +135,6 @@ public class MyDownloadPanel extends Composite {
             }
         };
 
-        waitDialog = new WaitDialog();
-
         ContentPanel contentPanel = new ContentPanel();
         contentPanel.setHeaderVisible(false);
         contentPanel.setCollapsible(true);
@@ -155,28 +143,7 @@ public class MyDownloadPanel extends Composite {
         VerticalPanel bodyPanel = new VerticalPanel();
         bodyPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
 
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig column;
-        column = new ColumnConfig("facilityName", "Facility Name", 150);
-        configs.add(column);
-
-        column = new ColumnConfig("submitTime", "Submit Time", 150);
-        column.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
-        configs.add(column);
-
-        column = new ColumnConfig("downloadName", "Download Name", 150);
-        configs.add(column);
-
-        column = new ColumnConfig("status", "Status", 150);
-        configs.add(column);
-
-        column = new ColumnConfig("timeRemaining", "Download Availability", 200);
-        configs.add(column);
-
-        column = new ColumnConfig("downloadAvailable", "Download", 100);
-        column.setRenderer(buttonRenderer);
-        configs.add(column);
+        List<ColumnConfig> configs = getColumnConfig(buttonRenderer);
 
         // Pagination
         loader = new BasePagingLoader<PagingLoadResult<DownloadModel>>(proxy);
@@ -193,46 +160,16 @@ public class MyDownloadPanel extends Composite {
         contentPanel.add(bodyPanel);
 
         // Pagination Bar
-        toolBar = new PagingToolBar(15) {
-            @Override
-            public void refresh() {
-                refreshDownloadData();
-                super.refresh();
-            }
-        };
+        toolBar = getToolBar();
         toolBar.bind(loader);
         contentPanel.setBottomComponent(toolBar);
 
         setMonitorWindowResize(true);
         initComponent(contentPanel);
         createAddMyDownloadHandler();
+        createUpdateDownloadStatusHandler();
         createTabSelectedHandler();
         createLogoutHandler();
-    }
-
-    /**
-     * Add details of a download.
-     * 
-     * @param dlm
-     *            a DownloadModel
-     */
-    public void addDownload(DownloadModel dlm) {
-        @SuppressWarnings("unchecked")
-        List<DownloadModel> downloadList = (List<DownloadModel>) proxy.getData();
-        if (downloadList == null) {
-            downloadList = new ArrayList<DownloadModel>();
-        }
-        downloadList.add(dlm);
-        proxy.setData(downloadList);
-        toolBar.refresh();
-    }
-
-    /**
-     * Refresh.
-     * 
-     */
-    public void refresh() {
-        toolBar.refresh();
     }
 
     public void setEventBus(EventPipeLine eventBus) {
@@ -246,6 +183,62 @@ public class MyDownloadPanel extends Composite {
      */
     public void setGridWidth(int width) {
         grid.setWidth(width);
+    }
+
+    /**
+     * Refresh.
+     * 
+     */
+    public void refresh() {
+        toolBar.refresh();
+    }
+
+    /**
+     * Get the list of column configurations. This includes column names and
+     * widths
+     * 
+     * @param buttonRenderer
+     * @return a list of <code>ColumnConfig</code>
+     */
+    private List<ColumnConfig> getColumnConfig(GridCellRenderer<DownloadModel> buttonRenderer) {
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+        ColumnConfig column;
+        column = new ColumnConfig("facilityName", "Facility Name", 150);
+        configs.add(column);
+
+        column = new ColumnConfig("submitTime", "Submit Time", 150);
+        column.setDateTimeFormat(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
+        configs.add(column);
+
+        column = new ColumnConfig("downloadName", "Download Name", 150);
+        configs.add(column);
+
+        column = new ColumnConfig("status", "Status", 150);
+        configs.add(column);
+
+        column = new ColumnConfig("downloadAvailable", "Download", 100);
+        column.setRenderer(buttonRenderer);
+        configs.add(column);
+        return configs;
+    }
+
+    /**
+     * Get the paging tool bar. Refresh will call out to the server.
+     */
+    private PagingToolBar getToolBar() {
+        PagingToolBar toolBar = new PagingToolBar(15) {
+            @Override
+            public void refresh() {
+                if (remoteRefresh) {
+                    updateDownloadList();
+                } else {
+                    remoteRefresh = true;
+                }
+                super.refresh();
+            }
+        };
+        return toolBar;
     }
 
     /**
@@ -284,60 +277,11 @@ public class MyDownloadPanel extends Composite {
     }
 
     /**
-     * Only call out to check status if any of the model's status are 'in
-     * progress'. If all the status are 'available' then update the ttl locally.
+     * Call the server to check the statuses of all of the downloads. This will
+     * in turn result in an UpdateDownloadStatusEvent being fired.
      */
-    private void refreshDownloadData() {
-        @SuppressWarnings("unchecked")
-        List<DownloadModel> downloadList = (List<DownloadModel>) proxy.getData();
-        if (downloadList != null) {
-            Set<String> facilities = new HashSet<String>();
-            for (Iterator<DownloadModel> it = downloadList.iterator(); it.hasNext();) {
-                DownloadModel model = it.next();
-                model.refresh();
-                if (model.getStatus().equals(Constants.STATUS_EXPIRED)) {
-                    it.remove();
-                }
-                if (model.getStatus().equals(Constants.STATUS_IN_PROGRESS)) {
-                    facilities.add(model.getFacilityName());
-                }
-            }
-            if (facilities.isEmpty()) {
-                proxy.setData(downloadList);
-            } else {
-                remoteRefresh(facilities);
-            }
-        }
-    }
-
-    /**
-     * Refresh all data for the given facilities.
-     * 
-     * @param facilities
-     */
-    private void remoteRefresh(final Set<String> facilities) {
-        waitDialog.setMessage("  Retrieving data...");
-        waitDialog.show();
-        utilityService.getMyDownloadList(facilities, new AsyncCallback<ArrayList<DownloadModel>>() {
-            @Override
-            public void onSuccess(ArrayList<DownloadModel> result) {
-                for (String facility : facilities) {
-                    clearDownloadList(facility);
-                }
-                loadDownloads(result);
-                waitDialog.hide();
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                waitDialog.hide();
-                if (caught instanceof SessionException) {
-                    EventPipeLine.getInstance().checkStillLoggedIn();
-                } else {
-                    EventPipeLine.getInstance().showMessageDialog("Error retrieving fresh data from server");
-                }
-            }
-        });
+    private void updateDownloadList() {
+        DownloadManager.getInstance().getMyDownloadList(eventBus.getLoggedInFacilities());
     }
 
     /**
@@ -355,6 +299,22 @@ public class MyDownloadPanel extends Composite {
     }
 
     /**
+     * Setup a handler to react to UpdateDownloadStatus events.
+     */
+    private void createUpdateDownloadStatusHandler() {
+        // react to the download statuses being updated
+        UpdateDownloadStatusEvent.register(EventPipeLine.getEventBus(), new UpdateDownloadStatusEventHandler() {
+            @Override
+            public void updateDownloadStatus(UpdateDownloadStatusEvent event) {
+                proxy.setData(event.getDownloads());
+                loader.load();
+                remoteRefresh = false;
+                toolBar.refresh();
+            }
+        });
+    }
+
+    /**
      * Setup a listener to react to Select events.
      */
     private void createTabSelectedHandler() {
@@ -363,7 +323,7 @@ public class MyDownloadPanel extends Composite {
             @Override
             public void handleEvent(TabPanelEvent event) {
                 if (event.getItem() == myDownloadTab) {
-                    refreshDownloadData();
+                    updateDownloadList();
                 }
             }
         });
@@ -377,6 +337,7 @@ public class MyDownloadPanel extends Composite {
             @Override
             public void logout(LogoutEvent event) {
                 clearDownloadList(event.getFacilityName());
+                remoteRefresh = false;
                 toolBar.refresh();
             }
         });

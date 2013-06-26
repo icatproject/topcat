@@ -1,17 +1,17 @@
 Topcat a Web Based GUI for Icat
 ###############################
 
-A setup script has been provided to help configure topcat.
+A setup script has been provided to help install topcat.
 
 
 PREREQUISITES
 #############
 
-Glassfish installed and domain1 running:
-> <GLASSFISH_HOME>/glassfish/bin/asadmin start-domain domain1
+Glassfish installed and <DOMAIN> running:
+> <GLASSFISH_HOME>/glassfish/bin/asadmin start-domain <DOMAIN>
 
 If you are not using the Derby database ensure the appropriate driver is in 
-<GLASSFISH_HOME>/glassfish/domains/domain1/lib/. Glassfish will need to be
+<GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/lib/. Glassfish will need to be
 restarted after the driver is put there. You will also need write access to a
 database/schema.
 
@@ -21,74 +21,67 @@ CONFIGURATION FILES
 
 The configuration files are described in more detail below. Configuration data
 is stored in the following files:
-	glassfish.props
-	icats.d/localhost.icat
+	topcat_glassfish.props
 	topcat.properties
 
 
 INSTALLATION
 ############
 
-1) customise glassfish.props
+1) customise topcat_glassfish.props
 
 2) create and customise topcat.properties using topcat.properties.example as a
    template
    
-3) add a .icat file to the icats.d directory for every icat you wish to be able
-   to access via topcat, using my.icat.example as a template. The setup script 
-   looks for all .icat files in the icats.d directory.
-   
-4) create the connection pool, recourses and copy the topcat.properties file 
-   into place (only if it does not already exist) using:
-> ./topcat_setup.py --create
+3) create the jdbc connection pool and resource, and the topcat admin user and
+   enable the principal to role manager and deploy the topcat and topcat admin 
+   applications to Glassfish using:
+> ./topcat_setup.py --install
 
-5) Deploy topcat to Glassfish using:
-> ./topcat_setup.py --deploy
 
-6) Initialise the database with data about icat using:
-> ./topcat_setup.py --addICAT
+ADDING ICATS
+############
 
-7) If the icats you are connecting to are using non standard certificates you
-   will need to add them to the Glassfish trust store:
-> openssl s_client -showcerts -connect <HOST>:<PORT> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > <GLASSFISH_HOME>/glassfish/domains/domain1/config/facility.cert
-> keytool -import -noprompt -alias <ALIAS> -file <GLASSFISH_HOME>/glassfish/domains/domain1/config/facility.cert -keystore <GLASSFISH_HOME>/glassfish/domains/domain1/config/cacerts.jks --storepass changeit 
+In order for topcat to be useful it needs to know about one or more icats. To
+configure topcat to point to icat use the topcat admin console:
+	https://localhost.localdomain:8181/TopCATAdmin/
 
-8) If you added certificates to the trust store you must restart glassfish:
+If the icats you are connecting to are using non standard certificates you
+will need to add them to the Glassfish trust store:
+> openssl s_client -showcerts -connect <HOST>:<PORT> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/facility.cert
+> keytool -import -noprompt -alias <ALIAS> -file <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/facility.cert -keystore <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/cacerts.jks --storepass changeit 
+
+If you added certificates to the trust store you MUST restart glassfish:
 > asadmin restart-domain
 
-UPGRADING to 1.9
-################
 
-1) Undeploy topcat from Glassfish using:
-> ./topcat_setup.py --undeploy
+UN-INSTALL
+##########
 
-2) Upgrade the database schema
-> ./topcat_setup.py --upgrade
-
-3) Deploy topcat to Glassfish using:
-> ./topcat_setup.py --deploy
-
-4) If upgrading from 1.6 use your favourite database GUI or CLI to update your 
-   database. You will need to add data to the table ICAT_AUTHENTICATION. First
-   find the out the server id:
-SELECT ID, NAME FROM TOPCAT_ICAT_SERVER;
-   Then add one or more rows e.g.:
-INSERT INTO ICAT_AUTHENTICATION (SERVER_ID, AUTHENTICATION_TYPE) VALUES (1, 'ldap');
+To delete the jdbc connection pool and resource, and the topcat admin user and
+disable the principal to role manager and undeploy the topcat and topcat admin 
+applications from Glassfish use:
+> ./topcat_setup.py --uninstall
 
 
-CONNECTING TO AN ICAT DATA SERVICE
-##################################
+UPGRADING FROM 1.7 TO 1.9
+#########################
 
-Currently this has to be carried out using your favourite database GUI or CLI
-to update your database. You will need to add data to the table 
-TOPCAT_ICAT_SERVER. For example:
-UPDATE TOPCAT_ICAT_SERVER SET DOWNLOAD_PLUGIN_NAME='IDS', DOWNLOAD_SERVICE_URL='http://examle.com/DownloadManager/' WHERE NAME = 'myFacility';
+1) Uninstall topcat using:
+> ./topcat_setup.py --uninstall
+
+2) Upgrade the database schema using:
+> ./topcat_upgrade.py --upgrade19
+
+3) Install topcat using:
+> ./topcat_setup.py --install
 
 
-LOG FILE
-########
+LOG FILES
+#########
 
-Messages are logged in <GLASSFISH_HOME>glassfish/domains/domain1/log/server.log
+Messages are logged in <GLASSFISH_HOME>glassfish/domains/<DOMAIN>/log/server.log
+and <GLASSFISH_HOME>glassfish/domains/<DOMAIN>/log/topcat*
 
 
 CONFIGURATION FILES IN MORE DETAIL
@@ -104,6 +97,8 @@ The keys in this file are:
 	glassfish
 	port (optional)
 	domain (optional)
+	topcatAdminUser
+	topcatAdminWar
 
 A) dbType (optional, default:derby) - The type of database to use, i.e.:
 	derby
@@ -130,38 +125,17 @@ C) topcatProperties - The topcat connection properties, e.g.
 
 D) glassfish - The Glassfish home directory, must contain "glassfish/domains"
 
-E) port (optional, default:4848) - The port for glassfish admin calls (normally 4848)
+E) port (optional, default:4848) - The port for glassfish admin calls 
+    (normally 4848)
 
 F) domain (optional, default:domain1) - The domain within glassfish to use.
     This domain must already exist.
 
+G) topcatAdminUser - The user name to use when setting up the topcat admin 
+    user. This will then be the user name to use to log on to the topcat admin
+    console.
 
-
-icats.d/localhost.icat
-~~~~~~~~~~~~~~~~~~~~~~
-
-The keys in this file are:
-	facilityName
-	wdslUrl
-	icatVersion
-	authenticationProperties
-
-A) facilityName - The name of the facility to be displayed in topcat
-
-B) wsdlUrl - The URL of the WSDL for the icat
-
-C) icatVersion - The name of the plugin in topcat to be used with this icat,
-   i.e. v420
-   N.B. for any 4.2.n icat please use 'v420'. In a future release the '0' will be
-   dropped as now it is guaranteed that the icat api will not change between minor
-   versions.
-   
-D) authenticationProperties - The properties for the authentication plugin
-   There can be multiple authenticationProperties entries. The components are:
-		url -    The url of the authentication service, NOT currently used
-		type -   The ICAT authentication type, i.e. 'db' or 'ldap'
-		plugin - The topcat plugin name, leave blank to use the default 
-				 username/password plugin
+H) topcatAdminWar - The name of the topcat admin war file.
 
 
 topcat.properties
@@ -181,7 +155,7 @@ A) KEYWORDS_CACHED - Boolean flag, 'true' or 'false'
 
 B) LOGO_URL - The location of an image to display in the header of topcat. The
    value should be a path/file name relative to the 
-   <GLASSFISH_HOME>glassfish/domains/domain1/applications/TopCAT/ directory.
+   <GLASSFISH_HOME>glassfish/domains/<DOMAIN>/applications/TopCAT/ directory.
    
 C) MESSAGE - This message will be displayed at the top of the web page. It is
    intended for use by sys admins so that they can inform users of up coming
@@ -204,4 +178,3 @@ H) COMPLAINTS_PROCEDURE - The URL for a complaints web page, a link to this is
 
 I) FEEDBACK - The URL for a mailto link, a link to this is included in the
    topcat footer
-

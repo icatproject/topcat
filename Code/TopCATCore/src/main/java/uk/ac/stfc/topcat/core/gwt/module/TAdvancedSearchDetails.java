@@ -36,28 +36,27 @@ import java.util.List;
  * @since iCAT Version 3.3
  */
 public class TAdvancedSearchDetails implements Serializable {
-
-    protected String propostaltitle;
-    protected String proposalAbstract;
-    protected String sample;
-    protected ArrayList<String> investigatorNameList;
-    protected String datafileName;
-    protected Date startDate;
-    protected Date endDate;
-    protected String rbNumberStart;
-    protected String rbNumberEnd;
-    protected String grantId;
-    protected ArrayList<String> facilityList;
-    protected ArrayList<String> investigationTypeList;
-    protected ArrayList<String> instrumentList;
-    protected Boolean datafileNameCaseSensitive;
-    protected ArrayList<String> keywordsList;
-    protected String parameterName;
-    protected String parameterUnits;
-    protected String parameterValue;
-    protected String parameterValueMax;
-    protected String visitId;
-    protected boolean searchAllData = false;
+    private static final long serialVersionUID = 1L;
+    private String propostaltitle;
+    private String proposalAbstract;
+    private String sample;
+    private ArrayList<String> investigatorNameList;
+    private String datafileName;
+    private Date startDate;
+    private Date endDate;
+    private String rbNumberStart;
+    private String rbNumberEnd;
+    private String grantId;
+    private ArrayList<String> facilityList;
+    private ArrayList<String> investigationTypeList;
+    private ArrayList<String> instrumentList;
+    private ArrayList<String> keywordsList;
+    private String parameterName;
+    private String parameterUnits;
+    private String parameterValue;
+    private String parameterValueMax;
+    private String visitId;
+    private boolean searchAllData = false;
 
     public TAdvancedSearchDetails() {
         investigatorNameList = new ArrayList<String>();

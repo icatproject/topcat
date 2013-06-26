@@ -124,7 +124,7 @@ public class ICATWebInterfaceBase {
         throw new NotSupportedException("getParameterType is not supported");
     }
 
-    public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
+    public String downloadDatafiles(String sessionId, List<Long> datafileIds) {
         return null;
     }
 

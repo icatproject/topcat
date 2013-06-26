@@ -491,7 +491,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     }
 
     @Override
-    public String downloadDatafiles(String sessionId, ArrayList<Long> datafileIds) {
+    public String downloadDatafiles(String sessionId, List<Long> datafileIds) {
         String result = "";
         return result;
     }

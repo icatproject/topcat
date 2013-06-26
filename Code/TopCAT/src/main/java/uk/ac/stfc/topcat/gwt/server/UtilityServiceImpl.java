@@ -22,25 +22,11 @@
  */
 package uk.ac.stfc.topcat.gwt.server;
 
-/**
- * Imports
- */
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -48,13 +34,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.icatproject.idsclient.Client;
-import org.icatproject.idsclient.Status;
-import org.icatproject.idsclient.exceptions.BadRequestException;
-import org.icatproject.idsclient.exceptions.ForbiddenException;
-import org.icatproject.idsclient.exceptions.IDSException;
-import org.icatproject.idsclient.exceptions.NotFoundException;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
@@ -66,21 +45,17 @@ import uk.ac.stfc.topcat.core.gwt.module.TDatasetParameter;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
-import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.NotSupportedException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 import uk.ac.stfc.topcat.ejb.utils.Configuration;
-import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
-import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
@@ -101,8 +76,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
 
     private UtilityLocal utilityManager = null;
     private UserManagementBeanLocal userManager = null;
-    private Map<String, String> downloadPlugins = new HashMap<String, String>();
-    private static String RESTFUL_DOWNLOAD_SERVICE = "restfulDownload";
 
     /**
      * Servlet Init method.
@@ -120,11 +93,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                     .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
         } catch (NamingException ex) {
             ex.printStackTrace();
-        }
-
-        ArrayList<TFacility> facilities = utilityManager.getFacilities();
-        for (TFacility facility : facilities) {
-            downloadPlugins.put(facility.getName(), facility.getDownloadPluginName());
         }
     }
 
@@ -546,75 +514,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * (non-Javadoc)
      * 
      * @see
-     * uk.ac.stfc.topcat.gwt.client.UtilityService#getDatafilesDownloadURL(java
-     * .lang.String, java.util.ArrayList, java.lang.String)
-     */
-    @Override
-    public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName)
-            throws TopcatException {
-        String status;
-        Date submitTime = new Date(System.currentTimeMillis());
-        Date expiryTime = null;
-        String url = utilityManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
-        String downloadPlugin = downloadPlugins.get(facilityName);
-        if (downloadPlugin != null && downloadPlugin.equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
-            status = Constants.STATUS_IN_PROGRESS;
-            expiryTime = getExpiryTime(url);
-            utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime,
-                    url, null);
-        } else {
-            status = Constants.STATUS_AVAILABLE;
-        }
-        return new DownloadModel(facilityName, submitTime, downloadName, status, expiryTime, url);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * uk.ac.stfc.topcat.gwt.client.UtilityService#getDatasetDownloadURL(java
-     * .lang.String, java.lang.Long, java.lang.String)
-     */
-    @Override
-    public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName)
-            throws TopcatException {
-        String status;
-        Date submitTime = new Date(System.currentTimeMillis());
-        Date expiryTime = null;
-        String url = utilityManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
-        if (downloadPlugins.get(facilityName).equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
-            status = Constants.STATUS_IN_PROGRESS;
-            expiryTime = getExpiryTime(url);
-            utilityManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime,
-                    url, null);
-        } else {
-            status = Constants.STATUS_AVAILABLE;
-        }
-        return new DownloadModel(facilityName, submitTime, downloadName, status, expiryTime, url);
-    }
-
-    private Date getExpiryTime(String url) {
-        Date expiryTime = null;
-        try {
-            URL statusUrl = new URL(url + "/ExpiryTime");
-            BufferedReader in = new BufferedReader(new InputStreamReader(statusUrl.openStream()));
-            SimpleDateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-            expiryTime = df.parse(in.readLine());
-            in.close();
-        } catch (IOException e) {
-            // TODO
-            System.out.println("ERROR in getExpiryTime " + e.getMessage());
-        } catch (ParseException e) {
-            // TODO
-            System.out.println("ERROR in getExpiryTime " + e.getMessage());
-        }
-        return expiryTime;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * uk.ac.stfc.topcat.gwt.client.UtilityService#getAllICATNodeDatafiles(uk
      * .ac.stfc.topcat.gwt.client.model.ICATNode)
      */
@@ -751,156 +650,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     }
 
     @Override
-    public ArrayList<DownloadModel> getMyDownloadList(Set<String> facilities) throws TopcatException {
-        ArrayList<DownloadModel> result = new ArrayList<DownloadModel>();
-        for (String facilityName : facilities) {
-            List<TopcatUserDownload> dlList = utilityManager.getMyDownloadList(getSessionId(), facilityName);
-            if (dlList == null)
-                continue;
-            for (TopcatUserDownload dl : dlList) {
-                result.add(new DownloadModel(facilityName, dl.getUrl(), dl.getPreparedId(), dl.getName(), dl
-                        .getSubmitTime(), dl.getStatus()));
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public List<DownloadModel> getDownloadStatus(Set<DownloadModel> downloadModels) throws TopcatException {
-        List<DownloadModel> finalStateReached = new ArrayList<DownloadModel>();
-        for (DownloadModel downloadModel : downloadModels) {
-            DownloadModel updatedDownloadModel = null;
-            if (downloadModel.getPreparedId() == null || downloadModel.getPreparedId().isEmpty()) {
-                updatedDownloadModel = updateDownloadStatusClassic(downloadModel);
-            } else {
-                updatedDownloadModel = updateDownloadStatus(downloadModel);
-            }
-            if (updatedDownloadModel != null) {
-                finalStateReached.add(updatedDownloadModel);
-            }
-        }
-        return finalStateReached;
-    }
-
-    @Deprecated
-    private DownloadModel updateDownloadStatusClassic(DownloadModel downloadModel) throws SessionException {
-        BufferedReader in = null;
-        try {
-            // get the status from the download service
-            String requestUrl = downloadModel.getUrl();
-            URL statusUrl = new URL(requestUrl + "/Status");
-            URLConnection conn = statusUrl.openConnection();
-            try {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } catch (IOException e) {
-                if (((HttpURLConnection) statusUrl.openConnection()).getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    // assume this one is finished, possibly expired
-                    downloadModel.setStatus(Constants.STATUS_ERROR);
-                    downloadModel.setUrl(requestUrl + "/Download?Filename=" + downloadModel.getDownloadName());
-                    utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
-                            requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(),
-                            Constants.STATUS_ERROR);
-                    return downloadModel;
-                } else {
-                    throw new IOException(e);
-                }
-            }
-            String inputLine = in.readLine();
-            System.out.println("updateDownloadStatusClassic " + inputLine);
-            if (inputLine.equalsIgnoreCase("COMPLETED")) {
-                // this one is finished
-                downloadModel.setStatus(Constants.STATUS_AVAILABLE);
-                downloadModel.setUrl(requestUrl + "/Download?Filename=" + downloadModel.getDownloadName());
-                utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
-                        requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(),
-                        Constants.STATUS_AVAILABLE);
-                return downloadModel;
-            } else if (inputLine.equalsIgnoreCase("ERROR")) {
-                // this one is finished
-                downloadModel.setStatus(Constants.STATUS_ERROR);
-                downloadModel.setUrl(requestUrl + "/Download?Filename=" + downloadModel.getDownloadName());
-                utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
-                        requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(), Constants.STATUS_ERROR);
-                return downloadModel;
-            }
-            in.close();
-        } catch (IOException e) {
-            // download service unavailable
-            // TODO
-            System.out.println("ERROR in updateDownloadStatusClassic " + e.getMessage());
-            try {
-                in.close();
-            } catch (IOException e1) {
-            } catch (NullPointerException e1) {
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get the status of the download from the download service.
-     * 
-     * @param downloadModel
-     *            the download to check
-     * @return an updated DataModel is returned if the status has changed
-     *         overwise null is returned
-     * @throws TopcatException
-     */
-    private DownloadModel updateDownloadStatus(DownloadModel downloadModel) throws TopcatException {
-        Client ids = null;
-        try {
-            ids = new Client(downloadModel.getUrl());
-        } catch (BadRequestException e) {
-            // TODO
-            System.out.println("ERROR in updateDownloadStatus " + e.getMessage());
-            throw new InternalException("Error bad url for the download service. " + e.getMessage());
-        }
-        Status status = null;
-        String downloadUrl = "";
-        try {
-            status = ids.getStatus(downloadModel.getPreparedId());
-            if (status == Status.ONLINE || status == Status.INCOMPLETE) {
-                downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());
-            }
-        } catch (NotFoundException e) {
-            // assume this one is finished, possibly expired
-            System.out.println("updateDownloadStatus: NotFoundException: " + e.getMessage());
-            downloadModel.setStatus(Constants.STATUS_EXPIRED);
-            utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                    downloadModel.getUrl(), downloadModel.getUrl(), Constants.STATUS_EXPIRED);
-            return downloadModel;
-        } catch (IDSException e) {
-            // something has gone wrong
-            // TODO
-            System.out.println("ERROR in updateDownloadStatus " + e.getMessage());
-            throw new InternalException("Error returned from the data service. " + e.getMessage());
-        } catch (IOException e) {
-            // cannot contact IDS, network issues?
-            // TODO
-            System.out.println("ERROR in updateDownloadStatus " + e.getMessage());
-            throw new InternalException("Unable to contact the data service, " + downloadModel.getUrl());
-        }
-        if (status == Status.ONLINE) {
-            // this one is finished
-            utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                    downloadModel.getUrl(), downloadUrl, Constants.STATUS_AVAILABLE);
-            downloadModel.setUrl(downloadUrl);
-            downloadModel.setStatus(Constants.STATUS_AVAILABLE);
-            return downloadModel;
-        } else if (status == Status.INCOMPLETE) {
-            // this one is finished
-            // TODO what to do, give the user an incomplete set?
-            utilityManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(),
-                    downloadModel.getUrl(), downloadUrl, Constants.STATUS_ERROR);
-            downloadModel.setUrl(downloadUrl);
-            downloadModel.setStatus(Constants.STATUS_ERROR);
-            System.out.println("updateDownloadStatus: IMCOMPLETE");
-            return downloadModel;
-        }
-        return null;
-    }
-
-    @Override
     public List<AuthenticationModel> getAuthenticationDetails(String facilityName) {
         List<TAuthentication> authentications = utilityManager.getAuthenticationDetails(facilityName);
         List<AuthenticationModel> models = new ArrayList<AuthenticationModel>();
@@ -924,40 +673,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
                     .getFormatDescription(), df.getFormatVersion(), df.getFormatType()));
         }
         return models;
-    }
-
-    @Override
-    public DownloadModel prepareDataObjectsForDownload(String dataType, TFacility facility, List<Long> dataObjectList,
-            String downloadName) throws TopcatException {
-        String sessionId = userManager.getIcatSessionId(getSessionId(), facility.getName());
-        Date submitTime = new Date(System.currentTimeMillis());
-        Client ids;
-        try {
-            ids = new Client(facility.getDownloadServiceUrl());
-        } catch (BadRequestException e) {
-            // TODO
-            System.out.println("ERROR in updateDownloadStatus " + e.getMessage());
-            throw new InternalException("Error bad url for the download service. " + e.getMessage());
-        }
-        String preparedId = "";
-        try {
-            if (dataType.equalsIgnoreCase(Constants.DATA_FILE)) {
-                preparedId = ids.prepareDatafiles(sessionId, dataObjectList, false, null);
-            } else if (dataType.equalsIgnoreCase(Constants.DATA_SET)) {
-                preparedId = ids.prepareDatasets(sessionId, dataObjectList, false, null);
-            }
-        } catch (ForbiddenException e) {
-            throw new SessionException();
-        } catch (IDSException e) {
-            throw new InternalException("Error returned from the download service. " + e.getMessage());
-        } catch (IOException e) {
-            throw new InternalException("Error trying to contact the download service. " + e.getMessage());
-        }
-        DownloadModel dm = new DownloadModel(facility.getName(), facility.getDownloadServiceUrl(), preparedId,
-                downloadName, submitTime, Constants.STATUS_IN_PROGRESS);
-        utilityManager.addMyDownload(getSessionId(), facility.getName(), submitTime, downloadName,
-                Constants.STATUS_IN_PROGRESS, null, facility.getDownloadServiceUrl(), preparedId);
-        return dm;
     }
 
 }

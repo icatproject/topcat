@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -21,53 +21,56 @@
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.facility;
+
 /**
  * Imports
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+
 /**
- * This is Facility Plugin Factory which holds all the plugins that are available in TopCAT.
+ * This is Facility Plugin Factory which holds all the plugins that are
+ * available in TopCAT.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class FacilityPluginFactory{	
-	private static FacilityPluginFactory pluginFactory = new FacilityPluginFactory();
-	//With out these GWT will not compile the plugins and add them to AJAX code
-	private static DefaultFacilityPlugin defaultPlugin=DefaultFacilityPlugin.getInstance();
-	@SuppressWarnings("unused")
-	private static ISISFacilityPlugin isisPlugin=ISISFacilityPlugin.getInstance();
-	@SuppressWarnings("unused")
-	private static DiamondFacilityPlugin diamondPlugin=DiamondFacilityPlugin.getInstance();
-	private HashMap<String,FacilityPlugin> facilityPluginMap;
+public class FacilityPluginFactory {
+    private static FacilityPluginFactory pluginFactory = new FacilityPluginFactory();
+    // With out these GWT will not compile the plugins and add them to AJAX code
+    private static DefaultFacilityPlugin defaultPlugin = DefaultFacilityPlugin.getInstance();
+    @SuppressWarnings("unused")
+    private static ISISFacilityPlugin isisPlugin = ISISFacilityPlugin.getInstance();
+    @SuppressWarnings("unused")
+    private static DiamondFacilityPlugin diamondPlugin = DiamondFacilityPlugin.getInstance();
+    private HashMap<String, FacilityPlugin> facilityPluginMap;
 
-	private FacilityPluginFactory(){
-		facilityPluginMap = new HashMap<String,FacilityPlugin>();	
-	}
-	
-	public static FacilityPluginFactory getInstance(){
-		return pluginFactory;
-	}
-	
-	public void registerPlugin(String pluginName,FacilityPlugin plugin){
-		facilityPluginMap.put(pluginName, plugin);
-	}
-	
-	public FacilityPlugin getPlugin(String pluginName) {
-		FacilityPlugin plugin = facilityPluginMap.get(pluginName);
-		if(plugin==null)
-			plugin = defaultPlugin;
-		return plugin;
-	}
-	
-	public int getNumberOfPlugins(){
-		return facilityPluginMap.size();
-	}
+    private FacilityPluginFactory() {
+        facilityPluginMap = new HashMap<String, FacilityPlugin>();
+    }
 
-	public ArrayList<String> getPluginNames() {
-		// TODO Auto-generated method stub
-		return new ArrayList<String>(facilityPluginMap.keySet());
-	}
+    public static FacilityPluginFactory getInstance() {
+        return pluginFactory;
+    }
+
+    public void registerPlugin(String pluginName, FacilityPlugin plugin) {
+        facilityPluginMap.put(pluginName, plugin);
+    }
+
+    public FacilityPlugin getPlugin(String pluginName) {
+        FacilityPlugin plugin = facilityPluginMap.get(pluginName);
+        if (plugin == null)
+            plugin = defaultPlugin;
+        return plugin;
+    }
+
+    public int getNumberOfPlugins() {
+        return facilityPluginMap.size();
+    }
+
+    public ArrayList<String> getPluginNames() {
+        return new ArrayList<String>(facilityPluginMap.keySet());
+    }
 }

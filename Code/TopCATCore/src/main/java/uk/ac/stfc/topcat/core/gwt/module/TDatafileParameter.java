@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -27,19 +27,20 @@ import java.io.Serializable;
 /**
  * This is shared with GWT for datafile parameters information.
  * <p>
+ * 
  * @author Mr. Srikanth Nagella
- * @version 1.0,  &nbsp; 30-APR-2010
+ * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 public class TDatafileParameter implements Serializable {
-    String name;
-    String units;
-    String value;
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private String units;
+    private String value;
 
     public TDatafileParameter() {
     }
 
-    
     public TDatafileParameter(String name, String units, String value) {
         this.name = name;
         this.units = units;
@@ -69,6 +70,5 @@ public class TDatafileParameter implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
-
 
 }

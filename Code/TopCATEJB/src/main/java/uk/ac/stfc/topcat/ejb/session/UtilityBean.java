@@ -23,7 +23,6 @@
 package uk.ac.stfc.topcat.ejb.session;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -40,7 +39,6 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TFacilityCycle;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
 /**
@@ -176,34 +174,6 @@ public class UtilityBean implements UtilityLocal {
     public ArrayList<String> getParameterTypes(String sessionId, String facilityName, String name, String units)
             throws TopcatException {
         return utilManager.getParameterTypes(manager, sessionId, facilityName, name, units);
-    }
-
-    @Override
-    public String getDatafilesDownloadURL(String sessionId, String facilityName, ArrayList<Long> datafileIds)
-            throws TopcatException {
-        return utilManager.getDatafilesDownloadURL(manager, sessionId, facilityName, datafileIds);
-    }
-
-    @Override
-    public String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException {
-        return utilManager.getDatasetDownloadURL(manager, sessionId, facilityName, datasetId);
-    }
-
-    @Override
-    public List<TopcatUserDownload> getMyDownloadList(String sessionId, String facilityName) throws TopcatException {
-        return utilManager.getMyDownloadList(manager, sessionId, facilityName);
-    }
-
-    @Override
-    public void addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName,
-            String status, Date expiryTime, String url, String preparedId) throws TopcatException {
-        utilManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName, status, expiryTime, url,
-                preparedId);
-    }
-
-    @Override
-    public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {
-        utilManager.updateDownloadStatus(manager, sessionId, facilityName, url, updatedUrl, status);
     }
 
     @Override

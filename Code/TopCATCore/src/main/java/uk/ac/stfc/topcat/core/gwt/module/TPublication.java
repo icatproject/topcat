@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -29,6 +29,7 @@ import java.io.Serializable;
  * details about a publication.
  */
 public class TPublication implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String fullReference;
     private Long id;
     private String repository;

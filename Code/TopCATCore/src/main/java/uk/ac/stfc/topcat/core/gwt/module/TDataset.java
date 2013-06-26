@@ -34,14 +34,15 @@ import java.io.Serializable;
  * @since iCAT Version 3.3
  */
 public class TDataset implements Serializable {
-    String facilityName;
-    String investigationId;
-    String id;
-    String name;
-    String status;
-    String type;
-    String description;
-    String sample;
+    private static final long serialVersionUID = 1L;
+    private String facilityName;
+    private String investigationId;
+    private String id;
+    private String name;
+    private String status;
+    private String type;
+    private String description;
+    private String sample;
 
     public TDataset() {
     }

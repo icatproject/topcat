@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -29,6 +29,7 @@ import java.io.Serializable;
  * details about an investigator.
  */
 public class TInvestigator implements Serializable, Comparable<TInvestigator> {
+    private static final long serialVersionUID = 1L;
     private String facilityUserId;
     private String federalId;
     private String fullName;

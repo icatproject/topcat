@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -37,7 +36,6 @@ import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
-import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
@@ -145,38 +143,6 @@ public interface UtilityServiceAsync {
             AsyncCallback<ArrayList<DatafileModel>> callback);
 
     /**
-     * Get the URL of a file that contains all the requested data files for the
-     * given facility.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datafileIds
-     *            a list containing data file ids
-     * @param downloadName
-     *            a string containing a user defined name
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName,
-            AsyncCallback<DownloadModel> callback);
-
-    /**
-     * Get the URL of a file that contains the requested data set for the given
-     * facility.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datasetId
-     *            the data set id
-     * @param downloadName
-     *            a string containing a user defined name
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName,
-            AsyncCallback<DownloadModel> callback);
-
-    /**
      * Get a list of investigations for the given facility that belong to the
      * user.
      * 
@@ -207,28 +173,6 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getTopcatProperties(AsyncCallback<Map<String, String>> asyncCallback);
-
-    /**
-     * Get a list of downloads for the user.
-     * 
-     * @param facilities
-     *            a set containing the facility names
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getMyDownloadList(Set<String> facilities, AsyncCallback<ArrayList<DownloadModel>> asyncCallback);
-
-    /**
-     * Check all of the models for a final status, 'available' or 'ERROR', from
-     * the download service.
-     * 
-     * @param downloadModels
-     *            a set of models of the items that have already been requested
-     *            from the download service
-     * @param callback
-     *            object to be called on completion
-     */
-    public void getDownloadStatus(Set<DownloadModel> downloadQueue, AsyncCallback<List<DownloadModel>> asyncCallback);
 
     /**
      * Get a list of parameter names known to a facility.
@@ -297,20 +241,5 @@ public interface UtilityServiceAsync {
      * @param callback
      */
     public void getDatafileFormats(String facilityName, AsyncCallback<List<DatafileFormatModel>> callback);
-
-    /**
-     * Contact the I.D.S. and prepare the download of the given data objects.
-     * 
-     * @param dataType
-     *            the type of the data object to be downloaded
-     * @param facility
-     *            the facility data
-     * @param dataObjectList
-     *            a list of data object ids
-     * @param downloadName
-     *            the name to give the down load file
-     */
-    public void prepareDataObjectsForDownload(String dataType, TFacility facility, List<Long> dataObjectList,
-            String downloadName, AsyncCallback<DownloadModel> callback);
 
 }

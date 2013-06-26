@@ -36,60 +36,8 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  */
 @SuppressWarnings("serial")
 public class DownloadModel extends BaseModelData implements Serializable {
-    /** The initial URL. This is used in the equal operator of the object */
-    private String m_ulr;
 
     public DownloadModel() {
-    }
-
-    /**
-     * Constructor to set download information.
-     * 
-     * @param facilityName
-     * @param submitTime
-     * @param downloadName
-     * @param status
-     * @param expiryTime
-     * @param url
-     */
-    public DownloadModel(String facilityName, Date submitTime, String downloadName, String status, Date expiryTime,
-            String url) {
-        setFacilityName(facilityName);
-        setSubmitTime(submitTime);
-        setDownloadName(downloadName);
-        setStatus(status);
-        setExpiryTime(expiryTime);
-        setUrl(url);
-        setTimeRemaining(expiryTime);
-        m_ulr = url;
-    }
-
-    /**
-     * Constructor to set download information.
-     * 
-     * @param facilityName
-     *            facility name
-     * @param url
-     *            url of the download service
-     * @param preparedId
-     *            id of the download on the download service
-     * @param downloadName
-     *            the name given by the user
-     * @param submitTime
-     *            the time the download was requested
-     * @param status
-     *            the status of the download from the server
-     */
-    public DownloadModel(String facilityName, String url, String preparedId, String downloadName, Date submitTime,
-            String status) {
-        setFacilityName(facilityName);
-        setUrl(url);
-        setPreparedId(preparedId);
-        setDownloadName(downloadName);
-        setSubmitTime(submitTime);
-        setStatus(status);
-        setUrl(url);
-        m_ulr = url;
     }
 
     /**
@@ -102,6 +50,7 @@ public class DownloadModel extends BaseModelData implements Serializable {
     /**
      * @return expiryTime
      */
+    @Deprecated
     public Date getExpiryTime() {
         return get("expiryTime");
     }
@@ -114,10 +63,31 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
+     * @return id
+     */
+    public Long getId() {
+        return get("id");
+    }
+
+    /**
+     * @return pluginName
+     */
+    public String getPluginName() {
+        return get("pluginName");
+    }
+
+    /**
      * @return preparedId
      */
     public String getPreparedId() {
         return get("preparedId");
+    }
+
+    /**
+     * @return startDownload
+     */
+    public boolean getStartDownload() {
+        return get("startDownload");
     }
 
     /**
@@ -169,6 +139,7 @@ public class DownloadModel extends BaseModelData implements Serializable {
      * 
      * @param expiryTime
      */
+    @Deprecated
     public void setExpiryTime(Date expiryTime) {
         set("expiryTime", expiryTime);
     }
@@ -183,12 +154,39 @@ public class DownloadModel extends BaseModelData implements Serializable {
     }
 
     /**
+     * Set id
+     * 
+     * @param id
+     */
+    public void setId(Long id) {
+        set("id", id);
+    }
+
+    /**
+     * Set pluginName
+     * 
+     * @param pluginName
+     */
+    public void setPluginName(String pluginName) {
+        set("pluginName", pluginName);
+    }
+
+    /**
      * Set preparedId
      * 
      * @param preparedId
      */
     public void setPreparedId(String preparedId) {
         set("preparedId", preparedId);
+    }
+
+    /**
+     * Set startDownload
+     * 
+     * @param startDownload
+     */
+    public void setStartDownload(boolean startDownload) {
+        set("startDownload", startDownload);
     }
 
     /**
@@ -256,7 +254,7 @@ public class DownloadModel extends BaseModelData implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((m_ulr == null) ? 0 : m_ulr.hashCode());
+        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         return result;
     }
 
@@ -269,10 +267,10 @@ public class DownloadModel extends BaseModelData implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         DownloadModel other = (DownloadModel) obj;
-        if (m_ulr == null) {
-            if (other.m_ulr != null)
+        if (getId() == null) {
+            if (other.getId() != null)
                 return false;
-        } else if (!m_ulr.equals(other.m_ulr))
+        } else if (!getId().equals(other.getId()))
             return false;
         return true;
     }

@@ -24,49 +24,43 @@ package uk.ac.stfc.topcat.gwt.client.event;
 
 import java.util.List;
 
-import uk.ac.stfc.topcat.gwt.client.eventHandler.AddMyDownloadEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.UpdateDownloadStatusEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class AddMyDownloadEvent extends GwtEvent<AddMyDownloadEventHandler> {
+public class UpdateDownloadStatusEvent extends GwtEvent<UpdateDownloadStatusEventHandler> {
 
-    public static Type<AddMyDownloadEventHandler> TYPE = new Type<AddMyDownloadEventHandler>();
+    public static Type<UpdateDownloadStatusEventHandler> TYPE = new Type<UpdateDownloadStatusEventHandler>();
 
-    public static HandlerRegistration register(final EventBus eventBus, final AddMyDownloadEventHandler handler) {
-        return eventBus.addHandler(AddMyDownloadEvent.TYPE, handler);
+    public static HandlerRegistration register(final EventBus eventBus, final UpdateDownloadStatusEventHandler handler) {
+        return eventBus.addHandler(UpdateDownloadStatusEvent.TYPE, handler);
     }
 
     public static HandlerRegistration registerToSource(final EventBus eventBus, Object source,
-            final AddMyDownloadEventHandler handler) {
-        return eventBus.addHandlerToSource(AddMyDownloadEvent.TYPE, source, handler);
+            final UpdateDownloadStatusEventHandler handler) {
+        return eventBus.addHandlerToSource(UpdateDownloadStatusEvent.TYPE, source, handler);
     }
 
-    private final String facilityName;
-    private final List<DownloadModel> myDownloads;
+    private final List<DownloadModel> downloads;
 
-    public AddMyDownloadEvent(final String facilityName, final List<DownloadModel> myDownloads) {
-        this.facilityName = facilityName;
-        this.myDownloads = myDownloads;
+    public UpdateDownloadStatusEvent(final List<DownloadModel> myDownloads) {
+        this.downloads = myDownloads;
     }
 
-    public String getFacilityName() {
-        return this.facilityName;
-    }
-
-    public List<DownloadModel> getMyDownloads() {
-        return this.myDownloads;
+    public List<DownloadModel> getDownloads() {
+        return this.downloads;
     }
 
     @Override
-    public Type<AddMyDownloadEventHandler> getAssociatedType() {
-        return AddMyDownloadEvent.TYPE;
+    public Type<UpdateDownloadStatusEventHandler> getAssociatedType() {
+        return UpdateDownloadStatusEvent.TYPE;
     }
 
     @Override
-    protected void dispatch(final AddMyDownloadEventHandler handler) {
-        handler.addMyDownloads(this);
+    protected void dispatch(final UpdateDownloadStatusEventHandler handler) {
+        handler.updateDownloadStatus(this);
     }
 }

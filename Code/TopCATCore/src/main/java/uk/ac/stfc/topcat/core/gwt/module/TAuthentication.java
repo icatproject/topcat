@@ -29,6 +29,7 @@ import java.io.Serializable;
  * 
  */
 public class TAuthentication implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String displayName;
     private String facilityName;
     private String pluginName;
@@ -79,18 +80,21 @@ public class TAuthentication implements Serializable {
         this.type = type;
     }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
         StringBuilder message = new StringBuilder();
         message.append("TAuthentication\n");
+        if (id != null) {
+            message.append("id:").append(id).append("\n");
+        }
         message.append("displayName:").append(displayName).append("\n");
         message.append("facilityName:").append(facilityName).append("\n");
         message.append("pluginName:").append(pluginName).append("\n");

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
@@ -38,7 +37,6 @@ import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileFormatModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
-import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
@@ -163,38 +161,6 @@ public interface UtilityService extends RemoteService {
     public ArrayList<DatafileModel> getDatafilesInDatasets(ArrayList<DatasetModel> datasets) throws TopcatException;
 
     /**
-     * Get the URL of a file that contains all the requested data files for the
-     * given facility.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datafileIds
-     *            a list containing data file ids
-     * @param downloadName
-     *            a string containing a user defined name
-     * @return a DownloadModel
-     * @throws TopcatException
-     */
-    public DownloadModel getDatafilesDownloadURL(String facilityName, ArrayList<Long> datafileIds, String downloadName)
-            throws TopcatException;
-
-    /**
-     * Get the URL of a file that contains the requested data set for the given
-     * facility.
-     * 
-     * @param facilityName
-     *            a string containing the facility name
-     * @param datasetId
-     *            the data set id
-     * @param downloadName
-     *            a string containing a user defined name
-     * @return a DownloadModel
-     * @throws TopcatException
-     */
-    public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName)
-            throws TopcatException;
-
-    /**
      * Get a list of investigations for the given facility that belong to the
      * user.
      * 
@@ -223,29 +189,6 @@ public interface UtilityService extends RemoteService {
      * @return a map of properties
      */
     public Map<String, String> getTopcatProperties();
-
-    /**
-     * Get a list of downloads for the user.
-     * 
-     * @param facilities
-     *            a set containing the facility names
-     * 
-     * @return a list of <code>DownloadModel</code>
-     * @throws TopcatException
-     */
-    public ArrayList<DownloadModel> getMyDownloadList(Set<String> facilities) throws TopcatException;
-
-    /**
-     * Check all of the models for a final status, 'available' or 'ERROR', from
-     * the download service.
-     * 
-     * @param downloadModels
-     *            a set of models of the items that have already been requested
-     *            from the download service
-     * @return a list of <code>DownloadModel</code> that do NOT have a final
-     *         status
-     */
-    public List<DownloadModel> getDownloadStatus(Set<DownloadModel> downloadQueue) throws TopcatException;
 
     /**
      * Get a list of parameter names known to a facility.
@@ -314,21 +257,5 @@ public interface UtilityService extends RemoteService {
      * @throws TopcatException
      */
     public List<DatafileFormatModel> getDatafileFormats(String facilityName) throws TopcatException;
-
-    /**
-     * Contact the I.D.S. and prepare the download of the given data objects.
-     * 
-     * @param dataType
-     *            the type of the data object to be downloaded
-     * @param facility
-     *            the facility data
-     * @param dataObjectList
-     *            a list of data object ids
-     * @param downloadName
-     *            the name to give the down load file
-     * @throws TopcatException
-     */
-    public DownloadModel prepareDataObjectsForDownload(String dataType, TFacility facility, List<Long> dataObjectList,
-            String downloadName) throws TopcatException;
 
 }

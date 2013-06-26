@@ -42,23 +42,24 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
-import uk.ac.stfc.topcat.gwt.client.UtilityService;
-import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.DownloadService;
+import uk.ac.stfc.topcat.gwt.client.DownloadServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.event.AddMyDownloadEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.event.UpdateDownloadStatusEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
 public class DownloadManager {
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-    /** Items waiting to be down loaded. */
+    private final DownloadServiceAsync downloadService = GWT.create(DownloadService.class);
+    /** Items waiting to be downloaded. */
     private Set<DownloadModel> downloadQueue = new HashSet<DownloadModel>();
     private int downloadCount = 0;
     private boolean statusErrorVissable = false;
-    EventPipeLine eventPipeLine = EventPipeLine.getInstance();
+    private EventPipeLine eventPipeLine = EventPipeLine.getInstance();
 
     /** An instance of this class. */
     private static DownloadManager downloadManager = new DownloadManager();
@@ -86,14 +87,34 @@ public class DownloadManager {
     }
 
     /**
-     * Down load all the data files from the facility for the given ids.
+     * Initiate a download in a separate window.
+     * 
+     * @param facilityName
+     *            a string containing the facility name
+     * @param url
+     *            a string containing the url to contact
+     */
+    public void download(String facilityName, final String url) {
+        if (!eventPipeLine.getLoggedInFacilities().contains(facilityName)) {
+            // session logged out so do not download
+            return;
+        }
+        DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", url);
+        downloadCount = downloadCount + 1;
+        if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES - 1)) {
+            downloadCount = 0;
+        }
+    }
+
+    /**
+     * Download all the data files from the facility for the given ids.
      * 
      * @param facilityName
      *            a string containing the facility name
      * @param datafileList
      *            a list containing data file ids
      * @param downloadName
-     *            a string containing a user defined name to give the down load
+     *            a string containing a user defined name to give the download
      *            file
      */
     public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName) {
@@ -102,9 +123,9 @@ public class DownloadManager {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
                         && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
-                    prepareDataObjectsForDownload(Constants.DATA_FILE, facility, datafileList, downloadName);
+                    prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
                 } else {
-                    downloadDatafilesClassic(facilityName, datafileList, downloadName);
+                    downloadDatafilesRDS(facilityName, datafileList, downloadName);
                 }
 
             }
@@ -112,14 +133,14 @@ public class DownloadManager {
     }
 
     /**
-     * Down load the data set from the facility.
+     * Download the data set from the facility.
      * 
      * @param facilityName
      *            a string containing the facility name
      * @param datasetId
      *            the data set id
      * @param downloadName
-     *            a string containing a user defined name to give the down load
+     *            a string containing a user defined name to give the download
      *            file
      */
     public void downloadDataset(final String facilityName, final List<Long> datasetList, final String downloadName) {
@@ -129,9 +150,9 @@ public class DownloadManager {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
                         && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
-                    prepareDataObjectsForDownload(Constants.DATA_SET, facility, datasetList, downloadName);
+                    prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
                 } else {
-                    downloadDatasetsClassic(facilityName, datasetList.get(0), downloadName);
+                    downloadDatasetsRDS(facilityName, datasetList.get(0), downloadName);
                 }
             }
         }
@@ -139,7 +160,49 @@ public class DownloadManager {
     }
 
     /**
+     * Call out to the server to get the list of downloads available for the
+     * given facilities.
+     * <dl>
+     * <dt>Fires:</dt>
+     * <dd> <code>UpdateDownloadStatusEvent</code></dd>
+     * </dl>
+     * 
+     * @param facilities
+     *            a list of facility names
+     */
+    public void getMyDownloadList(Set<String> facilities) {
+        if (facilities.size() == 0) {
+            return;
+        }
+        eventPipeLine.showRetrievingData();
+        downloadService.getMyDownloadList(facilities, new AsyncCallback<List<DownloadModel>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                eventPipeLine.hideRetrievingData();
+                if (caught instanceof SessionException) {
+                    eventPipeLine.checkStillLoggedIn();
+                } else if (caught instanceof InternalException) {
+                    showErrorDialog(caught.getMessage());
+                } else {
+                    showErrorDialog("Error updating download status. " + caught.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccess(List<DownloadModel> result) {
+                eventPipeLine.hideRetrievingData();
+                EventPipeLine.getEventBus().fireEvent(new UpdateDownloadStatusEvent(result));
+            }
+        });
+    }
+
+    /**
      * Contact the I.D.S. and prepare the download of the given data objects.
+     * 
+     * <dl>
+     * <dt>Fires:</dt>
+     * <dd> <code>AddMyDownloadEvent</code></dd>
+     * </dl>
      * 
      * @param dataType
      *            the type of the data object to be downloaded
@@ -148,11 +211,11 @@ public class DownloadManager {
      * @param dataObjectList
      *            a list of data object ids
      * @param downloadName
-     *            the name to give the down load file
+     *            the name to give the download file
      */
-    private void prepareDataObjectsForDownload(final String dataType, final TFacility facility,
+    private void prepareDataObjectsForDownloadIDS(final String dataType, final TFacility facility,
             final List<Long> dataObjectList, final String downloadName) {
-        utilityService.prepareDataObjectsForDownload(dataType, facility, dataObjectList, downloadName,
+        downloadService.prepareDataObjectsForDownload(dataType, facility, dataObjectList, downloadName,
                 new AsyncCallback<DownloadModel>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -161,22 +224,35 @@ public class DownloadManager {
                         } else if (caught instanceof InternalException) {
                             showErrorDialog(caught.getMessage());
                         } else {
-                            showErrorDialog("Error requesing the download. " + caught.getMessage());
+                            showErrorDialog("Error requesting the download. " + caught.getMessage());
                         }
                     }
 
                     @Override
                     public void onSuccess(DownloadModel result) {
-                        eventPipeLine.getMainWindow().getMainPanel().getMyDownloadPanel().addDownload(result);
+                        ArrayList<DownloadModel> downloadModels = new ArrayList<DownloadModel>();
+                        downloadModels.add(result);
+                        EventPipeLine.getEventBus().fireEventFromSource(
+                                new AddMyDownloadEvent(facility.getName(), downloadModels), facility.getName());
                         downloadQueue.add(result);
                     }
                 });
     }
 
+    /**
+     * <dl>
+     * <dt>Fires:</dt>
+     * <dd> <code>AddMyDownloadEvent</code></dd>
+     * </dl>
+     * 
+     * @param facilityName
+     * @param datafileList
+     * @param downloadName
+     */
     @Deprecated
-    private void downloadDatafilesClassic(final String facilityName, final List<Long> datafileList,
+    private void downloadDatafilesRDS(final String facilityName, final List<Long> datafileList,
             final String downloadName) {
-        utilityService.getDatafilesDownloadURL(facilityName, (ArrayList<Long>) datafileList, downloadName,
+        downloadService.getDatafilesDownloadURL(facilityName, (ArrayList<Long>) datafileList, downloadName,
                 new AsyncCallback<DownloadModel>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -185,7 +261,10 @@ public class DownloadManager {
 
                     @Override
                     public void onSuccess(DownloadModel result) {
-                        eventPipeLine.getMainWindow().getMainPanel().getMyDownloadPanel().addDownload(result);
+                        ArrayList<DownloadModel> downloadModels = new ArrayList<DownloadModel>();
+                        downloadModels.add(result);
+                        EventPipeLine.getEventBus().fireEventFromSource(
+                                new AddMyDownloadEvent(facilityName, downloadModels), facilityName);
                         if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
                             downloadQueue.add(result);
                         } else {
@@ -195,44 +274,38 @@ public class DownloadManager {
                 });
     }
 
-    @Deprecated
-    private void downloadDatasetsClassic(final String facilityName, Long datasetId, String downloadName) {
-        utilityService.getDatasetDownloadURL(facilityName, datasetId, downloadName, new AsyncCallback<DownloadModel>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                showErrorDialog("Error retrieving data from server");
-            }
-
-            @Override
-            public void onSuccess(DownloadModel result) {
-                eventPipeLine.getMainWindow().getMainPanel().getMyDownloadPanel().addDownload(result);
-                if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
-                    downloadQueue.add(result);
-                } else {
-                    download(facilityName, result.getUrl());
-                }
-            }
-        });
-    }
-
     /**
-     * Initiate a down load in a separate window.
+     * <dl>
+     * <dt>Fires:</dt>
+     * <dd> <code>AddMyDownloadEvent</code></dd>
+     * </dl>
      * 
      * @param facilityName
-     *            a string containing the facility name
-     * @param url
-     *            a string containing the url to contact
+     * @param datasetId
+     * @param downloadName
      */
-    public void download(String facilityName, final String url) {
-        if (!eventPipeLine.getLoggedInFacilities().contains(facilityName)) {
-            // session logged out so do not down load
-            return;
-        }
-        DOM.setElementAttribute(RootPanel.get("__download" + downloadCount).getElement(), "src", url);
-        downloadCount = downloadCount + 1;
-        if (downloadCount > (Constants.MAX_DOWNLOAD_FRAMES - 1)) {
-            downloadCount = 0;
-        }
+    @Deprecated
+    private void downloadDatasetsRDS(final String facilityName, Long datasetId, String downloadName) {
+        downloadService.getDatasetDownloadURL(facilityName, datasetId, downloadName,
+                new AsyncCallback<DownloadModel>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        showErrorDialog("Error retrieving data from server");
+                    }
+
+                    @Override
+                    public void onSuccess(DownloadModel result) {
+                        ArrayList<DownloadModel> downloadModels = new ArrayList<DownloadModel>();
+                        downloadModels.add(result);
+                        EventPipeLine.getEventBus().fireEventFromSource(
+                                new AddMyDownloadEvent(facilityName, downloadModels), facilityName);
+                        if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
+                            downloadQueue.add(result);
+                        } else {
+                            download(facilityName, result.getUrl());
+                        }
+                    }
+                });
     }
 
     /**
@@ -255,8 +328,8 @@ public class DownloadManager {
                     return;
                 }
 
-                // call the server which will call the down load service
-                utilityService.getDownloadStatus(downloadQueue, new AsyncCallback<List<DownloadModel>>() {
+                // call the server which will call the download service
+                downloadService.checkForFinalStatus(downloadQueue, new AsyncCallback<List<DownloadModel>>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         if (caught instanceof StatusCodeException) {
@@ -304,14 +377,16 @@ public class DownloadManager {
                             downloadQueue.remove(download);
                             if (!eventPipeLine.getLoggedInFacilities().contains(download.getFacilityName())) {
                                 // session logged out so do not process this
-                                // down load
+                                // download
                                 continue;
                             }
                             if (download.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
                                 download(download.getFacilityName(), download.getUrl());
+                                // update model
                             } else if (download.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
                                 showErrorDialog("Error retrieving data from server for download "
                                         + download.getDownloadName());
+                                // update model
                             }
                             refresh = true;
                         }
@@ -336,8 +411,13 @@ public class DownloadManager {
     }
 
     /**
-     * Get the list of down loads belonging to the user for the given facility.
-     * If any are in a state of in progress, add them to the downloadQueue.
+     * Call out to the server to get the list of downloads belonging to the user
+     * for the given facility. If any are in a state of in progress, add them to
+     * the downloadQueue.
+     * <dl>
+     * <dt>Fires:</dt>
+     * <dd> <code>AddMyDownloadEvent</code></dd>
+     * </dl>
      * 
      * @param facilityName
      *            a string containing the facility name
@@ -346,7 +426,7 @@ public class DownloadManager {
         eventPipeLine.showRetrievingData();
         Set<String> facilityNames = new HashSet<String>();
         facilityNames.add(facilityName);
-        utilityService.getMyDownloadList(facilityNames, new AsyncCallback<ArrayList<DownloadModel>>() {
+        downloadService.getMyDownloadList(facilityNames, new AsyncCallback<List<DownloadModel>>() {
             @Override
             public void onFailure(Throwable caught) {
                 eventPipeLine.hideRetrievingData();
@@ -354,12 +434,12 @@ public class DownloadManager {
             }
 
             @Override
-            public void onSuccess(ArrayList<DownloadModel> result) {
+            public void onSuccess(List<DownloadModel> result) {
                 EventPipeLine.getEventBus().fireEventFromSource(new AddMyDownloadEvent(facilityName, result),
                         facilityName);
                 eventPipeLine.hideRetrievingData();
-                // Check for down loads that are 'in progress' as we need to add
-                // them to the down load queue
+                // Check for downloads that are 'in progress' as we need to add
+                // them to the download queue
                 for (Iterator<DownloadModel> it = result.iterator(); it.hasNext();) {
                     if (!it.next().getStatus().equals(Constants.STATUS_IN_PROGRESS)) {
                         it.remove();
@@ -393,7 +473,7 @@ public class DownloadManager {
         LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
             @Override
             public void logout(final LogoutEvent event) {
-                // remove items from the down load queue
+                // remove items from the download queue
                 for (Iterator<DownloadModel> it = downloadQueue.iterator(); it.hasNext();) {
                     if (it.next().getFacilityName().equals(event.getFacilityName())) {
                         it.remove();

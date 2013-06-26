@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2012
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -30,6 +30,7 @@ import java.util.Date;
  * details about a shift.
  */
 public class TShift implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String comment;
     private Date startDate;
     private Date endDate;

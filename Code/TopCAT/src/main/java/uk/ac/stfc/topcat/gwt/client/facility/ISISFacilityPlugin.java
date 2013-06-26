@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -50,7 +50,6 @@ public class ISISFacilityPlugin extends FacilityPlugin {
 
     @Override
     public Composite getGUI() {
-        // TODO Auto-generated method stub
         return widget;
     }
 
