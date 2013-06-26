@@ -17,7 +17,7 @@
 		</fileSet>
 		<fileSet>
 			<outputDirectory>topcat.${project.version}</outputDirectory>
-			<directory>${project.basedir}/../../../TopCATAdmin/target</directory>
+			<directory>${project.basedir}/../TopCATAdmin/target</directory>
 			<includes>
 				<include>*.war</include>
 			</includes>
@@ -25,6 +25,7 @@
 			<outputDirectory>topcat.${project.version}</outputDirectory>
 			<directory>${project.basedir}/../../Installation</directory>
 			<includes>
+				<include>topcat_upgrade.py</include>
 				<include>topcat_setup.py</include>
 				<include>README.txt</include>
 				<include>RELEASE_NOTES</include>
@@ -34,7 +35,7 @@
 			<outputDirectory>topcat.${project.version}</outputDirectory>
 			<directory>${project.basedir}/../../Installation/etc</directory>
 			<includes>
-				<include>glassfish.props</include>
+				<include>topcat_glassfish.props</include>
 				<include>topcat.properties.example</include>
 			</includes>
 		</fileSet>

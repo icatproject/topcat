@@ -24,6 +24,7 @@
 		<module>../Code/TopCATCore</module>
 		<module>../Code/TopCATEJB</module>
 		<module>../Code/TopCAT</module>
+		<module>../Code/TopCATAdmin</module>
 	</modules>
 
 	<build>
@@ -68,8 +69,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-
-
 
 	</build>
 
