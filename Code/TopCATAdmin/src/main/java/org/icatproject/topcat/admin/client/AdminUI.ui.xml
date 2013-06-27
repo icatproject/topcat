@@ -46,9 +46,9 @@
 										<g:Button ui:field="btnAdd" text="add" ></g:Button>
 										<g:HorizontalPanel ui:field="hPanel4" width="" height="30" verticalAlignment="ALIGN_MIDDLE" spacing="5" horizontalAlignment="ALIGN_RIGHT" styleName="keySection">
 											<g:Image url="images/blue.png" width="20px" height="20px"></g:Image>
-											<g:Label text=" = This row is currently selecte" ></g:Label>
+											<g:Label text=" = Row currently selected" ></g:Label>
 											<g:Image width="20px" height="20px" url="images/red.png"/>
-											<g:Label text=" = No authentication associated to this ICAT"></g:Label>
+											<g:Label text=" = No authentication associated with this ICAT"></g:Label>
 										</g:HorizontalPanel>
 									</g:HorizontalPanel>
 								</g:SimplePanel>

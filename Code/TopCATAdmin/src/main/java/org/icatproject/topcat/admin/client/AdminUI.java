@@ -3,6 +3,8 @@ package org.icatproject.topcat.admin.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.TabExpander;
+
 import org.icatproject.topcat.admin.shared.Constants;
 import org.icatproject.topcat.admin.client.service.DataService;
 import org.icatproject.topcat.admin.client.service.DataServiceAsync;
@@ -34,8 +36,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.DataGrid;
 
 public class AdminUI extends Composite {
 
@@ -54,7 +54,7 @@ public class AdminUI extends Composite {
 	public enum validationMessages {
 		// TODO Come up with better messages
 		FACILITY_NAME(
-				"Please provide a valid Facility Mame to proceed ! e.g. ISIS"), ICAT_URL(
+				"Please provide a valid Facility Name to proceed ! e.g. ISIS"), ICAT_URL(
 				"Please provide a valid ICAT URL to proceed ! e.g. ....."), DOWNLOAD_SERVICE_URL(
 				"Please provide a valid Download Service URL to proceed ! e.g. ...."), DISPLAY_NAME(
 				"Please provide a valid Display Name to proceed ! e.g. \"WORK_PC\"");
@@ -205,16 +205,6 @@ public class AdminUI extends Composite {
 			authbtn[i].setTitle("Show the Authetication Details associated with this ICAT");
 
 		}
-//		Image img = new Image("images/blue.png");
-//		Image img1 = new Image("images/red.png");
-//		img.setPixelSize(20, 20);
-//		img1.setPixelSize(20, 20);
-//		
-//		hPanel4.add(img);
-//		hPanel4.add(new Label(" = This row is currently selected"));
-//		hPanel4.add(img1);
-//		hPanel4.add(new Label(" = No authentication associated to this ICAT"));
-		
 	
 		setSplitterPosition();
 		checkIncompleteIcat();
@@ -386,6 +376,7 @@ public class AdminUI extends Composite {
 		tableMenu.setText(menuType + " MENU");
 		tableMenu.center();
 		tableMenu.setVisible(true);
+		
 	}
 
 	private void initialiseAuthMenu(String menuType) {
@@ -532,15 +523,22 @@ public class AdminUI extends Composite {
 		if (txtName.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.FACILITY_NAME.toString());
 			editMenu.setWidget(0, 1, new Image("images/exclamation-icon.png"));
+			txtName.setFocus(true);
 			invalidName = true;
 		}
 		if (txtServerUrl.getText().trim().isEmpty()) {
-			lbl1.setText(validationMessages.ICAT_URL.toString());
+			if(invalidName != true){
+				lbl1.setText(validationMessages.ICAT_URL.toString());
+				txtServerUrl.setFocus(true);
+			}
 			editMenu.setWidget(2, 1, new Image("images/exclamation-icon.png"));
 			invalidSUrl = true;
 		}
 		if (txtDownloadServiceUrl.getText().trim().isEmpty()) {
-			lbl1.setText(validationMessages.DOWNLOAD_SERVICE_URL.toString());
+			if((invalidName || invalidSUrl) != true){
+				lbl1.setText(validationMessages.DOWNLOAD_SERVICE_URL.toString());
+				txtDownloadServiceUrl.setFocus(true);
+			}
 			editMenu.setWidget(5, 1, new Image("images/exclamation-icon.png"));
 			invalidDSUrl = true;
 		}
@@ -628,7 +626,7 @@ public class AdminUI extends Composite {
 			public void onSuccess(String result) {
 				tableCall();
 				tableMenu.hide();
-				//selectNewEntry();
+				selectNewEntry();
 			}
 		};
 
@@ -866,6 +864,8 @@ public class AdminUI extends Composite {
 	void handleAddButtonClick(ClickEvent e) {
 		handleRowUnselection("table0");
 		inititialiseMenu(MENU_ADD);
+		txtName.setFocus(true);
+
 	}
 
 	@UiHandler("btnCancel")
