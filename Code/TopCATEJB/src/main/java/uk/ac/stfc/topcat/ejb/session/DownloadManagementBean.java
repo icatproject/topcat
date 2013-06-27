@@ -34,45 +34,29 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.manager.DownloadManager;
 
 /**
- * This is an upload bean implementation which is used to get data prior to file
- * upload.
+ * This is an download bean implementation which is used to get and set data
+ * about user download requests.
  */
 @Stateless
 public class DownloadManagementBean implements DownloadManagementBeanLocal {
+    private DownloadManager downloadManager;
     @PersistenceContext(unitName = "TopCATEJBPU")
     protected EntityManager manager;
-    private DownloadManager downloadManager;
 
     public DownloadManagementBean() {
         downloadManager = new DownloadManager();
     }
 
     @Override
-    public List<TopcatUserDownload> getMyDownloadList(String sessionId, String facilityName) throws TopcatException {
-        return downloadManager.getMyDownloadList(manager, sessionId, facilityName);
+    public Long add(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
+            Date expiryTime, String url, String preparedId) throws TopcatException {
+        return downloadManager.add(manager, sessionId, facilityName, submitTime, downloadName, status, expiryTime, url,
+                preparedId);
     }
 
     @Override
-    public Long addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName,
-            String status, Date expiryTime, String url, String preparedId) throws TopcatException {
-        return downloadManager.addMyDownload(manager, sessionId, facilityName, submitTime, downloadName, status,
-                expiryTime, url, preparedId);
-    }
-
-    @Override
-    public void removeDownload(String sessionId, Long id) {
-        downloadManager.removeDownload(manager, sessionId, id);
-    }
-
-    @Override
-    public void updateStatus(String sessionId, Long id, String url, String status) {
-        downloadManager.updateStatus(manager, sessionId, id, url, status);
-    }
-
-    @Deprecated
-    @Override
-    public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {
-        downloadManager.updateDownloadStatus(manager, sessionId, facilityName, url, updatedUrl, status);
+    public void delete(String sessionId, Long id) {
+        downloadManager.delete(manager, sessionId, id);
     }
 
     @Deprecated
@@ -86,6 +70,22 @@ public class DownloadManagementBean implements DownloadManagementBeanLocal {
     @Override
     public String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException {
         return downloadManager.getDatasetDownloadURL(manager, sessionId, facilityName, datasetId);
+    }
+
+    @Override
+    public List<TopcatUserDownload> getMyDownloads(String sessionId, String facilityName) throws TopcatException {
+        return downloadManager.getMyDownloads(manager, sessionId, facilityName);
+    }
+
+    @Override
+    public void update(String sessionId, Long id, String url, String status) {
+        downloadManager.update(manager, sessionId, id, url, status);
+    }
+
+    @Deprecated
+    @Override
+    public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {
+        downloadManager.updateDownloadStatus(manager, sessionId, facilityName, url, updatedUrl, status);
     }
 
 }

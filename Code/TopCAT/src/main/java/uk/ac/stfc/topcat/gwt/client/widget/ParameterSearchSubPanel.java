@@ -63,7 +63,6 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.ListField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -75,7 +74,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  */
 public class ParameterSearchSubPanel extends Composite {
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private EventPipeLine eventBus;
     private ListField<Facility> listFieldFacility;
     private ComboBox<ParameterModel> comboBoxName;

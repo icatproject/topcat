@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -63,7 +62,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @since iCAT Version 3.3
  */
 public class LoginWidget extends Window {
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private LoginInterface loginHandler = null;
     private LayoutContainer authTypeContainer = new LayoutContainer();
     private TFacility facility;

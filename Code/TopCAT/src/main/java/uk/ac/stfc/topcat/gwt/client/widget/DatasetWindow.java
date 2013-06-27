@@ -72,7 +72,6 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -87,7 +86,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * @since iCAT Version 3.3
  */
 public class DatasetWindow extends Window {
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private CheckBoxSelectionModel<DatasetModel> datasetSelectionModel = null;
     private ListStore<DatasetModel> datasetStore;
     private PagingModelMemoryProxy pageProxy = null;

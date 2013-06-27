@@ -281,7 +281,7 @@ public class MyDownloadPanel extends Composite {
      * in turn result in an UpdateDownloadStatusEvent being fired.
      */
     private void updateDownloadList() {
-        DownloadManager.getInstance().getMyDownloadList(eventBus.getLoggedInFacilities());
+        DownloadManager.getInstance().getMyDownloads(eventBus.getLoggedInFacilities());
     }
 
     /**

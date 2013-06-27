@@ -56,7 +56,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -70,7 +69,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @since iCAT Version 3.3
  */
 public class ParameterWindow extends Window {
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
 
     private ListStore<ParameterModel> parameterStore;
     private boolean historyVerified;

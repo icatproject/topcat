@@ -102,14 +102,14 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
     }
 
     @Override
-    public List<DownloadModel> getMyDownloadList(Set<String> facilities) throws TopcatException {
+    public List<DownloadModel> getMyDownloads(Set<String> facilities) throws TopcatException {
         if (logger.isInfoEnabled()) {
-            logger.info("getMyDownloadList: facilities.size() (" + facilities.size() + ")");
+            logger.info("getMyDownloads: facilities.size() (" + facilities.size() + ")");
         }
         List<DownloadModel> result = new ArrayList<DownloadModel>();
         Map<String, TFacility> facilityMapping = getDownloadPluginMapping();
         for (String facilityName : facilities) {
-            List<TopcatUserDownload> dlList = downloadManager.getMyDownloadList(getSessionId(), facilityName);
+            List<TopcatUserDownload> dlList = downloadManager.getMyDownloads(getSessionId(), facilityName);
             if (dlList == null)
                 continue;
             for (TopcatUserDownload dl : dlList) {
@@ -157,7 +157,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             if (logger.isTraceEnabled()) {
                 logger.trace("isAvailableIDS: NotFoundException downloadModel.getId() (" + downloadModel.getId() + ")");
             }
-            downloadManager.removeDownload(getSessionId(), downloadModel.getId());
+            downloadManager.delete(getSessionId(), downloadModel.getId());
             downloadModel.setStatus(Constants.STATUS_EXPIRED);
             return false;
         } catch (IDSException e) {
@@ -245,7 +245,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             if (logger.isTraceEnabled()) {
                 logger.trace("getStatusIDS: NotFoundException downloadModel.getId() (" + downloadModel.getId() + ")");
             }
-            downloadManager.removeDownload(getSessionId(), downloadModel.getId());
+            downloadManager.delete(getSessionId(), downloadModel.getId());
             downloadModel.setStatus(Constants.STATUS_EXPIRED);
             return downloadModel;
         } catch (IDSException e) {
@@ -271,7 +271,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             }
             downloadModel.setStatus(Constants.STATUS_AVAILABLE);
             downloadModel.setStartDownload(true);
-            downloadManager.updateStatus(getSessionId(), downloadModel.getId(), downloadModel.getUrl(),
+            downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(),
                     downloadModel.getStatus());
 
         } else if (status == Status.INCOMPLETE && !downloadModel.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
@@ -287,7 +287,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
                 throw new InternalException("Error returned from the data service. " + e.getMessage());
             }
             downloadModel.setStatus(Constants.STATUS_ERROR);
-            downloadManager.updateStatus(getSessionId(), downloadModel.getId(), downloadModel.getUrl(),
+            downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(),
                     downloadModel.getStatus());
         }
 
@@ -360,7 +360,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
         dm.setStatus(Constants.STATUS_IN_PROGRESS);
         dm.setSubmitTime(submitTime);
         dm.setUrl(facility.getDownloadServiceUrl());
-        Long id = downloadManager.addMyDownload(getSessionId(), facility.getName(), submitTime, downloadName,
+        Long id = downloadManager.add(getSessionId(), facility.getName(), submitTime, downloadName,
                 Constants.STATUS_IN_PROGRESS, null, facility.getDownloadServiceUrl(), preparedId);
         dm.setId(id);
         return dm;
@@ -464,7 +464,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             } catch (IOException e) {
                 if (((HttpURLConnection) statusUrl.openConnection()).getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                     // assume this one is finished, possibly expired
-                    downloadManager.removeDownload(getSessionId(), downloadModel.getId());
+                    downloadManager.delete(getSessionId(), downloadModel.getId());
                     downloadModel.setStatus(Constants.STATUS_EXPIRED);
                     return downloadModel;
                 } else {
@@ -522,8 +522,8 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
         if (downloadPluginName != null && downloadPluginName.equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
             status = Constants.STATUS_IN_PROGRESS;
             expiryTime = getExpiryTime(url);
-            id = downloadManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status,
-                    expiryTime, url, null);
+            id = downloadManager.add(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url,
+                    null);
         } else {
             status = Constants.STATUS_AVAILABLE;
             startDownload = true;
@@ -560,8 +560,8 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
         if (downloadPluginName.equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
             status = Constants.STATUS_IN_PROGRESS;
             expiryTime = getExpiryTime(url);
-            id = downloadManager.addMyDownload(getSessionId(), facilityName, submitTime, downloadName, status,
-                    expiryTime, url, null);
+            id = downloadManager.add(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url,
+                    null);
         } else {
             status = Constants.STATUS_AVAILABLE;
             startDownload = true;

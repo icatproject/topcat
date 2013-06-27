@@ -31,23 +31,41 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 
 /**
- * This is local interface to the upload bean.
+ * This is local interface to the download bean.
  */
 
 @Local
 public interface DownloadManagementBeanLocal {
 
-    List<TopcatUserDownload> getMyDownloadList(String sessionId, String facilityName) throws TopcatException;
-
-    Long addMyDownload(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
+    /**
+     * Add a new record.
+     * 
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param facilityName
+     *            a string containing the facility name
+     * @param submitTime
+     * @param downloadName
+     * @param status
+     * @param expiryTime
+     * @param url
+     * @param preparedId
+     * @return the id of the download
+     * @throws TopcatException
+     */
+    Long add(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
             Date expiryTime, String url, String preparedId) throws TopcatException;
 
-    void removeDownload(String sessionId, Long id);
-
-    void updateStatus(String sessionId, Long id, String url, String status);
-
-    @Deprecated
-    void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
+    /**
+     * Delete the record with the given id.
+     * 
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param id
+     *            the id of the record to delete
+     */
+    void delete(String sessionId, Long id);
 
     @Deprecated
     String getDatafilesDownloadURL(String sessionId, String facilityName, List<Long> datafileIds)
@@ -55,5 +73,37 @@ public interface DownloadManagementBeanLocal {
 
     @Deprecated
     String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException;
+
+    /**
+     * Get a list of downloads for a user, which are associated with the given
+     * facility.
+     * 
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of <code>TopcatUserDownload</code>
+     * @throws TopcatException
+     */
+    List<TopcatUserDownload> getMyDownloads(String sessionId, String facilityName) throws TopcatException;
+
+    /**
+     * Update the status and the url of the record with the given id.
+     * 
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param id
+     *            the id of the record to update
+     * @param url
+     *            the updated url
+     * @param status
+     *            the updated status
+     */
+    void update(String sessionId, Long id, String url, String status);
+
+    @Deprecated
+    void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
 }

@@ -32,7 +32,6 @@ import uk.ac.stfc.topcat.gwt.client.widget.WaitDialog;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -81,7 +80,7 @@ public class LoginAfterRedirect {
         urlBuilder.removeParameter("facilityName");
         urlBuilder.removeParameter("authenticationType");
 
-        LoginServiceAsync loginService = GWT.create(LoginService.class);
+        LoginServiceAsync loginService = LoginService.Util.getInstance();
         final WaitDialog waitDialog = new WaitDialog();
         waitDialog.setMessage(" Logging In...");
         waitDialog.show();

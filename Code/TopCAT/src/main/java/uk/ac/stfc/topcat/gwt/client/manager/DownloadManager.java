@@ -31,7 +31,7 @@ import java.util.Set;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -54,12 +54,13 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
 public class DownloadManager {
-    private final DownloadServiceAsync downloadService = GWT.create(DownloadService.class);
+    private final DownloadServiceAsync downloadService = DownloadService.Util.getInstance();
     /** Items waiting to be downloaded. */
     private Set<DownloadModel> downloadQueue = new HashSet<DownloadModel>();
     private int downloadCount = 0;
     private boolean statusErrorVissable = false;
     private EventPipeLine eventPipeLine = EventPipeLine.getInstance();
+    private EventBus eventBus = EventPipeLine.getEventBus();
 
     /** An instance of this class. */
     private static DownloadManager downloadManager = new DownloadManager();
@@ -170,12 +171,12 @@ public class DownloadManager {
      * @param facilities
      *            a list of facility names
      */
-    public void getMyDownloadList(Set<String> facilities) {
+    public void getMyDownloads(Set<String> facilities) {
         if (facilities.size() == 0) {
             return;
         }
         eventPipeLine.showRetrievingData();
-        downloadService.getMyDownloadList(facilities, new AsyncCallback<List<DownloadModel>>() {
+        downloadService.getMyDownloads(facilities, new AsyncCallback<List<DownloadModel>>() {
             @Override
             public void onFailure(Throwable caught) {
                 eventPipeLine.hideRetrievingData();
@@ -184,14 +185,14 @@ public class DownloadManager {
                 } else if (caught instanceof InternalException) {
                     showErrorDialog(caught.getMessage());
                 } else {
-                    showErrorDialog("Error updating download status. " + caught.getMessage());
+                    showErrorDialog("Error retrieving download history from server. " + caught.getMessage());
                 }
             }
 
             @Override
             public void onSuccess(List<DownloadModel> result) {
                 eventPipeLine.hideRetrievingData();
-                EventPipeLine.getEventBus().fireEvent(new UpdateDownloadStatusEvent(result));
+                eventBus.fireEvent(new UpdateDownloadStatusEvent(result));
             }
         });
     }
@@ -232,8 +233,8 @@ public class DownloadManager {
                     public void onSuccess(DownloadModel result) {
                         ArrayList<DownloadModel> downloadModels = new ArrayList<DownloadModel>();
                         downloadModels.add(result);
-                        EventPipeLine.getEventBus().fireEventFromSource(
-                                new AddMyDownloadEvent(facility.getName(), downloadModels), facility.getName());
+                        eventBus.fireEventFromSource(new AddMyDownloadEvent(facility.getName(), downloadModels),
+                                facility.getName());
                         downloadQueue.add(result);
                     }
                 });
@@ -256,15 +257,20 @@ public class DownloadManager {
                 new AsyncCallback<DownloadModel>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        showErrorDialog("Error retrieving data from server");
+                        if (caught instanceof SessionException) {
+                            eventPipeLine.checkStillLoggedIn();
+                        } else if (caught instanceof InternalException) {
+                            showErrorDialog(caught.getMessage());
+                        } else {
+                            showErrorDialog("Error retrieving data from server. " + caught.getMessage());
+                        }
                     }
 
                     @Override
                     public void onSuccess(DownloadModel result) {
                         ArrayList<DownloadModel> downloadModels = new ArrayList<DownloadModel>();
                         downloadModels.add(result);
-                        EventPipeLine.getEventBus().fireEventFromSource(
-                                new AddMyDownloadEvent(facilityName, downloadModels), facilityName);
+                        eventBus.fireEventFromSource(new AddMyDownloadEvent(facilityName, downloadModels), facilityName);
                         if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
                             downloadQueue.add(result);
                         } else {
@@ -290,15 +296,20 @@ public class DownloadManager {
                 new AsyncCallback<DownloadModel>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        showErrorDialog("Error retrieving data from server");
+                        if (caught instanceof SessionException) {
+                            eventPipeLine.checkStillLoggedIn();
+                        } else if (caught instanceof InternalException) {
+                            showErrorDialog(caught.getMessage());
+                        } else {
+                            showErrorDialog("Error retrieving data from server. " + caught.getMessage());
+                        }
                     }
 
                     @Override
                     public void onSuccess(DownloadModel result) {
                         ArrayList<DownloadModel> downloadModels = new ArrayList<DownloadModel>();
                         downloadModels.add(result);
-                        EventPipeLine.getEventBus().fireEventFromSource(
-                                new AddMyDownloadEvent(facilityName, downloadModels), facilityName);
+                        eventBus.fireEventFromSource(new AddMyDownloadEvent(facilityName, downloadModels), facilityName);
                         if (result.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)) {
                             downloadQueue.add(result);
                         } else {
@@ -422,21 +433,26 @@ public class DownloadManager {
      * @param facilityName
      *            a string containing the facility name
      */
-    private void getMyDownloadList(final String facilityName) {
+    private void initDownloadData(final String facilityName) {
         eventPipeLine.showRetrievingData();
         Set<String> facilityNames = new HashSet<String>();
         facilityNames.add(facilityName);
-        downloadService.getMyDownloadList(facilityNames, new AsyncCallback<List<DownloadModel>>() {
+        downloadService.getMyDownloads(facilityNames, new AsyncCallback<List<DownloadModel>>() {
             @Override
             public void onFailure(Throwable caught) {
                 eventPipeLine.hideRetrievingData();
-                showErrorDialog("Error retrieving download history from server for " + facilityName);
+                if (caught instanceof SessionException) {
+                    eventPipeLine.checkStillLoggedIn();
+                } else if (caught instanceof InternalException) {
+                    showErrorDialog(caught.getMessage());
+                } else {
+                    showErrorDialog("Error retrieving download history from server for " + facilityName);
+                }
             }
 
             @Override
             public void onSuccess(List<DownloadModel> result) {
-                EventPipeLine.getEventBus().fireEventFromSource(new AddMyDownloadEvent(facilityName, result),
-                        facilityName);
+                eventBus.fireEventFromSource(new AddMyDownloadEvent(facilityName, result), facilityName);
                 eventPipeLine.hideRetrievingData();
                 // Check for downloads that are 'in progress' as we need to add
                 // them to the download queue
@@ -457,10 +473,10 @@ public class DownloadManager {
      */
     private void createLoginHandler() {
         // react to user logging into a facility
-        LoginEvent.register(EventPipeLine.getEventBus(), new LoginEventHandler() {
+        LoginEvent.register(eventBus, new LoginEventHandler() {
             @Override
             public void login(final LoginEvent event) {
-                getMyDownloadList(event.getFacilityName());
+                initDownloadData(event.getFacilityName());
             }
         });
     }
@@ -470,7 +486,7 @@ public class DownloadManager {
      */
     private void createLogoutHandler() {
         // react to user logging out of a facility
-        LogoutEvent.register(EventPipeLine.getEventBus(), new LogoutEventHandler() {
+        LogoutEvent.register(eventBus, new LogoutEventHandler() {
             @Override
             public void logout(final LogoutEvent event) {
                 // remove items from the download queue

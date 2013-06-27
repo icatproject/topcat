@@ -83,7 +83,6 @@ import uk.ac.stfc.topcat.gwt.client.widget.WaitDialog;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -103,10 +102,10 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @since iCAT Version 3.3
  */
 public class EventPipeLine implements LoginInterface {
-    private final LoginServiceAsync loginService = GWT.create(LoginService.class);
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-    private final SearchServiceAsync searchService = GWT.create(SearchService.class);
-    private final SoftwareRepoServiceAsync softwareRepoService = GWT.create(SoftwareRepoService.class);
+    private final LoginServiceAsync loginService = LoginService.Util.getInstance();
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
+    private final SearchServiceAsync searchService = SearchService.Util.getInstance();
+    private final SoftwareRepoServiceAsync softwareRepoService = SoftwareRepoService.Util.getInstance();
     ArrayList<TFacility> facilities;
     HashMap<String, ListStore<Instrument>> facilityInstrumentMap;
     ParameterDownloadForm paramDownloadForm;

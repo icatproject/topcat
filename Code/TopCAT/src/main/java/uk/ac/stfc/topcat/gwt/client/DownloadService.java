@@ -111,7 +111,7 @@ public interface DownloadService extends RemoteService {
      * @return a list of <code>DownloadModel</code>
      * @throws TopcatException
      */
-    public List<DownloadModel> getMyDownloadList(Set<String> facilities) throws TopcatException;
+    public List<DownloadModel> getMyDownloads(Set<String> facilities) throws TopcatException;
 
     /**
      * Contact the I.D.S. and prepare the download of the given data objects.

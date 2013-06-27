@@ -72,7 +72,6 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -93,7 +92,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  */
 public class BrowsePanel extends Composite {
 
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private BaseTreeLoader<ICATNode> loader;
     TreePanel<ICATNode> tree;
     HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();

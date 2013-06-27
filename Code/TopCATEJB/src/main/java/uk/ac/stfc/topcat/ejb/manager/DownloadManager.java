@@ -36,36 +36,12 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
 /**
- * This is used to get data prior to file upload.
+ * This is used to get and set data about user download requests.
  */
 
 public class DownloadManager {
 
     private final static Logger logger = Logger.getLogger(DownloadManager.class.getName());
-
-    /**
-     * Get a list of downloads for a user, which are associated with the given
-     * facility.
-     * 
-     * @param manager
-     * @param topcatSessionId
-     *            a string containing the session id
-     * @param facilityName
-     *            a string containing the facility name
-     * @return
-     * @throws TopcatException
-     */
-    public List<TopcatUserDownload> getMyDownloadList(EntityManager manager, String topcatSessionId, String facilityName)
-            throws TopcatException {
-        logger.info("getMyDownloadList: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName + ")");
-        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
-                topcatSessionId, facilityName);
-        manager.createNamedQuery("TopcatUserDownload.cleanup").executeUpdate();
-        @SuppressWarnings("unchecked")
-        List<TopcatUserDownload> userDownloads = manager.createNamedQuery("TopcatUserDownload.findByUserId")
-                .setParameter("userId", userSession.getUserId()).getResultList();
-        return userDownloads;
-    }
 
     /**
      * Add a new record.
@@ -81,14 +57,16 @@ public class DownloadManager {
      * @param expiryTime
      * @param url
      * @param preparedId
-     * @return
+     * @return the id of the download
      * @throws TopcatException
      */
-    public Long addMyDownload(EntityManager manager, String topcatSessionId, String facilityName, Date submitTime,
+    public Long add(EntityManager manager, String topcatSessionId, String facilityName, Date submitTime,
             String downloadName, String status, Date expiryTime, String url, String preparedId) throws TopcatException {
-        logger.info("addMyDownload: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), downloadName (" + downloadName + "), status (" + status + "), url (" + url + "), preparedId ("
-                + preparedId + ")");
+        if (logger.isInfoEnabled()) {
+            logger.info("add: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                    + "), downloadName (" + downloadName + "), status (" + status + "), url (" + url
+                    + "), preparedId (" + preparedId + ")");
+        }
         TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                 topcatSessionId, facilityName);
         TopcatUserDownload download = new TopcatUserDownload();
@@ -104,56 +82,29 @@ public class DownloadManager {
     }
 
     /**
-     * Remove the record with the given id.
+     * Delete the record with the given id.
      * 
      * @param manager
      * @param topcatSessionId
      *            a string containing the session id
      * @param id
-     *            the id of the record to remove
+     *            the id of the record to delete
      */
-    public void removeDownload(EntityManager manager, String topcatSessionId, Long id) {
-        logger.info("removeDownload: topcatSessionId (" + topcatSessionId + "), id (" + id + ")");
-        manager.createNamedQuery("TopcatUserDownload.cleanupById").setParameter("id", id).executeUpdate();
-        manager.flush();
-    }
-
-    /**
-     * Update the status and the url of the record with the given id.
-     * 
-     * @param manager
-     * @param topcatSessionId
-     *            a string containing the session id
-     * @param id
-     *            the id of the record to update
-     * @param url
-     *            the updated url
-     * @param status
-     *            the updated status
-     */
-    public void updateStatus(EntityManager manager, String topcatSessionId, Long id, String url, String status) {
-        logger.info("updateStatus: topcatSessionId (" + topcatSessionId + "), id (" + id + "), url (" + url
-                + "), status (" + status + ")");
-        manager.createNamedQuery("TopcatUserDownload.updateStatusById").setParameter("id", id).setParameter("url", url)
-                .setParameter("status", status).executeUpdate();
-        manager.flush();
-    }
-
-    @Deprecated
-    public void updateDownloadStatus(EntityManager manager, String topcatSessionId, String facilityName, String url,
-            String updatedUrl, String status) {
-        logger.info("updateDownloadStatus: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), url (" + url + "), updatedUrl (" + updatedUrl + "), status (" + status + ")");
-        manager.createNamedQuery("TopcatUserDownload.updateStatus").setParameter("url", url)
-                .setParameter("updatedUrl", updatedUrl).setParameter("status", status).executeUpdate();
+    public void delete(EntityManager manager, String topcatSessionId, Long id) {
+        if (logger.isInfoEnabled()) {
+            logger.info("delete: topcatSessionId (" + topcatSessionId + "), id (" + id + ")");
+        }
+        manager.createNamedQuery("TopcatUserDownload.deleteById").setParameter("id", id).executeUpdate();
         manager.flush();
     }
 
     @Deprecated
     public String getDatafilesDownloadURL(EntityManager manager, String topcatSessionId, String facilityName,
             List<Long> datafileIds) throws TopcatException {
-        logger.info("getDatafilesDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), datafileIds.size (" + datafileIds.size() + ")");
+        if (logger.isInfoEnabled()) {
+            logger.info("getDatafilesDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                    + facilityName + "), datafileIds.size (" + datafileIds.size() + ")");
+        }
         String result = "";
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
@@ -185,8 +136,10 @@ public class DownloadManager {
     @Deprecated
     public String getDatasetDownloadURL(EntityManager manager, String topcatSessionId, String facilityName,
             Long datasetId) throws TopcatException {
-        logger.info("getDatasetDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
-                + "), datasetId (" + datasetId + ")");
+        if (logger.isInfoEnabled()) {
+            logger.info("getDatasetDownloadURL: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                    + facilityName + "), datasetId (" + datasetId + ")");
+        }
         String result = "";
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
@@ -199,6 +152,68 @@ public class DownloadManager {
             logger.error("getDatasetDownloadURL: " + ex.getMessage());
         }
         return result;
+    }
+
+    /**
+     * Get a list of downloads for a user, which are associated with the given
+     * facility.
+     * 
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param facilityName
+     *            a string containing the facility name
+     * @return a list of <code>TopcatUserDownload</code>
+     * @throws TopcatException
+     */
+    public List<TopcatUserDownload> getMyDownloads(EntityManager manager, String topcatSessionId, String facilityName)
+            throws TopcatException {
+        if (logger.isInfoEnabled()) {
+            logger.info("getMyDownloads: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                    + ")");
+        }
+        TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
+                topcatSessionId, facilityName);
+        manager.createNamedQuery("TopcatUserDownload.cleanup").executeUpdate();
+        @SuppressWarnings("unchecked")
+        List<TopcatUserDownload> userDownloads = manager.createNamedQuery("TopcatUserDownload.findByUserId")
+                .setParameter("userId", userSession.getUserId()).getResultList();
+        return userDownloads;
+    }
+
+    /**
+     * Update the status and the url of the record with the given id.
+     * 
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param id
+     *            the id of the record to update
+     * @param url
+     *            the updated url
+     * @param status
+     *            the updated status
+     */
+    public void update(EntityManager manager, String topcatSessionId, Long id, String url, String status) {
+        if (logger.isInfoEnabled()) {
+            logger.info("update: topcatSessionId (" + topcatSessionId + "), id (" + id + "), url (" + url
+                    + "), status (" + status + ")");
+        }
+        manager.createNamedQuery("TopcatUserDownload.updateById").setParameter("id", id).setParameter("url", url)
+                .setParameter("status", status).executeUpdate();
+        manager.flush();
+    }
+
+    @Deprecated
+    public void updateDownloadStatus(EntityManager manager, String topcatSessionId, String facilityName, String url,
+            String updatedUrl, String status) {
+        if (logger.isInfoEnabled()) {
+            logger.info("updateDownloadStatus: topcatSessionId (" + topcatSessionId + "), facilityName ("
+                    + facilityName + "), url (" + url + "), updatedUrl (" + updatedUrl + "), status (" + status + ")");
+        }
+        manager.createNamedQuery("TopcatUserDownload.updateStatus").setParameter("url", url)
+                .setParameter("updatedUrl", updatedUrl).setParameter("status", status).executeUpdate();
+        manager.flush();
     }
 
 }

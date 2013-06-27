@@ -77,7 +77,6 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -94,7 +93,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * @since iCAT Version 3.3
  */
 public class DatafileWindow extends Window {
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     CheckBoxSelectionModel<DatafileModel> datafileSelectionModel = null;
     GroupingStore<DatafileModel> dfmStore;
     ArrayList<DatasetModel> inputDatasetModels = new ArrayList<DatasetModel>();

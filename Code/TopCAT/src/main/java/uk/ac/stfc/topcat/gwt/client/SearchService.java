@@ -34,6 +34,7 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -48,6 +49,24 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("search")
 public interface SearchService extends RemoteService {
+    /**
+     * Utility class for simplifying access to the instance of async service.
+     */
+    public static class Util {
+        private static SearchServiceAsync instance;
+
+        /**
+         * Returns the instance value.
+         * 
+         * @return the <code>SearchServiceAsync</code> instance
+         */
+        public static SearchServiceAsync getInstance() {
+            if (instance == null) {
+                instance = GWT.create(SearchService.class);
+            }
+            return instance;
+        }
+    }
 
     /**
      * Get a list of *public* keywords that match the partial key. Limit the
@@ -80,7 +99,8 @@ public interface SearchService extends RemoteService {
      * @return a list of <code>TInvestigation</code> containing investigations
      * @throws TopcatException
      */
-    List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords) throws TopcatException;
+    List<TInvestigation> getSearchResultsMyInvestigationFromKeywords(String sessionId, ArrayList<String> keywords)
+            throws TopcatException;
 
     /**
      * Get a list of investigations matching the criteria given in the search

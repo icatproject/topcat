@@ -80,14 +80,13 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 
 public class UploadDatasetPanel extends Composite {
-    private final UploadServiceAsync uploadService = GWT.create(UploadService.class);
-    private final UtilityServiceAsync utilityService = GWT.create(UtilityService.class);
-    private final LoginServiceAsync loginService = GWT.create(LoginService.class);
+    private final UploadServiceAsync uploadService = UploadService.Util.getInstance();
+    private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
+    private final LoginServiceAsync loginService = LoginService.Util.getInstance();
     private FormPanel datasetPanel;
     private String facilityName = "";
     private String investigationId;

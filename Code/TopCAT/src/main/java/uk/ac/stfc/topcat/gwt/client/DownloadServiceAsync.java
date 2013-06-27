@@ -95,7 +95,7 @@ public interface DownloadServiceAsync {
      * @param callback
      *            object to be called on completion
      */
-    public void getMyDownloadList(Set<String> facilities, AsyncCallback<List<DownloadModel>> asyncCallback);
+    public void getMyDownloads(Set<String> facilities, AsyncCallback<List<DownloadModel>> asyncCallback);
 
     /**
      * Contact the I.D.S. and prepare the download of the given data objects.
