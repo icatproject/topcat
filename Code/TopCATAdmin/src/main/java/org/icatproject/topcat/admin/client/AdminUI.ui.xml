@@ -117,14 +117,14 @@
 					<g:DialogBox ui:field="authMenu" modal="true"
 						glassEnabled="true" visible="false">
 						<g:VerticalPanel>
-							<g:FlexTable ui:field="editMenu1" styleName="mainBody"></g:FlexTable>
+							<g:FlexTable ui:field="editAuthMenu" styleName="mainBody"></g:FlexTable>
 							<g:TextBox ui:field="txtDisplayName"></g:TextBox>
 							<g:ListBox ui:field="txtAuthType"></g:ListBox>
 							<g:ListBox ui:field="txtAuthPluginName" visible="false"></g:ListBox>
 							<g:TextBox ui:field="txtAuthURL"></g:TextBox>
 							<g:HorizontalPanel ui:field="hPanel2"
 								styleName="mainBody">
-								<g:Button ui:field="btnSave1" styleName="button-spacing"></g:Button>
+								<g:Button ui:field="btnAuthMenu" styleName="button-spacing"></g:Button>
 								<g:Button ui:field="btnCancel1" styleName="button-spacing">cancel</g:Button>
 							</g:HorizontalPanel>
 							<g:Label ui:field="lbl3" styleName="font"></g:Label>

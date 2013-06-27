@@ -58,7 +58,8 @@ public class AdminUI extends Composite {
 				"Please provide a valid ICAT URL to proceed ! e.g. ....."), DOWNLOAD_SERVICE_URL(
 				"Please provide a valid Download Service URL to proceed ! e.g. ...."), DISPLAY_NAME(
 				"Please provide a valid Display Name to proceed ! e.g. \"WORK_PC\""), FACILITY_NAME_DUPLICATION(
-				"Facility Name already exist please use a diffrent Facility Name");
+				"Facility Name already exist please use a diffrent Facility Name"), DISPLAY_NAME_DUPLICATION(
+				"Display Name already exist please use a diffrent Display Name");
 
 		private validationMessages(final String text) {
 			this.text = text;
@@ -78,11 +79,11 @@ public class AdminUI extends Composite {
 	Constants headerNames = new Constants();
 
 	@UiField
-	FlexTable table0, table1, tableHeader, editMenu, editMenu1;
+	FlexTable table0, table1, tableHeader, editMenu, editAuthMenu;
 	@UiField
 	VerticalPanel vPanel;
 	@UiField
-	Button btnMenu, btnCancel, btnYes, btnNo, btnAdd, btnSave1, btnCancel1,
+	Button btnMenu, btnCancel, btnYes, btnNo, btnAdd, btnAuthMenu, btnCancel1,
 			btnOk, btnAddAuth;
 	@UiField
 	DialogBox tableMenu, alertDialogBox, authMenu, PingDialogBox;
@@ -133,7 +134,6 @@ public class AdminUI extends Composite {
 		 * @return
 		 * @throws
 		 */
-		int pRowCount = table0.getRowCount();
 		table0.removeAllRows();
 		int c, r = 1;
 
@@ -393,15 +393,15 @@ public class AdminUI extends Composite {
 			handleRowSelection("table1");
 		}
 
-		editMenu1.setText(0, 0, Constants.DISPLAY_NAME);
-		editMenu1.setText(1, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
-		editMenu1.setText(3, 0, Constants.AUTHENTICATION_URL);
+		editAuthMenu.setText(0, 0, Constants.DISPLAY_NAME);
+		editAuthMenu.setText(1, 0, Constants.AUTHENTICATION_SERVICE_TYPE);
+		editAuthMenu.setText(3, 0, Constants.AUTHENTICATION_URL);
 
-		editMenu1.setWidget(0, 2, txtDisplayName);
-		editMenu1.setWidget(1, 2, txtAuthType);
-		editMenu1.setWidget(3, 2, txtAuthURL);
-		editMenu1.setWidget(4, 2, lbl3);
-		editMenu1.setWidget(4, 0, hPanel2);
+		editAuthMenu.setWidget(0, 2, txtDisplayName);
+		editAuthMenu.setWidget(1, 2, txtAuthType);
+		editAuthMenu.setWidget(3, 2, txtAuthURL);
+		editAuthMenu.setWidget(4, 2, lbl3);
+		editAuthMenu.setWidget(4, 0, hPanel2);
 
 		// Initialising Plugin Name ListBox
 		txtAuthPluginName
@@ -460,12 +460,12 @@ public class AdminUI extends Composite {
 		}
 
 		if (menuType.equals(MENU_EDIT)) {
-			btnSave1.setText("update");
+			btnAuthMenu.setText("update");
 		} else {
-			btnSave1.setText("save");
+			btnAuthMenu.setText("save");
 		}
 
-		authMenu.setText("AUTHETICATION " + menuType + " MENU");
+		authMenu.setText("AUTHENTICATION " + menuType + " MENU");
 		authMenu.center();
 		authMenu.setVisible(true);
 	}
@@ -510,8 +510,8 @@ public class AdminUI extends Composite {
 	}
 
 	private void clearAuthMenu() {
-		editMenu1.clearCell(0, 1);
-		btnSave1.setText("save");
+		editAuthMenu.clearCell(0, 1);
+		btnAuthMenu.setText("save");
 		txtAuthURL.setText(null);
 		txtDisplayName.setText(null);
 		txtAuthPluginName.clear();
@@ -576,15 +576,27 @@ public class AdminUI extends Composite {
 
 	private boolean AuthMenuValidation() {
 
-		editMenu1.clearCell(0, 1);
+		editAuthMenu.clearCell(0, 1);
 
 		if (txtDisplayName.getText().trim().isEmpty()) {
 			lbl3.setText(validationMessages.DISPLAY_NAME.toString());
-			editMenu1.setWidget(0, 1, new Image("images/exclamation-icon.png"));
+			editAuthMenu.setWidget(0, 1, new Image(
+					"images/exclamation-icon.png"));
 			return false;
-		} else {
-			return true;
+		} else if (btnAuthMenu.getText() == "save") {
+			for (int i = 1; i < table1.getRowCount(); i++) {
+				if (table1.getText(i, 0).equals(txtDisplayName.getText())) {
+					lbl3.setText(validationMessages.DISPLAY_NAME_DUPLICATION
+							.toString());
+					editAuthMenu.setWidget(0, 1, new Image(
+							"images/exclamation-icon.png"));
+					txtDisplayName.setFocus(true);
+					return false;
+				}
+			}
 		}
+
+		return true;
 	}
 
 	void setSplitterPosition() {
@@ -609,7 +621,7 @@ public class AdminUI extends Composite {
 	}
 
 	/*
-	 * ################### Server Calls ##################
+	 * ################### Server Calls ##################F
 	 */
 
 	private void updateAuth(TAuthentication authentication) {
@@ -909,7 +921,7 @@ public class AdminUI extends Composite {
 		handleRowUnselection("table1");
 	}
 
-	@UiHandler("btnSave1")
+	@UiHandler("btnAuthMenu")
 	void handleAuthSaveButton(ClickEvent e) {
 
 		TAuthentication authentication = new TAuthentication();
@@ -933,10 +945,10 @@ public class AdminUI extends Composite {
 		authentication.setId(idArrayTable0.get(table0Row));
 
 		if (AuthMenuValidation() == true) {
-
-			if (btnSave1.getText() == "save") {
+			Window.alert("hello");
+			if (btnAuthMenu.getText() == "save") {
 				addRowToAuthTable(authentication);
-			} else if (btnSave1.getText() == "update") {
+			} else if (btnAuthMenu.getText() == "update") {
 				updateAuth(authentication);
 			}
 			clearAuthMenu();
