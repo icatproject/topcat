@@ -93,7 +93,7 @@ public class AdminUI extends Composite {
 	ListBox txtPluginName, txtDownloadPluginName, txtVersion, txtAuthType,
 			txtAuthPluginName;
 	@UiField
-	HorizontalPanel hPanel0, hPanel2, hPanel4; 
+	HorizontalPanel hPanel0, hPanel2, hPanel4;
 
 	@UiField
 	Label lbl1, lbl2, lbl3, lblAuth;
@@ -112,7 +112,6 @@ public class AdminUI extends Composite {
 
 	@UiField
 	FlowPanel flowPanel;
-	
 
 	public AdminUI() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -134,7 +133,7 @@ public class AdminUI extends Composite {
 		 * @return
 		 * @throws
 		 */
-
+		int pRowCount = table0.getRowCount();
 		table0.removeAllRows();
 		int c, r = 1;
 
@@ -203,13 +202,13 @@ public class AdminUI extends Composite {
 			pingDSBtn[i].setTitle("Ping the Download Service URL");
 			authbtn[i] = new Button("Show Auth. Details");
 			table0.setWidget(i, 10, authbtn[i]);
-			authbtn[i].setTitle("Show the Authetication Details associated with this ICAT");
+			authbtn[i]
+					.setTitle("Show the Authetication Details associated with this ICAT");
 
 		}
-	
+
 		setSplitterPosition();
 		checkIncompleteIcat();
-
 	}
 
 	private void displayAuthTable(List<TAuthentication> result) {
@@ -312,7 +311,7 @@ public class AdminUI extends Composite {
 		editMenu.getColumnFormatter().setWidth(1, "5px");
 		editMenu.getColumnFormatter().setWidth(2, "355px");
 		// CREATES A SPACE BETTWEEN THE LABELS AND THE WIDGETS
-		
+
 		// ADDING WIDGETS TO THE FLEXTABLE
 		editMenu.setWidget(0, 2, txtName);
 		editMenu.setWidget(1, 2, txtVersion);
@@ -377,7 +376,7 @@ public class AdminUI extends Composite {
 		tableMenu.setText(menuType + " MENU");
 		tableMenu.center();
 		tableMenu.setVisible(true);
-		
+
 	}
 
 	private void initialiseAuthMenu(String menuType) {
@@ -405,9 +404,18 @@ public class AdminUI extends Composite {
 		editMenu1.setWidget(4, 0, hPanel2);
 
 		// Initialising Plugin Name ListBox
-		txtAuthPluginName.insertItem("anonymous", 0);
-		txtAuthPluginName.insertItem("cas", 1);
-		txtAuthPluginName.insertItem("user/password", 2);
+		txtAuthPluginName
+				.insertItem(
+						"uk.ac.stfc.topcat.gwt.client.authentication.AnonymousAuthenticationPlugin",
+						0);
+		txtAuthPluginName
+				.insertItem(
+						"uk.ac.stfc.topcat.gwt.client.authentication.CASAuthenticationPlugin",
+						1);
+		txtAuthPluginName
+				.insertItem(
+						"uk.ac.stfc.topcat.gwt.client.authentication.DefaultAuthenticationPlugin",
+						2);
 
 		// Initialising Typ ListBox
 		txtAuthType.insertItem("anonymous", 0);
@@ -424,23 +432,26 @@ public class AdminUI extends Composite {
 					.equals(txtAuthType.getItemText(0))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(0, true);
+
 			} else if (table1.getText(table1Row, 1).trim()
 					.equals(txtAuthType.getItemText(1))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(1, true);
+
 			} else if (table1.getText(table1Row, 1).trim()
 					.equals(txtAuthType.getItemText(2))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(2, true);
+
 			} else if (table1.getText(table1Row, 1).trim()
 					.equals(txtAuthType.getItemText(3))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(3, true);
+
 			} else if (table1.getText(table1Row, 1).trim()
 					.equals(txtAuthType.getItemText(4))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(4, true);
-
 			}
 
 			if (menuType.equals(MENU_EDIT)) {
@@ -527,20 +538,22 @@ public class AdminUI extends Composite {
 			txtName.setFocus(true);
 			invalidName = true;
 		}
-		
-		if (btnMenu.getText() == "save"){
-			for (int i=1; i < table0.getRowCount(); i++){
-				if (table0.getText(i, 0).equals(txtName.getText())){
-					lbl1.setText(validationMessages.FACILITY_NAME_DUPLICATION.toString());
-					editMenu.setWidget(0, 1, new Image("images/exclamation-icon.png"));
+
+		if (btnMenu.getText() == "save") {
+			for (int i = 1; i < table0.getRowCount(); i++) {
+				if (table0.getText(i, 0).equals(txtName.getText())) {
+					lbl1.setText(validationMessages.FACILITY_NAME_DUPLICATION
+							.toString());
+					editMenu.setWidget(0, 1, new Image(
+							"images/exclamation-icon.png"));
 					txtName.setFocus(true);
 					invalidName = true;
-				}	
+				}
 			}
 		}
-		
+
 		if (txtServerUrl.getText().trim().isEmpty()) {
-			if(invalidName != true){
+			if (invalidName != true) {
 				lbl1.setText(validationMessages.ICAT_URL.toString());
 				txtServerUrl.setFocus(true);
 			}
@@ -548,7 +561,7 @@ public class AdminUI extends Composite {
 			invalidSUrl = true;
 		}
 		if (txtDownloadServiceUrl.getText().trim().isEmpty()) {
-			if((invalidName || invalidSUrl) != true){
+			if ((invalidName || invalidSUrl) != true) {
 				lbl1.setText(validationMessages.DOWNLOAD_SERVICE_URL.toString());
 				txtDownloadServiceUrl.setFocus(true);
 			}
@@ -638,8 +651,8 @@ public class AdminUI extends Composite {
 
 			public void onSuccess(String result) {
 				tableCall();
+
 				tableMenu.hide();
-				selectNewEntry();
 			}
 		};
 
@@ -691,7 +704,6 @@ public class AdminUI extends Composite {
 
 			public void onSuccess(String result) {
 				tableCall();
-				authTableCall();
 				alertDialogBox.hide();
 			}
 		};
@@ -776,6 +788,9 @@ public class AdminUI extends Composite {
 		table0Column = cell.getCellIndex();
 		String url;
 
+		handleRowSelection("table0");
+		authTableCall();
+
 		switch (table0Column) {
 		case 6:
 			inititialiseMenu(MENU_EDIT);
@@ -809,6 +824,7 @@ public class AdminUI extends Composite {
 
 		String url = table1.getText(table1Row, 3);
 		// Window.alert("Row: " + table1Row + " Column: " + table1Column);
+		handleRowSelection("table1");
 
 		switch (table1Column) {
 		case 4:
@@ -899,11 +915,15 @@ public class AdminUI extends Composite {
 		TAuthentication authentication = new TAuthentication();
 
 		if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "anonymous") {
-			authentication.setPluginName("anonymous");
+			authentication.setPluginName(txtAuthPluginName.getItemText(0));
 		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "cas") {
-			authentication.setPluginName("cas");
-		} else {
-			authentication.setPluginName("user/password");
+			authentication.setPluginName(txtAuthPluginName.getItemText(1));
+		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "db") {
+			authentication.setPluginName(txtAuthPluginName.getItemText(2));
+		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "ldap") {
+			authentication.setPluginName(txtAuthPluginName.getItemText(2));
+		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "uows") {
+			authentication.setPluginName(txtAuthPluginName.getItemText(2));
 		}
 
 		authentication.setType(txtAuthType.getItemText(txtAuthType
@@ -1001,12 +1021,12 @@ public class AdminUI extends Composite {
 		PingDialogBox.setVisible(true);
 	}
 
-	void selectNewEntry(){
+	void selectNewEntry() {
 		table0Row = table0.getRowCount();
 		table0.getRowFormatter().setStyleName(table0Row, "selected");
 		handleRowSelection("table0");
 		authTableCall();
-		
-//		
+
+		//
 	}
 }
