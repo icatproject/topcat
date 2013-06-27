@@ -61,8 +61,8 @@ def get_props(file_name):
     finally:
         file_handle.close()
     return props_dict
-    
-    
+
+
 def check_keys(props_dict, required_keys, file_name):
     """
     The check_keys function checks if the properties have all been configured
@@ -74,7 +74,7 @@ def check_keys(props_dict, required_keys, file_name):
             exit(1)
     return
 
-        
+
 def add_optional_props(props_dict):
     """
     The add_optional_props function checks if optional properties have been
@@ -320,12 +320,12 @@ def delete(conf_props):
 
 def deploy(conf_props):
     """
-    Deploy the TopCAT application and the Admin Consol
+    Deploy the TopCAT application and the Admin Console
     """
     # TOPCat
     if VERBOSE > 0:
         print "Deploy the TopCAT application"
-    command = (ASADMIN + " deploy --contextroot TopCAT --name TopCAT "
+    command = (ASADMIN + " deploy --name TopCAT "
                + conf_props['topcatWar'])
     if VERBOSE > 1:
         print command
@@ -339,7 +339,7 @@ def deploy(conf_props):
         
     # TOPCatAdmin
     if VERBOSE > 0:
-        print "Deploy the TopCATAdmin Consol"
+        print "Deploy the TopCATAdmin Console"
     command = (ASADMIN + " deploy --contextroot TopCATAdmin --name TopCATAdmin "
                + conf_props['topcatAdminWar'])
     if VERBOSE > 1:
@@ -349,18 +349,18 @@ def deploy(conf_props):
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR deploying TopCATAdmin Consol"
+        print "ERROR deploying TopCATAdmin Console"
         exit(1)
 
 
 def undeploy():
     """
-    Un-deploy the TopCAT application & the TopCATAdmin Consol
+    Undeploy the TopCAT application & the TopCATAdmin Console
     """
     # TOPCatAdmin
     if VERBOSE > 0:
-        print "Un-deploy the TopCAT application"
-    command = ASADMIN + " un-deploy TopCAT"
+        print "Undeploy the TopCAT application"
+    command = ASADMIN + " undeploy TopCAT"
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:
@@ -368,13 +368,12 @@ def undeploy():
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR un-deploying TopCAT"
-        exit(1)
+        print "ERROR undeploying TopCAT"
 
     # TOPCatAdmin
     if VERBOSE > 0:
-        print "Undeploy the TopCATAdmin Consol"
-    command = ASADMIN + " un-deploy TopCATAdmin"
+        print "Undeploy the TopCATAdmin Console"
+    command = ASADMIN + " undeploy TopCATAdmin"
     if VERBOSE > 1:
         print command
     if VERBOSE > 2:
@@ -382,8 +381,7 @@ def undeploy():
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR un-deploying TopCATAdmin Consol"
-        exit(1)
+        print "ERROR undeploying TopCATAdmin Console"
 
 
 def status():

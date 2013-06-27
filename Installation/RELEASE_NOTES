@@ -1,8 +1,14 @@
-bug fixes
+Release 1.9
+~~~~~~~~~~~~
+Bug fixes
+Added support for the ICAT Data Service
+Added support for ICAT version no v42, this points to the existing
+ ICATInterfacev420
 Added MESSAGE to topcat.properties, the message gets displayed by topcat
 Added verbose option to setup script
 schema changes:
-Drop the columns AUTHENTICATION_SERVICE_URL and AUTHENTICATION_SERVICE_TYPE from TOPCAT_ICAT_SERVER
+Drop the columns AUTHENTICATION_SERVICE_URL and AUTHENTICATION_SERVICE_TYPE
+ from TOPCAT_ICAT_SERVER
 Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER
 Add the column PREPARED_ID to the table TOPCAT_USER_DOWNLOAD
 Add the column DISPLAY_NAME to the table ICAT_AUTHENTICATION

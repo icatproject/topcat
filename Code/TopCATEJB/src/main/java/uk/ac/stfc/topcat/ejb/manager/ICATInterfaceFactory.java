@@ -43,6 +43,8 @@ public class ICATInterfaceFactory {
             return new ICATInterfacev410(URL, serverName);
         } else if (version.compareToIgnoreCase("v420") == 0) {
             return new ICATInterfacev420(URL, serverName);
+        } else if (version.compareToIgnoreCase("v42") == 0) {
+            return new ICATInterfacev420(URL, serverName);
         }
         return null;
     }

@@ -280,9 +280,6 @@ def upgrade_db(conf_props, sql_command, db_props):
 
 
 PARSER = OptionParser()
-PARSER.add_option("--upgrade19", dest="upgrade",
-                  help=("upgrade the database for the migration between 1.7"
-                        + " and 1.9"), action="store_true")
 PARSER.add_option("-v", "--verbose", action="count", default=0,
                     help="increase output verbosity")
 
@@ -300,11 +297,6 @@ ASADMIN = ASADMIN + " --port " + CONF_PROPS["port"]
 IJ = path.join(CONF_PROPS["glassfish"], "javadb", "bin", "ij")
 MYSQL = "mysql"
 
-if OPTIONS.upgrade:
-    upgrade(CONF_PROPS)
-else:
-    print ("\nYou must provide an option\n")
-    print PARSER.print_help()
-    exit(1)
+upgrade(CONF_PROPS)
 
 exit(0)
