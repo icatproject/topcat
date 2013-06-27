@@ -148,9 +148,9 @@ public class AdminUI extends Composite {
 
 		table0.getColumnFormatter().setWidth(0, "110px");
 		table0.getColumnFormatter().setWidth(1, "90px");
-		table0.getColumnFormatter().setWidth(2, "230px");
-		table0.getColumnFormatter().setWidth(3, "230px");
-		table0.getColumnFormatter().setWidth(4, "170px");
+		table0.getColumnFormatter().setWidth(2, "190px");
+		table0.getColumnFormatter().setWidth(3, "190px");
+		table0.getColumnFormatter().setWidth(4, "190px");
 		table0.getColumnFormatter().setWidth(5, "190px");
 
 		idArrayTable0.clear();
@@ -190,30 +190,30 @@ public class AdminUI extends Composite {
 
 			editBtn[i] = new Button("edit");
 			table0.setWidget(i, 6, editBtn[i]);
-			editBtn[i].setTitle("");
+			editBtn[i].setTitle("Edit the ICAT");
 			deleteBtn[i] = new Button("delete");
 			table0.setWidget(i, 7, deleteBtn[i]);
-			deleteBtn[i].setTitle("");
+			deleteBtn[i].setTitle("Remove the ICAT");
 			pingICatBtn[i] = new Button("ping ICAT");
 			table0.setWidget(i, 8, pingICatBtn[i]);
-			pingICatBtn[i].setTitle("This button pings the ICAT URL");
+			pingICatBtn[i].setTitle("Ping the ICAT URL");
 			pingDSBtn[i] = new Button("ping D.S.");
 			table0.setWidget(i, 9, pingDSBtn[i]);
-			pingDSBtn[i].setTitle("This Button pings the Download Service URL");
+			pingDSBtn[i].setTitle("Ping the Download Service URL");
 			authbtn[i] = new Button("Show Auth. Details");
 			table0.setWidget(i, 10, authbtn[i]);
-			authbtn[i].setTitle("This button shows the Authetication Details associated with this ICAT");
+			authbtn[i].setTitle("Show the Authetication Details associated with this ICAT");
 
 		}
-		Image img = new Image("images/blue.png");
-		Image img1 = new Image("images/red.png");
-		img.setPixelSize(20, 20);
-		img1.setPixelSize(20, 20);
-		
-		hPanel4.add(img);
-		hPanel4.add(new Label(" = This row is currently selected"));
-		hPanel4.add(img1);
-		hPanel4.add(new Label("   = No authentication associated to this ICAT"));
+//		Image img = new Image("images/blue.png");
+//		Image img1 = new Image("images/red.png");
+//		img.setPixelSize(20, 20);
+//		img1.setPixelSize(20, 20);
+//		
+//		hPanel4.add(img);
+//		hPanel4.add(new Label(" = This row is currently selected"));
+//		hPanel4.add(img1);
+//		hPanel4.add(new Label(" = No authentication associated to this ICAT"));
 		
 	
 		setSplitterPosition();
@@ -318,10 +318,10 @@ public class AdminUI extends Composite {
 		editMenu.setText(5, 0, Constants.DOWNLOAD_SERVICE_URL + ":");
 
 		editMenu.getColumnFormatter().setWidth(0, "170px");
+		editMenu.getColumnFormatter().setWidth(1, "5px");
 		editMenu.getColumnFormatter().setWidth(2, "355px");
 		// CREATES A SPACE BETTWEEN THE LABELS AND THE WIDGETS
-		editMenu.getColumnFormatter().setWidth(1, "5px");
-
+		
 		// ADDING WIDGETS TO THE FLEXTABLE
 		editMenu.setWidget(0, 2, txtName);
 		editMenu.setWidget(1, 2, txtVersion);
@@ -342,7 +342,7 @@ public class AdminUI extends Composite {
 		// THESE ARE THE ITEMS IN THE VERSION LISTBOX
 		txtVersion.insertItem("v42", "v42", 0);
 		if (menuType.equals(MENU_ADD)
-				|| table0.getText(table0Row, 1).trim().equals("v420")) {
+				|| table0.getText(table0Row, 1).trim().equals("v42")) {
 			txtVersion.setItemSelected(0, true);
 		}
 
@@ -566,7 +566,7 @@ public class AdminUI extends Composite {
 	void setSplitterPosition() {
 		long height = htmlPanel.getOffsetHeight() + 25;
 		sPanel.clear();
-		sPanel.addEast(flowPanel, 30);
+		sPanel.addEast(flowPanel, 270);
 		sPanel.addNorth(scrollPanel, height);
 		sPanel.add(simplePanel0);
 	}
@@ -628,7 +628,7 @@ public class AdminUI extends Composite {
 			public void onSuccess(String result) {
 				tableCall();
 				tableMenu.hide();
-				addNewRowSelect();
+				//selectNewEntry();
 			}
 		};
 
@@ -988,9 +988,12 @@ public class AdminUI extends Composite {
 		PingDialogBox.setVisible(true);
 	}
 
-	void addNewRowSelect(){
-//		table0Row = table0.getRowCount() + 1;
-//		table0.
+	void selectNewEntry(){
+		table0Row = table0.getRowCount();
+		table0.getRowFormatter().setStyleName(table0Row, "selected");
+		handleRowSelection("table0");
+		authTableCall();
+		
 //		
 	}
 }

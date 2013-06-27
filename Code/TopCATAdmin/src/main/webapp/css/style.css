@@ -15,6 +15,7 @@
 .table_style{
 	background-color: #ececec;
 	color: black;
+	overflow:auto;
 }
 
 .selected {
@@ -23,9 +24,9 @@
 }
 
 .mergeAuto{
-	max-width: 1540px;
-	margin-right: auto;
-	margin-left: auto;
+	min-width: 800px;
+	margin-right: 50px;
+	margin-left: 50px;
 }
 .centerObject {
 	
@@ -102,5 +103,11 @@
 	font-weight: bold;
 }
 .keySection {
-	margin-left:5px;
+	margin-left: 15px;
+}
+.word-wrap{
+		word-wrap:break-word;
+}
+.scroll {
+overflow:auto;
 }
