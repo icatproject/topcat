@@ -57,7 +57,8 @@ public class AdminUI extends Composite {
 				"Please provide a valid Facility Name to proceed ! e.g. ISIS"), ICAT_URL(
 				"Please provide a valid ICAT URL to proceed ! e.g. ....."), DOWNLOAD_SERVICE_URL(
 				"Please provide a valid Download Service URL to proceed ! e.g. ...."), DISPLAY_NAME(
-				"Please provide a valid Display Name to proceed ! e.g. \"WORK_PC\"");
+				"Please provide a valid Display Name to proceed ! e.g. \"WORK_PC\""), FACILITY_NAME_DUPLICATION(
+				"Facility Name already exist please use a diffrent Facility Name");
 
 		private validationMessages(final String text) {
 			this.text = text;
@@ -81,7 +82,7 @@ public class AdminUI extends Composite {
 	@UiField
 	VerticalPanel vPanel;
 	@UiField
-	Button btnSave, btnCancel, btnYes, btnNo, btnAdd, btnSave1, btnCancel1,
+	Button btnMenu, btnCancel, btnYes, btnNo, btnAdd, btnSave1, btnCancel1,
 			btnOk, btnAddAuth;
 	@UiField
 	DialogBox tableMenu, alertDialogBox, authMenu, PingDialogBox;
@@ -368,9 +369,9 @@ public class AdminUI extends Composite {
 		}
 
 		if (menuType.equals(MENU_EDIT)) {
-			btnSave.setText("update");
+			btnMenu.setText("update");
 		} else {
-			btnSave.setText("save");
+			btnMenu.setText("save");
 		}
 
 		tableMenu.setText(menuType + " MENU");
@@ -482,7 +483,7 @@ public class AdminUI extends Composite {
 		editMenu.clearCell(0, 1);
 		editMenu.clearCell(2, 1);
 		editMenu.clearCell(5, 1);
-		btnSave.setText("save");
+		btnMenu.setText("save");
 		txtName.setText(null);
 		txtServerUrl.setText(null);
 		txtDownloadServiceUrl.setText(null);
@@ -526,6 +527,18 @@ public class AdminUI extends Composite {
 			txtName.setFocus(true);
 			invalidName = true;
 		}
+		
+		if (btnMenu.getText() == "save"){
+			for (int i=1; i < table0.getRowCount(); i++){
+				if (table0.getText(i, 0).equals(txtName.getText())){
+					lbl1.setText(validationMessages.FACILITY_NAME_DUPLICATION.toString());
+					editMenu.setWidget(0, 1, new Image("images/exclamation-icon.png"));
+					txtName.setFocus(true);
+					invalidName = true;
+				}	
+			}
+		}
+		
 		if (txtServerUrl.getText().trim().isEmpty()) {
 			if(invalidName != true){
 				lbl1.setText(validationMessages.ICAT_URL.toString());
@@ -930,15 +943,15 @@ public class AdminUI extends Composite {
 		// handleRowUnselection("table0");
 	}
 
-	@UiHandler("btnSave")
+	@UiHandler("btnMenu")
 	void handleSaveUpdateButton(ClickEvent e) {
 		TFacility facility = new TFacility();
 
 		if (validationCheck() == true) {
 
-			if (btnSave.getText() == "save") {
+			if (btnMenu.getText() == "save") {
 				addRowToTable(facility);
-			} else if (btnSave.getText() == "update") {
+			} else if (btnMenu.getText() == "update") {
 				updateRowInTable(facility, MENU_EDIT);
 			}
 			clearMenuBox();

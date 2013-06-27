@@ -92,7 +92,7 @@
 								title="This is the URL of the download service that will be used by the selected download plugin"></g:TextBox>
 							<g:HorizontalPanel ui:field="hPanel0"
 								styleName=".mainBody">
-								<g:Button ui:field="btnSave" styleName="button-spacing"></g:Button>
+								<g:Button ui:field="btnMenu" styleName="button-spacing"></g:Button>
 								<g:Button ui:field="btnCancel" styleName="button-spacing">cancel</g:Button>
 							</g:HorizontalPanel>
 							<g:Label ui:field="lbl1" styleName="font"></g:Label>
