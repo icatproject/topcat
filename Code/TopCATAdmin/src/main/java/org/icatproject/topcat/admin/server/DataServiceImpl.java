@@ -99,6 +99,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		HttpURLConnection connection = null;
 		URL address = null;
 		
+		if(urlSelection == "Download Service"){
+			url = url + "/getStatus";
+		}
+		
+		logger.debug(url);
 		try {
 			address = new URL(url);
 			if (address.getProtocol().equalsIgnoreCase("http")) {
@@ -126,8 +131,10 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 			return "successfully, but URL requires login";
 		case 404:
 			return "unsuccessfully. The requested resource does not exist"; 
-		default:
+		case 200:
 			return "successfully";
+		default:
+			return "unsuccessful";
 		}
 	}
 	

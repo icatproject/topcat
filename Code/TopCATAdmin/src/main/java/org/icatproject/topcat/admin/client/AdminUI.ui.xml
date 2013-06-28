@@ -43,7 +43,7 @@
 								<g:FlexTable ui:field="table0"></g:FlexTable>
 								<g:SimplePanel styleName="margin-top">
 									<g:HorizontalPanel >
-										<g:Button ui:field="btnAdd" text="add" ></g:Button>
+										<g:Button ui:field="btnAdd" text="add" title="Add mew ICAT"></g:Button>
 										<g:HorizontalPanel ui:field="hPanel4" width="" height="30" verticalAlignment="ALIGN_MIDDLE" spacing="5" horizontalAlignment="ALIGN_RIGHT" styleName="keySection">
 											<g:Image url="images/blue.png" width="20px" height="20px"></g:Image>
 											<g:Label text=" = Row currently selected" ></g:Label>
@@ -65,7 +65,7 @@
 							visible="false"></g:Label>
 							<g:FlexTable ui:field="table1" styleName="buttonSpacing"></g:FlexTable>
 							<g:SimplePanel styleName="margin-top">
-								<g:Button ui:field="btnAddAuth" text="add" visible="false" ></g:Button>
+								<g:Button ui:field="btnAddAuth" text="add" visible="false" title="Add new Authentication"></g:Button>
 							</g:SimplePanel>
 						</g:HTMLPanel>
 					</g:SimplePanel>	
@@ -118,10 +118,10 @@
 						glassEnabled="true" visible="false">
 						<g:VerticalPanel>
 							<g:FlexTable ui:field="editAuthMenu" styleName="mainBody"></g:FlexTable>
-							<g:TextBox ui:field="txtDisplayName"></g:TextBox>
-							<g:ListBox ui:field="txtAuthType"></g:ListBox>
+							<g:TextBox ui:field="txtDisplayName" title="This field will be displayed to the user. Ensure that it is meaningful to the user"></g:TextBox>
+							<g:ListBox ui:field="txtAuthType" title="This is the Authetication Type that will be used to connect to the ICAT"></g:ListBox>
 							<g:ListBox ui:field="txtAuthPluginName" visible="false"></g:ListBox>
-							<g:TextBox ui:field="txtAuthURL"></g:TextBox>
+							<g:TextBox ui:field="txtAuthURL" title="The URL of the Authentication Service"></g:TextBox>
 							<g:HorizontalPanel ui:field="hPanel2"
 								styleName="mainBody">
 								<g:Button ui:field="btnAuthMenu" styleName="button-spacing"></g:Button>

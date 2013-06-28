@@ -50,14 +50,13 @@ public class AdminUI extends Composite {
 	private static boolean table1Flag = false;
 
 	public enum validationMessages {
-		// TODO Come up with better messages
 		FACILITY_NAME(
-				"Please provide a valid Facility Name to proceed ! e.g. ISIS"), ICAT_URL(
-				"Please provide a valid ICAT URL to proceed ! e.g. ....."), DOWNLOAD_SERVICE_URL(
-				"Please provide a valid Download Service URL to proceed ! e.g. ...."), DISPLAY_NAME(
-				"Please provide a valid Display Name to proceed ! e.g. \"WORK_PC\""), FACILITY_NAME_DUPLICATION(
-				"Facility Name already exist please use a diffrent Facility Name"), DISPLAY_NAME_DUPLICATION(
-				"Display Name already exist please use a diffrent Display Name");
+				"Please provide a valid Facility Name to proceed e.g. ISIS"), ICAT_URL(
+				"Please provide a valid ICAT URL to proceed e.g. https://example.com/ICATService/ICAT?wsdl"), DOWNLOAD_SERVICE_URL(
+				"Please provide a valid Download Service URL to proceed e.g. https://example.com/IDS"), DISPLAY_NAME(
+				"Please provide a valid Display Name to proceed e.g. \"Facility ID\""), FACILITY_NAME_DUPLICATION(
+				"Facility Name already exists, please use a different Facility Name"), DISPLAY_NAME_DUPLICATION(
+				"Display Name already exists, please use a different Display Name");
 
 		private validationMessages(final String text) {
 			this.text = text;
@@ -71,8 +70,11 @@ public class AdminUI extends Composite {
 		}
 	}
 
+	// The array lists beneath, will contain the id numbers for the ICAT Server and Authentication Table 
 	ArrayList<Long> idArrayTable0 = new ArrayList<Long>();
 	ArrayList<Long> idArrayTable1 = new ArrayList<Long>();
+	
+	// The array lists beneath, will contain the numbers of associated authentications, to the ICATs in the ICAT Server Table 
 	ArrayList<Integer> numberOfAuthDetails = new ArrayList<Integer>();
 	Constants headerNames = new Constants();
 
@@ -135,7 +137,7 @@ public class AdminUI extends Composite {
 		table0.removeAllRows();
 		int c, r = 1;
 
-		// header section, columns width are equal to the second flextable
+		// Header Section - Icat Server Table
 		table0.setText(0, 0, Constants.NAME);
 		table0.setText(0, 1, Constants.VERSION);
 		table0.setText(0, 2, Constants.SERVER_URL);
@@ -144,6 +146,7 @@ public class AdminUI extends Composite {
 		table0.setText(0, 5, Constants.DOWNLOAD_SERVICE_URL);
 		table0.getRowFormatter().setStyleName(0, "header");
 
+		// Sets the width for each column 
 		table0.getColumnFormatter().setWidth(0, "110px");
 		table0.getColumnFormatter().setWidth(1, "90px");
 		table0.getColumnFormatter().setWidth(2, "190px");
@@ -153,11 +156,8 @@ public class AdminUI extends Composite {
 
 		idArrayTable0.clear();
 		idArrayTable0.add(null);
-		// The first elementis populated with a null so that index correspond
-		// with the rows
 
-		// with the use of a second flextable the for loop display the content
-		// of the TOPCAT_ICAT_SERVER
+		//Populates the Table 
 		for (TFacility facility : result) {
 			c = 0;
 
@@ -171,13 +171,15 @@ public class AdminUI extends Composite {
 			idArrayTable0.add(facility.getId());
 
 		}
+		
+		// Check if a row is selected 
 		if (!(table0Row == 0) && table0Flag) {
 			handleRowSelection("table0");
 			table0Flag = false;
 		}
 
-		// counts the numbers of columns available and adds a delete and a edit
-		// button
+		// Adding an edit, delete, ping and show Authentication button to each end of the row except the Header row  
+		
 		Button[] deleteBtn = new Button[r];
 		Button[] editBtn = new Button[r];
 		Button[] pingICatBtn = new Button[r];
@@ -204,7 +206,7 @@ public class AdminUI extends Composite {
 					.setTitle("Show the Authetication Details associated with this ICAT");
 
 		}
-
+		
 		setSplitterPosition();
 		checkIncompleteIcat();
 	}
@@ -528,8 +530,6 @@ public class AdminUI extends Composite {
 		editMenu.clearCell(2, 1);
 		editMenu.clearCell(5, 1);
 
-		// TODO Find a way of showing the images
-
 		if (txtName.getText().trim().isEmpty()) {
 			lbl1.setText(validationMessages.FACILITY_NAME.toString());
 			editMenu.setWidget(0, 1, new Image("images/exclamation-icon.png"));
@@ -598,6 +598,7 @@ public class AdminUI extends Composite {
 	}
 
 	void setSplitterPosition() {
+		// Check the height of the panel that contains the ICAT Server Table and sets the Verticalsplitter right beneath it with a 25px space
 		long height = htmlPanel.getOffsetHeight() + 25;
 		sPanel.clear();
 		sPanel.addEast(flowPanel, 270);
@@ -771,6 +772,7 @@ public class AdminUI extends Composite {
 	}
 
 	private void checkIncompleteIcat() {
+		// checks 
 		AsyncCallback<ArrayList<Integer>> callback = new AsyncCallback<ArrayList<Integer>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
@@ -833,6 +835,7 @@ public class AdminUI extends Composite {
 		table1Column = cell.getCellIndex();
 
 		String url = table1.getText(table1Row, 3);
+
 		// Window.alert("Row: " + table1Row + " Column: " + table1Column);
 		handleRowSelection("table1");
 
@@ -879,24 +882,6 @@ public class AdminUI extends Composite {
 			table1.getRowFormatter().setStyleName(table1Row, "selected");
 		}
 
-		// if (table == "table0") {
-		// handleRowUnselection("table0");
-		// // checkIncompleteIcat();
-		// table0.getRowFormatter().setStyleName(table0Row, "selected");
-		//
-		// for (int i = 1; i < table0.getRowCount(); i++) {
-		// rowAlert.get(i)
-		//
-		// else if(!(table0.getRowFormatter().getStyleName(i) ==
-		// "incompleteSetting")) {
-		//
-		// }
-		//
-		// Window.alert(table0.getRowFormatter().getStyleName(1));
-		// } else {
-		// handleRowUnselection("table1");
-		// table1.getRowFormatter().setStyleName(table1Row, "selected");
-		// }
 	}
 
 	@UiHandler("btnAdd")
@@ -943,7 +928,6 @@ public class AdminUI extends Composite {
 		authentication.setId(idArrayTable0.get(table0Row));
 
 		if (AuthMenuValidation() == true) {
-			Window.alert("hello");
 			if (btnAuthMenu.getText() == "save") {
 				addRowToAuthTable(authentication);
 			} else if (btnAuthMenu.getText() == "update") {
@@ -970,7 +954,6 @@ public class AdminUI extends Composite {
 		alertDialogBox.setVisible(false);
 		alertDialogBox.setModal(false);
 
-		// handleRowUnselection("table0");
 	}
 
 	@UiHandler("btnMenu")
@@ -998,6 +981,7 @@ public class AdminUI extends Composite {
 	void handleAuthAddButtonClick(ClickEvent e) {
 		handleRowUnselection("table1");
 		initialiseAuthMenu(MENU_ADD);
+		txtDisplayName.setFocus(true);
 	}
 
 	void handleDeleteButtonEvent(String table) {
