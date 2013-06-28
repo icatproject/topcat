@@ -3,11 +3,9 @@ package org.icatproject.topcat.admin.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.TabExpander;
-
-import org.icatproject.topcat.admin.shared.Constants;
 import org.icatproject.topcat.admin.client.service.DataService;
 import org.icatproject.topcat.admin.client.service.DataServiceAsync;
+import org.icatproject.topcat.admin.shared.Constants;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
@@ -19,6 +17,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -35,7 +34,6 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.Button;
 
 public class AdminUI extends Composite {
 

@@ -1,7 +1,6 @@
 package org.icatproject.topcat.admin.server.ejb.session;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,8 +10,6 @@ import javax.persistence.PersistenceContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gwt.rpc.client.ast.ReturnCommand;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
@@ -95,7 +92,8 @@ public class AdminEJB {
 
 	public void removeIcatServer(Long id, String facilityName) {
 
-		List<TopcatIcatAuthentication> authenDetails = entityManager
+		@SuppressWarnings("unchecked")
+                List<TopcatIcatAuthentication> authenDetails = entityManager
 				.createNamedQuery("TopcatIcatAuthentication.findByServerName")
 				.setParameter("serverName", facilityName).getResultList();
 
@@ -113,7 +111,8 @@ public class AdminEJB {
 
 	public List<TAuthentication> authCall(String serverName) {
 		ArrayList<TAuthentication> authenticationDetails = new ArrayList<TAuthentication>();
-		List<TopcatIcatAuthentication> authenDetails = entityManager
+		@SuppressWarnings("unchecked")
+                List<TopcatIcatAuthentication> authenDetails = entityManager
 				.createNamedQuery("TopcatIcatAuthentication.findByServerName")
 				.setParameter("serverName", serverName).getResultList();
 		for (TopcatIcatAuthentication authentication : authenDetails) {
