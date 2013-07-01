@@ -13,7 +13,7 @@ from sys import exit
 from os import getcwd
 
 # Variables
-GLASSFISH_PROPS_FILE = "topcat_glassfish.props"
+GLASSFISH_PROPS_FILE = "topcat_glassfish.properties"
 
 REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish"]
 

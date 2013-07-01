@@ -35,7 +35,7 @@
 			<outputDirectory>topcat.${project.version}</outputDirectory>
 			<directory>${project.basedir}/../../Installation/etc</directory>
 			<includes>
-				<include>topcat_glassfish.props</include>
+				<include>topcat_glassfish.properties</include>
 				<include>topcat.properties.example</include>
 			</includes>
 		</fileSet>
