@@ -98,11 +98,23 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		int code = 0;
 		HttpURLConnection connection = null;
 		URL address = null;
+		logger.debug("Selection = " +urlSelection);
+		logger.debug("URL: " + url);
 		
-		if(urlSelection == "Download Service"){
+		if(urlSelection.equals("Download Service")){
 			url = url + "/getStatus";
 		}
+		else if (urlSelection.equals("ICAT")){
+			if (!url.matches(".*/ICATService/ICAT\\?wsdl$")) {
+				if (url.matches(".*/$")) {
+					url = url + "ICATService/ICAT?wsdl";
+				} else {
+		           	url = url + "/ICATService/ICAT?wsdl";
+				}
+			}
+		}
 		
+		logger.debug(urlSelection);
 		logger.debug(url);
 		try {
 			address = new URL(url);

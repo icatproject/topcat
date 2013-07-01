@@ -49,8 +49,7 @@
 						<g:SimplePanel width="100%">
 							<g:HTMLPanel width="" styleName="mergeAuto" ui:field="htmlPanel">
 								<g:Label styleName="TableHeader" width="" >ICAT Servers</g:Label>
-								<g:FlexTable ui:field="tableHeader" styleName="header"></g:FlexTable>
-								<g:FlexTable ui:field="table0"></g:FlexTable>
+								<g:FlexTable ui:field="table0" cellPadding="5"></g:FlexTable>
 								<g:SimplePanel styleName="margin-top">
 									<g:HorizontalPanel >
 										<g:Button ui:field="btnAdd" text="add" title="Add mew ICAT"></g:Button>
@@ -73,7 +72,7 @@
 						<g:HTMLPanel styleName="mergeAuto">
 							<g:Label styleName="TableHeader" ui:field="lblAuth"
 							visible="false"></g:Label>
-							<g:FlexTable ui:field="table1" styleName="buttonSpacing"></g:FlexTable>
+							<g:FlexTable ui:field="table1" styleName="buttonSpacing" cellPadding="5"></g:FlexTable>
 							<g:SimplePanel styleName="margin-top">
 								<g:Button ui:field="btnAddAuth" text="add" visible="false" title="Add new Authentication"></g:Button>
 							</g:SimplePanel>
@@ -95,7 +94,7 @@
 								title="This will be the name that is presented to users"></g:TextBox>
 							<g:ListBox ui:field="txtVersion"></g:ListBox>
 							<g:TextBox ui:field="txtServerUrl"
-								title="This should be the URL of the WSDL, e.g. https://example.com"></g:TextBox>
+								title="This should be the URL of the WSDL, e.g. https://example.com" width="150"></g:TextBox>
 							<g:ListBox ui:field="txtPluginName"></g:ListBox>
 							<g:ListBox ui:field="txtDownloadPluginName"></g:ListBox>
 							<g:TextBox ui:field="txtDownloadServiceUrl"
