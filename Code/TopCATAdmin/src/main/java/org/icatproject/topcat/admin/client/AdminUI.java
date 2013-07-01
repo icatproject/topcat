@@ -418,7 +418,7 @@ public class AdminUI extends Composite {
 						2);
 
 		// Initialising Typ ListBox
-		txtAuthType.insertItem("anonymous", 0);
+		txtAuthType.insertItem("anon", 0);
 		txtAuthType.insertItem("cas", 1);
 		txtAuthType.insertItem("db", 2);
 		txtAuthType.insertItem("ldap", 3);
@@ -909,7 +909,7 @@ public class AdminUI extends Composite {
 
 		TAuthentication authentication = new TAuthentication();
 
-		if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "anonymous") {
+		if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "anon") {
 			authentication.setPluginName(txtAuthPluginName.getItemText(0));
 		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "cas") {
 			authentication.setPluginName(txtAuthPluginName.getItemText(1));
