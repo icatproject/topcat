@@ -85,7 +85,7 @@
 								title="This will be the name that is presented to users"></g:TextBox>
 							<g:ListBox ui:field="txtVersion"></g:ListBox>
 							<g:TextBox ui:field="txtServerUrl"
-								title="This should be the URL of the WSDL, e.g. https://example.com/ICATService/ICAT?wsdl"></g:TextBox>
+								title="This should be the URL of the WSDL, e.g. https://example.com"></g:TextBox>
 							<g:ListBox ui:field="txtPluginName"></g:ListBox>
 							<g:ListBox ui:field="txtDownloadPluginName"></g:ListBox>
 							<g:TextBox ui:field="txtDownloadServiceUrl"

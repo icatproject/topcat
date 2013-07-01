@@ -52,7 +52,7 @@ public class AdminUI extends Composite {
 	public enum validationMessages {
 		FACILITY_NAME(
 				"Please provide a valid Facility Name to proceed e.g. ISIS"), ICAT_URL(
-				"Please provide a valid ICAT URL to proceed e.g. https://example.com/ICATService/ICAT?wsdl"), DOWNLOAD_SERVICE_URL(
+				"Please provide a valid ICAT URL to proceed e.g. https://example.com"), DOWNLOAD_SERVICE_URL(
 				"Please provide a valid Download Service URL to proceed e.g. https://example.com/IDS"), DISPLAY_NAME(
 				"Please provide a valid Display Name to proceed e.g. \"Facility ID\""), FACILITY_NAME_DUPLICATION(
 				"Facility Name already exists, please use a different Facility Name"), DISPLAY_NAME_DUPLICATION(
