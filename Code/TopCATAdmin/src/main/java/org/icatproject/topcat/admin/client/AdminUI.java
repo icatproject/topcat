@@ -35,6 +35,15 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * This is Topcat Admin Consol
+ * <p>
+ * 
+ * @author Mr. Noris Nyamekye
+ * @version 28-Jun-2013
+ * @since 28-Jun-2013
+ */
+
 public class AdminUI extends Composite {
 
 	interface adminUIUiBinder extends UiBinder<Widget, AdminUI> {
@@ -52,7 +61,7 @@ public class AdminUI extends Composite {
 	public enum validationMessages {
 		FACILITY_NAME(
 				"Please provide a valid Facility Name to proceed e.g. ISIS"), ICAT_URL(
-				"Please provide a valid ICAT URL to proceed e.g. https://example.com/ICATService/ICAT?wsdl"), DOWNLOAD_SERVICE_URL(
+				"Please provide a valid ICAT URL to proceed e.g. https://example.com"), DOWNLOAD_SERVICE_URL(
 				"Please provide a valid Download Service URL to proceed e.g. https://example.com/IDS"), DISPLAY_NAME(
 				"Please provide a valid Display Name to proceed e.g. \"Facility ID\""), FACILITY_NAME_DUPLICATION(
 				"Facility Name already exists, please use a different Facility Name"), DISPLAY_NAME_DUPLICATION(
@@ -79,7 +88,7 @@ public class AdminUI extends Composite {
 	Constants headerNames = new Constants();
 
 	@UiField
-	FlexTable table0, table1, tableHeader, editMenu, editAuthMenu;
+	FlexTable table0, table1, editMenu, editAuthMenu;
 	@UiField
 	VerticalPanel vPanel;
 	@UiField
@@ -157,25 +166,36 @@ public class AdminUI extends Composite {
 		idArrayTable0.clear();
 		idArrayTable0.add(null);
 
+		
+		
 		//Populates the Table 
 		for (TFacility facility : result) {
 			c = 0;
-
+			
 			table0.setText(r, c++, facility.getName());
 			table0.setText(r, c++, facility.getVersion());
-			table0.setText(r, c++, facility.getUrl());
+			
+			String[]  bits =  facility.getUrl().split("/ICATService/ICAT\\?wsdl");
+			
+			table0.setText(r, c++, bits[0]);
 			table0.setText(r, c++, facility.getSearchPluginName());
 			table0.setText(r, c++, facility.getDownloadPluginName());
 			table0.getRowFormatter().setStyleName(r, "table_style");
 			table0.setText(r++, c++, facility.getDownloadServiceUrl());
 			idArrayTable0.add(facility.getId());
-
 		}
+		
 		
 		// Check if a row is selected 
 		if (!(table0Row == 0) && table0Flag) {
 			handleRowSelection("table0");
 			table0Flag = false;
+		}
+		
+		for(int col=0; col < 6; col++){
+			for(int row=1; row <table0.getRowCount(); row++){
+				table0.getCellFormatter().setStyleName(1, 1, "cell");
+			}
 		}
 
 		// Adding an edit, delete, ping and show Authentication button to each end of the row except the Header row  
@@ -184,26 +204,31 @@ public class AdminUI extends Composite {
 		Button[] editBtn = new Button[r];
 		Button[] pingICatBtn = new Button[r];
 		Button[] pingDSBtn = new Button[r];
-		Button[] authbtn = new Button[r];
+		Button[] authDetailsBtn = new Button[r];
 
 		for (int i = 1; i < r; i++) {
 
 			editBtn[i] = new Button("edit");
 			table0.setWidget(i, 6, editBtn[i]);
 			editBtn[i].setTitle("Edit the ICAT");
+			editBtn[i].setPixelSize(50, 50);
 			deleteBtn[i] = new Button("delete");
 			table0.setWidget(i, 7, deleteBtn[i]);
 			deleteBtn[i].setTitle("Remove the ICAT");
+			deleteBtn[i].setPixelSize(50, 50);
 			pingICatBtn[i] = new Button("ping ICAT");
 			table0.setWidget(i, 8, pingICatBtn[i]);
 			pingICatBtn[i].setTitle("Ping the ICAT URL");
+			pingICatBtn[i].setPixelSize(50, 50);
 			pingDSBtn[i] = new Button("ping D.S.");
 			table0.setWidget(i, 9, pingDSBtn[i]);
 			pingDSBtn[i].setTitle("Ping the Download Service URL");
-			authbtn[i] = new Button("Show Auth. Details");
-			table0.setWidget(i, 10, authbtn[i]);
-			authbtn[i]
-					.setTitle("Show the Authetication Details associated with this ICAT");
+			pingDSBtn[i].setPixelSize(50, 50);
+			authDetailsBtn[i] = new Button("Auth. Details");
+			table0.setWidget(i, 10, authDetailsBtn[i]);
+			authDetailsBtn[i].setTitle("Show the Authetication Details associated with this ICAT");
+			authDetailsBtn[i].setPixelSize(50, 50);
+			
 
 		}
 		
@@ -316,9 +341,11 @@ public class AdminUI extends Composite {
 		editMenu.setWidget(0, 2, txtName);
 		editMenu.setWidget(1, 2, txtVersion);
 		editMenu.setWidget(2, 2, txtServerUrl);
+		txtServerUrl.setWidth("341px");
 		editMenu.setWidget(3, 2, txtPluginName);
 		editMenu.setWidget(4, 2, txtDownloadPluginName);
 		editMenu.setWidget(5, 2, txtDownloadServiceUrl);
+		txtDownloadServiceUrl.setWidth("341px");
 		editMenu.setWidget(6, 2, lbl1);
 		editMenu.setWidget(6, 0, hPanel0);
 
@@ -418,7 +445,7 @@ public class AdminUI extends Composite {
 						2);
 
 		// Initialising Typ ListBox
-		txtAuthType.insertItem("anonymous", 0);
+		txtAuthType.insertItem("anon", 0);
 		txtAuthType.insertItem("cas", 1);
 		txtAuthType.insertItem("db", 2);
 		txtAuthType.insertItem("ldap", 3);
@@ -475,7 +502,7 @@ public class AdminUI extends Composite {
 		facility.setName(txtName.getText());
 		facility.setVersion(txtVersion.getItemText(txtVersion
 				.getSelectedIndex()));
-		facility.setUrl(txtServerUrl.getText());
+		facility.setUrl(icatURLAppendixSetter(txtServerUrl.getText()));
 		facility.setSearchPluginName(txtPluginName.getItemText(txtPluginName
 				.getSelectedIndex()));
 		facility.setDownloadPluginName((txtDownloadPluginName
@@ -558,7 +585,8 @@ public class AdminUI extends Composite {
 			editMenu.setWidget(2, 1, new Image("images/exclamation-icon.png"));
 			invalidSUrl = true;
 		}
-		if (txtDownloadServiceUrl.getText().trim().isEmpty()) {
+		
+		if (txtDownloadServiceUrl.getText().trim().isEmpty() && !(txtDownloadPluginName.getSelectedIndex() == 0)) {
 			if ((invalidName || invalidSUrl) != true) {
 				lbl1.setText(validationMessages.DOWNLOAD_SERVICE_URL.toString());
 				txtDownloadServiceUrl.setFocus(true);
@@ -766,6 +794,8 @@ public class AdminUI extends Composite {
 				handlePingButtonEvent(result, urlSelection);
 			}
 		};
+		
+	    
 		// make the call to the server
 		dataService.ping(url, urlSelection, callback);
 
@@ -792,6 +822,17 @@ public class AdminUI extends Composite {
 	 * ################### Event handlers ##################
 	 */
 
+	String icatURLAppendixSetter(String serverURL){
+		 if (!serverURL.matches(".*/ICATService/ICAT\\?wsdl$")) {
+	            if (serverURL.matches(".*/$")) {
+	            	serverURL = serverURL + "ICATService/ICAT?wsdl";
+	            } else {
+	            	serverURL = serverURL + "/ICATService/ICAT?wsdl";
+	            }
+	        }
+		 return serverURL;
+	}
+	
 	@UiHandler("table0")
 	void handleTable0ButtonsClick(ClickEvent e) {
 
@@ -799,10 +840,12 @@ public class AdminUI extends Composite {
 		table0Row = cell.getRowIndex();
 		table0Column = cell.getCellIndex();
 		String url;
-
-		handleRowSelection("table0");
-		authTableCall();
-
+		
+		if (table0Row != 0){
+			handleRowSelection("table0");
+			authTableCall();
+		}
+			
 		switch (table0Column) {
 		case 6:
 			inititialiseMenu(MENU_EDIT);
@@ -909,7 +952,7 @@ public class AdminUI extends Composite {
 
 		TAuthentication authentication = new TAuthentication();
 
-		if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "anonymous") {
+		if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "anon") {
 			authentication.setPluginName(txtAuthPluginName.getItemText(0));
 		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "cas") {
 			authentication.setPluginName(txtAuthPluginName.getItemText(1));
@@ -1014,13 +1057,12 @@ public class AdminUI extends Composite {
 		PingDialogBox.center();
 		PingDialogBox.setVisible(true);
 	}
-
+	
 	void selectNewEntry() {
 		table0Row = table0.getRowCount();
 		table0.getRowFormatter().setStyleName(table0Row, "selected");
 		handleRowSelection("table0");
 		authTableCall();
 
-		//
 	}
 }

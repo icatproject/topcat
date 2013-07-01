@@ -56,14 +56,21 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     private final static Logger logger = Logger.getLogger(ICATInterfacev420.class.getName());
 
     public ICATInterfacev420(String serverURL, String serverName) throws MalformedURLException {
-        service = new ICATService(new URL(serverURL), new QName("http://icatproject.org", "ICATService")).getICATPort();
+        logger.info("ICATInterfacev420: serverURL (" + serverURL + "), serverName (" + serverName + ")");
+        URL url = new URL(serverURL);
+        if (!serverURL.matches(".*/ICATService/ICAT\\?wsdl$")) {
+            url = new URL(new URL(serverURL), "ICATService/ICAT?wsdl");
+        }
+        logger.trace("ICATInterfacev420: Using URL:" + url.toString());
+        service = new ICATService(url, new QName("http://icatproject.org", "ICATService")).getICATPort();
         this.serverName = serverName;
     }
 
     @Override
     public String loginLifetime(String authenticationType, Map<String, String> parameters, int hours)
             throws AuthenticationException {
-        logger.info("loginLifetime(" + authenticationType + ", parameters)");
+        logger.info("loginLifetime: authenticationType (" + authenticationType + "), number of parameters "
+                + parameters.size());
         String result = new String();
         try {
             // TODO no longer uses hours
@@ -78,10 +85,14 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             result = service.login(authenticationType, credentials);
         } catch (IcatException_Exception ex) {
             // TODO check type
+            logger.debug("loginLifetime: IcatException_Exception:" + ex.getMessage());
+
             throw new AuthenticationException("ICAT Server not available");
         } catch (javax.xml.ws.WebServiceException ex) {
+            logger.debug("loginLifetime: WebServiceException:" + ex.getMessage());
             throw new AuthenticationException("ICAT Server not available");
         }
+        logger.debug("loginLifetime: result(" + result + ")");
         return result;
     }
 

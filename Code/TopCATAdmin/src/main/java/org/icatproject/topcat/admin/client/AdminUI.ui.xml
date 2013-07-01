@@ -20,16 +20,26 @@
 						
 							<g:Label styleName="helpHeader">Help</g:Label>
 							<g:VerticalPanel spacing="10">
-								<g:Label text="In order to use topcat it must be configured to point to one or more icats. This web page allows admins to configure topcat to point to one or more icats. " styleName="italic"/>
+								<g:Label text="In order to use topcat it must be configured to point to one or more icats. " styleName="italic"/>
 								<g:Label text="Adding an Icat" styleName="helpSubHeader"/>
-							
-							
-								<g:Label text="To add an icat click on the add button. This will present you with a form to complete. Enter a name for the facility, this is the name that gets presented to the users. Select the version number of the icat that you are going to talk to. Enter the URL of the icats wsdl, e.g. http://example.com/ICATService/ICAT?wsdl. You may select a bespoke search plugin to associate with the facility, currently plugins exist for DLS and ISIS. Select a download plugin and provide the URL of the download server. You can then save the information.">..</g:Label>
-								<g:Label text="The next step is to associate one or more authentication plugins with the icat server. To do this click on the Show Auth. Details button and then on the add button that has just popped up. This will present you with another form to complete. Enter a display name. If you are providing more than one type of authentication the user will be presented with the list of display names to select from. You should therefore ensure that the display names are meaningful to the user. Select the appropriate authentication service type and if necessary provide a URL of the authentication service. You can then save the information. Add additional authentication details as required."/>
+								<g:Label text="1) Click on the add button, this will present you with a form to complete.">..</g:Label>
+								<g:Label text="2) Enter a name for the facility, this is the name that gets presented to the users.">..</g:Label>
+								<g:Label text="3) Select the version number of the icat that you are going to talk to.">..</g:Label>
+								<g:Label text="4) Enter the URL of the icat, e.g. http://example.com:8181.">..</g:Label>
+								<g:Label text="5) You may select a bespoke search plugin to associate with the facility, currently plugins exist for DLS and ISIS.">..</g:Label>
+								<g:Label text="6) Select a download plugin.">..</g:Label>
+								<g:Label text="7) Provide the URL of the download server.">..</g:Label>
+								<g:Label text="8) Save the information.">..</g:Label>
+								<g:Label text="The next step is to associate one or more authentication plugins with the icat server. ">..</g:Label>
+								<g:Label text="1) Click on the Show Auth. Details button.">..</g:Label>
+								<g:Label text="2) Click on the add button that has just popped up. This will present you with another form to complete.">..</g:Label>
+								<g:Label text="3) Enter a display name. If you are providing more than one type of authentication the user will be presented with the list of display names to select from. You should therefore ensure that the display names are meaningful to the user.">..</g:Label>
+								<g:Label text="4) Select the appropriate authentication service type.">..</g:Label>
+								<g:Label text="5) Optionally provide a URL of the authentication service.">..</g:Label>
+								<g:Label text="6) Save the information.">..</g:Label>
+								<g:Label text="7) Add additional authentication details as required."/>
 								<g:Label text="Testing Connections" styleName="helpSubHeader">..</g:Label>
 								<g:Label text="Ping functions have been provided to test that services are listening on the given URLs. This gives no guarantee that the remote service is functioning correctly."/>	
-						
-							
 							</g:VerticalPanel>
 					</g:FlowPanel>
 				</g:east> 
@@ -39,8 +49,7 @@
 						<g:SimplePanel width="100%">
 							<g:HTMLPanel width="" styleName="mergeAuto" ui:field="htmlPanel">
 								<g:Label styleName="TableHeader" width="" >ICAT Servers</g:Label>
-								<g:FlexTable ui:field="tableHeader" styleName="header"></g:FlexTable>
-								<g:FlexTable ui:field="table0"></g:FlexTable>
+								<g:FlexTable ui:field="table0" cellPadding="5"></g:FlexTable>
 								<g:SimplePanel styleName="margin-top">
 									<g:HorizontalPanel >
 										<g:Button ui:field="btnAdd" text="add" title="Add mew ICAT"></g:Button>
@@ -63,7 +72,7 @@
 						<g:HTMLPanel styleName="mergeAuto">
 							<g:Label styleName="TableHeader" ui:field="lblAuth"
 							visible="false"></g:Label>
-							<g:FlexTable ui:field="table1" styleName="buttonSpacing"></g:FlexTable>
+							<g:FlexTable ui:field="table1" styleName="buttonSpacing" cellPadding="5"></g:FlexTable>
 							<g:SimplePanel styleName="margin-top">
 								<g:Button ui:field="btnAddAuth" text="add" visible="false" title="Add new Authentication"></g:Button>
 							</g:SimplePanel>
@@ -85,7 +94,7 @@
 								title="This will be the name that is presented to users"></g:TextBox>
 							<g:ListBox ui:field="txtVersion"></g:ListBox>
 							<g:TextBox ui:field="txtServerUrl"
-								title="This should be the URL of the WSDL, e.g. https://example.com/ICATService/ICAT?wsdl"></g:TextBox>
+								title="This should be the URL of the WSDL, e.g. https://example.com" width="150"></g:TextBox>
 							<g:ListBox ui:field="txtPluginName"></g:ListBox>
 							<g:ListBox ui:field="txtDownloadPluginName"></g:ListBox>
 							<g:TextBox ui:field="txtDownloadServiceUrl"

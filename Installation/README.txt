@@ -1,19 +1,32 @@
 Topcat a Web Based GUI for Icat
 ###############################
 
-A setup script has been provided to help install topcat.
+A setup script has been provided to aid the installation of topcat when 
+deploying to Glassfish. When running the script you can increase the verbose
+level by using the -v option. The maximum level of output is obtained by using
+-vvv.
 
 
 PREREQUISITES
 #############
 
-Glassfish installed and <DOMAIN> running:
-> <GLASSFISH_HOME>/glassfish/bin/asadmin start-domain <DOMAIN>
+Glassfish installed and running.
 
-If you are not using the Derby database ensure the appropriate driver is in 
-<GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/lib/. Glassfish will need to be
-restarted after the driver is put there. You will also need write access to a
-database/schema.
+A Derby, MySQL or Oracle database system. You will need an empty schema/
+database with permissions for data definition operations such as
+"CREATE TABLE ..." You must place a copy of the "JDBC Connector" for your
+database in the lib directory below the domain where you will install topcat.
+You should get the connector from the database supplier. In the case of Oracle
+this is ojdbc14.jar or ojdbc16.jar and for MySQL it is something like
+mysql-connector-java*.jar.
+
+MySQL must be installed with InnoDB support and you must ensure that while
+installing ICAT the default engine is InnoDB. You can see the default engine
+with "show engines;". To fix an existing system you can use the ALTER TABLE
+command as explained in: storage-engine-setting
+
+In the case of Derby the connector comes pre-installed with Glassfish however
+we do not expect Derby to be used for production work.
 
 
 CONFIGURATION FILES
@@ -21,14 +34,16 @@ CONFIGURATION FILES
 
 The configuration files are described in more detail below. Configuration data
 is stored in the following files:
-	topcat_glassfish.props
+	topcat_glassfish.properties
 	topcat.properties
 
 
 INSTALLATION
 ############
 
-1) customise topcat_glassfish.props
+To install topcat using the setup script:
+
+1) customise topcat_glassfish.properties
 
 2) create and customise topcat.properties using topcat.properties.example as a
    template
@@ -36,7 +51,7 @@ INSTALLATION
 3) create the jdbc connection pool and resource, and the topcat admin user and
    enable the principal to role manager and deploy the topcat and topcat admin 
    applications to Glassfish using:
-> ./topcat_setup.py --install
+topcat_setup.py --install
 
 
 ADDING ICATS
@@ -44,15 +59,21 @@ ADDING ICATS
 
 In order for topcat to be useful it needs to know about one or more icats. To
 configure topcat to point to icat use the topcat admin console:
-	https://localhost.localdomain:8181/TopCATAdmin/
+https://localhost.localdomain:8181/TopCATAdmin/
 
 If the icats you are connecting to are using non standard certificates you
 will need to add them to the Glassfish trust store:
-> openssl s_client -showcerts -connect <HOST>:<PORT> </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/facility.cert
-> keytool -import -noprompt -alias <ALIAS> -file <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/facility.cert -keystore <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/cacerts.jks --storepass changeit 
+openssl s_client -showcerts -connect <HOST>:<PORT> </dev/null | \
+sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > \
+<GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/facility.cert
+
+keytool -import -noprompt -alias <ALIAS> \
+-file <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/facility.cert \
+-keystore <GLASSFISH_HOME>/glassfish/domains/<DOMAIN>/config/cacerts.jks \
+--storepass changeit 
 
 If you added certificates to the trust store you MUST restart glassfish:
-> asadmin restart-domain
+asadmin restart-domain
 
 
 UN-INSTALL
@@ -61,7 +82,8 @@ UN-INSTALL
 To delete the jdbc connection pool and resource, and the topcat admin user and
 disable the principal to role manager and undeploy the topcat and topcat admin 
 applications from Glassfish use:
-> ./topcat_setup.py --uninstall
+topcat_setup.py --uninstall
+This will not change the contents of the datbase.
 
 
 UPGRADING FROM 1.7 TO 1.9
@@ -71,7 +93,7 @@ UPGRADING FROM 1.7 TO 1.9
 > ./topcat_setup.py --uninstall
 
 2) Upgrade the database schema using:
-> ./topcat_upgrade.py --upgrade19
+> ./topcat_upgrade.py
 
 3) Install topcat using:
 > ./topcat_setup.py --install
@@ -87,8 +109,8 @@ and <GLASSFISH_HOME>glassfish/domains/<DOMAIN>/log/topcat*
 CONFIGURATION FILES IN MORE DETAIL
 ##################################
 
-glassfish.props
-~~~~~~~~~~~~~~~
+topcat_glassfish.properties
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The keys in this file are:
 	dbType (optional)
@@ -151,7 +173,9 @@ The keys in this file are:
 	COMPLAINTS_PROCEDURE
 	FEEDBACK
 
-A) KEYWORDS_CACHED - Boolean flag, 'true' or 'false'
+A) KEYWORDS_CACHED - Boolean flag, 'true' or 'false'. True will result in 
+   keywords being cached on the server, this could result in the bypassing of
+   the authorisation rules.
 
 B) LOGO_URL - The location of an image to display in the header of topcat. The
    value should be a path/file name relative to the 
