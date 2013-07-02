@@ -57,10 +57,14 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
 
     public ICATInterfacev420(String serverURL, String serverName) throws MalformedURLException {
         logger.info("ICATInterfacev420: serverURL (" + serverURL + "), serverName (" + serverName + ")");
-        URL url = new URL(serverURL);
         if (!serverURL.matches(".*/ICATService/ICAT\\?wsdl$")) {
-            url = new URL(new URL(serverURL), "ICATService/ICAT?wsdl");
+            if (serverURL.matches(".*/$")) {
+                serverURL = serverURL + "ICATService/ICAT?wsdl";
+            } else {
+                serverURL = serverURL + "/ICATService/ICAT?wsdl";
+            }
         }
+        URL url = new URL(serverURL);
         logger.trace("ICATInterfacev420: Using URL:" + url.toString());
         service = new ICATService(url, new QName("http://icatproject.org", "ICATService")).getICATPort();
         this.serverName = serverName;
