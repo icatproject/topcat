@@ -239,7 +239,13 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
         Client ids = getIDSClient(downloadServiceUrl);
         Status status = null;
         try {
+            if (logger.isTraceEnabled()) {
+                logger.trace("getStatusIDS: ids.getStatus (" + downloadModel.getPreparedId() + ")");
+            }
             status = ids.getStatus(downloadModel.getPreparedId());
+            if (logger.isTraceEnabled()) {
+                logger.trace("getStatusIDS: ids.getStatus returned:" + status);
+            }
         } catch (NotFoundException e) {
             // assume this one is finished, possibly expired
             if (logger.isTraceEnabled()) {
