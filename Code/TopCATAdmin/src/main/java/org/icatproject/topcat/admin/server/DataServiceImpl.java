@@ -102,7 +102,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		logger.debug("URL: " + url);
 		
 		if(urlSelection.equals("Download Service")){
+                    if (url.matches(".*/$")) {
+                        url = url + "getStatus";
+                    } else {
 			url = url + "/getStatus";
+                    }
 		}
 		else if (urlSelection.equals("ICAT")){
 			if (!url.matches(".*/ICATService/ICAT\\?wsdl$")) {
@@ -114,16 +118,16 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 		
-		logger.debug(urlSelection);
-		logger.debug(url);
 		try {
 			address = new URL(url);
+		        logger.debug("Connecting to URL: " + address);
 			if (address.getProtocol().equalsIgnoreCase("http")) {
 				connection = (HttpURLConnection) address.openConnection();
 			}else if (address.getProtocol().equalsIgnoreCase("https")) {
 				connection = (HttpsURLConnection) address.openConnection();
 			}
 			code = connection.getResponseCode();
+                        logger.debug("ResponseCode: " + code);
 
 		}catch (MalformedURLException e) {
 			String msg = "The URL '" + url.toString() + "' is invalid";
@@ -145,6 +149,8 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 			return "unsuccessfully. The requested resource does not exist"; 
 		case 200:
 			return "successfully";
+                case 501:
+                    return "successfully";
 		default:
 			return "unsuccessful";
 		}
