@@ -1,11 +1,13 @@
 Release 1.9
 ~~~~~~~~~~~~
 Bug fixes
+Added admin console
 Added support for the ICAT Data Service
 Added support for ICAT version no v42, this points to the existing
  ICATInterfacev420
 Added MESSAGE to topcat.properties, the message gets displayed by topcat
-Added verbose option to setup script
+Added verbose option to the setup script, -v, -vv and -vvv
+Properties file renamed from glassfish.props to topcat_glassfish.properties
 schema changes:
 Drop the columns AUTHENTICATION_SERVICE_URL and AUTHENTICATION_SERVICE_TYPE
  from TOPCAT_ICAT_SERVER

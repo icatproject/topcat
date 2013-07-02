@@ -83,20 +83,20 @@ To delete the jdbc connection pool and resource, and the topcat admin user and
 disable the principal to role manager and undeploy the topcat and topcat admin 
 applications from Glassfish use:
 topcat_setup.py --uninstall
-This will not change the contents of the datbase.
+This will not change the contents of the database.
 
 
 UPGRADING FROM 1.7 TO 1.9
 #########################
 
 1) Uninstall topcat using:
-> ./topcat_setup.py --uninstall
+topcat_setup.py --uninstall
 
 2) Upgrade the database schema using:
-> ./topcat_upgrade.py
+topcat_upgrade.py
 
 3) Install topcat using:
-> ./topcat_setup.py --install
+topcat_setup.py --install
 
 
 LOG FILES
@@ -104,6 +104,27 @@ LOG FILES
 
 Messages are logged in <GLASSFISH_HOME>glassfish/domains/<DOMAIN>/log/server.log
 and <GLASSFISH_HOME>glassfish/domains/<DOMAIN>/log/topcat*
+
+
+TOPCAT ADMIN CONSOLE
+####################
+
+Running topcat_setup.py --install will install the admin console. This gives 
+read write access to the data used by topcat to connect to an icat. The admin
+console is a web application, https://localhost.localdomain:8181/TopCATAdmin/
+A user name and password are required to log onto the console. The admin user
+is created when you run topcat_setup.py --install. The user name is taken from
+the topcat_glassfish.properties file, the default user name is topcatadmin. The
+password is set by the admin when topcat_setup.py --install is run.
+
+
+TOPCAT MESSAGE FIELD
+####################
+
+A message field has been added to the top of the topcat screen. This field is 
+populated from the contents of the MESSAGE variable in the topcat.properties 
+file. Any changes to this value will require a reload of topcat in order for
+them to take affect.
 
 
 CONFIGURATION FILES IN MORE DETAIL
