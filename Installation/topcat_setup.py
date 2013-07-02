@@ -133,8 +133,6 @@ def create(conf_props):
     if VERBOSE > 0:
         print "Create the database connection pool and resource"
     install_props_file(conf_props)
-    if conf_props['dbType'].upper() == "DERBY":
-        start_derby()
     create_connection_pool(conf_props)
     create_jdbc_resource()
     create_topcat_admin(conf_props)
@@ -237,24 +235,6 @@ def install_props_file(conf_props):
         copyfile(TOPCAT_PROPS_FILE, dest)
         if VERBOSE > 0:
             print "copied " + TOPCAT_PROPS_FILE + " to " + str(dest)
-
-
-def start_derby():
-    """
-    Ensure the derby database is running
-    """
-    if VERBOSE > 0:
-        print "Ensure the derby database is running"
-    command = ASADMIN + " start-database --dbhost 127.0.0.1"
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        print "ERROR starting Derby database"
-        exit(1)
 
 
 def delete(conf_props):
