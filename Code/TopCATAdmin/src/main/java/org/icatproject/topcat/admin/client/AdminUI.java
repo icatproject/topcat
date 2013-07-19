@@ -223,6 +223,9 @@ public class AdminUI extends Composite {
 			pingDSBtn[i] = new Button("ping D.S.");
 			table0.setWidget(i, 9, pingDSBtn[i]);
 			pingDSBtn[i].setTitle("Ping the Download Service URL");
+			if (table0.getText(i, 5).isEmpty()) {
+			    pingDSBtn[i].setEnabled(false);
+			}
 			pingDSBtn[i].setPixelSize(50, 50);
 			authDetailsBtn[i] = new Button("Auth. Details");
 			table0.setWidget(i, 10, authDetailsBtn[i]);
@@ -293,7 +296,10 @@ public class AdminUI extends Composite {
 				authDeleteButton[i] = new Button("delete");
 				table1.setWidget(i, 5, authDeleteButton[i]);
 				authPingButton[i] = new Button("ping");
-				table1.setWidget(i, 6, authPingButton[i]);
+				if (table1.getText(i, 3).isEmpty()    ) {
+				    authPingButton[i].setEnabled(false);
+				}
+                                table1.setWidget(i, 6, authPingButton[i]);
 			}
 		}
 		btnAddAuth.setVisible(true);
@@ -328,11 +334,11 @@ public class AdminUI extends Composite {
 		editMenu.setText(0, 0, Constants.NAME + ":");
 		editMenu.setText(1, 0, Constants.VERSION + ":");
 		editMenu.setText(2, 0, Constants.SERVER_URL + ":");
-		editMenu.setText(3, 0, Constants.PLUGIN_NAME + ":");
-		editMenu.setText(4, 0, Constants.DOWNLOAD_PLUGIN_NAME + ":");
-		editMenu.setText(5, 0, Constants.DOWNLOAD_SERVICE_URL + ":");
+		editMenu.setText(3, 0, Constants.FORM_PLUGIN_NAME + ":");
+		editMenu.setText(4, 0, Constants.FORM_DOWNLOAD_PLUGIN_NAME + ":");
+		editMenu.setText(5, 0, Constants.FORM_DOWNLOAD_SERVICE_URL + ":");
 
-		editMenu.getColumnFormatter().setWidth(0, "170px");
+		editMenu.getColumnFormatter().setWidth(0, "195px");
 		editMenu.getColumnFormatter().setWidth(1, "5px");
 		editMenu.getColumnFormatter().setWidth(2, "355px");
 		// CREATES A SPACE BETTWEEN THE LABELS AND THE WIDGETS
@@ -785,6 +791,9 @@ public class AdminUI extends Composite {
 	}
 
 	private void handlePingButtonClick(String url, final String urlSelection) {
+	        if (url.isEmpty()) {
+	            return;
+	        }
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());

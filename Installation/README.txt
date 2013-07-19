@@ -21,7 +21,7 @@ this is ojdbc14.jar or ojdbc16.jar and for MySQL it is something like
 mysql-connector-java*.jar.
 
 MySQL must be installed with InnoDB support and you must ensure that while
-installing ICAT the default engine is InnoDB. You can see the default engine
+installing topcat the default engine is InnoDB. You can see the default engine
 with "show engines;". To fix an existing system you can use the ALTER TABLE
 command as explained in: storage-engine-setting
 
@@ -34,7 +34,7 @@ CONFIGURATION FILES
 
 The configuration files are described in more detail below. Configuration data
 is stored in the following files:
-	topcat_glassfish.properties
+	topcat-setup.properties
 	topcat.properties
 
 
@@ -43,7 +43,7 @@ INSTALLATION
 
 To install topcat using the setup script:
 
-1) customise topcat_glassfish.properties
+1) customise topcat-setup.properties
 
 2) create and customise topcat.properties using topcat.properties.example as a
    template
@@ -51,7 +51,7 @@ To install topcat using the setup script:
 3) create the jdbc connection pool and resource, and the topcat admin user and
    enable the principal to role manager and deploy the topcat and topcat admin 
    applications to Glassfish using:
-topcat_setup.py --install
+setup.py install
 
 
 ADDING ICATS
@@ -76,27 +76,27 @@ If you added certificates to the trust store you MUST restart glassfish:
 asadmin restart-domain
 
 
-UN-INSTALL
-##########
+UNINSTALL
+#########
 
 To delete the jdbc connection pool and resource, and the topcat admin user and
 disable the principal to role manager and undeploy the topcat and topcat admin 
 applications from Glassfish use:
-topcat_setup.py --uninstall
+setup.py uninstall
 This will not change the contents of the database.
 
 
-UPGRADING FROM 1.7 TO 1.9
-#########################
+UPGRADING FROM 1.7 TO 1.9.0
+###########################
 
 1) Uninstall topcat using:
-topcat_setup.py --uninstall
+setup.py uninstall
 
 2) Upgrade the database schema using:
-topcat_upgrade.py
+upgrade_1_7.py
 
 3) Install topcat using:
-topcat_setup.py --install
+setup.py install
 
 
 LOG FILES
@@ -109,13 +109,13 @@ and <GLASSFISH_HOME>glassfish/domains/<DOMAIN>/log/topcat*
 TOPCAT ADMIN CONSOLE
 ####################
 
-Running topcat_setup.py --install will install the admin console. This gives 
-read write access to the data used by topcat to connect to an icat. The admin
-console is a web application, https://localhost.localdomain:8181/TopCATAdmin/
-A user name and password are required to log onto the console. The admin user
-is created when you run topcat_setup.py --install. The user name is taken from
-the topcat_glassfish.properties file, the default user name is topcatadmin. The
-password is set by the admin when topcat_setup.py --install is run.
+Running setup.py install will install the admin console. This gives read write
+access to the data used by topcat to connect to an icat. The admin console is a
+web application, https://localhost.localdomain:8181/TopCATAdmin/ A user name
+and password are required to log onto the console. The admin user is created
+when you run setup.py install. The user name is taken from the 
+topcat-setup.properties file, the default user name is topcatadmin. The
+password is set by the admin when setup.py install is run.
 
 
 TOPCAT MESSAGE FIELD
@@ -130,7 +130,7 @@ them to take affect.
 CONFIGURATION FILES IN MORE DETAIL
 ##################################
 
-topcat_glassfish.properties
+topcat-setup.properties
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The keys in this file are:

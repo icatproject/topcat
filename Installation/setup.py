@@ -8,10 +8,10 @@ from os import path
 from tempfile import TemporaryFile
 from shutil import copyfile
 from optparse import OptionParser
-from sys import exit
+import sys
 
 # Variables
-GLASSFISH_PROPS_FILE = "topcat_glassfish.properties"
+GLASSFISH_PROPS_FILE = "topcat-setup.properties"
 TOPCAT_PROPS_FILE = "topcat.properties"
 
 REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish", "topcatWar",
@@ -21,6 +21,21 @@ SUPPORTED_DATABASES = {"DERBY":'', "MYSQL":'', "ORACLE":''}
 
 # Do NOT change, this value is required by TopCAT
 CONNECTION_POOL_ID = 'TopCATDB'
+
+def add_newline(msg):
+    """
+    If there is a string add a newline to the end.
+    """
+    if msg != "":
+        msg = msg + "\n"
+    return msg
+
+def abort(msg):
+    """
+    Print the message to standard error and exit.
+    """
+    print >> sys.stderr, msg
+    sys.exit(1)
 
 
 def get_and_validate_props(file_name, req_values):
@@ -40,8 +55,7 @@ def get_props(file_name):
     """
     props_dict = {}
     if  not  path.exists(file_name):
-        print ("There is no file " + file_name)
-        exit(1)
+        abort("There is no file " + file_name)
     elif VERBOSE > 1:
         print ("Reading props from " + str(file_name))
     try:
@@ -70,8 +84,7 @@ def check_keys(props_dict, required_keys, file_name):
     """
     for key in required_keys:
         if not props_dict.has_key(key):
-            print (key + " must be set in the file " + file_name)
-            exit(1)
+            abort(key + " must be set in the file " + file_name)
     return
 
 
@@ -93,11 +106,11 @@ def add_optional_props(props_dict):
         if VERBOSE > 2:
             print ("Set dbType to " + str(props_dict["dbType"]))
     if not SUPPORTED_DATABASES.has_key(props_dict["dbType"].upper()):
-        print ("ERROR " + props_dict["dbType"] + 
+        msg = ("ERROR " + props_dict["dbType"] + 
                " not supported. Supported databases are: ")
         for key in SUPPORTED_DATABASES.keys():
-            print "    " + key
-        exit(1)
+            msg = msg + "\n    " + key
+        abort(msg)
     return props_dict
 
 
@@ -156,8 +169,7 @@ def create_connection_pool(conf_props):
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR creating jdbc connection pool"
-        exit(1)
+        abort("ERROR creating jdbc connection pool")
 
 
 def create_jdbc_resource():
@@ -174,8 +186,7 @@ def create_jdbc_resource():
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR creating jdbc resource"
-        exit(1)
+        abort("ERROR creating jdbc resource")
 
 
 def create_topcat_admin(conf_props):
@@ -190,8 +201,7 @@ def create_topcat_admin(conf_props):
         print command
     retcode = call(command, shell=True)
     if retcode > 0:
-        print "ERROR creating user " + user
-        exit(1)
+        abort("ERROR creating user " + user)
 
 
 def enable_principal_to_role_mng():
@@ -209,8 +219,7 @@ def enable_principal_to_role_mng():
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR enabling Default Principal to role Manager"
-        exit(1)
+        abort("ERROR enabling Default Principal to role Manager")
 
 
 def install_props_file(conf_props):
@@ -220,8 +229,7 @@ def install_props_file(conf_props):
     dest_dir = path.join(conf_props["glassfish"], "glassfish", "domains",
                      conf_props["domain"], "lib", "classes")
     if not path.exists(dest_dir):
-        print "ERROR Cannot find the directory " + dest_dir
-        exit(1)
+        abort("ERROR Cannot find the directory " + dest_dir)
     dest = path.join(dest_dir, TOPCAT_PROPS_FILE)
         
     if path.exists(dest):
@@ -229,73 +237,11 @@ def install_props_file(conf_props):
                + " new file not copied")
     else:
         if not path.exists(TOPCAT_PROPS_FILE):
-            print ("ERROR Cannot find " + TOPCAT_PROPS_FILE + 
+            abort("ERROR Cannot find " + TOPCAT_PROPS_FILE + 
                    " in the current directory")
-            exit(1)
         copyfile(TOPCAT_PROPS_FILE, dest)
         if VERBOSE > 0:
             print "copied " + TOPCAT_PROPS_FILE + " to " + str(dest)
-
-
-def delete(conf_props):
-    """
-    Delete the database connection pool and resource
-    """
-    user = conf_props['topcatAdminUser']
-    if VERBOSE > 0:
-        print "Delete the database connection pool and resource"
-    error = False
-    command = (ASADMIN + " " + 
-    "delete-jdbc-resource jdbc/" + CONNECTION_POOL_ID)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        print "ERROR deleting jdbc resource"
-        error = True
-
-    command = (ASADMIN + " delete-file-user " + user)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        print "ERROR deleting topcat admin user"
-        error = True
-
-    command = (ASADMIN + " " + 
-    "delete-jdbc-connection-pool " + CONNECTION_POOL_ID)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        print "ERROR deleting jdbc connection pool"
-        error = True
-
-    if VERBOSE > 0:
-        print "Disable Default Principal to role Manger"
-    command = (ASADMIN + " set server-config.security-service.activate-" + 
-               "default-principal-to-role-mapping=false")
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        print "ERROR disabling Default Principal to role Manger"
-        exit(1)
-
-    if error:
-        exit(1)
 
 
 def deploy(conf_props):
@@ -314,8 +260,7 @@ def deploy(conf_props):
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR deploying TopCAT"
-        exit(1)
+        abort("ERROR deploying TopCAT")
         
     # TOPCatAdmin
     if VERBOSE > 0:
@@ -329,15 +274,16 @@ def deploy(conf_props):
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR deploying TopCATAdmin Console"
-        exit(1)
+        abort("ERROR deploying TopCATAdmin Console")
 
 
-def undeploy():
+def undeploy(conf_props):
     """
-    Undeploy the TopCAT application & the TopCATAdmin Console
+    Undeploy the TopCAT application & the TopCATAdmin Console.
+    Delete the database connection pool and resource.
     """
-    # TOPCatAdmin
+    msg = ""
+    # TOPCat
     if VERBOSE > 0:
         print "Undeploy the TopCAT application"
     command = ASADMIN + " undeploy TopCAT"
@@ -348,7 +294,7 @@ def undeploy():
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR undeploying TopCAT"
+        msg = add_newline(msg) + "ERROR undeploying TopCAT"
 
     # TOPCatAdmin
     if VERBOSE > 0:
@@ -361,64 +307,83 @@ def undeploy():
     else:
         retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR undeploying TopCATAdmin Console"
+        msg = add_newline(msg) + "ERROR undeploying TopCATAdmin Console"
 
+    user = conf_props['topcatAdminUser']
+    if VERBOSE > 0:
+        print "Delete the database connection pool and resource"
 
-def status():
-    """
-    display the status as reported by asadmin
-    """
-    print "\nStatus"
-    print "\nDomains"
-    command = ASADMIN + " list-domains"
+    # jdbc resource
+    command = (ASADMIN + " " + 
+    "delete-jdbc-resource jdbc/" + CONNECTION_POOL_ID)
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR listing domains"
-    print "\nComponents"
-    command = ASADMIN + " list-components"
+        msg = add_newline(msg) + "ERROR deleting jdbc resource"
+
+    # topcat admin user
+    command = (ASADMIN + " delete-file-user " + user)
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR listing components"
-    print "\nJDBC connection pools"
-    command = ASADMIN + " list-jdbc-connection-pools"
+        msg = add_newline(msg) + "ERROR deleting topcat admin user"
+    
+    # jdbc connection pool
+    command = (ASADMIN + " " + 
+    "delete-jdbc-connection-pool " + CONNECTION_POOL_ID)
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR listing jdbc connection pools"
-    print "\nJDBC resources"
-    command = ASADMIN + " list-jdbc-resources"
+        msg = add_newline(msg) + "ERROR deleting jdbc connection pool"
+
+    # Default Principal to Role Manger
+    if VERBOSE > 0:
+        print "Disable Default Principal to Role Manger"
+    command = (ASADMIN + " set server-config.security-service.activate-" + 
+               "default-principal-to-role-mapping=false")
     if VERBOSE > 1:
         print command
-    retcode = call(command, shell=True)
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile())
     if retcode > 0:
-        print "ERROR listing jdbc resources"
+        msg = (add_newline(msg) + 
+               "ERROR disabling Default Principal to role Manger")
+
+    if msg != "":
+        abort(msg)
 
 
-PARSER = OptionParser()
-PARSER.add_option("--install", dest="install",
-                  help=("create the jdbc connection pool and resource, " + 
-                        "and the topcat admin user and enable the " + 
-                        "principal to role manager. Deploy the topcat and " + 
-                        "topcat admin applications to Glassfish"),
-                  action="store_true")
-PARSER.add_option("--uninstall", dest="uninstall",
-                  help=("delete the jdbc connection pool and resource, " + 
-                        "and the topcat admin user and disable the " + 
-                        "principal to role manager. Undeploy the topcat and " + 
-                        "topcat admin applications from Glassfish"),
-                  action="store_true")
-PARSER.add_option("--status", dest="status",
-                  help="display status information",
-                  action="store_true")
+
+PARSER = OptionParser("usage: %prog [options] install | uninstall")
 PARSER.add_option("-v", "--verbose", action="count", default=0,
                     help="increase output verbosity")
 
 (OPTIONS, ARGS) = PARSER.parse_args()
+
+if len(ARGS) != 1:
+    abort("Must have one argument: 'install' or 'uninstall'")
+
+CMD = ARGS[0].upper()
+if CMD not in ["INSTALL", "UNINSTALL"]:
+    abort("Must have one argument: 'install' or 'uninstall'")
+    
+if not path.exists ("setup.py"):
+    abort ("This must be run from the unpacked distribution directory")
+
 VERBOSE = OPTIONS.verbose
 
 CONF_PROPS = get_and_validate_props(GLASSFISH_PROPS_FILE, REQ_VALUES_TOPCAT)
@@ -432,17 +397,9 @@ ASADMIN = ASADMIN + " --port " + CONF_PROPS["port"]
 IJ = path.join(CONF_PROPS["glassfish"], "javadb", "bin", "ij")
 MYSQL = "mysql"
 
-if OPTIONS.install:
+if CMD == "INSTALL":
     create(CONF_PROPS)
     deploy(CONF_PROPS)
-elif OPTIONS.uninstall:
-    undeploy()
-    delete(CONF_PROPS)
-elif OPTIONS.status:
-    status()
-else:
-    print ("\nYou must provide an option\n")
-    print PARSER.print_help()
-    exit(1)
+else:  # UNINSTALL
+    undeploy(CONF_PROPS)
 
-exit(0)

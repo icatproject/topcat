@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Set up TopCAT
+Upgrade TopCAT
 """
 
 from subprocess import call
@@ -9,16 +9,23 @@ from os import environ
 from tempfile import NamedTemporaryFile
 from tempfile import TemporaryFile
 from optparse import OptionParser
-from sys import exit
 from os import getcwd
+import sys
 
 # Variables
-GLASSFISH_PROPS_FILE = "topcat_glassfish.properties"
+GLASSFISH_PROPS_FILE = "topcat-setup.properties"
 
 REQ_VALUES_TOPCAT = ["topcatProperties", "driver", "glassfish"]
 
 SUPPORTED_DATABASES = {"DERBY":'', "MYSQL":'', "ORACLE":''}
 
+def abort(msg):
+    """
+    Print the message to standard error and exit.
+    """
+    print >> sys.stderr, msg
+    sys.exit(1)
+    
 def get_and_validate_props(file_name, req_values):
     """
     The get_and_validate_props function gets the properties and validate them
@@ -36,8 +43,7 @@ def get_props(file_name):
     """
     props_dict = {}
     if  not  path.exists(file_name):
-        print ("There is no file " + file_name)
-        exit(1)
+        abort("There is no file " + file_name)
     elif VERBOSE > 1:
         print ("Reading props from " + str(file_name))
     try:
@@ -66,8 +72,7 @@ def check_keys(props_dict, required_keys, file_name):
     """
     for key in required_keys:
         if not props_dict.has_key(key):
-            print (key + " must be set in the file " + file_name)
-            exit(1)
+            abort(key + " must be set in the file " + file_name)
     return
 
         
@@ -89,11 +94,11 @@ def add_optional_props(props_dict):
         if VERBOSE > 2:
             print ("Set dbType to " + str(props_dict["dbType"]))
     if not SUPPORTED_DATABASES.has_key(props_dict["dbType"].upper()):
-        print ("ERROR " + props_dict["dbType"] + 
+        msg = ("ERROR " + props_dict["dbType"] + 
                " not supported. Supported databases are: ")
         for key in SUPPORTED_DATABASES.keys():
-            print "    " + key
-        exit(1)
+            msg = msg + "\n    " + key
+        abort(msg)
     return props_dict
 
 
@@ -121,24 +126,6 @@ def extract_db_props(topcat_properties):
     return props_dict
 
 
-def start_derby():
-    """
-    Ensure the derby database is running
-    """
-    if VERBOSE > 0:
-        print "Ensure the derby database is running"
-    command = ASADMIN + " start-database --dbhost 127.0.0.1"
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        print "ERROR starting Derby database"
-        exit(1)
-
-
 def upgrade(conf_props):
     """
     Upgrade the database
@@ -158,26 +145,22 @@ def get_sql_command(conf_props, db_props):
     """
     if conf_props['dbType'].upper() == "DERBY":
         sql_command = IJ
-        start_derby()
     elif conf_props['dbType'].upper() == "ORACLE":
         try:
             db_props['oracleHome'] = environ['ORACLE_HOME']
         except KeyError:
-            print "ERROR - Please set ORACLE_HOME"
-            exit(1)
+            abort("ERROR - Please set ORACLE_HOME")
         sqlplus = path.join(db_props['oracleHome'], "bin", "sqlplus")
         try:
             db_props['password']
         except KeyError:
-            print ("ERROR - Unable to extract DB password from"
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)
+            abort("ERROR - Unable to extract DB password from"
+                  + " topcatProperties in " + GLASSFISH_PROPS_FILE)
         try:
             db_props['hostname']
         except KeyError:
-            print ("ERROR - Unable to extract DB hostname from"
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)
+            abort("ERROR - Unable to extract DB hostname from"
+                 + " topcatProperties in " + GLASSFISH_PROPS_FILE)
         sql_command = (sqlplus + " " + db_props['user'] + "/" + 
                        db_props['password'] + "@" + 
                        db_props['hostname'] + " @")
@@ -185,15 +168,13 @@ def get_sql_command(conf_props, db_props):
         try:
             db_props['password']
         except KeyError:
-            print ("ERROR - Unable to extract DB password from"
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)
+            abort("ERROR - Unable to extract DB password from"
+                  + " topcatProperties in " + GLASSFISH_PROPS_FILE)
         try:
             db_props['databaseName']
         except KeyError:
-            print ("ERROR - Unable to extract DB databaseName from"
-                   + " topcatProperties in " + GLASSFISH_PROPS_FILE)
-            exit(1)
+            abort("ERROR - Unable to extract DB databaseName from"
+                  + " topcatProperties in " + GLASSFISH_PROPS_FILE)
         sql_command = (MYSQL + " -u " + db_props['user'] + " -p" + 
                        db_props['password'] + " " + db_props['databaseName'] + 
                        "<")
@@ -223,22 +204,22 @@ def upgrade_db(conf_props, sql_command, db_props):
                    "AUTHENTICATION_SERVICE_TYPE\n;\n")
 
     sql_file.write("ALTER TABLE TOPCAT_ICAT_SERVER ")
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR(255)\n;\n")
-    else:
+    if conf_props['dbType'].upper() == "ORACLE":
         sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR2(255)\n;\n")
+    else:
+        sql_file.write("ADD DOWNLOAD_SERVICE_URL VARCHAR(255)\n;\n")
         
     sql_file.write("ALTER TABLE TOPCAT_USER_DOWNLOAD ")
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("ADD PREPARED_ID VARCHAR(255)\n;\n")
-    else:
+    if conf_props['dbType'].upper() == "ORACLE":
         sql_file.write("ADD PREPARED_ID VARCHAR2(255)\n;\n")
-    
-    sql_file.write("ALTER TABLE ICAT_AUTHENTICATION ")
-    if conf_props['dbType'].upper() == "DERBY":
-        sql_file.write("ADD DISPLAY_NAME VARCHAR(255)\n;\n")
     else:
+        sql_file.write("ADD PREPARED_ID VARCHAR(255)\n;\n")
+
+    sql_file.write("ALTER TABLE ICAT_AUTHENTICATION ")
+    if conf_props['dbType'].upper() == "ORACLE":
         sql_file.write("ADD DISPLAY_NAME VARCHAR2(255)\n;\n")
+    else:
+        sql_file.write("ADD DISPLAY_NAME VARCHAR(255)\n;\n")
 
     if conf_props['dbType'].upper() == "ORACLE":
         sql_file.write("RENAME ICAT_AUTHENTICATION TO "
@@ -259,8 +240,7 @@ def upgrade_db(conf_props, sql_command, db_props):
     out_file = TemporaryFile()
     retcode = call(command, shell=True, stdout=out_file)
     if retcode > 0:
-        print "ERROR updating table"
-        exit(1)
+        abort("ERROR updating table")
     out_file.seek(0)
     lines = out_file.readlines()
     if VERBOSE > 2:
@@ -268,10 +248,10 @@ def upgrade_db(conf_props, sql_command, db_props):
             print line
     for line in lines:
         if line.find("ERROR") > -1:
-            print "ERROR updating table"
+            msg = "ERROR updating table"
             for lin in lines:
-                print lin
-            exit(1)
+                msg = msg + "\n" + lin
+            abort(msg)
     out_file.close()
     sql_file.close()
     print ("updated tables TOPCAT_ICAT_SERVER, TOPCAT_USER_DOWNLOAD and "
@@ -299,4 +279,3 @@ MYSQL = "mysql"
 
 upgrade(CONF_PROPS)
 
-exit(0)

@@ -2,7 +2,7 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>distribution</id>
+	<id>distro</id>
 	<formats>
 		<format>zip</format>
 	</formats>
@@ -25,8 +25,8 @@
 			<outputDirectory>topcat.${project.version}</outputDirectory>
 			<directory>${project.basedir}/../../Installation</directory>
 			<includes>
-				<include>topcat_upgrade.py</include>
-				<include>topcat_setup.py</include>
+				<include>upgrade_1_7.py</include>
+				<include>setup.py</include>
 				<include>README.txt</include>
 				<include>RELEASE_NOTES</include>
 			</includes>
@@ -35,7 +35,7 @@
 			<outputDirectory>topcat.${project.version}</outputDirectory>
 			<directory>${project.basedir}/../../Installation/etc</directory>
 			<includes>
-				<include>topcat_glassfish.properties</include>
+				<include>topcat-setup.properties</include>
 				<include>topcat.properties.example</include>
 			</includes>
 		</fileSet>

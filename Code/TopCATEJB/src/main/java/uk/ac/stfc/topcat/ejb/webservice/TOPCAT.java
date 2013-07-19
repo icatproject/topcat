@@ -141,7 +141,7 @@ public class TOPCAT {
         try {
             ArrayList<TFacility> fs = utility.getFacilities();
             output.append("OK").append("\n\n");
-            output.append("Topcat server version: 1.9-SNAPSHOT").append("\n\n");
+            output.append("Topcat server version: 1.9.0").append("\n\n");
             for (TFacility f : fs) {
                 output.append(f.toString()).append("\n");
                 List<TAuthentication> auths = utility.getAuthenticationDetails(f.getName());
@@ -153,7 +153,7 @@ public class TOPCAT {
         } catch (Throwable e) {
             output = new StringBuilder();
             output.append("ERROR").append("\n\n");
-            output.append("Topcat server version: 1.9-snap").append("\n\n");
+            output.append("Topcat server version: 1.9.0").append("\n\n");
             output.append(e.getMessage()).append("\n\n");
         }
         return output.toString();
