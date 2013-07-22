@@ -11,7 +11,7 @@
 		<gwt.version>2.4.0</gwt.version>
 		<gwt.plugin.version>2.4.0</gwt.plugin.version>
 		<gxt.version>2.2.3</gxt.version>
-		<ids.version>1.0.5</ids.version>
+		<ids.version>1.0.0</ids.version>
 		<runTarget>index.html</runTarget>
 	</properties>
 
@@ -29,6 +29,12 @@
 			<id>gxt</id>
 			<url>http://maven.jahia.org/maven2</url>
 		</repository>
+
+		<repository>
+			<id>ICAT Repo</id>
+			<url>http://www.icatproject.org/mvn/repo</url>
+		</repository>
+
 	</repositories>
 
 	<dependencies>
