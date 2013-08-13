@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:p1="urn:import:com.google.gwt.user.datepicker.client" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+	<ui:style>
+		
+	</ui:style>
+	<g:HTMLPanel styleName="null">
+		<g:FlexTable ui:field="f_table" styleName="msg-style"/>
+		
+		<p1:DateBox ui:field="fromDate"/>
+		<g:ListBox ui:field="fromTime"/>
+		<g:CheckBox ui:field="AllDayCheck" />
+		
+		<p1:DateBox ui:field="toDate"/>
+		<g:ListBox ui:field="toTime"/>
+		
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -5,16 +5,10 @@
 	xmlns:a="urn:import:java.awt" xmlns:asm="urn:import:com.google.gwt.dev.asm" xmlns:p1="urn:import:com.google.gwt.user.cellview.client">
 
 	<g:DockLayoutPanel styleName="centerBodyContent">
-
-		<g:north size="81.0">
-			<g:SimplePanel styleName="centerObject" height="80px">
-				<g:Label styleName="MainTitle">Topcat Admin Console</g:Label>
-			</g:SimplePanel>
-		</g:north>
-		
 		<g:center>
+			
 			<g:SplitLayoutPanel ui:field="sPanel">
-				
+					
 				<g:east size="270"> 
 					<g:FlowPanel styleName="table_style" ui:field="flowPanel">
 						
@@ -67,7 +61,6 @@
 				</g:north>
 
 				<g:center>
-					
 					<g:SimplePanel width="100%" ui:field="simplePanel0" styleName="scroll">
 						<g:HTMLPanel styleName="mergeAuto">
 							<g:Label styleName="TableHeader" ui:field="lblAuth"
@@ -78,9 +71,10 @@
 							</g:SimplePanel>
 						</g:HTMLPanel>
 					</g:SimplePanel>	
-			
 				</g:center>
+					
 			</g:SplitLayoutPanel>
+	
 		</g:center>
 		<g:south size="1">
 			<g:FlowPanel styleName="centerObject">
