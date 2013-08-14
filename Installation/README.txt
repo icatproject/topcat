@@ -86,16 +86,13 @@ setup.py uninstall
 This will not change the contents of the database.
 
 
-UPGRADING FROM 1.7 TO 1.9.0
-###########################
+UPGRADING FROM 1.9.0 TO 1.10.0
+##############################
 
 1) Uninstall topcat using:
 setup.py uninstall
 
-2) Upgrade the database schema using:
-upgrade_1_7.py
-
-3) Install topcat using:
+2) Install topcat using:
 setup.py install
 
 

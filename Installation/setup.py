@@ -22,14 +22,6 @@ SUPPORTED_DATABASES = {"DERBY":'', "MYSQL":'', "ORACLE":''}
 # Do NOT change, this value is required by TopCAT
 CONNECTION_POOL_ID = 'TopCATDB'
 
-def add_newline(msg):
-    """
-    If there is a string add a newline to the end.
-    """
-    if msg != "":
-        msg = msg + "\n"
-    return msg
-
 def abort(msg):
     """
     Print the message to standard error and exit.
@@ -138,6 +130,25 @@ def extract_db_props(topcat_properties):
     return props_dict
 
 
+def run_cmd(command, errormsg, abortOnError=True):
+    """
+    Run the command
+    """
+    if VERBOSE > 1:
+        print command
+    if VERBOSE > 2:
+        retcode = call(command, shell=True)
+    else:
+        retcode = call(command, shell=True, stdout=TemporaryFile()) 
+    if retcode > 0:
+        if abortOnError:
+            abort(errormsg)
+        else:
+            print >> sys.stderr, errormsg
+            return 1
+    return 0
+
+
 def create(conf_props):
     """
     Create the jdbc connection pool and resource, and the topcat admin user and
@@ -162,14 +173,7 @@ def create_connection_pool(conf_props):
                  " --steadypoolsize 2 --maxpoolsize 8 --ping" + 
                  " --property " + conf_props["topcatProperties"] + " " + 
                  CONNECTION_POOL_ID)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        abort("ERROR creating jdbc connection pool")
+    run_cmd(command, "ERROR creating JDBC connection pool")          
 
 
 def create_jdbc_resource():
@@ -179,14 +183,7 @@ def create_jdbc_resource():
     command = (ASADMIN + " create-jdbc-resource --connectionpoolid " + 
                  CONNECTION_POOL_ID + " " + "jdbc/" + 
                  CONNECTION_POOL_ID)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        abort("ERROR creating jdbc resource")
+    run_cmd(command, "ERROR creating JDBC resource")          
 
 
 def create_topcat_admin(conf_props):
@@ -212,14 +209,7 @@ def enable_principal_to_role_mng():
         print "Enable Default Principal to role Manager"
     command = (ASADMIN + " set server-config.security-service.activate" + 
                "-default-principal-to-role-mapping=true")
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        abort("ERROR enabling Default Principal to role Manager")
+    run_cmd(command, "ERROR enabling Default Principal to role Manager")          
 
 
 def install_props_file(conf_props):
@@ -253,28 +243,14 @@ def deploy(conf_props):
         print "Deploy the TopCAT application"
     command = (ASADMIN + " deploy --name TopCAT "
                + conf_props['topcatWar'])
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        abort("ERROR deploying TopCAT")
+    run_cmd(command, "ERROR deploying TopCAT")          
         
     # TOPCatAdmin
     if VERBOSE > 0:
         print "Deploy the TopCATAdmin Console"
     command = (ASADMIN + " deploy --contextroot TopCATAdmin --name TopCATAdmin "
                + conf_props['topcatAdminWar'])
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        abort("ERROR deploying TopCATAdmin Console")
+    run_cmd(command, "ERROR deploying TopCATAdmin Console")          
 
 
 def undeploy(conf_props):
@@ -282,89 +258,49 @@ def undeploy(conf_props):
     Undeploy the TopCAT application & the TopCATAdmin Console.
     Delete the database connection pool and resource.
     """
-    msg = ""
+    ret = 0
     # TOPCat
     if VERBOSE > 0:
         print "Undeploy the TopCAT application"
     command = ASADMIN + " undeploy TopCAT"
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        msg = add_newline(msg) + "ERROR undeploying TopCAT"
+    ret = ret + run_cmd(command, "ERROR undeploying TopCAT", False)          
+
 
     # TOPCatAdmin
     if VERBOSE > 0:
         print "Undeploy the TopCATAdmin Console"
     command = ASADMIN + " undeploy TopCATAdmin"
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        msg = add_newline(msg) + "ERROR undeploying TopCATAdmin Console"
+    ret = ret + run_cmd(command, "ERROR undeploying TopCATAdmin Console",
+                        False)
 
-    user = conf_props['topcatAdminUser']
     if VERBOSE > 0:
         print "Delete the database connection pool and resource"
 
     # jdbc resource
     command = (ASADMIN + " " + 
     "delete-jdbc-resource jdbc/" + CONNECTION_POOL_ID)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        msg = add_newline(msg) + "ERROR deleting jdbc resource"
+    ret = ret + run_cmd(command, "ERROR deleting jdbc resource", False)
 
     # topcat admin user
+    user = conf_props['topcatAdminUser']
     command = (ASADMIN + " delete-file-user " + user)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        msg = add_newline(msg) + "ERROR deleting topcat admin user"
+    ret = ret + run_cmd(command, "ERROR deleting topcat admin user", False)
     
     # jdbc connection pool
     command = (ASADMIN + " " + 
     "delete-jdbc-connection-pool " + CONNECTION_POOL_ID)
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        msg = add_newline(msg) + "ERROR deleting jdbc connection pool"
+    ret = ret + run_cmd(command, "ERROR deleting jdbc connection pool", False)
 
     # Default Principal to Role Manger
     if VERBOSE > 0:
         print "Disable Default Principal to Role Manger"
     command = (ASADMIN + " set server-config.security-service.activate-" + 
                "default-principal-to-role-mapping=false")
-    if VERBOSE > 1:
-        print command
-    if VERBOSE > 2:
-        retcode = call(command, shell=True)
-    else:
-        retcode = call(command, shell=True, stdout=TemporaryFile())
-    if retcode > 0:
-        msg = (add_newline(msg) + 
-               "ERROR disabling Default Principal to role Manger")
-
-    if msg != "":
-        abort(msg)
+    ret = ret + run_cmd(command,
+                        "ERROR disabling Default Principal to role Manger",
+                        False)
+    if ret > 0:
+        exit(1)
 
 
 
