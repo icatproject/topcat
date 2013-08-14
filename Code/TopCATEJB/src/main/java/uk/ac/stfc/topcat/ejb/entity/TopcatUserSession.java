@@ -60,6 +60,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TopcatUserSession.findByAnonymous",query = "SELECT t FROM TopcatUserSession t WHERE t.topcatSessionId IS NULL")
 })
 @XmlRootElement
+
 public class TopcatUserSession implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
