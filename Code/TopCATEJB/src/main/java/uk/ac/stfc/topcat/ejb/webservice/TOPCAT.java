@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2009-2010
+ * Copyright (c) 2009-2013
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -65,6 +65,8 @@ public class TOPCAT {
     private DownloadManagementBeanLocal downloadManagement;
     @EJB
     private UtilityLocal utility;
+
+    private static final String VERSION = "1.10.0-SNAPSHOT";
 
     @WebMethod(operationName = "login")
     public String login() throws AuthenticationException {
@@ -141,7 +143,7 @@ public class TOPCAT {
         try {
             ArrayList<TFacility> fs = utility.getFacilities();
             output.append("OK").append("\n\n");
-            output.append("Topcat server version: 1.9.0").append("\n\n");
+            output.append("Topcat server version: ").append(VERSION).append("\n\n");
             for (TFacility f : fs) {
                 output.append(f.toString()).append("\n");
                 List<TAuthentication> auths = utility.getAuthenticationDetails(f.getName());
@@ -153,10 +155,18 @@ public class TOPCAT {
         } catch (Throwable e) {
             output = new StringBuilder();
             output.append("ERROR").append("\n\n");
-            output.append("Topcat server version: 1.9.0").append("\n\n");
+            output.append("Topcat server version: ").append(VERSION).append("\n\n");
             output.append(e.getMessage()).append("\n\n");
         }
         return output.toString();
+    }
+
+    /**
+     * Web service operation
+     * 
+     */
+    public String getVersion() {
+        return VERSION;
     }
 
 }
