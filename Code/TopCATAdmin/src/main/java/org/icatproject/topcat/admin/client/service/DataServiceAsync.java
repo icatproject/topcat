@@ -42,6 +42,5 @@ public interface DataServiceAsync {
 
 	void authCount(AsyncCallback<ArrayList<Integer>> callback);
 
-	
-
+	void getAllMessages(AsyncCallback<String> callback);
 }

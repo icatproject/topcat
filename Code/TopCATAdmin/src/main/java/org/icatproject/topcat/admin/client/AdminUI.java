@@ -648,7 +648,7 @@ public class AdminUI extends Composite {
 	}
 
 	/*
-	 * ################### Server Calls ##################F
+	 * ################### Server Calls ##################
 	 */
 
 	private void updateAuth(TAuthentication authentication) {

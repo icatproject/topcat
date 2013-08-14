@@ -5,6 +5,7 @@
 		
 	</ui:style>
 	<g:HTMLPanel styleName="null">
+		<g:Label text="Message Generator" horizontalAlignment="ALIGN_CENTER" styleName="subheader"/>
 		<g:FlexTable ui:field="f_table" styleName="msg-style"/>
 		
 		<p1:DateBox ui:field="fromDate"/>

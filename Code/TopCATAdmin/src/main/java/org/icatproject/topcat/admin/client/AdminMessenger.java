@@ -2,10 +2,15 @@ package org.icatproject.topcat.admin.client;
 
 
 
+import org.icatproject.topcat.admin.client.service.DataService;
+import org.icatproject.topcat.admin.client.service.DataServiceAsync;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -17,7 +22,8 @@ public class AdminMessenger extends Composite {
 
 	private static AdminMessengerUiBinder uiBinder = GWT
 			.create(AdminMessengerUiBinder.class);
-
+	private DataServiceAsync dataService = GWT.create(DataService.class);
+	
 	interface AdminMessengerUiBinder extends UiBinder<Widget, AdminMessenger> {
 	}
 	
@@ -32,11 +38,10 @@ public class AdminMessenger extends Composite {
 			,"19:00","19:30","20:00","20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
 	
 	
-	
-	
 	public AdminMessenger() {
 		initWidget(uiBinder.createAndBindUi(this));
 		onMudlueLoad();
+		messageCall();
 	}
 
 
@@ -68,6 +73,24 @@ public class AdminMessenger extends Composite {
 		
 	}
 
+	private void messageCall(){
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				// TODO Auto-generated method stub
+			}
+		};
+		// make the call to the server
+		dataService.getAllMessages(callback);
+	}
+
+	
 }
 	
 

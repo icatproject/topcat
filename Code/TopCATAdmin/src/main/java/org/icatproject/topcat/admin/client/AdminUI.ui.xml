@@ -42,6 +42,7 @@
 					<g:ScrollPanel ui:field="scrollPanel" height="">
 						<g:SimplePanel width="100%">
 							<g:HTMLPanel width="" styleName="mergeAuto" ui:field="htmlPanel">
+								<g:Label text="DB Management" styleName="subheader" horizontalAlignment="ALIGN_CENTER"/>
 								<g:Label styleName="TableHeader" width="" >ICAT Servers</g:Label>
 								<g:FlexTable ui:field="table0" cellPadding="5"></g:FlexTable>
 								<g:SimplePanel styleName="margin-top">

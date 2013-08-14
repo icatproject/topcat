@@ -40,4 +40,6 @@ public interface DataService extends RemoteService {
 
 	ArrayList<Integer> authCount() throws TopcatException;
 
+	String getAllMessages() throws TopcatException;
+
 }

@@ -181,4 +181,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 
 		return list;
 	}
+	
+	public String getAllMessages() {
+//		adminEJB.messageCall();
+		return "HEllo";
+	}
 }

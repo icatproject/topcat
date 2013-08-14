@@ -92,8 +92,14 @@
 	font-weight: bold;
 	text-align: center;
 }
-.italic {
-	font-style: italic;
+.subheader {
+	color: #d1d1d1;
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-left: 10px;
+	font-size: 18px;
+	font-style: normal;
+	font-weight: bold;
 }
 .helpSubHeader {
 	font-weight: bold;
@@ -119,4 +125,8 @@ overflow:auto;
 	margin-right: auto;
 	margin-left: auto;
 	border: 2px dashed #295380;
+	font-weight: bold;
+}
+.italic {
+	font-style: italic;
 }

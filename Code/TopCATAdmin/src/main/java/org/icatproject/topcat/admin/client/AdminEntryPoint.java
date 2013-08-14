@@ -33,7 +33,7 @@ public class AdminEntryPoint implements EntryPoint {
 		
 		tabLayoutPanel.setAnimationDuration(1000);
 		tabLayoutPanel.add(adminUI, "DB Managment");
-		tabLayoutPanel.add(adminMsg, "TopCat Message Generater");
+		tabLayoutPanel.add(adminMsg, "Message Generater");
 
 	}
 }
