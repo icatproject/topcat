@@ -50,7 +50,7 @@ public class TMessages implements Serializable {
         return stopTime;
     }
 
-    public void setmessage(Date stopTime) {
+    public void setStopTime(Date stopTime) {
         this.stopTime = stopTime;
     }   
     

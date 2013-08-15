@@ -12,6 +12,7 @@
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUserSession</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatKeywords</class>
+		<class>uk.ac.stfc.topcat.ejb.entity.TopcatMessages</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<!-- Prints out SQL generated from EJBQL -->
@@ -34,6 +35,7 @@
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUserInfo</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatUserSession</class>
 		<class>uk.ac.stfc.topcat.ejb.entity.TopcatKeywords</class>
+		<class>uk.ac.stfc.topcat.ejb.entity.TopcatMessages</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<!-- Prints out SQL generated from EJBQL -->

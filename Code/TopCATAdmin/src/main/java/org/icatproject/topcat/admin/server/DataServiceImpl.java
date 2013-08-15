@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TMessages;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -182,8 +183,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		return list;
 	}
 	
-	public String getAllMessages() {
-//		adminEJB.messageCall();
-		return "HEllo";
+	public List<TMessages> getAllMessages() {
+		return adminEJB.messageCall();
 	}
 }

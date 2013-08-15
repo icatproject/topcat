@@ -5,6 +5,7 @@ import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TMessages;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -42,5 +43,5 @@ public interface DataServiceAsync {
 
 	void authCount(AsyncCallback<ArrayList<Integer>> callback);
 
-	void getAllMessages(AsyncCallback<String> callback);
+	void getAllMessages(AsyncCallback<List<TMessages>> callback);
 }

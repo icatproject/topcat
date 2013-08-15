@@ -8,6 +8,7 @@ import org.icatproject.topcat.admin.shared.SessionException;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TMessages;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -40,6 +41,6 @@ public interface DataService extends RemoteService {
 
 	ArrayList<Integer> authCount() throws TopcatException;
 
-	String getAllMessages() throws TopcatException;
+	List<TMessages> getAllMessages() throws TopcatException;
 
 }

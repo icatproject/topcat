@@ -2,8 +2,12 @@ package org.icatproject.topcat.admin.client;
 
 
 
+import java.util.List;
+
 import org.icatproject.topcat.admin.client.service.DataService;
 import org.icatproject.topcat.admin.client.service.DataServiceAsync;
+
+import uk.ac.stfc.topcat.core.gwt.module.TMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -67,14 +71,11 @@ public class AdminMessenger extends Composite {
 			fromTime.addItem(values);
 			toTime.addItem(values);
 		}
-		
-		
-
-		
+						
 	}
 
 	private void messageCall(){
-		AsyncCallback<String> callback = new AsyncCallback<String>() {
+		AsyncCallback<List<TMessages>> callback = new AsyncCallback<List<TMessages>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -82,14 +83,17 @@ public class AdminMessenger extends Composite {
 			}
 
 			@Override
-			public void onSuccess(String result) {
-				// TODO Auto-generated method stub
+			public void onSuccess(List<TMessages> result) {
+				Window.alert(result.toString());
 			}
 		};
 		// make the call to the server
 		dataService.getAllMessages(callback);
 	}
 
+	private void generateCellTable(){
+		
+	}
 	
 }
 	

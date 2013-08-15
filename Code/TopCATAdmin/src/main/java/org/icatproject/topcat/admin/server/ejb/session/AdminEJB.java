@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
+import uk.ac.stfc.topcat.core.gwt.module.TMessages;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
+import uk.ac.stfc.topcat.ejb.entity.TopcatMessages;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
 @Stateless
@@ -165,6 +167,24 @@ public class AdminEJB {
 				.createNamedQuery("TopcatIcatAuthentication.findByServerName")
 				.setParameter("serverName", serverName).getResultList().size();
 		return count;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TMessages> messageCall() {
+		
+		 List<TMessages> tMessages = new ArrayList<TMessages>();
+		 List<?> messages = entityManager.createNamedQuery("TopcatMessages.findAll").getResultList();
+		
+		 for (Object message: messages){
+			 TMessages tMessage = new TMessages();
+			 tMessage.setId(((TopcatMessages) message).getId());
+			 tMessage.setmessage(((TopcatMessages) message).getMessage());
+			 tMessage.setstartTime(((TopcatMessages) message).getStartTime());
+			 tMessage.setStopTime(((TopcatMessages) message).getStopTime());
+			 tMessages.add(tMessage);
+		 }
+		return tMessages;
+		 
 	}
 
 }

@@ -26,11 +26,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "TOPCAT_MESSAGES")
 @NamedQueries({
         @NamedQuery(name = "TopcatMessages.findAll", query = "SELECT t FROM TopcatMessages t"),
-        @NamedQuery(name = "TopcatMessages.findById", query = "SELECT t FROM TopcatMessages t WHERE t.id = :id") })
+        @NamedQuery(name = "TopcatMessages.findById", query = "SELECT t FROM TopcatMessages t WHERE t.id = :id")
+})
 @XmlRootElement
-
-
-public class TopcatMessages implements Serializable{
+public class TopcatMessages implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,13 +37,16 @@ public class TopcatMessages implements Serializable{
 	@Column(name = "ID")
 	private Long id;
 	
+	@Basic(optional = false)
 	@Column(name = "MESSAGE")
 	private String message;
-
+	
+	@Basic(optional = false)
 	@Column(name = "START_TIME")
     @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
-    
+	
+	@Basic(optional = false)
     @Column(name = "STOP_TIME")
     @Temporal(TemporalType.TIMESTAMP)
     private Date stopTime;
@@ -88,8 +90,6 @@ public class TopcatMessages implements Serializable{
     public Date getStopTime() {
   		return stopTime;
   	}
-    
-    
     
     @Override
     public int hashCode() {
