@@ -186,4 +186,10 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	public List<TMessages> getAllMessages() {
 		return adminEJB.messageCall();
 	}
+
+	@Override
+	public String addMessages(TMessages message) throws TopcatException {
+		adminEJB.addMessage(message);
+		return "Successfull";
+	}
 }

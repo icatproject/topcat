@@ -10,6 +10,10 @@
 	
 }
 
+.center{
+	text-align: center;
+}
+
 .table_style{
 	background-color: #ececec;
 	color: black;
@@ -28,10 +32,8 @@
 	margin-left: 30px;
 }
 .centerObject {
-	
 	padding-top: 20px;
 	text-align: center;
-	
 }
 
 .font {
@@ -94,7 +96,7 @@
 }
 .subheader {
 	color: #d1d1d1;
-	margin-top: 10px;
+	margin-top: 10PX;
 	margin-right: 10px;
 	margin-left: 10px;
 	font-size: 18px;
@@ -121,12 +123,25 @@ overflow:auto;
 	margin-top: 15px;
 }
 .msg-style {
-	margin-top: 5%;
-	margin-right: auto;
-	margin-left: auto;
-	border: 2px dashed #295380;
+	margin: 2% auto 5px;
+	border: 1px solid #295380;
 	font-weight: bold;
 }
 .italic {
 	font-style: italic;
+}
+.msg-style2 {
+	margin-top: 20px;
+	margin-right: auto;
+	margin-left: auto;
+	border: 1px solid #295380;
+
+
+}
+.msg-style3 {
+	margin-right: auto;
+	margin-left: auto;
+}
+.margin-bottom {
+	margin-bottom: 5px;
 }

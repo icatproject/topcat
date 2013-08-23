@@ -4,9 +4,9 @@
 	<ui:style>
 		
 	</ui:style>
-	<g:HTMLPanel styleName="null">
+	<g:HTMLPanel>
 		<g:Label text="Message Generator" horizontalAlignment="ALIGN_CENTER" styleName="subheader"/>
-		<g:FlexTable ui:field="f_table" styleName="msg-style"/>
+		<g:FlexTable ui:field="table0" styleName="msg-style"/>
 		
 		<p1:DateBox ui:field="fromDate"/>
 		<g:ListBox ui:field="fromTime"/>
@@ -14,6 +14,17 @@
 		
 		<p1:DateBox ui:field="toDate"/>
 		<g:ListBox ui:field="toTime"/>
+		<g:VerticalPanel styleName="msg-style2">
+		
+		
+			<g:ScrollPanel ui:field="scrollPanel" styleName="margin-bottom">
+					<g:FlexTable ui:field="table1" borderWidth="0"/>
+			</g:ScrollPanel>
+			<g:HorizontalPanel width="100%">
+				<g:Button ui:field="addBtn" text="add "/>
+				<g:TextBox ui:field="txtMessage"></g:TextBox>
+			</g:HorizontalPanel>
+		</g:VerticalPanel>
 		
 	</g:HTMLPanel>
 </ui:UiBinder> 

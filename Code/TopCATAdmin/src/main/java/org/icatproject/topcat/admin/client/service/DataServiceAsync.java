@@ -44,4 +44,7 @@ public interface DataServiceAsync {
 	void authCount(AsyncCallback<ArrayList<Integer>> callback);
 
 	void getAllMessages(AsyncCallback<List<TMessages>> callback);
+
+	void addMessages(TMessages message, AsyncCallback<String> callback);
+
 }

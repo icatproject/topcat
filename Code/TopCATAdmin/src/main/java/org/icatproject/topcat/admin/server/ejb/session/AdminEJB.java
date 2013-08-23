@@ -179,12 +179,24 @@ public class AdminEJB {
 			 TMessages tMessage = new TMessages();
 			 tMessage.setId(((TopcatMessages) message).getId());
 			 tMessage.setmessage(((TopcatMessages) message).getMessage());
-			 tMessage.setstartTime(((TopcatMessages) message).getStartTime());
+			 tMessage.setStartTime(((TopcatMessages) message).getStartTime());
 			 tMessage.setStopTime(((TopcatMessages) message).getStopTime());
 			 tMessages.add(tMessage);
 		 }
 		return tMessages;
 		 
+	}
+
+	public void addMessage(TMessages message) {
+		TopcatMessages entity = new TopcatMessages();
+		entity.setMessage(message.getmessage());
+		entity.setStartTime(message.getStartTime());
+		entity.setStopTime(message.getStopTime());
+		logger.debug(entity.getMessage());
+		logger.debug(entity.getStartTime().toString());
+		logger.debug(entity.getStopTime().toString());
+		entityManager.persist(entity);
+		
 	}
 
 }
