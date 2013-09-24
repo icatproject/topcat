@@ -270,7 +270,12 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
                 logger.trace("getStatusIDS: status updated to " + Constants.STATUS_AVAILABLE);
             }
             try {
-                downloadModel.setUrl(ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName()));
+                if (downloadModel.getDownloadName().isEmpty()) {
+                    downloadModel.setUrl(ids.getDataUrl(downloadModel.getPreparedId(), null));
+                } else {
+                    downloadModel
+                            .setUrl(ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName()));
+                }
             } catch (UnsupportedEncodingException e) {
                 logger.error("getStatusIDS: " + e.getMessage());
                 throw new InternalException("Error returned from the data service. " + e.getMessage());
