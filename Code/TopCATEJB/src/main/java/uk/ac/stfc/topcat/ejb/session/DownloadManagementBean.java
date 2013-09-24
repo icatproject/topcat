@@ -82,6 +82,11 @@ public class DownloadManagementBean implements DownloadManagementBeanLocal {
         downloadManager.update(manager, sessionId, id, url, status);
     }
 
+    @Override
+    public String getUrl(String facilityName) throws TopcatException {
+        return downloadManager.getUrl(manager, facilityName);
+    }
+
     @Deprecated
     @Override
     public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {

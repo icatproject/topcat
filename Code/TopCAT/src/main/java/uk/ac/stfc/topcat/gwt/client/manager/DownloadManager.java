@@ -215,7 +215,12 @@ public class DownloadManager {
      *            the name to give the download file
      */
     private void prepareDataObjectsForDownloadIDS(final String dataType, final TFacility facility,
-            final List<Long> dataObjectList, final String downloadName) {
+            final List<Long> dataObjectList, String downloadName) {
+        // TODO quick hack to avoid ids bug
+        if (downloadName.isEmpty()){
+            downloadName = dataObjectList.get(0).toString();
+        }
+        // TODO end of hack
         downloadService.prepareDataObjectsForDownload(dataType, facility, dataObjectList, downloadName,
                 new AsyncCallback<DownloadModel>() {
                     @Override

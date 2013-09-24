@@ -66,7 +66,7 @@ public class TOPCAT {
     @EJB
     private UtilityLocal utility;
 
-    private static final String VERSION = "1.10.0-SNAPSHOT";
+    private static final String VERSION = "1.10.0";
 
     @WebMethod(operationName = "login")
     public String login() throws AuthenticationException {
@@ -75,11 +75,17 @@ public class TOPCAT {
 
     @WebMethod(operationName = "ICATLogin")
     @RequestWrapper(className = "ICATLogin")
-    public void ICATLogin(@WebParam(name = "sessionId") String sessionId,
+    public String ICATLogin(@WebParam(name = "sessionId") String sessionId,
             @WebParam(name = "serverName") String serverName,
             @WebParam(name = "authenticationType") String authenticationType,
             @WebParam(name = "credentials") Map<String, String> credentials) throws AuthenticationException {
         userManagement.login(sessionId, serverName, authenticationType, credentials);
+        String icatSessioID = "";
+        try {
+            icatSessioID = userManagement.getIcatSessionId(sessionId, serverName);
+        } catch (TopcatException e) {
+        }
+        return icatSessioID;
     }
 
     @WebMethod(operationName = "logout")
@@ -130,6 +136,16 @@ public class TOPCAT {
             @WebParam(name = "serverName") String serverName,
             @WebParam(name = "datafileIds") java.util.ArrayList<java.lang.Long> datafileIds) throws TopcatException {
         return downloadManagement.getDatafilesDownloadURL(topcatSessionId, serverName, datafileIds);
+    }
+
+    /**
+     * Web service operation
+     * 
+     * @throws TopcatException
+     */
+    @WebMethod(operationName = "getDownloadServiceURL")
+    public String getIDSURL(@WebParam(name = "serverName") String serverName) throws TopcatException {
+        return downloadManagement.getUrl(serverName);
     }
 
     /**

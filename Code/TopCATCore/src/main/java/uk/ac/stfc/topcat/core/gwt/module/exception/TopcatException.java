@@ -41,7 +41,7 @@ public class TopcatException extends Exception {
     /**
      * 
      * @return returns fault bean:
-     *         uk.ac.stfc.topcat.icatclient.v410.TopcatException
+     *         uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException
      */
     public TopcatException getFaultInfo() {
         return faultInfo;

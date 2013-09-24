@@ -27,11 +27,16 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 import org.apache.log4j.Logger;
 
+import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
+import uk.ac.stfc.topcat.core.gwt.module.exception.NoSuchObjectException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
+import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
@@ -216,4 +221,30 @@ public class DownloadManager {
         manager.flush();
     }
 
+    /**
+     * Get the URL of the download server for the given facility
+     * 
+     * @param manager
+     * @param facilityName
+     * @return the URL of the download server
+     * @throws NoSuchObjectException
+     * @throws InternalException
+     */
+    public String getUrl(EntityManager manager, String facilityName) throws NoSuchObjectException, InternalException {
+        if (logger.isInfoEnabled()) {
+            logger.info("getUrl: facilityName (" + facilityName + ")");
+        }
+        TopcatIcatServer icatServer = null;
+        try {
+            icatServer = (TopcatIcatServer) manager.createNamedQuery("TopcatIcatServer.findByName")
+                    .setParameter("name", facilityName).getSingleResult();
+        } catch (NoResultException exinnex) {
+            throw new NoSuchObjectException("Facility " + facilityName + " not found");
+        } catch (NonUniqueResultException e) {
+            logger.error("More the one entry found for facility " + facilityName);
+            throw new InternalException("More the one entry found for facility " + facilityName);
+
+        }
+        return icatServer.getDownloadServiceUrl();
+    }
 }

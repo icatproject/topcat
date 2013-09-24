@@ -25,7 +25,6 @@
 			<outputDirectory>topcat.${project.version}</outputDirectory>
 			<directory>${project.basedir}/../../Installation</directory>
 			<includes>
-				<include>upgrade_1_7.py</include>
 				<include>setup.py</include>
 				<include>README.txt</include>
 				<include>RELEASE_NOTES</include>

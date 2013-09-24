@@ -103,6 +103,15 @@ public interface DownloadManagementBeanLocal {
      */
     void update(String sessionId, Long id, String url, String status);
 
+    /**
+     * Get the URL of the download server for the given facility
+     * 
+     * @param facilityName
+     * @return the URL of the download server
+     * @throws TopcatException
+     */
+    String getUrl(String facilityName) throws TopcatException;
+
     @Deprecated
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
 
