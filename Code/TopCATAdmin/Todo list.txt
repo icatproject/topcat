@@ -4,4 +4,6 @@ To do for TopCATAdmin Project
 ###################################################
 4. Validation on Textboxes (URL- uses url class; facility name no blank)
 6. add a javadoc to to all methods created by my so that people know what the methods do (eclipse shortcut SHIFT + ALT + J)  
-7. Another tab 
+7. Another tab
+8. Messages feature
+
