@@ -358,9 +358,10 @@ public class AdminUI extends Composite {
 
 		// THESE ARE THE ITEMS IN THE VERSION LISTBOX
 		txtVersion.insertItem("v42", "v42", 0);
+		txtVersion.insertItem("v43", "v43", 1);
 		if (menuType.equals(MENU_ADD)
-				|| table0.getText(table0Row, 1).trim().equals("v42")) {
-			txtVersion.setItemSelected(0, true);
+				|| table0.getText(table0Row, 1).trim().equals("v43")) {
+			txtVersion.setItemSelected(1, true);
 		}
 
 		// THESE ARE THE ITEMS IN THE PLUGIN_NAME LISTBOX

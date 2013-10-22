@@ -13,6 +13,7 @@ import uk.ac.stfc.topcat.icatclient.v341.ICATInterfacev341;
 import uk.ac.stfc.topcat.icatclient.v400.ICATInterfacev400;
 import uk.ac.stfc.topcat.icatclient.v410.ICATInterfacev410;
 import uk.ac.stfc.topcat.icatclient.v420.ICATInterfacev420;
+import uk.ac.stfc.topcat.icatclient.v43.ICATInterfacev43;
 
 /**
  * 
@@ -45,6 +46,8 @@ public class ICATInterfaceFactory {
             return new ICATInterfacev420(URL, serverName);
         } else if (version.compareToIgnoreCase("v42") == 0) {
             return new ICATInterfacev420(URL, serverName);
+        } else if (version.compareToIgnoreCase("v43") == 0) {
+            return new ICATInterfacev43(URL, serverName);
         }
         return null;
     }

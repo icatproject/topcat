@@ -45,7 +45,7 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
     private Date endDate = null;
     private String title = null;
     private String visitId = null;
-    private String instrument = null;
+    private List<String> instruments = null;
     private String proposal = null;
     private List<TParameter> parameters = null;
     private List<TPublication> publications = null;
@@ -128,12 +128,12 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
         this.visitId = visitId;
     }
 
-    public String getInstrument() {
-        return instrument;
+    public List<String> getInstruments() {
+        return instruments;
     }
 
-    public void setInstrument(String instrument) {
-        this.instrument = instrument;
+    public void setInstruments(List<String> instruments) {
+        this.instruments = instruments;
     }
 
     public List<TPublication> getPublications() {

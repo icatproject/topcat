@@ -174,11 +174,14 @@ public class ICATInterfacev341 extends ICATWebInterfaceBase {
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId)
             throws AuthenticationException {
         TInvestigation ti = new TInvestigation();
+        List<String> instruments = new ArrayList<String>();
+        
         try {
             Investigation resultInv = service.getInvestigationIncludes(sessionId, investigationId,
                     InvestigationInclude.ALL_EXCEPT_DATASETS_AND_DATAFILES);
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
-            ti.setInstrument(resultInv.getInstrument());
+            instruments.add(resultInv.getInstrument());
+            ti.setInstruments(instruments);
             ti.setProposal(resultInv.getInvAbstract());
             ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
             List<Publication> pubs = resultInv.getPublicationCollection();

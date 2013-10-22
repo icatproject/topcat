@@ -261,12 +261,23 @@ public class InvestigationDetailPanel extends Composite {
     public void setInvestigation(TInvestigation inv) {
         // For a number of field we have to use the LableField in order to be
         // able to bind to them. As a consequence we want to display the rest of
-        // the data as LableFields rather than Text in order to maintain
+        // the data as LableFields rather than Text in order to maintain       
         // consistent formatting.
         reset();
+        
+        // As of ICAT version 4.3, an investigatio can have more than 1 instrument.
+        // We list the instruments in a string separated by commas.
+        StringBuilder sb = new StringBuilder();
+        String separator = "";
+        for (String instrumentName : inv.getInstruments()) {
+            sb.append(separator);
+            sb.append(instrumentName);
+            separator = ", ";
+        }
+        
         investigationModel = new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(),
                 inv.getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv.getEndDate(),
-                inv.getInstrument(), inv.getProposal());
+                sb.toString(), inv.getProposal());
 
         // Shifts
         if (inv.getShifts().size() > 0) {

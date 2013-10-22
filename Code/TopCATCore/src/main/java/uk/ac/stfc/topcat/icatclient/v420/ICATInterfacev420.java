@@ -293,6 +293,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     public TInvestigation getInvestigationDetails(String sessionId, Long investigationId) throws TopcatException {
         logger.info("getInvestigationDetails: sessionId (" + sessionId + "), investigationId (" + investigationId + ")");
         TInvestigation ti = new TInvestigation();
+        List<String> instruments = new ArrayList<String>();
+        
         try {
             Investigation resultInv = (Investigation) service
                     .get(sessionId,
@@ -300,8 +302,9 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
                             investigationId);
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
 
-            if (resultInv.getInstrument() != null) {
-                ti.setInstrument(resultInv.getInstrument().getFullName());
+            if (resultInv.getInstrument() != null) {                
+                instruments.add(resultInv.getInstrument().getFullName());
+                ti.setInstruments(instruments);  
             }
             ti.setProposal(resultInv.getSummary());
             ArrayList<TPublication> publicationList = new ArrayList<TPublication>();

@@ -130,14 +130,13 @@ overflow:auto;
 .italic {
 	font-style: italic;
 }
+
 .msg-style2 {
 	margin-top: 20px;
 	margin-right: auto;
 	margin-left: auto;
-	border: 1px solid #295380;
-
-
 }
+
 .msg-style3 {
 	margin-right: auto;
 	margin-left: auto;
@@ -145,3 +144,21 @@ overflow:auto;
 .margin-bottom {
 	margin-bottom: 5px;
 }
+
+.messageTableIdColumn {
+    width: 5%;
+}
+
+.messageTableTimeColumn {
+    width: 12%;
+}
+
+.messageTableMessageColumn {
+    width: 70%;
+}
+
+.messageTableActionColumn {
+    
+}
+
+

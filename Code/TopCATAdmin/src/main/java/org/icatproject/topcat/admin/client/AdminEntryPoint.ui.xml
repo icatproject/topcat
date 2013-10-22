@@ -1,18 +1,16 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:M="urn:import:javax.swing.plaf.metal.MetalTabbedPaneUI">
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
 <g:DockLayoutPanel styleName="centerBodyContent">
-
 	<g:north size="81.0">
 		<g:SimplePanel styleName="centerObject" height="80px">
 			<g:Label styleName="MainTitle">Topcat Admin Console</g:Label>
 		</g:SimplePanel>
-	</g:north>
-		
+	</g:north>		
 	<g:center>
-			<g:TabLayoutPanel ui:field='tabLayoutPanel' barHeight='1.5' barUnit='EM'>
-			</g:TabLayoutPanel>
+        <g:TabLayoutPanel ui:field='tabLayoutPanel' barHeight='2' barUnit='EM'>
+        </g:TabLayoutPanel>
 	</g:center>
 </g:DockLayoutPanel>
 	

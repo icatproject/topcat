@@ -169,7 +169,6 @@ public class AdminEJB {
 		return count;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<TMessages> messageCall() {
 		
 		 List<TMessages> tMessages = new ArrayList<TMessages>();
@@ -178,7 +177,7 @@ public class AdminEJB {
 		 for (Object message: messages){
 			 TMessages tMessage = new TMessages();
 			 tMessage.setId(((TopcatMessages) message).getId());
-			 tMessage.setmessage(((TopcatMessages) message).getMessage());
+			 tMessage.setMessage(((TopcatMessages) message).getMessage());
 			 tMessage.setStartTime(((TopcatMessages) message).getStartTime());
 			 tMessage.setStopTime(((TopcatMessages) message).getStopTime());
 			 tMessages.add(tMessage);
@@ -189,7 +188,7 @@ public class AdminEJB {
 
 	public void addMessage(TMessages message) {
 		TopcatMessages entity = new TopcatMessages();
-		entity.setMessage(message.getmessage());
+		entity.setMessage(message.getMessage());
 		entity.setStartTime(message.getStartTime());
 		entity.setStopTime(message.getStopTime());
 		logger.debug(entity.getMessage());
