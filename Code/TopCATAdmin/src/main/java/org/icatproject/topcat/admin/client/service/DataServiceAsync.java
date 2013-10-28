@@ -1,6 +1,7 @@
 package org.icatproject.topcat.admin.client.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
@@ -46,5 +47,9 @@ public interface DataServiceAsync {
 	void getAllMessages(AsyncCallback<List<TMessages>> callback);
 
 	void addMessages(TMessages message, AsyncCallback<String> callback);
+
+	void deleteMessage(TMessages message, AsyncCallback<String> callback);
+	
+	void getMessageByDateRange(Date fromDateTime, Date toDateTime, AsyncCallback<List<TMessages>> callback);
 
 }

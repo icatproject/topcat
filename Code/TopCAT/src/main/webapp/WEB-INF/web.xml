@@ -34,6 +34,10 @@
 		<servlet-name>CopyDataToCSVFile</servlet-name>
 		<servlet-class>uk.ac.stfc.topcat.gwt.server.CopyDataToCSVFile</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>MessageService</servlet-name>
+		<servlet-class>uk.ac.stfc.topcat.gwt.server.MessageServiceImpl</servlet-class>
+	</servlet>	
 	<servlet-mapping>
 		<servlet-name>searchServlet</servlet-name>
 		<url-pattern>/topcatweb/search</url-pattern>
@@ -61,6 +65,10 @@
 	<servlet-mapping>
 		<servlet-name>CopyDataToCSVFile</servlet-name>
 		<url-pattern>/topcatweb/CopyDataToCSVFile</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MessageService</servlet-name>
+		<url-pattern>/topcatweb/MessageService</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>600</session-timeout>

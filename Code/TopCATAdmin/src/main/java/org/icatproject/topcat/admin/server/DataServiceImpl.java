@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -151,6 +152,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		case 200:
 			return "successfully";
                 case 501:
+                case 400:	
                     return "successfully";
 		default:
 			return "unsuccessful";
@@ -192,4 +194,17 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		adminEJB.addMessage(message);
 		return "Successfull";
 	}
+
+	@Override
+	public String deleteMessage(TMessages message) throws TopcatException {
+		adminEJB.deleteMessage(message);
+		return "Successful";
+		
+	}
+
+    @Override
+    public List<TMessages> getMessageByDateRange(Date fromDateTime,
+            Date toDateTime) {
+        return adminEJB.getMessagesByDateRange(fromDateTime, toDateTime);        
+    }
 }

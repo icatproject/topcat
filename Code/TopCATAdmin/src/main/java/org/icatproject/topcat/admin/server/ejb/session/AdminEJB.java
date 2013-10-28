@@ -1,6 +1,7 @@
 package org.icatproject.topcat.admin.server.ejb.session;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -197,5 +198,38 @@ public class AdminEJB {
 		entityManager.persist(entity);
 		
 	}
+	
+	public void deleteMessage(TMessages message) {
+	    logger.debug(message.getId().toString());
+		TopcatMessages topcatMessage =  (TopcatMessages) entityManager.
+		        createNamedQuery("TopcatMessages.findById").
+		        setParameter("id", message.getId()).getSingleResult();				
+		entityManager.remove(topcatMessage);
+		entityManager.flush();
+		
+	}
+
+    public List<TMessages> getMessagesByDateRange(Date fromDateTime,
+            Date toDateTime) {
+        List<TMessages> tMessages = new ArrayList<TMessages>();
+        List<?> messages = entityManager.
+                createNamedQuery("TopcatMessages.findMessagesByDateRange").
+                setParameter("fromDateTime", fromDateTime).
+                setParameter("toDateTime", toDateTime).
+                getResultList();
+       
+        for (Object message: messages){
+            TMessages tMessage = new TMessages();
+            tMessage.setId(((TopcatMessages) message).getId());
+            tMessage.setMessage(((TopcatMessages) message).getMessage());
+            tMessage.setStartTime(((TopcatMessages) message).getStartTime());
+            tMessage.setStopTime(((TopcatMessages) message).getStopTime());
+            tMessages.add(tMessage);
+        }
+        
+        return tMessages;
+    }
+	
+	
 
 }

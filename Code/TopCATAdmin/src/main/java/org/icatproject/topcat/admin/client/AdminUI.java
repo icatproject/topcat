@@ -537,8 +537,10 @@ public class AdminUI extends Composite {
 		alertDialogBox.setVisible(false);
 	}
 
-	private void clearAuthMenu() {
-		editAuthMenu.clearCell(0, 1);
+	private void clearAuthMenu() {    
+	    if (editAuthMenu.isCellPresent(0, 1)) {    
+	        editAuthMenu.clearCell(0, 1);
+	    }
 		btnAuthMenu.setText("save");
 		txtAuthURL.setText(null);
 		txtDisplayName.setText(null);
@@ -546,7 +548,7 @@ public class AdminUI extends Composite {
 		txtAuthType.clear();
 		authMenu.setModal(false);
 		authMenu.setVisible(false);
-		lbl3.setText(null);
+		lbl3.setText(null);	    
 	}
 
 	private boolean validationCheck() {
@@ -863,7 +865,7 @@ public class AdminUI extends Composite {
 		case 9:
 			handleRowSelection("table0");
 			url = table0.getText(table0Row, 5);
-			handlePingButtonClick(url, "Download Service");
+			handlePingButtonClick(url + Constants.IDS_URL_PATH, "Download Service");
 			break;
 		case 10:
 			handleRowSelection("table0");

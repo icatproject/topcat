@@ -38,6 +38,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Panel;
@@ -138,6 +139,9 @@ public class TOPCATOnline implements EntryPoint {
         // Initialise
         eventPipeLine.getTopcatProperties();
         eventPipeLine.loadFacilityNames();
+        
+        // Initialise announcement message
+        eventPipeLine.setAnnouncementMessage();
 
         // Set Event pipeline
         mainPanel.getSearchPanel().setEventBus(eventPipeLine);
@@ -166,4 +170,5 @@ public class TOPCATOnline implements EntryPoint {
         eventPipeLine.getHistoryManager().processHistory(History.getToken());
         eventPipeLine.initDownloadParameter();
     }
+    
 }

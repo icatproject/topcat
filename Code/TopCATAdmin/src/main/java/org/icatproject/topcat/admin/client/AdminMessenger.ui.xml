@@ -10,10 +10,10 @@
         <g:center>
             <g:ScrollPanel ui:field="scrollPanel">
                 <g:VerticalPanel styleName="msg-style2">
-                
+                    
             		<g:Label text="Message Generator" horizontalAlignment="ALIGN_CENTER" styleName="subheader"/>
-            		<g:FlexTable ui:field="messageInputTable" styleName="msg-style"/>
-            		
+            		<g:FlexTable ui:field="messageForm" styleName="msg-style"/>
+            		<g:FlowPanel ui:field="errorPanel" styleName="errorMessage"/>
             		<p1:DateBox ui:field="fromDate"/>
             		<g:ListBox ui:field="fromTime"/>
             		<g:CheckBox ui:field="allDayCheck" />
@@ -21,8 +21,8 @@
             		<p1:DateBox ui:field="toDate"/>
             		<g:ListBox ui:field="toTime"/>
                     
-                    <g:TextArea ui:field="txtMessage"></g:TextArea>
-                    <g:Button ui:field="addBtn" text="add "/>            
+                    <g:TextArea ui:field="txtMessage" characterWidth="80" visibleLines="5"></g:TextArea>                    
+                    <g:Button ui:field="addBtn" text="add "/>
                     <c:CellTable ui:field="messageListTable"></c:CellTable>
                 </g:VerticalPanel>
             </g:ScrollPanel>

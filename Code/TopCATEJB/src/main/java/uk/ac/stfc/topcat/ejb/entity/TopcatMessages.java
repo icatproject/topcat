@@ -25,8 +25,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "TOPCAT_MESSAGES")
 @NamedQueries({
-        @NamedQuery(name = "TopcatMessages.findAll", query = "SELECT t FROM TopcatMessages t"),
-        @NamedQuery(name = "TopcatMessages.findById", query = "SELECT t FROM TopcatMessages t WHERE t.id = :id")
+        @NamedQuery(name = "TopcatMessages.findAll", query = "SELECT t FROM TopcatMessages t ORDER BY t.startTime DESC"),
+        @NamedQuery(name = "TopcatMessages.findById", query = "SELECT t FROM TopcatMessages t WHERE t.id = :id"),
+        @NamedQuery(name = "TopcatMessages.findActiveMessage", query = "SELECT t FROM TopcatMessages t WHERE CURRENT_TIMESTAMP BETWEEN t.startTime AND t.stopTime"),
+        @NamedQuery(name = "TopcatMessages.findMessagesByDateRange", query = "SELECT t FROM TopcatMessages t WHERE (t.startTime <= :toDateTime) and (t.stopTime >= :fromDateTime)"),
 })
 @XmlRootElement
 public class TopcatMessages implements Serializable {

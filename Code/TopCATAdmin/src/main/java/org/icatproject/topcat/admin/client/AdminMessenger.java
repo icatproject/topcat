@@ -31,6 +31,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -60,26 +62,41 @@ public class AdminMessenger extends Composite {
 	
 	@UiField DateBox toDate, fromDate;;
 	@UiField ListBox fromTime, toTime;
-	@UiField FlexTable messageInputTable;
+	@UiField FlexTable messageForm;
 	@UiField TextArea txtMessage;
 	@UiField CheckBox allDayCheck;
 	@UiField ScrollPanel scrollPanel;
 	@UiField Button addBtn; 
-	@UiField CellTable<TMessages> messageListTable;	
+	@UiField CellTable<TMessages> messageListTable;
+	@UiField FlowPanel errorPanel;
 	
 	String[] timeValue = new String[] {"00:00","00:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30","05:00","05:30","06:00","06:30","07:00","07:30","08:00","08:30"
 			,"09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30"
-			,"19:00","19:30","20:00","20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
+			,"19:00","19:30","20:00","20:30","21:00","21:30","22:00","22:30","23:00","23:30", "23:59"};
 	
 	
 	//create a data provider.
     ListDataProvider<TMessages> dataProvider;
+    
+    //validation
+    public final static int MAX_MESSAGE_LENGTH = 255;
+    private TMessages tMessage = new TMessages();
+    
+    public final class validationMessage {
+        public static final String START_TIME_REQUIRED = "Start time is required";
+        public static final String END_TIME_REQUIRED = "End time is required"; 
+        public static final String START_BEFORE_END_TIME = "Start time must be before the end time"; 
+        public static final String MESSAGE_LENGTH = "Message must be less than " + MAX_MESSAGE_LENGTH + " characters "; 
+        public static final String MESSAGE_REQUIRED = "Message is required"; 
+        public static final String TIME_OVERLAP_EXISTING = "New message overlaps an existing message";
+    }
+    
 	
 	public AdminMessenger() {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		//add input widgets
-		tableCall();
+		createMessageForm();
 		
 		//create the message list
 		createMessagesTable();
@@ -89,62 +106,50 @@ public class AdminMessenger extends Composite {
 	}
 
 
-    public void tableCall(){		
-		DateTimeFormat dateFormat= DateTimeFormat.getFormat("dd/MM/yyyy"); 
+    public void createMessageForm(){		
+		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd/MM/yyyy"); 
 		
 		fromDate.setFormat(new DateBox.DefaultFormat(dateFormat));
 		toDate.setFormat(new DateBox.DefaultFormat(dateFormat));		
-		messageInputTable.setText(0, 0, "From: ");
-		messageInputTable.setText(0, 1, "");
-		messageInputTable.setWidget(0, 2, fromDate);
-		messageInputTable.setWidget(0, 3, fromTime);
-		messageInputTable.setWidget(0, 4, allDayCheck);
-		messageInputTable.setText  (0, 5, "All day event");
 		
+		messageForm.setWidget(0, 2, errorPanel);
 		
-		messageInputTable.setText(1, 0, "To: ");
-		messageInputTable.setText(0, 1, "");
-		messageInputTable.setWidget(1, 2, toDate);
-		messageInputTable.setWidget(1, 3, toTime);
+		messageForm.setText(1, 0, "Start Time: ");
+		messageForm.setText(1, 1, "");
+		messageForm.setWidget(1, 2, fromDate);
+		messageForm.setWidget(1, 3, fromTime);
+		messageForm.setWidget(1, 4, allDayCheck);
+		messageForm.setText  (1, 5, "All day event");
 		
-		messageInputTable.setText(2, 0, "Message:");
-		messageInputTable.setText(2, 1, "");
-		messageInputTable.setWidget(2, 2, txtMessage);
-		messageInputTable.setWidget(3, 0, addBtn);
+		messageForm.setText(2, 0, "End Time: ");
+		messageForm.setText(2, 1, "");
+		messageForm.setWidget(2, 2, toDate);
+		messageForm.setWidget(2, 3, toTime);
+		
+		messageForm.setText(3, 0, "Message:");
+		messageForm.setText(3, 1, "");
+		messageForm.setWidget(3, 2, txtMessage);
+		
+		messageForm.setWidget(4, 0, addBtn);		
 		
 		//set colspan
-		messageInputTable.getFlexCellFormatter().setColSpan(1, 4, 2);
-		messageInputTable.getFlexCellFormatter().setColSpan(2, 2, 4);
-		messageInputTable.getFlexCellFormatter().setColSpan(3, 0, 6);
+		messageForm.getFlexCellFormatter().setColSpan(0, 2, 4);
+		messageForm.getFlexCellFormatter().setColSpan(2, 4, 2);
+		messageForm.getFlexCellFormatter().setColSpan(3, 2, 4);				
+        messageForm.getFlexCellFormatter().setColSpan(4, 0, 6);
 		
 		for(String values : timeValue){
 			fromTime.addItem(values);
 			toTime.addItem(values);
 		}
-			
-		//format the text area
-        setupTextArea();
 	}
     
-    //set initial size of text area
-    private void setupTextArea() {      
-        txtMessage.setCharacterWidth(80);
-        txtMessage.setVisibleLines(5);
-    }
+    
     
     
     private void createMessagesTable() {
         //date time format for date cells
         DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd MMM yyyy HH:mm");
-        
-        //add id column
-        TextColumn<TMessages> idColumn = new TextColumn<TMessages>() {
-          @Override
-          public String getValue(TMessages message) {
-            return message.getId().toString();
-          }
-        };
-        messageListTable.addColumn(idColumn, "Id");
         
         
         //add a start time column
@@ -163,7 +168,7 @@ public class AdminMessenger extends Composite {
         Column<TMessages, Date> endTimeColumn = new Column<TMessages, Date>(endTimeCell) {
           @Override
           public Date getValue(TMessages message) {
-            return message.getStartTime();
+            return message.getStopTime();
           }
         };
         messageListTable.addColumn(endTimeColumn, "End Time");
@@ -180,17 +185,19 @@ public class AdminMessenger extends Composite {
         List<HasCell<TMessages, ?>> cells = new LinkedList<HasCell<TMessages, ?>>();
         
         //create 2 action cells for edit and delete button
+        /*
         cells.add(new ActionHasCell("Edit", new ActionCell.Delegate<TMessages>(){
             @Override
             public void execute(TMessages message) {
-                Window.alert("You clicked " + message.getId());
+                Window.alert("To be implemented");
             }
         }));
+        */
         
         cells.add(new ActionHasCell("Delete", new ActionCell.Delegate<TMessages>() {
             @Override
             public void execute(TMessages message) {
-                Window.alert("You clicked " + message.getId());
+                deleteMessage(message);
             }
         }));
         
@@ -205,23 +212,16 @@ public class AdminMessenger extends Composite {
               return message;
             }
         };
-        messageListTable.addColumn(actionColumn, "Actions");
+        messageListTable.addColumn(actionColumn, "Action");
         
-        //have to set to fixedlayout for setColumnWidth to work!!!
-        messageListTable.setWidth("100%", true);
-        messageListTable.setColumnWidth(idColumn, 5, Unit.PCT);
-        messageListTable.setColumnWidth(startTimeColumn, 10, Unit.PCT);
-        messageListTable.setColumnWidth(endTimeColumn, 10, Unit.PCT);
-        messageListTable.setColumnWidth(messageColumn, 65, Unit.PCT);
+        //have to set a width for setColumnWidth to work!!!
+        messageListTable.setWidth("100%", true);        
+        messageListTable.setColumnWidth(startTimeColumn, 15, Unit.PCT);
+        messageListTable.setColumnWidth(endTimeColumn, 15, Unit.PCT);
+        messageListTable.setColumnWidth(messageColumn, 60, Unit.PCT);
         messageListTable.setColumnWidth(actionColumn, 10, Unit.PCT);
         
-        
-        //messageListTable.addColumnStyleName(1, "messageTableTimeColumn");
-        //messageListTable.addColumnStyleName(2, "messageTableTimeColumn");
-        //messageListTable.addColumnStyleName(3, "messageTableMessageColumn");
-        //messageListTable.addColumnStyleName(4, "messageTableActionColumn");        
-        
-        //create data privider
+        //create data provider
         dataProvider = new ListDataProvider<TMessages>();
         
         //connect the table to the data provider.
@@ -242,32 +242,27 @@ public class AdminMessenger extends Composite {
 
 
 	private TMessages createQuery(TMessages message){
-		String fromDateString = "";
-		String toDateString = "";
-		
+				
 		//get date object from datepicker
-	    Date fromDateObj = fromDate.getDatePicker().getValue();
-	    Date toDateObj = toDate.getDatePicker().getValue();
+	    Date fromDateObj = fromDate.getValue();
+	    Date toDateObj = toDate.getValue();
 	    
 	    String fromTimeString = fromTime.getValue(fromTime.getSelectedIndex());
         String toTimeString = toTime.getValue(toTime.getSelectedIndex());
+        
+        if (allDayCheck.getValue() == true) {
+            int toTimeItemCount = toTime.getItemCount();
+            
+            fromTimeString = fromTime.getValue(0);
+            toTimeString = toTime.getValue((toTimeItemCount == 0) ? 0 : toTimeItemCount - 1); 
+        }
 	    
 	    if (fromDateObj != null) {
-	        //get the date in yyyy-MM-dd format
-	        fromDateString = DateTimeFormat.getFormat("dd/MM/yyyy").format(fromDateObj);	        	        
-	        //append hours:minutes to date string 
-	        fromDateString = fromDateString + " " + fromTimeString;
-	        //get the date object
-	        fromDateObj = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm").parse(fromDateString);	        
+	        fromDateObj = createDateTimeObj(fromDateObj, fromTimeString);
 	    }	    
 	    
 	    if (toDateObj != null) {
-            //get the date in yyyy-MM-dd format
-	        toDateString = DateTimeFormat.getFormat("dd/MM/yyyy").format(toDateObj);            
-            //append hours:minutes to date string 
-	        toDateString = toDateString + " " + toTimeString;
-            //get the date object
-            toDateObj = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm").parse(toDateString);
+	        toDateObj = createDateTimeObj(toDateObj, toTimeString);
         }
 	    
 	    //set message start time
@@ -297,7 +292,12 @@ public class AdminMessenger extends Composite {
 		dataService.getAllMessages(callback);
 	}	
 	
-	private void addNewMessage(final TMessages message){
+	/**
+	 * Add a new message
+	 *  
+	 * @param message
+	 */
+	private void addNewMessage(){
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 
 			@Override
@@ -307,15 +307,76 @@ public class AdminMessenger extends Composite {
 
 			@Override
 			public void onSuccess(String result) {
+			    resetForm();
+			    loadMessages();
+			}			
+		};
+		// make the call to the server
+		dataService.addMessages(tMessage, callback);
+	}
+	
+	/**
+	 * Delete the selected message
+	 * @param message
+	 */
+	private void deleteMessage(final TMessages message){
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Server error: " + caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(String result) {				
 			    loadMessages();
 			}
 		};
 		// make the call to the server
-		dataService.addMessages(message, callback);
+		dataService.deleteMessage(message, callback);
 	}
 	
+	
+	private void validateOverlappingDateRange(Date fromDateTimeObj, Date toDateTimeObj){
+        AsyncCallback<List<TMessages>> callback = new AsyncCallback<List<TMessages>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: " + caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(List<TMessages> results) {
+                if (results.size() > 0) {                    
+                    messageForm.setWidget(1, 1, new Image("images/exclamation-icon.png"));
+                    messageForm.setWidget(2, 1, new Image("images/exclamation-icon.png"));
+                    errorPanel.add(new HTML("&bull; " + validationMessage.TIME_OVERLAP_EXISTING));
+                } else {
+                    errorPanel.clear();
+                    addNewMessage();
+                }
+            }
+        };        
+        
+        dataService.getMessageByDateRange(fromDateTimeObj, toDateTimeObj, callback);
+    }
+	
+	
+	
 	/**
-	 * Validate whethere the message form is correctly filled
+	 * Reset the form values
+	 */
+	private void resetForm() {
+	    toDate.setValue(null); 
+	    fromDate.setValue(null);
+	    fromTime.setSelectedIndex(0);
+	    toTime.setSelectedIndex(0);
+	    txtMessage.setValue(null);
+	    allDayCheck.setValue(false);
+	}	
+	
+	/**
+	 * Validate whether the message form is correctly filled
 	 * 
 	 * @return boolean
 	 */
@@ -324,74 +385,149 @@ public class AdminMessenger extends Composite {
 	    boolean isValidToDate = false;        
         boolean isValidFromTime = false;
         boolean isValidToTime = false;
-        boolean isValidMessage = false;
+        boolean isValidRequiredMessage = false;
+        boolean isValidMessageLength = false;
+        boolean isValidDateOrder = false;
+        
+        Date fromDateTimeObj = new Date();
+        Date toDateTimeObj = new Date();
+        String fromTimeString = fromTime.getItemText(fromTime.getSelectedIndex());
+        String toTimeString = toTime.getItemText(toTime.getSelectedIndex());
+        
+        //clear validation errors
+        errorPanel.clear();
         
         //clear error ! image
-        messageInputTable.setText(0, 1, "");
-        messageInputTable.setText(1, 1, "");
-        messageInputTable.setText(2, 1, "");
+        messageForm.setText(1, 1, "");
+        messageForm.setText(2, 1, "");
+        messageForm.setText(3, 1, "");
+                
+        //set time if all day checked
+        if (allDayCheck.getValue() == true) {
+            int toTimeItemCount = toTime.getItemCount();
+            
+            fromTimeString = fromTime.getValue(0);
+            toTimeString = toTime.getValue((toTimeItemCount == 0) ? 0 : toTimeItemCount - 1);            
+        }
 	    
         // validate from date is set
 	    if (fromDate.getValue() != null) {
 	        isValidFromDate = true;
         } else {
-            messageInputTable.setWidget(0, 1, new Image("images/exclamation-icon.png"));
+            messageForm.setWidget(1, 1, new Image("images/exclamation-icon.png"));
+            errorPanel.add(new HTML("&bull; " + validationMessage.START_TIME_REQUIRED));
         }
 	    
 	    // validate to date is set 
 	    if (toDate.getValue() != null) {
             isValidToDate = true;
         } else {
-            messageInputTable.setWidget(1, 1, new Image("images/exclamation-icon.png"));
+            messageForm.setWidget(2, 1, new Image("images/exclamation-icon.png"));
+            errorPanel.add(new HTML("&bull; " + validationMessage.END_TIME_REQUIRED));
         }
 	    
 	    // validate from time has a value
-	    if (! fromTime.getItemText(fromTime.getSelectedIndex()).isEmpty()) {
+	    if (! fromTimeString.isEmpty()) {
             isValidFromTime = true;
         } else {
-            messageInputTable.setWidget(0, 1, new Image("images/exclamation-icon.png"));
+            messageForm.setWidget(1, 1, new Image("images/exclamation-icon.png"));
+            errorPanel.add(new HTML("&bull; " + validationMessage.START_TIME_REQUIRED));
         }
 	    
 	    // validate to time has a value
-	    if (! toTime.getItemText(toTime.getSelectedIndex()).isEmpty()) {
+	    if (! toTimeString.isEmpty()) {
             isValidToTime = true;
         } else {
-            messageInputTable.setWidget(1, 1, new Image("images/exclamation-icon.png"));
+            messageForm.setWidget(2, 1, new Image("images/exclamation-icon.png"));
+            errorPanel.add(new HTML("&bull; " + validationMessage.END_TIME_REQUIRED));
         }
 	    
-	    // validate message has content and is less that 4000 characters
-	    if (! txtMessage.getValue().isEmpty() && txtMessage.getValue().length() <= 4000) {
-            isValidMessage = true;
-        } else {
-            messageInputTable.setWidget(2, 1, new Image("images/exclamation-icon.png"));
-        }	    
+	    //validate from time is before to time for non all day message    
+	    if (isValidFromDate && isValidFromTime && isValidToDate && isValidToTime && allDayCheck.getValue() == false) {	        
+	        fromDateTimeObj = createDateTimeObj(fromDate.getValue(), fromTimeString);
+	        toDateTimeObj = createDateTimeObj(toDate.getValue(), toTimeString);
+            
+            if (toDateTimeObj.compareTo(fromDateTimeObj) > 0) {
+                isValidDateOrder = true;
+            } else {
+                messageForm.setWidget(1, 1, new Image("images/exclamation-icon.png"));
+                messageForm.setWidget(2, 1, new Image("images/exclamation-icon.png"));
+                errorPanel.add(new HTML("&bull; " + validationMessage.START_BEFORE_END_TIME));
+            }
+	    }
 	    
-	    return isValidFromDate && isValidToDate && isValidFromTime && isValidToTime && isValidMessage;
+	    //validate from time is before to time for all day message	    
+	    if (isValidFromDate && isValidFromTime && isValidToDate && isValidToTime && allDayCheck.getValue() == true) {
+            Date fromDateObj = fromDate.getValue();
+            Date toDateObj = toDate.getValue();
+            
+            if (toDateObj.compareTo(fromDateObj) >= 0) {
+                isValidDateOrder = true;
+            } else {
+                messageForm.setWidget(1, 1, new Image("images/exclamation-icon.png"));
+                messageForm.setWidget(2, 1, new Image("images/exclamation-icon.png"));
+                errorPanel.add(new HTML("&bull; " + validationMessage.START_BEFORE_END_TIME));
+            }
+        }
+	    
+	    // validate message has content and is less that 255 characters
+	    if (!txtMessage.getValue().isEmpty()) {
+            isValidRequiredMessage = true;
+             
+            if (isValidRequiredMessage && txtMessage.getValue().length() <= MAX_MESSAGE_LENGTH) {
+                isValidMessageLength = true;
+            } else {
+                messageForm.setWidget(3, 1, new Image("images/exclamation-icon.png"));
+                errorPanel.add(new HTML("&bull; " + validationMessage.MESSAGE_LENGTH));
+            }
+        } else {
+            messageForm.setWidget(3, 1, new Image("images/exclamation-icon.png"));
+            errorPanel.add(new HTML("&bull; " + validationMessage.MESSAGE_REQUIRED));
+        }
+	    
+	    return isValidFromDate && isValidToDate && isValidFromTime && isValidToTime && isValidDateOrder && isValidRequiredMessage && isValidMessageLength;
 	}
+	
+	/**
+	 * Returns the date object with time
+	 * 
+	 * @param date
+	 * @param time
+	 * @return Date object
+	 */
+	private Date createDateTimeObj(Date date, String timeString) {
+    	//get the from date string in dd/MM/yyyy format
+        String dateString = DateTimeFormat.getFormat("dd/MM/yyyy").format(date);
+        //append hours:minutes to date string 
+        dateString = dateString + " " + timeString;
+        //get the from date object
+        return DateTimeFormat.getFormat("dd/MM/yyyy HH:mm").parse(dateString);
+	}    
 	
 	
 	@UiHandler("addBtn")
 	void handleAddButton(ClickEvent e){
 	    //validate the form
 	    if (validateMessageForm()) {
-    		//create new message
-	        TMessages message = new TMessages();
-	        
-	        //set the message values from the form widgets
-    		message = createQuery(message);
-    		
-    		//save the message to the server
-    		addNewMessage(message);
-	    }	
+	        //create tMessage
+            tMessage = createQuery(tMessage);            
+            //validate date range doesn't overlap via gwt-rpc and add the message
+	        validateOverlappingDateRange(tMessage.getStartTime(), tMessage.getStopTime());    		
+	    }
 	}
-
-//	@UiHandler("fromDate")
-//	void handleDateClick(ClickEvent e){
-//		//new
-//		
-//	}
-
 	
+	
+	@UiHandler("allDayCheck")
+    void handleAllDayCheckButton(ClickEvent e){
+	    boolean checked = ((CheckBox) e.getSource()).getValue();
+	    if(checked) {
+	        fromTime.setVisible(false);
+	        toTime.setVisible(false);
+	    } else {	        
+	        fromTime.setVisible(true);
+            toTime.setVisible(true);
+	    }
+    }
 }
 
 

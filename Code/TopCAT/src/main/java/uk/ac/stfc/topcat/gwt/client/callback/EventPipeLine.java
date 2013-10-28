@@ -45,6 +45,8 @@ import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.LoginServiceAsync;
+import uk.ac.stfc.topcat.gwt.client.MessageService;
+import uk.ac.stfc.topcat.gwt.client.MessageServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.SearchService;
 import uk.ac.stfc.topcat.gwt.client.SearchServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.SoftwareRepoService;
@@ -86,6 +88,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -106,6 +109,7 @@ public class EventPipeLine implements LoginInterface {
     private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private final SearchServiceAsync searchService = SearchService.Util.getInstance();
     private final SoftwareRepoServiceAsync softwareRepoService = SoftwareRepoService.Util.getInstance();
+    private final MessageServiceAsync messageService = MessageService.Util.getInstance();
     ArrayList<TFacility> facilities;
     HashMap<String, ListStore<Instrument>> facilityInstrumentMap;
     ParameterDownloadForm paramDownloadForm;
@@ -1058,5 +1062,30 @@ public class EventPipeLine implements LoginInterface {
             }
         });
     }
+	
+	//call to server to retrieve any active message and display it  
+	public void setAnnouncementMessage() {
+		messageService.getMessage(new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				//set to blank if error retrieving message from server
+				mainWindow.getHeaderPanel().setMessage("");
+			}
+
+			@Override
+			public void onSuccess(String message) {
+				//set the message in header panel
+				if (message != null && !message.isEmpty()) {
+					mainWindow.getHeaderPanel().setMessage(message);
+				} else {
+				    mainWindow.getHeaderPanel().setMessage("");
+				}
+			}
+		});
+		
+	}
+	
+	
 
 }

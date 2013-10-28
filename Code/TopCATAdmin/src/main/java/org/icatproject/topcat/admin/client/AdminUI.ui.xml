@@ -22,7 +22,7 @@
 								<g:Label text="4) Enter the URL of the icat, e.g. http://example.com:8181.">..</g:Label>
 								<g:Label text="5) Optionally select a bespoke search plugin to associate with the facility, currently plugins exist for DLS and ISIS.">..</g:Label>
 								<g:Label text="6) Optionally select a download plugin.">..</g:Label>
-								<g:Label text="7) Optionally provide the URL of the download server.">..</g:Label>
+								<g:Label text="7) Optionally provide the URL of the download server. (https://hostname:port only)">..</g:Label>
 								<g:Label text="8) Save the information.">..</g:Label>
 								<g:Label text="The next step is to associate one or more authentication plugins with the icat server. ">..</g:Label>
 								<g:Label text="1) Click on the Show Auth. Details button.">..</g:Label>

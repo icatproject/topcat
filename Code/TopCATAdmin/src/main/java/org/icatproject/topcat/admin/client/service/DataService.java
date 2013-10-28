@@ -1,6 +1,7 @@
 package org.icatproject.topcat.admin.client.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.icatproject.topcat.admin.shared.ServerException;
@@ -11,7 +12,6 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TMessages;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -45,4 +45,8 @@ public interface DataService extends RemoteService {
 	List<TMessages> getAllMessages() throws TopcatException;
 
 	String addMessages(TMessages message) throws TopcatException;
+	
+	String deleteMessage(TMessages message) throws TopcatException;
+	
+	List<TMessages> getMessageByDateRange(Date fromDateTime, Date toDateTime);
 }

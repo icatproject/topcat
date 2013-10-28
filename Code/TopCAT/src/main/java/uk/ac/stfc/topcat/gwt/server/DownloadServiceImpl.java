@@ -27,13 +27,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,12 +50,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.icatproject.idsclient.Client;
-import org.icatproject.idsclient.Status;
-import org.icatproject.idsclient.exceptions.BadRequestException;
-import org.icatproject.idsclient.exceptions.ForbiddenException;
-import org.icatproject.idsclient.exceptions.IDSException;
-import org.icatproject.idsclient.exceptions.NotFoundException;
+import org.icatproject.ids.client.BadRequestException;
+import org.icatproject.ids.client.DataSelection;
+import org.icatproject.ids.client.IdsClient;
+import org.icatproject.ids.client.IdsClient.Flag;
+import org.icatproject.ids.client.IdsClient.Status;
+import org.icatproject.ids.client.IdsException;
+import org.icatproject.ids.client.InsufficientPrivilegesException;
+import org.icatproject.ids.client.NotFoundException;
+import org.icatproject.ids.client.NotImplementedException;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
@@ -80,6 +86,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
     private UserManagementBeanLocal userManager = null;
     private static String RESTFUL_DOWNLOAD_SERVICE = "restfulDownload";
     private final static Logger logger = Logger.getLogger(DownloadServiceImpl.class.getName());
+    //path of the ids url    
 
     /**
      * Servlet Init method.
@@ -149,7 +156,15 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             logger.debug("isAvailableIDS: downloadServiceUrl (" + downloadServiceUrl + "),  downloadModel.getId() ("
                     + downloadModel.getId() + ")");
         }
-        Client ids = getIDSClient(downloadServiceUrl);
+        IdsClient ids;        
+        
+        try {
+			ids = getIDSClient(downloadServiceUrl);
+		} catch (MalformedURLException e) {
+			//invalid url
+			logger.error("isAvailableIDS: " + e.getMessage());
+			throw new InternalException("Unable to contact the data service, " + downloadServiceUrl + " url appears to be invalid.");
+		}
         try {
             ids.getStatus(downloadModel.getPreparedId());
         } catch (NotFoundException e) {
@@ -160,14 +175,10 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             downloadManager.delete(getSessionId(), downloadModel.getId());
             downloadModel.setStatus(Constants.STATUS_EXPIRED);
             return false;
-        } catch (IDSException e) {
+        } catch (IdsException e) {
             // something has gone wrong
             logger.error("isAvailableIDS: " + e.getMessage());
             throw new InternalException("Error returned from the data service. " + e.getMessage());
-        } catch (IOException e) {
-            // cannot contact IDS, network issues?
-            logger.error("isAvailableIDS: " + e.getMessage());
-            throw new InternalException("Unable to contact the data service, " + downloadModel.getUrl());
         }
         return true;
     }
@@ -236,7 +247,13 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             logger.debug("getStatusIDS: downloadServiceUrl (" + downloadServiceUrl + "), downloadModel.getId() ("
                     + downloadModel.getId() + ")");
         }
-        Client ids = getIDSClient(downloadServiceUrl);
+        IdsClient ids;
+		try {
+			ids = getIDSClient(downloadServiceUrl);
+		} catch (MalformedURLException e) {
+			logger.error("getStatusIDS: " + e.getMessage());
+            throw new InternalException("Unable to contact the data service, " + downloadModel.getUrl() + " url appears to be invalid.");
+		}
         Status status = null;
         try {
             if (logger.isTraceEnabled()) {
@@ -254,14 +271,10 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             downloadManager.delete(getSessionId(), downloadModel.getId());
             downloadModel.setStatus(Constants.STATUS_EXPIRED);
             return downloadModel;
-        } catch (IDSException e) {
+        } catch (IdsException e) {
             // something has gone wrong
             logger.error("getStatusIDS: " + e.getMessage());
             throw new InternalException("Error returned from the data service. " + e.getMessage());
-        } catch (IOException e) {
-            // cannot contact IDS, network issues?
-            logger.error("getStatusIDS: " + e.getMessage());
-            throw new InternalException("Unable to contact the data service, " + downloadModel.getUrl());
         }
 
         if (status == Status.ONLINE && !downloadModel.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
@@ -269,17 +282,20 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             if (logger.isTraceEnabled()) {
                 logger.trace("getStatusIDS: status updated to " + Constants.STATUS_AVAILABLE);
             }
+            
             try {
                 if (downloadModel.getDownloadName().isEmpty()) {
-                    downloadModel.setUrl(ids.getDataUrl(downloadModel.getPreparedId(), null));
+                    downloadModel.setUrl(getDataUrl(downloadServiceUrl, downloadModel.getPreparedId(), null));
+                    
                 } else {
                     downloadModel
-                            .setUrl(ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName()));
+                            .setUrl(getDataUrl(downloadServiceUrl, downloadModel.getPreparedId(), downloadModel.getDownloadName()));
                 }
             } catch (UnsupportedEncodingException e) {
                 logger.error("getStatusIDS: " + e.getMessage());
                 throw new InternalException("Error returned from the data service. " + e.getMessage());
             }
+            
             downloadModel.setStatus(Constants.STATUS_AVAILABLE);
             downloadModel.setStartDownload(true);
             downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(),
@@ -290,16 +306,17 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             // TODO what to do, give the user an incomplete set?
             if (logger.isTraceEnabled()) {
                 logger.trace("getStatusIDS: status updated to " + Constants.STATUS_ERROR);
-            }
+            }            
+            
             try {
-                downloadModel.setUrl(ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName()));
+                downloadModel.setUrl(getDataUrl(downloadServiceUrl, downloadModel.getPreparedId(), downloadModel.getDownloadName()));
             } catch (UnsupportedEncodingException e) {
                 logger.error("getStatusIDS: " + e.getMessage());
                 throw new InternalException("Error returned from the data service. " + e.getMessage());
             }
             downloadModel.setStatus(Constants.STATUS_ERROR);
             downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(),
-                    downloadModel.getStatus());
+                    downloadModel.getStatus());                    
         }
 
         if (logger.isTraceEnabled()) {
@@ -342,25 +359,46 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             logger.debug("prepareDataObjectsForDownloadIDS: dataType (" + dataType + "), facility("
                     + facility.toString() + "), dataObjectList.size() (" + dataObjectList.size() + "), downloadName ("
                     + downloadName + ")");
+            for (Long dataObjectId : dataObjectList) {
+                logger.debug("prepareDataObjectsForDownloadIDS: dataObjectId: "  + dataObjectId + " (" + dataType + ")");
+            }
+            
         }
-        String sessionId = userManager.getIcatSessionId(getSessionId(), facility.getName());
+        //String sessionId = userManager.getIcatSessionId(getSessionId(), facility.getName());
         Date submitTime = new Date(System.currentTimeMillis());
-        Client ids = getIDSClient(facility.getDownloadServiceUrl());
+        IdsClient ids;
+		try {
+			ids = getIDSClient(facility.getDownloadServiceUrl());
+		} catch (MalformedURLException e) {
+			logger.error("prepareDataObjectsForDownloadIDS: getIDSClient " + e.getMessage());
+            throw new InternalException("Error trying to contact the download service at " + facility.getDownloadServiceUrl() + " url appears to be invalid.");
+        }
         String preparedId = "";
+        DataSelection dataSelection = new DataSelection();
         try {
             if (dataType.equalsIgnoreCase(Constants.DATA_FILE)) {
-                preparedId = ids.prepareDatafiles(sessionId, dataObjectList, false, null);
+                //preparedId = ids.prepareDatafiles(sessionId, dataObjectList, false, null);
+            	dataSelection.addDatafiles(dataObjectList);
+                preparedId = ids.prepareData(preparedId, dataSelection, Flag.ZIP);
             } else if (dataType.equalsIgnoreCase(Constants.DATA_SET)) {
-                preparedId = ids.prepareDatasets(sessionId, dataObjectList, false, null);
+                //preparedId = ids.prepareDatasets(sessionId, dataObjectList, false, null);
+            	dataSelection.addDatasets(dataObjectList);                
+                preparedId = ids.prepareData(preparedId, dataSelection, Flag.ZIP);
             }
-        } catch (ForbiddenException e) {
+        } catch (InsufficientPrivilegesException e) {
             throw new SessionException();
-        } catch (IDSException e) {
-            logger.error("prepareDataObjectsForDownloadIDS: " + e.getMessage());
+        } catch (NotImplementedException e) {
+            logger.error("prepareDataObjectsForDownloadIDS: " + "not implemented error " + e.getMessage());
             throw new InternalException("Error returned from the download service. " + e.getMessage());
-        } catch (IOException e) {
-            logger.error("prepareDataObjectsForDownloadIDS: " + e.getMessage());
-            throw new InternalException("Error trying to contact the download service. " + e.getMessage());
+        } catch (BadRequestException e) {
+            logger.error("prepareDataObjectsForDownloadIDS: " + "bad request error " + e.getMessage());
+            throw new InternalException("Error returned from the download service. " + e.getMessage());
+        } catch (NotFoundException e) {
+            logger.error("prepareDataObjectsForDownloadIDS: " + "not found error " + e.getMessage());
+            throw new InternalException("Error returned from the download service. " + e.getMessage());
+        } catch (org.icatproject.ids.client.InternalException e) {
+            logger.error("prepareDataObjectsForDownloadIDS: " + "internal error " + e.getMessage());
+            throw new InternalException("Error returned from the download service. " + e.getMessage());
         }
         DownloadModel dm = new DownloadModel();
         dm.setDownloadName(downloadName);
@@ -422,18 +460,17 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
      *            a string containing the url of the icat data service
      * @return an Icat Data Service <code>Client</code>
      * @throws InternalException
+     * @throws MalformedURLException 
      */
-    private Client getIDSClient(String url) throws InternalException {
+    private IdsClient getIDSClient(String url) throws InternalException, MalformedURLException {
         if (logger.isDebugEnabled()) {
             logger.debug("getIDSClient: url (" + url + ")");
         }
-        Client ids = null;
-        try {
-            ids = new Client(url);
-        } catch (BadRequestException e) {
-            logger.error("getIDSClient: " + e.getMessage());
-            throw new InternalException("Error bad url for the download service. " + e.getMessage());
-        }
+        
+        URL urlObject = new URL(url);
+        
+        IdsClient ids = null;
+        ids = new IdsClient(urlObject);
         return ids;
     }
 
@@ -605,5 +642,63 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             logger.error("getExpiryTime: " + e.getMessage());
         }
         return expiryTime;
+    }
+    
+    
+    /**
+     * Returns the URL from which you can download requested data from.
+     * 
+     * @param idsUrl     The url of the ids
+     * @param preparedId The ID of the download request
+     * @param outname    The desired filename for the download (optional)
+     * 
+     * @return The URL from which you can download requested data from
+     * 
+     * @throws UnsupportedEncodingException Check for non UTF-8 characters.
+     */
+    public String getDataUrl(String idsUrl, String preparedId, String outname) throws UnsupportedEncodingException {
+        Map<String, String> parameters = new HashMap<String, String>();
+
+        // create parameter list
+        parameters.put("preparedId", preparedId);
+        if (outname != null)
+            parameters.put("outname", outname);
+
+        StringBuilder url = new StringBuilder();
+
+        // construct url
+        url.append(idsUrl);
+        if (idsUrl.toString().charAt(idsUrl.toString().length() - 1) != '/') {
+            url.append("/");
+        }
+        
+        //append the ids url path
+        url.append(Constants.IDS_URL_PATH);
+        
+        url.append("getData?");
+        url.append(parametersToString(parameters));
+        
+        logger.info(url.toString());
+
+        return url.toString();
+    }
+    
+    /**
+     * Turn a list of key-value pairs into format suitable for HTTP GET request ie.
+     * key=value&key=value
+     */
+    private String parametersToString(Map<String, String> parameters)
+            throws UnsupportedEncodingException {
+        StringBuilder sb = new StringBuilder();
+        Iterator<Map.Entry<String, String>> it = parameters.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
+            sb.append(pairs.getKey() + "=" + URLEncoder.encode(pairs.getValue(), "UTF-8"));
+            if (it.hasNext()) {
+                sb.append("&");
+            }
+            it.remove();
+        }
+        return sb.toString();
     }
 }

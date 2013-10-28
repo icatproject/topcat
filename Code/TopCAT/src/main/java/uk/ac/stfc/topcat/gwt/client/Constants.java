@@ -59,4 +59,12 @@ public class Constants {
     /** Old download service */
     @Deprecated
     public static final String RESTFUL_DOWNLOAD = "restfulDownload";
+    
+    /** Url path of the IDS service (include ending /)*/
+    public static final String IDS_URL_PATH = "ids/";
+    
+    
+    /** Polling refresh interval for messages **/
+    public static final int MESSAGE_REFRESH_INTERVAL = 30000;
+    
 }

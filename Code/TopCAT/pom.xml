@@ -11,7 +11,7 @@
 		<gwt.version>2.4.0</gwt.version>
 		<gwt.plugin.version>2.4.0</gwt.plugin.version>
 		<gxt.version>2.2.3</gxt.version>
-		<ids.version>1.0.0</ids.version>
+		<ids.version>1.0.0-SNAPSHOT</ids.version>
 		<runTarget>index.html</runTarget>
 	</properties>
 
@@ -66,12 +66,13 @@
 			<artifactId>gxt</artifactId>
 			<version>${gxt.version}</version>
 		</dependency>
-
+		
+		 
 		<dependency>
 			<groupId>org.icatproject</groupId>
-			<artifactId>idsclient</artifactId>
+			<artifactId>ids.client</artifactId>
 			<version>${ids.version}</version>
-		</dependency>
+		</dependency>		
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -159,6 +160,34 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!-- deploy to glassfish -->
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <workingDirectory>C:\glassfish3topcat\glassfish\bin</workingDirectory>
+                    <executable>asadmin</executable>
+                    <arguments>                    
+                        <argument>--echo</argument>
+                        <argument>--port=4848</argument>
+                        <argument>deploy</argument>
+                        <argument>--name=${project.artifactId}</argument>                        
+                        <argument>--force=true</argument>
+                        <argument>${project.build.directory}/${project.build.finalName}.war</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+			
+			
 
 		</plugins>
 
