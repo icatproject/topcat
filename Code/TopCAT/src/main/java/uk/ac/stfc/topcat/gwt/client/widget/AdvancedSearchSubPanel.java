@@ -58,6 +58,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.ListField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -85,7 +86,8 @@ public class AdvancedSearchSubPanel extends Composite {
     private TextField<String> txtFldDataFileName;
     private DateField dateFieldStart;
     private DateField dateFieldEnd;
-    private TextField<String> txtFldRunNo;
+    private NumberField txtFldRunNo;
+    private TextField<String> txtVisitId;
     private InvestigationSearchCallback invSearchCallback;
 
     private HashMap<String, ArrayList<Instrument>> instrumentList;
@@ -153,12 +155,20 @@ public class AdvancedSearchSubPanel extends Composite {
         dateFieldEnd.getPropertyEditor().setFormat(
                 DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
 
-        LabelField lblfldRbNumbervisitId = new LabelField("Rb Number/Visit Id");
-        flexTable.setWidget(6, 0, lblfldRbNumbervisitId);
+        LabelField lblfldRbNumber = new LabelField("Rb Number");
+        flexTable.setWidget(6, 0, lblfldRbNumber);
 
-        txtFldRunNo = new TextField<String>();
+        txtFldRunNo = new NumberField();
+        txtFldRunNo.setPropertyEditorType(Integer.class);
         flexTable.setWidget(6, 1, txtFldRunNo);
         txtFldRunNo.setFieldLabel("New TextField");
+        
+        LabelField lblfldVisitId = new LabelField("Visit Id");
+        flexTable.setWidget(7, 0, lblfldVisitId);
+        
+        txtVisitId = new TextField<String>();
+        flexTable.setWidget(7, 1, txtVisitId);
+        txtVisitId.setFieldLabel("New TextField");
 
         LabelField lblfldFacility = new LabelField("Facility");
         flexTable.setWidget(8, 0, lblfldFacility);
@@ -278,8 +288,11 @@ public class AdvancedSearchSubPanel extends Composite {
         result.setDatafileName(txtFldDataFileName.getValue());
         result.setStartDate(dateFieldStart.getValue());
         result.setEndDate(dateFieldEnd.getValue());
-        result.setRbNumberStart(txtFldRunNo.getValue());
-        result.setRbNumberEnd(txtFldRunNo.getValue());
+        if (txtFldRunNo.getValue() != null) {
+            result.setRbNumberStart(txtFldRunNo.getValue().toString());
+            result.setRbNumberEnd(txtFldRunNo.getValue().toString());
+        }
+        result.setVisitId(txtVisitId.getValue());
         result.setFacilityList(getFacilitySelectedList());
         result.setInvestigationTypeList(getInvestigationTypeSelectedList());
         result.setInstrumentList(getInstrumentSelectedList());
@@ -342,6 +355,7 @@ public class AdvancedSearchSubPanel extends Composite {
         dateFieldStart.clear();
         dateFieldEnd.clear();
         txtFldRunNo.clear();
+        txtVisitId.clear();
     }
 
     /**
