@@ -75,6 +75,8 @@ public class TopcatIcatServer implements Serializable {
     private String defaultPassword;
     @Column(name = "DOWNLOAD_PLUGIN_NAME")
     private String downloadPluginName;
+    @Column(name = "DOWNLOAD_TYPE")
+    private String downloadType;
     @Column(name = "DOWNLOAD_SERVICE_URL")
     private String downloadServiceUrl;
     @Column(name = "PLUGIN_NAME")
@@ -142,6 +144,14 @@ public class TopcatIcatServer implements Serializable {
 
     public void setDownloadPluginName(String downloadPluginName) {
         this.downloadPluginName = downloadPluginName;
+    }
+
+    public String getDownloadType() {
+        return downloadType;
+    }
+
+    public void setDownloadType(String downloadType) {
+        this.downloadType = downloadType;
     }
 
     public String getDownloadServiceUrl() {

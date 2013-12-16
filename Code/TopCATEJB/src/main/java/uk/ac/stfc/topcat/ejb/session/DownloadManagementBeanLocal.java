@@ -114,5 +114,18 @@ public interface DownloadManagementBeanLocal {
 
     @Deprecated
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
+    
+    /**
+     * Update the expiry time of the record with the given id.
+     * 
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param id
+     *            the id of the record to update
+     * @param expiryTime
+     *            the expiry time
+     */
+    void updateExpiryTime(String sessionId, Long id, Date expiryTime);
 
 }

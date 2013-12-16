@@ -24,6 +24,8 @@ package uk.ac.stfc.topcat.gwt.client;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import uk.ac.stfc.topcat.gwt.client.authentication.LoginAfterRedirect;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
@@ -35,10 +37,11 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Panel;
@@ -64,6 +67,14 @@ public class TOPCATOnline implements EntryPoint {
     private EventPipeLine eventPipeLine;
 
     public void onModuleLoad() {
+        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+          @Override
+          public void onUncaughtException(@NotNull Throwable e) {
+            ensureNotUmbrellaError(e);
+          }
+        });
+        
+        
         if (Window.Location.getParameter("authenticationType") != null) {
             // This is to handle a call back from an authentication service
             loginAfterRedirect();
@@ -170,5 +181,17 @@ public class TOPCATOnline implements EntryPoint {
         eventPipeLine.getHistoryManager().processHistory(History.getToken());
         eventPipeLine.initDownloadParameter();
     }
+    
+    
+    private static void ensureNotUmbrellaError(@NotNull Throwable e) {
+        for (Throwable th : ((UmbrellaException) e).getCauses()) {
+          if (th instanceof UmbrellaException) {
+            ensureNotUmbrellaError(th);
+          } else {
+            System.err.println(th);
+          }
+        }
+      }
+    
     
 }

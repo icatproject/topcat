@@ -58,6 +58,9 @@ public interface SearchManagementBeanLocal {
 
     public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
+    
+    public ArrayList<TInvestigation> searchFreeTextInvestigation(String topcatSessionId,
+            TAdvancedSearchDetails searchDetails) throws TopcatException;
 
     public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
@@ -67,5 +70,6 @@ public interface SearchManagementBeanLocal {
 
     public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
+    
 
 }

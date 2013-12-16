@@ -35,6 +35,7 @@ import java.io.Serializable;
 public class TFacility implements Serializable {
     private static final long serialVersionUID = 1L;
     private String downloadPluginName;
+    private String downloadTypeName;
     private String downloadServiceUrl;
     private String name;
     private String searchPluginName;
@@ -51,6 +52,14 @@ public class TFacility implements Serializable {
 
     public void setDownloadPluginName(String downloadPluginName) {
         this.downloadPluginName = downloadPluginName;
+    }
+    
+    public String getDownloadTypeName() {
+        return downloadTypeName;
+    }
+
+    public void setDownloadTypeName(String downloadTypeName) {
+        this.downloadTypeName = downloadTypeName;
     }
 
     public String getDownloadServiceUrl() {
@@ -111,8 +120,8 @@ public class TFacility implements Serializable {
         message.append("version:").append(version).append("\n");
         message.append("searchPluginName:").append(searchPluginName).append("\n");
         message.append("downloadPluginName:").append(downloadPluginName).append("\n");
+        message.append("downloadTypeName:").append(downloadTypeName).append("\n");
         message.append("downloadServiceUrl:").append(downloadServiceUrl);
         return message.toString();
     }
-
 }

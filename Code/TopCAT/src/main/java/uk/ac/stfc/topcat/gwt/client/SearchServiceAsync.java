@@ -92,6 +92,22 @@ public interface SearchServiceAsync {
      */
     void getAdvancedSearchResultsInvestigation(String sessionId, TAdvancedSearchDetails searchDetails,
             AsyncCallback<List<TInvestigation>> callback);
+    
+    /**
+     * Get a list of investigations matching the criteria given in the free text search query
+     * Search all the iCat servers >= 4.3. Search is case insensitive.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param searchDetails
+     *            a <code>TAdvancedSearchDetails</code> containing the search
+     *            details
+     * @param callback
+     *            object to be called on completion
+     */
+    void getFreeTextSearchResultsInvestigation(String sessionId, TAdvancedSearchDetails searchDetails,
+            AsyncCallback<List<TInvestigation>> callback);
+    
 
     /**
      * Get a list of data sets matching the criteria given in the search

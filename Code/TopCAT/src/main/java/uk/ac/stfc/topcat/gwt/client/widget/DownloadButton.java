@@ -54,7 +54,7 @@ public class DownloadButton extends Button {
                     @Override
                     public void handleEvent(MessageBoxEvent be) {
                         if (be.getButtonClicked() != null
-                                && be.getButtonClicked().getText().equalsIgnoreCase(MessageBox.OK)) {
+                                && be.getButtonClicked().getHtml().equalsIgnoreCase(MessageBox.OK)) {
                             DownloadButtonEvent de = createDownloadButtonEvent();
                             de.setDownloadName(be.getValue());
                             fireEvent(Events.Select, de);

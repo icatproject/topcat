@@ -92,6 +92,7 @@
 								title="This should be the URL of the WSDL, e.g. https://example.com" width="150"></g:TextBox>
 							<g:ListBox ui:field="txtPluginName"></g:ListBox>
 							<g:ListBox ui:field="txtDownloadPluginName"></g:ListBox>
+							<g:ListBox ui:field="txtDownloadTypeName"></g:ListBox>
 							<g:TextBox ui:field="txtDownloadServiceUrl"
 								title="This is the URL of the download service that will be used by the selected download plugin"></g:TextBox>
 							<g:HorizontalPanel ui:field="hPanel0"

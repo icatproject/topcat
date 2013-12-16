@@ -31,6 +31,8 @@ import java.util.Set;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
+
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -128,5 +130,22 @@ public interface DownloadService extends RemoteService {
      */
     public DownloadModel prepareDataObjectsForDownload(String dataType, TFacility facility, List<Long> dataObjectList,
             String downloadName) throws TopcatException;
+
+    
+    /**
+     * Contact the I.D.S. and initiate the download of the given data objects.
+     * 
+     * @param dataType
+     *            the type of the data object to be downloaded
+     * @param facility
+     *            the facility data
+     * @param dataObjectList
+     *            a list of data object ids
+     * @param downloadName
+     *            the name to give the down load file
+     * @throws TopcatException
+     */
+    public DownloadModel directDownloadFromIDS(String dataType, TFacility facility, List<Long> dataObjectList, String downloadName)
+            throws TopcatException;
 
 }

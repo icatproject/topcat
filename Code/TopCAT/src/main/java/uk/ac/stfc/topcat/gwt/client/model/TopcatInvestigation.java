@@ -75,9 +75,10 @@ public class TopcatInvestigation extends BaseModel {
      * @param endDate
      *            Investigation end date
      */
-    public TopcatInvestigation(String serverName, String investigationId, String investigationName, String title,
+    public TopcatInvestigation(String serverName, String facilityName, String investigationId, String investigationName, String title,
             String visitId, Date startDate, Date endDate) {
         set("serverName", serverName);
+        set("facilityName", facilityName);
         set("investigationName", investigationName);
         set("investigationId", investigationId);
         set("title", title);
@@ -108,8 +109,9 @@ public class TopcatInvestigation extends BaseModel {
      * @param proposal
      *            Investigation proposal
      */
-    public TopcatInvestigation(String serverName, String investigationId, String investigationName, String title,
+    public TopcatInvestigation(String serverName, String facilityName, String investigationId, String investigationName, String title,
             String visitId, Date startDate, Date endDate, String instrument, String proposal) {
+        set("facilityName", facilityName);
         set("serverName", serverName);
         set("investigationName", investigationName);
         set("investigationId", investigationId);
@@ -131,13 +133,24 @@ public class TopcatInvestigation extends BaseModel {
         } else {
             set("formatedEndDate", "");
         }
-    }
+    }    
 
+    
+    //TODO getFacilityName returns the serverName defined in topcat
+    //it should 
     /**
      * @return facility name
      */
     public String getFacilityName() {
         return get("serverName");
+    }
+    
+    /**
+     * @return get the true facility name
+     * 
+     */
+    public String getFacilityNameFromInvestigation() {        
+        return get("facilityName");
     }
 
     /**

@@ -90,6 +90,14 @@ public class SearchManagementBean implements SearchManagementBeanLocal {
             TAdvancedSearchDetails searchDetails) throws TopcatException {
         return advancedSearchManager.searchAdvancedInvestigation(manager, topcatSessionId, searchDetails);
     }
+    
+    
+    @Override
+    public ArrayList<TInvestigation> searchFreeTextInvestigation(String topcatSessionId,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        return advancedSearchManager.searchFreeTextInvestigation(manager, topcatSessionId, searchDetails);
+    }
+    
 
     @Override
     public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String facilityName,

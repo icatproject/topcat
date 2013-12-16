@@ -119,7 +119,7 @@ public class DatasetWindow extends Window {
 
         datasetSelectionModel = createDatasetSelectionModel();
 
-        setHeading("");
+        setHeadingText("");
         setLayout(new FillLayout(Orientation.HORIZONTAL));
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -270,7 +270,7 @@ public class DatasetWindow extends Window {
      */
     public void setInvestigationTitle(String investigationTitle) {
         investigationName = investigationTitle;
-        setHeading("Investigation: " + investigationTitle);
+        setHeadingText("Investigation: " + investigationTitle);
     }
 
     /**

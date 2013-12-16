@@ -41,6 +41,7 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
     private String investigationId = null;
     private String investigationName = null;
     private String serverName = null;
+    private String facilityName = null;
     private Date startDate = null;
     private Date endDate = null;
     private String title = null;
@@ -55,17 +56,19 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
     public TInvestigation() {
     }
 
-    public TInvestigation(String invId, String inv, String server) {
+    public TInvestigation(String invId, String inv, String server, String facility) {
         investigationId = invId;
         investigationName = inv;
         serverName = server;
+        this.facilityName = facility;
     }
 
-    public TInvestigation(String invId, String invName, String server, String title, Date startDate, Date endDate,
+    public TInvestigation(String invId, String invName, String server, String facility, String title, Date startDate, Date endDate,
             String visitId) {
-        investigationId = invId;
-        investigationName = invName;
-        serverName = server;
+        this.investigationId = invId;
+        this.investigationName = invName;
+        this.serverName = server;
+        this.facilityName = facility;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -94,6 +97,14 @@ public class TInvestigation implements Serializable, Comparable<TInvestigation> 
 
     public void setServerName(String server) {
         serverName = server;
+    }
+
+    public String getFacilityName() {
+        return facilityName;
+    }
+
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
     }
 
     public String getTitle() {

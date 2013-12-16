@@ -229,7 +229,7 @@ public class BrowsePanel extends Composite {
                                                     "An internal error occured on the server, please see the server logs for more details.");
                                 } else {
                                     EventPipeLine.getInstance().showErrorDialog(
-                                            "Error retrieving data from server. " + caught.getMessage());
+                                            "Error retrieving data from server @browse panel. " + caught.getMessage());
                                 }
                                 callback.onFailure(caught);
                                 // TODO This is not working properly, the circle
@@ -528,7 +528,7 @@ public class BrowsePanel extends Composite {
 
         if (batchCount == 0) {
             EventPipeLine.getInstance().showMessageDialog("Nothing selected for download");
-        } else if (batchCount == 1) {
+        } /*else if (batchCount == 1) {
             EventPipeLine.getInstance().showMessageDialog(
                     "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                             + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
@@ -537,7 +537,7 @@ public class BrowsePanel extends Composite {
                     "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                             + "as " + batchCount
                             + " files. The status of your download can be seen from the ‘My Downloads’ tab.");
-        }
+        }*/
     }
 
     /**

@@ -54,9 +54,10 @@ public class TAdvancedSearchDetails implements Serializable {
     private String parameterName;
     private String parameterUnits;
     private String parameterValue;
-    private String parameterValueMax;
+    private String parameterValueMax;    
     private String visitId;
     private boolean searchAllData = false;
+    private String freeTextQuery;
 
     public TAdvancedSearchDetails() {
         investigatorNameList = new ArrayList<String>();
@@ -229,6 +230,14 @@ public class TAdvancedSearchDetails implements Serializable {
 
     public void setVisitId(String visitId) {
         this.visitId = visitId;
+    }
+
+    public String getFreeTextQuery() {
+        return freeTextQuery;
+    }
+
+    public void setFreeTextQuery(String freeTextQuery) {
+        this.freeTextQuery = freeTextQuery;
     }
 
 }

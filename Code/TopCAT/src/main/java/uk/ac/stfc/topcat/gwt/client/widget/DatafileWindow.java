@@ -126,9 +126,8 @@ public class DatafileWindow extends Window {
             }
         });
 
-        datafileSelectionModel = createDatafileSelectionModel();
-
-        setHeading("Datafile Window");
+        datafileSelectionModel = createDatafileSelectionModel();            
+        setHeadingText("Datafile Window");
         setLayout(new RowLayout(Orientation.VERTICAL));
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -166,7 +165,7 @@ public class DatafileWindow extends Window {
         view.setGroupRenderer(new GridGroupRenderer() {
             @Override
             public String render(GroupColumnData data) {
-                String f = cm.getColumnById(data.field).getHeader();
+                String f = cm.getColumnById(data.field).getHeaderHtml();
                 String l = data.models.size() == 1 ? "Item" : "Items";
                 return f + ": " + data.group + " (" + data.models.size() + " " + l + ")";
             }

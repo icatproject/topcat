@@ -156,7 +156,7 @@ public class UploadDatasetPanel extends Composite {
      */
     private FormPanel getDSPanel() {
         FormPanel datasetContainer = new FormPanel();
-        datasetContainer.setHeading("New Data Set Parameters");
+        datasetContainer.setHeadingText("New Data Set Parameters");
         datasetContainer.setWidth(370);
         datasetContainer.setLabelWidth(120);
         datasetContainer.setStyleAttribute("margin", "10px");
@@ -241,7 +241,7 @@ public class UploadDatasetPanel extends Composite {
     private FormPanel getDFPanel() {
         FormPanel form = new FormPanel();
         form.setItemId("datafileForm");
-        form.setHeading("Add A File");
+        form.setHeadingText("Add A File");
         form.setAction(idsUrl);
         form.setEncoding(Encoding.MULTIPART);
         form.setMethod(Method.POST);

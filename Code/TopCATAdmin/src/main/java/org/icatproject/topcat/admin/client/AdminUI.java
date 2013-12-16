@@ -59,13 +59,13 @@ public class AdminUI extends Composite {
 	private static boolean table1Flag = false;
 
 	public enum validationMessages {
-		FACILITY_NAME(
-				"Please provide a valid Facility Name to proceed e.g. ISIS"), ICAT_URL(
-				"Please provide a valid ICAT URL to proceed e.g. https://example.com"), DOWNLOAD_SERVICE_URL(
-				"Please provide a valid Download Service URL to proceed e.g. https://example.com/IDS"), DISPLAY_NAME(
-				"Please provide a valid Display Name to proceed e.g. \"Facility ID\""), FACILITY_NAME_DUPLICATION(
-				"Facility Name already exists, please use a different Facility Name"), DISPLAY_NAME_DUPLICATION(
-				"Display Name already exists, please use a different Display Name");
+		FACILITY_NAME("Please provide a valid Facility Name to proceed e.g. ISIS"), 
+		ICAT_URL("Please provide a valid ICAT URL to proceed e.g. https://example.com"),
+		DOWNLOAD_TYPE("Please select a download type"),
+		DOWNLOAD_SERVICE_URL("Please provide a valid Download Service URL to proceed e.g. https://example.com/IDS"), 
+		DISPLAY_NAME("Please provide a valid Display Name to proceed e.g. \"Facility ID\""), 
+		FACILITY_NAME_DUPLICATION("Facility Name already exists, please use a different Facility Name"), 
+		DISPLAY_NAME_DUPLICATION("Display Name already exists, please use a different Display Name");
 
 		private validationMessages(final String text) {
 			this.text = text;
@@ -100,7 +100,7 @@ public class AdminUI extends Composite {
 	TextBox txtName, txtServerUrl, txtDownloadServiceUrl, txtAuthURL,
 			txtDisplayName;
 	@UiField
-	ListBox txtPluginName, txtDownloadPluginName, txtVersion, txtAuthType,
+	ListBox txtPluginName, txtDownloadPluginName, txtDownloadTypeName, txtVersion, txtAuthType,
 			txtAuthPluginName;
 	@UiField
 	HorizontalPanel hPanel0, hPanel2, hPanel4;
@@ -152,7 +152,8 @@ public class AdminUI extends Composite {
 		table0.setText(0, 2, Constants.SERVER_URL);
 		table0.setText(0, 3, Constants.PLUGIN_NAME);
 		table0.setText(0, 4, Constants.DOWNLOAD_PLUGIN_NAME);
-		table0.setText(0, 5, Constants.DOWNLOAD_SERVICE_URL);
+		table0.setText(0, 5, Constants.DOWNLOAD_TYPE);
+		table0.setText(0, 6, Constants.DOWNLOAD_SERVICE_URL);
 		table0.getRowFormatter().setStyleName(0, "header");
 
 		// Sets the width for each column 
@@ -162,6 +163,7 @@ public class AdminUI extends Composite {
 		table0.getColumnFormatter().setWidth(3, "190px");
 		table0.getColumnFormatter().setWidth(4, "190px");
 		table0.getColumnFormatter().setWidth(5, "190px");
+		table0.getColumnFormatter().setWidth(6, "190px");
 
 		idArrayTable0.clear();
 		idArrayTable0.add(null);
@@ -180,6 +182,7 @@ public class AdminUI extends Composite {
 			table0.setText(r, c++, bits[0]);
 			table0.setText(r, c++, facility.getSearchPluginName());
 			table0.setText(r, c++, facility.getDownloadPluginName());
+			table0.setText(r, c++, facility.getDownloadTypeName());
 			table0.getRowFormatter().setStyleName(r, "table_style");
 			table0.setText(r++, c++, facility.getDownloadServiceUrl());
 			idArrayTable0.add(facility.getId());
@@ -192,7 +195,7 @@ public class AdminUI extends Composite {
 			table0Flag = false;
 		}
 		
-		for(int col=0; col < 6; col++){
+		for(int col=0; col < 7; col++){
 			for(int row=1; row <table0.getRowCount(); row++){
 				table0.getCellFormatter().setStyleName(1, 1, "cell");
 			}
@@ -209,23 +212,23 @@ public class AdminUI extends Composite {
 		for (int i = 1; i < r; i++) {
 
 			editBtn[i] = new Button("edit");
-			table0.setWidget(i, 6, editBtn[i]);
+			table0.setWidget(i, 7, editBtn[i]);
 			editBtn[i].setTitle("Edit the ICAT");
 			editBtn[i].setPixelSize(50, 50);
 			deleteBtn[i] = new Button("delete");
-			table0.setWidget(i, 7, deleteBtn[i]);
+			table0.setWidget(i, 8, deleteBtn[i]);
 			deleteBtn[i].setTitle("Remove the ICAT");
 			deleteBtn[i].setPixelSize(50, 50);
 			pingICatBtn[i] = new Button("ping ICAT");
-			table0.setWidget(i, 8, pingICatBtn[i]);
+			table0.setWidget(i, 9, pingICatBtn[i]);
 			pingICatBtn[i].setTitle("Ping the ICAT URL");
 			pingICatBtn[i].setPixelSize(50, 50);
 			pingDSBtn[i] = new Button("ping D.S.");
-			table0.setWidget(i, 9, pingDSBtn[i]);
+			table0.setWidget(i, 10, pingDSBtn[i]);
 			pingDSBtn[i].setTitle("Ping the Download Service URL");
 			pingDSBtn[i].setPixelSize(50, 50);
 			authDetailsBtn[i] = new Button("Auth. Details");
-			table0.setWidget(i, 10, authDetailsBtn[i]);
+			table0.setWidget(i, 11, authDetailsBtn[i]);
 			authDetailsBtn[i].setTitle("Show the Authetication Details associated with this ICAT");
 			authDetailsBtn[i].setPixelSize(50, 50);
 			
@@ -330,7 +333,8 @@ public class AdminUI extends Composite {
 		editMenu.setText(2, 0, Constants.SERVER_URL + ":");
 		editMenu.setText(3, 0, Constants.PLUGIN_NAME + ":");
 		editMenu.setText(4, 0, Constants.DOWNLOAD_PLUGIN_NAME + ":");
-		editMenu.setText(5, 0, Constants.DOWNLOAD_SERVICE_URL + ":");
+		editMenu.setText(5, 0, Constants.DOWNLOAD_TYPE + ":");
+		editMenu.setText(6, 0, Constants.DOWNLOAD_SERVICE_URL + ":");
 
 		editMenu.getColumnFormatter().setWidth(0, "170px");
 		editMenu.getColumnFormatter().setWidth(1, "5px");
@@ -344,16 +348,17 @@ public class AdminUI extends Composite {
 		txtServerUrl.setWidth("341px");
 		editMenu.setWidget(3, 2, txtPluginName);
 		editMenu.setWidget(4, 2, txtDownloadPluginName);
-		editMenu.setWidget(5, 2, txtDownloadServiceUrl);
+		editMenu.setWidget(5, 2, txtDownloadTypeName);
+		editMenu.setWidget(6, 2, txtDownloadServiceUrl);
 		txtDownloadServiceUrl.setWidth("341px");
-		editMenu.setWidget(6, 2, lbl1);
-		editMenu.setWidget(6, 0, hPanel0);
+		editMenu.setWidget(7, 2, lbl1);
+		editMenu.setWidget(8, 0, hPanel0);
 
 		// SETTING THE TEXT IN THE
 		if (menuType.equals(MENU_EDIT)) {
 			txtName.setText(table0.getText(table0Row, 0));
 			txtServerUrl.setText(table0.getText(table0Row, 2));
-			txtDownloadServiceUrl.setText(table0.getText(table0Row, 5));
+			txtDownloadServiceUrl.setText(table0.getText(table0Row, 6));
 		}
 
 		// THESE ARE THE ITEMS IN THE VERSION LISTBOX
@@ -394,6 +399,20 @@ public class AdminUI extends Composite {
 				.equals(txtDownloadPluginName.getItemText(1))) {
 			txtDownloadPluginName.setItemSelected(1, true);
 		}
+		
+		
+		// THESE ARE THE ITEMS IN THE DOWNLOAD_PLUGIN_NAME LISTBOX
+        txtDownloadTypeName.insertItem("direct", 0);
+        txtDownloadTypeName.insertItem("prepared", 1);
+
+        if (menuType.equals(MENU_ADD)
+                || table0.getText(table0Row, 5).trim().equals(null)) {
+            txtDownloadTypeName.setItemSelected(0, true);
+        } else if (table0.getText(table0Row, 5).trim().trim()
+                .equals(txtDownloadTypeName.getItemText(1))) {
+            txtDownloadTypeName.setItemSelected(1, true);
+        }
+		
 
 		if (menuType.equals(MENU_EDIT)) {
 			btnMenu.setText("update");
@@ -508,6 +527,8 @@ public class AdminUI extends Composite {
 				.getSelectedIndex()));
 		facility.setDownloadPluginName((txtDownloadPluginName
 				.getItemText(txtDownloadPluginName.getSelectedIndex())));
+		facility.setDownloadTypeName((txtDownloadTypeName
+                .getItemText(txtDownloadTypeName.getSelectedIndex())));
 		facility.setDownloadServiceUrl(txtDownloadServiceUrl.getText());
 
 		if (action.equals(MENU_EDIT) && (facility.getId() == null))
@@ -528,6 +549,7 @@ public class AdminUI extends Composite {
 		txtDownloadServiceUrl.setText(null);
 		txtPluginName.clear();
 		txtDownloadPluginName.clear();
+		txtDownloadTypeName.clear();
 		txtVersion.clear();
 		tableMenu.setModal(false);
 		tableMenu.setVisible(false);
@@ -850,24 +872,24 @@ public class AdminUI extends Composite {
 		}
 			
 		switch (table0Column) {
-		case 6:
+		case 7:
 			inititialiseMenu(MENU_EDIT);
 			table0Flag = true;
 			break;
-		case 7:
+		case 8:
 			handleDeleteButtonEvent("ICAT_TABLE");
 			break;
-		case 8:
+		case 9:
 			handleRowSelection("table0");
 			url = table0.getText(table0Row, 2);
 			handlePingButtonClick(url, "ICAT");
 			break;
-		case 9:
+		case 10:
 			handleRowSelection("table0");
 			url = table0.getText(table0Row, 5);
 			handlePingButtonClick(url + Constants.IDS_URL_PATH, "Download Service");
 			break;
-		case 10:
+		case 11:
 			handleRowSelection("table0");
 			authTableCall();
 			break;

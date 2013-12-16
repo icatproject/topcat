@@ -71,7 +71,8 @@ public class AdminEJB {
 		tiServer.setServerUrl(facility.getUrl());
 		tiServer.setPluginName(facility.getSearchPluginName());
 		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
-		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
+		tiServer.setDownloadType(facility.getDownloadTypeName());
+		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());		
 		entityManager.persist(tiServer);
 
 		logger.debug("A new row has been added");
@@ -86,6 +87,7 @@ public class AdminEJB {
 		tiServer.setServerUrl(facility.getUrl());
 		tiServer.setPluginName(facility.getSearchPluginName());
 		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
+		tiServer.setDownloadType(facility.getDownloadTypeName());
 		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
 		entityManager.merge(tiServer);
 

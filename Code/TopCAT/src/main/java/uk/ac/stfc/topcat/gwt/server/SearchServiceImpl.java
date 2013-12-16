@@ -145,6 +145,24 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
         List<TInvestigation> investigationList = searchManager.searchAdvancedInvestigation(sessionId, searchDetails);
         return investigationList;
     }
+    
+    
+    /*
+     * This method searches all the icat servers >= 4.3 for user investigations for given search query 
+     * Search is CASE insensitive and return maximum of 200 results
+     * 
+     * @see uk.ac.stfc.topcat.gwt.client.SearchService#
+     * getFreeTextSearchResultsInvestigation(java.lang.String,
+     * uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails)
+     */
+    @Override
+    public List<TInvestigation> getFreeTextSearchResultsInvestigation(String sessionId,
+            TAdvancedSearchDetails searchDetails) throws TopcatException {
+        if (sessionId == null)
+            sessionId = getSessionId();
+        List<TInvestigation> investigationList = searchManager.searchFreeTextInvestigation(sessionId, searchDetails);
+        return investigationList;
+    }
 
     /**
      * This methods searches for the datafiles that meet the criteria given in
@@ -222,6 +240,6 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
             sessionId = (String) session.getAttribute("SESSION_ID");
         }
         return sessionId;
-    }
+    }    
 
 }

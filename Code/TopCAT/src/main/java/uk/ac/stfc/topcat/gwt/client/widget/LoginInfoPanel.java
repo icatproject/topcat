@@ -75,7 +75,7 @@ public class LoginInfoPanel extends Composite {
         TableData td_lblFieldFacility = new TableData();
         td_lblFieldFacility.setHorizontalAlign(HorizontalAlignment.RIGHT);
         horizontalPanel.add(lblFieldFacility, td_lblFieldFacility);
-        lblFieldFacility.setText(facility.getName());
+        lblFieldFacility.setValue(facility.getName());
 
         btnLogin = new Button("Login");
         btnLogin.setIconAlign(IconAlign.RIGHT);

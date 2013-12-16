@@ -112,4 +112,19 @@ public interface DownloadServiceAsync {
     public void prepareDataObjectsForDownload(String dataType, TFacility facility, List<Long> dataObjectList,
             String downloadName, AsyncCallback<DownloadModel> callback);
 
+    /**
+     * Contact the I.D.S. and download of the given data objects.
+     * 
+     * @param dataType
+     *            the type of the data object to be downloaded
+     * @param facility
+     *            the facility data
+     * @param dataObjectList
+     *            a list of data object ids
+     * @param downloadName
+     *            the name to give the down load file
+     */
+    public void directDownloadFromIDS(String dataType, TFacility facility, List<Long> dataObjectList, 
+            String downloadName, AsyncCallback<DownloadModel> asyncCallback);
+
 }

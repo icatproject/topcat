@@ -247,4 +247,27 @@ public class DownloadManager {
         }
         return icatServer.getDownloadServiceUrl();
     }
+    
+    
+    /**
+     * Update the expiry time of the record with the given id.
+     * 
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param id
+     *            the id of the record to update
+     * @param expiryTime
+     *            the expiry time 
+     */
+    public void updateExpiryTime(EntityManager manager, String topcatSessionId, Long id, Date expiryTime) {
+        if (logger.isInfoEnabled()) {
+            logger.info("updateExpiryTime: topcatSessionId (" + topcatSessionId + "), id (" + id + "), expiry time (" + expiryTime.toString() + ")");
+        }
+        manager.createNamedQuery("TopcatUserDownload.updateExpiryTimeById").setParameter("id", id).
+            setParameter("expiryTime", expiryTime).executeUpdate();
+        manager.flush();
+    }
+    
+    
 }

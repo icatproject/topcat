@@ -116,6 +116,22 @@ public interface SearchService extends RemoteService {
      */
     List<TInvestigation> getAdvancedSearchResultsInvestigation(String sessionId, TAdvancedSearchDetails searchDetails)
             throws TopcatException;
+    
+    /**
+     * Get a list of investigations matching the criteria given in the free text search
+     * details. Search all the iCat servers.
+     * 
+     * @param sessionId
+     *            a string containing the session id
+     * @param searchDetails
+     *            a <code>TAdvancedSearchDetails</code> containing the search
+     *            details
+     * @return a list of <code>TInvestigation</code> containing investigations
+     * @throws TopcatException
+     */
+    List<TInvestigation> getFreeTextSearchResultsInvestigation(String sessionId, TAdvancedSearchDetails searchDetails)
+            throws TopcatException;
+    
 
     /**
      * Get a list of data sets matching the criteria given in the search

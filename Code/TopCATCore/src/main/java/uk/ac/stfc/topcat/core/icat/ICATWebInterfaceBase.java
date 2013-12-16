@@ -78,7 +78,12 @@ public class ICATWebInterfaceBase {
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
             int start, int end) throws TopcatException {
         return new ArrayList<TInvestigation>();
-    }
+    }    
+    
+    public ArrayList<TInvestigation> searchByFreeTextPagination(String sessionId, TAdvancedSearchDetails searchDetails,
+            int start, int end) throws TopcatException {
+        throw new NotSupportedException("Free text search is not currently supported by this server.");
+    }    
 
     public ArrayList<TDatafile> searchDatafilesByParameter(String sessionId, TAdvancedSearchDetails details)
             throws TopcatException {

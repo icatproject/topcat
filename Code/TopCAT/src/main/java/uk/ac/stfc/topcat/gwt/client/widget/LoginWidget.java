@@ -74,7 +74,7 @@ public class LoginWidget extends Window {
         setBlinkModal(true);
         setModal(true);
 
-        setHeading("New Window");
+        setHeadingText("New Window");
         RowLayout rowLayout = new RowLayout(Orientation.VERTICAL);
         setLayout(rowLayout);
 
@@ -131,7 +131,7 @@ public class LoginWidget extends Window {
      */
     public void show(TFacility facility) {
         this.facility = facility;
-        setHeading("Login to " + facility.getName());
+        setHeadingText("Login to " + facility.getName());
         getAuthenticationTypes(facility.getName());
     }
 

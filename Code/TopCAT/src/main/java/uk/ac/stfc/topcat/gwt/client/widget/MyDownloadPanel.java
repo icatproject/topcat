@@ -125,6 +125,9 @@ public class MyDownloadPanel extends Composite {
                 } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
                     b.setEnabled(false);
                     b.setText(Constants.STATUS_ERROR);
+                } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED)) {
+                    b.setEnabled(false);
+                    b.setText(Constants.STATUS_EXPIRED);
                 } else {
                     b.setEnabled(false);
                     b.setText("waiting");

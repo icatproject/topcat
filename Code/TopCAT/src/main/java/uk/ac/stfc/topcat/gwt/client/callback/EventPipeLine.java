@@ -88,7 +88,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -471,7 +470,7 @@ public class EventPipeLine implements LoginInterface {
                         ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
                         if (result != null) {
                             for (TInvestigation inv : result)
-                                invList.add(new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(), inv
+                                invList.add(new TopcatInvestigation(inv.getServerName(), inv.getFacilityName(), inv.getInvestigationId(), inv
                                         .getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(),
                                         inv.getEndDate()));
                         }
@@ -480,6 +479,48 @@ public class EventPipeLine implements LoginInterface {
                     }
                 });
     }
+    
+    
+    /**
+     * This method searches for all the investigations that match the given
+     * search details.
+     * 
+     * @param searchDetails
+     */
+    public void searchForInvestigationByFreeText(final TAdvancedSearchDetails searchDetails) {
+        waitDialog.setMessage("  Searching...");
+        waitDialog.center();        
+        waitDialog.show();
+        searchService.getFreeTextSearchResultsInvestigation(null, searchDetails,
+                new AsyncCallback<List<TInvestigation>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        waitDialog.hide();
+                        if (caught instanceof SessionException) {
+                            checkStillLoggedIn();
+                        } else if (caught instanceof BadParameterException) {
+                            showErrorDialog("Error " + ((BadParameterException) caught).getMessage());                        
+                        } else {
+                            showErrorDialog("Error retrieving data from server");
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(List<TInvestigation> result) {
+                        ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
+                        if (result != null) {
+                            for (TInvestigation inv : result)
+                                invList.add(new TopcatInvestigation(inv.getServerName(), inv.getFacilityName(), inv.getInvestigationId(), inv
+                                        .getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(),
+                                        inv.getEndDate()));
+                        }
+                        waitDialog.hide();
+                        mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);
+                    }
+                });
+    }
+    
+    
 
     /**
      * Get additional details about an investigation. An asynchronous call is
@@ -540,7 +581,7 @@ public class EventPipeLine implements LoginInterface {
                         ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
                         if (result != null) {
                             for (TInvestigation inv : result)
-                                invList.add(new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(), inv
+                                invList.add(new TopcatInvestigation(inv.getServerName(), inv.getFacilityName(), inv.getInvestigationId(), inv
                                         .getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(),
                                         inv.getEndDate()));
                         }
@@ -885,7 +926,7 @@ public class EventPipeLine implements LoginInterface {
                 ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
                 if (result != null) {
                     for (TInvestigation inv : result)
-                        invList.add(new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(), inv
+                        invList.add(new TopcatInvestigation(inv.getServerName(), inv.getFacilityName(), inv.getInvestigationId(), inv
                                 .getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv
                                 .getEndDate()));
                 }
@@ -1085,7 +1126,4 @@ public class EventPipeLine implements LoginInterface {
 		});
 		
 	}
-	
-	
-
 }

@@ -232,7 +232,7 @@ public class InvestigationDetailPanel extends Composite {
      * @return the facility name
      */
     public String getFacilityName() {
-        return dataFacility.getText();
+        return (String) dataFacility.getValue();
     }
 
     /**
@@ -265,7 +265,7 @@ public class InvestigationDetailPanel extends Composite {
         // consistent formatting.
         reset();
         
-        // As of ICAT version 4.3, an investigatio can have more than 1 instrument.
+        // As of ICAT version 4.3, an investigation can have more than 1 instrument.
         // We list the instruments in a string separated by commas.
         StringBuilder sb = new StringBuilder();
         String separator = "";
@@ -275,7 +275,7 @@ public class InvestigationDetailPanel extends Composite {
             separator = ", ";
         }
         
-        investigationModel = new TopcatInvestigation(inv.getServerName(), inv.getInvestigationId(),
+        investigationModel = new TopcatInvestigation(inv.getServerName(), inv.getFacilityName(), inv.getInvestigationId(),
                 inv.getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(), inv.getEndDate(),
                 sb.toString(), inv.getProposal());
 
@@ -371,7 +371,7 @@ public class InvestigationDetailPanel extends Composite {
     }
 
     protected void initDataBindings() {
-        FieldBinding fieldBinding = new FieldBinding(dataFacility, "serverName");
+        FieldBinding fieldBinding = new FieldBinding(dataFacility, "facilityName");
         fieldBinding.bind(investigationModel);
         //
         FieldBinding fieldBinding_1 = new FieldBinding(dataVisitId, "visitId");

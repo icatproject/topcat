@@ -92,5 +92,11 @@ public class DownloadManagementBean implements DownloadManagementBeanLocal {
     public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {
         downloadManager.updateDownloadStatus(manager, sessionId, facilityName, url, updatedUrl, status);
     }
+    
+    @Override
+    public void updateExpiryTime(String sessionId, Long id, Date expiryTime) {
+        downloadManager.updateExpiryTime(manager, sessionId, id, expiryTime);
+    }
+
 
 }

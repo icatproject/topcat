@@ -38,6 +38,7 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatKeywords;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 import uk.ac.stfc.topcat.ejb.utils.Configuration;
 
+
 /**
  * This class manages the keywords updating from the servers and serving the
  * keywords.

@@ -25,6 +25,7 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
@@ -49,7 +50,7 @@ public class WaitDialog extends Window {
 		setOnEsc(false);
 		setModal(true);
 		setClosable(false);
-		setHeading("");
+		setHeadingText("");
 		setLayout(new TableLayout(2));
 		
 		Image image = new Image("images/wait-icon.gif");
@@ -70,5 +71,4 @@ public class WaitDialog extends Window {
 		displayText.setText(msg);
 		layout();
 	}
-
 }

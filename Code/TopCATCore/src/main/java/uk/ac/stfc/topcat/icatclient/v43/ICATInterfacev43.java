@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -51,6 +53,7 @@ import org.icatproject_4_3_0.DatafileParameter;
 import org.icatproject_4_3_0.Dataset;
 import org.icatproject_4_3_0.DatasetParameter;
 import org.icatproject_4_3_0.DatasetType;
+import org.icatproject_4_3_0.Facility;
 import org.icatproject_4_3_0.FacilityCycle;
 import org.icatproject_4_3_0.ICAT;
 import org.icatproject_4_3_0.ICATService;
@@ -69,7 +72,7 @@ import org.icatproject_4_3_0.Publication;
 import org.icatproject_4_3_0.Shift;
 
 /**
- * 
+ *
  */
 public class ICATInterfacev43 extends ICATWebInterfaceBase {
     private ICAT service;
@@ -317,17 +320,18 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             Investigation resultInv = (Investigation) service
                     .get(sessionId,
-                            "Investigation INCLUDE InvestigationInstrument, Publication, InvestigationUser, Instrument, User, Shift, InvestigationParameter, ParameterType",
+                            "Investigation inv INCLUDE inv.facility, inv.publications, inv.investigationUsers, inv.investigationInstruments.instrument, inv.investigationUsers.user, inv.shifts, inv.parameters.type",
                             investigationId);
+
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
-            
-            List<String> instruments = new ArrayList<String>();            
+
+            List<String> instruments = new ArrayList<String>();
             List<InvestigationInstrument> investigationInstruments = resultInv.getInvestigationInstruments();
             for (InvestigationInstrument investigationInstrument :  investigationInstruments) {
                 instruments.add(investigationInstrument.getInstrument().getFullName());
-            }            
+            }
             ti.setInstruments(instruments);
-            
+
             ti.setProposal(resultInv.getSummary());
             ArrayList<TPublication> publicationList = new ArrayList<TPublication>();
             List<Publication> pubs = resultInv.getPublications();
@@ -388,6 +392,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
                 + end + ")");
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         String query = getAdvancedQuery(sessionId, details);
+        logger.info("advanced query: " + query);
         List<Object> resultInv = null;
         try {
             resultInv = service.search(sessionId, start + ", " + end + query);
@@ -399,11 +404,76 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
                     "Internal error, searchByAdvancedPagination threw an unexpected exception, see server logs for details");
         }
         for (Object inv : resultInv) {
+            logger.info("*********search result*********");            
             investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
         }
         Collections.sort(investigationList);
         return investigationList;
     }
+
+
+    public ArrayList<TInvestigation> searchByFreeTextPagination(String sessionId, TAdvancedSearchDetails details,
+            int start, int end) throws TopcatException {
+        logger.info("searchByFreeTextPagination: sessionId (" + sessionId + " query: " + details.getFreeTextQuery());
+        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+
+        String query = details.getFreeTextQuery().trim();
+
+        logger.info("paginate query:" + query);
+        
+        List<Object> resultInv = null;
+        try {
+            resultInv = service.searchText(sessionId, query, 200, "Investigation");
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "searchByFreeTextPagination");
+        } catch (Throwable e) {
+            logger.error("searchByFreeTextPagination caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, searchByFreeTextPagination threw an unexpected exception, see server logs for details");
+        }
+        
+        //searchText() can only give the investigation table without the facility name information 
+        //which is required for display. We need to perform another query to get all the 
+        //investigations found form searchText()
+        List<Long> investigationIds = new ArrayList<Long>();
+        
+        //get list of investigation ids
+        for (Object inv : resultInv) {
+            Investigation invTemp = (Investigation) inv;
+            investigationIds.add(invTemp.getId());
+        }
+        
+        //build in string for query
+        String investigationIdList = "";
+        investigationIdList = getINLong(investigationIds);
+        
+        List<Object> result = null;
+        
+        //search query 
+        String jPQLQuery = "SELECT inv FROM Investigation inv WHERE inv.id IN " + investigationIdList + " INCLUDE inv.facility";
+        
+        //perform search
+        try {
+            result = service.search(sessionId, jPQLQuery);
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "searchByFreeTextPagination");
+        } catch (Throwable e) {
+            logger.error("searchByFreeTextPagination caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, searchByFreeTextPagination threw an unexpected exception, see server logs for details");
+        }
+        
+        for (Object inv : result) {            
+            investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
+        }
+        
+        Collections.sort(investigationList);
+
+        logger.info("result count:" + investigationList.size());
+
+        return investigationList;
+    }
+
 
     @Override
     public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId)
@@ -767,7 +837,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
             return getParameterQuery(sessionId, details, "Investigation");
         }
 
-        StringBuilder query = new StringBuilder(" DISTINCT Investigation");
+        StringBuilder query = new StringBuilder(" DISTINCT Investigation INCLUDE Facility");
         boolean addAnd = false;
         boolean queryDataset = false;
 
@@ -879,7 +949,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
 
     /**
      * Construct the query string to search for parameter(s).
-     * 
+     *
      * @param sessionId
      * @param details
      * @param entityName
@@ -1033,7 +1103,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
     /**
      * Get the date as a string from a <code>XMLGregorianCalendar</code> in a
      * format suitable for a icat query.
-     * 
+     *
      * @param date
      *            a <code>XMLGregorianCalendar</code> date
      * @return a string containing a date in a format suitable for a icat query
@@ -1045,7 +1115,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
     /**
      * Get the date as a string from a <code>Date</code> in a format suitable
      * for a icat query.
-     * 
+     *
      * @param date
      *            a <code>Date</code> date
      * @return a string containing a date in a format suitable for a icat query
@@ -1063,6 +1133,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         String id = inv.getId().toString();
         Date invStartDate = null;
         Date invEndDate = null;
+        String facilityName = "";
 
         if (inv.getStartDate() != null) {
             invStartDate = inv.getStartDate().toGregorianCalendar().getTime();
@@ -1070,7 +1141,15 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         if (inv.getEndDate() != null) {
             invEndDate = inv.getEndDate().toGregorianCalendar().getTime();
         }
-        return new TInvestigation(id, inv.getName(), serverName, inv.getTitle(), invStartDate, invEndDate,
+
+        Facility invFacility = inv.getFacility();
+        if (invFacility != null) {
+            facilityName = invFacility.getFullName();            
+        } else {
+            facilityName = serverName;            
+        }
+
+        return new TInvestigation(id, inv.getName(), serverName, facilityName, inv.getTitle(), invStartDate, invEndDate,
                 inv.getVisitId());
     }
 
@@ -1112,7 +1191,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
     /**
      * Call icat with the given query and then format the results as a list of
      * strings.
-     * 
+     *
      * @param sessionId
      * @param query
      *            a string containing the query to pass to icat
@@ -1151,4 +1230,17 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         infield.append(')');
         return infield.toString();
     }
+    
+    private String getINLong(List<Long> ele) {
+        final StringBuilder infield = new StringBuilder("(");
+        for (final long t : ele) {
+            if (infield.length() != 1) {
+                infield.append(',');
+            }
+            infield.append(t);
+        }
+        infield.append(')');
+        return infield.toString();
+    }
+    
 }

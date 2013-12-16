@@ -15,6 +15,7 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(name = "TopcatUserDownload.findByUserId", query = "SELECT t FROM TopcatUserDownload t WHERE t.userId = :userId"),
         @NamedQuery(name = "TopcatUserDownload.updateStatus", query = "UPDATE TopcatUserDownload t SET t.url = :updatedUrl, t.status = :status WHERE t.url = :url"),
+        @NamedQuery(name = "TopcatUserDownload.updateExpiryTimeById", query = "UPDATE TopcatUserDownload t SET t.expiryTime = :expiryTime WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.updateById", query = "UPDATE TopcatUserDownload t SET t.url = :url, t.status = :status WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.deleteById", query = "DELETE from TopcatUserDownload t where t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.cleanup", query = "DELETE from TopcatUserDownload t where CURRENT_TIMESTAMP > t.expiryTime") })

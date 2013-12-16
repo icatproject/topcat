@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -72,7 +73,7 @@ public class DownloadManager {
         // Create a new timer that calls getDownloadStatus() on the server.
         Timer t = getDownloadStatusTimer();
         // Schedule the timer to run every 5 seconds.
-        t.scheduleRepeating(5000);
+        t.scheduleRepeating(30000);
 
         createLoginHandler();
         createLogoutHandler();
@@ -124,7 +125,14 @@ public class DownloadManager {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
                         && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
-                    prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
+                    if (facility.getDownloadTypeName().equalsIgnoreCase("prepared")) {                    
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
+                    } else if (facility.getDownloadTypeName().equalsIgnoreCase("direct")) {
+                        directDownloadFromIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
+                    } else { 
+                        //use prepared if download type not set. Shouldn't get here
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
+                    }
                 } else {
                     downloadDatafilesRDS(facilityName, datafileList, downloadName);
                 }
@@ -151,7 +159,15 @@ public class DownloadManager {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
                         && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
-                    prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
+                    
+                    if (facility.getDownloadTypeName().equalsIgnoreCase("prepared")) {
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
+                    } else if (facility.getDownloadTypeName().equalsIgnoreCase("direct")) {                        
+                        directDownloadFromIDS(Constants.DATA_SET, facility, datasetList, downloadName);
+                    } else { 
+                        //use prepared if download type not set. Shouldn't get here                        
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
+                    }
                 } else {
                     downloadDatasetsRDS(facilityName, datasetList.get(0), downloadName);
                 }
@@ -214,6 +230,51 @@ public class DownloadManager {
      * @param downloadName
      *            the name to give the download file
      */
+    private void directDownloadFromIDS(final String dataType, final TFacility facility,
+            final List<Long> dataObjectList, final String downloadName) {
+        downloadService.directDownloadFromIDS(dataType, facility, dataObjectList, downloadName,
+                new AsyncCallback<DownloadModel>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        if (caught instanceof SessionException) {
+                            eventPipeLine.checkStillLoggedIn();
+                        } else if (caught instanceof InternalException) {
+                            showErrorDialog(caught.getMessage());
+                        } else {
+                            showErrorDialog("Error requesting the download. " + caught.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(DownloadModel result) {
+                        //trigger the download in __directdownload iframe
+                        if(!result.getUrl().isEmpty()) {
+                            DOM.setElementAttribute(RootPanel.get("__directdownload").getElement(), "src", result.getUrl());
+                        } else {
+                            showErrorDialog("Error retrieving download url from the ids");
+                        }
+                    }
+                });
+    }
+    
+    
+    /**
+     * Contact the I.D.S. and prepare the download of the given data objects.
+     * 
+     * <dl>
+     * <dt>Fires:</dt>
+     * <dd> <code>AddMyDownloadEvent</code></dd>
+     * </dl>
+     * 
+     * @param dataType
+     *            the type of the data object to be downloaded
+     * @param facility
+     *            the facility data
+     * @param dataObjectList
+     *            a list of data object ids
+     * @param downloadName
+     *            the name to give the download file
+     */
     private void prepareDataObjectsForDownloadIDS(final String dataType, final TFacility facility,
             final List<Long> dataObjectList, final String downloadName) {
         downloadService.prepareDataObjectsForDownload(dataType, facility, dataObjectList, downloadName,
@@ -239,6 +300,9 @@ public class DownloadManager {
                     }
                 });
     }
+    
+    
+    
 
     /**
      * <dl>

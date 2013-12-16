@@ -89,7 +89,7 @@ public class ParameterWindow extends Window {
             }
         });
         parameterStore = new ListStore<ParameterModel>();
-        setHeading("");
+        setHeadingText("");
         setLayout(new RowLayout(Orientation.VERTICAL));
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -143,9 +143,9 @@ public class ParameterWindow extends Window {
         this.dataType = dataType;
         this.dataName = dataName;
         if (dataType.equals(Constants.DATA_SET)) {
-            setHeading("Dataset: " + dataName);
+            setHeadingText("Dataset: " + dataName);
         } else {
-            setHeading("Datafile: " + dataName);
+            setHeadingText("Datafile: " + dataName);
         }
     }
 

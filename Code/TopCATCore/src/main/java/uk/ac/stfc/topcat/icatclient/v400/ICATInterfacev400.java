@@ -455,7 +455,7 @@ public class ICATInterfacev400 extends ICATWebInterfaceBase {
         if (inv.getInvEndDate() != null) {
             invEndDate = inv.getInvEndDate().toGregorianCalendar().getTime();
         }
-        return new TInvestigation(id, inv.getInvNumber(), serverName, inv.getTitle(), invStartDate, invEndDate,
+        return new TInvestigation(id, inv.getInvNumber(), serverName, serverName, inv.getTitle(), invStartDate, invEndDate,
                 inv.getVisitId());
     }
 

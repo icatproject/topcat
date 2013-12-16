@@ -90,6 +90,7 @@ public class UtilityManager {
             tFacility.setVersion(((TopcatIcatServer) icatServer).getVersion());
             tFacility.setSearchPluginName(((TopcatIcatServer) icatServer).getPluginName());
             tFacility.setDownloadPluginName(((TopcatIcatServer) icatServer).getDownloadPluginName());
+            tFacility.setDownloadTypeName(((TopcatIcatServer) icatServer).getDownloadType());
             tFacility.setDownloadServiceUrl(((TopcatIcatServer) icatServer).getDownloadServiceUrl());
             tFacility.setId(((TopcatIcatServer) icatServer).getId());
             facilities.add(tFacility);
