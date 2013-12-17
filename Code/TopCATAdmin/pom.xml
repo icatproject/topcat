@@ -136,6 +136,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <skip>true</skip>
                     <workingDirectory>C:\glassfish3topcat\glassfish\bin</workingDirectory>
                     <executable>asadmin</executable>
                     <arguments>                    
