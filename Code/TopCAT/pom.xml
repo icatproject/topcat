@@ -13,6 +13,7 @@
 		<gxt.version>2.3.1-gwt22</gxt.version>
 		<ids.version>1.0.0-SNAPSHOT</ids.version>
 		<runTarget>index.html</runTarget>
+		<skip.deploy>true</skip.deploy>
 	</properties>
 
 	<name>TopCAT Java EE 6 Webapp</name>
@@ -178,7 +179,8 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>                    
+                <configuration>
+                    <skip>${skip.deploy}</skip>
                     <workingDirectory>C:\glassfish3topcat\glassfish\bin</workingDirectory>
                     <executable>asadmin</executable>
                     <arguments>                    
