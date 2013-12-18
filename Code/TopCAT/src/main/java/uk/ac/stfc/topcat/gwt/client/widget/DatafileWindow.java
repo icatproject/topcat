@@ -46,6 +46,7 @@ import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.shared.Utils;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.core.El;
@@ -310,12 +311,14 @@ public class DatafileWindow extends Window {
     private void setDatafileList(ArrayList<DatafileModel> datafileList) {
         dfmStore.removeAll();
         selectedFiles.clear();
-        NumberFormat format = NumberFormat.getDecimalFormat();
+        //NumberFormat format = NumberFormat.getDecimalFormat();
         // convert Bytes to MegaBytes
+        //TODO use standard method
         for (DatafileModel dfm : datafileList) {
-            Float size = Float.parseFloat(dfm.getFileSize());
-            size = size / 1048576.0f;
-            dfm.setFileSize(format.format(size.doubleValue()) + " MB");
+            //Float size = Float.parseFloat(dfm.getFileSize());
+            //size = size / 1048576.0f;
+            //dfm.setFileSize(format.format(size.doubleValue()) + " MB");
+            dfm.setFileSize(Utils.byteCountToDisplaySizeForClient(Long.valueOf(dfm.getFileSize()), false));
         }
         pageProxy.setData(datafileList);
         loader.load(0, PAGE_SIZE);

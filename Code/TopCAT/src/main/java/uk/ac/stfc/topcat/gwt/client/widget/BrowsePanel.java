@@ -28,6 +28,8 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
@@ -98,6 +100,7 @@ public class BrowsePanel extends Composite {
     HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
     private InvestigationPanel investigationPanel;
     private static final String SOURCE = "BrowsePanel";
+    private static Logger rootLogger = Logger.getLogger("");
 
     public BrowsePanel() {
 
@@ -112,6 +115,7 @@ public class BrowsePanel extends Composite {
 
         // Add Treepanel
         RpcProxy<ArrayList<ICATNode>> proxy = getProxy();
+        
         loader = getLoader(proxy);
         TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
         tree = new TreePanel<ICATNode>(store);
@@ -121,6 +125,7 @@ public class BrowsePanel extends Composite {
         addBeforeCheckChangeListener();
         addSingleClickListener();
         addDoubleClickListener();
+        addChangeListener(); //TODO
         addContextMenu();
 
         tree.setCaching(true);
@@ -241,7 +246,9 @@ public class BrowsePanel extends Composite {
                                 ArrayList<ICATNode> rawFiles = result.get("");
                                 // remove from the result list
                                 result.remove("");
-                                for (String key : result.keySet()) {
+                                for (String key : result.keySet()) {                                      
+                                    rootLogger.log(Level.SEVERE, "getProxy() key: " + key + "(" + result.get(key).toString() + ")");
+                                    
                                     logfilesMap.put(key, result.get(key));
                                 }
                                 callback.onSuccess(rawFiles);
@@ -341,6 +348,25 @@ public class BrowsePanel extends Composite {
             }
         });
     }
+    
+    
+    private void addChangeListener() {
+        tree.addListener(Events.CheckChange, new Listener<TreePanelEvent<ICATNode>>(){
+
+            @Override
+            public void handleEvent(TreePanelEvent<ICATNode> be) {
+                // TODO Auto-generated method stub
+                ICATNode node = be.getItem();
+                if(be.isChecked()){
+                    rootLogger.log(Level.SEVERE, "is checked: " + node.getNodeType().name() + "(" + node.getDatafileName() + ")");
+                } else {
+                    rootLogger.log(Level.SEVERE, "is unchecked: " + node.getNodeType().name() + "(" + node.getDatafileName() + ")");
+                }
+            }
+            
+        });
+    }
+    
 
     /**
      * Add a ContextMenu to the tree.
@@ -441,6 +467,18 @@ public class BrowsePanel extends Composite {
      */
     private void download(String downloadName) {
         List<ICATNode> selectedItems = tree.getCheckedSelection();
+        
+        for (ICATNode node : selectedItems) {
+            if (node.getNodeType() == ICATNodeType.DATASET) {
+                rootLogger.log(Level.SEVERE, "DATASET: " + node.getDatasetId() + "(" + node.getDatasetName() + ")"); 
+            }
+            
+            if (node.getNodeType() == ICATNodeType.DATAFILE) {
+                ICATNodeType type = node.getNodeType();
+                
+                rootLogger.log(Level.SEVERE, type.name() + ":: " + node.getDatafileId() + "(" + node.getDatafileName() + ")"); 
+            }
+        }
 
         // Create map of selected datasets
         // map: key = facility name, value = list of dataset ids

@@ -135,8 +135,7 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <skip>true</skip>
+                <configuration>                    
                     <workingDirectory>C:\glassfish3topcat\glassfish\bin</workingDirectory>
                     <executable>asadmin</executable>
                     <arguments>                    

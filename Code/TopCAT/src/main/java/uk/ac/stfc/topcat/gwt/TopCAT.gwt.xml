@@ -27,6 +27,10 @@
 	<inherits name="com.extjs.gxt.ui.GXT" />
 	<inherits name="uk.ac.stfc.topcat.core.gwt.module" />
 	<entry-point class="uk.ac.stfc.topcat.gwt.client.TOPCATOnline" />
+	
+	<!-- Specify the paths for translatable code                    -->
+    <source path='client'/>
+    <source path='shared'/>
 
 	<!-- development setting to only compile for Firefox -->
 	<!-- <set-property name="user.agent" value="gecko1_8"/> -->

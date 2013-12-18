@@ -25,6 +25,8 @@ package uk.ac.stfc.topcat.gwt.client.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import uk.ac.stfc.topcat.gwt.shared.Utils;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -270,6 +272,24 @@ public class ICATNode extends BaseModelData implements Serializable, Comparable 
 	public void setDescription(String cycleDescription){
 		set("cycleDescription",cycleDescription);
 	}
+	
+	
+	/**
+	 * Get file size
+	 * @return
+	 */
+    public Long getSize() {
+        return get("size");
+    }
+	
+	
+	/**
+     * Set file size
+     * @param name
+     */
+    public void setSize(Long size) {
+        set("size",size);
+    }
 
     @Override
     public int compareTo(Object t) {
