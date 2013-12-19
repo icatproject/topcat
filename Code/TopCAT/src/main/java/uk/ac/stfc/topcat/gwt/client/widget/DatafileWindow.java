@@ -79,7 +79,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -564,9 +563,11 @@ public class DatafileWindow extends Window {
         @SuppressWarnings("unchecked")
         String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
         DownloadManager.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
+        /*
         EventPipeLine.getInstance().showMessageDialog(
                 "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                         + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
+        */
     }
 
     /**
