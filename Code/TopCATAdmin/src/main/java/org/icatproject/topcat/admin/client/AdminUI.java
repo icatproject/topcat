@@ -402,8 +402,8 @@ public class AdminUI extends Composite {
 		
 		
 		// THESE ARE THE ITEMS IN THE DOWNLOAD_PLUGIN_NAME LISTBOX
-        txtDownloadTypeName.insertItem("direct", 0);
-        txtDownloadTypeName.insertItem("prepared", 1);
+        txtDownloadTypeName.insertItem("local", 0);
+        txtDownloadTypeName.insertItem("archived", 1);
 
         if (menuType.equals(MENU_ADD)
                 || table0.getText(table0Row, 5).trim().equals(null)) {

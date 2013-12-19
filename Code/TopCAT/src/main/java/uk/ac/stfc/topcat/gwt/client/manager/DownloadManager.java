@@ -125,9 +125,9 @@ public class DownloadManager {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
                         && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
-                    if (facility.getDownloadTypeName().equalsIgnoreCase("prepared")) {                    
+                    if (facility.getDownloadTypeName().equalsIgnoreCase("archived")) {                    
                         prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
-                    } else if (facility.getDownloadTypeName().equalsIgnoreCase("direct")) {
+                    } else if (facility.getDownloadTypeName().equalsIgnoreCase("local")) {
                         directDownloadFromIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
                     } else { 
                         //use prepared if download type not set. Shouldn't get here
