@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  <body>
+  
+    <breadcrumbs>
+      <item name="TopCAT" href="index.html"/>
+    </breadcrumbs>
+
+    <menu name="Information for Users">
+         <item name="Release Notes" href="release-notes.html"/>
+       <item name="Issue Tracking" href="issue-tracking.html"/>
+    </menu>
+       
+    <menu name="Information for Installers">
+    <item name="Server Installation" href="installation.html"/>
+    </menu>
+      
+    <menu ref="reports"/>
+ 
+  </body>
+</project>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>TopCAT Installation</title>
+    </properties>
+
+    <body>
+
+        <a name="installation" />
+        <section name="Installation">
+
+            <subsection name="Compatibility">TopCAT will work with ICATs with version of 4.2 or greater.</subsection>
+
+            <subsection name="Prerequisites">
+
+                <ul>
+                    <li>
+                        The TopCAT distribution:
+                        <a href="${repoUrl}/org/icatproject/topcat/${project.version}/topcat-${project.version}-distro.zip">topcat-${project.version}-distro.zip</a>
+                    </li>
+                    <li>
+                        A suitable deployed container (here assumed to be glassfish) to support a web
+                        application.
+                        Testing has been carried out with
+                        Glassfish 3.1.2.
+                        <a href="https://code.google.com/p/icatproject/wiki/Glassfish">Glassfish installation instructions</a>
+                        are available.
+                    </li>
+                    <li>
+                        A database as described in
+                        <a href="https://code.google.com/p/icatproject/wiki/Databases">Database installation instructions</a>
+                        installed on the server
+                    </li>
+                    <li>
+                        Python (version 2.4 to 2.7) and the python-suds package installed on the server.
+                    </li>
+
+                </ul>
+            </subsection>
+
+            <subsection name="Summary of steps">
+
+                <ol>
+                    <li>
+                        Please follow
+                        <a href="http://code.google.com/p/icatproject/wiki/Installation"> the generic installation instructions</a>
+                    </li>
+                    <li>Use the admin interface to configure access to one or more ICATs</li>
+                    <li> See if it works.</li>
+                </ol>
+
+            </subsection>
+
+            <subsection name="The topcat-setup.properties file">
+                <dl>
+                    <dt>driver</dt>
+                    <dd>is the name of the jdbc driver and must match the jar file for your database that you stored in the previous step.</dd>
+                    <dt>dbProperties</dt>
+                    <dd>identifies the icat database and how to connect to it.</dd>
+                    <dt>glassfish</dt>
+                    <dd>is the top level of the glassfish installation. It must contain "glassfish/domains", and will be referred to here as
+                        GLASSFISH_HOME as if an environment variable had been set.
+                    </dd>
+                    <dt>port</dt>
+                    <dd>is the administration port of the chosen glassfish domain which is typically 4848.</dd>
+                    <dt>adminUsername</dt>
+                    <dd>The user name to use when setting up the topcat admin
+                        user. This will then be the user name to use to log on to the topcat
+                        admin
+                        console.
+                    </dd>
+                    <dt>adminPassword</dt>
+                    <dd>The password corresponding to the adminUsername
+                    </dd>
+                </dl>
+
+                <p>For a local oracle-xe installation the following values of driver and dbProperties should be good except for
+                    the user and password
+                    values:
+                </p>
+                <code>
+                    driver=oracle.jdbc.pool.OracleDataSource
+                    <br />
+                    icatProperties=url="'"jdbc:oracle:thin:@//localhost:1521/XE"'":ImplicitCachingEnabled=true:MaxStatements=200:user=icat:password=secret
+                    <br />
+                </code>
+                <p>
+                    Note the
+                    <tt>"'"</tt>
+                    which is needed because the url contains colons which also separate individual properties.
+                </p>
+                <p>For MySQL:</p>
+                <code>
+                    driver=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+                    <br />
+                    icatProperties=user=icat:password=secret:databaseName=icat
+                    <br />
+                </code>
+            </subsection>
+
+            <subsection name="The topcat.properties file">
+
+                <dl>
+                    <dt>KEYWORDS_CACHED</dt>
+                    <dd> Boolean flag, 'true' or 'false'. True will result in
+                        keywords being cached on the server, this could result in the bypassing
+                        of
+                        the authorisation rules
+                    </dd>
+
+                    <dt>LOGO_URL</dt>
+                    <dd>The location of an image to display in the header of topcat. The
+                        value should be a path/file name relative to the
+                        &lt;GLASSFISH_HOME&gt;/glassfish/domains/&lt;DOMAIN&gt;/applications/TopCAT/ directory.
+                    </dd>
+
+                    <dt>MESSAGE</dt>
+                    <dd>
+                        This message will be displayed at the top of the web page. It is
+                        intended for use by sys admins so that they can inform users
+                        of up coming
+                        down times. If you change it then you will need to reload the application.
+                    </dd>
+                    <dt>
+                        ACCESSIBILITY
+                    </dt>
+                    <dd>The URL for an accessibility web page, a link to this is
+                        included in the topcat footer
+                    </dd>
+                    <dt>PRIVACY_POLICY</dt>
+                    <dd>The URL for a privacy policy web page, a link to this is
+                        included in the topcat footer
+                    </dd>
+                    <dt>
+                        DATA_POLICY
+                    </dt>
+                    <dd>The URL for a data policy web page, a link to this is included
+                        in the topcat footer
+
+                    </dd>
+                    <dt>TERMS_OF_USE</dt>
+                    <dd>The URL for a terms of use web page, a link to this is
+                        included in the topcat footer
+                    </dd>
+
+                    <dt>COMPLAINTS_PROCEDURE </dt>
+                    <dd>The URL for a complaints web page, a link to this is
+                        included in the topcat footer
+                    </dd>
+
+                    <dt>FEEDBACK</dt>
+                    <dd>The URL for a mailto link, a link to this is included in the
+                        topcat footer.
+                    </dd>
+
+
+                </dl>
+
+            </subsection>
+
+            <subsection name="Add ICATs with the admin console">
+
+                <p>Connect to the https://&lt;your host name&gt;:8181/TopCATAdmin. You will be prompted for a username and password.</p>
+            </subsection>
+
+
+            <subsection name="Check that TopCAT works">
+                <p>
+                    Go to https://&lt;your host name&gt;:8181/TOPCATWeb.jsp and try logging in to one of the configured ICATs if you have a login on
+                    one of
+                    them.
+                </p>
+
+                <p>In case of problems look at the log files:
+                    server.log, topcat.log and topcat_admin.log all of which can both be found in the logs
+                    directory below your
+                    domain.
+                </p>
+            </subsection>
+        </section>
+
+
+    </body>
+</document>
+			

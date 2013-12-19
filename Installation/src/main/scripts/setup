@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+from setup_utils import *
+import os
+
+# TopCAT
+
+actions, options, arg = getActions()
+props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "adminUsername", "adminPassword"])
+
+prop_name = "topcat.properties"
+prop_list = ["KEYWORDS_CACHED", "LOGO_URL", "ACCESSIBILITY", "PRIVACY_POLICY", "DATA_POLICY", "TERMS_OF_USE", "COMPLAINTS_PROCEDURE", "FEEDBACK"]
+
+if arg == "CONFIGURE":
+    actions.configure(prop_name, prop_list)
+    actions.setConfigured()
+    
+elif arg == "INSTALL":
+    
+    actions.checkConfigured()
+           
+    topcatProperties = actions.getProperties(prop_name, prop_list)       
+           
+    actions.installFile(prop_name)
+    
+    try:
+        
+        actions.addFileRealmUser(props["adminUsername"], props["adminPassword"], "topcatAdmin");
+        
+        app = actions.getAppName("TopCAT")
+        if app: actions.asadmin("undeploy " + app)
+
+        app = actions.getAppName("TopCATAdmin")
+        if app: actions.asadmin("undeploy " + app)
+        
+        actions.asadmin("delete-jdbc-resource jdbc/TopCATDB", tolerant=True)
+        actions.asadmin("delete-jdbc-connection-pool TopCATDB", tolerant=True)
+        
+        actions.asadmin('create-jdbc-connection-pool --datasourceclassname ' + props["driver"] + 
+                ' --restype javax.sql.DataSource --failconnection=true --steadypoolsize 2' + 
+                ' --maxpoolsize 8 --ping --property ' + props["dbProperties"] + ' TopCATDB', printOutput=True)
+        
+        actions.asadmin("create-jdbc-resource --connectionpoolid TopCATDB jdbc/TopCATDB")
+      
+        actions.deploy("TopCAT-*.war")
+        actions.deploy("TopCATAdmin-*.war")
+          
+    except Exception, e:
+        abort(str(e))
+               
+else:  # UNINSTALL
+    
+    actions.removeFile(prop_name)
+    
+    try: 
+
+        app = actions.getAppName("TopCAT")
+        if app: actions.asadmin("undeploy " + app)
+
+        app = actions.getAppName("TopCATAdmin")
+        if app: actions.asadmin("undeploy " + app)
+
+        actions.asadmin("delete-jdbc-resource jdbc/TopCATDB", tolerant=True)
+        actions.asadmin("delete-jdbc-connection-pool TopCATDB", tolerant=True)   
+        
+        actions.deleteFileRealmUser(props["adminUsername"]);
+         
+    except Exception, e:
+        abort(str(e))       
+    
+            
+###################################################################################################################    
+
+
+
+def create_topcat_admin(conf_props):
+    """
+    Set up topcat admin user
+    """
+    user = conf_props['topcatAdminUser']
+    print ("\nCreating TopCAT Admin User '" + user + 
+           "'. Please enter new password:")
+    command = (ASADMIN + " create-file-user --groups topcatAdmin " + user)
+    if VERBOSE > 1:
+        print command
+    retcode = call(command, shell=True)
+    if retcode > 0:
+        abort("ERROR creating user " + user)
+
+
+def enable_principal_to_role_mng():
+    """
+    Enable default principal to role manager
+    """
+    if VERBOSE > 0:
+        print "Enable Default Principal to role Manager"
+    command = (ASADMIN + " set server-config.security-service.activate" + 
+               "-default-principal-to-role-mapping=true")
+    run_cmd(command, "ERROR enabling Default Principal to role Manager")          
+
+
+
+
+    # topcat admin user
+    user = conf_props['topcatAdminUser']
+    command = (ASADMIN + " delete-file-user " + user)
+    ret = ret + run_cmd(command, "ERROR deleting topcat admin user", False)
+    
+   
+
+    # Default Principal to Role Manger
+    if VERBOSE > 0:
+        print "Disable Default Principal to Role Manger"
+    command = (ASADMIN + " set server-config.security-service.activate-" + 
+               "default-principal-to-role-mapping=false")
+    ret = ret + run_cmd(command,
+                        "ERROR disabling Default Principal to role Manger",
+                        False)
+    if ret > 0:
+        exit(1)
+
+
+

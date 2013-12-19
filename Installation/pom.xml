@@ -1,75 +1,167 @@
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>maven.java.net</id>
-			<name>Java.net Maven2 Repository</name>
-			<url>http://download.java.net/maven/2</url>
-		</pluginRepository>
-	</pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven.java.net</id>
+            <name>Java.net Maven2 Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </pluginRepository>
+    </pluginRepositories>
 
-	<groupId>uk.ac.stfc</groupId>
-	<artifactId>ROOT</artifactId>
-	<version>1.11.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>org.icatproject</groupId>
+    <artifactId>topcat.ROOT</artifactId>
+    <version>1.11.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>TopCAT</name>
+    <name>TopCAT</name>
 
-	<url>http://maven.apache.org</url>
+    <distributionManagement>
+        <downloadUrl>http://www.icatproject.org/mvn/repo</downloadUrl>
+        <site>
+            <id>website</id>
+            <url>scp://www.icatproject.org/var/www/html/mvn/site/topcat/${project.version}</url>
+        </site>
+        <repository>
+            <id>repo</id>
+            <url>scp://www.icatproject.org/var/www/html/mvn/repo</url>
+        </repository>
+    </distributionManagement>
 
-	<modules>
-		<module>../Code/TopCATCore</module>
-		<module>../Code/TopCATEJB</module>
-		<module>../Code/TopCAT</module>
-		<module>../Code/TopCATAdmin</module>
-	</modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <repoUrl>http://www.icatproject.org/mvn/repo</repoUrl>
+    </properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.glassfish.maven.plugin</groupId>
-				<artifactId>maven-glassfish-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<user>admin</user>
-					<passwordFile>passFile</passwordFile>
-					<domain>
-						<name>TOPCAT</name>
-						<adminPort>4848</adminPort>
-						<httpPort>8080</httpPort>
-						<httpsPort>8181</httpsPort>
-						<resourceDescriptor>resources.xml</resourceDescriptor>
-					</domain>
-					<components>
-						<component>
-							<name>TopCAT</name>
-							<artifact>../Code/TopCAT/target/TopCAT.war</artifact>
-						</component>
-					</components>
-				</configuration>
-			</plugin>
+    <description>Main pom to build all the icat components. For more information please see the individual components.</description>
+    <issueManagement>
+        <url>http://code.google.com/p/topcat/issues/list</url>
+        <system>Google Code</system>
+    </issueManagement>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<outputDirectory>${glassfish.home}/domains/TOPCAT/lib/classes</outputDirectory>
-					<resources>
-						<resource>
-							<directory>.</directory>
-							<includes>
-								<include>topcat.properties</include>
-							</includes>
-						</resource>
-					</resources>
-				</configuration>
-			</plugin>
-		</plugins>
+    <scm>
+        <connection>scm:svn:http://topcat.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://topcat.googlecode.com/svn/trunk</developerConnection>
+        <url>http://code.google.com/p/topcat/source/browse/#svn%2Ftrunk</url>
+    </scm>
 
-	</build>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
+    <organization>
+        <name>The ICAT Collaboration</name>
+        <url>http://www.icatproject.org</url>
+    </organization>
+
+    <url>http://maven.apache.org</url>
+
+    <modules>
+        <module>../Code/TopCATCore</module>
+        <module>../Code/TopCATEJB</module>
+        <module>../Code/TopCAT</module>
+        <module>../Code/TopCATAdmin</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.glassfish.maven.plugin</groupId>
+                <artifactId>maven-glassfish-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <user>admin</user>
+                    <passwordFile>passFile</passwordFile>
+                    <domain>
+                        <name>TOPCAT</name>
+                        <adminPort>4848</adminPort>
+                        <httpPort>8080</httpPort>
+                        <httpsPort>8181</httpsPort>
+                        <resourceDescriptor>resources.xml</resourceDescriptor>
+                    </domain>
+                    <components>
+                        <component>
+                            <name>TopCAT</name>
+                            <artifact>../Code/TopCAT/target/TopCAT.war</artifact>
+                        </component>
+                    </components>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <outputDirectory>${glassfish.home}/domains/TOPCAT/lib/classes</outputDirectory>
+                    <resources>
+                        <resource>
+                            <directory>.</directory>
+                            <includes>
+                                <include>topcat.properties</include>
+                            </includes>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${project.basedir}/src/assemble/distribution.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>dependencies</report>
+                            <report>issue-tracking</report>
+                            <report>license</report>
+                            <report>plugins</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+        </plugins>
+    </reporting>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.icatproject</groupId>
+            <artifactId>icat.utils</artifactId>
+            <version>4.4.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

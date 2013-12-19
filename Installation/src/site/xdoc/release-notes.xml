@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>TopCAT Release Notes</title>
+    </properties>
+
+    <body>
+        <section name="1.11.0">
+            <ul>
+                <li>Harmonized installation</li>
+                <li>Uses Maven release mechanism</li>
+            </ul>
+        </section>
+        <section name="1.10.0">
+            <p>Changes to the WS interface
+            </p>
+        </section>
+
+        <section name="1.9.0">
+            <ul>
+                <li>Bug fixes.
+                </li>
+                <li>Added admin console</li>
+                <li>Added support for the ICAT Data Service
+                </li>
+                <li>Added support for ICAT version no v42, this points to the existing
+                    ICATInterfacev420
+                </li>
+                <li>Added MESSAGE to topcat.properties, the message gets displayed by topcat</li>
+                <li>Added verbose option to the setup script, -v, -vv and -vvv</li>
+                <li>Properties file renamed from glassfish.props to topcat-setup.properties</li>
+                <li>
+                    schema changes:
+                    <ul>
+                        <li>Drop the columns AUTHENTICATION_SERVICE_URL and AUTHENTICATION_SERVICE_TYPE
+                            from TOPCAT_ICAT_SERVER
+                        </li>
+                        <li>Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER </li>
+                        <li>Add the column PREPARED_ID to the table TOPCAT_USER_DOWNLOAD </li>
+                        <li>Add the column DISPLAY_NAME to the table ICAT_AUTHENTICATION </li>
+                        <li>Rename the table ICAT_AUTHENTICATION to TOPCAT_ICAT_AUTHENTICATION </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section name="1.8.0">
+            <p>This is a bug fix release for sites still running ICAT 3.4.</p>
+
+            <ul>
+                <li>Parameter searching has temporarily been disabled
+                </li>
+            </ul>
+        </section>
+
+        <section name="1.7.0">
+
+            <ul>
+                <li>Added range searches to the parameter search </li>
+                <li>
+                    Added table ICAT_AUTHENTICATION.
+                    Now when logging in to an ICAT if there is more than one type of authentication
+                    available the user
+                    will be presented with a drop down list of types.
+                    NB there is still stuff hard coded for CAS and entries for
+                    AUTHENTICATION_SERVICE_URL and AUTHENTICATION_TYPE in the table
+                    TOPCAT_ICAT_SERVER. These will be removed in a future release.
+                </li>
+
+            </ul>
+
+        </section>
+
+    </body>
+</document>   
