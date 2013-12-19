@@ -212,7 +212,8 @@ public class KeywordManager {
      *            local cache
      * @throws TopcatException
      */
-    private void UpdateKeywordsFromServer(EntityManager manager, TopcatUserSession session) throws TopcatException {
+	private void UpdateKeywordsFromServer(EntityManager manager, TopcatUserSession session)
+			throws TopcatException {
         // Get all the keywords from the server
         List<String> resultKeywords = getKeywordsFromServer(session.getIcatSessionId(), session.getUserId()
                 .getServerId().getName(), session.getUserId().getServerId().getVersion(), session.getUserId()
