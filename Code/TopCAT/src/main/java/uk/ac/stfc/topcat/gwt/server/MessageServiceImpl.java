@@ -22,11 +22,9 @@
  */
 package uk.ac.stfc.topcat.gwt.server;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.ejb.EJB;
 
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.MessageLocal;
@@ -38,25 +36,16 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * 
  */
 @SuppressWarnings("serial")
-public class MessageServiceImpl extends RemoteServiceServlet implements MessageService {
-	
-	MessageLocal messageManager;
+public class MessageServiceImpl extends RemoteServiceServlet implements MessageService {	
+	@EJB
+    MessageLocal messageManager;
 	
 	/**
      * Servlet Init method.
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
-        super.init(conf);
-
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            messageManager = (MessageLocal) ctx
-                    .lookup("java:global/TopCAT/MessageBean!uk.ac.stfc.topcat.ejb.session.MessageLocal");            
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
+        super.init(conf);        
     }
 	
 	

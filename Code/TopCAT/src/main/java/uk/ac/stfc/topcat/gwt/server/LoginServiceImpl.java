@@ -27,9 +27,7 @@ package uk.ac.stfc.topcat.gwt.server;
  */
 import java.util.Map;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +53,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
-    private UserManagementBeanLocal userManager = null;
+    @EJB
+    private UserManagementBeanLocal userManager;
 
     /**
      * This method initializes the servlet, creates a usermanagementbean. this
@@ -63,16 +62,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
-        super.init(conf);
-
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            userManager = (UserManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
+        super.init(conf);        
     }
 
     /*

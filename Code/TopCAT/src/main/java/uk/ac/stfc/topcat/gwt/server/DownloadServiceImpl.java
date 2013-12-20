@@ -40,9 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -80,9 +78,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class DownloadServiceImpl extends RemoteServiceServlet implements DownloadService {
-    private DownloadManagementBeanLocal downloadManager = null;
-    private UtilityLocal utilityManager = null;
-    private UserManagementBeanLocal userManager = null;
+    @EJB
+    private DownloadManagementBeanLocal downloadManager;
+    @EJB
+    private UtilityLocal utilityManager;
+    @EJB
+    private UserManagementBeanLocal userManager;
     private static String RESTFUL_DOWNLOAD_SERVICE = "restfulDownload";
     private final static Logger logger = Logger.getLogger(DownloadServiceImpl.class.getName());
     //path of the ids url    
@@ -92,19 +93,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
-        super.init(conf);
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            downloadManager = (DownloadManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/DownloadManagementBean!uk.ac.stfc.topcat.ejb.session.DownloadManagementBeanLocal");
-            utilityManager = (UtilityLocal) ctx
-                    .lookup("java:global/TopCAT/UtilityBean!uk.ac.stfc.topcat.ejb.session.UtilityLocal");
-            userManager = (UserManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
+        super.init(conf);        
     }
 
     @Override
@@ -458,12 +447,12 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
                 
                 logger.debug("prepareDataObjectsForDownloadIDS: dataSelection: "  + dataSelection.getParameters().toString());
                 
-                preparedId = ids.prepareData(sessionId, dataSelection, Flag.ZIP);
+                preparedId = ids.prepareData(sessionId, dataSelection, Flag.ZIP_AND_COMPRESS);
             } else if (dataType.equalsIgnoreCase(Constants.DATA_SET)) {                
                 for (Long dataObjectId : dataObjectList) {
                     dataSelection.addDataset(dataObjectId);
                 }                
-                preparedId = ids.prepareData(sessionId, dataSelection, Flag.ZIP);
+                preparedId = ids.prepareData(sessionId, dataSelection, Flag.ZIP_AND_COMPRESS);
             }
         } catch (InsufficientPrivilegesException e) {
             throw new SessionException();
@@ -572,7 +561,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
         
         URL url = null;        
         if (status.equals(Status.ONLINE)) {            
-            url = ids.getDataUrl(sessionId, dataSelection, Flag.ZIP, downloadName);
+            url = ids.getDataUrl(sessionId, dataSelection, Flag.ZIP_AND_COMPRESS, downloadName);
         }
         
         DownloadModel dm = new DownloadModel();

@@ -25,9 +25,7 @@ package uk.ac.stfc.topcat.gwt.server;
 /**
  * Imports
  */
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
@@ -47,21 +45,15 @@ import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
  */
 public class TOPCATServletSession implements HttpSessionListener {
     // Session bean for managing user session
-    private UserManagementBeanLocal userManager = null;
+    @EJB
+    private UserManagementBeanLocal userManager;
     private final static Logger logger = Logger.getLogger(TOPCATServletSession.class.getName());
 
     /**
      * Constructor for initialising user sessions.
      */
     public TOPCATServletSession() {
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            userManager = (UserManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
+
     }
 
     /**

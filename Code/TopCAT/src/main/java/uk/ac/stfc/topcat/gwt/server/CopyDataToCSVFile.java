@@ -31,9 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -64,25 +62,15 @@ import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
  */
 @SuppressWarnings("serial")
 public class CopyDataToCSVFile extends HttpServlet {
-    private UtilityLocal utilityManager = null;
+    @EJB
+    private UtilityLocal utilityManager;
 
     /**
      * Servlet Init method
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
-        super.init(conf);
-
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            // Use utility session bean manager for getting parameter
-            // information
-            utilityManager = (UtilityLocal) ctx
-                    .lookup("java:global/TopCAT/UtilityBean!uk.ac.stfc.topcat.ejb.session.UtilityLocal");
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
+        super.init(conf);        
     }
 
     /**

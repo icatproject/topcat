@@ -143,7 +143,7 @@
                         <argument>--echo</argument>
                         <argument>--port=4848</argument>
                         <argument>deploy</argument>
-                        <argument>--name=${project.name}</argument>
+                        <argument>--name=${project.build.finalName}</argument>
                         <argument>--contextroot=${project.name}</argument>
                         <argument>--force=true</argument>
                         <argument>${project.build.directory}/${project.build.finalName}.war</argument>

@@ -82,6 +82,13 @@
             <artifactId>commons-lang</artifactId>
             <version>2.1</version>
         </dependency>
+        
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 
@@ -167,15 +174,12 @@
                         <argument>--echo</argument>
                         <argument>--port=4848</argument>
                         <argument>deploy</argument>
-                        <argument>--name=${project.artifactId}</argument>
+                        <argument>--name=${project.build.finalName}</argument>
                         <argument>--force=true</argument>
                         <argument>${project.build.directory}/${project.build.finalName}.war</argument>
                     </arguments>
                 </configuration>
             </plugin>
-
-
-
         </plugins>
 
         <pluginManagement>

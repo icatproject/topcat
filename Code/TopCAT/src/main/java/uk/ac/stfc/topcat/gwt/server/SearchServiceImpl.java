@@ -28,6 +28,7 @@ package uk.ac.stfc.topcat.gwt.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -63,10 +64,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class SearchServiceImpl extends RemoteServiceServlet implements SearchService {
-
-    private SearchManagementBeanLocal searchManager = null;
-    private KeywordManagementLocal keywordManager = null;
-    private UserManagementBeanLocal userManager = null;
+    @EJB
+    private SearchManagementBeanLocal searchManager;
+    @EJB
+    private KeywordManagementLocal keywordManager;
+    @EJB
+    private UserManagementBeanLocal userManager;
 
     /*
      * This is servlet initialisation code. creates search, keyword and user
@@ -76,22 +79,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
-        super.init(conf);
-
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            searchManager = (SearchManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/SearchManagementBean!uk.ac.stfc.topcat.ejb.session.SearchManagementBeanLocal");
-            keywordManager = (KeywordManagementLocal) ctx
-                    .lookup("java:global/TopCAT/KeywordManagementBean!uk.ac.stfc.topcat.ejb.session.KeywordManagementLocal");
-            userManager = (UserManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
-    }
+        super.init(conf);    }
 
     /*
      * This method returns the *public* keywords from the server that matches

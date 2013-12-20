@@ -27,9 +27,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
+import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -77,9 +76,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityService {
-
-    private UtilityLocal utilityManager = null;
-    private UserManagementBeanLocal userManager = null;
+    @EJB
+    private UtilityLocal utilityManager;
+    @EJB
+    private UserManagementBeanLocal userManager;
     private final static Logger logger = Logger.getLogger(UtilityServiceImpl.class.getName());
 
     /**
@@ -87,18 +87,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
-        super.init(conf);
-
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            utilityManager = (UtilityLocal) ctx
-                    .lookup("java:global/TopCAT/UtilityBean!uk.ac.stfc.topcat.ejb.session.UtilityLocal");
-            userManager = (UserManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
+        super.init(conf);        
     }
 
     /**

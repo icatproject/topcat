@@ -22,9 +22,7 @@
  */
 package uk.ac.stfc.topcat.gwt.server;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,25 +44,17 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class UploadServiceImpl extends RemoteServiceServlet implements UploadService {
-    private UploadManagementBeanLocal uploadManager = null;
-    private UserManagementBeanLocal userManager = null;
+    @EJB
+    private UploadManagementBeanLocal uploadManager;
+    @EJB
+    private UserManagementBeanLocal userManager;
 
     /**
      * Servlet Init method.
      */
     @Override
     public void init(ServletConfig conf) throws ServletException {
-        super.init(conf);
-        try {
-            // create initial context
-            Context ctx = new InitialContext();
-            uploadManager = (UploadManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/UploadManagementBean!uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal");
-            userManager = (UserManagementBeanLocal) ctx
-                    .lookup("java:global/TopCAT/UserManagementBean!uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal");
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
+        super.init(conf);        
     }
 
     @Override
