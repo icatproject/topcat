@@ -1,7 +1,7 @@
 TopCAT
 ------
 
-General installation instructions are at http://code.google.com/p/icatproject/wiki/Installation
+General installation instructions are at http://www.icatproject.org/installation/component
 
 Specific installation instructions are at http://www.icatproject.org/mvn/site/topcat/${project.version}/installation.html
 
