@@ -106,39 +106,40 @@ public class ICATNode extends BaseModelData implements Serializable, Comparable 
 		set("datafileName",name);
 	}
 	
+	
 	/**
 	 * This method sets the node to given input type
 	 * @param type node type
 	 * @param id   node id
-	 * @param name node name
+	 * @param nodeName the node name text shown on a tree 
 	 */
-	public void setNode(ICATNodeType type, String id, String name) {
+	public void setNode(ICATNodeType type, String id, String nodeName, String itemName) {
 		switch(type) {
 		case FACILITY:
-			setFacility(name);
-			set("name",name);	
+			setFacility(nodeName);
+			set("name", nodeName);			
 			break;
 		case INSTRUMENT:
-			setInstrumentName(name);
-			set("name",name);
+			setInstrumentName(nodeName);
+			set("name", nodeName);
 			break;
 		case CYCLE:
-			set("name",name);
+			set("name", nodeName);
 			break;
 		case INVESTIGATION:
 			setInvestigationId(id);
-			setInvestigationName(name);
-			set("name",name);
+			setInvestigationName(itemName);
+			set("name", nodeName);
 			break;
 		case DATASET:
 			setDatasetId(id);
-			setDatasetName(name);
-			set("name",name);	
+			setDatasetName(itemName);
+			set("name", nodeName);	
 			break;
 		case DATAFILE:
 			setDatafileId(id);
-			setDatafileName(name);
-			set("name",name);
+			setDatafileName(itemName);
+			set("name", nodeName);			
 			break;
 		default:
 		}
@@ -207,6 +208,15 @@ public class ICATNode extends BaseModelData implements Serializable, Comparable 
 	public String getDatafileName() {
 		return get("datafileName");
 	}
+	
+	
+	/**
+     * @return display name
+     */
+    public String getDisplayName() {
+        return get("displayName");
+    }
+	
 	
 	/**
 	 * @return investigation title

@@ -10,7 +10,7 @@
         <a name="installation" />
         <section name="Installation">
 
-            <subsection name="Compatibility">TopCAT will work with ICATs with version of 4.2 or greater.</subsection>
+            <subsection name="Compatibility">TopCAT will work with ICATs with version of 4.3 or greater.</subsection>
 
             <subsection name="Prerequisites">
 
@@ -177,6 +177,32 @@
                     directory below your
                     domain.
                 </p>
+            </subsection>
+            
+            <subsection name="Schema Upgrade">
+                <p>
+                    To upgrade the schema from topcat 1.1.10 to 1.1.11, run the following sql queries for your database:
+                </p>
+                <ul>
+                    <li>
+                        <p>Oracle:</p>
+                        <p>
+                            ALTER TABLE TOPCAT_ICAT_SERVER ADD DOWNLOAD_TYPE VARCHAR2(255);
+                        </p>
+                    </li>
+                    <li>
+                        <p>MySql:</p>
+                        <p>
+                            ALTER TABLE TOPCAT_ICAT_SERVER ADD DOWNLOAD_TYPE VARCHAR(255);
+                        </p>
+                    </li>
+                    <li>
+                        <p>Derby:</p>
+                        <p>
+                            ALTER TABLE TOPCAT_ICAT_SERVER ADD DOWNLOAD_TYPE VARCHAR(255);
+                        </p>
+                    </li>
+                </ul>    
             </subsection>
         </section>
 

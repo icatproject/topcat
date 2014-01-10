@@ -144,7 +144,7 @@ public class AdvancedSearchSubPanel extends Composite {
         flexTable.setWidget(5, 1, dateFieldStart);
         dateFieldStart.setFieldLabel("New DateField");
         dateFieldStart.getPropertyEditor().setFormat(
-                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
+                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT));
 
         LabelField lblfldEndDate = new LabelField("End Date");
         flexTable.setWidget(5, 2, lblfldEndDate);
@@ -153,7 +153,7 @@ public class AdvancedSearchSubPanel extends Composite {
         flexTable.setWidget(5, 3, dateFieldEnd);
         dateFieldEnd.setFieldLabel("New DateField");
         dateFieldEnd.getPropertyEditor().setFormat(
-                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT));
+                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT));
 
         LabelField lblfldRbNumber = new LabelField("Rb Number");
         flexTable.setWidget(6, 0, lblfldRbNumber);
@@ -210,7 +210,9 @@ public class AdvancedSearchSubPanel extends Composite {
         btnSearch.addListener(Events.Select, new Listener<ButtonEvent>() {
             @Override
             public void handleEvent(ButtonEvent e) {
-                searchAdvanced();
+                if (isInputValid() == true) {
+                    searchAdvanced();
+                }
             }
         });
         flexTable.setWidget(12, 1, btnSearch);
@@ -238,6 +240,24 @@ public class AdvancedSearchSubPanel extends Composite {
         createAddInvestigationTypeHandler();
         createLogoutHandler();
     }
+    
+    
+    private boolean isInputValid(){
+        if (!dateFieldStart.isValid() || !dateFieldEnd.isValid()) {
+            return false;
+        }
+        
+        if (dateFieldStart.getValue().compareTo(dateFieldEnd.getValue()) > 0) {
+            dateFieldEnd.markInvalid("'End Date' must be equal or greater than 'Start Date'");
+            dateFieldEnd.focus();
+            
+            return false;
+        }
+            
+        return true;
+    }
+    
+    
 
     public ListField<InvestigationType> getListFieldInvestigationType() {
         return lstInvestigationTypes;

@@ -1,6 +1,7 @@
 package uk.ac.stfc.topcat.gwt.shared;
 
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.regexp.shared.RegExp;
 
 
 public class Utils {
@@ -24,6 +25,16 @@ public class Utils {
         String num = NumberFormat.getFormat("#.0").format(size);
         
         return num + " " + pre + "B";
+    }
+    
+    /**
+     * Normalise a string to a filename replacing any invalid characters with underscore '_'
+     * 
+     * @param filename
+     * @return
+     */
+    public static String normaliseFileName(String filename) {
+        return RegExp.compile("[^a-zA-Z0-9\\._\\-\\+]+", "g").replace(filename, "_");
     }
 
 }

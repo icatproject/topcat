@@ -351,7 +351,7 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
                 downloadModel.setUrl(downloadUrl.toString());
                 
             } else {
-                downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());                    
+                downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());
                 logger.debug("getStatusIDS: downloadUrl: " + downloadUrl.toString());
                 downloadModel.setUrl(downloadUrl.toString());
             }
@@ -371,6 +371,8 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             URL downloadUrl = null;
             
             downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());
+            
+            logger.debug("getStatusIDS: downloadUrl: " + downloadUrl.toString());
             
             downloadModel.setUrl(downloadUrl.toString());
             downloadModel.setStatus(Constants.STATUS_IN_PROGRESS);
@@ -559,13 +561,21 @@ public class DownloadServiceImpl extends RemoteServiceServlet implements Downloa
             throw new InternalException("Error returned from the download service. " + e.getMessage());
         }
         
-        URL url = null;        
-        if (status.equals(Status.ONLINE)) {            
-            url = ids.getDataUrl(sessionId, dataSelection, Flag.ZIP_AND_COMPRESS, downloadName);
+        URL downloadUrl = null;
+        if (status.equals(Status.ONLINE)) {
+            //make sure downloadName is not an empty string. Use null if empty.
+            if (downloadName != null) {
+                if (downloadName.trim().isEmpty()) {
+                    downloadName  = null;
+                }
+            }
+            
+            downloadUrl = ids.getDataUrl(sessionId, dataSelection, Flag.ZIP_AND_COMPRESS, downloadName);
+            logger.debug("directDownloadFromIDS: downloadUrl: " + downloadUrl.toString());
         }
         
         DownloadModel dm = new DownloadModel();
-        dm.setUrl(url.toString());        
+        dm.setUrl(downloadUrl.toString());        
         return dm;
     }
     

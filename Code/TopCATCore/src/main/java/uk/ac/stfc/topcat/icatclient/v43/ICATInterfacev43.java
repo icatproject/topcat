@@ -15,7 +15,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -320,7 +319,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             Investigation resultInv = (Investigation) service
                     .get(sessionId,
-                            "Investigation inv INCLUDE inv.facility, inv.publications, inv.investigationUsers, inv.investigationInstruments.instrument, inv.investigationUsers.user, inv.shifts, inv.parameters.type",
+                            "Investigation inv INCLUDE inv.facility, inv.publications, inv.investigationInstruments.instrument, inv.investigationUsers.user, inv.shifts, inv.parameters.type",
                             investigationId);
 
             ti = copyInvestigationToTInvestigation(serverName, resultInv);
@@ -1179,7 +1178,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
                 pub.getUrl());
     }
 
-    private TInvestigator copyInvestigatorToTInvestigator(InvestigationUser investigator) {
+    private TInvestigator copyInvestigatorToTInvestigator(InvestigationUser investigator) {        
         return new TInvestigator("", "", investigator.getUser().getFullName(), investigator.getRole());
     }
 

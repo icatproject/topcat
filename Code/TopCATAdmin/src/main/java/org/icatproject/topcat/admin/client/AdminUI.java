@@ -372,7 +372,7 @@ public class AdminUI extends Composite {
 		// THESE ARE THE ITEMS IN THE PLUGIN_NAME LISTBOX
 		txtPluginName.insertItem("", "", 0);
 		txtPluginName.insertItem(
-				"uk.ac.stfc.topcat.gwt.client.facility.ISISPlugin", 1);
+				"uk.ac.stfc.topcat.gwt.client.facility.ISISFacilityPlugin", 1);
 		txtPluginName.insertItem(
 				"uk.ac.stfc.topcat.gwt.client.facility.DiamondFacilityPlugin",
 				2);
@@ -819,7 +819,6 @@ public class AdminUI extends Composite {
 				handlePingButtonEvent(result, urlSelection);
 			}
 		};
-		
 	    
 		// make the call to the server
 		dataService.ping(url, urlSelection, callback);
@@ -886,8 +885,8 @@ public class AdminUI extends Composite {
 			break;
 		case 10:
 			handleRowSelection("table0");
-			url = table0.getText(table0Row, 5);
-			handlePingButtonClick(url + Constants.IDS_URL_PATH, "Download Service");
+			url = table0.getText(table0Row, 6);
+			handlePingButtonClick(url, "Download Service");
 			break;
 		case 11:
 			handleRowSelection("table0");

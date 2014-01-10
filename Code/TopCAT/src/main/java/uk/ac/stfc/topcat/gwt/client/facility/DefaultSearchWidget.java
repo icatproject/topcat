@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.form.ListField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 
 /**
  * This is a widget, a default search widget collects the user search info and
@@ -175,24 +176,34 @@ public class DefaultSearchWidget extends Composite {
     private TAdvancedSearchDetails validateInput() {
         errorMessage.setText("");
         TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-        if (endDate.getValue() == null) {
-            if (startDate.getValue() != null) {
-                searchDetails.setEndDate(startDate.getValue());
-            }
-        } else {
-            if (startDate.getValue() == null) {
-                errorMessage.setText("Please enter a 'Start Date'");
-                startDate.focus();
+        
+        if (!startDate.isValid() || !endDate.isValid()) {
+            return null;
+        }
+        
+        if (endDate.getValue() != null && startDate.getValue() == null) {
+            startDate.markInvalid("Please enter a 'Start Date'");
+            startDate.focus();            
+            return null;
+        }
+        
+        if (startDate.getValue() != null && endDate.getValue() != null) {
+            if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
+                endDate.markInvalid("'End Date' must be equal or greater than 'Start Date'");
+                endDate.focus();
+                
                 return null;
-            } else {
-                if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
-                    errorMessage.setText("'End Date' must be equal or greater than 'Start Date'");
-                    endDate.focus();
-                    return null;
-                }
             }
+        }
+        
+        if (startDate.getValue() != null && endDate.getValue() == null) {
+            endDate.setValue(startDate.getValue());
+            searchDetails.setEndDate(startDate.getValue());
+        } else {
             searchDetails.setEndDate(endDate.getValue());
         }
+        
+        
         searchDetails.setStartDate(startDate.getValue());
         searchDetails.getFacilityList().add(facilityName);
         if (runNumberEnd.getValue() == null) {
@@ -201,12 +212,12 @@ public class DefaultSearchWidget extends Composite {
             }
         } else {
             if (runNumberStart.getValue() == null) {
-                errorMessage.setText("Please enter a 'Run Number Start'");
+                runNumberStart.markInvalid("Please enter a 'Run Number Start'");
                 runNumberStart.focus();
                 return null;
             } else {
                 if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
-                    errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
+                    runNumberEnd.markInvalid("'Run Number End' must be equal or greater than 'Run Number Start'");
                     runNumberEnd.focus();
                     return null;
                 }

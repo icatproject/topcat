@@ -14,25 +14,25 @@
 						
 							<g:Label styleName="helpHeader">Help</g:Label>
 							<g:VerticalPanel spacing="10">
-								<g:Label text="In order to use topcat it must be configured to point to one or more icats. " styleName="italic"/>
+								<g:Label text="In order to use topcat it must be configured to point to one or more icat servers. " styleName="italic"/>
 								<g:Label text="Adding an Icat" styleName="helpSubHeader"/>
-								<g:Label text="1) Click on the add button, this will present you with a form to complete.">..</g:Label>
-								<g:Label text="2) Enter a name for the facility, this is the name that gets presented to the users.">..</g:Label>
-								<g:Label text="3) Select the version number of the icat that you are going to talk to.">..</g:Label>
-								<g:Label text="4) Enter the URL of the icat, e.g. http://example.com:8181.">..</g:Label>
-								<g:Label text="5) Optionally select a bespoke search plugin to associate with the facility, currently plugins exist for DLS and ISIS.">..</g:Label>
-								<g:Label text="6) Optionally select a download plugin.">..</g:Label>
-								<g:Label text="7) Optionally provide the URL of the download server. (https://hostname:port only)">..</g:Label>
-								<g:Label text="8) Save the information.">..</g:Label>
-								<g:Label text="The next step is to associate one or more authentication plugins with the icat server. ">..</g:Label>
-								<g:Label text="1) Click on the Show Auth. Details button.">..</g:Label>
-								<g:Label text="2) Click on the add button that has just popped up. This will present you with another form to complete.">..</g:Label>
-								<g:Label text="3) Enter a display name. If you are providing more than one type of authentication the user will be presented with the list of display names to select from. You should therefore ensure that the display names are meaningful to the user.">..</g:Label>
-								<g:Label text="4) Select the appropriate authentication service type.">..</g:Label>
-								<g:Label text="5) Optionally provide a URL of the authentication service.">..</g:Label>
-								<g:Label text="6) Save the information.">..</g:Label>
+								<g:Label text="1) Click on the add button, this will present you with a form to complete."/>
+								<g:Label text="2) Enter a name for the facility, this is the name that gets presented to the users."/>
+								<g:Label text="3) Select the version number of the icat that you are going to connect to."/>
+								<g:Label text="4) Enter the URL of the icat server (including the protocol http:// or https://) e.g. https://example.com"/>
+								<g:Label text="5) Optionally select a bespoke search plugin to associate with the facility, currently plugins exist for DLS and ISIS."/>
+								<g:Label text="6) Optionally select a download plugin in order to download files (only ids 1.0.0 is currently supported)."/>
+								<g:Label text="7) If a download plugin is selected you must provide the URL of the download server (including the protocol http:// or https://)e.g. https://hostname:port"/>
+								<g:Label text="8) Save the information."/>
+								<g:Label text="The next step is to associate one or more authentication plugins with the icat server."/>
+								<g:Label text="1) Click on the Show Auth. Details button."/>
+								<g:Label text="2) Click on the add button that has just popped up. This will present you with another form to complete."/>
+								<g:Label text="3) Enter a display name. If you are providing more than one type of authentication the user will be presented with the list of display names to select from. You should therefore ensure that the display names are meaningful to the user."/>
+								<g:Label text="4) Select the appropriate authentication service type."/>
+								<g:Label text="5) Optionally provide a URL of the authentication service."/>
+								<g:Label text="6) Save the information."/>
 								<g:Label text="7) Add additional authentication details as required."/>
-								<g:Label text="Testing Connections" styleName="helpSubHeader">..</g:Label>
+								<g:Label text="Testing Connections" styleName="helpSubHeader"/>
 								<g:Label text="Ping functions have been provided to test that services are listening on the given URLs. This gives no guarantee that the remote service is functioning correctly."/>	
 							</g:VerticalPanel>
 					</g:FlowPanel>

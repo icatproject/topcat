@@ -49,8 +49,7 @@ public class DownloadModel extends BaseModelData implements Serializable {
 
     /**
      * @return expiryTime
-     */
-    @Deprecated
+     */    
     public Date getExpiryTime() {
         return get("expiryTime");
     }

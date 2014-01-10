@@ -34,9 +34,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.log4j.Logger;
-
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAuthentication;
 import uk.ac.stfc.topcat.core.gwt.module.TDatafile;
@@ -50,7 +47,6 @@ import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.NotSupportedException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
-import uk.ac.stfc.topcat.debug.RecursiveToStringStyle;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 import uk.ac.stfc.topcat.ejb.utils.Configuration;
@@ -80,7 +76,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     private UtilityLocal utilityManager;
     @EJB
     private UserManagementBeanLocal userManager;
-    private final static Logger logger = Logger.getLogger(UtilityServiceImpl.class.getName());
 
     /**
      * Servlet Init method.
@@ -141,7 +136,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             ArrayList<String> facilityNames = utilityManager.getFacilityNames();
             for (String facility : facilityNames) {
                 ICATNode tnode = new ICATNode();
-                tnode.setNode(ICATNodeType.FACILITY, null, facility);
+                tnode.setNode(ICATNodeType.FACILITY, null, facility, null);
                 result.add(tnode);
             }
         } else if (node.getNodeType() == ICATNodeType.FACILITY) {
@@ -155,7 +150,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             // If only one dataset then directly show datafiles in tree
             if (tresult.size() == 1) {
                 ICATNode tnode = new ICATNode();
-                tnode.setNode(ICATNodeType.DATASET, tresult.get(0).getDatasetId(), tresult.get(0).getDatasetName());
+                tnode.setNode(ICATNodeType.DATASET, tresult.get(0).getDatasetId(), tresult.get(0).getDatasetName(), tresult.get(0).getDatasetName());
                 tnode.setFacility(node.getFacility());
                 return getICATNodeChildren(tnode, isMyData);
             } else {
@@ -167,8 +162,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         if (node != null && node.getNodeType() != ICATNodeType.INSTRUMENT) {
             Collections.sort(result);
         }
-        
-        logger.info("return getICATNodeChildren:" + ReflectionToStringBuilder.toString(result.toArray(), new RecursiveToStringStyle(5)));
         
         return result;
     }
@@ -187,7 +180,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         if (instrumentList.size() > 0) {
             for (String instrument : instrumentList) {
                 ICATNode tnode = new ICATNode();
-                tnode.setNode(ICATNodeType.INSTRUMENT, instrument, instrument);
+                tnode.setNode(ICATNodeType.INSTRUMENT, instrument, instrument, null);
                 tnode.setFacility(node.getFacility());
                 result.add(tnode);
             }
@@ -212,7 +205,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
             if (facilityCycleList.size() > 0) {
                 for (TFacilityCycle cycle : facilityCycleList) {
                     ICATNode tnode = new ICATNode();
-                    tnode.setNode(ICATNodeType.CYCLE, "", cycle.getName());
+                    tnode.setNode(ICATNodeType.CYCLE, "", cycle.getName(), null);
                     tnode.setStartDate(cycle.getStartDate());
                     tnode.setEndDate(cycle.getFinishDate());
                     tnode.setFacility(node.getFacility());
@@ -245,7 +238,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         for (TInvestigation inv : invList) {
             ICATNode tnode = new ICATNode();
             tnode.setNode(ICATNodeType.INVESTIGATION, inv.getInvestigationId(),
-                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:" + inv.getVisitId() + ")");
+                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:" + inv.getVisitId() + ")", inv.getInvestigationName());
             tnode.setFacility(node.getFacility());
             tnode.setTitle(inv.getTitle());
             result.add(tnode);
@@ -264,7 +257,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         for (TInvestigation inv : invList) {
             ICATNode tnode = new ICATNode();
             tnode.setNode(ICATNodeType.INVESTIGATION, inv.getInvestigationId(),
-                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:" + inv.getVisitId() + ")");
+                    inv.getTitle() + "(Inv. Id:" + inv.getInvestigationName() + " & Visit Id:" + inv.getVisitId() + ")", inv.getInvestigationName());
             tnode.setFacility(node.getFacility());
             tnode.setTitle(inv.getTitle());
             result.add(tnode);
@@ -296,7 +289,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         for (TInvestigation inv : invList) {
             ICATNode tnode = new ICATNode();
             tnode.setNode(ICATNodeType.INVESTIGATION, inv.getInvestigationId(),
-                    inv.getTitle() + "(Id:" + inv.getInvestigationName() + ")");
+                    inv.getTitle() + "(Id:" + inv.getInvestigationName() + ")", inv.getInvestigationName());
             tnode.setFacility(node.getFacility());
             tnode.setTitle(inv.getTitle());
             result.add(tnode);
@@ -317,10 +310,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         ArrayList<TDataset> invList;
         invList = utilityManager.getDatasetsInServer(getSessionId(), node.getFacility(), node.getInvestigationId());
         for (TDataset inv : invList) {
-            logger.info("createDatasetNodesInInvestigation:" + ReflectionToStringBuilder.toString(inv, new RecursiveToStringStyle(5)));
-            
             ICATNode tnode = new ICATNode();
-            tnode.setNode(ICATNodeType.DATASET, inv.getId(), inv.getName());
+            tnode.setNode(ICATNodeType.DATASET, inv.getId(), inv.getName(), inv.getName());
             tnode.setFacility(node.getFacility());
             result.add(tnode);
         }
@@ -340,10 +331,8 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         ArrayList<TDatafile> invList = utilityManager.getDatafilesInServer(getSessionId(), node.getFacility(),
                 node.getDatasetId());
         for (TDatafile inv : invList) {
-            logger.info("createDatafileNodesInDataset:" + ReflectionToStringBuilder.toString(inv, new RecursiveToStringStyle(5)));
-            
             ICATNode tnode = new ICATNode();
-            tnode.setNode(ICATNodeType.DATAFILE, inv.getId(), inv.getName() + " [" + byteCountToDisplaySize(inv.getSize(), false) + "]");
+            tnode.setNode(ICATNodeType.DATAFILE, inv.getId(), inv.getName() + " [" + byteCountToDisplaySize(inv.getSize(), false) + "]", inv.getName());            
             tnode.setFacility(node.getFacility());
             tnode.setSize(inv.getSize());
             result.add(tnode);
@@ -530,9 +519,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
         } catch (SessionException e) {
             throw new SessionException(e.getMessage());
         }
-        
-        
-        logger.info("getAllICATNodeDatafiles:" + ReflectionToStringBuilder.toString(resultNodes.toArray(), new RecursiveToStringStyle(5)));
         
         if (resultNodes.size() != 0 && resultNodes.get(0).getNodeType() != ICATNodeType.DATAFILE) {
             HashMap<String, ArrayList<ICATNode>> result = new HashMap<String, ArrayList<ICATNode>>();

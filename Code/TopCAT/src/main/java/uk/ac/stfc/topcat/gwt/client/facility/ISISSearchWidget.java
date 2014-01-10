@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2012
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.facility;
@@ -51,7 +51,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 /**
  * This is custom search widget for ISIS used in plugin.
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -65,8 +65,7 @@ public class ISISSearchWidget extends Composite {
     private NumberField runNumberEnd;
     private TextField<String> grantId;
     private ListField<Instrument> lstInstrument;
-    private String facilityName;
-    private Text errorMessage;
+    private String facilityName;    
 
     public ISISSearchWidget(EventPipeLine eventBusPipeLine) {
         eventBus = eventBusPipeLine;
@@ -151,7 +150,7 @@ public class ISISSearchWidget extends Composite {
 
         Button btnSearchFile = new Button("Search Data Files");
         btnSearchFile
-                .setToolTip("Get a list of data files. Only the run nubers and instrument name are used as search criteria.");
+                .setToolTip("Get a list of data files. Only the run numbers and instrument name are used as search criteria.");
         btnSearchFile.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -174,10 +173,7 @@ public class ISISSearchWidget extends Composite {
         layoutContainer.add(new Text());
 
         topContainer.add(layoutContainer);
-        topContainer.add(new Text());
-        errorMessage = new Text();
-        errorMessage.setText("");
-        topContainer.add(errorMessage);
+        topContainer.add(new Text());        
         topContainer.setHeight("310px");
         initComponent(topContainer);
         setBorders(true);
@@ -186,7 +182,7 @@ public class ISISSearchWidget extends Composite {
 
     /**
      * Set the facility name.
-     * 
+     *
      * @param facilityName
      */
     public void setFacilityName(String facilityName) {
@@ -197,8 +193,7 @@ public class ISISSearchWidget extends Composite {
         createLogoutHandler();
     }
 
-    private TAdvancedSearchDetails validateExperimentSearchInput() {
-        errorMessage.setText("");
+    private TAdvancedSearchDetails validateExperimentSearchInput() {        
         TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
         searchDetails = validateDates(searchDetails);
         if (searchDetails == null) {
@@ -219,24 +214,32 @@ public class ISISSearchWidget extends Composite {
     }
 
     private TAdvancedSearchDetails validateDates(TAdvancedSearchDetails searchDetails) {
-        if (endDate.getValue() == null) {
-            if (startDate.getValue() != null) {
-                searchDetails.setEndDate(startDate.getValue());
-            }
-        } else {
-            if (startDate.getValue() == null) {
-                errorMessage.setText("Please enter a 'Start Date'");
-                startDate.focus();
+        if (!startDate.isValid() || !endDate.isValid()) {
+            return null;
+        }        
+        
+        if (endDate.getValue() != null && startDate.getValue() == null) {
+            startDate.markInvalid("Please enter a 'Start Date'");
+            startDate.focus();            
+            return null;
+        }
+        
+        if (startDate.getValue() != null && endDate.getValue() != null) {
+            if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
+                endDate.markInvalid("'End Date' must be equal or greater than 'Start Date'");
+                endDate.focus();
+                
                 return null;
-            } else {
-                if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
-                    errorMessage.setText("'End Date' must be equal or greater than 'Start Date'");
-                    endDate.focus();
-                    return null;
-                }
             }
+        }
+        
+        if (startDate.getValue() != null && endDate.getValue() == null) {
+            endDate.setValue(startDate.getValue());
+            searchDetails.setEndDate(startDate.getValue());
+        } else {
             searchDetails.setEndDate(endDate.getValue());
         }
+        
         return searchDetails;
     }
 
@@ -247,12 +250,12 @@ public class ISISSearchWidget extends Composite {
             }
         } else {
             if (runNumberStart.getValue() == null) {
-                errorMessage.setText("Please enter a 'Run Number Start'");
+                runNumberStart.markInvalid("Please enter a 'Run Number Start'");
                 runNumberStart.focus();
                 return null;
             } else {
                 if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
-                    errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
+                    runNumberEnd.markInvalid("'Run Number End' must be equal or greater than 'Run Number Start'");
                     runNumberEnd.focus();
                     return null;
                 }
@@ -262,11 +265,11 @@ public class ISISSearchWidget extends Composite {
         if (runNumberStart.getValue() != null) {
             searchDetails.setRbNumberStart(runNumberStart.getValue().toString());
         }
+        
         return searchDetails;
     }
 
-    private TAdvancedSearchDetails validateDatafileSearchInput() {
-        errorMessage.setText("");
+    private TAdvancedSearchDetails validateDatafileSearchInput() {        
         TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
         searchDetails.getFacilityList().add(facilityName);
         searchDetails.setGrantId(grantId.getValue());
@@ -284,9 +287,11 @@ public class ISISSearchWidget extends Composite {
     private TAdvancedSearchDetails validateInstrument(TAdvancedSearchDetails searchDetails) {
         List<Instrument> selectedIns = lstInstrument.getSelection();
         if (selectedIns.size() == 0) {
-            errorMessage.setText("Please select at least one instrument");
+            lstInstrument.markInvalid("Please select at least one instrument");
             lstInstrument.focus();
             return null;
+        } else {
+            lstInstrument.clearInvalid();
         }
         for (Instrument ins : selectedIns) {
             searchDetails.getInstrumentList().add(ins.getName());
@@ -296,7 +301,7 @@ public class ISISSearchWidget extends Composite {
 
     private TAdvancedSearchDetails validRunNosD(TAdvancedSearchDetails searchDetails) {
         if (runNumberStart.getValue() == null) {
-            errorMessage.setText("Please enter a run number");
+            runNumberStart.markInvalid("Please enter a run number");
             runNumberStart.focus();
             return null;
         }
@@ -304,7 +309,7 @@ public class ISISSearchWidget extends Composite {
 
         if (runNumberEnd.getValue() != null) {
             if (runNumberStart.getValue().intValue() > runNumberEnd.getValue().intValue()) {
-                errorMessage.setText("'Run Number End' must be equal or greater than 'Run Number Start'");
+                runNumberEnd.markInvalid("'Run Number End' must be equal or greater than 'Run Number Start'");
                 runNumberEnd.focus();
                 return null;
             }
@@ -313,8 +318,7 @@ public class ISISSearchWidget extends Composite {
         return searchDetails;
     }
 
-    private void reset() {
-        errorMessage.setText("");
+    private void reset() {        
         startDate.clear();
         endDate.clear();
         runNumberStart.clear();

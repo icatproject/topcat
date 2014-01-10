@@ -8,7 +8,7 @@ dbProperties=Password=APP:User=APP:serverName=localhost:DatabaseName=topcat:conn
 
 # Oracle Database Properties
 #driver=oracle.jdbc.pool.OracleDataSource
-#dbProperties=url="'"jdbc:oracle:thin:@//localhost:1521/XE"'":ImplicitCachingEnabled=true:MaxStatements=200:user=topcat:password=secret 
+#dbProperties=url="jdbc:oracle:thin:@//localhost:1521/XE":ImplicitCachingEnabled=true:MaxStatements=200:user=topcat:password=secret 
 
 # Glasfish home, must contain "glassfish/domains"
 glassfish=/opt/glassfish3

@@ -10,6 +10,22 @@
             <ul>
                 <li>Harmonized installation</li>
                 <li>Uses Maven release mechanism</li>
+                <li>Added support for ICAT 4.3</li>
+                <li>Added support in TopCatAdmin to add an announcement message to the Topcat page header</li>
+                <li>Added free text search (support icat 4.3 only)</li>
+                <li>Display the full facility name on search results and investigation details</li>
+                <li>No download filename prompt if single file selected for download</li>
+                <li>Date/time download filename suggested if more than one download file is selected</li>
+                <li>Updated gwt to 2.5.1</li>
+                <li>Updated gxt to 2.3.1</li>
+                <li>Removed MESSAGE property in topcat.properties as it is no longer used</li>
+                <li>Bug fixes</li>
+                <li>schema changes:
+                    <ul>
+                        <li>Add the column DOWNLOAD_TYPE to the table TOPCAT_ICAT_SERVER</li>
+                        
+                    </ul>
+                </li>
             </ul>
         </section>
         <section name="1.10.0">

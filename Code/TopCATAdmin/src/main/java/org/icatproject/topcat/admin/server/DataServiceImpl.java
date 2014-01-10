@@ -96,6 +96,10 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public String ping(String url, String urlSelection) {
+	    
+	    if (url == null || url.trim().isEmpty()) {
+	        return "No url set";
+	    }
 
 		int code = 0;
 		HttpURLConnection connection = null;
@@ -104,11 +108,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 		logger.debug("URL: " + url);
 		
 		if(urlSelection.equals("Download Service")){
-                    if (url.matches(".*/$")) {
-                        url = url + "getStatus";
-                    } else {
-			url = url + "/getStatus";
-                    }
+            if (url.matches(".*/$")) {
+                url = url + "ids/ping";
+            } else {
+                url = url + "/";
+            }
 		}
 		else if (urlSelection.equals("ICAT")){
 			if (!url.matches(".*/ICATService/ICAT\\?wsdl$")) {
@@ -132,7 +136,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements
                         logger.debug("ResponseCode: " + code);
 
 		}catch (MalformedURLException e) {
-			String msg = "The URL '" + url.toString() + "' is invalid";
+			String msg = "The URL '" + address.toString() + "' is invalid";
 			e.printStackTrace();
 			return "unsuccessfully: " + msg;
 

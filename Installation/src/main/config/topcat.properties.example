@@ -1,11 +1,6 @@
 KEYWORDS_CACHED=false
 LOGO_URL=images/stfc.JPG
 
-# This message will be displayed at the top of the web page. It is intended for
-# use by sys admins so that they can inform users of up coming down times. If
-# you change it then you will need to reload the application.
-MESSAGE
-
 # Links to be used in the footer
 ACCESSIBILITY=http://example.com/accessibility.html
 PRIVACY_POLICY=http://example.com/privacy.html

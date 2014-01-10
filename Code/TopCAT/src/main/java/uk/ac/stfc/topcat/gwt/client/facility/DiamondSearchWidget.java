@@ -111,17 +111,20 @@ public class DiamondSearchWidget extends Composite {
         Button btnSearch = new Button("Search");
         btnSearch.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-                searchDetails.setStartDate(startDate.getValue());
-                searchDetails.setEndDate(endDate.getValue());
-                searchDetails.setVisitId(visitId.getValue());
-                searchDetails.getFacilityList().add(facilityName);
-                List<Instrument> selectedIns = beamLine.getSelection();
-                for (Instrument ins : selectedIns) {
-                    searchDetails.getInstrumentList().add(ins.getName());
+            public void componentSelected(ButtonEvent ce) {                
+                if (isInputValid() == true) {
+                    TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
+                    searchDetails.setStartDate(startDate.getValue());
+                    searchDetails.setEndDate(endDate.getValue());
+                    searchDetails.setVisitId(visitId.getValue());
+                    searchDetails.getFacilityList().add(facilityName);
+                    List<Instrument> selectedIns = beamLine.getSelection();
+                    for (Instrument ins : selectedIns) {
+                        searchDetails.getInstrumentList().add(ins.getName());
+                    }
+                    
+                    eventBus.searchForInvestigation(searchDetails);
                 }
-                eventBus.searchForInvestigation(searchDetails);
             }
         });
         layoutContainer.add(btnSearch);
@@ -144,6 +147,39 @@ public class DiamondSearchWidget extends Composite {
         layoutContainer.setHeight("275px");
         setBorders(true);
         setAutoHeight(true);
+    }
+    
+    /**
+     * validate form input
+     * 
+     * @return
+     */
+    private boolean isInputValid(){        
+        if (!startDate.isValid() || !endDate.isValid()) {
+            return false;
+        }
+        
+        if (endDate.getValue() != null && startDate.getValue() == null) {
+            startDate.markInvalid("Please enter a 'Start Date'");
+            startDate.focus();
+            return false;
+        }
+        
+        if (startDate.getValue() != null && endDate.getValue() != null) {
+            if (startDate.getValue().compareTo(endDate.getValue()) > 0) {
+                endDate.markInvalid("'End Date' must be equal or greater than 'Start Date'");
+                endDate.focus();
+                
+                return false;
+            }
+        }
+        
+        if (startDate.getValue() != null && endDate.getValue() == null) {
+            endDate.setValue(startDate.getValue());
+        }
+        
+            
+        return true;
     }
 
     /**
