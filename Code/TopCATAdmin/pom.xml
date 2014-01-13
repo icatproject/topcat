@@ -137,7 +137,7 @@
                 </executions>
                 <configuration>
                     <skip>${skip.deploy}</skip>
-                    <workingDirectory>C:\glassfish3topcat\glassfish\bin</workingDirectory>
+                    <workingDirectory>C:\glassfish4topcat\glassfish\bin</workingDirectory>
                     <executable>asadmin</executable>
                     <arguments>
                         <argument>--echo</argument>
