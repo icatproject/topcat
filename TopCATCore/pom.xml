@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.icatproject</groupId>
         <artifactId>topcat.root</artifactId>
-        <version>1.11.0-SNAPSHOT</version>
+        <version>1.11.0</version>
     </parent>
 
     <build>
@@ -177,7 +177,7 @@
                                         jar
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
