@@ -29,7 +29,7 @@
 
         <fileSet>
             <outputDirectory>topcat</outputDirectory>
-            <directory>${project.basedir}/../TopCAT/target</directory>
+            <directory>${project.basedir}/../TopCATAdmin/target</directory>
             <includes>
                 <include>*.war</include>
             </includes>

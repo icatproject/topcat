@@ -17,7 +17,7 @@
                 <ul>
                     <li>
                         The TopCAT distribution:
-                        <a href="${repoUrl}/org/icatproject/topcat/${project.version}/TopCAT-${project.version}-distro.zip">TopCAT-${project.version}-distro.zip</a>
+                        <a href="${repoUrl}/org/icatproject/TopCAT/${project.version}/TopCAT-${project.version}-distro.zip">TopCAT-${project.version}-distro.zip</a>
                     </li>
                     <li>
                         A suitable deployed container (here assumed to be glassfish) to support a web
@@ -178,7 +178,7 @@
                     domain.
                 </p>
             </subsection>
-            
+
             <subsection name="Schema Upgrade">
                 <p>
                     To upgrade the schema from topcat 1.1.10 to 1.1.11, run the following sql queries for your database:
@@ -202,7 +202,7 @@
                             ALTER TABLE TOPCAT_ICAT_SERVER ADD DOWNLOAD_TYPE VARCHAR(255);
                         </p>
                     </li>
-                </ul>    
+                </ul>
             </subsection>
         </section>
 
