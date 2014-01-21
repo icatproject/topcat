@@ -58,8 +58,6 @@
         <url>http://www.icatproject.org</url>
     </organization>
 
-    <url>http://maven.apache.org</url>
-
     <modules>
         <module>TopCATCore</module>
         <module>TopCATEJB</module>
@@ -69,45 +67,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.glassfish.maven.plugin</groupId>
-                <artifactId>maven-glassfish-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <user>admin</user>
-                    <passwordFile>passFile</passwordFile>
-                    <domain>
-                        <name>TOPCAT</name>
-                        <adminPort>4848</adminPort>
-                        <httpPort>8080</httpPort>
-                        <httpsPort>8181</httpsPort>
-                        <resourceDescriptor>resources.xml</resourceDescriptor>
-                    </domain>
-                    <components>
-                        <component>
-                            <name>TopCAT</name>
-                            <artifact>../Code/TopCAT/target/TopCAT.war</artifact>
-                        </component>
-                    </components>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <outputDirectory>${glassfish.home}/domains/TOPCAT/lib/classes</outputDirectory>
-                    <resources>
-                        <resource>
-                            <directory>.</directory>
-                            <includes>
-                                <include>topcat.properties</include>
-                            </includes>
-                        </resource>
-                    </resources>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

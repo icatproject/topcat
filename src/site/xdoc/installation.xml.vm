@@ -17,7 +17,7 @@
                 <ul>
                     <li>
                         The TopCAT distribution:
-                        <a href="${repoUrl}/org/icatproject/topcat/${project.version}/topcat-${project.version}-distro.zip">topcat-${project.version}-distro.zip</a>
+                        <a href="${repoUrl}/org/icatproject/topcat/${project.version}/TopCAT-${project.version}-distro.zip">TopCAT-${project.version}-distro.zip</a>
                     </li>
                     <li>
                         A suitable deployed container (here assumed to be glassfish) to support a web

@@ -19,17 +19,17 @@
 
         <fileSet>
             <outputDirectory>topcat</outputDirectory>
-            <directory>${project.basedir}../src/main/config</directory>
+            <directory>${project.basedir}/src/main/config</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>topcat</outputDirectory>
-            <directory>${project.basedir}../src/main/scripts</directory>
+            <directory>${project.basedir}/src/main/scripts</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>topcat</outputDirectory>
-            <directory>${project.basedir}../TopCAT/target</directory>
+            <directory>${project.basedir}/../TopCAT/target</directory>
             <includes>
                 <include>*.war</include>
             </includes>
