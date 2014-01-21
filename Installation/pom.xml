@@ -11,7 +11,7 @@
 
     <groupId>org.icatproject</groupId>
     <artifactId>topcat.ROOT</artifactId>
-    <version>1.11.0-SNAPSHOT</version>
+    <version>1.11.0</version>
     <packaging>pom</packaging>
 
     <name>TopCAT</name>
@@ -40,9 +40,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://topcat.googlecode.com/svn/trunk</connection>
-        <developerConnection>scm:svn:https://topcat.googlecode.com/svn/trunk</developerConnection>
-        <url>http://code.google.com/p/topcat/source/browse/#svn%2Ftrunk</url>
+        <connection>scm:svn:http://topcat.googlecode.com/svn/tags/topcat.ROOT-1.11.0/trunk</connection>
+        <developerConnection>scm:svn:https://topcat.googlecode.com/svn/tags/topcat.ROOT-1.11.0/trunk</developerConnection>
+        <url>http://code.google.com/p/topcat/source/browse/#svn%2Ftrunk/tags/topcat.ROOT-1.11.0/#svn%2Ftrunk</url>
     </scm>
 
     <licenses>
