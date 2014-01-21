@@ -3,7 +3,7 @@
 	<groupId>org.icatproject</groupId>
 	<artifactId>TopCATCore</artifactId>
 	<packaging>jar</packaging>
-	<version>1.11.0</version>
+	<version>1.11.1-SNAPSHOT</version>
 	<name>TopCATCore</name>
 	<url>http://maven.apache.org</url>
 
