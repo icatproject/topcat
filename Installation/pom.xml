@@ -11,7 +11,7 @@
 
     <groupId>org.icatproject</groupId>
     <artifactId>topcat.ROOT</artifactId>
-    <version>1.11.1-SNAPSHOT</version>
+    <version>1.11.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TopCAT</name>

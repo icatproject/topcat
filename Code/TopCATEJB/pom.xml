@@ -3,7 +3,7 @@
     <groupId>org.icatproject</groupId>
     <artifactId>TopCATEJB</artifactId>
     <packaging>ejb</packaging>
-    <version>1.11.1-SNAPSHOT</version>
+    <version>1.11.0-SNAPSHOT</version>
     <name>TopCATEJB Java EE 6 EJB</name>
     <url>http://maven.apache.org</url>
 
