@@ -41,6 +41,9 @@ public interface UserManagementBeanLocal {
 
     public void login(String sessionId, String facilityName, String authenticationType, Map<String, String> parameters)
             throws AuthenticationException;
+    
+    public boolean login(String sessionId, String facilityName, String authenticationType, String icatSessionId)
+            throws AuthenticationException;
 
     public void logout(String sessionId) throws AuthenticationException;
 
@@ -49,5 +52,4 @@ public interface UserManagementBeanLocal {
     public Boolean isSessionValid(String sessionId, String facilityName);
 
     public String getIcatSessionId(String sessionId, String facilityName) throws TopcatException;
-
 }

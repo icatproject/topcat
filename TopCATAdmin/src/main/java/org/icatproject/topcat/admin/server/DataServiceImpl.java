@@ -76,7 +76,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements
 	public String removeIcatServer(Long id, String facilityName)
 			throws TopcatException {
 		if (!adminEJB.authCall(facilityName).isEmpty()) {
-		}
+		}		
+		
+		//remove icat server
 		adminEJB.removeIcatServer(id, facilityName);
 		return "The Row with the ID: " + id
 				+ " has been Removed from the to TopcatIcatServer Table";

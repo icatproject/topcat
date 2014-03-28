@@ -431,43 +431,48 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
                     "Internal error, searchByFreeTextPagination threw an unexpected exception, see server logs for details");
         }
         
+        logger.info("paginate query:" + resultInv.size() + " found");
+        
         //searchText() can only give the investigation table without the facility name information 
         //which is required for display. We need to perform another query to get all the 
-        //investigations found form searchText()
-        List<Long> investigationIds = new ArrayList<Long>();
+        //investigations found from searchText()
         
-        //get list of investigation ids
-        for (Object inv : resultInv) {
-            Investigation invTemp = (Investigation) inv;
-            investigationIds.add(invTemp.getId());
+        if (resultInv.size() > 0) {
+            List<Long> investigationIds = new ArrayList<Long>();
+            
+            //get list of investigation ids
+            for (Object inv : resultInv) {
+                Investigation invTemp = (Investigation) inv;
+                investigationIds.add(invTemp.getId());
+            }
+            
+            //build in string for query
+            String investigationIdList = "";
+            investigationIdList = getINLong(investigationIds);
+            
+            List<Object> result = null;
+            
+            //search query 
+            String jPQLQuery = "SELECT inv FROM Investigation inv WHERE inv.id IN " + investigationIdList + " INCLUDE inv.facility";
+            
+            //perform search
+            try {
+                result = service.search(sessionId, jPQLQuery);
+            } catch (IcatException_Exception e) {
+                convertToTopcatException(e, "searchByFreeTextPagination");
+            } catch (Throwable e) {
+                logger.error("searchByFreeTextPagination caught an unexpected exception: " + e.toString());
+                throw new InternalException(
+                        "Internal error, searchByFreeTextPagination threw an unexpected exception, see server logs for details");
+            }
+            
+            for (Object inv : result) {            
+                investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
+            }
+            
+            Collections.sort(investigationList);        
         }
         
-        //build in string for query
-        String investigationIdList = "";
-        investigationIdList = getINLong(investigationIds);
-        
-        List<Object> result = null;
-        
-        //search query 
-        String jPQLQuery = "SELECT inv FROM Investigation inv WHERE inv.id IN " + investigationIdList + " INCLUDE inv.facility";
-        
-        //perform search
-        try {
-            result = service.search(sessionId, jPQLQuery);
-        } catch (IcatException_Exception e) {
-            convertToTopcatException(e, "searchByFreeTextPagination");
-        } catch (Throwable e) {
-            logger.error("searchByFreeTextPagination caught an unexpected exception: " + e.toString());
-            throw new InternalException(
-                    "Internal error, searchByFreeTextPagination threw an unexpected exception, see server logs for details");
-        }
-        
-        for (Object inv : result) {            
-            investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
-        }
-        
-        Collections.sort(investigationList);
-
         logger.info("result count:" + investigationList.size());
 
         return investigationList;

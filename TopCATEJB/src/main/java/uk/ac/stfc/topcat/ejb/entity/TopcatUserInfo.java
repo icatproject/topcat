@@ -53,7 +53,9 @@ import javax.persistence.Table;
         @NamedQuery(name = "TopcatUserInfo.findAll", query = "SELECT t FROM TopcatUserInfo t"),
         @NamedQuery(name = "TopcatUserInfo.findById", query = "SELECT t FROM TopcatUserInfo t WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserInfo.findByDisplayName", query = "SELECT t FROM TopcatUserInfo t WHERE t.displayName = :displayName"),
-        @NamedQuery(name = "TopcatUserInfo.findAnonymousUser", query = "SELECT t FROM TopcatUserInfo t WHERE t.displayName = 'Anonymous'") })
+        @NamedQuery(name = "TopcatUserInfo.findAnonymousUser", query = "SELECT t FROM TopcatUserInfo t WHERE t.displayName = 'Anonymous'"),
+        @NamedQuery(name = "TopcatUserInfo.deleteByServerId", query = "DELETE FROM TopcatUserInfo t WHERE t.homeServer.id = :serverId"),
+})
 public class TopcatUserInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

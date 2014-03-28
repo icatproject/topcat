@@ -40,7 +40,9 @@ public class AuthenticationPluginFactory {
     @SuppressWarnings("unused")
     private static CASAuthenticationPlugin casPlugin = CASAuthenticationPlugin.getInstance();
     @SuppressWarnings("unused")
-    private static AnonymousAuthenticationPlugin anonPlugin = AnonymousAuthenticationPlugin.getInstance();
+    private static AnonymousAuthenticationPlugin anonPlugin = AnonymousAuthenticationPlugin.getInstance();    
+    @SuppressWarnings("unused")
+    private static ExternalRedirectAuthenticationPlugin extenalRedirectPlugin = ExternalRedirectAuthenticationPlugin.getInstance();
 
     private HashMap<String, AuthenticationPlugin> authenticationPluginMap;
 

@@ -25,7 +25,6 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.TableData;

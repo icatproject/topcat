@@ -56,7 +56,10 @@ import javax.xml.bind.annotation.XmlRootElement;
         @NamedQuery(name = "TopcatUser.findByNameAndServer", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName"),
         @NamedQuery(name = "TopcatUser.findByNameAndServerNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.displayName <> 'Anonymous'"),
         @NamedQuery(name = "TopcatUser.findByNameAndServerAndHomeNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.homeServer.name = :serverName AND t.topcatUserId.displayName <> 'Anonymous'"),
-        @NamedQuery(name = "TopcatUser.findAnonymousUser", query = "SELECT t FROM TopcatUser t WHERE t.name = 'Anonymous'") })
+        @NamedQuery(name = "TopcatUser.findAnonymousUser", query = "SELECT t FROM TopcatUser t WHERE t.name = 'Anonymous'"),
+        @NamedQuery(name = "TopcatUser.findByServerId", query = "SELECT t FROM TopcatUser t WHERE t.serverId.id = :serverId"),
+})
+
 @XmlRootElement
 public class TopcatUser implements Serializable {
     private static final long serialVersionUID = 1L;

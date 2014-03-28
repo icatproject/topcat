@@ -91,7 +91,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * @since iCAT Version 3.3
  */
 public class BrowsePanel extends Composite {
-
     private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private BaseTreeLoader<ICATNode> loader;
     TreePanel<ICATNode> tree;
@@ -328,15 +327,15 @@ public class BrowsePanel extends Composite {
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
-                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
+                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {                    
                     ICATNode icatnode = node.getModel();
                     EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
                             icatnode.getInvestigationId(), SOURCE);
-                } else if (node.getModel().getNodeType() == ICATNodeType.DATASET) {
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATASET) {                    
                     ICATNode icatnode = node.getModel();
                     EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(),
                             Constants.DATA_SET, icatnode.getDatasetId(), icatnode.getDatafileName());
-                } else if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {                    
                     ICATNode icatnode = node.getModel();
                     EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(),
                             Constants.DATA_FILE, icatnode.getDatafileId(), icatnode.getDatafileName());
@@ -462,6 +461,7 @@ public class BrowsePanel extends Composite {
         // Create map of selected datasets
         // map: key = facility name, value = list of dataset ids
         HashMap<String, ArrayList<Long>> dsMap = new HashMap<String, ArrayList<Long>>();
+        
         for (ICATNode node : selectedItems) {
             if (node.getNodeType() == ICATNodeType.DATASET) {
                 ArrayList<Long> idList = dsMap.get(node.getFacility());
@@ -476,12 +476,13 @@ public class BrowsePanel extends Composite {
         // Create map of selected datafiles
         // map: key = facility name, value = list of datafile ids
         HashMap<String, ArrayList<Long>> dfMap = new HashMap<String, ArrayList<Long>>();
+        
         for (ICATNode node : selectedItems) {
             if (node.getNodeType() == ICATNodeType.DATAFILE) {
                 ArrayList<Long> dsList = dsMap.get(node.getFacility());
                 if (dsList != null) {
                     if (dsList.contains(new Long(tree.getStore().getParent(node).getDatasetId()))) {
-                        // we have already selected the whole datset so ignore
+                        // we have already selected the whole dataset so ignore
                         // the file
                         continue;
                     }

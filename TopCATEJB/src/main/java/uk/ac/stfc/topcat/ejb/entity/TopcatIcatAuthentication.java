@@ -48,7 +48,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
         @NamedQuery(name = "TopcatIcatAuthentication.findAll", query = "SELECT t FROM TopcatIcatAuthentication t"),
         @NamedQuery(name = "TopcatIcatAuthentication.findById", query = "SELECT t FROM TopcatIcatAuthentication t WHERE t.id = :id"),
-        @NamedQuery(name = "TopcatIcatAuthentication.findByServerName", query = "SELECT t FROM TopcatIcatAuthentication t WHERE t.serverId.name=:serverName") })
+        @NamedQuery(name = "TopcatIcatAuthentication.findByServerName", query = "SELECT t FROM TopcatIcatAuthentication t WHERE t.serverId.name=:serverName"),
+        @NamedQuery(name = "TopcatIcatAuthentication.deleteByServerId", query = "DELETE FROM TopcatIcatAuthentication t WHERE t.serverId.id = :serverId"),
+})
 @XmlRootElement
 public class TopcatIcatAuthentication implements Serializable {
     private static final long serialVersionUID = 1L;

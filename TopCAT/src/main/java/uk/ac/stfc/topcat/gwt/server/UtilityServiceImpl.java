@@ -126,7 +126,6 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
      * @throws SessionException
      * @throws TopcatException
      */
-    @SuppressWarnings("unchecked")
     private ArrayList<ICATNode> getICATNodeChildren(ICATNode node, boolean isMyData) throws SessionException,
             TopcatException {
         // Check the node type

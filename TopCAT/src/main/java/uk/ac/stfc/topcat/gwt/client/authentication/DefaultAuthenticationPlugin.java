@@ -78,4 +78,9 @@ public class DefaultAuthenticationPlugin extends AuthenticationPlugin {
     public void authenticate() {
     }
 
+    @Override
+    public boolean isRedirect() {        
+        return false;
+    }
+
 }

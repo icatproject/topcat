@@ -79,6 +79,11 @@ public interface LoginService extends RemoteService {
      */
     public String login(Map<String, String> parameters, String authenticationType, String facilityName)
             throws LoginException;
+    
+    
+    
+    public Boolean login(String icatSessionId, String authenticationType,
+            String facilityName) throws LoginException;
 
     /**
      * Logout of an iCat server.
@@ -106,5 +111,5 @@ public interface LoginService extends RemoteService {
      * @return the current facility session id
      * @throws TopcatException
      */
-    public String getSessionId(String facilityName) throws TopcatException;
+    public String getSessionId(String facilityName) throws TopcatException;    
 }

@@ -83,6 +83,23 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
         return sessionId;
     }
+    
+    @Override
+    public Boolean login(String icatSessionId, String authenticationType, String facilityName)
+            throws LoginException {        
+        String sessionId = getTopcatSessionId();
+        
+        Boolean loginSuccess = false;
+        
+        try {
+            loginSuccess = userManager.login(sessionId, facilityName, authenticationType, icatSessionId);
+        } catch (AuthenticationException e) {
+            throw (new LoginException(e.getMessage()));
+        }
+        
+        return loginSuccess;
+    }
+    
 
     /*
      * This method performs logout operation from an iCAT server. (non-Javadoc)

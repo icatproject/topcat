@@ -22,92 +22,50 @@
  */
 package uk.ac.stfc.topcat.gwt.client.authentication;
 
-/**
- * Imports
- */
-import java.util.HashMap;
-import java.util.Map;
-
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
- * This is an authentication widget that gets the user name and password.
+ * This is an authentication widget that for external authentication.
  */
-public class DefaultAuthenticationWidget extends Composite {
-    private LoginInterface loginHandler = null;
-    private TextField<String> txtFldPassword;
-    private TextField<String> txtFldUsername;
+public class ExternalRedirectAuthenticationWidget extends Composite {
     private AuthenticationModel authenticationModel;
+    private LoginInterface loginHandler = null;
 
-    public DefaultAuthenticationWidget() {
+    public ExternalRedirectAuthenticationWidget() {
         LayoutContainer mainContainer = new LayoutContainer();
-        VerticalPanel panel = new VerticalPanel();
         FlexTable flexTable = new FlexTable();
         flexTable.setSize("304px", "100px");
-        
-        final Button btnLogin = new Button("Login");
-
-        LabelField lblfldUsername = new LabelField("Username");
-        flexTable.setWidget(1, 0, lblfldUsername);
-
-        txtFldUsername = new TextField<String>();
-        flexTable.setWidget(1, 1, txtFldUsername);
-        txtFldUsername.setFieldLabel("New TextField");
-
-        LabelField lblfldPassword = new LabelField("Password");
-        flexTable.setWidget(2, 0, lblfldPassword);
-
-        txtFldPassword = new TextField<String>();
-        // On enter key in password box. fire click on login button.
-        txtFldPassword.addListener(Events.SpecialKey, new Listener<FieldEvent>() {
-            @Override
-            public void handleEvent(FieldEvent e) {
-                if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    btnLogin.fireEvent(Events.Select);
-                }
-            }
-        });
-        txtFldPassword.setPassword(true);
-        flexTable.setWidget(2, 1, txtFldPassword);
-        txtFldPassword.setFieldLabel("New TextField");
-        
-        FlexTable buttonTable = new FlexTable();
-        buttonTable.setSize("304px", "70px");
-
+        final Button btnLogin = new Button("Yes");
         btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (loginHandler != null) {
-                    Map<String, String> parameters = new HashMap<String, String>();
-                    parameters.put("username", txtFldUsername.getValue());
-                    parameters.put("password", txtFldPassword.getValue());
-                    loginHandler.onLoginOk(authenticationModel.getFacilityName(), authenticationModel.getType(),
-                            parameters);
-                }
+                authenticate();
             }
         });
-        buttonTable.setWidget(0, 0, btnLogin);
+        
+        Text text = new Text("Redirect to login server?");
+        flexTable.getFlexCellFormatter().setColSpan(2, 0, 2);
+        flexTable.getCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER);
+        flexTable.setWidget(2, 0, text);
+        flexTable.setWidget(3, 0, btnLogin);
         btnLogin.setSize("50", "25");
 
-        Button btnCancel = new Button("Cancel");
+        Button btnCancel = new Button("No");
         btnCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -118,16 +76,14 @@ public class DefaultAuthenticationWidget extends Composite {
             }
         });
 
-        buttonTable.setWidget(0, 1, btnCancel);
+        flexTable.setWidget(3, 1, btnCancel);
         btnCancel.setSize("50", "25");
-        buttonTable.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
-        buttonTable.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER);               
-        panel.add(flexTable);
-        panel.add(buttonTable);
         
+        flexTable.getCellFormatter().setHorizontalAlignment(3, 0, HasHorizontalAlignment.ALIGN_CENTER);
+        flexTable.getCellFormatter().setHorizontalAlignment(3, 1, HasHorizontalAlignment.ALIGN_CENTER);
 
-        mainContainer.add(panel);
-        mainContainer.setHeight("175px");
+        mainContainer.add(flexTable);
+        mainContainer.setHeight("100px");
         initComponent(mainContainer);
         setAutoHeight(true);
     }
@@ -139,19 +95,38 @@ public class DefaultAuthenticationWidget extends Composite {
     public void setLoginHandler(LoginInterface loginHandler) {
         this.loginHandler = loginHandler;
     }
+    
 
-    /**
-     * Show Login Widget. First clear out password. If user name exists focus on
-     * password.
-     */
-    @Override
-    public void focus() {
-        txtFldPassword.clear();
-        if (txtFldUsername.isDirty()) {
-            txtFldPassword.focus();
-        } else {
-            txtFldUsername.focus();
+    public void authenticate() {
+        if (authenticationModel != null) {
+            //get current url
+            String currentUrl = Window.Location.getHref();            
+            
+            UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+            urlBuilder.setParameter("facilityName", authenticationModel.getFacilityName());
+            urlBuilder.setParameter("authenticationType", authenticationModel.getType());
+            
+            urlBuilder.setParameter("url", currentUrl);
+            urlBuilder.setHash(null); //make sure there is no hash
+            
+            //get configured authentication url
+            String loginServiceUrl = authenticationModel.getUrl();
+            
+            //deal with url that might already contain a hash
+            String loginServiceUrlHash = "";
+            if (loginServiceUrl.contains("#")) {
+                loginServiceUrlHash = loginServiceUrl.substring(loginServiceUrl.indexOf("#") + 1);
+            }
+            
+            //determine if query parameters already exists to determine query append character
+            if (loginServiceUrl.contains("?")) {
+                loginServiceUrl = loginServiceUrl + "&";
+            } else {
+                loginServiceUrl = loginServiceUrl + "?";
+            }            
+            
+            //redirect
+            Window.Location.assign(loginServiceUrl + "service=" + URL.encodeQueryString(urlBuilder.buildString()) + loginServiceUrlHash);
         }
-        super.focus();
     }
 }

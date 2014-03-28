@@ -32,6 +32,10 @@
 								<g:Label text="5) Optionally provide a URL of the authentication service."/>
 								<g:Label text="6) Save the information."/>
 								<g:Label text="7) Add additional authentication details as required."/>
+								<g:Label text="External Redirect Authentication" styleName="helpSubHeader"/>
+								<g:Label text="The external redirect authentication plugin redirects the user to a url that you specifify. The plugin appends to the url the query parameter service= which contains information on the facility to login and authentication type in addition to the last requested url. 
+								Your authentication system after a successful login should redirect to the service url with the icat sessionId appended to a ticket= parameter. e.g  
+								https://localhost:8181/TOPCATWeb.jsp?facilityName=isis&amp;authenticationType=external+redirect&amp;url=https%3A%2F%2Flocalhost%3A8181%2FTOPCATWeb.jsp%23view%2F%2F%2F%40tab%3DAllData&amp;ticket=ICAT_SESSIONID "/>								
 								<g:Label text="Testing Connections" styleName="helpSubHeader"/>
 								<g:Label text="Ping functions have been provided to test that services are listening on the given URLs. This gives no guarantee that the remote service is functioning correctly."/>	
 							</g:VerticalPanel>

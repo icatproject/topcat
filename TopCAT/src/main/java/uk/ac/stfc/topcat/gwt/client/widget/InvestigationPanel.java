@@ -164,8 +164,9 @@ public class InvestigationPanel extends Composite {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 EventPipeLine.getInstance().downloadParametersData(
-                        invDetailPanel.getInvestigationModel().getFacilityNameFromInvestigation(), Constants.INVESTIGATION,
+                        invDetailPanel.getInvestigationModel().getFacilityName(), Constants.INVESTIGATION,
                         invDetailPanel.getInvestigationModel().getInvestigationId());
+                        
             }
         });
         buttonBar.add(btnExport);

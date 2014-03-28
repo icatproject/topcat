@@ -29,13 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
 
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails;
@@ -70,6 +69,9 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
     private KeywordManagementLocal keywordManager;
     @EJB
     private UserManagementBeanLocal userManager;
+    
+    
+    private final static Logger logger = Logger.getLogger(SearchServiceImpl.class.getName());
 
     /*
      * This is servlet initialisation code. creates search, keyword and user
@@ -146,9 +148,20 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
     @Override
     public List<TInvestigation> getFreeTextSearchResultsInvestigation(String sessionId,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
-        if (sessionId == null)
+        
+        if (sessionId == null) {
             sessionId = getSessionId();
-        List<TInvestigation> investigationList = searchManager.searchFreeTextInvestigation(sessionId, searchDetails);
+            logger.debug("session id:" + sessionId);
+        }
+        
+        List<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+        
+        try {
+            investigationList = searchManager.searchFreeTextInvestigation(sessionId, searchDetails);
+        } catch (Exception e) {
+            logger.debug("searchManager.searchFreeTextInvestigation:" + e.getMessage());
+        }
+        
         return investigationList;
     }
 

@@ -112,6 +112,7 @@ public class UserManager {
         if (logger.isTraceEnabled()) {
             logger.trace("login: " + icatServer.getServerUrl());
         }
+        
         // Login to the icat server
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
@@ -135,6 +136,65 @@ public class UserManager {
             throw new AuthenticationException("Unable to get surname");
         }
     }
+    
+    
+    /**
+     * 
+     * @param manager
+     * @param topcatSessionId
+     * @param facilityName
+     * @param authenticationType
+     * @param icatSessionId
+     * @return boolean whether the login was successful or not
+     * @throws AuthenticationException
+     */
+    public boolean login(EntityManager manager, String topcatSessionId, String facilityName, String authenticationType,
+            String icatSessionId) throws AuthenticationException {
+        logger.info("login: topcatSessionId (" + topcatSessionId + "), facilityName (" + facilityName
+                + "), authenticationType (" + authenticationType + "), icatSessionId " + icatSessionId);
+        long hours = 2;
+        // Process
+        // 1) Get the icat server
+        // 2) check icat session id is valid
+        // 3) if the server login fails then throw exception and return.
+
+        // Get the icat server
+        TopcatIcatServer icatServer = findTopcatIcatServerByName(manager, facilityName);
+        if (logger.isTraceEnabled()) {
+            logger.trace("login: " + icatServer.getServerUrl());
+        }
+        
+        // authenticate icat session id
+        try {
+            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
+                    icatServer.getVersion(), icatServer.getServerUrl());
+            
+            if (service.isSessionValid(icatSessionId)) {
+                // get username from icat server (currently only implemented in 3.4.1 and 4.2)
+                String username = service.getUserName(icatSessionId);
+                
+                logger.info("login: username (" + username + ")");
+                
+                loginUpdate(manager, service, topcatSessionId, icatServer, username, icatSessionId, hours);
+                
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (MalformedURLException ex) {
+            logger.error("UserManager (login): " + ex.getMessage());
+            throw new AuthenticationException("ICAT URL is not valid");
+        } catch (javax.xml.ws.WebServiceException ex) {
+            logger.warn("UserManager (login): " + ex.getMessage());
+            throw new AuthenticationException("ICAT Server not available");
+        } catch (TopcatException e) {
+            throw new AuthenticationException("Unable to get surname");
+        }
+    }
+    
+    
+    
 
     /**
      * This method logout of all the ICAT servers that the user has logged in

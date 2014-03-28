@@ -57,7 +57,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TopcatUserSession.findByTopcatSessionIdAndAnonymous", query = "SELECT t FROM TopcatUserSession t WHERE t.topcatSessionId = :topcatSessionId OR (t.userId.topcatUserId.displayName = 'Anonymous' AND t.userId.serverId.id NOT IN (SELECT tus.userId.serverId.id FROM TopcatUserSession tus WHERE tus.topcatSessionId = :topcatSessionId ))"),
     @NamedQuery(name = "TopcatUserSession.findByTopcatSessionIdAndServerName",query = "SELECT t FROM TopcatUserSession t WHERE t.topcatSessionId = :topcatSessionId AND t.userId.serverId.name = :serverName"),
     @NamedQuery(name = "TopcatUserSession.findByAnonymousAndServerName",query = "SELECT t FROM TopcatUserSession t WHERE t.topcatSessionId IS NULL AND t.userId.serverId.name = :serverName"),
-    @NamedQuery(name = "TopcatUserSession.findByAnonymous",query = "SELECT t FROM TopcatUserSession t WHERE t.topcatSessionId IS NULL")
+    @NamedQuery(name = "TopcatUserSession.findByAnonymous",query = "SELECT t FROM TopcatUserSession t WHERE t.topcatSessionId IS NULL"),
+    @NamedQuery(name = "TopcatUserSession.deleteSessionByUserId",query = "DELETE FROM TopcatUserSession t WHERE t.userId.id = :userId")
 })
 @XmlRootElement
 

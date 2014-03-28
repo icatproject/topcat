@@ -25,8 +25,6 @@ package uk.ac.stfc.topcat.gwt.client.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import uk.ac.stfc.topcat.gwt.shared.Utils;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
@@ -38,7 +36,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @since iCAT Version 3.3   
  */
 @SuppressWarnings("serial")
-public class ICATNode extends BaseModelData implements Serializable, Comparable {
+public class ICATNode extends BaseModelData implements Serializable, Comparable<Object> {
 	ICATNodeType type; // added just to let gwt compiler know that ICATNodeType is serializable
 	public ICATNode(){		
 	}

@@ -30,9 +30,18 @@ import java.util.Map;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
+import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Composite;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
  * This is an authentication widget that uses the anonymous user name and
@@ -44,6 +53,46 @@ public class AnonymousAuthenticationWidget extends Composite {
     private LoginInterface loginHandler = null;
 
     public AnonymousAuthenticationWidget() {
+        LayoutContainer mainContainer = new LayoutContainer();
+        FlexTable flexTable = new FlexTable();
+        flexTable.setSize("304px", "100px");
+        
+        Text text = new Text("Login anonymously?");
+        flexTable.getFlexCellFormatter().setColSpan(2, 0, 2);
+        flexTable.getCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER);
+        flexTable.setWidget(2, 0, text);
+        
+        final Button btnLogin = new Button("Login");
+        btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                authenticate();
+            }
+        });
+        flexTable.setWidget(3, 0, btnLogin);
+        btnLogin.setSize("50", "25");
+
+        Button btnCancel = new Button("Cancel");
+        btnCancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (loginHandler != null)
+                    loginHandler.onLoginCancel();
+                EventPipeLine.getEventBus().fireEventFromSource(new LogoutEvent(authenticationModel.getFacilityName()),
+                        authenticationModel.getFacilityName());
+            }
+        });
+
+        flexTable.setWidget(3, 1, btnCancel);
+        btnCancel.setSize("50", "25");
+        flexTable.getCellFormatter().setHorizontalAlignment(3, 0, HasHorizontalAlignment.ALIGN_CENTER);
+        flexTable.getCellFormatter().setHorizontalAlignment(3, 1, HasHorizontalAlignment.ALIGN_CENTER);
+
+        mainContainer.add(flexTable);
+        mainContainer.setHeight("100px");
+        initComponent(mainContainer);
+        setAutoHeight(true);
+        
     }
 
     public void setAuthenticationModel(AuthenticationModel authenticationModel) {

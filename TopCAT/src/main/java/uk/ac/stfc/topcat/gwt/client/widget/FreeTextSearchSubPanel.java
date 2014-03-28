@@ -56,10 +56,9 @@ import com.google.gwt.user.client.ui.FlexTable;
 
 public class FreeTextSearchSubPanel extends Composite {    
     private EventPipeLine eventBus;    
-    private TextField<String> txtFldQuery;    
+    private TextField<String> txtFldQuery;
 
     public FreeTextSearchSubPanel() {
-        
         eventBus = EventPipeLine.getInstance();
 
         LayoutContainer layoutContainer = new LayoutContainer();
@@ -79,12 +78,16 @@ public class FreeTextSearchSubPanel extends Composite {
         Button btnSearch = new Button("Search");
         btnSearch.addListener(Events.Select, new Listener<ButtonEvent>() {
             @Override
-            public void handleEvent(ButtonEvent e) {                
+            public void handleEvent(ButtonEvent e) {
+                
                 if (validateInput()) {                    
                     TAdvancedSearchDetails searchDetails = new TAdvancedSearchDetails();
-                    searchDetails.setFreeTextQuery(txtFldQuery.getValue().trim());                    
-                    eventBus.searchForInvestigationByFreeText(searchDetails);
+                    searchDetails.setFreeTextQuery(txtFldQuery.getValue().trim());
+                    searchDetails.setSearchAllData(true);
+                    
+                    eventBus.searchForInvestigationByFreeText(searchDetails);                    
                 }
+                
             }
         });
         flexTable.setWidget(2, 1, btnSearch);
@@ -99,7 +102,7 @@ public class FreeTextSearchSubPanel extends Composite {
     
     
     private boolean validateInput() {
-        if (txtFldQuery.getValue().trim().isEmpty()) {
+        if (txtFldQuery.getValue() == null || txtFldQuery.getValue().trim().isEmpty()) {
             return false;            
         }
            

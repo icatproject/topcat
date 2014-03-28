@@ -54,6 +54,22 @@ public interface LoginServiceAsync {
      */
     public void login(Map<String, String> parameters, String authenticationType, String facilityName,
             AsyncCallback<String> callback);
+    
+    
+    /**
+     * Login to Topcat given icat session id
+     * 
+     * @param icatSessionId
+     *            icat session id
+     *            type
+     * @param authenticationType
+     *            a string containing the authentication type
+     * @param facilityName
+     *            a string containing the facility name
+     * @param callback
+     *            object to be called on completion
+     */
+    public void login(String icatSessionId, String authenticationType, String facilityName,  AsyncCallback<Boolean> callback);
 
     /**
      * Logout of an iCat server.

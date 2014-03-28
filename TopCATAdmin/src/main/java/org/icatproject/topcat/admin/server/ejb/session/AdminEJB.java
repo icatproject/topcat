@@ -19,6 +19,8 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatMessages;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUser;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
 @Stateless
@@ -96,22 +98,31 @@ public class AdminEJB {
 	}
 
 	public void removeIcatServer(Long id, String facilityName) {
-
 		@SuppressWarnings("unchecked")
-                List<TopcatIcatAuthentication> authenDetails = entityManager
-				.createNamedQuery("TopcatIcatAuthentication.findByServerName")
-				.setParameter("serverName", facilityName).getResultList();
-
-		if (!authenDetails.isEmpty()) {
-			for (TopcatIcatAuthentication authDetatils : authenDetails) {
-				entityManager.remove(authDetatils);
-			}
-		}
-
-		TopcatIcatServer tiServer = entityManager.find(TopcatIcatServer.class,
-				id);
+		//get list of users that belongs to the server
+		List<TopcatUser> topcatUsers = entityManager.createNamedQuery("TopcatUser.findByServerId").setParameter("serverId", id).getResultList();
+		//loop user
+		for (TopcatUser topcatUser : topcatUsers) {
+		    //remove sessions belonging to the user
+	        entityManager.createNamedQuery("TopcatUserSession.deleteSessionByUserId").setParameter("userId", topcatUser.getId()).executeUpdate();
+	        
+	        //remove user downloads
+	        entityManager.createNamedQuery("TopcatUserDownload.deleteByUserId").setParameter("userId", topcatUser.getId()).executeUpdate();
+	        
+		    //remove the user
+            entityManager.remove(topcatUser);            
+        }
+		
+		//remove user info
+        entityManager.createNamedQuery("TopcatUserInfo.deleteByServerId").setParameter("serverId", id).executeUpdate();
+		
+		//remove authentication types for the server
+		entityManager.createNamedQuery("TopcatIcatAuthentication.deleteByServerId").setParameter("serverId", id).executeUpdate();
+		
+		//Delete server 
+		TopcatIcatServer tiServer = entityManager.find(TopcatIcatServer.class,id);		
 		entityManager.remove(tiServer);
-
+		entityManager.flush();
 	}
 
 	public List<TAuthentication> authCall(String serverName) {

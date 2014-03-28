@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2009-2013
+ * Copyright (c) 2009-2014
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -22,34 +22,65 @@
  */
 package uk.ac.stfc.topcat.gwt.client.authentication;
 
+/**
+ * Imports
+ */
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 
 import com.extjs.gxt.ui.client.widget.Composite;
+import com.google.gwt.core.client.GWT;
 
 /**
- * This is an abstract authentication plugin class. Which uses authentication
- * plugin factory to register all the plugins available.
+ * External web plugin for authentication.
  */
-public abstract class AuthenticationPlugin {
+public class ExternalRedirectAuthenticationPlugin extends AuthenticationPlugin {
 
-    protected AuthenticationPlugin() {
-        AuthenticationPluginFactory factory = AuthenticationPluginFactory.getInstance();
-        factory.registerPlugin(this.getClass().getName(), this);
+    private static ExternalRedirectAuthenticationPlugin externalWebAuthentication = GWT.create(ExternalRedirectAuthenticationPlugin.class);
+    ExternalRedirectAuthenticationWidget widget;
+
+    private ExternalRedirectAuthenticationPlugin() {
+        super();
+        widget = new ExternalRedirectAuthenticationWidget();
     }
 
-    public abstract Composite getWidget();
+    @Override
+    public Composite getWidget() {
+        return widget;
+    }
 
-    public abstract void setAuthenticationModel(AuthenticationModel authenticationModel);
+    public static ExternalRedirectAuthenticationPlugin getInstance() {
+        return externalWebAuthentication;
+    }
 
-    public abstract void setFacility(TFacility facility);
-    
-    public abstract void setLoginHandler(LoginInterface loginHandler);
+    @Override
+    public void setAuthenticationModel(AuthenticationModel authenticationModel) {
+        widget.setAuthenticationModel(authenticationModel);
+    }
 
-    public abstract boolean showable();
+    @Override
+    public void setFacility(TFacility facility) {        
+    }
 
-    public abstract void authenticate();
-    
-    public abstract boolean isRedirect();
+    @Override
+    public void setLoginHandler(LoginInterface loginHandler) {
+        widget.setLoginHandler(loginHandler);
+    }
+
+    @Override
+    public boolean showable() {
+        return true;
+    }
+
+    @Override
+    public void authenticate() {
+        widget.authenticate();
+    }
+
+    @Override
+    public boolean isRedirect() {        
+        return true;
+    }
+
 }

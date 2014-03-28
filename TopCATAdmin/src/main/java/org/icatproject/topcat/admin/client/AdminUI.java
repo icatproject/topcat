@@ -463,13 +463,18 @@ public class AdminUI extends Composite {
 				.insertItem(
 						"uk.ac.stfc.topcat.gwt.client.authentication.DefaultAuthenticationPlugin",
 						2);
+		txtAuthPluginName
+                .insertItem(
+                        "uk.ac.stfc.topcat.gwt.client.authentication.ExternalRedirectAuthenticationPlugin",
+                        3);
 
-		// Initialising Typ ListBox
+		// Initialising Type ListBox
 		txtAuthType.insertItem("anon", 0);
 		txtAuthType.insertItem("cas", 1);
 		txtAuthType.insertItem("db", 2);
 		txtAuthType.insertItem("ldap", 3);
 		txtAuthType.insertItem("uows", 4);
+		txtAuthType.insertItem("external redirect", 5);
 
 		if (menuType.equals(MENU_EDIT)) {
 
@@ -499,7 +504,13 @@ public class AdminUI extends Composite {
 					.equals(txtAuthType.getItemText(4))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(4, true);
-			}
+				
+			} else if (table1.getText(table1Row, 1).trim()
+                    .equals(txtAuthType.getItemText(5))
+                    && menuType.equals(MENU_EDIT)) {
+                txtAuthType.setItemSelected(5, true);
+            }
+			
 
 			if (menuType.equals(MENU_EDIT)) {
 				txtAuthURL.setText(table1.getText(table1Row, 3).trim());
@@ -986,7 +997,9 @@ public class AdminUI extends Composite {
 			authentication.setPluginName(txtAuthPluginName.getItemText(2));
 		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "uows") {
 			authentication.setPluginName(txtAuthPluginName.getItemText(2));
-		}
+		} else if (txtAuthType.getItemText(txtAuthType.getSelectedIndex()) == "external redirect") {
+            authentication.setPluginName(txtAuthPluginName.getItemText(3));
+        }
 
 		authentication.setType(txtAuthType.getItemText(txtAuthType
 				.getSelectedIndex()));

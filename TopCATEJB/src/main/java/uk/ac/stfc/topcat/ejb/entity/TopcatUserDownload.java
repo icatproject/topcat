@@ -18,7 +18,11 @@ import java.util.Date;
         @NamedQuery(name = "TopcatUserDownload.updateExpiryTimeById", query = "UPDATE TopcatUserDownload t SET t.expiryTime = :expiryTime WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.updateById", query = "UPDATE TopcatUserDownload t SET t.url = :url, t.status = :status WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.deleteById", query = "DELETE from TopcatUserDownload t where t.id = :id"),
-        @NamedQuery(name = "TopcatUserDownload.cleanup", query = "DELETE from TopcatUserDownload t where CURRENT_TIMESTAMP > t.expiryTime") })
+        @NamedQuery(name = "TopcatUserDownload.cleanup", query = "DELETE from TopcatUserDownload t where CURRENT_TIMESTAMP > t.expiryTime"),
+        @NamedQuery(name = "TopcatUserDownload.deleteByUserId", query = "DELETE from TopcatUserDownload t where t.userId.id = :userId"),
+        
+})
+
 @XmlRootElement
 public class TopcatUserDownload implements Serializable {
     private static final long serialVersionUID = 1L;

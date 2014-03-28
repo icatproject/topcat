@@ -71,12 +71,16 @@ public class AnonymousAuthenticationPlugin extends AuthenticationPlugin {
 
     @Override
     public boolean showable() {
-        return false;
+        return true;
     }
 
     @Override
     public void authenticate() {
-        widget.authenticate();
+        //widget.authenticate();
     }
 
+    @Override
+    public boolean isRedirect() {        
+        return false;
+    }
 }

@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import uk.ac.stfc.topcat.gwt.client.authentication.LoginAfterRedirect;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
+import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
 import uk.ac.stfc.topcat.gwt.client.widget.FooterPanel;
 import uk.ac.stfc.topcat.gwt.client.widget.HeaderPanel;
 import uk.ac.stfc.topcat.gwt.client.widget.MainPanel;
@@ -43,6 +44,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -74,14 +76,47 @@ public class TOPCATOnline implements EntryPoint {
           }
         });
         
-        
+        // This is to handle a call back from an authentication service
         if (Window.Location.getParameter("authenticationType") != null) {
-            // This is to handle a call back from an authentication service
-            loginAfterRedirect();
+            //get the facility name
+            String facilityName = Window.Location.getParameter("facilityName");
+            
+            //we need to prevent attempt to login via redirect if plugin is not enabled for the particular server
+            UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
+            //get the list of configured authentication type for the icat server 
+            utilityService.getAuthenticationDetails(facilityName, new AsyncCallback<List<AuthenticationModel>>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    init();
+                    eventPipeLine.showErrorDialog("Authentication type not available for the icat server");
+                }
+
+                @Override
+                public void onSuccess(List<AuthenticationModel> result) {
+                    boolean hasPlugin = false;
+                    
+                    for (AuthenticationModel authenticationModel: result) {
+                        if (authenticationModel.getPluginName().equals("uk.ac.stfc.topcat.gwt.client.authentication.ExternalRedirectAuthenticationPlugin")) {
+                            hasPlugin = true;
+                            break;
+                        }
+                    }
+                    
+                    if (hasPlugin) {
+                        loginAfterRedirect();
+                    } else {
+                        init();
+                        eventPipeLine.showErrorDialog("Authentication type not available for the icat server");
+                        
+                    }
+                    
+                }
+            });
         } else {
             init();
         }
     }
+
 
     public void resizePanels(int width) {
         int newWidth = width;

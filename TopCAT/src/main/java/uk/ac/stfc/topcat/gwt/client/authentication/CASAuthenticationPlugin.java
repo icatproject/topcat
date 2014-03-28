@@ -77,4 +77,10 @@ public class CASAuthenticationPlugin extends AuthenticationPlugin {
         widget.authenticate();
     }
 
+    @Override
+    public boolean isRedirect() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

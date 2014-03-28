@@ -68,12 +68,14 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.WindowLogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.exception.WindowsNotAvailableExcecption;
+import uk.ac.stfc.topcat.gwt.client.factory.MyCookieFactory;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
+import uk.ac.stfc.topcat.gwt.client.model.TopcatCookie;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 import uk.ac.stfc.topcat.gwt.client.widget.DatafileWindow;
 import uk.ac.stfc.topcat.gwt.client.widget.DatasetWindow;
@@ -85,11 +87,16 @@ import uk.ac.stfc.topcat.gwt.client.widget.WaitDialog;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 /**
  * This is import class which holds all the events. currently doesn't directly
@@ -103,7 +110,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class EventPipeLine implements LoginInterface {
+public class EventPipeLine implements LoginInterface {    
     private final LoginServiceAsync loginService = LoginService.Util.getInstance();
     private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private final SearchServiceAsync searchService = SearchService.Util.getInstance();
@@ -353,7 +360,34 @@ public class EventPipeLine implements LoginInterface {
                 break;
             }
         }
+        
         if (!loggedIn) {
+            //show the login panel for the last logged in facility from the cookie 
+            String cookie = Cookies.getCookie("topcat");
+            
+            if(cookie != null) {
+                TopcatCookie topcatCookie = deserializeCookie(cookie);
+                
+                String lastFacitity = topcatCookie.getLastAuthenticationFacility();
+                
+                if (lastFacitity != null) {
+                    //check facility exists
+                    boolean facilityExist = false;                    
+                    for(TFacility facility : facilities) {
+                        if (facility.getName().equals(lastFacitity)) {
+                            facilityExist = true;
+                            break;
+                        }
+                    }
+                    
+                    if (facilityExist) {
+                        showLoginWidget(topcatCookie.getLastAuthenticationFacility());
+                        return;
+                    }
+                } 
+            }
+            
+            //show first facility login panel as default
             showLoginWidget(facilities.get(0).getName());
         }
     }
@@ -489,13 +523,12 @@ public class EventPipeLine implements LoginInterface {
      */
     public void searchForInvestigationByFreeText(final TAdvancedSearchDetails searchDetails) {
         waitDialog.setMessage("  Searching...");
-        waitDialog.center();        
         waitDialog.show();
+        
         searchService.getFreeTextSearchResultsInvestigation(null, searchDetails,
                 new AsyncCallback<List<TInvestigation>>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        waitDialog.hide();
                         if (caught instanceof SessionException) {
                             checkStillLoggedIn();
                         } else if (caught instanceof BadParameterException) {
@@ -515,7 +548,7 @@ public class EventPipeLine implements LoginInterface {
                                         inv.getEndDate()));
                         }
                         waitDialog.hide();
-                        mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);
+                        mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);                        
                     }
                 });
     }
@@ -1126,4 +1159,29 @@ public class EventPipeLine implements LoginInterface {
 		});
 		
 	}
+	
+	/**
+	 * serialize the pojo to json string using gwt autobean
+	 * @param cookie
+	 * @return
+	 */
+	public String serializeCookie(TopcatCookie cookie){
+	    AutoBean<TopcatCookie> bean = AutoBeanUtils.getAutoBean(cookie);
+	    return AutoBeanCodex.encode(bean).getPayload();
+	}
+	
+	/**
+	 * deserialize json string to pojo using autobean
+	 *  
+	 * @param json
+	 * @return
+	 */
+	public TopcatCookie deserializeCookie(String json) 
+	{   
+	    MyCookieFactory factory = GWT.create(MyCookieFactory.class);
+	    AutoBean<TopcatCookie> bean = AutoBeanCodex.decode(factory, TopcatCookie.class, json);     
+	    return bean.as();   
+	} 
+	
+	
 }

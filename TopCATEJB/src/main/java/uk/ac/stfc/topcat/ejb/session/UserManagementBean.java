@@ -103,6 +103,16 @@ public class UserManagementBean implements UserManagementBeanLocal {
             throws AuthenticationException {
         userManager.login(manager, sessionId, facilityName, authenticationType, parameters);
     }
+    
+    
+    @Override
+    public boolean login(String sessionId, String facilityName, String authenticationType, String icatSessionId)
+            throws AuthenticationException {
+        return userManager.login(manager, sessionId, facilityName, authenticationType, icatSessionId);
+    }
+    
+    
+    
 
     /**
      * This method checks whether the login session is valid

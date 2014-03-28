@@ -141,7 +141,7 @@ public class CopyDataToCSVFile extends HttpServlet {
             }
             if (inv == null)
                 return result;
-            result.add(new ParameterModel("Facility", "", "\"" + inv.getServerName() + "\""));
+            result.add(new ParameterModel("Facility", "", "\"" + inv.getFacilityName() + "\""));            
             result.add(new ParameterModel("Title", "", "\"" + inv.getTitle() + "\""));
             result.add(new ParameterModel("Investigation No", "", "\"" + inv.getInvestigationName() + "\""));
             result.add(new ParameterModel("Visit Id", "", "\"" + inv.getVisitId() + "\""));

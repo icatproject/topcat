@@ -22,7 +22,9 @@
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.LoginInterface;
@@ -31,7 +33,9 @@ import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.authentication.AuthenticationPlugin;
 import uk.ac.stfc.topcat.gwt.client.authentication.AuthenticationPluginFactory;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.factory.MyCookieFactory;
 import uk.ac.stfc.topcat.gwt.client.model.AuthenticationModel;
+import uk.ac.stfc.topcat.gwt.client.model.TopcatCookie;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -49,7 +53,10 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBean;
 
 /**
  * This class is a widget for login window. It will check to see what types of
@@ -68,7 +75,7 @@ public class LoginWidget extends Window {
     private TFacility facility;
     private ComboBox<AuthenticationModel> authTypesBox;
     private LayoutContainer authenticationWidget;
-    private AuthenticationPlugin plugin;
+    private AuthenticationPlugin plugin;    
 
     public LoginWidget() {
         setBlinkModal(true);
@@ -108,7 +115,7 @@ public class LoginWidget extends Window {
     }
 
     @Override
-    public void show() {
+    public void show() {        
         if (authTypesBox.getStore().getCount() == 1) {
             if (plugin != null) {
                 if (plugin.showable()) {
@@ -118,8 +125,65 @@ public class LoginWidget extends Window {
                     plugin.authenticate();
                 }
             }
-        } else if (authTypesBox.getStore().getCount() > 1) {
-            super.show();
+        } else {            
+            if (authTypesBox.getStore().getCount() > 1) {
+                if (Cookies.getCookie("topcat") != null) {
+                    //get topcat cookie
+                    String cookie = Cookies.getCookie("topcat");
+                    String lastAuthenticationType = "";
+                    String lastFacility = "";
+                    
+                    Map<String, String> servers = new HashMap<String, String>();
+                    TopcatCookie topcatCookie;
+                    
+                    //deserialize cookie
+                    try {
+                        topcatCookie = EventPipeLine.getInstance().deserializeCookie(cookie);
+                    } catch(Exception e) {
+                        //can't deserialize cookie so create a new one
+                        MyCookieFactory factory = GWT.create(MyCookieFactory.class);
+                        AutoBean<TopcatCookie> topcatCookieBean = factory.topcatCookie();
+                        topcatCookie = topcatCookieBean.as();
+                    }
+                        
+                    lastFacility = topcatCookie.getLastAuthenticationFacility();                    
+                    
+                    if (topcatCookie.getServers() != null) {
+                        servers = topcatCookie.getServers();
+                    }
+                    
+                    lastAuthenticationType = servers.get(lastFacility);
+                    
+                    //iterate liststore to see if authentication type matches the one set in cookie
+                    for(AuthenticationModel authenticationModel : authTypesBox.getStore().getModels() ) {                        
+                        //popup login box when not logged in and on a fresh page load
+                        if (authenticationModel.getFacilityName().equalsIgnoreCase(lastFacility) && authenticationModel.getDisplayName().equalsIgnoreCase(lastAuthenticationType)){
+                            //check if plugin is showable and display
+                            if (AuthenticationPluginFactory.getInstance().getPlugin(lastAuthenticationType).showable()) {
+                                authTypesBox.setValue(authenticationModel);
+                                showPlugin(authenticationModel);
+                            }
+                        }                        
+                    }
+                    
+                    //iterate liststore to see if authentication type matches the one set in cookie
+                    for(AuthenticationModel authenticationModel : authTypesBox.getStore().getModels() ) {
+                        //popup for when a login box is clicked for a specific facility
+                        if (authenticationModel.getFacilityName().equalsIgnoreCase(facility.getName()) && authenticationModel.getDisplayName().equalsIgnoreCase(servers.get(facility.getName()))){
+                            //check if plugin is showable and display
+                            if (AuthenticationPluginFactory.getInstance().getPlugin(servers.get(facility.getName())).showable()) {
+                                authTypesBox.setValue(authenticationModel);
+                                showPlugin(authenticationModel);
+                            }
+                        }
+                    }
+                    
+                    //use default as non matching cookie
+                    super.show();
+                } else {                 
+                    super.show();
+                }
+            }
         }
     }
 
@@ -129,7 +193,7 @@ public class LoginWidget extends Window {
      * 
      * @param facility
      */
-    public void show(TFacility facility) {
+    public void show(TFacility facility) {        
         this.facility = facility;
         setHeadingText("Login to " + facility.getName());
         getAuthenticationTypes(facility.getName());
@@ -144,7 +208,7 @@ public class LoginWidget extends Window {
      * 
      * @return
      */
-    private ComboBox<AuthenticationModel> getAuthTypesBox() {
+    private ComboBox<AuthenticationModel> getAuthTypesBox() {        
         ComboBox<AuthenticationModel> authTypesBox = new ComboBox<AuthenticationModel>();
         authTypesBox.addSelectionChangedListener(new SelectionChangedListener<AuthenticationModel>() {
             @Override
@@ -168,6 +232,9 @@ public class LoginWidget extends Window {
                 EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
+        
+        authTypesBox.select(1);
+        
         return authTypesBox;
     }
 
@@ -176,7 +243,7 @@ public class LoginWidget extends Window {
      * 
      * @param facilityName
      */
-    private void getAuthenticationTypes(final String facilityName) {
+    private void getAuthenticationTypes(final String facilityName) {        
         plugin = null;
         authTypesBox.getStore().removeAll();
         authTypesBox.clear();
@@ -216,7 +283,7 @@ public class LoginWidget extends Window {
     /**
      * Show the widget with the auth selection box
      */
-    private void showAuthSelectionBox() {
+    private void showAuthSelectionBox() {        
         show();
         authTypeContainer.show();
         authTypesBox.focus();
@@ -227,7 +294,7 @@ public class LoginWidget extends Window {
      * 
      * @param model
      */
-    private void showPlugin(AuthenticationModel model) {
+    private void showPlugin(AuthenticationModel model) {        
         if (model == null) {
             // result of selecting auth type and then switching to a different
             // facility
@@ -240,13 +307,85 @@ public class LoginWidget extends Window {
         plugin.setAuthenticationModel(model);
         plugin.setFacility(facility);
         plugin.setLoginHandler(loginHandler);
+        
+        //getcookie
+        String cookie = Cookies.getCookie("topcat");
+        
+        //if cookie is not empty, deserialize it to a TopcatCookie object
+        if (cookie != null) {
+            TopcatCookie topcatCookie = null;
+            Map<String, String> servers = new HashMap<String, String>();
+            
+            //handle problems if cookie cannot be serialized i.e old cookie format or cookie was edited by user  
+            try {
+                topcatCookie = EventPipeLine.getInstance().deserializeCookie(cookie);
+            } catch(Exception e) {
+                //can't deserialize cookie so create a new one
+                MyCookieFactory factory = GWT.create(MyCookieFactory.class);
+                AutoBean<TopcatCookie> topcatCookieBean = factory.topcatCookie();
+                topcatCookie = topcatCookieBean.as();
+            }
+            
+            //set the last authentication
+            topcatCookie.setLastAuthenticationFacility(model.getFacilityName());
+            
+            //make sure server is not null
+            if (topcatCookie.getServers() != null) {
+                servers = topcatCookie.getServers();
+            }           
+            
+            //add the last selected authentication type to map with facility as the key
+            servers.put(model.getFacilityName(), model.getDisplayName());            
+            topcatCookie.setServers(servers);
+            cookie = EventPipeLine.getInstance().serializeCookie(topcatCookie);
+        } else {
+            //create new TopcatCookie via AutoBean
+            MyCookieFactory factory = GWT.create(MyCookieFactory.class);
+            AutoBean<TopcatCookie> topcatCookieBean = factory.topcatCookie();
+            TopcatCookie topcatCookie = topcatCookieBean.as();
+            topcatCookie.setLastAuthenticationFacility(model.getFacilityName());
+            
+            Map<String, String> servers = new HashMap<String, String>();            
+            servers.put(model.getFacilityName(), model.getDisplayName());
+            topcatCookie.setServers(servers);            
+            cookie = EventPipeLine.getInstance().serializeCookie(topcatCookie);
+        }
+        
+        //set cookie
+        Cookies.setCookie("topcat", cookie);
+        
         if (plugin.showable()) {
             super.show();
             authenticationWidget.add(plugin.getWidget());
             authenticationWidget.layout(true);
             setFocusWidget(plugin.getWidget());
-        } else {
-            plugin.authenticate();
         }
     }
+    
+    /**
+     * Determine if this widget contain only 1 authentication type and if the authentication 
+     * is showable. This prevents looping issue that may encounter if only a single 
+     * redirect authentication is set and the user is automatically redirected when
+     * landing on the homepage or if a redirect authentication fails
+     * 
+     * @return
+     */
+    public boolean isShowable() {        
+        boolean showable = false;        
+        
+        if (authTypesBox.getStore().getCount() == 1) {
+            List<AuthenticationModel> models = authTypesBox.getStore().getModels();            
+            AuthenticationModel aModel = models.get(0);
+            
+            plugin = AuthenticationPluginFactory.getInstance().getPlugin(aModel.getPluginName());
+            
+            if (plugin != null) {
+                showable = plugin.showable();
+                
+            }
+        }
+        
+        return showable;
+    }
+    
 }
