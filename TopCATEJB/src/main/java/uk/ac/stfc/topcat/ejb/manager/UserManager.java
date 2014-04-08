@@ -33,6 +33,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 
 import org.apache.log4j.Logger;
 
@@ -134,6 +135,8 @@ public class UserManager {
             throw new AuthenticationException("ICAT Server not available");
         } catch (TopcatException e) {
             throw new AuthenticationException("Unable to get surname");
+        } catch (PersistenceException e) {
+            throw new AuthenticationException("Unable to update login");
         }
     }
     
@@ -290,7 +293,7 @@ public class UserManager {
 
     private void loginUpdate(EntityManager manager, ICATWebInterfaceBase service, String topcatSessionId,
             TopcatIcatServer icatServer, String username, String icatSessionId, long hours)
-            throws AuthenticationException {
+            throws AuthenticationException, TopcatException {
         // Process
 
         // 4) if the server login is success then
@@ -334,7 +337,12 @@ public class UserManager {
                     user.setServerId(icatServer);
                     user.setTopcatUserId(userInfo);
                     user.setUserSurname(userSurname);
-                    manager.persist(user);
+                    
+                    try {                    
+                        manager.persist(user);
+                    } catch (PersistenceException e) {
+                        throw new PersistenceException("Could not update user login");
+                    }                        
                 }
             }
         } else { // This is a Anonymous user session trying to login to first
@@ -395,7 +403,7 @@ public class UserManager {
         try {
             TopcatUser user = (TopcatUser) manager
                     .createNamedQuery("TopcatUser.findByNameAndServerAndHomeNotAnonymous")
-                    .setParameter("userName", username).setParameter("serverName", facilityName).getSingleResult();
+                    .setParameter("userName", username).setParameter("serverName", facilityName).setMaxResults(1).getSingleResult();
             return user;
         } catch (NoResultException ex) {
         }
