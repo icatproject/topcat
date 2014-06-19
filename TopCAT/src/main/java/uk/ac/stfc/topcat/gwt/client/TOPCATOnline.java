@@ -23,6 +23,8 @@
 package uk.ac.stfc.topcat.gwt.client;
 
 import java.util.List;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 import javax.validation.constraints.NotNull;
 
@@ -67,14 +69,17 @@ public class TOPCATOnline implements EntryPoint {
     private HeaderPanel headerPanel;
     private FooterPanel footerPanel;
     private EventPipeLine eventPipeLine;
+    
+    //private static Logger rootLogger = Logger.getLogger("");
 
     public void onModuleLoad() {
+        
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
           @Override
           public void onUncaughtException(@NotNull Throwable e) {
             ensureNotUmbrellaError(e);
           }
-        });
+        });        
         
         // This is to handle a call back from an authentication service
         if (Window.Location.getParameter("authenticationType") != null) {
@@ -223,10 +228,9 @@ public class TOPCATOnline implements EntryPoint {
           if (th instanceof UmbrellaException) {
             ensureNotUmbrellaError(th);
           } else {
-            System.err.println(th);
+            //rootLogger.log(Level.SEVERE, "uncaught: " + th);
+            //System.err.println(th);
           }
         }
       }
-    
-    
 }

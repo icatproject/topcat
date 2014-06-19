@@ -51,18 +51,15 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 public class InvestigationPanel extends Composite {
     private ContentPanel mainPanel;
     private TabPanel tabPanel;
-    private InvestigationDetailPanel invDetailPanel;
-    private AssociatedSoftwarePanel associatedSoftwarePanel;
-    private UploadDatasetPanel uploadDatasetPanel;
-    private EventPipeLine eventBus;
-    private TabItem tabAssSoft;
+    private InvestigationDetailPanel invDetailPanel;    
+    private EventPipeLine eventBus;    
     private TabItem tabUpload;
-    private String source;
+    private String source;    
 
     public InvestigationPanel(String source) {
         this.source = source;
-        eventBus = EventPipeLine.getInstance();
-
+        eventBus = EventPipeLine.getInstance();        
+        
         LayoutContainer mainContainer = new LayoutContainer();
         mainContainer.setLayout(new RowLayout(Orientation.VERTICAL));
         mainContainer.setBorders(true);
@@ -92,24 +89,17 @@ public class InvestigationPanel extends Composite {
 
         // Investigation Details Tab
         addInvDetailsTab();
-
-        // Associated Software Tab
-        // TODO
-        // addAssociatedSoftwareTab();
-
-        // Upload Dataset Tab
-        // TODO
-        // addUploadDatasetTab();
-
+        
         mainPanel.add(tabPanel);
         initComponent(mainContainer);
+        
         tabPanel.addListener(Events.Select, new Listener<TabPanelEvent>() {
             @Override
             public void handleEvent(TabPanelEvent event) {
                 EventPipeLine.getInstance().getTcEvents().fireResize();
             }
         });
-        createUploadAthorisationHandler();
+        createUploadAuthorisationHandler();
     }
 
     /**
@@ -126,8 +116,6 @@ public class InvestigationPanel extends Composite {
      */
     protected void reset() {
         invDetailPanel.reset();
-        // TODO
-        // uploadDatasetPanel.reset();
     }
 
     /**
@@ -136,15 +124,14 @@ public class InvestigationPanel extends Composite {
      * @param inv
      *            the investigation
      */
-    protected void setInvestigation(TInvestigation inv) {
+    protected void setInvestigation(TInvestigation inv) {        
         mainPanel.setHeadingText("Investigation: " + inv.getTitle());
         invDetailPanel.setInvestigation(inv);
-        // TODO
-        // uploadDatasetPanel.setInvestigation(inv);
     }
 
     private ToolBar getToolBar() {
         ToolBar toolBar = new ToolBar();
+        
         ButtonBar buttonBar = new ButtonBar();
         Button btnShowDataSets = new Button("Show Data Sets");
         btnShowDataSets
@@ -158,11 +145,12 @@ public class InvestigationPanel extends Composite {
             }
         });
         buttonBar.add(btnShowDataSets);
+        
         Button btnExport = new Button("Download Investigation Summary");
         btnExport.setToolTip("Click to download the data shown in this window");
         btnExport.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void componentSelected(ButtonEvent ce) {                
                 EventPipeLine.getInstance().downloadParametersData(
                         invDetailPanel.getInvestigationModel().getFacilityName(), Constants.INVESTIGATION,
                         invDetailPanel.getInvestigationModel().getInvestigationId());
@@ -170,12 +158,14 @@ public class InvestigationPanel extends Composite {
             }
         });
         buttonBar.add(btnExport);
+        
         toolBar.add(buttonBar);
         toolBar.setBorders(true);
+        
         return toolBar;
     }
 
-    private void addInvDetailsTab() {
+    private void addInvDetailsTab() {        
         TabItem tabInvDetails = new TabItem("Investigation Details");
         tabInvDetails.setItemId("InvDetails");
         invDetailPanel = new InvestigationDetailPanel();
@@ -187,6 +177,7 @@ public class InvestigationPanel extends Composite {
         tabInvDetails.setAutoWidth(true);
     }
 
+    /*
     private void addAssociatedSoftwareTab() {
         tabAssSoft = new TabItem("Associated Software");
         tabAssSoft.setItemId("AssociatedSoftware");
@@ -198,26 +189,31 @@ public class InvestigationPanel extends Composite {
         tabAssSoft.setAutoHeight(true);
         tabAssSoft.setAutoWidth(true);
     }
-
+    */
+    
+    /*
     private void addUploadDatasetTab() {
         tabUpload = new TabItem("Upload Dataset");
         tabUpload.setItemId("UploadDataset");
-        uploadDatasetPanel = new UploadDatasetPanel(source);
+        
+        uploadDatasetPanel = new UploadDatasetPanel(source);        
         uploadDatasetPanel.setAutoWidth(true);
         uploadDatasetPanel.setAutoHeight(true);
         tabUpload.add(uploadDatasetPanel);
         tabPanel.add(tabUpload);
         tabUpload.setAutoHeight(true);
         tabUpload.setAutoWidth(true);
-        tabUpload.disable();
+        //tabUpload.disable();
+        tabUpload.enable();
     }
+    */
 
     // Upload Dataset Tab
 
     /**
      * Setup a handler to react to Logout events.
      */
-    private void createUploadAthorisationHandler() {
+    private void createUploadAuthorisationHandler() {
         // TODO we need a means of determining if this user is authorised to
         // upload data
         UploadAuthorisationEvent.registerToSource(EventPipeLine.getEventBus(), source,
@@ -232,6 +228,7 @@ public class InvestigationPanel extends Composite {
                         }
                     }
                 });
+        
     }
 
 }

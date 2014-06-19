@@ -34,13 +34,16 @@ import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddDatasetEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddDatasetEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -92,6 +95,7 @@ public class DatasetWindow extends Window {
     private PagingModelMemoryProxy pageProxy = null;
     private PagingLoader<PagingLoadResult<DatasetModel>> loader = null;
     private PagingToolBar pageBar = null;
+    private ToolBar toolBar;
     private int selectionCount = 0;
     String facilityName;
     String investigationId;
@@ -99,6 +103,7 @@ public class DatasetWindow extends Window {
     boolean historyVerified;
     private boolean awaitingLogin;
     private boolean loadingData = false;
+    private static final String SOURCE = "DatasetWindow";
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
@@ -166,19 +171,26 @@ public class DatasetWindow extends Window {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showDS = new MenuItem();
-        showDS.setText("show data set");
-        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showDS.setText("Show Data Set Parameters");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatasetParameter()));
+        showDS.setStyleAttribute("margin-left", "25px");        
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
-                DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
-                EventPipeLine.getInstance().showParameterWindowWithHistory(dsm.getFacilityName(), Constants.DATA_SET,
-                        dsm.getId(), dsm.getName());
+                if (grid.getSelectionModel().getSelectedItem() != null) {
+                    DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
+                    EventPipeLine.getInstance().showParameterWindowWithHistory(dsm.getFacilityName(), Constants.DATA_SET,
+                            dsm.getId(), dsm.getName());
+                }
             }
         });
+        
+        
         MenuItem showFS = new MenuItem();
-        showFS.setText("show data files");
-        showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showFS.setText("Show Data Files");
+        showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDatafile()));
+        showFS.setStyleAttribute("margin-left", "25px");
+        showFS.addStyleName("fixContextMenuIcon2");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -187,6 +199,31 @@ public class DatasetWindow extends Window {
                 EventPipeLine.getInstance().showDatafileWindowWithHistory(dsmList);
             }
         });
+        
+        
+        //add add datafile content menu if has create datafile support
+        //TODO problem since facility is not set when windows is created
+        if (facilityName != null) {
+            if (EventPipeLine.getInstance().hasUploadSupport(facilityName)) {
+                MenuItem addDatafile = new MenuItem();
+                addDatafile.setText("Add Data File");
+                addDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
+                addDatafile.setStyleAttribute("margin-left", "25px");
+                addDatafile.addStyleName("fixContextMenuIcon3");
+                contextMenu.add(addDatafile);
+                addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
+                    public void componentSelected(MenuEvent ce) {
+                        DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
+                        
+                        EventPipeLine.getInstance().showUploadDatasetWindow(dsm.getFacilityName(),
+                                dsm.getId(),
+                                dsm,
+                                SOURCE);
+                    }
+                });
+            }
+        }
+        
         grid.setContextMenu(contextMenu);
 
         BufferView view = new BufferView();
@@ -195,8 +232,8 @@ public class DatasetWindow extends Window {
         grid.setView(view);
         setSize(600, 400);
 
-        ToolBar toolBar = new ToolBar();
-        Button btnView = new Button("View", AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        toolBar = new ToolBar();
+        Button btnView = new Button("View", AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
         btnView.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -204,6 +241,25 @@ public class DatasetWindow extends Window {
             }
         });
         toolBar.add(btnView);
+        
+        //add add data set button if has create dataset support
+        /*
+        if (eventPipeLine.hasCreateDatasetSupport(facilityName)) {
+            Button btnShowAddDatasetWindow = new Button("Add Data Set", AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
+            btnShowAddDatasetWindow.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    //we need a topcat investigation to be passed to the event. create a dummy one to pass
+                    TopcatInvestigation topcatInvestigation = new TopcatInvestigation(facilityName, facilityName, investigationId, investigationName, null, null, null, null);
+                    
+                    EventPipeLine.getInstance().showAddNewDatasetWindow(facilityName, investigationId, investigationName, topcatInvestigation);
+                }
+            });            
+            toolBar.add(btnShowAddDatasetWindow);
+        }
+		*/
+        
+        
         toolBar.add(new SeparatorToolItem());
         setTopComponent(toolBar);
 
@@ -220,6 +276,7 @@ public class DatasetWindow extends Window {
         awaitingLogin = false;
         createLoginHandler();
         createLogoutHandler();
+        createAddDatasetHandler();        
     }
 
     /**
@@ -230,6 +287,7 @@ public class DatasetWindow extends Window {
      * @param facilityName
      * @param investigationId
      */
+    
     public void setDataset(String facilityName, String investigationId) {
         this.facilityName = facilityName;
         this.investigationId = investigationId;
@@ -239,7 +297,7 @@ public class DatasetWindow extends Window {
         } else {
             awaitingLogin = true;
         }
-    }
+    }    
 
     /**
      * @return the facility name
@@ -586,5 +644,26 @@ public class DatasetWindow extends Window {
             }
         });
     }
+    
+    
+    /**
+     *  Setup handler for addd data file
+     */
+    private void createAddDatasetHandler() {
+        AddDatasetEvent.register(EventPipeLine.getEventBus(), new AddDatasetEventHandler() {
+            
+            @Override
+            public void addDataset(AddDatasetEvent event) {                
+                if (event.getNode() != null) {
+                    TopcatInvestigation investigation = (TopcatInvestigation) event.getNode(); 
+                    
+                    if (investigation.getInvestigationId().equals(investigationId)) {                        
+                        datasetSelectionModel.refresh();
+                        loadData();
+                    }
+                }
+            }
+        });
+    }   
 
 }

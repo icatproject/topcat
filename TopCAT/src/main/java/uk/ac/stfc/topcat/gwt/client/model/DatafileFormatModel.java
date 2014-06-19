@@ -63,7 +63,8 @@ public class DatafileFormatModel extends BaseModelData implements Serializable {
     public DatafileFormatModel(String facilityName, String formatId, String formatName, String formatDescription,
             String formatVersion, String formatType) {
         setFacilityName(facilityName);
-        setFormat(formatName);
+        setFormatDescription(formatDescription);
+        setFormat(formatName + " (" + formatType + " v" + formatVersion + ")");
         setFormatId(formatId);
         setFormatVersion(formatVersion);
         setFormatType(formatType);

@@ -621,6 +621,7 @@ public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityS
     public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws TopcatException {
         return utilityManager.getInvestigationDetails(getSessionId(), facilityName, investigationId);
     }
+    
 
     @Override
     public ArrayList<String> getParameterNames(String facilityName) throws TopcatException {

@@ -20,7 +20,6 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatIcatAuthentication;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
 import uk.ac.stfc.topcat.ejb.entity.TopcatMessages;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUser;
-import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 import uk.ac.stfc.topcat.ejb.manager.UtilityManager;
 
 @Stateless
@@ -74,7 +73,9 @@ public class AdminEJB {
 		tiServer.setPluginName(facility.getSearchPluginName());
 		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
 		tiServer.setDownloadType(facility.getDownloadTypeName());
-		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());		
+		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
+		tiServer.setAllowUpload(facility.isAllowUpload());
+		tiServer.setAllowCreateDataset(facility.isAllowCreateDataset());
 		entityManager.persist(tiServer);
 
 		logger.debug("A new row has been added");
@@ -91,6 +92,8 @@ public class AdminEJB {
 		tiServer.setDownloadPluginName(facility.getDownloadPluginName());
 		tiServer.setDownloadType(facility.getDownloadTypeName());
 		tiServer.setDownloadServiceUrl(facility.getDownloadServiceUrl());
+		tiServer.setAllowUpload(facility.isAllowUpload());
+        tiServer.setAllowCreateDataset(facility.isAllowCreateDataset());
 		entityManager.merge(tiServer);
 
 		logger.debug("The Row with the ID: " + facility.getId()

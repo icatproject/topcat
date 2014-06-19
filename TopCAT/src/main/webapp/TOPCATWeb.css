@@ -40,3 +40,12 @@ h1 {
 .footer-links a:visited {text-decoration: none; color: #453E3E;}
 .footer-links a:visited:active {text-decoration: none; color: #fcfcfc; background-color: #093F7D;}
 .footer-links a:hover {text-decoration: underline;}
+
+
+.fixContextMenuIcon2 img{
+	margin-top: 16px;	
+}
+
+.fixContextMenuIcon3 img{
+    margin-top: 32px;   
+}

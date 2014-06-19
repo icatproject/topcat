@@ -37,6 +37,8 @@ public class TFacility implements Serializable {
     private String downloadPluginName;
     private String downloadTypeName;
     private String downloadServiceUrl;
+    private boolean allowUpload;
+    private boolean allowCreateDataset;
     private String name;
     private String searchPluginName;
     private String url;
@@ -68,7 +70,24 @@ public class TFacility implements Serializable {
 
     public void setDownloadServiceUrl(String downloadServiceUrl) {
         this.downloadServiceUrl = downloadServiceUrl;
+    }    
+    
+    public boolean isAllowUpload() {
+        return allowUpload;
     }
+
+    public void setAllowUpload(boolean allowUpload) {
+        this.allowUpload = allowUpload;
+    }
+
+    public boolean isAllowCreateDataset() {
+        return allowCreateDataset;
+    }
+
+    public void setAllowCreateDataset(boolean allowCreateDataset) {
+        this.allowCreateDataset = allowCreateDataset;
+    }
+    
 
     public String getName() {
         return name;
@@ -122,6 +141,9 @@ public class TFacility implements Serializable {
         message.append("downloadPluginName:").append(downloadPluginName).append("\n");
         message.append("downloadTypeName:").append(downloadTypeName).append("\n");
         message.append("downloadServiceUrl:").append(downloadServiceUrl);
+        
         return message.toString();
     }
+
+    
 }

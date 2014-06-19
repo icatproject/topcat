@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import uk.ac.stfc.topcat.core.gwt.module.TDataset;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TInvestigation;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
@@ -181,7 +182,8 @@ public interface UtilityService extends RemoteService {
      * @return a <code>TInvestigation</code> containing additional data
      * @throws TopcatException
      */
-    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws TopcatException;
+    public TInvestigation getInvestigationDetails(String facilityName, String investigationId) throws TopcatException;    
+    
 
     /**
      * This method returns the information from the topcat.properties file.

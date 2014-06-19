@@ -52,8 +52,7 @@ public class UploadManager {
      * @throws TopcatException
      */
     public Long createDataSet(EntityManager manager, String topcatSessionId, TDataset dataset) throws TopcatException {
-        logger.info("searchAdvancedDatafilesInServer: topcatSessionId (" + topcatSessionId + "), facilityName ("
-                + dataset.getFacilityName() + ")");
+        logger.info("createDataSet: topcatSessionId (" + topcatSessionId + "), facilityName (" + dataset.getFacilityName() + ")");
         try {
             TopcatUserSession userSession = UserManager.getValidUserSessionByTopcatSessionAndServerName(manager,
                     topcatSessionId, dataset.getFacilityName());
@@ -65,10 +64,8 @@ public class UploadManager {
     }
 
     private Long createDataSet(String icatSessionId, TopcatIcatServer server, TDataset dataset) throws TopcatException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("searchAdvancedDatafilesInServer: icatSessionId (" + icatSessionId + "), facilityName ("
-                    + dataset.getFacilityName() + ")");
-        }
+        logger.debug("createDataSet: icatSessionId (" + icatSessionId + "), facilityName (" + dataset.getFacilityName() + ")" + " server (" + server.getName() + ")");
+        
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());

@@ -183,10 +183,11 @@ public class MyDataPanel extends Composite {
 
         // Context Menu
         Menu contextMenu = new Menu();
-        contextMenu.setWidth(160);
+        contextMenu.setWidth(180);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show investigation");
-        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showInvestigation.setText("Show Investigation Details");
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
+        showInvestigation.setStyleAttribute("margin-left", "25px");        
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -194,9 +195,12 @@ public class MyDataPanel extends Composite {
                         .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
             }
         });
+        
         MenuItem showDS = new MenuItem();
-        showDS.setText("show data sets");
-        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showDS.setText("Show Data Sets");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
+        showDS.setStyleAttribute("margin-left", "25px");
+        showDS.addStyleName("fixContextMenuIcon2");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -205,6 +209,24 @@ public class MyDataPanel extends Composite {
                                 .getSelectedItem().getInvestigationTitle());
             }
         });
+        
+        MenuItem addDataset = new MenuItem();
+        addDataset.setText("Add Data Set");
+        addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
+        addDataset.setStyleAttribute("margin-left", "25px");
+        addDataset.addStyleName("fixContextMenuIcon3");
+        contextMenu.add(addDataset);
+        addDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {                
+                EventPipeLine.getInstance().showAddNewDatasetWindow(
+                    grid.getSelectionModel().getSelectedItem().getFacilityName(),
+                    grid.getSelectionModel().getSelectedItem().getInvestigationId(), 
+                    SOURCE,
+                    grid.getSelectionModel().getSelectedItem());
+                
+            }
+        });        
+        
         grid.setContextMenu(contextMenu);
 
         grid.setAutoHeight(true);

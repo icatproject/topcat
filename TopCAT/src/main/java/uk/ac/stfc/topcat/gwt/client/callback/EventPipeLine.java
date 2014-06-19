@@ -77,14 +77,17 @@ import uk.ac.stfc.topcat.gwt.client.model.Instrument;
 import uk.ac.stfc.topcat.gwt.client.model.InvestigationType;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatCookie;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
+import uk.ac.stfc.topcat.gwt.client.widget.AddNewDatasetWindow;
 import uk.ac.stfc.topcat.gwt.client.widget.DatafileWindow;
 import uk.ac.stfc.topcat.gwt.client.widget.DatasetWindow;
 import uk.ac.stfc.topcat.gwt.client.widget.LoginPanel;
 import uk.ac.stfc.topcat.gwt.client.widget.LoginWidget;
 import uk.ac.stfc.topcat.gwt.client.widget.ParameterDownloadForm;
 import uk.ac.stfc.topcat.gwt.client.widget.ParameterWindow;
+import uk.ac.stfc.topcat.gwt.client.widget.UploadDataFileWindow;
 import uk.ac.stfc.topcat.gwt.client.widget.WaitDialog;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
@@ -119,6 +122,7 @@ public class EventPipeLine implements LoginInterface {
     ArrayList<TFacility> facilities;
     HashMap<String, ListStore<Instrument>> facilityInstrumentMap;
     ParameterDownloadForm paramDownloadForm;
+    
     /**
      * Name of the facilities that have been loaded as a result of the user
      * logging on
@@ -152,7 +156,7 @@ public class EventPipeLine implements LoginInterface {
         loginWidget = new LoginWidget();
         tcWindowManager = new TopcatWindowManager();
         historyManager = new HistoryManager(tcWindowManager);
-        retrievingDataDialog = new WaitDialog();
+        retrievingDataDialog = new WaitDialog();        
         retrievingDataDialog.setMessage("  Retrieving data...");
         waitDialog = new WaitDialog();
         facilityInstrumentMap = new HashMap<String, ListStore<Instrument>>();
@@ -746,6 +750,8 @@ public class EventPipeLine implements LoginInterface {
             showErrorDialog(e.getMessage());
         }
     }
+    
+    
 
     /**
      * This method will show the dataset window for the given facility name and
@@ -840,6 +846,66 @@ public class EventPipeLine implements LoginInterface {
         showParameterWindow(facilityName, dataType, dataId, dataName);
         historyManager.updateHistory();
     }
+    
+    
+    
+    /**
+     * This method will show the ass dataset window for the given facility name and
+     * investigation id.
+     * 
+     * @param facilityName
+     *            facility name
+     * @param investigationId
+     *            investigation id
+     * @param investigationName
+     *            investigation name
+     */
+    /*
+    public void showAddNewDatasetWindow(TopcatInvestigation investigation, String source) {
+        AddNewDatasetWindow addNewDatasetWindow = new AddNewDatasetWindow(investigation, source); 
+        addNewDatasetWindow.show();
+        
+    }
+    */
+    
+    
+    public void showAddNewDatasetWindow(String facilityName, String investigationId, final String source, final BaseModelData node) {
+        utilityService.getInvestigationDetails(facilityName, investigationId, new AsyncCallback<TInvestigation>(){
+
+            @Override
+            public void onFailure(Throwable caught) {
+                EventPipeLine.getInstance().showErrorDialog("Failed retrieve investigation details");
+            }
+
+            @Override
+            public void onSuccess(TInvestigation result) {
+                TopcatInvestigation investigation = new TopcatInvestigation();
+                investigation.set("serverName", result.getServerName());
+                investigation.set("facilityName", result.getFacilityName());
+                investigation.set("investigationName", result.getInvestigationName());
+                investigation.set("investigationId", result.getInvestigationId());
+                investigation.set("title", result.getTitle());
+                investigation.set("visitId", result.getVisitId());
+                investigation.set("startDate", result.getStartDate());
+                investigation.set("endDate", result.getEndDate());
+                
+                
+                AddNewDatasetWindow addNewDatasetWindow = new AddNewDatasetWindow(investigation, source, node); 
+                addNewDatasetWindow.show();   
+            }
+            
+        });
+        
+    }
+    
+    
+    public void showUploadDatasetWindow(String facilityName, String dataSetId, BaseModelData node, final String source) {        
+        UploadDataFileWindow addNewDatasetWindow = new UploadDataFileWindow(dataSetId, facilityName, source, node); 
+        addNewDatasetWindow.show();   
+
+        
+    }
+    
 
     /**
      * This method will take the input facility name and investigation / data
@@ -1182,6 +1248,28 @@ public class EventPipeLine implements LoginInterface {
 	    AutoBean<TopcatCookie> bean = AutoBeanCodex.decode(factory, TopcatCookie.class, json);     
 	    return bean.as();   
 	} 
+	
+	
+	public boolean hasUploadSupport(String facilityName) {
+        TFacility facility = getFacility(facilityName);
+        
+        if (facility.getDownloadPluginName().equals("ids") && facility.isAllowUpload()) {
+            return true;
+        }        
+        
+        return false;        
+    }
+	
+	
+	public boolean hasCreateDatasetSupport(String facilityName) {
+        TFacility facility = getFacility(facilityName);
+        
+        if (facility.isAllowCreateDataset()) {            
+            return true;
+        }
+        
+        return false;        
+    }
 	
 	
 }

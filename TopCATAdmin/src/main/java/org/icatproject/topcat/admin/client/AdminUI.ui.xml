@@ -99,6 +99,8 @@
 							<g:ListBox ui:field="txtDownloadTypeName"></g:ListBox>
 							<g:TextBox ui:field="txtDownloadServiceUrl"
 								title="This is the URL of the download service that will be used by the selected download plugin"></g:TextBox>
+							<g:CheckBox ui:field="allowUpload" title="Enable upload if supported by the configured ids" />
+							<g:CheckBox ui:field="allowCreateDataset" title="Enable dataset creation"/>	
 							<g:HorizontalPanel ui:field="hPanel0"
 								styleName=".mainBody">
 								<g:Button ui:field="btnMenu" styleName="button-spacing"></g:Button>

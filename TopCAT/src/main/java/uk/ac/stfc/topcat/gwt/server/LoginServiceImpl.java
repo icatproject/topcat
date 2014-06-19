@@ -33,6 +33,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import uk.ac.stfc.topcat.core.exception.AuthenticationException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
@@ -55,6 +57,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
     @EJB
     private UserManagementBeanLocal userManager;
+    private final static Logger logger = Logger.getLogger(LoginServiceImpl.class.getName());
 
     /**
      * This method initializes the servlet, creates a usermanagementbean. this
@@ -75,6 +78,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     public String login(Map<String, String> parameters, String authenticationType, String facilityName)
             throws LoginException {
         String sessionId = getTopcatSessionId();
+        
+        logger.info("login as map method: authenticationType: " + authenticationType + ", facilityName: " + facilityName);
+        
         try {
             userManager.login(sessionId, facilityName, authenticationType, parameters);
         } catch (AuthenticationException e) {
@@ -88,6 +94,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
     public Boolean login(String icatSessionId, String authenticationType, String facilityName)
             throws LoginException {        
         String sessionId = getTopcatSessionId();
+        
+        logger.info("login as icatSessionId: " +  icatSessionId + ", authenticationType: " + authenticationType + ", facilityName: " + facilityName);
         
         Boolean loginSuccess = false;
         

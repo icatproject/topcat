@@ -44,7 +44,8 @@ public class FacilityPluginFactory {
     @SuppressWarnings("unused")
     private static ISISFacilityPlugin isisPlugin = ISISFacilityPlugin.getInstance();
     @SuppressWarnings("unused")
-    private static DiamondFacilityPlugin diamondPlugin = DiamondFacilityPlugin.getInstance();
+    private static DiamondFacilityPlugin diamondPlugin = DiamondFacilityPlugin.getInstance();        
+    
     private HashMap<String, FacilityPlugin> facilityPluginMap;
 
     private FacilityPluginFactory() {

@@ -531,8 +531,8 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show investigation");
-        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showInvestigation.setText("Show Investigation Details");
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
@@ -541,9 +541,12 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                         .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
             }
         });
+        
         MenuItem showDS = new MenuItem();
         showDS.setText("show data sets");
-        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
+        showDS.setStyleAttribute("margin-left", "25px");
+        showDS.addStyleName("fixContextMenuIcon2");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override

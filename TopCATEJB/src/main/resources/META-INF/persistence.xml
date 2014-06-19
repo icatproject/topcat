@@ -17,8 +17,8 @@
 		<properties>
 			<!-- Prints out SQL generated from EJBQL -->
 			<!-- No caching of entity data -->
-			<property name="eclipselink.target-server" value="SunAS9" />
-			<property name="eclipselink.logging.level" value="FINE" />
+			<property name="eclipselink.target-server" value="SunAS9" />			
+			<property name="eclipselink.logging.logger" value="ServerLogger"/>
 			<property name="eclipselink.cache.shared.default" value="false" />
 			<property name="eclipselink.cache.type.default" value="NONE" />
 			<property name="eclipselink.cache.size.default" value="0" />

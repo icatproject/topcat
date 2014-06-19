@@ -55,7 +55,7 @@ public class DefaultAuthenticationWidget extends Composite {
     private LoginInterface loginHandler = null;
     private TextField<String> txtFldPassword;
     private TextField<String> txtFldUsername;
-    private AuthenticationModel authenticationModel;
+    private AuthenticationModel authenticationModel;    
 
     public DefaultAuthenticationWidget() {
         LayoutContainer mainContainer = new LayoutContainer();
@@ -98,7 +98,7 @@ public class DefaultAuthenticationWidget extends Composite {
                 if (loginHandler != null) {
                     Map<String, String> parameters = new HashMap<String, String>();
                     parameters.put("username", txtFldUsername.getValue());
-                    parameters.put("password", txtFldPassword.getValue());
+                    parameters.put("password", txtFldPassword.getValue());                    
                     loginHandler.onLoginOk(authenticationModel.getFacilityName(), authenticationModel.getType(),
                             parameters);
                 }

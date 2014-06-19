@@ -11,6 +11,8 @@ public class Constants {
 	public static final String DOWNLOAD_PLUGIN_NAME = "Download Plugin" ;
 	public static final String DOWNLOAD_TYPE = "Storage Type" ;
 	public static final String DOWNLOAD_SERVICE_URL = "Download Service URL" ;
+	public static final String ALLOW_UPLOAD = "Allow Datafile Upload";
+	public static final String ALLOW_CREATE_DATASET = "Allow Dataset Creation";
 	public static final String TOPCAT_ICAT_SERVER = "TOPCAT_ICAT_SERVER";
 	public static final String DISPLAY_NAME = "Display Name";
 	public static final String IDS_URL_PATH = "/ids/";	

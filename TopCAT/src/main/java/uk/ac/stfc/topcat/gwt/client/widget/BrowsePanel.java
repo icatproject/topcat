@@ -37,9 +37,13 @@ import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddDatafileEvent;
+import uk.ac.stfc.topcat.gwt.client.event.AddDatasetEvent;
 import uk.ac.stfc.topcat.gwt.client.event.AddInvestigationDetailsEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddDatafileEventHandler;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddDatasetEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
@@ -50,10 +54,12 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
@@ -96,9 +102,12 @@ public class BrowsePanel extends Composite {
     TreePanel<ICATNode> tree;
     HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
     private InvestigationPanel investigationPanel;
-    private static final String SOURCE = "BrowsePanel";    
+    private static final String SOURCE = "BrowsePanel";
+    private ICATNode node;
+    private EventPipeLine eventPipline;    
 
     public BrowsePanel() {
+        eventPipline = EventPipeLine.getInstance();
 
         LayoutContainer mainContainer = new LayoutContainer();
         mainContainer.setLayout(new RowLayout(Orientation.VERTICAL));        
@@ -155,6 +164,15 @@ public class BrowsePanel extends Composite {
         createAddInvestigationDetailsHandler();
         createLoginHandler();
         createLogoutHandler();
+        CreateAddDatafileHandler();
+        CreateAddDatasetHandler();        
+        
+        loader.addLoadListener(new LoadListener() {
+            @Override
+            public void loaderLoad(LoadEvent event) {
+                tree.setExpanded(node, true);
+            }
+        });
     }
 
     /**
@@ -189,7 +207,9 @@ public class BrowsePanel extends Composite {
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                download(((DownloadButtonEvent) ce).getDownloadName());
+                String downloadName = ((DownloadButtonEvent) ce).getDownloadName();                
+                        
+                download(downloadName);
             }
         });
         buttonBar.add(btnDownload);
@@ -223,14 +243,14 @@ public class BrowsePanel extends Composite {
                             @Override
                             public void onFailure(Throwable caught) {
                                 if (caught instanceof SessionException) {
-                                    EventPipeLine.getInstance().checkStillLoggedIn();
+                                    eventPipline.checkStillLoggedIn();
                                 } else if (caught instanceof InternalException) {
                                     EventPipeLine
                                             .getInstance()
                                             .showErrorDialog(
                                                     "An internal error occured on the server, please see the server logs for more details.");
                                 } else {
-                                    EventPipeLine.getInstance().showErrorDialog(
+                                    eventPipline.showErrorDialog(
                                             "Error retrieving data from server @browse panel. " + caught.getMessage());
                                 }
                                 callback.onFailure(caught);
@@ -309,7 +329,7 @@ public class BrowsePanel extends Composite {
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
                 if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
                     ICATNode icatnode = node.getModel();
-                    EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
+                    eventPipline.getInvestigationDetails(icatnode.getFacility(),
                             icatnode.getInvestigationId(), SOURCE);
                 }
             }
@@ -329,15 +349,15 @@ public class BrowsePanel extends Composite {
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
                 if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {                    
                     ICATNode icatnode = node.getModel();
-                    EventPipeLine.getInstance().getInvestigationDetails(icatnode.getFacility(),
+                    eventPipline.getInvestigationDetails(icatnode.getFacility(),
                             icatnode.getInvestigationId(), SOURCE);
                 } else if (node.getModel().getNodeType() == ICATNodeType.DATASET) {                    
                     ICATNode icatnode = node.getModel();
-                    EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(),
+                    eventPipline.showParameterWindowWithHistory(icatnode.getFacility(),
                             Constants.DATA_SET, icatnode.getDatasetId(), icatnode.getDatafileName());
                 } else if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {                    
                     ICATNode icatnode = node.getModel();
-                    EventPipeLine.getInstance().showParameterWindowWithHistory(icatnode.getFacility(),
+                    eventPipline.showParameterWindowWithHistory(icatnode.getFacility(),
                             Constants.DATA_FILE, icatnode.getDatafileId(), icatnode.getDatafileName());
                 }
             }
@@ -389,20 +409,58 @@ public class BrowsePanel extends Composite {
      */
     private Menu getInvestigationMenu() {
         Menu contextMenu = new Menu();
-        contextMenu.setWidth(160);
+        contextMenu.setWidth(180);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show investigation");
-        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showInvestigation.setText("Show Investigation Details");        
+        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
+        showInvestigation.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 if (tree.getSelectionModel().getSelectedItem().getNodeType() == ICATNodeType.INVESTIGATION) {
-                    EventPipeLine.getInstance().getInvestigationDetails(
+                    eventPipline.getInvestigationDetails(
                             tree.getSelectionModel().getSelectedItem().getFacility(),
                             tree.getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
                 }
             }
         });
+        
+        
+        MenuItem showDataSet = new MenuItem();
+        showDataSet.setText("Show Data Sets");
+        showDataSet.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
+        showDataSet.setStyleAttribute("margin-left", "25px");
+        showDataSet.addStyleName("fixContextMenuIcon2");
+        contextMenu.add(showDataSet);
+        showDataSet.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                eventPipline.showDatasetWindowWithHistory(
+                        tree.getSelectionModel().getSelectedItem().getFacility(),
+                        tree.getSelectionModel().getSelectedItem().getInvestigationId(), 
+                        tree.getSelectionModel().getSelectedItem().getInvestigationName());
+            }
+        });
+        
+        if(eventPipline.hasCreateDatasetSupport(tree.getSelectionModel().getSelectedItem().getFacility())) {
+            MenuItem addDataset = new MenuItem();
+            addDataset.setText("Add Data Set");
+            addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
+            addDataset.setStyleAttribute("margin-left", "25px");
+            addDataset.addStyleName("fixContextMenuIcon3");
+            contextMenu.add(addDataset);
+            addDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {
+                    if (tree.getSelectionModel().getSelectedItem().getNodeType() == ICATNodeType.INVESTIGATION) {
+                        eventPipline.showAddNewDatasetWindow(
+                                tree.getSelectionModel().getSelectedItem().getFacility(),
+                                tree.getSelectionModel().getSelectedItem().getInvestigationId(), 
+                                SOURCE,
+                                tree.getSelectionModel().getSelectedItem());
+                    }
+                }
+            });
+        }
+        
         return contextMenu;
     }
 
@@ -413,19 +471,40 @@ public class BrowsePanel extends Composite {
      */
     private Menu getDatasetMenu() {
         Menu contextMenu = new Menu();
-        contextMenu.setWidth(160);
-        MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show data set");
-        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
-        contextMenu.add(showInvestigation);
-        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+        
+        contextMenu.setWidth(190);
+        MenuItem showDataset = new MenuItem();
+        showDataset.setText("Show Data Set Parameters");
+        showDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatasetParameter()));
+        showDataset.setStyleAttribute("margin-left", "25px");
+        contextMenu.add(showDataset);
+        showDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
-                EventPipeLine.getInstance().showParameterWindowWithHistory(
+                eventPipline.showParameterWindowWithHistory(
                         tree.getSelectionModel().getSelectedItem().getFacility(), Constants.DATA_SET,
                         tree.getSelectionModel().getSelectedItem().getDatasetId(),
                         tree.getSelectionModel().getSelectedItem().getDatasetName());
             }
-        });
+        });        
+        
+        //add data file if enabled and supported by ids
+        if (eventPipline.hasUploadSupport(tree.getSelectionModel().getSelectedItem().getFacility())) {
+            MenuItem addDatafile = new MenuItem();
+            addDatafile.setText("Add Data File");
+            addDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
+            addDatafile.setStyleAttribute("margin-left", "25px");
+            addDatafile.addStyleName("fixContextMenuIcon2");
+            contextMenu.add(addDatafile);
+            addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
+                public void componentSelected(MenuEvent ce) {                
+                    eventPipline.showUploadDatasetWindow(tree.getSelectionModel().getSelectedItem().getFacility(),
+                            tree.getSelectionModel().getSelectedItem().getDatasetId(),
+                            tree.getSelectionModel().getSelectedItem(),
+                            SOURCE);
+                }
+            });
+        }
+        
         return contextMenu;
     }
 
@@ -436,14 +515,15 @@ public class BrowsePanel extends Composite {
      */
     private Menu getDatafileMenu() {
         Menu contextMenu = new Menu();
-        contextMenu.setWidth(160);
-        MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("show data file");
-        showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
-        contextMenu.add(showInvestigation);
-        showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
+        contextMenu.setWidth(190);
+        MenuItem showDatafile = new MenuItem();
+        showDatafile.setText("Show Data File Parameters");
+        showDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatafileParameter()));
+        showDatafile.setStyleAttribute("margin-left", "25px");
+        contextMenu.add(showDatafile);
+        showDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
-                EventPipeLine.getInstance().showParameterWindowWithHistory(
+                eventPipline.showParameterWindowWithHistory(
                         tree.getSelectionModel().getSelectedItem().getFacility(), Constants.DATA_FILE,
                         tree.getSelectionModel().getSelectedItem().getDatafileId(),
                         tree.getSelectionModel().getSelectedItem().getDatafileName());
@@ -494,7 +574,7 @@ public class BrowsePanel extends Composite {
                 }
                 idList.add(new Long(node.getDatafileId()));
             }
-        }
+        }       
 
         // Calculate how many batches the data will need to be split into.
         // Different batches are required for each dataset and for each
@@ -545,17 +625,19 @@ public class BrowsePanel extends Composite {
         }
 
         if (batchCount == 0) {
-            EventPipeLine.getInstance().showMessageDialog("Nothing selected for download");
+            eventPipline.showMessageDialog("Nothing selected for download");
         } /*else if (batchCount == 1) {
-            EventPipeLine.getInstance().showMessageDialog(
+            eventPipline.showMessageDialog(
                     "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                             + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
         } else {
-            EventPipeLine.getInstance().showMessageDialog(
+            eventPipline.showMessageDialog(
                     "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
                             + "as " + batchCount
                             + " files. The status of your download can be seen from the ‘My Downloads’ tab.");
         }*/
+        
+        
     }
 
     /**
@@ -625,4 +707,40 @@ public class BrowsePanel extends Composite {
             }
         });
     }
+    
+    
+    /**
+     *  Setup handler for addd data file
+     */
+    private void CreateAddDatafileHandler() {
+        AddDatafileEvent.registerToSource(EventPipeLine.getEventBus(), SOURCE, new AddDatafileEventHandler() {
+            
+            @Override
+            public void addDatafile(AddDatafileEvent event) {                
+                node = (ICATNode) event.getNode();                
+                loader.loadChildren(node);
+            }
+        });
+        
+    }
+    
+    
+    /**
+     *  Setup handler for addd data file
+     */
+    private void CreateAddDatasetHandler() {
+        AddDatasetEvent.registerToSource(EventPipeLine.getEventBus(), SOURCE, new AddDatasetEventHandler() {
+            
+            @Override
+            public void addDataset(AddDatasetEvent event) {                
+                node = (ICATNode) event.getNode();
+                loader.loadChildren(node);
+            }
+        });
+        
+    }
+    
+    
+    
+    
 }

@@ -105,5 +105,5 @@ public interface UtilityLocal {
 
     List<TDatafileFormat> getDatafileFormats(String sessionId, String facilityName) throws TopcatException;
 
-    List<String> getDatasetTypes(String sessionId, String facilityName) throws TopcatException;
+    List<String> getDatasetTypes(String sessionId, String facilityName) throws TopcatException;    
 }

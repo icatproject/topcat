@@ -37,15 +37,18 @@ import uk.ac.stfc.topcat.gwt.client.UtilityService;
 import uk.ac.stfc.topcat.gwt.client.UtilityServiceAsync;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
+import uk.ac.stfc.topcat.gwt.client.event.AddDatafileEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LoginEvent;
 import uk.ac.stfc.topcat.gwt.client.event.LogoutEvent;
 import uk.ac.stfc.topcat.gwt.client.event.WindowLogoutEvent;
+import uk.ac.stfc.topcat.gwt.client.eventHandler.AddDatafileEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -64,6 +67,7 @@ import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -107,12 +111,16 @@ public class DatafileWindow extends Window {
     private Set<String> facilityNames = new HashSet<String>();
     private boolean awaitingLogin;
     private boolean loadingData = false;
-    private boolean advancedSearchData = false;
+    private boolean advancedSearchData = false;    
+    private static final String SOURCE = "DatafileWindow";
+    private EventPipeLine eventPipeLine;
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
 
     public DatafileWindow() {
+        eventPipeLine = EventPipeLine.getInstance();
+        
         // Listener called when the datafile window is closed.
         addWindowListener(new WindowListener() {
             @Override
@@ -207,6 +215,30 @@ public class DatafileWindow extends Window {
             }
         });
         toolBar.add(btnDownload);
+        
+        //only display if window has models from one dataset
+        if (inputDatasetModels.size() == 1) {
+            final String facilityName = inputDatasetModels.get(0).getFacilityName();
+            final String datasetId = inputDatasetModels.get(0).getId();
+            final DatasetModel node = inputDatasetModels.get(0);
+            
+            if (eventPipeLine.hasUploadSupport(facilityName)) {
+                if (inputDatasetModels.size() == 1) {
+                    Button btnShowUploadDatasetWindow = new Button("Add Data Set", AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
+                    btnShowUploadDatasetWindow.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {                            
+                            EventPipeLine.getInstance().showUploadDatasetWindow(facilityName, datasetId, node , SOURCE);
+                        }
+                    });            
+                    toolBar.add(btnShowUploadDatasetWindow);
+                }
+            }
+        } else {
+            inputDatasetModels.size();
+        }
+        
+        
         toolBar.add(new SeparatorToolItem());
         setTopComponent(toolBar);
 
@@ -214,8 +246,9 @@ public class DatafileWindow extends Window {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showDS = new MenuItem();
-        showDS.setText("show data file");
-        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showDS.setText("Show Data File Parameters");
+        showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatafileParameter()));
+        showDS.setStyleAttribute("margin-left", "25px");        
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -224,9 +257,13 @@ public class DatafileWindow extends Window {
                         dfm.getId(), dfm.getName());
             }
         });
+        
+        
         MenuItem showFS = new MenuItem();
-        showFS.setText("download data file");
-        showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconView()));
+        showFS.setText("Download Data File");
+        showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
+        showFS.setStyleAttribute("margin-left", "25px");
+        showFS.addStyleName("fixContextMenuIcon2");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -234,6 +271,7 @@ public class DatafileWindow extends Window {
                 btnDownload.fireEvent(Events.BeforeSelect, new ButtonEvent(btnDownload));
             }
         });
+        
         grid.setContextMenu(contextMenu);
 
         setLayout(new FitLayout());
@@ -262,6 +300,7 @@ public class DatafileWindow extends Window {
         awaitingLogin = false;
         createLoginHandler();
         createLogoutHandler();
+        createAddDatafileHandler();
     }
 
     /**
@@ -561,8 +600,10 @@ public class DatafileWindow extends Window {
             return;
         }
         List<Long> selectedItems = new ArrayList<Long>(selectedFiles);
+        
         @SuppressWarnings("unchecked")
-        String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
+        String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName(); 
+                
         DownloadManager.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
         /*
         EventPipeLine.getInstance().showMessageDialog(
@@ -649,6 +690,26 @@ public class DatafileWindow extends Window {
                 }
             }
         });
+    }
+    
+    
+    private void createAddDatafileHandler() {
+        AddDatafileEvent.register(EventPipeLine.getEventBus(), new AddDatafileEventHandler() {
+            
+            @Override
+            public void addDatafile(AddDatafileEvent event) {
+                DatasetModel node = (DatasetModel) event.getNode();
+               
+                for (DatasetModel datasetModel: inputDatasetModels) {                    
+                    if(datasetModel.getId().equals(node.getId())) {
+                        datafileSelectionModel.refresh();
+                        loadData();             
+                    }
+                    
+                }
+            }
+        });
+        
     }
     
     

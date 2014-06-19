@@ -805,6 +805,8 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             return service.create(sessionId, ds);
         } catch (IcatException_Exception e) {
+            logger.error("createDataSet IcatException_Exception: " + e.toString());
+            
             convertToTopcatException(e, "createDataSet");
         } catch (Throwable e) {
             logger.error("createDataSet caught an unexpected exception: " + e.toString());

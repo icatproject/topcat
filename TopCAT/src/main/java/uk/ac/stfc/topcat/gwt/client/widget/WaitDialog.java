@@ -42,8 +42,8 @@ public class WaitDialog extends Window {
 	private Text displayText;
 	public WaitDialog() {
 		setMinHeight(50);
-		setMinWidth(180);
-		setInitialWidth(180);
+		setMinWidth(220);
+		setInitialWidth(220);
 		setBlinkModal(true);
 		setResizable(false);
 		setOnEsc(false);

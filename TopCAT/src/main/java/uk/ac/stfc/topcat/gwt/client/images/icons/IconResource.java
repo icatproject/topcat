@@ -36,13 +36,39 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface IconResource extends ClientBundle  {
 	  @Source ("login-icon.png")
-	  ImageResource  iconLogin();	
+	  ImageResource iconLogin();
+	  
 	  @Source  ("wait-icon.gif")
-	  ImageResource  iconWait();
+	  ImageResource iconWait();
+	  
 	  @Source ("warn-icon.jpg")
-	  ImageResource  iconWarn();
-	  @Source ("album.gif")
-	  ImageResource iconView();
+	  ImageResource iconWarn();
+	  
 	  @Source ("arrow_down.png")
 	  ImageResource iconDownload();
+	  
+	  @Source ("folder_add.png")
+      ImageResource iconAddDataset();
+	  
+	  @Source ("page_white_add.png")
+      ImageResource iconAddDatafile();
+	  
+	  @Source ("folder_table.png")
+	  ImageResource iconOpenDataset();
+	  
+	  @Source ("folder_page_white.png")
+      ImageResource iconOpenDatafile();
+	  
+	  @Source ("folder_explore.png")
+      ImageResource iconShowDatasetParameter();
+	  
+	  @Source ("page_white_put.png")
+      ImageResource iconDownloadDatafile();
+	  
+	  @Source ("page_white_magnify.png")
+      ImageResource iconShowDatafileParameter();
+	  
+	  @Source ("zoom.png")
+      ImageResource iconShowInvestigationDetails();
+	  
 }

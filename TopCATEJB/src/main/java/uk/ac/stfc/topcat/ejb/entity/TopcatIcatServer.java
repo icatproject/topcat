@@ -79,6 +79,10 @@ public class TopcatIcatServer implements Serializable {
     private String downloadType;
     @Column(name = "DOWNLOAD_SERVICE_URL")
     private String downloadServiceUrl;
+    @Column(name = "ALLOW_UPLOAD")
+    private boolean allowUpload;
+    @Column(name = "ALLOW_CREATE_DATASET")
+    private boolean allowCreateDataset;
     @Column(name = "PLUGIN_NAME")
     private String pluginName;
     @Column(name = "VERSION")
@@ -160,6 +164,22 @@ public class TopcatIcatServer implements Serializable {
 
     public void setDownloadServiceUrl(String downloadServiceUrl) {
         this.downloadServiceUrl = downloadServiceUrl;
+    }
+
+    public boolean isAllowUpload() {
+        return allowUpload;
+    }
+
+    public void setAllowUpload(boolean allowUpload) {
+        this.allowUpload = allowUpload;
+    }
+
+    public boolean isAllowCreateDataset() {
+        return allowCreateDataset;
+    }
+
+    public void setAllowCreateDataset(boolean allowCreateDataset) {
+        this.allowCreateDataset = allowCreateDataset;
     }
 
     public String getPluginName() {

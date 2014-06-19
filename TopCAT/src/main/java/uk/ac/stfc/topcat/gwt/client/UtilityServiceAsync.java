@@ -164,7 +164,9 @@ public interface UtilityServiceAsync {
      *            object to be called on completion
      */
     public void getInvestigationDetails(String facilityName, String investigationId,
-            AsyncCallback<TInvestigation> asyncCallback);
+            AsyncCallback<TInvestigation> asyncCallback);    
+    
+    
 
     /**
      * This method returns the information from the topcat.properties file.

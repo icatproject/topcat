@@ -93,6 +93,8 @@ public class UtilityManager {
             tFacility.setDownloadTypeName(((TopcatIcatServer) icatServer).getDownloadType());
             tFacility.setDownloadServiceUrl(((TopcatIcatServer) icatServer).getDownloadServiceUrl());
             tFacility.setId(((TopcatIcatServer) icatServer).getId());
+            tFacility.setAllowUpload(((TopcatIcatServer) icatServer).isAllowUpload());
+            tFacility.setAllowCreateDataset(((TopcatIcatServer) icatServer).isAllowCreateDataset());
             facilities.add(tFacility);
             if (logger.isTraceEnabled()) {
                 logger.trace(tFacility.toString());
@@ -764,6 +766,7 @@ public class UtilityManager {
         }
         return new ArrayList<TDatasetParameter>();
     }
+    
 
     /**
      * This method returns the datafile name corresponding to a given datasetid

@@ -91,12 +91,15 @@ public class UploadDatasetPanel extends Composite {
     private String facilityName = "";
     private String investigationId;
     private ListStore<DatafileModel> uploadFileList = new ListStore<DatafileModel>();
-    private List<DatafileFormatModel> datafileFormats = new ArrayList<DatafileFormatModel>();
+    private ListStore<DatafileFormatModel> datafileFormatModels = new ListStore<DatafileFormatModel>();
+    
+    
+    //private List<DatafileFormatModel> datafileFormats = new ArrayList<DatafileFormatModel>();
     private LayoutContainer datafilePanel = new LayoutContainer();
     private Text errorMessage = new Text("");
     private Integer localId = 0;
     private String SOURCE;
-    private String idsUrl = "";
+    private String idsUrl = "";    
 
     /**
      * Constructor
@@ -139,13 +142,16 @@ public class UploadDatasetPanel extends Composite {
      */
     protected void setInvestigation(TInvestigation inv) {
         clear();
-        if (!facilityName.equals(inv.getServerName())) {
+        
+        if (!facilityName.equals(inv.getServerName())) {                        
             facilityName = inv.getServerName();
+            
             setDSTypes(facilityName);
             setDFFormats(facilityName);
             idsUrl = EventPipeLine.getInstance().getFacility(facilityName).getDownloadServiceUrl();
             setIdsUrl(idsUrl);
         }
+        
         investigationId = inv.getInvestigationId();
     }
 
@@ -156,6 +162,7 @@ public class UploadDatasetPanel extends Composite {
      */
     private FormPanel getDSPanel() {
         FormPanel datasetContainer = new FormPanel();
+        
         datasetContainer.setHeadingText("New Data Set Parameters");
         datasetContainer.setWidth(370);
         datasetContainer.setLabelWidth(120);
@@ -212,6 +219,7 @@ public class UploadDatasetPanel extends Composite {
                 }
             }
         });
+        
         return datasetContainer;
     }
 
@@ -222,6 +230,7 @@ public class UploadDatasetPanel extends Composite {
      */
     private ComboBox<DatasetModel> getDSTypeBox() {
         ComboBox<DatasetModel> combo = new ComboBox<DatasetModel>();
+        
         combo.setStore(new ListStore<DatasetModel>());
         combo.setFieldLabel("Data Set Type");
         combo.setDisplayField("datasetType");
@@ -230,6 +239,7 @@ public class UploadDatasetPanel extends Composite {
         combo.setAllowBlank(false);
         combo.setTypeAhead(true);
         combo.setTriggerAction(TriggerAction.ALL);
+        
         return combo;
     }
 
@@ -240,6 +250,7 @@ public class UploadDatasetPanel extends Composite {
      */
     private FormPanel getDFPanel() {
         FormPanel form = new FormPanel();
+        
         form.setItemId("datafileForm");
         form.setHeadingText("Add A File");
         form.setAction(idsUrl);
@@ -288,7 +299,8 @@ public class UploadDatasetPanel extends Composite {
         HiddenField<String> hiddenDatasetId = new HiddenField<String>();
         hiddenDatasetId.setItemId("datasetId");
         hiddenDatasetId.setName("datasetId");
-        form.add(hiddenDatasetId);
+        form.add(hiddenDatasetId); 
+        
         return form;
     }
 
@@ -299,6 +311,7 @@ public class UploadDatasetPanel extends Composite {
      */
     private ComboBox<DatafileFormatModel> getDFFormatBox() {
         ComboBox<DatafileFormatModel> combo = new ComboBox<DatafileFormatModel>();
+        
         combo.setFieldLabel("File Format");
         combo.setDisplayField("datafileFormat");
         combo.setName("datafileFormat");
@@ -307,9 +320,9 @@ public class UploadDatasetPanel extends Composite {
         combo.setAllowBlank(false);
         combo.setTypeAhead(true);
         combo.setTriggerAction(TriggerAction.ALL);
-        ListStore<DatafileFormatModel> store = new ListStore<DatafileFormatModel>();
-        store.add(datafileFormats);
-        combo.setStore(store);
+        //ListStore<DatafileFormatModel> store = new ListStore<DatafileFormatModel>();
+        combo.setStore(datafileFormatModels);
+        
         return combo;
     }
 
@@ -320,10 +333,12 @@ public class UploadDatasetPanel extends Composite {
      */
     private ButtonBar getButtonBar() {
         ButtonBar buttons = new ButtonBar();
+        
         buttons.setAlignment(HorizontalAlignment.CENTER);
         buttons.add(getAddButton());
         buttons.add(getSubmitButton());
         buttons.add(getResetButton());
+        
         return buttons;
     }
 
@@ -332,8 +347,9 @@ public class UploadDatasetPanel extends Composite {
      * 
      * @return an Add File button
      */
-    private Button getAddButton() {
-        Button btn = new Button("Add File");
+    private Button getAddButton() {        
+        Button btn = new Button("Add File");        
+        
         btn.setToolTip("Click to add file to the data set");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -341,6 +357,7 @@ public class UploadDatasetPanel extends Composite {
                 addFile();
             }
         });
+        
         return btn;
     }
 
@@ -349,8 +366,9 @@ public class UploadDatasetPanel extends Composite {
      * 
      * @return an Reset button
      */
-    private Button getResetButton() {
-        Button btn = new Button("reset");
+    private Button getResetButton() {        
+        Button btn = new Button("reset");   
+        
         btn.setToolTip("Click to clear all fields");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -358,6 +376,7 @@ public class UploadDatasetPanel extends Composite {
                 clear();
             }
         });
+        
         return btn;
     }
 
@@ -366,7 +385,7 @@ public class UploadDatasetPanel extends Composite {
      * 
      * @return a DatafileModel grid
      */
-    private Grid<DatafileModel> getFileGrid() {
+    private Grid<DatafileModel> getFileGrid() {        
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig clmncnfgFileName = new ColumnConfig("datafileName", "File", 150);
@@ -385,7 +404,8 @@ public class UploadDatasetPanel extends Composite {
         Grid<DatafileModel> grid = new Grid<DatafileModel>(uploadFileList, new ColumnModel(configs));
         grid.setAutoExpandMin(200);
         grid.setMinColumnWidth(100);
-        grid.setAutoHeight(true);
+        grid.setAutoHeight(true);        
+        
         return grid;
     }
 
@@ -395,13 +415,14 @@ public class UploadDatasetPanel extends Composite {
      * @return a remove button renderer
      */
     private GridCellRenderer<DatafileModel> getButtonRenderer() {
-        GridCellRenderer<DatafileModel> buttonRenderer = new GridCellRenderer<DatafileModel>() {
-
+        GridCellRenderer<DatafileModel> buttonRenderer = new GridCellRenderer<DatafileModel>() {            
             private boolean init;
 
             @Override
             public Object render(final DatafileModel model, String property, ColumnData config, final int rowIndex,
                     final int colIndex, ListStore<DatafileModel> store, Grid<DatafileModel> grid) {
+                
+                
                 if (!init) {
                     init = true;
                     grid.addListener(Events.ColumnResize, new Listener<GridEvent<DatafileModel>>() {
@@ -418,6 +439,7 @@ public class UploadDatasetPanel extends Composite {
                         }
                     });
                 }
+                
 
                 Button b = new Button((String) model.get(property), new SelectionListener<ButtonEvent>() {
                     @Override
@@ -442,6 +464,7 @@ public class UploadDatasetPanel extends Composite {
                 return b;
             }
         };
+        
         return buttonRenderer;
     }
 
@@ -487,6 +510,7 @@ public class UploadDatasetPanel extends Composite {
         datafilePanel.add(newForm);
         newForm.render(datafilePanel.getElement());
         // TODO need to get the FileUploadField and ComboBox to display properly
+        
     }
 
     private FormPanel getForm() {
@@ -500,6 +524,7 @@ public class UploadDatasetPanel extends Composite {
      */
     private Button getSubmitButton() {
         Button btn = new Button("Submit");
+        
         btn.setToolTip("Click to create data set and upload files");
         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -507,6 +532,7 @@ public class UploadDatasetPanel extends Composite {
                 submit();
             }
         });
+        
         return btn;
     }
 
@@ -604,15 +630,15 @@ public class UploadDatasetPanel extends Composite {
      * @param facility
      */
     @SuppressWarnings("unchecked")
-    private void setDSTypes(final String facility) {
+    private void setDSTypes(final String facility) {        
         ((ComboBox<DatasetModel>) datasetPanel.getItemByItemId("datasetType")).getStore().removeAll();
         EventPipeLine.getInstance().showRetrievingData();
         utilityService.getDatasetTypes(facility, new AsyncCallback<List<String>>() {
             @Override
-            public void onSuccess(List<String> result) {
+            public void onSuccess(List<String> result) {                
                 EventPipeLine.getInstance().hideRetrievingData();
                 if (result.size() > 0) {
-                    for (String type : result) {
+                    for (String type : result) {                        
                         ((ComboBox<DatasetModel>) datasetPanel.getItemByItemId("datasetType")).getStore().add(
                                 new DatasetModel(facility, "", "", "", type, ""));
                     }
@@ -632,7 +658,7 @@ public class UploadDatasetPanel extends Composite {
                     EventPipeLine.getInstance().showErrorDialog("Error retrieving data set types from " + facility);
                 }
             }
-        });
+        });        
     }
 
     /**
@@ -643,8 +669,10 @@ public class UploadDatasetPanel extends Composite {
      */
     @SuppressWarnings("unchecked")
     private void setDFFormats(final String facility) {
-        datafileFormats.clear();
-        ((ComboBox<DatafileFormatModel>) (getForm()).getItemByItemId("datafileFormat")).getStore().removeAll();
+        datafileFormatModels.removeAll();
+        
+        ComboBox<DatafileFormatModel> combobox = (ComboBox<DatafileFormatModel>) getForm().getItemByItemId("datafileFormat");
+        combobox.getStore().removeAll();
 
         EventPipeLine.getInstance().showRetrievingData();
         utilityService.getDatafileFormats(facility, new AsyncCallback<List<DatafileFormatModel>>() {
@@ -652,10 +680,9 @@ public class UploadDatasetPanel extends Composite {
             public void onSuccess(List<DatafileFormatModel> result) {
                 EventPipeLine.getInstance().hideRetrievingData();
                 if (result.size() > 0) {
-                    datafileFormats.addAll(result);
+                    ComboBox<DatafileFormatModel> combobox = (ComboBox<DatafileFormatModel>) getForm().getItemByItemId("datafileFormat");
+                    combobox.getStore().add(result);
                 }
-                ((ComboBox<DatafileFormatModel>) (getForm()).getItemByItemId("datafileFormat")).getStore().add(
-                        datafileFormats);
             }
 
             @Override
@@ -678,15 +705,15 @@ public class UploadDatasetPanel extends Composite {
      * @param url
      *            the url of the ids
      */
-    private void setIdsUrl(String url) {
-        getForm().setAction(url);
+    private void setIdsUrl(String url) {                
+        getForm().setAction(url);        
     }
 
     /**
      * Clear out any non facility specific fields.
      */
     @SuppressWarnings("unchecked")
-    private void clear() {
+    private void clear() {        
         errorMessage.hide();
         errorMessage.setText("");
         ((TextField<String>) datasetPanel.getItemByItemId("datasetName")).reset();
@@ -694,10 +721,18 @@ public class UploadDatasetPanel extends Composite {
         ((ComboBox<DatasetModel>) datasetPanel.getItemByItemId("datasetType")).reset();
         ((CheckBox) datasetPanel.getItemByItemId("doi")).reset();
         LayoutContainer form = getForm();
-        ((FileUploadField) form.getItemByItemId("fileObject")).clear();
+        
+        FileUploadField fileUploadField = (FileUploadField) form.getItemByItemId("fileObject");
+        
+        if (fileUploadField != null && fileUploadField.isVisible()) {
+            ((FileUploadField) form.getItemByItemId("fileObject")).reset();
+        }
+        
         ((TextField<String>) form.getItemByItemId("description")).reset();
         ((ComboBox<DatafileFormatModel>) form.getItemByItemId("datafileFormat")).reset();
         uploadFileList.removeAll();
+        
+        /*
         List<Component> components = new ArrayList<Component>();
         for (Component c : datafilePanel.getItems()) {
             if (!c.getItemId().equals("datafileForm")) {
@@ -707,17 +742,18 @@ public class UploadDatasetPanel extends Composite {
         for (Component c : components) {
             datafilePanel.remove(c);
         }
+        */
     }
 
     /**
      * Clear out all fields.
      */
     @SuppressWarnings("unchecked")
-    protected void reset() {
+    protected void reset() {                
         clear();
         ((ComboBox<DatasetModel>) datasetPanel.getItemByItemId("datasetType")).getStore().removeAll();
         ((ComboBox<DatafileFormatModel>) (getForm()).getItemByItemId("datafileFormat")).getStore().removeAll();
-        datafileFormats.clear();
+        datafileFormatModels.removeAll();
         facilityName = "";
         idsUrl = "";
     }

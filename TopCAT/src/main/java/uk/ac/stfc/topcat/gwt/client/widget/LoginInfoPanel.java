@@ -91,7 +91,7 @@ public class LoginInfoPanel extends Composite {
             public void componentSelected(ButtonEvent ce) {
                 if (validLogin) {
                     eventPipeLine.facilityLogout(facility.getName());
-                } else {
+                } else {                                        
                     eventPipeLine.showLoginWidget(facility.getName());
                 }
             }
