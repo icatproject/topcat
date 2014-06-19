@@ -27,6 +27,8 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
@@ -104,6 +106,10 @@ public class DatasetWindow extends Window {
     private boolean awaitingLogin;
     private boolean loadingData = false;
     private static final String SOURCE = "DatasetWindow";
+    private Menu contextMenu;
+    private MenuItem addDatafile;
+    private static Logger rootLogger = Logger.getLogger("");
+    
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
@@ -168,7 +174,7 @@ public class DatasetWindow extends Window {
         grid.setSelectionModel(datasetSelectionModel);
 
         // Context Menu
-        Menu contextMenu = new Menu();
+        contextMenu = new Menu();
         contextMenu.setWidth(160);
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data Set Parameters");
@@ -203,26 +209,24 @@ public class DatasetWindow extends Window {
         
         //add add datafile content menu if has create datafile support
         //TODO problem since facility is not set when windows is created
-        if (facilityName != null) {
-            if (EventPipeLine.getInstance().hasUploadSupport(facilityName)) {
-                MenuItem addDatafile = new MenuItem();
-                addDatafile.setText("Add Data File");
-                addDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
-                addDatafile.setStyleAttribute("margin-left", "25px");
-                addDatafile.addStyleName("fixContextMenuIcon3");
-                contextMenu.add(addDatafile);
-                addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
-                    public void componentSelected(MenuEvent ce) {
-                        DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
-                        
-                        EventPipeLine.getInstance().showUploadDatasetWindow(dsm.getFacilityName(),
-                                dsm.getId(),
-                                dsm,
-                                SOURCE);
-                    }
-                });
+        
+        
+        addDatafile = new MenuItem();
+        addDatafile.setText("Add Data File");
+        addDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
+        addDatafile.setStyleAttribute("margin-left", "25px");
+        addDatafile.addStyleName("fixContextMenuIcon3");
+        //contextMenu.add(addDatafile);
+        addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
+                
+                EventPipeLine.getInstance().showUploadDatasetWindow(dsm.getFacilityName(),
+                        dsm.getId(),
+                        dsm,
+                        SOURCE);
             }
-        }
+        });        
         
         grid.setContextMenu(contextMenu);
 
@@ -276,8 +280,27 @@ public class DatasetWindow extends Window {
         awaitingLogin = false;
         createLoginHandler();
         createLogoutHandler();
-        createAddDatasetHandler();        
+        createAddDatasetHandler();
     }
+    
+    
+    private void addUploadContextMenu(String facilityName, Menu contextMenu, MenuItem menuItem) {
+        
+        rootLogger.log(Level.SEVERE, "addUploadContextMenu fired facilityName: " + facilityName);
+        if (facilityName != null) {
+            if (EventPipeLine.getInstance().hasUploadSupport(facilityName)) {
+                try {
+                
+                    contextMenu.add(menuItem);
+                } catch (Exception e) {
+                    rootLogger.log(Level.SEVERE, "addUploadContextMenu contextMenu.add(menuItem): " + facilityName);
+                    
+                }
+            }
+        }
+    }
+    
+    
 
     /**
      * This method sets the facility name and investigation id for this window.
@@ -297,6 +320,8 @@ public class DatasetWindow extends Window {
         } else {
             awaitingLogin = true;
         }
+        
+        addUploadContextMenu(facilityName, contextMenu, addDatafile);
     }    
 
     /**
