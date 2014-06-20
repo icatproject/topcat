@@ -48,7 +48,6 @@ import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
-import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -105,6 +104,8 @@ public class DatafileWindow extends Window {
     private PagingLoader<PagingLoadResult<DatafileModel>> loader = null;
     private PagingToolBar pageBar = null;
     private Set<Long> selectedFiles = new HashSet<Long>();
+    private ToolBar toolBar;
+    private Button btnUploadDatafile;
 
     boolean historyVerified;
     Grid<DatafileModel> grid;
@@ -113,7 +114,7 @@ public class DatafileWindow extends Window {
     private boolean loadingData = false;
     private boolean advancedSearchData = false;    
     private static final String SOURCE = "DatafileWindow";
-    private EventPipeLine eventPipeLine;
+    private EventPipeLine eventPipeLine;    
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
@@ -205,7 +206,7 @@ public class DatafileWindow extends Window {
         grid.setSelectionModel(datafileSelectionModel);
 
         // ToolBar with download button
-        ToolBar toolBar = new ToolBar();
+        toolBar = new ToolBar();
         final DownloadButton btnDownload = new DownloadButton(datafileSelectionModel);
         
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -216,30 +217,10 @@ public class DatafileWindow extends Window {
         });
         toolBar.add(btnDownload);
         
-        //only display if window has models from one dataset
-        if (inputDatasetModels.size() == 1) {
-            final String facilityName = inputDatasetModels.get(0).getFacilityName();
-            final String datasetId = inputDatasetModels.get(0).getId();
-            final DatasetModel node = inputDatasetModels.get(0);
-            
-            if (eventPipeLine.hasUploadSupport(facilityName)) {
-                if (inputDatasetModels.size() == 1) {
-                    Button btnShowUploadDatasetWindow = new Button("Add Data Set", AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
-                    btnShowUploadDatasetWindow.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {                            
-                            EventPipeLine.getInstance().showUploadDatasetWindow(facilityName, datasetId, node , SOURCE);
-                        }
-                    });            
-                    toolBar.add(btnShowUploadDatasetWindow);
-                }
-            }
-        } else {
-            inputDatasetModels.size();
-        }
-        
-        
         toolBar.add(new SeparatorToolItem());
+        
+        btnUploadDatafile = new Button("Add Data File", AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
+        
         setTopComponent(toolBar);
 
         // Context Menu
@@ -302,6 +283,36 @@ public class DatafileWindow extends Window {
         createLogoutHandler();
         createAddDatafileHandler();
     }
+    
+    
+    private void addUploadFileButton(List<DatasetModel> facilities, ToolBar toolBar, Button button) {
+      //only display if window has models from one dataset
+        if (facilities.size() == 1) {
+            final String facilityName = facilities.get(0).getFacilityName();
+            final String datasetId = facilities.get(0).getId();
+            final DatasetModel node = facilities.get(0);
+            
+            if (eventPipeLine.hasUploadSupport(facilityName)) {
+                btnUploadDatafile.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {                            
+                        EventPipeLine.getInstance().showUploadDatasetWindow(facilityName, datasetId, node , SOURCE);
+                    }
+                });
+                toolBar.add(button);
+            }
+        }
+    }
+    
+    public ToolBar getToolBar() {
+        return toolBar;
+    }
+
+
+    public Button getBtnUploadDatafile() {
+        return btnUploadDatafile;
+    }
+    
 
     /**
      * Set the datasets input which are used to get the datafiles corresponding
@@ -323,6 +334,8 @@ public class DatafileWindow extends Window {
         } else {
             awaitingLogin = true;
         }
+        
+        addUploadFileButton(inputDatasetModels, getToolBar(), getBtnUploadDatafile());
     }
 
     /**

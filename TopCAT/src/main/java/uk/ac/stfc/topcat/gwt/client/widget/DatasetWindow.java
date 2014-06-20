@@ -108,6 +108,9 @@ public class DatasetWindow extends Window {
     private static final String SOURCE = "DatasetWindow";
     private Menu contextMenu;
     private MenuItem addDatafile;
+
+    private Button btnShowAddDataset;
+    
     private static Logger rootLogger = Logger.getLogger("");
     
 
@@ -206,17 +209,13 @@ public class DatasetWindow extends Window {
             }
         });
         
-        
-        //add add datafile content menu if has create datafile support
-        //TODO problem since facility is not set when windows is created
-        
-        
+        //create add datafile content menu. Note: menu item is not added to the menu until setDataset is called as facility
+        //name is not available until then
         addDatafile = new MenuItem();
         addDatafile.setText("Add Data File");
         addDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
         addDatafile.setStyleAttribute("margin-left", "25px");
-        addDatafile.addStyleName("fixContextMenuIcon3");
-        //contextMenu.add(addDatafile);
+        addDatafile.addStyleName("fixContextMenuIcon3");        
         addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
@@ -246,22 +245,17 @@ public class DatasetWindow extends Window {
         });
         toolBar.add(btnView);
         
-        //add add data set button if has create dataset support
-        /*
-        if (eventPipeLine.hasCreateDatasetSupport(facilityName)) {
-            Button btnShowAddDatasetWindow = new Button("Add Data Set", AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
-            btnShowAddDatasetWindow.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    //we need a topcat investigation to be passed to the event. create a dummy one to pass
-                    TopcatInvestigation topcatInvestigation = new TopcatInvestigation(facilityName, facilityName, investigationId, investigationName, null, null, null, null);
-                    
-                    EventPipeLine.getInstance().showAddNewDatasetWindow(facilityName, investigationId, investigationName, topcatInvestigation);
-                }
-            });            
-            toolBar.add(btnShowAddDatasetWindow);
-        }
-		*/
+                
+        btnShowAddDataset = new Button("Add Data Set", AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
+        btnShowAddDataset.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                //we need a topcat investigation to be passed to the event.
+                TopcatInvestigation topcatInvestigation = new TopcatInvestigation(facilityName, facilityName, investigationId, investigationName, null, null, null, null);
+                
+                EventPipeLine.getInstance().showAddNewDatasetWindow(facilityName, investigationId, investigationName, topcatInvestigation);
+            }
+        });
         
         
         toolBar.add(new SeparatorToolItem());
@@ -284,13 +278,11 @@ public class DatasetWindow extends Window {
     }
     
     
-    private void addUploadContextMenu(String facilityName, Menu contextMenu, MenuItem menuItem) {
-        
+    private void addUploadContextMenu(String facilityName, Menu contextMenu, MenuItem menuItem) {        
         rootLogger.log(Level.SEVERE, "addUploadContextMenu fired facilityName: " + facilityName);
         if (facilityName != null) {
             if (EventPipeLine.getInstance().hasUploadSupport(facilityName)) {
                 try {
-                
                     contextMenu.add(menuItem);
                 } catch (Exception e) {
                     rootLogger.log(Level.SEVERE, "addUploadContextMenu contextMenu.add(menuItem): " + facilityName);
@@ -299,6 +291,16 @@ public class DatasetWindow extends Window {
             }
         }
     }
+    
+    
+    private void addCreateDatasetButton(final String facilityName, ToolBar toolbar, Button btnShowAddDatasetWindow){
+        //add add data set button if has create dataset support
+        if (EventPipeLine.getInstance().hasCreateDatasetSupport(facilityName)) {                      
+            toolBar.add(btnShowAddDatasetWindow);
+        }
+    }
+    
+    
     
     
 
@@ -321,8 +323,31 @@ public class DatasetWindow extends Window {
             awaitingLogin = true;
         }
         
-        addUploadContextMenu(facilityName, contextMenu, addDatafile);
-    }    
+        //add the upload file context menu as facilityName is set
+        addUploadContextMenu(facilityName, getContextMenu(), getAddDatafile());
+        //add the add dataset button as facilityName is set
+        addCreateDatasetButton(facilityName, getToolBar(), getBtnShowAddDataset());
+    }
+    
+    
+    public ToolBar getToolBar() {
+        return toolBar;
+    }
+
+
+    public Menu getContextMenu() {
+        return contextMenu;
+    }
+
+
+    public MenuItem getAddDatafile() {
+        return addDatafile;
+    }
+
+
+    public Button getBtnShowAddDataset() {
+        return btnShowAddDataset;
+    }
 
     /**
      * @return the facility name
