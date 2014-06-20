@@ -55,10 +55,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
         @NamedQuery(name = "TopcatUser.findById", query = "SELECT t FROM TopcatUser t WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUser.findByName", query = "SELECT t FROM TopcatUser t WHERE t.name = :name"),
-        @NamedQuery(name = "TopcatUser.findByDn", query = "SELECT t FROM TopcatUser t WHERE t.dn = :dn"),
-        //@NamedQuery(name = "TopcatUser.findByNameAndServer", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName"),
-        //@NamedQuery(name = "TopcatUser.findByNameAndServerNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.displayName <> 'Anonymous'"),
-        @NamedQuery(name = "TopcatUser.findByNameAndServerAndHomeNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.homeServer.name = :serverName AND t.topcatUserId.displayName <> 'anon'"),
+        @NamedQuery(name = "TopcatUser.findByDn", query = "SELECT t FROM TopcatUser t WHERE t.dn = :dn"),        
+        @NamedQuery(name = "TopcatUser.findByNameAndServerNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.displayName <> 'anon'"),
         @NamedQuery(name = "TopcatUser.findAnonymousUser", query = "SELECT t FROM TopcatUser t WHERE t.name = 'anon'"),
         @NamedQuery(name = "TopcatUser.findByServerId", query = "SELECT t FROM TopcatUser t WHERE t.serverId.id = :serverId"),
 })
