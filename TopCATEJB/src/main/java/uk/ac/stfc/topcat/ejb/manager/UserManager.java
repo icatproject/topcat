@@ -329,6 +329,7 @@ public class UserManager {
                     break;
                 }
             }
+            
             if (user == null) {
                 user = findUserFromUsernameAndServer(userInfo, username, icatServer.getName());
                 if (user == null) {
@@ -402,7 +403,7 @@ public class UserManager {
         // Find the User with the user name and server id
         try {
             TopcatUser user = (TopcatUser) manager
-                    .createNamedQuery("TopcatUser.findByNameAndServerAndHomeNotAnonymous")
+                    .createNamedQuery("TopcatUser.findByNameAndServerNotAnonymous")
                     .setParameter("userName", username).setParameter("serverName", facilityName).setMaxResults(1).getSingleResult();
             return user;
         } catch (NoResultException ex) {
