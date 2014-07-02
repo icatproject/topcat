@@ -488,13 +488,12 @@ public class UtilityManager {
     private ArrayList<TInvestigation> getAllInvestigationsInServerAndInstrument(String sessionId,
             TopcatIcatServer server, String userName, String instrumentName) throws TopcatException {
         try {
-            TAdvancedSearchDetails details = new TAdvancedSearchDetails();
-            details.getInstrumentList().add(instrumentName);
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
-            return service.searchByAdvancedPagination(sessionId, details, 0, 200);
+            
+            return service.getInvestigationsInInstrument(sessionId, instrumentName);            
         } catch (MalformedURLException ex) {
-            logger.error("getAllInvestigationsInServerAndInstrument: " + ex.getMessage());
+            logger.error("getAllInvestigationsInServerAndInstrument: for " + instrumentName + " " + ex.getMessage());
         }
 
         return new ArrayList<TInvestigation>();

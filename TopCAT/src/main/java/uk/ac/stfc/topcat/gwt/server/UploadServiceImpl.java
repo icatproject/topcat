@@ -36,14 +36,12 @@ import uk.ac.stfc.topcat.ejb.session.UploadManagementBeanLocal;
 import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.gwt.client.UploadService;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 /**
  * This is servlet implementation of Upload methods.
  * 
  */
 @SuppressWarnings("serial")
-public class UploadServiceImpl extends RemoteServiceServlet implements UploadService {
+public class UploadServiceImpl extends UrlBasedRemoteServiceServlet implements UploadService {
     @EJB
     private UploadManagementBeanLocal uploadManager;
     @EJB

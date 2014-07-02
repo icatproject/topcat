@@ -24,14 +24,13 @@ package uk.ac.stfc.topcat.gwt.server;
 
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.SoftwareRepoService;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * This is servlet implementation of SoftwareRepo methods.
  * 
  */
 @SuppressWarnings("serial")
-public class SoftwareRepoServiceImpl extends RemoteServiceServlet implements SoftwareRepoService {
+public class SoftwareRepoServiceImpl extends UrlBasedRemoteServiceServlet implements SoftwareRepoService {
 
     @Override
     public String getAssociatedSoftware(String instrument) throws TopcatException {

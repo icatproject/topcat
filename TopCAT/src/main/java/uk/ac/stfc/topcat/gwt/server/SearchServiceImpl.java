@@ -50,7 +50,6 @@ import uk.ac.stfc.topcat.gwt.client.SearchService;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * This is Search Service servlet implementation, it provides basic and advanced
@@ -62,7 +61,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
-public class SearchServiceImpl extends RemoteServiceServlet implements SearchService {
+public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements SearchService {
     @EJB
     private SearchManagementBeanLocal searchManager;
     @EJB

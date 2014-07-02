@@ -29,14 +29,13 @@ import javax.ejb.EJB;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.ejb.session.MessageLocal;
 import uk.ac.stfc.topcat.gwt.client.MessageService;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * This is servlet implementation of Message methods.
  * 
  */
 @SuppressWarnings("serial")
-public class MessageServiceImpl extends RemoteServiceServlet implements MessageService {	
+public class MessageServiceImpl extends UrlBasedRemoteServiceServlet implements MessageService {	
 	@EJB
     MessageLocal messageManager;
 	

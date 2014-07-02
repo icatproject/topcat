@@ -16,6 +16,12 @@ glassfish=/opt/glassfish3
 # Glassfish admin port (default 4848)
 port=4848
 
+#url root where topcat will be deployed. Leave blank for the default of / or enter your required root url (do not end url with /)
+topcatUrlRoot=
+
+#url root for topcatadmin will be deployed. Leave blank for the default of /TopCATAdmin or enter your required root url (do not end url with /)
+topcatAdminUrlRoot=
+
 # A Glassfish file user to access the topcat admin service
 adminUsername topcatadmin
 adminPassword change-me

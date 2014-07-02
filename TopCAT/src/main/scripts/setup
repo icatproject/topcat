@@ -5,7 +5,7 @@ import os
 # TopCAT
 
 actions, options, arg = getActions()
-props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "adminUsername", "adminPassword"])
+props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot", "topcatAdminUrlRoot", "adminUsername", "adminPassword"])
 
 prop_name = "topcat.properties"
 prop_list = ["KEYWORDS_CACHED", "LOGO_URL", "ACCESSIBILITY", "PRIVACY_POLICY", "DATA_POLICY", "TERMS_OF_USE", "COMPLAINTS_PROCEDURE", "FEEDBACK"]

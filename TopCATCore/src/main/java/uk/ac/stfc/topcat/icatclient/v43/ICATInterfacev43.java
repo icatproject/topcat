@@ -46,6 +46,7 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.ValidationException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 
+
 import org.icatproject_4_3_0.Datafile;
 import org.icatproject_4_3_0.DatafileFormat;
 import org.icatproject_4_3_0.DatafileParameter;
@@ -507,6 +508,30 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         }
         return datasetList;
     }
+    
+    
+    @Override
+    public ArrayList<TInvestigation> getInvestigationsInInstrument(String sessionId, String instrumentName)
+            throws TopcatException {
+        logger.info("getInvestigationsInInstrument: sessionId (" + sessionId + "), " + instrumentName + ")");
+        ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
+        try {
+            List<Object> results = new ArrayList<Object>();
+            results = service.search(sessionId, "DISTINCT Investigation <-> InvestigationInstrument <-> Instrument[fullName = '" + instrumentName + "']");
+            
+            for (Object inv : results) {
+                investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
+            }
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "getInvestigationsInInstrument");
+        } catch (Throwable e) {
+            logger.error("getInvestigationsInInstrument caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getInvestigationsInInstrument threw an unexpected exception, see server logs for details");
+        }
+        return investigationList;
+    }
+    
 
     @Override
     public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) throws TopcatException {
@@ -1133,6 +1158,16 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         retDate.append(formater.format(date));
         retDate.append("}");
         return retDate.toString();
+    }
+    
+    /**
+     * Get the date object from XMLGregorianCalendar date
+     * 
+     * @param date
+     * @return
+     */
+    private Date getDateObject(XMLGregorianCalendar date) {
+        return date.toGregorianCalendar().getTime();   
     }
 
     private TInvestigation copyInvestigationToTInvestigation(String serverName, Investigation inv) {

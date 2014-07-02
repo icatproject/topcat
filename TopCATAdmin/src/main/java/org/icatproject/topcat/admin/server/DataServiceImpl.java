@@ -25,10 +25,8 @@ import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.TMessages;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 @SuppressWarnings("serial")
-public class DataServiceImpl extends RemoteServiceServlet implements
+public class DataServiceImpl extends UrlBasedRemoteServiceServlet implements
 		DataService {
 
 	final static Logger logger = LoggerFactory.getLogger(DataServiceImpl.class);

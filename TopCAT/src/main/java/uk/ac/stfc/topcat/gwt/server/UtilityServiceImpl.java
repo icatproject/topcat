@@ -59,8 +59,6 @@ import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.ParameterModel;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 /**
  * This is servlet implementation of Utility methods such as getting information
  * about instruments etc.
@@ -71,7 +69,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
-public class UtilityServiceImpl extends RemoteServiceServlet implements UtilityService {
+public class UtilityServiceImpl extends UrlBasedRemoteServiceServlet implements UtilityService {
     @EJB
     private UtilityLocal utilityManager;
     @EJB

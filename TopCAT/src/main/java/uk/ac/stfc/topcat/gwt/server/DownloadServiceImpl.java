@@ -70,14 +70,13 @@ import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.DownloadService;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * This is servlet implementation of Download methods.
  * 
  */
 @SuppressWarnings("serial")
-public class DownloadServiceImpl extends RemoteServiceServlet implements DownloadService {
+public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements DownloadService {
     @EJB
     private DownloadManagementBeanLocal downloadManager;
     @EJB

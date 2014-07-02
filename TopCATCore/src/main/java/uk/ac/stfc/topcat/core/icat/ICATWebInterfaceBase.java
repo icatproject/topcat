@@ -99,6 +99,11 @@ public class ICATWebInterfaceBase {
             throws TopcatException {
         return new ArrayList<TDataset>();
     }
+    
+    public ArrayList<TInvestigation> getInvestigationsInInstrument(
+            String sessionId, String instrumentId) throws TopcatException {        
+        return new ArrayList<TInvestigation>();
+    }    
 
     public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) throws TopcatException {
         return new ArrayList<TDatasetParameter>();
@@ -167,5 +172,7 @@ public class ICATWebInterfaceBase {
     public Long createDataSet(String sessionId, TDataset dataset) throws TopcatException {
         throw new NotSupportedException("createDataSet is not supported");
     }
+
+    
 
 }

@@ -41,7 +41,6 @@ import uk.ac.stfc.topcat.ejb.session.UserManagementBeanLocal;
 import uk.ac.stfc.topcat.gwt.client.LoginService;
 import uk.ac.stfc.topcat.gwt.client.exception.LoginException;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * This class is a servlet implementation providing the login service to the gwt
@@ -54,7 +53,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @since iCAT Version 3.3
  */
 @SuppressWarnings("serial")
-public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
+public class LoginServiceImpl extends UrlBasedRemoteServiceServlet implements LoginService {
     @EJB
     private UserManagementBeanLocal userManager;
     private final static Logger logger = Logger.getLogger(LoginServiceImpl.class.getName());
