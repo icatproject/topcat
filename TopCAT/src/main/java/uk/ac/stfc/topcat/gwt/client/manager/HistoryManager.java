@@ -44,7 +44,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
     TopcatWindowManager tcWindowManager;
     private String tabSelected = "";
     public static final String seperatorModel = "///";
-    public static final String seperatorToken = "@";
+    public static final String seperatorToken = ";";
     public static final String seperatorKeyValues = "=";
 
     public HistoryManager() {
