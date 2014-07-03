@@ -40,10 +40,11 @@ public class TAdvancedSearchDetails implements Serializable {
     private String propostaltitle;
     private String proposalAbstract;
     private String sample;
-    private ArrayList<String> investigatorNameList;
+    private ArrayList<String> investigatorNameList;    
     private String datafileName;
     private Date startDate;
     private Date endDate;
+    private String investigationName;
     private String rbNumberStart;
     private String rbNumberEnd;
     private String grantId;
@@ -123,6 +124,14 @@ public class TAdvancedSearchDetails implements Serializable {
 
     public void setInvestigatorNameList(ArrayList<String> investigatorNames) {
         this.investigatorNameList = investigatorNames;
+    }
+    
+    public String getInvestigationName() {
+        return investigationName;
+    }
+
+    public void setInvestigationName(String investigationName) {
+        this.investigationName = investigationName;
     }
 
     public String getParameterName() {
@@ -239,5 +248,4 @@ public class TAdvancedSearchDetails implements Serializable {
     public void setFreeTextQuery(String freeTextQuery) {
         this.freeTextQuery = freeTextQuery;
     }
-
 }

@@ -856,6 +856,12 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             }
             query.append("]");
         }
+        
+        
+        //investigation name /rb number
+        if (details.getInvestigationName() != null) {
+            query.append(" <-> Investigation[name='" + details.getInvestigationName() + "']");
+        }
 
         // Keywords
         if (details.getKeywords().size() > 0
@@ -1058,17 +1064,8 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         retDate.append(formater.format(date));
         retDate.append("}");
         return retDate.toString();
-    }
-    
-    /**
-     * Get the date object from XMLGregorianCalendar date
-     * 
-     * @param date
-     * @return
-     */
-    private Date getDateObject(XMLGregorianCalendar date) {
-        return date.toGregorianCalendar().getTime();   
-    }
+    }   
+
 
     private TInvestigation copyInvestigationToTInvestigation(String serverName, Investigation inv) {
         String id = inv.getId().toString();

@@ -174,20 +174,40 @@
             </subsection>
 
             <subsection name="Schema Upgrade">                
-                <p>
-                    A unique constraint was added to TOPCAT_USER. To upgrade an existing database from topcat 1.1.11 to 1.1.12, run the following sql queries for your database:
-                </p>
-                <ul>                    
-                    <li>                        
+                <p>The following changes have been made to the schema in topcat 1.12.0:</p>
+                <ul>
+                    <li>A unique constraint was added to TOPCAT_USER</li>
+                    <li>ALLOW_UPLOAD and ALLOW_CREATE_DATASET columns were added to TOPCAT_ICAT_SERVER</li> 
+                </ul>
+                                    
+                <p>To upgrade an existing database from topcat 1.11.0 to 1.12.0, run the following sql queries for your particular database:</p>               
+                <ul>
+                    <li>
+                        <p>Oracle:</p>
                         <p>
                             ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);
+                            ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD NUMBER(1), ALLOW_CREATE_DATASET NUMBER(1));
+                        </p>
+                    </li>
+                    <li>
+                        <p>MySql:</p>
+                        <p>
+                            ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);
+                            ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD TINYINT(1), ALLOW_CREATE_DATASET TINYINT(1));
+                        </p>
+                    </li>
+                    <li>
+                        <p>Derby:</p>
+                        <p>
+                            ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);
+                            ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD SMALLINT, ALLOW_CREATE_DATASET SMALLINT);
                         </p>
                     </li>
                 </ul>                
             </subsection>
             
             <subsection name="Deployment Behind Reverse proxy">            
-                <p>Example Apache 2.4 proxy setting where topcat and topcatadmin were installed using the default paths:</p>
+                <p>Example Apache 2.4 proxy setting where topcat and topcatadmin were installed using the default topcat paths:</p>
                 <p>
                     topcatUrlRoot=<br/>
                     topcatAdminUrlRoot=
@@ -218,7 +238,7 @@ ProxyPassReverse /topcatadmin/ https://localhost:8181/TopCATAdmin/
   Require all granted
 &lt;/Proxy&gt;
                 </code></pre>
-                <p>Example Apache 2.4 proxy setting where topcat and topcatadmin were installed using the custom paths:</p>
+                <p>Example Apache 2.4 proxy setting where topcat and topcatadmin were installed using custom paths:</p>
                 <p>
                     topcatUrlRoot=/&lt;your topcat path&gt;<br/>
                     topcatAdminUrlRoot=/&lt;your topcatadmin path&gt;

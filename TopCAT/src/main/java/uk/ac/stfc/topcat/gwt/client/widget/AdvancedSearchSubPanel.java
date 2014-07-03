@@ -58,7 +58,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.ListField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -86,7 +85,8 @@ public class AdvancedSearchSubPanel extends Composite {
     private TextField<String> txtFldDataFileName;
     private DateField dateFieldStart;
     private DateField dateFieldEnd;
-    private NumberField txtFldRunNo;
+    //private NumberField txtFldRunNo;
+    private TextField<String> txtFldInvestigationName;
     private TextField<String> txtVisitId;
     private InvestigationSearchCallback invSearchCallback;
 
@@ -105,44 +105,39 @@ public class AdvancedSearchSubPanel extends Composite {
         flexTable.setWidget(0, 0, lblfldProposalTitle);
 
         txtFldProposalTitle = new TextField<String>();
-        flexTable.setWidget(0, 1, txtFldProposalTitle);
-        txtFldProposalTitle.setFieldLabel("New TextField");
+        flexTable.setWidget(0, 1, txtFldProposalTitle);        
 
         LabelField lblfldProposalAbstract = new LabelField("Proposal Abstract");
         flexTable.setWidget(1, 0, lblfldProposalAbstract);
 
         txtFldProposalAbstract = new TextField<String>();
-        flexTable.setWidget(1, 1, txtFldProposalAbstract);
-        txtFldProposalAbstract.setFieldLabel("New TextField");
+        flexTable.setWidget(1, 1, txtFldProposalAbstract);        
 
         LabelField lblfldSample = new LabelField("Sample");
         flexTable.setWidget(2, 0, lblfldSample);
 
         txtFldSampleName = new TextField<String>();
-        flexTable.setWidget(2, 1, txtFldSampleName);
-        txtFldSampleName.setFieldLabel("New TextField");
+        flexTable.setWidget(2, 1, txtFldSampleName);        
 
         LabelField lblfldInvestigatorName = new LabelField("Investigator Name");
         lblfldInvestigatorName.setToolTip("Surname");
         flexTable.setWidget(3, 0, lblfldInvestigatorName);
 
         txtFldInvestigatorName = new TextField<String>();
-        flexTable.setWidget(3, 1, txtFldInvestigatorName);
-        txtFldInvestigatorName.setFieldLabel("New TextField");
+        flexTable.setWidget(3, 1, txtFldInvestigatorName);        
 
         LabelField lblfldDatafileName = new LabelField("DataFile Name");
         flexTable.setWidget(4, 0, lblfldDatafileName);
 
         txtFldDataFileName = new TextField<String>();
-        flexTable.setWidget(4, 1, txtFldDataFileName);
-        txtFldDataFileName.setFieldLabel("New TextField");
+        flexTable.setWidget(4, 1, txtFldDataFileName);        
 
         LabelField lblfldStartDate = new LabelField("Start Date");
         flexTable.setWidget(5, 0, lblfldStartDate);
 
         dateFieldStart = new DateField();
         flexTable.setWidget(5, 1, dateFieldStart);
-        dateFieldStart.setFieldLabel("New DateField");
+        
         dateFieldStart.getPropertyEditor().setFormat(
                 DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT));
 
@@ -151,24 +146,21 @@ public class AdvancedSearchSubPanel extends Composite {
 
         dateFieldEnd = new DateField();
         flexTable.setWidget(5, 3, dateFieldEnd);
-        dateFieldEnd.setFieldLabel("New DateField");
+        
         dateFieldEnd.getPropertyEditor().setFormat(
                 DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT));
 
-        LabelField lblfldRbNumber = new LabelField("Rb Number");
-        flexTable.setWidget(6, 0, lblfldRbNumber);
-
-        txtFldRunNo = new NumberField();
-        txtFldRunNo.setPropertyEditorType(Integer.class);
-        flexTable.setWidget(6, 1, txtFldRunNo);
-        txtFldRunNo.setFieldLabel("New TextField");
+        LabelField lblfldRbNumber = new LabelField("Investigation/ Rb Number");
+        flexTable.setWidget(6, 0, lblfldRbNumber);        
+        
+        txtFldInvestigationName = new TextField<String>();
+        flexTable.setWidget(6, 1, txtFldInvestigationName);        
         
         LabelField lblfldVisitId = new LabelField("Visit Id");
         flexTable.setWidget(7, 0, lblfldVisitId);
         
         txtVisitId = new TextField<String>();
-        flexTable.setWidget(7, 1, txtVisitId);
-        txtVisitId.setFieldLabel("New TextField");
+        flexTable.setWidget(7, 1, txtVisitId);        
 
         LabelField lblfldFacility = new LabelField("Facility");
         flexTable.setWidget(8, 0, lblfldFacility);
@@ -191,8 +183,7 @@ public class AdvancedSearchSubPanel extends Composite {
         lstInvestigationTypes.setSize("100%", "100px");
         lstInvestigationTypes.setDisplayField("displayName");
         lstInvestigationTypes.setStore(new ListStore<InvestigationType>());
-        lstInvestigationTypes.setAutoWidth(true);
-        lstInvestigationTypes.setFieldLabel("New ListField");
+        lstInvestigationTypes.setAutoWidth(true);        
         lstInvestigationTypes.getListView().setAutoWidth(true);
         flexTable.setWidget(9, 1, lstInvestigationTypes);
 
@@ -210,7 +201,7 @@ public class AdvancedSearchSubPanel extends Composite {
         btnSearch.addListener(Events.Select, new Listener<ButtonEvent>() {
             @Override
             public void handleEvent(ButtonEvent e) {
-                if (isInputValid() == true) {
+                if (isInputValid()) {                    
                     searchAdvanced();
                 }
             }
@@ -243,16 +234,23 @@ public class AdvancedSearchSubPanel extends Composite {
     
     
     private boolean isInputValid(){
-        if (!dateFieldStart.isValid() || !dateFieldEnd.isValid()) {
+        if (!dateFieldStart.validate()) {
             return false;
         }
         
-        if (dateFieldStart.getValue().compareTo(dateFieldEnd.getValue()) > 0) {
-            dateFieldEnd.markInvalid("'End Date' must be equal or greater than 'Start Date'");
-            dateFieldEnd.focus();
-            
+        if (!dateFieldEnd.validate()) {
             return false;
+        }        
+        
+        if (dateFieldStart.getValue() != null && dateFieldEnd.getValue() != null) {
+            if (dateFieldStart.getValue().compareTo(dateFieldEnd.getValue()) > 0) {
+                dateFieldEnd.markInvalid("'End Date' must be equal or greater than 'Start Date'");
+                dateFieldEnd.focus();
+                
+                return false;
+            }
         }
+        
             
         return true;
     }
@@ -308,10 +306,9 @@ public class AdvancedSearchSubPanel extends Composite {
         result.setDatafileName(txtFldDataFileName.getValue());
         result.setStartDate(dateFieldStart.getValue());
         result.setEndDate(dateFieldEnd.getValue());
-        if (txtFldRunNo.getValue() != null) {
-            result.setRbNumberStart(txtFldRunNo.getValue().toString());
-            result.setRbNumberEnd(txtFldRunNo.getValue().toString());
-        }
+        
+        result.setInvestigationName(txtFldInvestigationName.getValue());
+
         result.setVisitId(txtVisitId.getValue());
         result.setFacilityList(getFacilitySelectedList());
         result.setInvestigationTypeList(getInvestigationTypeSelectedList());
@@ -374,7 +371,7 @@ public class AdvancedSearchSubPanel extends Composite {
         txtFldDataFileName.clear();
         dateFieldStart.clear();
         dateFieldEnd.clear();
-        txtFldRunNo.clear();
+        txtFldInvestigationName.clear();        
         txtVisitId.clear();
     }
 

@@ -21,6 +21,7 @@
                 <li>schema changes:
                     <ul>
                         <li>Add unique constraint for TopcatUser</li>
+                        <li>Add ALLOW_UPLOAD and ALLOW_CREATE_DATASET column to TOPCAT_ICAT_SERVER</li>                        
                     </ul>
                 </li>
             </ul>
