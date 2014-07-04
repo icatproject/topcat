@@ -30,6 +30,7 @@ import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
+import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -125,6 +126,6 @@ public interface DownloadServiceAsync {
      *            the name to give the down load file
      */
     public void directDownloadFromIDS(String dataType, TFacility facility, List<Long> dataObjectList, 
-            String downloadName, AsyncCallback<DownloadModel> asyncCallback);
+            String downloadName, IdsFlag flag, AsyncCallback<DownloadModel> asyncCallback);
 
 }

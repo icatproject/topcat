@@ -69,6 +69,7 @@ import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.DownloadService;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
+import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 
 
 /**
@@ -493,6 +494,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      * @param facility
      * @param dataObjectList
      * @param downloadName
+     * @param flag
      * @return ok string
      * @throws TopcatException
      * @throws UnsupportedEncodingException 
@@ -500,7 +502,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      */
     @Override
     public DownloadModel directDownloadFromIDS(String dataType, TFacility facility,
-            List<Long> dataObjectList, String downloadName) throws TopcatException {
+            List<Long> dataObjectList, String downloadName, IdsFlag flag) throws TopcatException {
         if (logger.isDebugEnabled()) {
             logger.debug("directDownloadFromIDS: dataType (" + dataType + "), facility("
                     + facility.toString() + "), dataObjectList.size() (" + dataObjectList.size() + "), downloadName ("
@@ -569,7 +571,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
                 }
             }
             
-            downloadUrl = ids.getDataUrl(sessionId, dataSelection, Flag.ZIP_AND_COMPRESS, downloadName);
+            downloadUrl = ids.getDataUrl(sessionId, dataSelection, getCompressionFlag(flag), downloadName);
             logger.debug("directDownloadFromIDS: downloadUrl: " + downloadUrl.toString());
         }
         
@@ -808,4 +810,24 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
         }
         return expiryTime;
     }
+    
+    
+    private Flag getCompressionFlag(IdsFlag flag) {
+        if (flag == IdsFlag.ZIP_AND_COMPRESS) {
+            return Flag.ZIP_AND_COMPRESS;
+        }
+        
+        if (flag == IdsFlag.ZIP) {
+            return Flag.ZIP;
+        }
+        
+        if (flag == IdsFlag.COMPRESS) {
+            return Flag.COMPRESS;
+        }
+        
+        return Flag.NONE;
+        
+    }
+    
+    
 }

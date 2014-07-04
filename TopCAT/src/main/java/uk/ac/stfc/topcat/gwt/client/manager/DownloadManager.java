@@ -34,7 +34,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -53,6 +52,7 @@ import uk.ac.stfc.topcat.gwt.client.event.UpdateDownloadStatusEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
+import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 
 public class DownloadManager {
     private final DownloadServiceAsync downloadService = DownloadService.Util.getInstance();
@@ -119,7 +119,7 @@ public class DownloadManager {
      *            a string containing a user defined name to give the download
      *            file
      */
-    public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName) {
+    public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName, IdsFlag flag) {
         ArrayList<TFacility> facilities = eventPipeLine.getFacilities();
         for (TFacility facility : facilities) {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
@@ -128,7 +128,7 @@ public class DownloadManager {
                     if (facility.getDownloadTypeName().equalsIgnoreCase("archived")) {                    
                         prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
                     } else if (facility.getDownloadTypeName().equalsIgnoreCase("local")) {
-                        directDownloadFromIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
+                        directDownloadFromIDS(Constants.DATA_FILE, facility, datafileList, downloadName, flag);
                     } else { 
                         //use prepared if download type not set. Shouldn't get here
                         prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
@@ -152,7 +152,7 @@ public class DownloadManager {
      *            a string containing a user defined name to give the download
      *            file
      */
-    public void downloadDataset(final String facilityName, final List<Long> datasetList, final String downloadName) {
+    public void downloadDataset(final String facilityName, final List<Long> datasetList, final String downloadName, IdsFlag flag) {
 
         ArrayList<TFacility> facilities = eventPipeLine.getFacilities();
         for (TFacility facility : facilities) {
@@ -163,7 +163,7 @@ public class DownloadManager {
                     if (facility.getDownloadTypeName().equalsIgnoreCase("prepared")) {
                         prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
                     } else if (facility.getDownloadTypeName().equalsIgnoreCase("direct")) {                        
-                        directDownloadFromIDS(Constants.DATA_SET, facility, datasetList, downloadName);
+                        directDownloadFromIDS(Constants.DATA_SET, facility, datasetList, downloadName, flag);
                     } else { 
                         //use prepared if download type not set. Shouldn't get here                        
                         prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
@@ -231,8 +231,8 @@ public class DownloadManager {
      *            the name to give the download file
      */
     private void directDownloadFromIDS(final String dataType, final TFacility facility,
-            final List<Long> dataObjectList, final String downloadName) {
-        downloadService.directDownloadFromIDS(dataType, facility, dataObjectList, downloadName,
+            final List<Long> dataObjectList, final String downloadName, IdsFlag flag) {
+        downloadService.directDownloadFromIDS(dataType, facility, dataObjectList, downloadName, flag,
                 new AsyncCallback<DownloadModel>() {
                     @Override
                     public void onFailure(Throwable caught) {

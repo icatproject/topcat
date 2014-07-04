@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
@@ -48,6 +50,9 @@ import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
+import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
+import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -114,7 +119,9 @@ public class DatafileWindow extends Window {
     private boolean loadingData = false;
     private boolean advancedSearchData = false;    
     private static final String SOURCE = "DatafileWindow";
-    private EventPipeLine eventPipeLine;    
+    private EventPipeLine eventPipeLine;
+    
+    private static Logger rootLogger = Logger.getLogger("");
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
@@ -247,9 +254,9 @@ public class DatafileWindow extends Window {
         showFS.addStyleName("fixContextMenuIcon2");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
-                // simulate the download button being pressed
-                btnDownload.fireEvent(Events.BeforeSelect, new ButtonEvent(btnDownload));
+            public void componentSelected(MenuEvent ce) {                
+                downloadSingleFile(grid.getSelectionModel().getSelectedItem());
+                
             }
         });
         
@@ -600,6 +607,23 @@ public class DatafileWindow extends Window {
 
         return dfSelectionModel;
     }
+    
+    /**
+     * Download a single date file
+     * @param node
+     */
+    private void downloadSingleFile(DatafileModel node) {
+        rootLogger.log(Level.SEVERE, "downloadSingleFile called");
+        
+        //make sure it a data file node type
+       
+        List<Long> id = new ArrayList<Long>();
+        id.add(new Long(node.getId()));
+        rootLogger.log(Level.SEVERE, "getFacilityName():" + node.getFacilityName() + " id: " + id + " node.getName(): " + node.getName());
+        
+        DownloadManager.getInstance().downloadDatafiles(node.getFacilityName(), id, node.getName(), IdsFlag.NONE);
+    }
+    
 
     /**
      * Download selected datafiles.
@@ -617,7 +641,7 @@ public class DatafileWindow extends Window {
         @SuppressWarnings("unchecked")
         String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName(); 
                 
-        DownloadManager.getInstance().downloadDatafiles(facility, selectedItems, downloadName);
+        DownloadManager.getInstance().downloadDatafiles(facility, selectedItems, downloadName, IdsFlag.ZIP_AND_COMPRESS);
         /*
         EventPipeLine.getInstance().showMessageDialog(
                 "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "

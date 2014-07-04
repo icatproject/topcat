@@ -28,6 +28,8 @@ package uk.ac.stfc.topcat.gwt.client.widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
@@ -50,6 +52,7 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
+import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -104,7 +107,9 @@ public class BrowsePanel extends Composite {
     private InvestigationPanel investigationPanel;
     private static final String SOURCE = "BrowsePanel";
     private ICATNode node;
-    private EventPipeLine eventPipline;    
+    private EventPipeLine eventPipline;
+    
+    private static Logger rootLogger = Logger.getLogger("");
 
     public BrowsePanel() {
         eventPipline = EventPipeLine.getInstance();
@@ -529,7 +534,36 @@ public class BrowsePanel extends Composite {
                         tree.getSelectionModel().getSelectedItem().getDatafileName());
             }
         });
+        
+        MenuItem showDatafileDownload = new MenuItem();
+        showDatafileDownload.setText("Download Data File");
+        showDatafileDownload.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
+        showDatafileDownload.setStyleAttribute("margin-left", "25px");
+        showDatafileDownload.addStyleName("fixContextMenuIcon2");
+        contextMenu.add(showDatafileDownload);
+        showDatafileDownload.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                //TODO
+                downloadSingleFile(tree.getSelectionModel().getSelectedItem());
+            }
+        });
+        
         return contextMenu;
+    }
+
+    private void downloadSingleFile(ICATNode node) {
+        rootLogger.log(Level.SEVERE, "downloadSingleFile called");
+        
+        //make sure it a data file node type
+        if (node.getNodeType() == ICATNodeType.DATAFILE) {
+            List<Long> id = new ArrayList<Long>();
+            id.add(new Long(node.getDatafileId()));
+            rootLogger.log(Level.SEVERE, "DownloadManager.getInstance().downloadDatafiles called");
+            DownloadManager.getInstance().downloadDatafiles(node.getFacility(), id, node.getDatafileName(), IdsFlag.NONE);
+        } else {
+            rootLogger.log(Level.SEVERE, "not a datafile");
+        }
+        
     }
 
     /**
@@ -597,12 +631,12 @@ public class BrowsePanel extends Composite {
                 List<Long> ids = new ArrayList<Long>(1);
                 ids.add(id);
                 if (requiredBatches == 1) {
-                    DownloadManager.getInstance().downloadDataset(facility, ids, downloadName);
+                    DownloadManager.getInstance().downloadDataset(facility, ids, downloadName, IdsFlag.ZIP_AND_COMPRESS);
                 } else {
                     if (batchCount < 10) {
-                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-0" + batchCount);
+                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-0" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
                     } else {
-                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-" + batchCount);
+                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
                     }
                 }
             }
@@ -614,12 +648,12 @@ public class BrowsePanel extends Composite {
             batchCount = batchCount + 1;
             List<Long> idList = dfMap.get(facility);
             if (requiredBatches == 1) {
-                DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName);
+                DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName, IdsFlag.ZIP_AND_COMPRESS);
             } else {
                 if (batchCount < 10) {
-                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-0" + batchCount);
+                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-0" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
                 } else {
-                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount);
+                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
                 }
             }
         }
@@ -639,6 +673,12 @@ public class BrowsePanel extends Composite {
         
         
     }
+    
+    
+    
+    
+    
+    
 
     /**
      * This method sets the width of the tree.
