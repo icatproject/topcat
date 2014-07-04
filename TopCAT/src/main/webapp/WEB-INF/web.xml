@@ -70,6 +70,19 @@
 		<servlet-name>MessageService</servlet-name>
 		<url-pattern>/topcatweb/MessageService</url-pattern>
 	</servlet-mapping>
+	
+	
+	<filter>
+        <filter-name>CacheControlFilter</filter-name>
+        <filter-class>uk.ac.stfc.topcat.gwt.server.filter.CacheDisablingFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CacheControlFilter</filter-name>
+        <url-pattern>/topcatweb/topcatweb.nocache.js</url-pattern>
+    </filter-mapping>
+	
+	
 	<session-config>
 		<session-timeout>600</session-timeout>
 	</session-config>
