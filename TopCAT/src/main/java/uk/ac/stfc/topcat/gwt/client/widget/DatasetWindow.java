@@ -178,7 +178,7 @@ public class DatasetWindow extends Window {
 
         // Context Menu
         contextMenu = new Menu();
-        contextMenu.setWidth(160);
+        contextMenu.setWidth(200);
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data Set Parameters");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatasetParameter()));

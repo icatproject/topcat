@@ -138,6 +138,7 @@ public class BrowsePanel extends Composite {
         addChangeListener(); //TODO
         addContextMenu();
 
+        tree.setView(new CheckboxTreePanelView<ICATNode>());
         tree.setCaching(true);
         tree.setDisplayProperty("name");
         tree.setCheckable(true);
@@ -310,14 +311,7 @@ public class BrowsePanel extends Composite {
                 if ((node.getNodeType() == ICATNodeType.DATAFILE || node.getNodeType() == ICATNodeType.INVESTIGATION)
                         && loader.hasChildren(node) && tree.getStore().getChildCount(node) == 0) {
                     loader.loadChildren(node);
-                }
-                // Only allow selection of datafiles, datasets and
-                // investigations
-                if (node.getNodeType() != ICATNodeType.DATAFILE && node.getNodeType() != ICATNodeType.DATASET
-                        && node.getNodeType() != ICATNodeType.INVESTIGATION) {
-                    be.setCancelled(true);
-                    return;
-                }
+                }                
             }
         });
     }
