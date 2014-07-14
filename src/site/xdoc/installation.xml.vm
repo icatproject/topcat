@@ -184,35 +184,33 @@
                 <ul>
                     <li>
                         <p>Oracle:</p>
-                        <p>
-                            ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);
-                            ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD NUMBER(1), ALLOW_CREATE_DATASET NUMBER(1));
-                        </p>
+                        <p>ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);</p>
+                        <p>ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD NUMBER(1), ALLOW_CREATE_DATASET NUMBER(1));</p>
                     </li>
                     <li>
                         <p>MySql:</p>
-                        <p>
-                            ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);
-                            ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD TINYINT(1), ALLOW_CREATE_DATASET TINYINT(1));
-                        </p>
+                        <p>ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);</p>
+                        <p>ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD TINYINT(1), ALLOW_CREATE_DATASET TINYINT(1));</p>
                     </li>
                     <li>
                         <p>Derby:</p>
-                        <p>
-                            ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);
-                            ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD SMALLINT, ALLOW_CREATE_DATASET SMALLINT);
-                        </p>
+                        <p>ALTER TABLE TOPCAT_USER ADD CONSTRAINT UNQ_TOPCAT_USER_0 UNIQUE(NAME, SERVER_ID);</p>
+                        <p>ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD SMALLINT, ALLOW_CREATE_DATASET SMALLINT);</p>
                     </li>
                 </ul>                
             </subsection>
             
-            <subsection name="Deployment Behind Reverse proxy">            
-                <p>Example Apache 2.4 proxy setting where topcat and topcatadmin were installed using the default topcat paths:</p>
+            <subsection name="Deployment Behind Reverse proxy">
+                <p>The following are two examples of Apache 2.4 reverse proxy settings for topcat and topcatadmin. 
+                One for when topcat and topcatadmin is deployed using the default path and the other when a custom path is used</p>
+                
+            
+                <p><strong>Using default install paths:</strong></p>
                 <p>
                     topcatUrlRoot=<br/>
                     topcatAdminUrlRoot=
                 </p>                
-                <pre><code>                
+                <pre><code>
 ProxyPreserveHost on
 SSLProxyEngine on    
 SSLProxyCheckPeerCN off
@@ -236,9 +234,8 @@ ProxyPassReverse /topcatadmin/ https://localhost:8181/TopCATAdmin/
 &lt;Proxy *&gt;
   Allow from All  
   Require all granted
-&lt;/Proxy&gt;
-                </code></pre>
-                <p>Example Apache 2.4 proxy setting where topcat and topcatadmin were installed using custom paths:</p>
+&lt;/Proxy&gt;</code></pre>
+                <p><strong>Using custom install paths:</strong></p>
                 <p>
                     topcatUrlRoot=/&lt;your topcat path&gt;<br/>
                     topcatAdminUrlRoot=/&lt;your topcatadmin path&gt;
@@ -267,8 +264,7 @@ ProxyPassReverse /topcatadmin/ https://localhost:8181/&lt;your topcatadmin path&
 &lt;Proxy *&gt;
   Allow from All  
   Require all granted
-&lt;/Proxy&gt;
-            </code></pre>                
+&lt;/Proxy&gt;</code></pre>                
                 
             </subsection>
         </section>
