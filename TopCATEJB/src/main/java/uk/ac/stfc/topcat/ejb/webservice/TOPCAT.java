@@ -66,7 +66,7 @@ public class TOPCAT {
     @EJB
     private UtilityLocal utility;
 
-    private static final String VERSION = "1.10.0";
+    private static final String VERSION = "1.12.0";
 
     @WebMethod(operationName = "login")
     public String login() throws AuthenticationException {
