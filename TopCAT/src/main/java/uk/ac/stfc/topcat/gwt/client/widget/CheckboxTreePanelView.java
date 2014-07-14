@@ -13,7 +13,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class CheckboxTreePanelView<M extends ModelData> extends TreePanelView<M> {
-    @SuppressWarnings("incomplete-switch")
+    @SuppressWarnings({ "incomplete-switch", "unchecked" })
     public String getTemplate(ModelData m, String id, String text, AbstractImagePrototype icon, boolean checkable,
             boolean checked, Joint joint, int level, TreeViewRenderMode renderMode) {
           if (renderMode == TreeViewRenderMode.CONTAINER) {
