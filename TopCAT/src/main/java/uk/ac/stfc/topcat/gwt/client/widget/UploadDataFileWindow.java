@@ -246,7 +246,7 @@ public class UploadDataFileWindow extends Window {
                             }
                                               
                         } catch (Exception e) {
-                            EventPipeLine.getInstance().showErrorDialog("Error occurred parsing response");
+                            EventPipeLine.getInstance().showErrorDialog("Error occurred parsing response: " + e.getMessage());
                         }
                     }
                 }

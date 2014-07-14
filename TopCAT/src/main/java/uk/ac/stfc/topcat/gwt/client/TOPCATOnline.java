@@ -23,8 +23,6 @@
 package uk.ac.stfc.topcat.gwt.client;
 
 import java.util.List;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
 
 import javax.validation.constraints.NotNull;
 
@@ -69,8 +67,6 @@ public class TOPCATOnline implements EntryPoint {
     private HeaderPanel headerPanel;
     private FooterPanel footerPanel;
     private EventPipeLine eventPipeLine;
-    
-    //private static Logger rootLogger = Logger.getLogger("");
 
     public void onModuleLoad() {
         
@@ -227,8 +223,7 @@ public class TOPCATOnline implements EntryPoint {
         for (Throwable th : ((UmbrellaException) e).getCauses()) {
           if (th instanceof UmbrellaException) {
             ensureNotUmbrellaError(th);
-          } else {
-            //rootLogger.log(Level.SEVERE, "uncaught: " + th);
+          } else {            
             //System.err.println(th);
           }
         }

@@ -375,9 +375,13 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
             throw new InternalException(
                     "Internal error, searchByAdvancedPagination threw an unexpected exception, see server logs for details");
         }
+        
+        logger.info("*********" + resultInv.size() + " search results from " + serverName + "*********");
+        
         for (Object inv : resultInv) {
             investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
         }
+        
         Collections.sort(investigationList);
         return investigationList;
     }
@@ -880,6 +884,9 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         if (details.getSample() != null && !queryDataset) {
             query.append(" <-> Sample[name='" + details.getSample() + "']");
         }
+        
+        logger.info("getAdvancedQuery Search query: " + query.toString());
+        
         return query.toString();
     }
 

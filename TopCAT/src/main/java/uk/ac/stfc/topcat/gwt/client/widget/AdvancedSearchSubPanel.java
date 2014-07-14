@@ -180,17 +180,16 @@ public class AdvancedSearchSubPanel extends Composite {
         flexTable.setWidget(9, 0, lblfldInvestigationType);
 
         lstInvestigationTypes = new ListField<InvestigationType>();
-        lstInvestigationTypes.setSize("100%", "100px");
+        lstInvestigationTypes.setHeight("100px");
+        lstInvestigationTypes.getListView().setWidth("198px");
         lstInvestigationTypes.setDisplayField("displayName");
         lstInvestigationTypes.setStore(new ListStore<InvestigationType>());
-        lstInvestigationTypes.setAutoWidth(true);        
-        lstInvestigationTypes.getListView().setAutoWidth(true);
         flexTable.setWidget(9, 1, lstInvestigationTypes);
 
         LabelField lblfldInstrumentbeamLine = new LabelField("Instrument/Beam Line");
         flexTable.setWidget(10, 0, lblfldInstrumentbeamLine);
 
-        lstInstrument = new ListField<Instrument>();
+        lstInstrument = new ListField<Instrument>();        
         lstInstrument.setDisplayField("displayName");
         lstInstrument.setStore(new ListStore<Instrument>());
         flexTable.setWidget(10, 1, lstInstrument);
