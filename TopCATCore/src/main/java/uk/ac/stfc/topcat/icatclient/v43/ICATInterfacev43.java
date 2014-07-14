@@ -113,9 +113,8 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
             result = service.login(authenticationType, credentials);
         } catch (IcatException_Exception ex) {
             // TODO check type
-            logger.debug("loginLifetime: IcatException_Exception:" + ex.getMessage());
-
-            throw new AuthenticationException("ICAT Server not available");
+            logger.debug("loginLifetime: IcatException_Exception:" + ex.getMessage());            
+            throw new AuthenticationException("Login error:" +  ex.getMessage());
         } catch (javax.xml.ws.WebServiceException ex) {
             logger.debug("loginLifetime: WebServiceException:" + ex.getMessage());
             throw new AuthenticationException("ICAT Server not available");
@@ -130,8 +129,8 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             service.logout(sessionId);
         } catch (IcatException_Exception e) {
-            // TODO check type
-            throw new AuthenticationException("ICAT Server not available");
+            // TODO check type            
+            throw new AuthenticationException("Logout error:" +  e.getMessage());
         } catch (javax.xml.ws.WebServiceException ex) {
             throw new AuthenticationException("ICAT Server not available");
         }
