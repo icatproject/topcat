@@ -266,8 +266,28 @@ ProxyPassReverse /topcatadmin/ https://localhost:8181/&lt;your topcatadmin path&
   Require all granted
 &lt;/Proxy&gt;</code></pre>                
                 
+            </subsection>            
+            
+            <subsection name="File Upload">
+                <p>Upload functionality in topcat requires the latest <a href="http://icatproject.org/mvn/site/ids/server/1.1.0/">IDS 1.1.0</a>.</p>
+                <p>File upload is achieved via a cross-domain mechanism where files are uploaded directly to your configured IDS from the browser. In order for this to work, your IDS must have a CA certificate. 
+                If you are using a self-signed certificate on a test IDS installation, you must add the IDS certificate to your browser's trusted store for upload to work properly. 
+                If you do not add the certificate to your browser's trusted store, you will get a never ending upload progress bar because topcat cannot retrieve the server response from the IDS.</p>
+                
+                <p>The upload functionality can be enabled/disabled in topcatadmin.</p>
             </subsection>
+            
+            
         </section>
+        
+        
+        
+        
+        
+        
+        
+        
+        
     </body>
 </document>
             

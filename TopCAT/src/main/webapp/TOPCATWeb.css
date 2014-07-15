@@ -49,3 +49,7 @@ h1 {
 .fixContextMenuIcon3 img{
     margin-top: 32px;   
 }
+
+.x-menu-list-item {
+	height: 16px;
+}

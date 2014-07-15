@@ -12,11 +12,11 @@
                 <li>Changed url separator token from &amp; to ;</li>
                 <li>Last used icat server and authentication type now saved to a cookie</li>
                 <li>Added ability for users to create datasets</li>
-                <li>Added ability for users to upload a datafile</li>                
+                <li>Added ability for users to upload a datafile (See <a href="installation.html#File_Upload">installation</a> doc.)</li>                
                 <li>Removed support for ICAT servers below 4.2</li>
                 <li>Changed persistence.xml to enable logging to be configured at container level</li>
                 <li>Added new configuration options to topcat-setup.properties to change the url path of topcat and topcatadmin</li>
-                <li>Fixed deployment issue when topcat is behind a reverse proxy (See installation doc for <a href="installation.html#Deployment_Behind_Reverse_proxy">example apache configuration</a>). </li>
+                <li>Fixed deployment issue when topcat is behind a reverse proxy (See installation doc. for <a href="installation.html#Deployment_Behind_Reverse_proxy">example apache configuration</a>). </li>
                 <li>Remove the 200 investigation limit on the Browse All data tree</li>
                 <li>Bug fixes</li>
                 <li>schema changes (See <a href="installation.html#Schema_Upgrade"> schema upgrade instructions</a>):

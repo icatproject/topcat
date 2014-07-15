@@ -16,6 +16,9 @@
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="ExtGWT/css/gxt-all.css">
     <link type="text/css" rel="stylesheet" href="TOPCATWeb.css">
+    <!--[if IE]>
+        <link type="text/css" rel="stylesheet" href="TOPCATWeb.ie.css">
+    <![endif]-->
 
     <!--                                           -->
     <!-- Any title is fine                         -->

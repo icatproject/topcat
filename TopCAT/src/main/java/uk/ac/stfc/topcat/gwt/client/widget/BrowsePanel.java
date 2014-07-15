@@ -410,7 +410,7 @@ public class BrowsePanel extends Composite {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(180);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("Show Investigation Details");        
+        showInvestigation.setText("Show Investigation Details");     
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
         showInvestigation.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showInvestigation);
