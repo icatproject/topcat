@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2013
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
@@ -26,11 +26,14 @@ package uk.ac.stfc.topcat.gwt.client.widget;
  * Imports
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.InternalException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
@@ -52,6 +55,7 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -94,7 +98,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * <dd>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Datafile</dd>
  * </dl>
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -108,22 +112,22 @@ public class BrowsePanel extends Composite {
     private static final String SOURCE = "BrowsePanel";
     private ICATNode node;
     private EventPipeLine eventPipline;
-    
+
     private static Logger rootLogger = Logger.getLogger("");
 
     public BrowsePanel() {
         eventPipline = EventPipeLine.getInstance();
 
         LayoutContainer mainContainer = new LayoutContainer();
-        mainContainer.setLayout(new RowLayout(Orientation.VERTICAL));        
+        mainContainer.setLayout(new RowLayout(Orientation.VERTICAL));
 
         // Add Treepanel
         RpcProxy<ArrayList<ICATNode>> proxy = getProxy();
-        
+
         loader = getLoader(proxy);
         TreeStore<ICATNode> store = new TreeStore<ICATNode>(loader);
         tree = new TreePanel<ICATNode>(store);
-        
+
         ContentPanel contentPanel = new ContentPanel();
         contentPanel.setHeaderVisible(false);
         contentPanel.setCollapsible(true);
@@ -171,8 +175,8 @@ public class BrowsePanel extends Composite {
         createLoginHandler();
         createLogoutHandler();
         CreateAddDatafileHandler();
-        CreateAddDatasetHandler();        
-        
+        CreateAddDatasetHandler();
+
         loader.addLoadListener(new LoadListener() {
             @Override
             public void loaderLoad(LoadEvent event) {
@@ -183,7 +187,7 @@ public class BrowsePanel extends Composite {
 
     /**
      * Get a base tree loader that uses the given proxy.
-     * 
+     *
      * @param proxy
      * @return a BaseTreeLoader
      */
@@ -202,19 +206,19 @@ public class BrowsePanel extends Composite {
 
     /**
      * Get a ToolBar with a ButtonBar with a download button.
-     * 
+     *
      * @return a ToolBar
      */
     private ToolBar getToolBar() {
         ToolBar toolBar = new ToolBar();
         ButtonBar buttonBar = new ButtonBar();
-        DownloadButton btnDownload = new DownloadButton(tree);        
-        
+        DownloadButton btnDownload = new DownloadButton(tree);
+
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                String downloadName = ((DownloadButtonEvent) ce).getDownloadName();                
-                        
+                String downloadName = ((DownloadButtonEvent) ce).getDownloadName();
+
                 download(downloadName);
             }
         });
@@ -226,7 +230,7 @@ public class BrowsePanel extends Composite {
     /**
      * Get the RPC proxy which will get the information from the server using
      * GWT-RPC AJAX calls each time the user expands the tree to browse.
-     * 
+     *
      * @return a RpcProxy
      */
     private RpcProxy<ArrayList<ICATNode>> getProxy() {
@@ -311,7 +315,7 @@ public class BrowsePanel extends Composite {
                 if ((node.getNodeType() == ICATNodeType.DATAFILE || node.getNodeType() == ICATNodeType.INVESTIGATION)
                         && loader.hasChildren(node) && tree.getStore().getChildCount(node) == 0) {
                     loader.loadChildren(node);
-                }                
+                }
             }
         });
     }
@@ -346,15 +350,15 @@ public class BrowsePanel extends Composite {
             @Override
             public void handleEvent(TreePanelEvent<ICATNode> be) {
                 TreePanel<ICATNode>.TreeNode node = be.getNode();
-                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {                    
+                if (node.getModel().getNodeType() == ICATNodeType.INVESTIGATION) {
                     ICATNode icatnode = node.getModel();
                     eventPipline.getInvestigationDetails(icatnode.getFacility(),
                             icatnode.getInvestigationId(), SOURCE);
-                } else if (node.getModel().getNodeType() == ICATNodeType.DATASET) {                    
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATASET) {
                     ICATNode icatnode = node.getModel();
                     eventPipline.showParameterWindowWithHistory(icatnode.getFacility(),
                             Constants.DATA_SET, icatnode.getDatasetId(), icatnode.getDatafileName());
-                } else if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {                    
+                } else if (node.getModel().getNodeType() == ICATNodeType.DATAFILE) {
                     ICATNode icatnode = node.getModel();
                     eventPipline.showParameterWindowWithHistory(icatnode.getFacility(),
                             Constants.DATA_FILE, icatnode.getDatafileId(), icatnode.getDatafileName());
@@ -362,8 +366,8 @@ public class BrowsePanel extends Composite {
             }
         });
     }
-    
-    
+
+
     private void addChangeListener() {
         tree.addListener(Events.CheckChange, new Listener<TreePanelEvent<ICATNode>>(){
 
@@ -372,10 +376,10 @@ public class BrowsePanel extends Composite {
                 // TODO Auto-generated method stub
                 //ICATNode node = be.getItem();
             }
-            
+
         });
     }
-    
+
 
     /**
      * Add a ContextMenu to the tree.
@@ -403,14 +407,14 @@ public class BrowsePanel extends Composite {
 
     /**
      * Get a context menu specific to an investigation node.
-     * 
+     *
      * @return a context menu
      */
     private Menu getInvestigationMenu() {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(180);
         MenuItem showInvestigation = new MenuItem();
-        showInvestigation.setText("Show Investigation Details");     
+        showInvestigation.setText("Show Investigation Details");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
         showInvestigation.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showInvestigation);
@@ -423,8 +427,8 @@ public class BrowsePanel extends Composite {
                 }
             }
         });
-        
-        
+
+
         MenuItem showDataSet = new MenuItem();
         showDataSet.setText("Show Data Sets");
         showDataSet.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
@@ -435,15 +439,15 @@ public class BrowsePanel extends Composite {
             public void componentSelected(MenuEvent ce) {
                 eventPipline.showDatasetWindowWithHistory(
                         tree.getSelectionModel().getSelectedItem().getFacility(),
-                        tree.getSelectionModel().getSelectedItem().getInvestigationId(), 
+                        tree.getSelectionModel().getSelectedItem().getInvestigationId(),
                         tree.getSelectionModel().getSelectedItem().getInvestigationName());
             }
         });
-        
+
         if(eventPipline.hasCreateDatasetSupport(tree.getSelectionModel().getSelectedItem().getFacility())) {
             MenuItem addDataset = new MenuItem();
             addDataset.setText("Add Data Set");
-            addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
+            addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));
             addDataset.setStyleAttribute("margin-left", "25px");
             addDataset.addStyleName("fixContextMenuIcon3");
             contextMenu.add(addDataset);
@@ -452,25 +456,25 @@ public class BrowsePanel extends Composite {
                     if (tree.getSelectionModel().getSelectedItem().getNodeType() == ICATNodeType.INVESTIGATION) {
                         eventPipline.showAddNewDatasetWindow(
                                 tree.getSelectionModel().getSelectedItem().getFacility(),
-                                tree.getSelectionModel().getSelectedItem().getInvestigationId(), 
+                                tree.getSelectionModel().getSelectedItem().getInvestigationId(),
                                 SOURCE,
                                 tree.getSelectionModel().getSelectedItem());
                     }
                 }
             });
         }
-        
+
         return contextMenu;
     }
 
     /**
      * Get a context menu specific to an data set node.
-     * 
+     *
      * @return a context menu
      */
     private Menu getDatasetMenu() {
         Menu contextMenu = new Menu();
-        
+
         contextMenu.setWidth(190);
         MenuItem showDataset = new MenuItem();
         showDataset.setText("Show Data Set Parameters");
@@ -484,8 +488,8 @@ public class BrowsePanel extends Composite {
                         tree.getSelectionModel().getSelectedItem().getDatasetId(),
                         tree.getSelectionModel().getSelectedItem().getDatasetName());
             }
-        });        
-        
+        });
+
         //add data file if enabled and supported by ids
         if (eventPipline.hasUploadSupport(tree.getSelectionModel().getSelectedItem().getFacility())) {
             MenuItem addDatafile = new MenuItem();
@@ -495,7 +499,7 @@ public class BrowsePanel extends Composite {
             addDatafile.addStyleName("fixContextMenuIcon2");
             contextMenu.add(addDatafile);
             addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent ce) {                
+                public void componentSelected(MenuEvent ce) {
                     eventPipline.showUploadDatasetWindow(tree.getSelectionModel().getSelectedItem().getFacility(),
                             tree.getSelectionModel().getSelectedItem().getDatasetId(),
                             tree.getSelectionModel().getSelectedItem(),
@@ -503,13 +507,13 @@ public class BrowsePanel extends Composite {
                 }
             });
         }
-        
+
         return contextMenu;
     }
 
     /**
      * Get a context menu specific to an data file node.
-     * 
+     *
      * @return a context menu
      */
     private Menu getDatafileMenu() {
@@ -528,7 +532,7 @@ public class BrowsePanel extends Composite {
                         tree.getSelectionModel().getSelectedItem().getDatafileName());
             }
         });
-        
+
         MenuItem showDatafileDownload = new MenuItem();
         showDatafileDownload.setText("Download Data File");
         showDatafileDownload.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
@@ -541,23 +545,25 @@ public class BrowsePanel extends Composite {
                 downloadSingleFile(tree.getSelectionModel().getSelectedItem());
             }
         });
-        
+
         return contextMenu;
     }
 
     private void downloadSingleFile(ICATNode node) {
         rootLogger.log(Level.SEVERE, "downloadSingleFile called");
-        
+
         //make sure it a data file node type
         if (node.getNodeType() == ICATNodeType.DATAFILE) {
-            List<Long> id = new ArrayList<Long>();
-            id.add(new Long(node.getDatafileId()));
             rootLogger.log(Level.SEVERE, "DownloadManager.getInstance().downloadDatafiles called");
-            DownloadManager.getInstance().downloadDatafiles(node.getFacility(), id, node.getDatafileName(), IdsFlag.NONE);
+
+            TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+            topcatDataSelection.addDatafile(new Long(node.getDatafileId()));
+
+            DownloadManager.getInstance().downloadData(node.getFacility(), topcatDataSelection, node.getDatafileName(), IdsFlag.NONE);
         } else {
             rootLogger.log(Level.SEVERE, "not a datafile");
         }
-        
+
     }
 
     /**
@@ -566,117 +572,26 @@ public class BrowsePanel extends Composite {
     private void download(String downloadName) {
         List<ICATNode> selectedItems = tree.getCheckedSelection();
 
-        // Create map of selected datasets
-        // map: key = facility name, value = list of dataset ids
-        HashMap<String, ArrayList<Long>> dsMap = new HashMap<String, ArrayList<Long>>();
-        
-        for (ICATNode node : selectedItems) {
-            if (node.getNodeType() == ICATNodeType.DATASET) {
-                ArrayList<Long> idList = dsMap.get(node.getFacility());
-                if (idList == null) {
-                    idList = new ArrayList<Long>();
-                    dsMap.put(node.getFacility(), idList);
-                }
-                idList.add(new Long(node.getDatasetId()));
-            }
-        }
+        Map<String, TopcatDataSelection> dataSelectionMap = reduceToDataSelection(selectedItems);
 
-        // Create map of selected datafiles
-        // map: key = facility name, value = list of datafile ids
-        HashMap<String, ArrayList<Long>> dfMap = new HashMap<String, ArrayList<Long>>();
-        
-        for (ICATNode node : selectedItems) {
-            if (node.getNodeType() == ICATNodeType.DATAFILE) {
-                ArrayList<Long> dsList = dsMap.get(node.getFacility());
-                if (dsList != null) {
-                    if (dsList.contains(new Long(tree.getStore().getParent(node).getDatasetId()))) {
-                        // we have already selected the whole dataset so ignore
-                        // the file
-                        continue;
-                    }
-                }
-                ArrayList<Long> idList = dfMap.get(node.getFacility());
-                if (idList == null) {
-                    idList = new ArrayList<Long>();
-                    dfMap.put(node.getFacility(), idList);
-                }
-                idList.add(new Long(node.getDatafileId()));
-            }
-        }       
-
-        // Calculate how many batches the data will need to be split into.
-        // Different batches are required for each dataset and for each
-        // facility. Datafiles from the same facility can be grouped together.
-        int requiredBatches = 0;
-        for (String facility : dsMap.keySet()) {
-            requiredBatches = requiredBatches + dsMap.get(facility).size();
-        }
-        requiredBatches = requiredBatches + dfMap.size();
-
-        int batchCount = 0;
-        // get a download frame for each data set
-        for (String facility : dsMap.keySet()) {
-            List<Long> idList = dsMap.get(facility);
-            for (Long id : idList) {
-                batchCount = batchCount + 1;
-                // TODO the next two lines where added as a temporary measure
-                // until all downloads are via the I.D.S. At which point all of
-                // the code needs reviewing.
-                List<Long> ids = new ArrayList<Long>(1);
-                ids.add(id);
-                if (requiredBatches == 1) {
-                    DownloadManager.getInstance().downloadDataset(facility, ids, downloadName, IdsFlag.ZIP_AND_COMPRESS);
-                } else {
-                    if (batchCount < 10) {
-                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-0" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
-                    } else {
-                        DownloadManager.getInstance().downloadDataset(facility, ids, downloadName + "-" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
-                    }
-                }
-            }
-        }
-
-        // get a download frame for each batch of data files, one batch per
-        // facility
-        for (String facility : dfMap.keySet()) {
-            batchCount = batchCount + 1;
-            List<Long> idList = dfMap.get(facility);
-            if (requiredBatches == 1) {
-                DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName, IdsFlag.ZIP_AND_COMPRESS);
-            } else {
-                if (batchCount < 10) {
-                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-0" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
-                } else {
-                    DownloadManager.getInstance().downloadDatafiles(facility, idList, downloadName + "-" + batchCount, IdsFlag.ZIP_AND_COMPRESS);
-                }
-            }
-        }
-
-        if (batchCount == 0) {
+        if (dataSelectionMap.size() == 0) {
             eventPipline.showMessageDialog("Nothing selected for download");
-        } /*else if (batchCount == 1) {
-            eventPipline.showMessageDialog(
-                    "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
-                            + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
+        } else if (dataSelectionMap.size() == 1) {
+            for (String facility : dataSelectionMap.keySet()) {
+                DownloadManager.getInstance().downloadData(facility, dataSelectionMap.get(facility), downloadName, IdsFlag.ZIP_AND_COMPRESS);
+                break;
+            }
         } else {
-            eventPipline.showMessageDialog(
-                    "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
-                            + "as " + batchCount
-                            + " files. The status of your download can be seen from the ‘My Downloads’ tab.");
-        }*/
-        
-        
+            for (String facility : dataSelectionMap.keySet()) {
+                DownloadManager.getInstance().downloadData(facility, dataSelectionMap.get(facility), downloadName + "-" + facility, IdsFlag.ZIP_AND_COMPRESS);
+            }
+        }
     }
-    
-    
-    
-    
-    
-    
+
 
     /**
      * This method sets the width of the tree.
-     * 
+     *
      * @param width
      */
     public void setTreeWidth(int width) {
@@ -741,40 +656,179 @@ public class BrowsePanel extends Composite {
             }
         });
     }
-    
-    
+
+
     /**
      *  Setup handler for addd data file
      */
     private void CreateAddDatafileHandler() {
         AddDatafileEvent.registerToSource(EventPipeLine.getEventBus(), SOURCE, new AddDatafileEventHandler() {
-            
+
             @Override
-            public void addDatafile(AddDatafileEvent event) {                
-                node = (ICATNode) event.getNode();                
+            public void addDatafile(AddDatafileEvent event) {
+                node = (ICATNode) event.getNode();
                 loader.loadChildren(node);
             }
         });
-        
+
     }
-    
-    
+
+
     /**
      *  Setup handler for addd data file
      */
     private void CreateAddDatasetHandler() {
         AddDatasetEvent.registerToSource(EventPipeLine.getEventBus(), SOURCE, new AddDatasetEventHandler() {
-            
+
             @Override
-            public void addDataset(AddDatasetEvent event) {                
+            public void addDataset(AddDatasetEvent event) {
                 node = (ICATNode) event.getNode();
                 loader.loadChildren(node);
             }
         });
-        
+
     }
-    
-    
-    
-    
+
+
+    /**
+     * This method reduced the ICATNode list to a map of the selected investigation, dataset and datafiles.
+     * Child dataset and datafiles are removed
+     *
+     * @param selectedItems
+     * @return
+     */
+    private Map<String, TopcatDataSelection> reduceToDataSelection(List<ICATNode> selectedItems) {
+
+        Map<String, TopcatDataSelection> dataSelectionMap = new HashMap<String, TopcatDataSelection>();
+
+        //create dataSelectionMap for each facility
+        List<TFacility> facilities = eventPipline.getFacilities();
+        for(TFacility facility : facilities) {
+            dataSelectionMap.put(facility.getName(), new TopcatDataSelection());
+        }
+
+        HashMap<String, ArrayList<Long>> invMap = new HashMap<String, ArrayList<Long>>();
+
+        for (ICATNode node : selectedItems) {
+            if (node.getNodeType() == ICATNodeType.INVESTIGATION) {
+                ArrayList<Long> idList = invMap.get(node.getFacility());
+
+                if (idList == null) {
+                    idList = new ArrayList<Long>();
+                }
+
+                idList.add(new Long(node.getInvestigationId()));
+                invMap.put(node.getFacility(), idList);
+
+                dataSelectionMap.get(node.getFacility()).addInvestigation(new Long(node.getInvestigationId()));
+            }
+        }
+
+        // Create map of selected datasets
+        // map: key = facility name, value = list of dataset ids
+        HashMap<String, ArrayList<Long>> dsMap = new HashMap<String, ArrayList<Long>>();
+        for (ICATNode node : selectedItems) {
+            if (node.getNodeType() == ICATNodeType.DATASET) {
+                //check if dataset parent is already selected
+                ArrayList<Long> invList = invMap.get(node.getFacility());
+                if (invList != null) {
+                    String parentInvestigationId = tree.getStore().getParent(node).getInvestigationId();
+                    if (parentInvestigationId != null) {
+                        if (invList.contains(new Long(parentInvestigationId))) {
+                            continue;
+                        }
+                    }
+                }
+
+                ArrayList<Long> idList = dsMap.get(node.getFacility());
+
+                if (idList == null) {
+                    idList = new ArrayList<Long>();
+                }
+
+                idList.add(new Long(node.getDatasetId()));
+                dataSelectionMap.get(node.getFacility()).addDataset(new Long(node.getDatasetId()));
+                dsMap.put(node.getFacility(), idList);
+            }
+        }
+
+        // Create map of selected datafiles
+        // map: key = facility name, value = list of datafile ids
+        HashMap<String, ArrayList<Long>> dfMap = new HashMap<String, ArrayList<Long>>();
+
+
+        for (ICATNode node : selectedItems) {
+            if (node.getNodeType() == ICATNodeType.DATAFILE) {
+                ArrayList<Long> dsList = dsMap.get(node.getFacility());
+                if (dsList != null) {
+                    String parentDataSetId = tree.getStore().getParent(node).getDatasetId();
+
+                    if (parentDataSetId != null) {
+                        if (dsList.contains(new Long(parentDataSetId))) {
+                            continue;
+                        }
+                    }
+                }
+
+                ArrayList<Long> invList = invMap.get(node.getFacility());
+                if (invList != null) {
+                    ICATNode investigationNode = null;
+
+                    //get parent node
+                    ICATNode parentNode = tree.getStore().getParent(node);
+                    //check if node is a dataset
+                    if (parentNode.getNodeType() == ICATNodeType.DATASET) {
+                        //again get the parent to get the investigation
+                        ICATNode tempNode = tree.getStore().getParent(parentNode);
+
+                        if (tempNode.getNodeType() == ICATNodeType.INVESTIGATION) {
+                            investigationNode = tempNode;
+                        }
+                    } else if(parentNode.getNodeType() == ICATNodeType.INVESTIGATION){
+                        investigationNode = parentNode;
+                    }
+
+                    if (investigationNode != null) {
+                        String parentInvestigationId = investigationNode.getInvestigationId();
+
+                        if (parentInvestigationId != null) {
+                            if (invList.contains(new Long(parentInvestigationId))) {
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                ArrayList<Long> idList = dfMap.get(node.getFacility());
+                if (idList == null) {
+                    idList = new ArrayList<Long>();
+                }
+
+                idList.add(new Long(node.getDatafileId()));
+                dataSelectionMap.get(node.getFacility()).addDatafile(new Long(node.getDatafileId()));
+                dfMap.put(node.getFacility(), idList);
+            }
+        }
+
+        //remove facilities without items
+        for(Map.Entry<String, TopcatDataSelection> entry : dataSelectionMap.entrySet()) {
+            if (entry.getValue().getParameters().size() == 0) {
+                dataSelectionMap.remove(entry.getKey());
+            }
+        }
+
+
+        //debug
+        for(Map.Entry<String, TopcatDataSelection> entry : dataSelectionMap.entrySet()) {
+            rootLogger.log(Level.SEVERE, "DataSelection:" + Arrays.toString(entry.getValue().getParameters().entrySet().toArray()));
+        }
+
+
+
+        return dataSelectionMap;
+    }
+
+
+
+
 }

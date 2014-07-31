@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2013
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
@@ -50,6 +50,7 @@ import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
 
@@ -91,9 +92,9 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 /**
  * This is a floating window widget, It shows list of datafiles for a given
  * investigation.
- * 
+ *
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -115,10 +116,10 @@ public class DatafileWindow extends Window {
     private Set<String> facilityNames = new HashSet<String>();
     private boolean awaitingLogin;
     private boolean loadingData = false;
-    private boolean advancedSearchData = false;    
+    private boolean advancedSearchData = false;
     private static final String SOURCE = "DatafileWindow";
     private EventPipeLine eventPipeLine;
-    
+
     private static Logger rootLogger = Logger.getLogger("");
 
     /** Number of rows of data. */
@@ -126,7 +127,7 @@ public class DatafileWindow extends Window {
 
     public DatafileWindow() {
         eventPipeLine = EventPipeLine.getInstance();
-        
+
         // Listener called when the datafile window is closed.
         addWindowListener(new WindowListener() {
             @Override
@@ -140,7 +141,7 @@ public class DatafileWindow extends Window {
             }
         });
 
-        datafileSelectionModel = createDatafileSelectionModel();            
+        datafileSelectionModel = createDatafileSelectionModel();
         setHeadingText("Datafile Window");
         setLayout(new RowLayout(Orientation.VERTICAL));
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
@@ -213,7 +214,7 @@ public class DatafileWindow extends Window {
         // ToolBar with download button
         toolBar = new ToolBar();
         final DownloadButton btnDownload = new DownloadButton(datafileSelectionModel);
-        
+
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -221,20 +222,20 @@ public class DatafileWindow extends Window {
             }
         });
         toolBar.add(btnDownload);
-        
+
         toolBar.add(new SeparatorToolItem());
-        
+
         btnUploadDatafile = new Button("Add Data File", AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
-        
+
         setTopComponent(toolBar);
 
         // Context Menu
         Menu contextMenu = new Menu();
-        contextMenu.setWidth(200);        
-        MenuItem showDS = new MenuItem();        
+        contextMenu.setWidth(200);
+        MenuItem showDS = new MenuItem();
         showDS.setText("Show Data File Parameters");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatafileParameter()));
-        showDS.setStyleAttribute("margin-left", "25px");        
+        showDS.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -243,8 +244,8 @@ public class DatafileWindow extends Window {
                         dfm.getId(), dfm.getName());
             }
         });
-        
-        
+
+
         MenuItem showFS = new MenuItem();
         showFS.setText("Download Data File");
         showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
@@ -252,12 +253,12 @@ public class DatafileWindow extends Window {
         showFS.addStyleName("fixContextMenuIcon2");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {                
+            public void componentSelected(MenuEvent ce) {
                 downloadSingleFile(grid.getSelectionModel().getSelectedItem());
-                
+
             }
         });
-        
+
         grid.setContextMenu(contextMenu);
 
         setLayout(new FitLayout());
@@ -288,19 +289,19 @@ public class DatafileWindow extends Window {
         createLogoutHandler();
         createAddDatafileHandler();
     }
-    
-    
+
+
     private void addUploadFileButton(List<DatasetModel> facilities, ToolBar toolBar, Button button) {
       //only display if window has models from one dataset
         if (facilities.size() == 1) {
             final String facilityName = facilities.get(0).getFacilityName();
             final String datasetId = facilities.get(0).getId();
             final DatasetModel node = facilities.get(0);
-            
+
             if (eventPipeLine.hasUploadSupport(facilityName)) {
                 btnUploadDatafile.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
-                    public void componentSelected(ButtonEvent ce) {                            
+                    public void componentSelected(ButtonEvent ce) {
                         EventPipeLine.getInstance().showUploadDatasetWindow(facilityName, datasetId, node , SOURCE);
                     }
                 });
@@ -308,7 +309,7 @@ public class DatafileWindow extends Window {
             }
         }
     }
-    
+
     public ToolBar getToolBar() {
         return toolBar;
     }
@@ -317,12 +318,12 @@ public class DatafileWindow extends Window {
     public Button getBtnUploadDatafile() {
         return btnUploadDatafile;
     }
-    
+
 
     /**
      * Set the datasets input which are used to get the datafiles corresponding
      * to each dataset and are displayed in the window.
-     * 
+     *
      * @param datasetList
      *            an array of <code>DatasetModel</code>
      */
@@ -339,13 +340,13 @@ public class DatafileWindow extends Window {
         } else {
             awaitingLogin = true;
         }
-        
+
         addUploadFileButton(inputDatasetModels, getToolBar(), getBtnUploadDatafile());
     }
 
     /**
      * Set the datafile list to be displayed in the window.
-     * 
+     *
      * @param datafileList
      *            an array of <code>DatafileModel</code>
      */
@@ -361,7 +362,7 @@ public class DatafileWindow extends Window {
 
     /**
      * Set the datafile list to be displayed in the window.
-     * 
+     *
      * @param datafileList
      *            an array of <code>DatafileModel</code>
      */
@@ -384,7 +385,7 @@ public class DatafileWindow extends Window {
 
     /**
      * Get the history of this window.
-     * 
+     *
      * @return the history string of this window
      */
     public String getHistoryString() {
@@ -409,7 +410,7 @@ public class DatafileWindow extends Window {
     /**
      * Compares the input list of <code>DatasetModel</code>s with the
      * <code>DatasetModel</code>s in the current windows.
-     * 
+     *
      * @param dsModelList
      *            array of <code>DatasetModel</code>
      * @return <code>true</code> if input list matches current windows
@@ -431,7 +432,7 @@ public class DatafileWindow extends Window {
 
     /**
      * Check if the history is verified.
-     * 
+     *
      * @return returns the history verified status
      */
     public boolean isHistoryVerified() {
@@ -445,7 +446,7 @@ public class DatafileWindow extends Window {
 
     /**
      * Set the history verified status.
-     * 
+     *
      * @param historyVerified
      *            history verified status
      */
@@ -469,7 +470,7 @@ public class DatafileWindow extends Window {
     /**
      * Check if the widget is in use by the given facility, i.e. waiting for the
      * user to log in or widget already visible.
-     * 
+     *
      * @param facilitName
      * @return true if the widget is in use
      */
@@ -484,7 +485,7 @@ public class DatafileWindow extends Window {
     /**
      * Check if the widget is in use, i.e. waiting for the user to log in or
      * widget already visible.
-     * 
+     *
      * @return true if the widget is in use
      */
     public boolean isInUse() {
@@ -509,7 +510,7 @@ public class DatafileWindow extends Window {
 
     /**
      * Get a customised CheckBoxSelectionModel
-     * 
+     *
      * @return a customised CheckBoxSelectionModel
      */
     private CheckBoxSelectionModel<DatafileModel> createDatafileSelectionModel() {
@@ -605,27 +606,25 @@ public class DatafileWindow extends Window {
 
         return dfSelectionModel;
     }
-    
+
     /**
      * Download a single date file
      * @param node
      */
     private void downloadSingleFile(DatafileModel node) {
         rootLogger.log(Level.SEVERE, "downloadSingleFile called");
-        
-        //make sure it a data file node type
-       
-        List<Long> id = new ArrayList<Long>();
-        id.add(new Long(node.getId()));
-        rootLogger.log(Level.SEVERE, "getFacilityName():" + node.getFacilityName() + " id: " + id + " node.getName(): " + node.getName());
-        
-        DownloadManager.getInstance().downloadDatafiles(node.getFacilityName(), id, node.getName(), IdsFlag.NONE);
+        rootLogger.log(Level.SEVERE, "getFacilityName():" + node.getFacilityName() + " id: " + node.getId() + " node.getName(): " + node.getName());
+
+        TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+        topcatDataSelection.addDatafile(new Long(node.getId()));
+
+        DownloadManager.getInstance().downloadData(node.getFacilityName(), topcatDataSelection, node.getName(), IdsFlag.NONE);
     }
-    
+
 
     /**
      * Download selected datafiles.
-     * 
+     *
      * @param downloadName
      *            the display name for the download
      */
@@ -635,11 +634,14 @@ public class DatafileWindow extends Window {
             return;
         }
         List<Long> selectedItems = new ArrayList<Long>(selectedFiles);
-        
+
         @SuppressWarnings("unchecked")
-        String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName(); 
-                
-        DownloadManager.getInstance().downloadDatafiles(facility, selectedItems, downloadName, IdsFlag.ZIP_AND_COMPRESS);
+        String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
+
+        TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+        topcatDataSelection.addDatafiles(selectedItems);
+
+        DownloadManager.getInstance().downloadData(facility, topcatDataSelection, downloadName, IdsFlag.ZIP_AND_COMPRESS);
         /*
         EventPipeLine.getInstance().showMessageDialog(
                 "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "
@@ -726,28 +728,28 @@ public class DatafileWindow extends Window {
             }
         });
     }
-    
-    
+
+
     private void createAddDatafileHandler() {
         AddDatafileEvent.register(EventPipeLine.getEventBus(), new AddDatafileEventHandler() {
-            
+
             @Override
             public void addDatafile(AddDatafileEvent event) {
                 DatasetModel node = (DatasetModel) event.getNode();
-               
-                for (DatasetModel datasetModel: inputDatasetModels) {                    
+
+                for (DatasetModel datasetModel: inputDatasetModels) {
                     if(datasetModel.getId().equals(node.getId())) {
                         datafileSelectionModel.refresh();
-                        loadData();             
+                        loadData();
                     }
-                    
+
                 }
             }
         });
-        
+
     }
-    
-    
-    
+
+
+
 
 }

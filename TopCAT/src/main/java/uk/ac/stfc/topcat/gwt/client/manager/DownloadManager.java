@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2013
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.manager;
@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -52,6 +53,7 @@ import uk.ac.stfc.topcat.gwt.client.event.UpdateDownloadStatusEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 
 public class DownloadManager {
@@ -81,7 +83,7 @@ public class DownloadManager {
 
     /**
      * Get the DownloadManager.
-     * 
+     *
      * @return an instance of the DownloadManager
      */
     public static DownloadManager getInstance() {
@@ -90,7 +92,7 @@ public class DownloadManager {
 
     /**
      * Initiate a download in a separate window.
-     * 
+     *
      * @param facilityName
      *            a string containing the facility name
      * @param url
@@ -110,7 +112,7 @@ public class DownloadManager {
 
     /**
      * Download all the data files from the facility for the given ids.
-     * 
+     *
      * @param facilityName
      *            a string containing the facility name
      * @param datafileList
@@ -119,31 +121,31 @@ public class DownloadManager {
      *            a string containing a user defined name to give the download
      *            file
      */
-    public void downloadDatafiles(final String facilityName, final List<Long> datafileList, final String downloadName, IdsFlag flag) {
+    /*
+    public void downloadDatafiles(final String facilityName, final TopcatDataSelection dataSelection, final String downloadName, IdsFlag flag) {
         ArrayList<TFacility> facilities = eventPipeLine.getFacilities();
         for (TFacility facility : facilities) {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
                         && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
-                    if (facility.getDownloadTypeName().equalsIgnoreCase("archived")) {                    
-                        prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
+                    if (facility.getDownloadTypeName().equalsIgnoreCase("archived")) {
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, dataSelection, downloadName);
                     } else if (facility.getDownloadTypeName().equalsIgnoreCase("local")) {
-                        directDownloadFromIDS(Constants.DATA_FILE, facility, datafileList, downloadName, flag);
-                    } else { 
+                        directDownloadFromIDS(Constants.DATA_FILE, facility, dataSelection, downloadName, flag);
+                    } else {
                         //use prepared if download type not set. Shouldn't get here
-                        prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, datafileList, downloadName);
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_FILE, facility, dataSelection, downloadName);
                     }
-                } else {
-                    downloadDatafilesRDS(facilityName, datafileList, downloadName);
                 }
 
             }
         }
     }
+    */
 
     /**
      * Download the data set from the facility.
-     * 
+     *
      * @param facilityName
      *            a string containing the facility name
      * @param datasetId
@@ -152,29 +154,48 @@ public class DownloadManager {
      *            a string containing a user defined name to give the download
      *            file
      */
-    public void downloadDataset(final String facilityName, final List<Long> datasetList, final String downloadName, IdsFlag flag) {
+    /*
+    public void downloadDataset(final String facilityName, final TopcatDataSelection dataSelection, final String downloadName, IdsFlag flag) {
 
         ArrayList<TFacility> facilities = eventPipeLine.getFacilities();
         for (TFacility facility : facilities) {
             if (facility.getName().equalsIgnoreCase(facilityName)) {
                 if (facility.getDownloadPluginName() != null
                         && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
-                    
+
                     if (facility.getDownloadTypeName().equalsIgnoreCase("prepared")) {
-                        prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
-                    } else if (facility.getDownloadTypeName().equalsIgnoreCase("direct")) {                        
-                        directDownloadFromIDS(Constants.DATA_SET, facility, datasetList, downloadName, flag);
-                    } else { 
-                        //use prepared if download type not set. Shouldn't get here                        
-                        prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, datasetList, downloadName);
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, dataSelection, downloadName);
+                    } else if (facility.getDownloadTypeName().equalsIgnoreCase("direct")) {
+                        directDownloadFromIDS(Constants.DATA_SET, facility, dataSelection, downloadName, flag);
+                    } else {
+                        //use prepared if download type not set. Shouldn't get here
+                        prepareDataObjectsForDownloadIDS(Constants.DATA_SET, facility, dataSelection, downloadName);
                     }
-                } else {
-                    downloadDatasetsRDS(facilityName, datasetList.get(0), downloadName);
                 }
             }
         }
-
     }
+    */
+
+
+    public void downloadData(final String facilityName, TopcatDataSelection dataSelection, final String downloadName, IdsFlag flag) {
+        ArrayList<TFacility> facilities = eventPipeLine.getFacilities();
+
+        for (TFacility facility : facilities) {
+            if (facility.getName().equalsIgnoreCase(facilityName)) {
+                if (facility.getDownloadPluginName() != null && facility.getDownloadPluginName().equalsIgnoreCase("ids")) {
+                    if (facility.getDownloadTypeName().equalsIgnoreCase(Constants.DOWNLOAD_TYPE_ARCHIVE)) {
+                        prepareDataObjectsForDownloadIDS(facility, dataSelection, downloadName, flag);
+                    } else if (facility.getDownloadTypeName().equalsIgnoreCase(Constants.DOWNLOAD_TYPE_LOCAL)) {
+                        directDownloadFromIDS(facility, dataSelection, downloadName, flag);
+                    } else {
+                        eventPipeLine.showErrorDialog("Unknown download type " + facility.getDownloadTypeName() + ". Please check ids configuration");
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * Call out to the server to get the list of downloads available for the
@@ -183,7 +204,7 @@ public class DownloadManager {
      * <dt>Fires:</dt>
      * <dd> <code>UpdateDownloadStatusEvent</code></dd>
      * </dl>
-     * 
+     *
      * @param facilities
      *            a list of facility names
      */
@@ -215,12 +236,12 @@ public class DownloadManager {
 
     /**
      * Contact the I.D.S. and prepare the download of the given data objects.
-     * 
+     *
      * <dl>
      * <dt>Fires:</dt>
      * <dd> <code>AddMyDownloadEvent</code></dd>
      * </dl>
-     * 
+     *
      * @param dataType
      *            the type of the data object to be downloaded
      * @param facility
@@ -230,42 +251,41 @@ public class DownloadManager {
      * @param downloadName
      *            the name to give the download file
      */
-    private void directDownloadFromIDS(final String dataType, final TFacility facility,
-            final List<Long> dataObjectList, final String downloadName, IdsFlag flag) {
-        downloadService.directDownloadFromIDS(dataType, facility, dataObjectList, downloadName, flag,
-                new AsyncCallback<DownloadModel>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        if (caught instanceof SessionException) {
-                            eventPipeLine.checkStillLoggedIn();
-                        } else if (caught instanceof InternalException) {
-                            showErrorDialog(caught.getMessage());
-                        } else {
-                            showErrorDialog("Error requesting the download. " + caught.getMessage());
-                        }
-                    }
+    private void directDownloadFromIDS(final TFacility facility, final TopcatDataSelection dataSelection, final String downloadName, IdsFlag flag) {
+        downloadService.directDownloadFromIDS(facility, dataSelection, downloadName, flag, new AsyncCallback<DownloadModel>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof SessionException) {
+                    eventPipeLine.checkStillLoggedIn();
+                } else if (caught instanceof InternalException) {
+                    showErrorDialog(caught.getMessage());
+                } else {
+                    showErrorDialog("Error requesting the download. " + caught.getMessage());
+                }
+            }
 
-                    @Override
-                    public void onSuccess(DownloadModel result) {
-                        //trigger the download in __directdownload iframe
-                        if(!result.getUrl().isEmpty()) {
-                            DOM.setElementAttribute(RootPanel.get("__directdownload").getElement(), "src", result.getUrl());
-                        } else {
-                            showErrorDialog("Error retrieving download url from the ids");
-                        }
-                    }
-                });
+            @Override
+            public void onSuccess(DownloadModel result) {
+                //trigger the download in __directdownload iframe
+                if(!result.getUrl().isEmpty()) {
+                    //DOM.setElementAttribute(RootPanel.get("__directdownload").getElement(), "src", result.getUrl());
+                    Window.alert(result.getUrl());
+                } else {
+                    showErrorDialog("Error retrieving download url from the ids");
+                }
+            }
+        });
     }
-    
-    
+
+
     /**
      * Contact the I.D.S. and prepare the download of the given data objects.
-     * 
+     *
      * <dl>
      * <dt>Fires:</dt>
      * <dd> <code>AddMyDownloadEvent</code></dd>
      * </dl>
-     * 
+     *
      * @param dataType
      *            the type of the data object to be downloaded
      * @param facility
@@ -275,9 +295,9 @@ public class DownloadManager {
      * @param downloadName
      *            the name to give the download file
      */
-    private void prepareDataObjectsForDownloadIDS(final String dataType, final TFacility facility,
-            final List<Long> dataObjectList, final String downloadName) {
-        downloadService.prepareDataObjectsForDownload(dataType, facility, dataObjectList, downloadName,
+    private void prepareDataObjectsForDownloadIDS(final TFacility facility,
+            final TopcatDataSelection dataSelection, final String downloadName, IdsFlag flag) {
+        downloadService.prepareDataObjectsForDownload(facility, dataSelection, downloadName, flag,
                 new AsyncCallback<DownloadModel>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -300,20 +320,21 @@ public class DownloadManager {
                     }
                 });
     }
-    
-    
-    
+
+
+
 
     /**
      * <dl>
      * <dt>Fires:</dt>
      * <dd> <code>AddMyDownloadEvent</code></dd>
      * </dl>
-     * 
+     *
      * @param facilityName
      * @param datafileList
      * @param downloadName
      */
+    /*
     @Deprecated
     private void downloadDatafilesRDS(final String facilityName, final List<Long> datafileList,
             final String downloadName) {
@@ -343,17 +364,19 @@ public class DownloadManager {
                     }
                 });
     }
+    */
 
     /**
      * <dl>
      * <dt>Fires:</dt>
      * <dd> <code>AddMyDownloadEvent</code></dd>
      * </dl>
-     * 
+     *
      * @param facilityName
      * @param datasetId
      * @param downloadName
      */
+    /*
     @Deprecated
     private void downloadDatasetsRDS(final String facilityName, Long datasetId, String downloadName) {
         downloadService.getDatasetDownloadURL(facilityName, datasetId, downloadName,
@@ -382,10 +405,11 @@ public class DownloadManager {
                     }
                 });
     }
+    */
 
     /**
      * Create a new timer that calls getDownloadStatus() on the server.
-     * 
+     *
      * @return a timer that call getDownloadStatus on the server
      */
     private Timer getDownloadStatusTimer() {
@@ -477,7 +501,7 @@ public class DownloadManager {
 
     /**
      * Show an alert dialog box.
-     * 
+     *
      * @param msg
      *            message in the dialog box
      */
@@ -493,7 +517,7 @@ public class DownloadManager {
      * <dt>Fires:</dt>
      * <dd> <code>AddMyDownloadEvent</code></dd>
      * </dl>
-     * 
+     *
      * @param facilityName
      *            a string containing the facility name
      */

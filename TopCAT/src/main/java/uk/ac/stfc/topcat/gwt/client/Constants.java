@@ -52,6 +52,12 @@ public class Constants {
 
     /** Data file **/
     public static final String DATA_FILE = "DATA_FILE";
+    
+    /** archive download type **/
+    public static final String DOWNLOAD_TYPE_ARCHIVE = "archived";
+    
+    /** local download type **/
+    public static final String DOWNLOAD_TYPE_LOCAL = "local";
 
     /** ICAT Data Service */
     public static final String IDS = "IDS";
