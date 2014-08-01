@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2013
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.callback;
@@ -104,16 +104,16 @@ import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 /**
  * This is import class which holds all the events. currently doesn't directly
  * inherit from handler manager but a beginning to move in right direction.
- * 
+ *
  * This is a singleton and Most of the widget will call this instance to login,
  * search, download, history etc..
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
-public class EventPipeLine implements LoginInterface {    
+public class EventPipeLine implements LoginInterface {
     private final LoginServiceAsync loginService = LoginService.Util.getInstance();
     private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private final SearchServiceAsync searchService = SearchService.Util.getInstance();
@@ -122,7 +122,7 @@ public class EventPipeLine implements LoginInterface {
     ArrayList<TFacility> facilities;
     HashMap<String, ListStore<Instrument>> facilityInstrumentMap;
     ParameterDownloadForm paramDownloadForm;
-    
+
     /**
      * Name of the facilities that have been loaded as a result of the user
      * logging on
@@ -156,7 +156,7 @@ public class EventPipeLine implements LoginInterface {
         loginWidget = new LoginWidget();
         tcWindowManager = new TopcatWindowManager();
         historyManager = new HistoryManager(tcWindowManager);
-        retrievingDataDialog = new WaitDialog();        
+        retrievingDataDialog = new WaitDialog();
         retrievingDataDialog.setMessage("  Retrieving data...");
         waitDialog = new WaitDialog();
         facilityInstrumentMap = new HashMap<String, ListStore<Instrument>>();
@@ -197,7 +197,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * Set the list of facilities that we need to log into in order to view the
      * requested data.
-     * 
+     *
      * @param facilitiesToLogOn
      *            a set of facility names
      */
@@ -222,7 +222,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Set the login info panel.
-     * 
+     *
      * @param loginPanel
      */
     public void setLoginPanel(LoginPanel loginPanel) {
@@ -231,7 +231,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Get the set of facility names that the user is logged into.
-     * 
+     *
      * @return set of facility names
      */
     public Set<String> getLoggedInFacilities() {
@@ -364,33 +364,33 @@ public class EventPipeLine implements LoginInterface {
                 break;
             }
         }
-        
+
         if (!loggedIn) {
-            //show the login panel for the last logged in facility from the cookie 
+            //show the login panel for the last logged in facility from the cookie
             String cookie = Cookies.getCookie("topcat");
-            
+
             if(cookie != null) {
                 TopcatCookie topcatCookie = deserializeCookie(cookie);
-                
+
                 String lastFacitity = topcatCookie.getLastAuthenticationFacility();
-                
+
                 if (lastFacitity != null) {
                     //check facility exists
-                    boolean facilityExist = false;                    
+                    boolean facilityExist = false;
                     for(TFacility facility : facilities) {
                         if (facility.getName().equals(lastFacitity)) {
                             facilityExist = true;
                             break;
                         }
                     }
-                    
+
                     if (facilityExist) {
                         showLoginWidget(topcatCookie.getLastAuthenticationFacility());
                         return;
                     }
-                } 
+                }
             }
-            
+
             //show first facility login panel as default
             showLoginWidget(facilities.get(0).getName());
         }
@@ -398,7 +398,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * This method shows login dialog box for the given facility.
-     * 
+     *
      * @param facilityName
      */
     public void showLoginWidget(String facilityName) {
@@ -410,7 +410,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * Show an error dialog asking to check the login details for the given
      * facility.
-     * 
+     *
      * @param facilityName
      */
     private void failureLogin(String facilityName) {
@@ -422,7 +422,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * This method logs out the user from the given facility.
-     * 
+     *
      * @param facilityName
      */
     public void facilityLogout(final String facilityName) {
@@ -465,7 +465,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * This method gets all the instrument details for input facility.
-     * 
+     *
      * @param facility
      * @return
      */
@@ -481,7 +481,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method searches for all the investigations that match the given
      * search details.
-     * 
+     *
      * @param searchDetails
      */
     public void searchForInvestigation(final TAdvancedSearchDetails searchDetails) {
@@ -517,18 +517,18 @@ public class EventPipeLine implements LoginInterface {
                     }
                 });
     }
-    
-    
+
+
     /**
      * This method searches for all the investigations that match the given
      * search details.
-     * 
+     *
      * @param searchDetails
      */
     public void searchForInvestigationByFreeText(final TAdvancedSearchDetails searchDetails) {
         waitDialog.setMessage("  Searching...");
         waitDialog.show();
-        
+
         searchService.getFreeTextSearchResultsInvestigation(null, searchDetails,
                 new AsyncCallback<List<TInvestigation>>() {
                     @Override
@@ -536,7 +536,7 @@ public class EventPipeLine implements LoginInterface {
                         if (caught instanceof SessionException) {
                             checkStillLoggedIn();
                         } else if (caught instanceof BadParameterException) {
-                            showErrorDialog("Error " + ((BadParameterException) caught).getMessage());                        
+                            showErrorDialog("Error " + ((BadParameterException) caught).getMessage());
                         } else {
                             showErrorDialog("Error retrieving data from server");
                         }
@@ -552,18 +552,18 @@ public class EventPipeLine implements LoginInterface {
                                         inv.getEndDate()));
                         }
                         waitDialog.hide();
-                        mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);                        
+                        mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);
                     }
                 });
     }
-    
-    
+
+
 
     /**
      * Get additional details about an investigation. An asynchronous call is
      * made to the server and an <code>AddInvestigationDetailsEvent</code> is
      * fired when the results have been returned.
-     * 
+     *
      * @param facilityName
      *            a string containing the facility name
      * @param investigationId
@@ -595,7 +595,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method searches for the user investigations that match the given
      * search details.
-     * 
+     *
      * @param searchDetails
      */
     public void searchForMyInvestigation(TAdvancedSearchDetails searchDetails) {
@@ -641,7 +641,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Show an alert dialog box.
-     * 
+     *
      * @param msg
      *            message in the dialog box
      */
@@ -651,7 +651,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Show an info dialog box.
-     * 
+     *
      * @param msg
      *            message in the dialog box
      */
@@ -662,7 +662,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * AJAX call to search of datafiles for the input search details in the
      * given facility.
-     * 
+     *
      * @param facilityName
      *            facility name
      * @param searchDetails
@@ -711,7 +711,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method searches for all the datafiles that match the given
      * searchDetails.
-     * 
+     *
      * @param searchDetails
      */
     public void searchForDatafilesByParameter(TAdvancedSearchDetails searchDetails) {
@@ -723,7 +723,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method will show the dataset window for the given facility name and
      * investigation id.
-     * 
+     *
      * @param facilityName
      *            facility name
      * @param investigationId
@@ -750,13 +750,13 @@ public class EventPipeLine implements LoginInterface {
             showErrorDialog(e.getMessage());
         }
     }
-    
-    
+
+
 
     /**
      * This method will show the dataset window for the given facility name and
      * investigation id, and also updates the browser history.
-     * 
+     *
      * @param facilityName
      *            facility name
      * @param investigationId
@@ -771,7 +771,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * This method will show the datafile window for the given dataset models.
-     * 
+     *
      * @param datasetModel
      *            list of dataset models
      */
@@ -793,7 +793,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method will show the datafile window and also update the browser
      * history.
-     * 
+     *
      * @param datasetModel
      *            list of dataset models
      */
@@ -805,7 +805,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method will show the parameter window for the given facility name
      * and data set / file id.
-     * 
+     *
      * @param facilityName
      *            facility name
      * @param dataType
@@ -834,7 +834,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * This method will the show parameter window and also update the browser
      * history.
-     * 
+     *
      * @param facilityName
      *            facility name
      * @param dataId
@@ -846,13 +846,13 @@ public class EventPipeLine implements LoginInterface {
         showParameterWindow(facilityName, dataType, dataId, dataName);
         historyManager.updateHistory();
     }
-    
-    
-    
+
+
+
     /**
      * This method will show the ass dataset window for the given facility name and
      * investigation id.
-     * 
+     *
      * @param facilityName
      *            facility name
      * @param investigationId
@@ -862,13 +862,13 @@ public class EventPipeLine implements LoginInterface {
      */
     /*
     public void showAddNewDatasetWindow(TopcatInvestigation investigation, String source) {
-        AddNewDatasetWindow addNewDatasetWindow = new AddNewDatasetWindow(investigation, source); 
+        AddNewDatasetWindow addNewDatasetWindow = new AddNewDatasetWindow(investigation, source);
         addNewDatasetWindow.show();
-        
+
     }
     */
-    
-    
+
+
     public void showAddNewDatasetWindow(String facilityName, String investigationId, final String source, final BaseModelData node) {
         utilityService.getInvestigationDetails(facilityName, investigationId, new AsyncCallback<TInvestigation>(){
 
@@ -888,29 +888,29 @@ public class EventPipeLine implements LoginInterface {
                 investigation.set("visitId", result.getVisitId());
                 investigation.set("startDate", result.getStartDate());
                 investigation.set("endDate", result.getEndDate());
-                
-                
-                AddNewDatasetWindow addNewDatasetWindow = new AddNewDatasetWindow(investigation, source, node); 
-                addNewDatasetWindow.show();   
-            }
-            
-        });
-        
-    }
-    
-    
-    public void showUploadDatasetWindow(String facilityName, String dataSetId, BaseModelData node, final String source) {        
-        UploadDataFileWindow addNewDatasetWindow = new UploadDataFileWindow(dataSetId, facilityName, source, node); 
-        addNewDatasetWindow.show();   
 
-        
+
+                AddNewDatasetWindow addNewDatasetWindow = new AddNewDatasetWindow(investigation, source, node);
+                addNewDatasetWindow.show();
+            }
+
+        });
+
     }
-    
+
+
+    public void showUploadDatasetWindow(String facilityName, String dataSetId, BaseModelData node, final String source) {
+        UploadDataFileWindow addNewDatasetWindow = new UploadDataFileWindow(dataSetId, facilityName, source, node);
+        addNewDatasetWindow.show();
+
+
+    }
+
 
     /**
      * This method will take the input facility name and investigation / data
      * set / file id and downloads the parameter files in CSV format.
-     * 
+     *
      * @param facilityName
      *            facility name
      * @param dataType
@@ -968,7 +968,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Get the facility for the given facility name.
-     * 
+     *
      * @param a
      *            string containing the facility name
      * @return a facility
@@ -984,7 +984,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Get the facilities.
-     * 
+     *
      * @return a list of facilities
      */
     public ArrayList<TFacility> getFacilities() {
@@ -993,7 +993,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Get the topcat events object. Use this to listen for and fire events.
-     * 
+     *
      * @return the topcat events object
      */
     public TopcatEvents getTcEvents() {
@@ -1002,7 +1002,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Get the investigations for the facility belonging to the user.
-     * 
+     *
      * @param facilityName
      */
     public void addMyInvestigations(final String facilityName) {
@@ -1037,7 +1037,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Get the instrument names for the facility .
-     * 
+     *
      * @param facilityName
      */
     private void addInstruments(final String facilityName) {
@@ -1074,7 +1074,7 @@ public class EventPipeLine implements LoginInterface {
 
     /**
      * Get the investigations types for the facility.
-     * 
+     *
      * @param facilityName
      */
     private void addInvestigationTypes(final String facilityName) {
@@ -1109,7 +1109,7 @@ public class EventPipeLine implements LoginInterface {
     /**
      * Get the investigation title from the server and then set it in the
      * window.
-     * 
+     *
      * @param facilityName
      * @param investigationId
      * @param datasetWindow
@@ -1202,8 +1202,8 @@ public class EventPipeLine implements LoginInterface {
             }
         });
     }
-	
-	//call to server to retrieve any active message and display it  
+
+	//call to server to retrieve any active message and display it
 	public void setAnnouncementMessage() {
 		messageService.getMessage(new AsyncCallback<String>() {
 
@@ -1223,9 +1223,9 @@ public class EventPipeLine implements LoginInterface {
 				}
 			}
 		});
-		
+
 	}
-	
+
 	/**
 	 * serialize the pojo to json string using gwt autobean
 	 * @param cookie
@@ -1235,41 +1235,41 @@ public class EventPipeLine implements LoginInterface {
 	    AutoBean<TopcatCookie> bean = AutoBeanUtils.getAutoBean(cookie);
 	    return AutoBeanCodex.encode(bean).getPayload();
 	}
-	
+
 	/**
 	 * deserialize json string to pojo using autobean
-	 *  
+	 *
 	 * @param json
 	 * @return
 	 */
-	public TopcatCookie deserializeCookie(String json) 
-	{   
+	public TopcatCookie deserializeCookie(String json)
+	{
 	    MyCookieFactory factory = GWT.create(MyCookieFactory.class);
-	    AutoBean<TopcatCookie> bean = AutoBeanCodex.decode(factory, TopcatCookie.class, json);     
-	    return bean.as();   
-	} 
-	
-	
+	    AutoBean<TopcatCookie> bean = AutoBeanCodex.decode(factory, TopcatCookie.class, json);
+	    return bean.as();
+	}
+
+
 	public boolean hasUploadSupport(String facilityName) {
         TFacility facility = getFacility(facilityName);
-        
+
         if (facility.getDownloadPluginName().equals("ids") && facility.isAllowUpload()) {
             return true;
-        }        
-        
-        return false;        
+        }
+
+        return false;
     }
-	
-	
+
+
 	public boolean hasCreateDatasetSupport(String facilityName) {
         TFacility facility = getFacility(facilityName);
-        
-        if (facility.isAllowCreateDataset()) {            
+
+        if (facility.isAllowCreateDataset()) {
             return true;
         }
-        
-        return false;        
+
+        return false;
     }
-	
-	
+
+
 }

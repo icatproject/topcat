@@ -8,8 +8,10 @@ import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
+import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
+import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -30,12 +32,12 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * A download button component. When the download button is pressed the user is
  * presented with a prompt box into which they can enter a name for the
  * download.
- * 
+ *
  * Fires event Select(downloadName)
- * 
+ *
  * <dl>
  * <dt><b>Events:</b></dt>
- * 
+ *
  * <dd><b>Select</b> : DownloadEvent(button, item)<br>
  * <div>Fires after a download name has been entered.</div>
  * <ul>
@@ -43,26 +45,53 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * <li>downloadName : the name of the download</li>
  * </ul>
  * </dd>
- * 
+ *
  * </dl>
- * 
+ *
  */
-public class DownloadButton extends Button {    
+public class DownloadButton extends Button {
     private TreePanel<ICATNode> tree = null;
-    private CheckBoxSelectionModel<DatafileModel> checkBoxSelection = null;
-    
+    private CheckBoxSelectionModel<DatafileModel> datafileSelection = null;
+    private CheckBoxSelectionModel<DatasetModel> datasetSelection = null;
+    private TopcatInvestigation investigation = null;
+
     public DownloadButton(TreePanel<ICATNode> tree) {
         super(" Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
         this.tree = tree;
         init();
     }
-    
+
     public DownloadButton(CheckBoxSelectionModel<DatafileModel> checkBoxSelection) {
         super(" Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
-        this.checkBoxSelection = checkBoxSelection;
+        this.datafileSelection = checkBoxSelection;
         init();
     }
-    
+
+    public DownloadButton(String buttonName, AbstractImagePrototype icon, TopcatInvestigation investigation) {
+        super(buttonName, icon);
+        this.investigation = investigation;
+        init();
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public DownloadButton(String buttonName, AbstractImagePrototype icon, ICATNodeType type, CheckBoxSelectionModel<?> selection) {
+        super(buttonName, icon);
+
+
+        if (type == ICATNodeType.DATAFILE) {
+            this.datafileSelection = (CheckBoxSelectionModel<DatafileModel>) selection;
+        }
+
+        if (type == ICATNodeType.DATASET) {
+            this.datasetSelection = (CheckBoxSelectionModel<DatasetModel>) selection;
+        }
+
+        init();
+    }
+
+
+
 
     private void init() {
         this.addListener(Events.BeforeSelect, new Listener<ButtonEvent>() {
@@ -72,23 +101,31 @@ public class DownloadButton extends Button {
                 if (be instanceof DownloadButtonEvent) {
                     return;
                 }
-                be.setCancelled(true);                
-                
+                be.setCancelled(true);
+
                 List<ICATNode> selectedItems = getSelectedNodes();
-                
+
                 if (selectedItems.isEmpty()) {
                     EventPipeLine.getInstance().showErrorDialog("Nothing selected for download");
                 } else {
                     //check if only one item selected to determine file name
                     if (selectedItems.size() == 1) {
                         //get the first item
-                        ICATNode node = selectedItems.get(0);                        
+                        ICATNode node = selectedItems.get(0);
+
                         DownloadButtonEvent de = createDownloadButtonEvent();
                         //set download name as first item filename
-                        de.setDownloadName(node.getDatafileName());
+                        if (node.getNodeType() == ICATNodeType.DATAFILE) {
+                            de.setDownloadName(node.getDatafileName());
+                        } else if(node.getNodeType() == ICATNodeType.DATASET) {
+                            de.setDownloadName(Utils.normaliseFileName(node.getDatasetName()));
+                        } else if (node.getNodeType() == ICATNodeType.INVESTIGATION) {
+                            de.setDownloadName(Utils.normaliseFileName(node.getInvestigationName()));
+                        }
+
                         fireEvent(Events.Select, de);
                     } else {
-                        final MessageBox box = MessageBox.prompt("Download ", "Please enter a name for your download:");                        
+                        final MessageBox box = MessageBox.prompt("Download ", "Please enter a name for your download:");
                         //get a suggested filename
                         String suggestedFilename = getFileNameAsDate();
                         box.getTextBox().setValue(suggestedFilename);
@@ -103,7 +140,7 @@ public class DownloadButton extends Button {
                                         fireEvent(Events.Select, de);
                                     }
                                 }
-                            
+
                         });
                         // listen for the enter key in the text box
                         box.getTextBox().addKeyListener(new KeyListener() {
@@ -118,9 +155,9 @@ public class DownloadButton extends Button {
                             }
                         });
                     }
-                    
-                }    
-                
+
+                }
+
             }
         });
     }
@@ -128,7 +165,7 @@ public class DownloadButton extends Button {
     private DownloadButtonEvent createDownloadButtonEvent() {
         return new DownloadButtonEvent(this);
     }
-    
+
     public TreePanel<ICATNode> getTree() {
         return tree;
     }
@@ -136,42 +173,114 @@ public class DownloadButton extends Button {
     public void setTree(TreePanel<ICATNode> tree) {
         this.tree = tree;
     }
-    
-    
+
+
     /**
-     * return a normalised date filename 
-     * 
+     * return a normalised date filename
+     *
      * @return
      */
     private String getFileNameAsDate() {
         return Utils.normaliseFileName(DateTimeFormat.getFormat("yyyy-MM-dd HH-mm-ss").format(new Date()));
     }
-    
+
     private List<ICATNode> getSelectedNodes() {
         if (tree != null) {
             return tree.getCheckedSelection();
         }
-        
-        if (checkBoxSelection != null) {
-            return convertDatafileModelToICATNode(checkBoxSelection);
-            
+
+        if (datafileSelection != null) {
+            return convertDatafileModelToICATNode(datafileSelection);
         }
-        
+
+        if (datasetSelection != null) {
+            return convertDatasetModelToICATNode(datasetSelection);
+        }
+
+        if (investigation != null) {
+            return convertInvestigationToICATNode(investigation);
+        }
+
         //return ICATNode array
         List<ICATNode> selectedItems = new ArrayList<ICATNode>();
         return selectedItems;
     }
-    
+
+
     private List<ICATNode> convertDatafileModelToICATNode(CheckBoxSelectionModel<DatafileModel> datafileSelectionModel) {
         List<ICATNode> nodes = new ArrayList<ICATNode>();
-        
+        // we only interest in the first 2 in the list to determine the download filename
+        int count = 0;
         for (DatafileModel datafileModel : datafileSelectionModel.getSelectedItems()) {
             ICATNode iCATNode = new ICATNode();
             iCATNode.setNode(ICATNodeType.DATAFILE, datafileModel.getId(), datafileModel.getName(), datafileModel.getName());
             nodes.add(iCATNode);
+
+            if (count == 2) {
+                break;
+            }
+
+            count = count + 1;
         }
-        
+
         return nodes;
     }
+
+
+    private List<ICATNode> convertInvestigationToICATNode(TopcatInvestigation investigation) {
+        List<ICATNode> nodes = new ArrayList<ICATNode>();
+
+        ICATNode iCATNode = new ICATNode();
+        iCATNode.setNode(ICATNodeType.INVESTIGATION, investigation.getInvestigationId(), investigation.getInvestigationName(), investigation.getInvestigationName());
+        nodes.add(iCATNode);
+
+        return nodes;
+    }
+
+
+    private List<ICATNode> convertDatasetModelToICATNode(CheckBoxSelectionModel<DatasetModel> datasetSelectionModel) {
+        List<ICATNode> nodes = new ArrayList<ICATNode>();
+        // we only interest in the first 2 in the list to determine the download filename
+        int count = 0;
+        for (DatasetModel datasetModel : datasetSelectionModel.getSelectedItems()) {
+            ICATNode iCATNode = new ICATNode();
+            iCATNode.setNode(ICATNodeType.DATASET, datasetModel.getId(), datasetModel.getName(), datasetModel.getName());
+            nodes.add(iCATNode);
+
+            if (count == 2) {
+                break;
+            }
+
+            count = count + 1;
+        }
+
+        return nodes;
+    }
+
+    public TopcatInvestigation getInvestigation() {
+        return investigation;
+    }
+
+    public void setInvestigation(TopcatInvestigation investigation) {
+        this.investigation = investigation;
+    }
+
+    public CheckBoxSelectionModel<DatafileModel> getDatafileSelection() {
+        return datafileSelection;
+    }
+
+    public void setDatafileSelection(
+            CheckBoxSelectionModel<DatafileModel> datafileSelection) {
+        this.datafileSelection = datafileSelection;
+    }
+
+    public CheckBoxSelectionModel<DatasetModel> getDatasetSelection() {
+        return datasetSelection;
+    }
+
+    public void setDatasetSelection(CheckBoxSelectionModel<DatasetModel> datasetSelection) {
+        this.datasetSelection = datasetSelection;
+    }
+
 
 }

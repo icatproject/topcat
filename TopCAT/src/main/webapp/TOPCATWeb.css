@@ -43,13 +43,17 @@ h1 {
 
 
 .fixContextMenuIcon2 img{
-	margin-top: 16px;	
+	margin-top: 17px;	
 }
 
 .fixContextMenuIcon3 img{
-    margin-top: 32px;   
+    margin-top: 34px;   
 }
 
-.x-menu-list-item {
+.fixContextMenuIcon4 img{
+    margin-top: 51px;   
+}
+
+.context-menu > .x-menu-list > .x-menu-list-item {
 	height: 16px;
 }

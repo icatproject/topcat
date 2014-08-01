@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2013
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
@@ -83,7 +83,7 @@ import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
  * hierarchy is -- Facility -- Instrument -- Investigation -- Dataset or
  * Datafile -- Datafile
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -184,10 +184,11 @@ public class MyDataPanel extends Composite {
         // Context Menu
         Menu contextMenu = new Menu();
         contextMenu.setWidth(180);
+        contextMenu.addStyleName("context-menu");
         MenuItem showInvestigation = new MenuItem();
         showInvestigation.setText("Show Investigation Details");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
-        showInvestigation.setStyleAttribute("margin-left", "25px");        
+        showInvestigation.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -195,7 +196,7 @@ public class MyDataPanel extends Composite {
                         .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
             }
         });
-        
+
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data Sets");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
@@ -209,24 +210,24 @@ public class MyDataPanel extends Composite {
                                 .getSelectedItem().getInvestigationTitle());
             }
         });
-        
+
         MenuItem addDataset = new MenuItem();
         addDataset.setText("Add Data Set");
-        addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));        
+        addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));
         addDataset.setStyleAttribute("margin-left", "25px");
         addDataset.addStyleName("fixContextMenuIcon3");
         contextMenu.add(addDataset);
         addDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {                
+            public void componentSelected(MenuEvent ce) {
                 EventPipeLine.getInstance().showAddNewDatasetWindow(
                     grid.getSelectionModel().getSelectedItem().getFacilityName(),
-                    grid.getSelectionModel().getSelectedItem().getInvestigationId(), 
+                    grid.getSelectionModel().getSelectedItem().getInvestigationId(),
                     SOURCE,
                     grid.getSelectionModel().getSelectedItem());
-                
+
             }
-        });        
-        
+        });
+
         grid.setContextMenu(contextMenu);
 
         grid.setAutoHeight(true);
@@ -268,7 +269,7 @@ public class MyDataPanel extends Composite {
 
     /**
      * This method sets the width of the search results table.
-     * 
+     *
      * @param width
      */
     public void setGridWidth(int width) {
@@ -333,7 +334,7 @@ public class MyDataPanel extends Composite {
 
     /**
      * Remove all investigations for the given facility.
-     * 
+     *
      * @param facilityName
      */
     private void clearInvestigationList(String facilityName) {

@@ -232,6 +232,7 @@ public class DatafileWindow extends Window {
         // Context Menu
         Menu contextMenu = new Menu();
         contextMenu.setWidth(200);
+        contextMenu.addStyleName("context-menu");
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data File Parameters");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatafileParameter()));

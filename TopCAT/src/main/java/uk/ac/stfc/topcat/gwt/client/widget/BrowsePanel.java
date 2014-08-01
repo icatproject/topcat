@@ -413,6 +413,7 @@ public class BrowsePanel extends Composite {
     private Menu getInvestigationMenu() {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(180);
+        contextMenu.addStyleName("context-menu");
         MenuItem showInvestigation = new MenuItem();
         showInvestigation.setText("Show Investigation Details");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
@@ -474,8 +475,8 @@ public class BrowsePanel extends Composite {
      */
     private Menu getDatasetMenu() {
         Menu contextMenu = new Menu();
-
         contextMenu.setWidth(190);
+        contextMenu.addStyleName("context-menu");
         MenuItem showDataset = new MenuItem();
         showDataset.setText("Show Data Set Parameters");
         showDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatasetParameter()));
@@ -519,6 +520,7 @@ public class BrowsePanel extends Composite {
     private Menu getDatafileMenu() {
         Menu contextMenu = new Menu();
         contextMenu.setWidth(190);
+        contextMenu.addStyleName("context-menu");
         MenuItem showDatafile = new MenuItem();
         showDatafile.setText("Show Data File Parameters");
         showDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatafileParameter()));

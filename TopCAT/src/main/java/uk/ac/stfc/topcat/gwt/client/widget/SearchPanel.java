@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2013
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.widget;
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.SuggestBox;
 /**
  * This is a composite widget for Search Panel used in the top level tab.
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -149,15 +149,15 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         TableData td_cntntpnlFacilitiesSearch = new TableData();
         td_cntntpnlFacilitiesSearch.setHeight("100%");
         td_cntntpnlFacilitiesSearch.setWidth("705px");
-        topPanel.add(getFacilitiesSearchPanel(), td_cntntpnlFacilitiesSearch);        
-        
+        topPanel.add(getFacilitiesSearchPanel(), td_cntntpnlFacilitiesSearch);
+
         // Free Text Search Panel
         TableData td_cntntpnlFreeTextSearch = new TableData();
         td_cntntpnlFreeTextSearch.setHeight("100%");
         td_cntntpnlFreeTextSearch.setWidth("705px");
         topPanel.add(getFreeTextSearchPanel(), td_cntntpnlFreeTextSearch);
         topPanel.add(new Text(""));
-        
+
 
         // Pagination
         invPageProxy = new PagingModelMemoryProxy(investigationList);
@@ -201,14 +201,14 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     public FacilitiesSearchSubPanel getFacilitiesSearchSubPanel() {
         return facilitiesSearchSubPanel;
     }
-    
+
     /**
      * @return the free text search sub panel
      */
     public FreeTextSearchSubPanel getFreeTextSearchSubPanel() {
         return freeTextSearchSubPanel;
     }
-    
+
 
     /**
      * This method is an callback for searching just user investigation using
@@ -251,7 +251,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     /**
      * This method sets the result investigations that will be displayed in the
      * results table.
-     * 
+     *
      * @param invList
      *            list of investigations
      */
@@ -264,7 +264,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     /**
      * This method sets the width of the search results table.
-     * 
+     *
      * @param width
      */
     public void setGridWidth(int width) {
@@ -274,7 +274,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     /**
      * Set up a flex table containing the keyword selection and my data / all
      * data button.
-     * 
+     *
      * @return a felex table
      */
     private FlexTable getFlexTable() {
@@ -335,7 +335,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     /**
      * Set up a ContentPanel containing the advancedSearchSubPanel.
-     * 
+     *
      * @return a ContentPanel containing the advancedSearchSubPanel
      */
     private ContentPanel getAdvancedSearchPanel() {
@@ -365,7 +365,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     /**
      * Set up a ContentPanel containing the parameterSearchSubPanel.
-     * 
+     *
      * @return a ContentPanel containing the parameterSearchSubPanel
      */
     private ContentPanel getParameterSearchPanel() {
@@ -394,7 +394,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     /**
      * Set up a ContentPanel containing the facilitiesSearchSubPanel.
-     * 
+     *
      * @return a ContentPanel containing the facilitiesSearchSubPanel
      */
     private ContentPanel getFacilitiesSearchPanel() {
@@ -420,12 +420,12 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         cp.add(facilitiesSearchSubPanel);
         return cp;
     }
-    
-    
-    
+
+
+
     /**
      * Set up a ContentPanel containing the freeTextSearchSubPanel.
-     * 
+     *
      * @return a ContentPanel containing the freeTextSearchSubPanel
      */
     private ContentPanel getFreeTextSearchPanel() {
@@ -451,14 +451,14 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         cp.add(freeTextSearchSubPanel);
         return cp;
     }
-    
-    
-    
-    
+
+
+
+
 
     /**
      * Get a panel containing a grid for the search results.
-     * 
+     *
      * @return results panel
      */
     private VerticalPanel getResultsPanel() {
@@ -495,7 +495,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     /**
      * Get the list of column configs.
-     * 
+     *
      * @return a list of ColumnConfig
      */
     private List<ColumnConfig> getColumnConfigs() {
@@ -524,12 +524,13 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     /**
      * Get the context menu.
-     * 
+     *
      * @return the context menu
      */
     private Menu getMenu() {
         Menu contextMenu = new Menu();
-        contextMenu.setWidth(160);
+        contextMenu.setWidth(180);
+        contextMenu.addStyleName("context-menu");
         MenuItem showInvestigation = new MenuItem();
         showInvestigation.setText("Show Investigation Details");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
@@ -541,7 +542,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
                         .getSelectionModel().getSelectedItem().getInvestigationId(), SOURCE);
             }
         });
-        
+
         MenuItem showDS = new MenuItem();
         showDS.setText("show data sets");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
@@ -606,7 +607,7 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
 
     /**
      * Remove all investigations for the given facility.
-     * 
+     *
      * @param facilityName
      */
     private void clearInvestigationList(String facilityName) {

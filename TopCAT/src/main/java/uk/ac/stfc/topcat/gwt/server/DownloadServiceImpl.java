@@ -225,7 +225,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
         } catch (IdsException e) {
             // something has gone wrong
             logger.error("isAvailableIDS: " + e.getMessage());
-            throw new InternalException("Error returned from the data service. " + e.getMessage());
+            throw new InternalException("Error returned from the download service. " + e.getMessage());
         }
 
         return isPrepared;
@@ -337,11 +337,15 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
             return downloadModel;
         } catch (BadRequestException e) {
             logger.error("getStatusIDS: BadRequestException " + e.getMessage());
-            throw new InternalException("Error returned from the data service. " + e.getMessage());
+            if (e.getMessage().startsWith("Generated URI is of length")) {
+                throw new InternalException("Error returned from the download service. " + e.getMessage() + ". Please reduce the number of items selected for download.");
+            } else {
+                throw new InternalException("Error returned from the download service. " + e.getMessage());
+            }
         } catch (IdsException e) {
             // something has gone wrong
             logger.error("getStatusIDS: IdsException" + e.getMessage());
-            throw new InternalException("Error returned from the data service. " + e.getMessage());
+            throw new InternalException("Error returned from the download service. " + e.getMessage());
         }
 
 
@@ -448,7 +452,12 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
             throw new InternalException("Error returned from the download service. " + e.getMessage());
         } catch (BadRequestException e) {
             logger.error("prepareDataObjectsForDownloadIDS: " + "bad request error " + e.getMessage());
-            throw new InternalException("Error returned from the download service. " + e.getMessage());
+
+            if (e.getMessage().startsWith("Generated URI is of length")) {
+                throw new InternalException("Error returned from the download service. " + e.getMessage() + ". Please reduce the number of items selected for download.");
+            } else {
+                throw new InternalException("Error returned from the download service. " + e.getMessage());
+            }
         } catch (NotFoundException e) {
             logger.error("prepareDataObjectsForDownloadIDS: " + "not found error " + e.getMessage());
             throw new InternalException("Error returned from the download service. " + e.getMessage());
@@ -515,7 +524,11 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
             throw new InternalException("Error returned from the download service. " + e.getMessage());
         } catch (BadRequestException e) {
             logger.error("directDownloadFromIDS: " + "bad request error " + e.getMessage());
-            throw new InternalException("Error returned from the download service. " + e.getMessage());
+            if (e.getMessage().startsWith("Generated URI is of length")) {
+                throw new InternalException("Error returned from the download service. " + e.getMessage() + ". Please reduce the number of items selected for download.");
+            } else {
+                throw new InternalException("Error returned from the download service. " + e.getMessage());
+            }
         } catch (NotFoundException e) {
             logger.error("directDownloadFromIDS: " + "not found error " + e.getMessage());
             throw new InternalException("Error returned from the download service. " + e.getMessage());

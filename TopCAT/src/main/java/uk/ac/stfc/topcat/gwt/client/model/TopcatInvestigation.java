@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2012
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.client.model;
@@ -31,7 +31,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  * This class is a datamodel to hold Investigation information TODO: change it
  * from datamodel to beanmodel
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -46,7 +46,7 @@ public class TopcatInvestigation extends BaseModel {
 
     /**
      * Constructor
-     * 
+     *
      * @param serverName
      *            facility name
      * @param investigationName
@@ -59,7 +59,7 @@ public class TopcatInvestigation extends BaseModel {
 
     /**
      * Constructor
-     * 
+     *
      * @param serverName
      *            facility name
      * @param investigationId
@@ -89,7 +89,7 @@ public class TopcatInvestigation extends BaseModel {
 
     /**
      * Constructor
-     * 
+     *
      * @param serverName
      *            facility name
      * @param investigationId
@@ -133,23 +133,23 @@ public class TopcatInvestigation extends BaseModel {
         } else {
             set("formatedEndDate", "");
         }
-    }    
+    }
 
-    
+
     //TODO getFacilityName returns the serverName defined in topcat
-    //it should 
+    //it should
     /**
      * @return facility name
      */
     public String getFacilityName() {
         return get("serverName");
     }
-    
+
     /**
      * @return get the true facility name
-     * 
+     *
      */
-    public String getFacilityNameFromInvestigation() {        
+    public String getFacilityNameFromInvestigation() {
         return get("facilityName");
     }
 
@@ -180,4 +180,48 @@ public class TopcatInvestigation extends BaseModel {
     public String getVisitId() {
         return get("visitId");
     }
+
+
+
+    public void setFacilityName(String facilityName) {
+        set("facilityName", facilityName);
+    }
+
+
+    public void setInvestigationName(String investigationName) {
+        set("investigationName", investigationName);
+    }
+
+    public void setServerName(String serverName) {
+        set("serverName", serverName);
+    }
+
+    public void setInvestigationId(String investigationId) {
+        set("investigationId", investigationId);
+    }
+
+    public void setInstrument(String instrument) {
+        set("instrument", instrument);
+    }
+
+    public void setTitle(String title) {
+        set("title", title);
+    }
+
+    public void setVisitId(String visitId) {
+        set("visitId", visitId);
+    }
+
+    public void setStartDate(String startDate) {
+        set("startDate", startDate);
+    }
+
+    public void setEndDate(String endDate) {
+        set("endDate", endDate);
+    }
+
+    public void setProposal(String proposal) {
+        set("proposal", proposal);
+    }
+
 }

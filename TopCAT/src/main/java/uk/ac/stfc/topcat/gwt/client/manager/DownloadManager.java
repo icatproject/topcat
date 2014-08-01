@@ -268,8 +268,8 @@ public class DownloadManager {
             public void onSuccess(DownloadModel result) {
                 //trigger the download in __directdownload iframe
                 if(!result.getUrl().isEmpty()) {
-                    //DOM.setElementAttribute(RootPanel.get("__directdownload").getElement(), "src", result.getUrl());
-                    Window.alert(result.getUrl());
+                    DOM.setElementAttribute(RootPanel.get("__directdownload").getElement(), "src", result.getUrl());
+                    //Window.alert(result.getUrl());
                 } else {
                     showErrorDialog("Error retrieving download url from the ids");
                 }
