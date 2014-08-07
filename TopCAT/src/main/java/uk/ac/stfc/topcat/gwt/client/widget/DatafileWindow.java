@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import uk.ac.stfc.topcat.core.gwt.module.exception.SessionException;
 import uk.ac.stfc.topcat.gwt.client.Constants;
@@ -50,6 +48,7 @@ import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
+import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
@@ -109,7 +108,10 @@ public class DatafileWindow extends Window {
     private PagingToolBar pageBar = null;
     private Set<Long> selectedFiles = new HashSet<Long>();
     private ToolBar toolBar;
+    private Button btnDownload;
+    private Button btnDownloadDataset;
     private Button btnUploadDatafile;
+
 
     boolean historyVerified;
     Grid<DatafileModel> grid;
@@ -119,8 +121,6 @@ public class DatafileWindow extends Window {
     private boolean advancedSearchData = false;
     private static final String SOURCE = "DatafileWindow";
     private EventPipeLine eventPipeLine;
-
-    private static Logger rootLogger = Logger.getLogger("");
 
     /** Number of rows of data. */
     private static final int PAGE_SIZE = 20;
@@ -148,7 +148,7 @@ public class DatafileWindow extends Window {
 
         configs.add(datafileSelectionModel.getColumn());
 
-        ColumnConfig clmncnfgDatasetName = new ColumnConfig("datasetName", "Dataset Name", 150);
+        ColumnConfig clmncnfgDatasetName = new ColumnConfig("datasetName", "Data Set Name", 150);
         configs.add(clmncnfgDatasetName);
 
         ColumnConfig clmncnfgFileName = new ColumnConfig("datafileName", "File Name", 150);
@@ -213,20 +213,6 @@ public class DatafileWindow extends Window {
 
         // ToolBar with download button
         toolBar = new ToolBar();
-        final DownloadButton btnDownload = new DownloadButton(datafileSelectionModel);
-
-        btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                download(((DownloadButtonEvent) ce).getDownloadName());
-            }
-        });
-        toolBar.add(btnDownload);
-
-        toolBar.add(new SeparatorToolItem());
-
-        btnUploadDatafile = new Button("Add Data File", AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
-
         setTopComponent(toolBar);
 
         // Context Menu
@@ -292,12 +278,14 @@ public class DatafileWindow extends Window {
     }
 
 
-    private void addUploadFileButton(List<DatasetModel> facilities, ToolBar toolBar, Button button) {
-      //only display if window has models from one dataset
-        if (facilities.size() == 1) {
-            final String facilityName = facilities.get(0).getFacilityName();
-            final String datasetId = facilities.get(0).getId();
-            final DatasetModel node = facilities.get(0);
+    private void addUploadFileButton(List<DatasetModel> datasets, ToolBar toolBar) {
+        btnUploadDatafile = new Button("Add Data File", AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
+
+        //only display if window has models from one dataset
+        if (datasets.size() == 1) {
+            final String facilityName = datasets.get(0).getFacilityName();
+            final String datasetId = datasets.get(0).getId();
+            final DatasetModel node = datasets.get(0);
 
             if (eventPipeLine.hasUploadSupport(facilityName)) {
                 btnUploadDatafile.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -306,18 +294,57 @@ public class DatafileWindow extends Window {
                         EventPipeLine.getInstance().showUploadDatasetWindow(facilityName, datasetId, node , SOURCE);
                     }
                 });
-                toolBar.add(button);
+                toolBar.add(new SeparatorToolItem());
+                toolBar.add(btnUploadDatafile);
             }
         }
     }
+
+
+    private void addDownloadDatasetButton(final DatasetModel dataset, ToolBar toolBar) {
+        btnDownloadDataset = new DownloadButton("Download this Data Set", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()), dataset);
+
+        if (dataset != null) {
+            btnDownloadDataset.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    downloadDataset(dataset);
+                }
+            });
+            toolBar.add(btnDownloadDataset);
+        }
+
+    }
+
+
+    private void addDownloadDatafileButton(ToolBar toolBar) {
+        btnDownload = new DownloadButton("Download selected Data File", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()), ICATNodeType.DATAFILE, datafileSelectionModel);
+        btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                download(((DownloadButtonEvent) ce).getDownloadName());
+            }
+        });
+        toolBar.add(btnDownload);
+    }
+
+
 
     public ToolBar getToolBar() {
         return toolBar;
     }
 
 
+    public Button getBtnDownload() {
+        return btnDownload;
+    }
+
     public Button getBtnUploadDatafile() {
         return btnUploadDatafile;
+    }
+
+    public Button getBtnDownloadDataset() {
+        return btnDownloadDataset;
     }
 
 
@@ -342,7 +369,14 @@ public class DatafileWindow extends Window {
             awaitingLogin = true;
         }
 
-        addUploadFileButton(inputDatasetModels, getToolBar(), getBtnUploadDatafile());
+
+        toolBar.removeAll();
+
+        if (datasetList.size() == 1) {
+            addDownloadDatasetButton(datasetList.get(0), getToolBar());
+        }
+        addDownloadDatafileButton(getToolBar());
+        addUploadFileButton(datasetList, getToolBar());
     }
 
     /**
@@ -355,10 +389,15 @@ public class DatafileWindow extends Window {
         loadingData = true;
         advancedSearchData = true;
         facilityNames.add(facilityName);
+
+        toolBar.removeAll();
+        addDownloadDatafileButton(getToolBar());
+
         setDatafileList(datafileList);
         show();
         EventPipeLine.getInstance().getHistoryManager().updateHistory();
         loadingData = false;
+
     }
 
     /**
@@ -370,6 +409,7 @@ public class DatafileWindow extends Window {
     private void setDatafileList(ArrayList<DatafileModel> datafileList) {
         dfmStore.removeAll();
         selectedFiles.clear();
+
         //NumberFormat format = NumberFormat.getDecimalFormat();
         // convert Bytes to MegaBytes
         //TODO use standard method
@@ -613,9 +653,6 @@ public class DatafileWindow extends Window {
      * @param node
      */
     private void downloadSingleFile(DatafileModel node) {
-        rootLogger.log(Level.SEVERE, "downloadSingleFile called");
-        rootLogger.log(Level.SEVERE, "getFacilityName():" + node.getFacilityName() + " id: " + node.getId() + " node.getName(): " + node.getName());
-
         TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
         topcatDataSelection.addDatafile(new Long(node.getId()));
 
@@ -649,6 +686,22 @@ public class DatafileWindow extends Window {
                         + "as a single file. The status of your download can be seen from the ‘My Downloads’ tab.");
         */
     }
+
+    /**
+     * Download datasets.
+     *
+     * @param downloadName
+     *            the display name for the download
+     */
+    private void downloadDataset(DatasetModel dataset) {
+        TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+        topcatDataSelection.addDataset(new Long(dataset.getId()));
+
+        DownloadManager.getInstance().downloadData(dataset.getFacilityName(), topcatDataSelection, Utils.normaliseFileName(dataset.getName()), IdsFlag.ZIP_AND_COMPRESS);
+    }
+
+
+
 
     /**
      * Call the server to get fresh data.

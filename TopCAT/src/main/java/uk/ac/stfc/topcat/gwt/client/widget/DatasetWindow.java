@@ -142,7 +142,7 @@ public class DatasetWindow extends Window {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         configs.add(datasetSelectionModel.getColumn());
-        ColumnConfig clmncnfgName = new ColumnConfig("datasetName", "Dataset Name", 150);
+        ColumnConfig clmncnfgName = new ColumnConfig("datasetName", "Data Set Name", 150);
 
         clmncnfgName.setAlignment(HorizontalAlignment.LEFT);
         configs.add(clmncnfgName);
@@ -235,7 +235,7 @@ public class DatasetWindow extends Window {
 
 
         downloadDatasetMenuItem = new MenuItem();
-        downloadDatasetMenuItem.setText("Download this Dataset");
+        downloadDatasetMenuItem.setText("Download this Data Set");
         downloadDatasetMenuItem.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()));
         downloadDatasetMenuItem.setStyleAttribute("margin-left", "25px");
         downloadDatasetMenuItem.addStyleName("fixContextMenuIcon4");
@@ -270,7 +270,7 @@ public class DatasetWindow extends Window {
         });
         toolBar.add(btnDownloadInvestigation);
 
-        Button btnDownloadDataset = new DownloadButton("Download Selected Datasets", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()), ICATNodeType.DATASET, datasetSelectionModel);
+        Button btnDownloadDataset = new DownloadButton("Download selected Data Sets", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()), ICATNodeType.DATASET, datasetSelectionModel);
         btnDownloadDataset.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -678,7 +678,7 @@ public class DatasetWindow extends Window {
 
 
     /**
-     * Download investigation.
+     * Download datasets.
      *
      * @param downloadName
      *            the display name for the download

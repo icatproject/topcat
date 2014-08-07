@@ -37,25 +37,22 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This is User entity.
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
  */
 @Entity
-@Table(name = "TOPCAT_USER", uniqueConstraints={
-        @UniqueConstraint(columnNames = {"NAME", "SERVER_ID"})
-})
+@Table(name = "TOPCAT_USER")
 @NamedQueries({
         @NamedQuery(name = "TopcatUser.findById", query = "SELECT t FROM TopcatUser t WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUser.findByName", query = "SELECT t FROM TopcatUser t WHERE t.name = :name"),
-        @NamedQuery(name = "TopcatUser.findByDn", query = "SELECT t FROM TopcatUser t WHERE t.dn = :dn"),        
+        @NamedQuery(name = "TopcatUser.findByDn", query = "SELECT t FROM TopcatUser t WHERE t.dn = :dn"),
         @NamedQuery(name = "TopcatUser.findByNameAndServerNotAnonymous", query = "SELECT t FROM TopcatUser t WHERE t.name= :userName AND t.serverId.name=:serverName AND t.topcatUserId.displayName <> 'anon'"),
         @NamedQuery(name = "TopcatUser.findAnonymousUser", query = "SELECT t FROM TopcatUser t WHERE t.name = 'anon'"),
         @NamedQuery(name = "TopcatUser.findByServerId", query = "SELECT t FROM TopcatUser t WHERE t.serverId.id = :serverId"),

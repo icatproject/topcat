@@ -695,6 +695,7 @@ public class EventPipeLine implements LoginInterface {
                         try {
                             if (result.size() > 0) {
                                 DatafileWindow datafileWindow = tcWindowManager.createDatafileWindow();
+                                datafileWindow.hide();
                                 datafileWindow.setAdvancedSearchResult(facilityName, result);
                                 datafileWindow.show();
                                 datafileWindow.setHistoryVerified(true);
@@ -1270,6 +1271,5 @@ public class EventPipeLine implements LoginInterface {
 
         return false;
     }
-
 
 }

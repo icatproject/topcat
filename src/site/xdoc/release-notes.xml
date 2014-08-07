@@ -17,11 +17,11 @@
                 <li>Changed persistence.xml to enable logging to be configured at container level</li>
                 <li>Added new configuration options to topcat-setup.properties to change the url path of topcat and topcatadmin</li>
                 <li>Fixed deployment issue when topcat is behind a reverse proxy (See installation doc. for <a href="installation.html#Deployment_Behind_Reverse_proxy">example apache configuration</a>). </li>
-                <li>Remove the 200 investigation limit on the Browse All data tree</li>
+                <li>Removed the 200 investigation limit on the Browse All data tree</li>
+                <li>Resolved issue where large number of datafiles download requests would exceed the max url length limit</li>
                 <li>Bug fixes</li>
                 <li>schema changes (See <a href="installation.html#Schema_Upgrade"> schema upgrade instructions</a>):
-                    <ul>
-                        <li>Add unique constraint for TopcatUser</li>
+                    <ul>                        
                         <li>Add ALLOW_UPLOAD and ALLOW_CREATE_DATASET column to TOPCAT_ICAT_SERVER</li>                        
                     </ul>
                 </li>

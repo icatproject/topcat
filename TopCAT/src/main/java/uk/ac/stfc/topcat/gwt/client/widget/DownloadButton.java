@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import uk.ac.stfc.topcat.gwt.client.Resource;
 import uk.ac.stfc.topcat.gwt.client.callback.DownloadButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.callback.EventPipeLine;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
@@ -54,22 +53,25 @@ public class DownloadButton extends Button {
     private CheckBoxSelectionModel<DatafileModel> datafileSelection = null;
     private CheckBoxSelectionModel<DatasetModel> datasetSelection = null;
     private TopcatInvestigation investigation = null;
+    private DatasetModel dataset = null;
 
-    public DownloadButton(TreePanel<ICATNode> tree) {
-        super(" Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
+
+    public DownloadButton(String buttonName, AbstractImagePrototype icon, TreePanel<ICATNode> tree) {
+        super(buttonName, icon);
         this.tree = tree;
-        init();
-    }
-
-    public DownloadButton(CheckBoxSelectionModel<DatafileModel> checkBoxSelection) {
-        super(" Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()));
-        this.datafileSelection = checkBoxSelection;
         init();
     }
 
     public DownloadButton(String buttonName, AbstractImagePrototype icon, TopcatInvestigation investigation) {
         super(buttonName, icon);
         this.investigation = investigation;
+        init();
+    }
+
+
+    public DownloadButton(String buttonName, AbstractImagePrototype icon, DatasetModel dataset) {
+        super(buttonName, icon);
+        this.setDataset(dataset);
         init();
     }
 
@@ -197,9 +199,15 @@ public class DownloadButton extends Button {
             return convertDatasetModelToICATNode(datasetSelection);
         }
 
+        if (dataset != null) {
+            return convertDatesetModelToICATNode(dataset);
+        }
+
         if (investigation != null) {
             return convertInvestigationToICATNode(investigation);
         }
+
+
 
         //return ICATNode array
         List<ICATNode> selectedItems = new ArrayList<ICATNode>();
@@ -236,6 +244,18 @@ public class DownloadButton extends Button {
 
         return nodes;
     }
+
+
+    private List<ICATNode> convertDatesetModelToICATNode(DatasetModel dataset) {
+        List<ICATNode> nodes = new ArrayList<ICATNode>();
+
+        ICATNode iCATNode = new ICATNode();
+        iCATNode.setNode(ICATNodeType.DATASET, dataset.getId(), dataset.getName(), dataset.getName());
+        nodes.add(iCATNode);
+
+        return nodes;
+    }
+
 
 
     private List<ICATNode> convertDatasetModelToICATNode(CheckBoxSelectionModel<DatasetModel> datasetSelectionModel) {
@@ -280,6 +300,14 @@ public class DownloadButton extends Button {
 
     public void setDatasetSelection(CheckBoxSelectionModel<DatasetModel> datasetSelection) {
         this.datasetSelection = datasetSelection;
+    }
+
+    public DatasetModel getDataset() {
+        return dataset;
+    }
+
+    public void setDataset(DatasetModel dataset) {
+        this.dataset = dataset;
     }
 
 

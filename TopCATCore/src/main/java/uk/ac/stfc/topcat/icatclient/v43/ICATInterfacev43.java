@@ -113,7 +113,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
             result = service.login(authenticationType, credentials);
         } catch (IcatException_Exception ex) {
             // TODO check type
-            logger.debug("loginLifetime: IcatException_Exception:" + ex.getMessage());            
+            logger.debug("loginLifetime: IcatException_Exception:" + ex.getMessage());
             throw new AuthenticationException("Login error:" +  ex.getMessage());
         } catch (javax.xml.ws.WebServiceException ex) {
             logger.debug("loginLifetime: WebServiceException:" + ex.getMessage());
@@ -129,7 +129,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             service.logout(sessionId);
         } catch (IcatException_Exception e) {
-            // TODO check type            
+            // TODO check type
             throw new AuthenticationException("Logout error:" +  e.getMessage());
         } catch (javax.xml.ws.WebServiceException ex) {
             throw new AuthenticationException("ICAT Server not available");
@@ -402,10 +402,10 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
             throw new InternalException(
                     "Internal error, searchByAdvancedPagination threw an unexpected exception, see server logs for details");
         }
-        
+
         logger.info("*********" + resultInv.size() + " searchs result from " + serverName + "*********");
-        
-        for (Object inv : resultInv) {            
+
+        for (Object inv : resultInv) {
             investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
         }
         Collections.sort(investigationList);
@@ -421,7 +421,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         String query = details.getFreeTextQuery().trim();
 
         logger.info("paginate query:" + query);
-        
+
         List<Object> resultInv = null;
         try {
             resultInv = service.searchText(sessionId, query, 200, "Investigation");
@@ -432,31 +432,31 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
             throw new InternalException(
                     "Internal error, searchByFreeTextPagination threw an unexpected exception, see server logs for details");
         }
-        
+
         logger.info("paginate query:" + resultInv.size() + " found");
-        
-        //searchText() can only give the investigation table without the facility name information 
-        //which is required for display. We need to perform another query to get all the 
+
+        //searchText() can only give the investigation table without the facility name information
+        //which is required for display. We need to perform another query to get all the
         //investigations found from searchText()
-        
+
         if (resultInv.size() > 0) {
             List<Long> investigationIds = new ArrayList<Long>();
-            
+
             //get list of investigation ids
             for (Object inv : resultInv) {
                 Investigation invTemp = (Investigation) inv;
                 investigationIds.add(invTemp.getId());
             }
-            
+
             //build in string for query
             String investigationIdList = "";
             investigationIdList = getINLong(investigationIds);
-            
+
             List<Object> result = null;
-            
-            //search query 
+
+            //search query
             String jPQLQuery = "SELECT inv FROM Investigation inv WHERE inv.id IN " + investigationIdList + " INCLUDE inv.facility";
-            
+
             //perform search
             try {
                 result = service.search(sessionId, jPQLQuery);
@@ -467,14 +467,14 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
                 throw new InternalException(
                         "Internal error, searchByFreeTextPagination threw an unexpected exception, see server logs for details");
             }
-            
-            for (Object inv : result) {            
+
+            for (Object inv : result) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
-            
-            Collections.sort(investigationList);        
+
+            Collections.sort(investigationList);
         }
-        
+
         logger.info("result count:" + investigationList.size());
 
         return investigationList;
@@ -509,8 +509,8 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         }
         return datasetList;
     }
-    
-    
+
+
     @Override
     public ArrayList<TInvestigation> getInvestigationsInInstrument(String sessionId, String instrumentName)
             throws TopcatException {
@@ -519,7 +519,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             List<Object> results = new ArrayList<Object>();
             results = service.search(sessionId, "DISTINCT Investigation <-> InvestigationInstrument <-> Instrument[fullName = '" + instrumentName + "']");
-            
+
             for (Object inv : results) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
@@ -532,7 +532,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         }
         return investigationList;
     }
-    
+
 
     @Override
     public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) throws TopcatException {
@@ -607,17 +607,24 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             Datafile df = (Datafile) service.get(sessionId, "Datafile INCLUDE DatafileParameter, ParameterType",
                     datafileId);
+
             List<DatafileParameter> dfList = df.getParameters();
             for (DatafileParameter dfParam : dfList) {
                 if (dfParam.getType().getValueType() == ParameterValueType.NUMERIC) {
-                    result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
-                            dfParam.getNumericValue().toString()));
+                    if (dfParam.getNumericValue() != null) {
+                        result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
+                                dfParam.getNumericValue().toString()));
+                    }
                 } else if (dfParam.getType().getValueType() == ParameterValueType.STRING) {
-                    result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
-                            dfParam.getStringValue()));
+                    if (dfParam.getNumericValue() != null) {
+                        result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
+                                dfParam.getStringValue()));
+                    }
                 } else if (dfParam.getType().getValueType() == ParameterValueType.DATE_AND_TIME) {
-                    result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
-                            dfParam.getDateTimeValue().toString()));
+                    if (dfParam.getNumericValue() != null) {
+                        result.add(new TDatafileParameter(dfParam.getType().getName(), dfParam.getType().getUnits(),
+                                dfParam.getDateTimeValue().toString()));
+                    }
                 }
             }
         } catch (IcatException_Exception e) {
@@ -832,7 +839,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
             return service.create(sessionId, ds);
         } catch (IcatException_Exception e) {
             logger.error("createDataSet IcatException_Exception: " + e.toString());
-            
+
             convertToTopcatException(e, "createDataSet");
         } catch (Throwable e) {
             logger.error("createDataSet caught an unexpected exception: " + e.toString());
@@ -957,7 +964,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
             }
             query.append("]");
         }
-        
+
         //investigation name /rb number
         if (details.getInvestigationName() != null) {
             query.append(" <-> Investigation[name='" + details.getInvestigationName() + "']");
@@ -981,9 +988,9 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         if (details.getSample() != null && !queryDataset) {
             query.append(" <-> Sample[name='" + details.getSample() + "']");
         }
-        
+
         logger.info("getAdvancedQuery Search query: " + query.toString());
-        
+
         return query.toString();
     }
 
@@ -1184,9 +1191,9 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
 
         Facility invFacility = inv.getFacility();
         if (invFacility != null) {
-            facilityName = invFacility.getFullName();            
+            facilityName = invFacility.getFullName();
         } else {
-            facilityName = serverName;            
+            facilityName = serverName;
         }
 
         return new TInvestigation(id, inv.getName(), serverName, facilityName, inv.getTitle(), invStartDate, invEndDate,
@@ -1219,7 +1226,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
                 pub.getUrl());
     }
 
-    private TInvestigator copyInvestigatorToTInvestigator(InvestigationUser investigator) {        
+    private TInvestigator copyInvestigatorToTInvestigator(InvestigationUser investigator) {
         return new TInvestigator("", "", investigator.getUser().getFullName(), investigator.getRole());
     }
 
@@ -1270,7 +1277,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         infield.append(')');
         return infield.toString();
     }
-    
+
     private String getINLong(List<Long> ele) {
         final StringBuilder infield = new StringBuilder("(");
         for (final long t : ele) {
@@ -1282,5 +1289,5 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         infield.append(')');
         return infield.toString();
     }
-    
+
 }
