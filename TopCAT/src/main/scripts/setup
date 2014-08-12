@@ -41,8 +41,8 @@ elif arg == "INSTALL":
         
         actions.asadmin("create-jdbc-resource --connectionpoolid TopCATDB jdbc/TopCATDB")
       
-        actions.deploy("TopCAT-*.war", deploymentorder=140)
-        actions.deploy("TopCATAdmin-*.war", deploymentorder=141)
+        actions.deploy("TopCAT-*.war", contextroot=props["topcatUrlRoot"],  deploymentorder=140)
+        actions.deploy("TopCATAdmin-*.war", contextroot=props["topcatAdminUrlRoot"], deploymentorder=141)
           
     except Exception, e:
         abort(str(e))
