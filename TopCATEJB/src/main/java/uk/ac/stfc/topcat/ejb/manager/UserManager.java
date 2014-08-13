@@ -49,7 +49,7 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 /**
  * This class manages the user login and logouts etc. for TopCAT
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -64,7 +64,7 @@ public class UserManager {
     /**
      * This method returns the default user / Anonymous user. this will be used
      * for login to resources where user doen't have a login id.
-     * 
+     *
      * @param manager
      * @return Anonymous user
      */
@@ -78,7 +78,7 @@ public class UserManager {
     /**
      * This method returns a Session ID, the Session ID is a random unique
      * string generated.
-     * 
+     *
      * @param manager
      * @return a Unique string.
      */
@@ -91,7 +91,7 @@ public class UserManager {
 
     /**
      * This method login to a requested ICAT Server.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -113,15 +113,17 @@ public class UserManager {
         if (logger.isTraceEnabled()) {
             logger.trace("login: " + icatServer.getServerUrl());
         }
-        
+
         // Login to the icat server
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
                     icatServer.getVersion(), icatServer.getServerUrl());
             String icatSessionId = service.loginLifetime(authenticationType, parameters, (int) hours);
             String username = parameters.get("username");
+
+            //anonymous user does not pass pass parameters so get username from icat server via sessionid
             if (username == null) {
-                // currently only implemented in 3.4.1 and 4.2
+                //currently only implemented in 3.4.1 and 4.2
                 username = service.getUserName(icatSessionId);
             }
 
@@ -139,10 +141,10 @@ public class UserManager {
             throw new AuthenticationException("Unable to update login");
         }
     }
-    
-    
+
+
     /**
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -166,20 +168,20 @@ public class UserManager {
         if (logger.isTraceEnabled()) {
             logger.trace("login: " + icatServer.getServerUrl());
         }
-        
+
         // authenticate icat session id
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(icatServer.getName(),
                     icatServer.getVersion(), icatServer.getServerUrl());
-            
+
             if (service.isSessionValid(icatSessionId)) {
                 // get username from icat server (currently only implemented in 3.4.1 and 4.2)
                 String username = service.getUserName(icatSessionId);
-                
+
                 logger.info("login: username (" + username + ")");
-                
+
                 loginUpdate(manager, service, topcatSessionId, icatServer, username, icatSessionId, hours);
-                
+
                 return true;
             } else {
                 return false;
@@ -195,14 +197,14 @@ public class UserManager {
             throw new AuthenticationException("Unable to get surname");
         }
     }
-    
-    
-    
+
+
+
 
     /**
      * This method logout of all the ICAT servers that the user has logged in
      * using the topcat session id.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      */
@@ -227,7 +229,7 @@ public class UserManager {
 
     /**
      * This method removes the ICAT login session of user for a given server.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -257,7 +259,7 @@ public class UserManager {
      * This method get the icat session corresponding the topcat session id and
      * icat server and queries the icat server to check whether the session is
      * valid.
-     * 
+     *
      * @param manager
      * @param sessionId
      * @param facilityName
@@ -292,7 +294,7 @@ public class UserManager {
     }
 
     private void loginUpdate(EntityManager manager, ICATWebInterfaceBase service, String topcatSessionId,
-            TopcatIcatServer icatServer, String username, String icatSessionId, long hours)
+            TopcatIcatServer icatServer, String topcatUserName, String icatSessionId, long hours)
             throws AuthenticationException, TopcatException {
         // Process
 
@@ -308,58 +310,74 @@ public class UserManager {
         // user and topcatSessionId otherwise update the existing session.
 
         // TODO: don't allow default user to login
-        String userSurname = service.getUserSurname(icatSessionId, username);
+        String icatUserName = service.getUserName(icatSessionId);
+
+        if (icatUserName == null) {
+            throw new AuthenticationException("Uable to retrive user information from icat server");
+        }
+
+
         // Get all the topcat user with session id
         TopcatUser user = null;
         TopcatUserSession session = null;
         TopcatUserInfo userInfo = null;
 
         @SuppressWarnings("unchecked")
-        List<TopcatUserSession> resultSessions = manager.createNamedQuery("TopcatUserSession.findByTopcatSessionId")
-                .setParameter("topcatSessionId", topcatSessionId).getResultList();
+        List<TopcatUserSession> resultSessions = manager.createNamedQuery("TopcatUserSession.findByTopcatSessionId").setParameter("topcatSessionId", topcatSessionId).getResultList();
+
         if (resultSessions != null && resultSessions.size() != 0) {
-            userInfo = resultSessions.get(0).getUserId().getTopcatUserId();
             // search through the results to get the relevant session
             for (TopcatUserSession us : resultSessions) {
-                if (us.getUserId().getServerId().getId() == icatServer.getId()
-                        && us.getUserId().getName().equals(username)) {
+                if (us.getUserId().getServerId().getId() == icatServer.getId() && us.getUserId().getUserSurname().equals(icatUserName)) {
                     // found the relevant session
                     session = us;
                     user = session.getUserId();
                     break;
                 }
             }
-            
-            if (user == null) {
-                user = findUserFromUsernameAndServer(userInfo, username, icatServer.getName());
+
+            //
+            if (user == null) {                
+                user = findUserFromIcatUserNameAndServer(manager, icatUserName, icatServer.getName());
+
                 if (user == null) {
+                    //new user
+                    userInfo = new TopcatUserInfo();
+                    userInfo.setDisplayName(topcatUserName);
+                    userInfo.setHomeServer(icatServer);
+                    manager.persist(userInfo);
+
                     user = new TopcatUser();
-                    user.setName(username);
+                    user.setName(topcatUserName);
                     user.setServerId(icatServer);
                     user.setTopcatUserId(userInfo);
-                    user.setUserSurname(userSurname);
-                    
-                    try {                    
+                    user.setUserSurname(icatUserName);
+
+                    try {
                         manager.persist(user);
                     } catch (PersistenceException e) {
                         throw new PersistenceException("Could not update user login");
-                    }                        
-                }
+                    }
+                } 
             }
-        } else { // This is a Anonymous user session trying to login to first
-                 // server with session id
+        } else {
+
+            // This is a Anonymous user session trying to login to first
+            // server with session id
             // Check if the user is already a logged in user.
-            user = findUserFromUsernameAndServer(manager, username, icatServer.getName());
-            if (user == null) {// Its a new user
-                // Create a new user
+            user = findUserFromIcatUserNameAndServer(manager, icatUserName, icatServer.getName());
+
+            if (user == null) {
+                //new user                
                 userInfo = new TopcatUserInfo();
-                userInfo.setDisplayName(username);
+                userInfo.setDisplayName(topcatUserName);
                 userInfo.setHomeServer(icatServer);
-                manager.persist(userInfo); // persist the new user info
-                user = new TopcatUser(username, null, icatServer, userInfo, null);
-                user.setUserSurname(userSurname);
+                manager.persist(userInfo);
+                user = new TopcatUser(topcatUserName, null, icatServer, userInfo, null);
+                user.setUserSurname(icatUserName);
                 manager.persist(user);
-            } else { // Its old user
+            } else {
+                // Its old user
                 userInfo = user.getTopcatUserId();
             }
         }
@@ -382,7 +400,7 @@ public class UserManager {
             userSession.setExpiryDate(calendar.getTime());
             manager.persist(userSession);
         }
-        user.setUserSurname(userSurname);
+        user.setUserSurname(icatUserName);
         manager.merge(user);
 
         manager.flush();
@@ -391,7 +409,7 @@ public class UserManager {
     /**
      * This method finds the user corresponding to the username used for
      * loggging to given ICAT Server.
-     * 
+     *
      * @param manager
      * @param username
      *            ICAT Server username
@@ -399,12 +417,12 @@ public class UserManager {
      *            ICAT Server
      * @return: User
      */
-    private TopcatUser findUserFromUsernameAndServer(EntityManager manager, String username, String facilityName) {
+    private TopcatUser findUserFromIcatUserNameAndServer(EntityManager manager, String icatUserName, String facilityName) {
         // Find the User with the user name and server id
         try {
             TopcatUser user = (TopcatUser) manager
-                    .createNamedQuery("TopcatUser.findByNameAndServerNotAnonymous")
-                    .setParameter("userName", username).setParameter("serverName", facilityName).setMaxResults(1).getSingleResult();
+                    .createNamedQuery("TopcatUser.findByNameAndServer")
+                    .setParameter("userSurname", icatUserName).setParameter("serverName", facilityName).setMaxResults(1).getSingleResult();
             return user;
         } catch (NoResultException ex) {
         }
@@ -414,25 +432,30 @@ public class UserManager {
     /**
      * This gets the user corresponding to username and facility in the
      * userInfo.
-     * 
+     *
      * @param userInfo
      * @param username
      * @param facilityName
      * @return
      */
-    private TopcatUser findUserFromUsernameAndServer(TopcatUserInfo userInfo, String username, String facilityName) {
+    /*
+    private TopcatUser findUserFromUsernameAndServer(TopcatUserInfo userInfo, String icatUserName, String facilityName) {
+
         List<TopcatUser> userList = userInfo.getTopcatUserList();
+
         for (TopcatUser user : userList) {
-            if (user.getServerId().getName().equals(facilityName) && user.getName().equals(username)) {
+            if (user.getServerId().getName().equals(facilityName) && user.getUserSurname().equals(icatUserName)) {
                 return user; // found the user
             }
         }
+
         return null; // no user found
     }
+    */
 
     /**
      * This method finds the ICAT server using the facility name.
-     * 
+     *
      * @param manager
      * @param facilityName
      * @return
@@ -450,7 +473,7 @@ public class UserManager {
     /**
      * This method get all the valid user icat sessions for the given topcat
      * session.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @return
@@ -472,7 +495,7 @@ public class UserManager {
     /**
      * This method gets valid icat user session for the given facility and
      * topcat session.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -510,7 +533,7 @@ public class UserManager {
 
     /**
      * This does anonymous login update for all the icat servers
-     * 
+     *
      * @param manager
      */
     public void anonymousUserLogin(EntityManager manager) {
@@ -539,7 +562,7 @@ public class UserManager {
     /**
      * This method does a anonymous user login for a given facility and update
      * the icat session information to be used in anonymous topcat logins.
-     * 
+     *
      * @param manager
      * @param facilityName
      * @throws AuthenticationException
@@ -578,7 +601,7 @@ public class UserManager {
     /**
      * Get the current ICAT session id for the given TopCAT session and
      * facility.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName

@@ -142,12 +142,13 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     @Override
     public String getUserSurname(String sessionId, String userId) {
         logger.info("getUserSurname: sessionId (" + sessionId + "), userId (" + userId + ")");
-        String name;
+        String name = null;
         try {
             name = service.getUserName(sessionId);
         } catch (IcatException_Exception e) {
-            return userId;
+
         }
+
         return name;
     }
 
