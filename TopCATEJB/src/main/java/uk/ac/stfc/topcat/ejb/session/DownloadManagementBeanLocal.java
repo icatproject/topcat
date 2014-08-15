@@ -39,7 +39,7 @@ public interface DownloadManagementBeanLocal {
 
     /**
      * Add a new record.
-     * 
+     *
      * @param topcatSessionId
      *            a string containing the session id
      * @param facilityName
@@ -53,12 +53,12 @@ public interface DownloadManagementBeanLocal {
      * @return the id of the download
      * @throws TopcatException
      */
-    Long add(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
+    Long add(String sessionId, String facilityName, Date submitTime, String downloadName, String status, String message,
             Date expiryTime, String url, String preparedId) throws TopcatException;
 
     /**
      * Delete the record with the given id.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      *            a string containing the session id
@@ -67,6 +67,7 @@ public interface DownloadManagementBeanLocal {
      */
     void delete(String sessionId, Long id);
 
+
     @Deprecated
     String getDatafilesDownloadURL(String sessionId, String facilityName, List<Long> datafileIds)
             throws TopcatException;
@@ -74,10 +75,11 @@ public interface DownloadManagementBeanLocal {
     @Deprecated
     String getDatasetDownloadURL(String sessionId, String facilityName, Long datasetId) throws TopcatException;
 
+
     /**
      * Get a list of downloads for a user, which are associated with the given
      * facility.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      *            a string containing the session id
@@ -89,8 +91,24 @@ public interface DownloadManagementBeanLocal {
     List<TopcatUserDownload> getMyDownloads(String sessionId, String facilityName) throws TopcatException;
 
     /**
+     * Update the status, the url and message of the record with the given id.
+     *
+     * @param manager
+     * @param topcatSessionId
+     *            a string containing the session id
+     * @param id
+     *            the id of the record to update
+     * @param url
+     *            the updated url
+     * @param status
+     *            the updated status
+     */
+    void update(String sessionId, Long id, String url, String status, String message);
+
+
+    /**
      * Update the status and the url of the record with the given id.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      *            a string containing the session id
@@ -103,21 +121,24 @@ public interface DownloadManagementBeanLocal {
      */
     void update(String sessionId, Long id, String url, String status);
 
+
     /**
      * Get the URL of the download server for the given facility
-     * 
+     *
      * @param facilityName
      * @return the URL of the download server
      * @throws TopcatException
      */
     String getUrl(String facilityName) throws TopcatException;
 
+    /*
     @Deprecated
     void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status);
-    
+    */
+
     /**
      * Update the expiry time of the record with the given id.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      *            a string containing the session id

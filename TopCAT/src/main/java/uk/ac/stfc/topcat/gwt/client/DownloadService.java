@@ -155,4 +155,18 @@ public interface DownloadService extends RemoteService {
     public DownloadModel directDownloadFromIDS(TFacility facility, TopcatDataSelection dataSelection, String downloadName, IdsFlag flag)
             throws TopcatException;
 
+
+
+    /**
+     * Contact the I.D.S. and delete a given download.
+     *
+     * @param facility
+     *            the facility data
+     * @param DownloadModel
+     *            download to delete
+     * @throws TopcatException
+     */
+    public boolean deleteDownload(String facility, DownloadModel downloadModel) throws TopcatException;
+
+
 }

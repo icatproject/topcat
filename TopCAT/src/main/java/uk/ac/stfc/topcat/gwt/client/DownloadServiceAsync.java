@@ -133,4 +133,18 @@ public interface DownloadServiceAsync {
     public void directDownloadFromIDS(TFacility facility, TopcatDataSelection dataSelection,
             String downloadName, IdsFlag flag, AsyncCallback<DownloadModel> asyncCallback);
 
+    /**
+     * Contact the I.D.S. and delete a given download
+     *
+     * @param dataType
+     *            the type of the data object to be downloaded
+     * @param facility
+     *            the facility data
+     * @param dataObjectList
+     *            a list of data object ids
+     * @param downloadName
+     *            the name to give the down load file
+     */
+    public void deleteDownload(String facility, DownloadModel downloadModel, AsyncCallback<Boolean> asyncCallback);
+
 }

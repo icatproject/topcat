@@ -481,7 +481,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
-
+    /*
     @Override
     public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId)
             throws TopcatException {
@@ -510,6 +510,38 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         }
         return datasetList;
     }
+    */
+
+    @Override
+    public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId)
+            throws TopcatException {
+        logger.info("getDatasetsInInvestigation: sessionId (" + sessionId + "), " + investigationId + ")");
+        ArrayList<TDataset> datasetList = new ArrayList<TDataset>();
+        try {
+            List<Object> results = service.search(sessionId,
+                    "SELECT ds FROM Dataset ds WHERE ds.investigation.id = " + investigationId + "ORDER BY ds.name INCLUDE ds.type dt");
+
+            for (Object object : results) {
+                String status;
+                Dataset dataset = (Dataset) object;
+
+                if (dataset.isComplete()) {
+                    status = "complete";
+                } else {
+                    status = "in progress";
+                }
+                datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
+                        .getDescription(), dataset.getType().getName(), status));
+            }
+        } catch (IcatException_Exception e) {
+            convertToTopcatException(e, "getDatasetsInInvestigation");
+        } catch (Throwable e) {
+            logger.error("getDatasetsInInvestigation caught an unexpected exception: " + e.toString());
+            throw new InternalException(
+                    "Internal error, getDatasetsInInvestigation threw an unexpected exception, see server logs for details");
+        }
+        return datasetList;
+    }
 
 
     @Override
@@ -518,12 +550,15 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         logger.info("getInvestigationsInInstrument: sessionId (" + sessionId + "), " + instrumentName + ")");
         ArrayList<TInvestigation> investigationList = new ArrayList<TInvestigation>();
         try {
+
             List<Object> results = new ArrayList<Object>();
-            results = service.search(sessionId, "DISTINCT Investigation <-> InvestigationInstrument <-> Instrument[fullName = '" + instrumentName + "']");
+            //results = service.search(sessionId, "DISTINCT Investigation <-> InvestigationInstrument <-> Instrument[fullName = '" + instrumentName + "']");
+            results = service.search(sessionId, "SELECT DISTINCT inv FROM Investigation inv, inv.investigationInstruments invins WHERE invins.instrument.fullName = '" + instrumentName + "' ORDER BY inv.title");
 
             for (Object inv : results) {
                 investigationList.add(copyInvestigationToTInvestigation(serverName, (Investigation) inv));
             }
+
         } catch (IcatException_Exception e) {
             convertToTopcatException(e, "getInvestigationsInInstrument");
         } catch (Throwable e) {
@@ -585,10 +620,11 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         logger.info("getDatafilesInDataset: sessionId (" + sessionId + "), datasetId (" + datasetId + ")");
         ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
         try {
-            Dataset resultInv = (Dataset) service.get(sessionId, "Dataset INCLUDE Datafile, DatafileFormat", datasetId);
-            List<Datafile> dList = resultInv.getDatafiles();
-            for (Datafile datafile : dList) {
-                datafileList.add(copyDatafileToTDatafile(serverName, datafile));
+            List<Object> results = new ArrayList<Object>();
+            results = service.search(sessionId, "SELECT df FROM Datafile df WHERE df.dataset.id = " + datasetId + " ORDER BY df.name INCLUDE df.datafileFormat dft");
+
+            for (Object datafile : results) {
+                datafileList.add(copyDatafileToTDatafile(serverName, (Datafile) datafile));
             }
         } catch (IcatException_Exception e) {
             convertToTopcatException(e, "getDatafilesInDataset");

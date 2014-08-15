@@ -48,9 +48,9 @@ public class DownloadManagementBean implements DownloadManagementBeanLocal {
     }
 
     @Override
-    public Long add(String sessionId, String facilityName, Date submitTime, String downloadName, String status,
+    public Long add(String sessionId, String facilityName, Date submitTime, String downloadName, String status, String message,
             Date expiryTime, String url, String preparedId) throws TopcatException {
-        return downloadManager.add(manager, sessionId, facilityName, submitTime, downloadName, status, expiryTime, url,
+        return downloadManager.add(manager, sessionId, facilityName, submitTime, downloadName, status, message, expiryTime, url,
                 preparedId);
     }
 
@@ -58,6 +58,7 @@ public class DownloadManagementBean implements DownloadManagementBeanLocal {
     public void delete(String sessionId, Long id) {
         downloadManager.delete(manager, sessionId, id);
     }
+
 
     @Deprecated
     @Override
@@ -72,9 +73,15 @@ public class DownloadManagementBean implements DownloadManagementBeanLocal {
         return downloadManager.getDatasetDownloadURL(manager, sessionId, facilityName, datasetId);
     }
 
+
     @Override
     public List<TopcatUserDownload> getMyDownloads(String sessionId, String facilityName) throws TopcatException {
         return downloadManager.getMyDownloads(manager, sessionId, facilityName);
+    }
+
+    @Override
+    public void update(String sessionId, Long id, String url, String status, String message) {
+        downloadManager.update(manager, sessionId, id, url, status, message);
     }
 
     @Override
@@ -82,17 +89,22 @@ public class DownloadManagementBean implements DownloadManagementBeanLocal {
         downloadManager.update(manager, sessionId, id, url, status);
     }
 
+
+
+
     @Override
     public String getUrl(String facilityName) throws TopcatException {
         return downloadManager.getUrl(manager, facilityName);
     }
 
+    /*
     @Deprecated
     @Override
     public void updateDownloadStatus(String sessionId, String facilityName, String url, String updatedUrl, String status) {
         downloadManager.updateDownloadStatus(manager, sessionId, facilityName, url, updatedUrl, status);
     }
-    
+    */
+
     @Override
     public void updateExpiryTime(String sessionId, Long id, Date expiryTime) {
         downloadManager.updateExpiryTime(manager, sessionId, id, expiryTime);

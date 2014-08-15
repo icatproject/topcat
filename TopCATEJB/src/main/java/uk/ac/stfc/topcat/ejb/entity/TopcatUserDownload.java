@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  * The persistent class for the TOPCAT_USER_DOWNLOAD database table.
- * 
+ *
  */
 @Entity
 @Table(name = "TOPCAT_USER_DOWNLOAD")
@@ -17,10 +17,11 @@ import java.util.Date;
         @NamedQuery(name = "TopcatUserDownload.updateStatus", query = "UPDATE TopcatUserDownload t SET t.url = :updatedUrl, t.status = :status WHERE t.url = :url"),
         @NamedQuery(name = "TopcatUserDownload.updateExpiryTimeById", query = "UPDATE TopcatUserDownload t SET t.expiryTime = :expiryTime WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.updateById", query = "UPDATE TopcatUserDownload t SET t.url = :url, t.status = :status WHERE t.id = :id"),
+        @NamedQuery(name = "TopcatUserDownload.updateWithMessageById", query = "UPDATE TopcatUserDownload t SET t.url = :url, t.status = :status, t.message = :message WHERE t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.deleteById", query = "DELETE from TopcatUserDownload t where t.id = :id"),
         @NamedQuery(name = "TopcatUserDownload.cleanup", query = "DELETE from TopcatUserDownload t where CURRENT_TIMESTAMP > t.expiryTime"),
         @NamedQuery(name = "TopcatUserDownload.deleteByUserId", query = "DELETE from TopcatUserDownload t where t.userId.id = :userId"),
-        
+
 })
 
 @XmlRootElement
@@ -51,6 +52,9 @@ public class TopcatUserDownload implements Serializable {
 
     @Column(name = "PREPARED_ID")
     private String preparedId;
+
+    @Column(name = "MESSAGE")
+    private String message;
 
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     @ManyToOne(optional = true)
@@ -121,6 +125,14 @@ public class TopcatUserDownload implements Serializable {
 
     public void setUserId(TopcatUser userId) {
         this.userId = userId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override

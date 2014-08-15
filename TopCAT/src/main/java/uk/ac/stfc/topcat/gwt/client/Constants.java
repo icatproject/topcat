@@ -42,7 +42,14 @@ public class Constants {
     public static final String STATUS_EXPIRED = "expired";
 
     /** Download status */
-    public static final String STATUS_ERROR = "ERROR";
+    public static final String STATUS_ERROR = "error";
+
+    /** Download */
+    public static final String DOWNLOAD = "Download";
+
+    /** Download */
+    public static final String DELETE = "Delete";
+
 
     /** Investigation **/
     public static final String INVESTIGATION = "INVESTIGATION";
@@ -52,10 +59,10 @@ public class Constants {
 
     /** Data file **/
     public static final String DATA_FILE = "DATA_FILE";
-    
+
     /** archive download type **/
     public static final String DOWNLOAD_TYPE_ARCHIVE = "archived";
-    
+
     /** local download type **/
     public static final String DOWNLOAD_TYPE_LOCAL = "local";
 
@@ -65,12 +72,12 @@ public class Constants {
     /** Old download service */
     @Deprecated
     public static final String RESTFUL_DOWNLOAD = "restfulDownload";
-    
+
     /** Url path of the IDS service (include ending /)*/
     public static final String IDS_URL_PATH = "ids/";
-    
-    
+
+
     /** Polling refresh interval for messages **/
     public static final int MESSAGE_REFRESH_INTERVAL = 30000;
-    
+
 }

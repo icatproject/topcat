@@ -30,7 +30,7 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 /**
  * This is local interface to user management stateless session bean.
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -41,7 +41,7 @@ public interface UserManagementBeanLocal {
 
     public void login(String sessionId, String facilityName, String authenticationType, Map<String, String> parameters)
             throws AuthenticationException;
-    
+
     public boolean login(String sessionId, String facilityName, String authenticationType, String icatSessionId)
             throws AuthenticationException;
 

@@ -34,7 +34,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -61,7 +60,7 @@ public class DownloadManager {
     /** Items waiting to be downloaded. */
     private Set<DownloadModel> downloadQueue = new HashSet<DownloadModel>();
     private int downloadCount = 0;
-    private boolean statusErrorVissable = false;
+    private boolean statusErrorVisible = false;
     private EventPipeLine eventPipeLine = EventPipeLine.getInstance();
     private EventBus eventBus = EventPipeLine.getEventBus();
 
@@ -74,7 +73,7 @@ public class DownloadManager {
     private DownloadManager() {
         // Create a new timer that calls getDownloadStatus() on the server.
         Timer t = getDownloadStatusTimer();
-        // Schedule the timer to run every 5 seconds.
+        // Schedule the timer to run every 30 seconds.
         t.scheduleRepeating(30000);
 
         createLoginHandler();
@@ -233,6 +232,38 @@ public class DownloadManager {
             }
         });
     }
+
+    /**
+     * Call out to the server to delete a download
+     *
+     * @param facility
+     *            name of the facility
+     *        downloadModel
+     *            the downlod to delete
+     */
+    public void deleteDownload(String facility, DownloadModel downloadModel) {
+
+        eventPipeLine.showRetrievingData();
+        downloadService.deleteDownload(facility, downloadModel, new AsyncCallback<Boolean>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                eventPipeLine.hideRetrievingData();
+                EventPipeLine.getInstance().showErrorDialog("Error deleting download: " + caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                eventPipeLine.hideRetrievingData();
+                if (result) {
+                    eventPipeLine.getMainWindow().getMainPanel().getMyDownloadPanel().refresh();
+                } else {
+                    EventPipeLine.getInstance().showErrorDialog("Failed to delete download");
+                }
+            }
+        });
+    }
+
 
     /**
      * Contact the I.D.S. and prepare the download of the given data objects.
@@ -416,18 +447,26 @@ public class DownloadManager {
         Timer t = new Timer() {
             @Override
             public void run() {
-                // remove items if we have logged out of the facility
                 for (Iterator<DownloadModel> it = downloadQueue.iterator(); it.hasNext();) {
-                    if (!eventPipeLine.getLoggedInFacilities().contains(it.next().getFacilityName())) {
+                    DownloadModel download = it.next();
+
+                    // remove items if we have logged out of the facility
+                    if (!eventPipeLine.getLoggedInFacilities().contains(download.getFacilityName())) {
+                        it.remove();
+                    }
+
+                    //remove item with error or expired status
+                    if (download.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR) || download.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED)) {
                         it.remove();
                     }
                 }
+
                 if (downloadQueue.size() == 0) {
                     // nothing to check
                     return;
                 }
 
-                // call the server which will call the download service
+                // call the server if there's something in the queue and check updates for items in the queue
                 downloadService.checkForFinalStatus(downloadQueue, new AsyncCallback<List<DownloadModel>>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -446,22 +485,24 @@ public class DownloadManager {
                             return;
                         }
 
-                        // remove items if we have logged out of the facility
                         for (Iterator<DownloadModel> it = downloadQueue.iterator(); it.hasNext();) {
-                            if (!eventPipeLine.getLoggedInFacilities().contains(it.next().getFacilityName())) {
+                            DownloadModel download = it.next();
+
+                            // remove items if we have logged out of the facility
+                            if (!eventPipeLine.getLoggedInFacilities().contains(download.getFacilityName())) {
                                 it.remove();
                             }
                         }
+
                         if (downloadQueue.size() > 0) {
-                            // Only show error message if a message is not
-                            // already being displayed
-                            if (statusErrorVissable != true) {
-                                statusErrorVissable = true;
-                                String msg = "Error retrieving data from server while trying to get download status: "
-                                        + caught.toString();
+                            // Only show error message if a message is not already being displayed
+                            if (statusErrorVisible != true) {
+                                statusErrorVisible = true;
+                                String msg = "Error retrieving data from server while trying to get download status: " + caught.toString();
+
                                 MessageBox.alert("Error", msg, new Listener<MessageBoxEvent>() {
                                     public void handleEvent(MessageBoxEvent be) {
-                                        statusErrorVissable = false;
+                                        statusErrorVisible = false;
                                     }
                                 });
                             }
@@ -471,24 +512,22 @@ public class DownloadManager {
                     @Override
                     public void onSuccess(List<DownloadModel> finalStateReached) {
                         boolean refresh = false;
+
                         for (DownloadModel download : finalStateReached) {
                             // remove done item from the list
                             downloadQueue.remove(download);
+
                             if (!eventPipeLine.getLoggedInFacilities().contains(download.getFacilityName())) {
-                                // session logged out so do not process this
-                                // download
+                                // session logged out so do not process this download
                                 continue;
                             }
                             if (download.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
                                 download(download.getFacilityName(), download.getUrl());
-                                // update model
-                            } else if (download.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
-                                showErrorDialog("Error retrieving data from server for download "
-                                        + download.getDownloadName());
-                                // update model
                             }
+
                             refresh = true;
                         }
+
                         if (refresh) {
                             eventPipeLine.getMainWindow().getMainPanel().getMyDownloadPanel().refresh();
                         }
