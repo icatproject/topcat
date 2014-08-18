@@ -77,4 +77,10 @@ public interface IconResource extends ClientBundle  {
 	  @Source ("zoom.png")
       ImageResource iconShowInvestigationDetails();
 
+	  @Source ("information.png")
+      ImageResource iconInformation();
+
+	  @Source ("chart_bar.png")
+      ImageResource iconFileSize();
+
 }

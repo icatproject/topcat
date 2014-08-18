@@ -1,23 +1,23 @@
 /**
- * 
+ *
  * Copyright (c) 2009-2013
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the distribution.
- * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software 
+ * Neither the name of the STFC nor the names of its contributors may be used to endorse or promote products derived from this software
  * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  */
 package uk.ac.stfc.topcat.gwt.server;
@@ -55,7 +55,7 @@ import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
  * This is Search Service servlet implementation, it provides basic and advanced
  * search options on ICAT for AJAX
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -68,14 +68,14 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
     private KeywordManagementLocal keywordManager;
     @EJB
     private UserManagementBeanLocal userManager;
-    
-    
+
+
     private final static Logger logger = Logger.getLogger(SearchServiceImpl.class.getName());
 
     /*
      * This is servlet initialisation code. creates search, keyword and user
      * managers (local interface for EJB session beans's) (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
      */
     @Override
@@ -85,7 +85,7 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
     /*
      * This method returns the *public* keywords from the server that matches
      * the partial keys and given maximum number of keywords. (non-Javadoc)
-     * 
+     *
      * @see
      * uk.ac.stfc.topcat.gwt.client.SearchService#getKeywordsFromServer(java
      * .lang.String, java.lang.String, java.lang.String, int)
@@ -104,7 +104,7 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
      * This method searches all the icat servers for user investigations(User as
      * Investigator) that has given input keywords ***WARNING: Search is CASE
      * Sensitive and return maximum of 200 results*** (non-Javadoc)
-     * 
+     *
      * @see uk.ac.stfc.topcat.gwt.client.SearchService#
      * getSearchResultsMyInvestigationFromKeywords(java.lang.String,
      * java.util.List)
@@ -121,7 +121,7 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see uk.ac.stfc.topcat.gwt.client.SearchService#
      * getAdvancedSearchResultsInvestigation(java.lang.String,
      * uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails)
@@ -134,12 +134,12 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
         List<TInvestigation> investigationList = searchManager.searchAdvancedInvestigation(sessionId, searchDetails);
         return investigationList;
     }
-    
-    
+
+
     /*
-     * This method searches all the icat servers >= 4.3 for user investigations for given search query 
+     * This method searches all the icat servers >= 4.3 for user investigations for given search query
      * Search is CASE insensitive and return maximum of 200 results
-     * 
+     *
      * @see uk.ac.stfc.topcat.gwt.client.SearchService#
      * getFreeTextSearchResultsInvestigation(java.lang.String,
      * uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails)
@@ -147,20 +147,20 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
     @Override
     public List<TInvestigation> getFreeTextSearchResultsInvestigation(String sessionId,
             TAdvancedSearchDetails searchDetails) throws TopcatException {
-        
+
         if (sessionId == null) {
             sessionId = getSessionId();
             logger.debug("session id:" + sessionId);
         }
-        
+
         List<TInvestigation> investigationList = new ArrayList<TInvestigation>();
-        
+
         try {
             investigationList = searchManager.searchFreeTextInvestigation(sessionId, searchDetails);
         } catch (Exception e) {
-            logger.debug("searchManager.searchFreeTextInvestigation:" + e.getMessage());
+            logger.error("searchManager.searchFreeTextInvestigation:" + e.getMessage());
         }
-        
+
         return investigationList;
     }
 
@@ -168,9 +168,9 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
      * This methods searches for the datafiles that meet the criteria given in
      * the searchDetails NOTE: only instruments and run number start and end
      * used. (non-Javadoc)
-     * 
+     *
      * @throws TopcatException
-     * 
+     *
      * @see uk.ac.stfc.topcat.gwt.client.SearchService#getAdvancedSearchResultsDatafile(java.lang.String,
      *      uk.ac.stfc.topcat.ejb.gwt.module.TAdvancedSearchDetails)
      */
@@ -195,7 +195,7 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * uk.ac.stfc.topcat.gwt.client.SearchService#getAdvancedSearchResultsDatasets
      * (java.lang.String, java.lang.String,
@@ -221,7 +221,7 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
     /**
      * This method returns the session id from the Servlet SESSION variable
      * ***WARNING: only works if the user browser cookies are enable ***
-     * 
+     *
      * @return
      * @throws SessionException
      */
@@ -240,6 +240,6 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
             sessionId = (String) session.getAttribute("SESSION_ID");
         }
         return sessionId;
-    }    
+    }
 
 }

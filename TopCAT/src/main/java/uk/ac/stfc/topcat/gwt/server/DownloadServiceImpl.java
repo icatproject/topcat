@@ -45,6 +45,7 @@ import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
 import org.icatproject.ids.client.IdsClient.Flag;
 import org.icatproject.ids.client.IdsClient.Status;
+import org.icatproject.ids.client.IdsException;
 import org.icatproject.ids.client.InsufficientPrivilegesException;
 import org.icatproject.ids.client.NotFoundException;
 import org.icatproject.ids.client.NotImplementedException;
@@ -61,8 +62,8 @@ import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 import uk.ac.stfc.topcat.gwt.client.Constants;
 import uk.ac.stfc.topcat.gwt.client.DownloadService;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
-import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 
 /**
@@ -78,6 +79,8 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
     @EJB
     private UserManagementBeanLocal userManager;
     private final static Logger logger = Logger.getLogger(DownloadServiceImpl.class.getName());
+    private boolean debugEnabled = logger.isDebugEnabled();
+    private boolean infoEnabled = logger.isInfoEnabled();
 
 
     /**
@@ -90,9 +93,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
 
     @Override
     public List<DownloadModel> getMyDownloads(Set<String> facilities) throws TopcatException {
-        logger.debug("getMyDownloads called");
-
-        if (logger.isInfoEnabled()) {
+        if (infoEnabled) {
             logger.info("getMyDownloads: facilities.size() (" + facilities.size() + ")");
         }
 
@@ -108,8 +109,8 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
         for (String facilityName : facilities) {
             List<TopcatUserDownload> dlList = downloadManager.getMyDownloads(getSessionId(), facilityName);
 
-            if (logger.isInfoEnabled()) {
-                logger.info("getMyDownloads: Number of myDownloads (" + dlList.size() + ")");
+            if (infoEnabled) {
+                logger.info("getMyDownloads: Facilty (" + facilityName + "), Downloads (" + dlList.size() + ")" );
             }
 
             if (dlList == null) {
@@ -191,10 +192,8 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      * @throws NotFoundException
      */
     private boolean isPreparedAvailable(String downloadServiceUrl, DownloadModel downloadModel) throws TopcatException, NotFoundException, BadRequestException, org.icatproject.ids.client.InternalException, NotImplementedException  {
-        logger.debug("isPreparedAvailable called");
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("isAvailableIDS: downloadServiceUrl (" + downloadServiceUrl + "),  downloadModel.getId() ("
+        if (debugEnabled) {
+            logger.debug("isPreparedAvailable: downloadServiceUrl (" + downloadServiceUrl + "),  downloadModel.getId() ("
                     + downloadModel.getId() + ")");
         }
 
@@ -211,20 +210,12 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
     }
 
     @Override
-    public List<DownloadModel> checkForFinalStatus(Set<DownloadModel> downloadModels) throws TopcatException {
-
-        logger.debug("checkForFinalStatus called");
-        logger.info("checkForFinalStatus: downloadModels.size() (" + downloadModels.size() + ")");
-
-        List<DownloadModel> finalStateReached = new ArrayList<DownloadModel>();
+    public List<DownloadModel> checkForFinalStatus(Set<DownloadModel> downloadModels) throws TopcatException {        List<DownloadModel> finalStateReached = new ArrayList<DownloadModel>();
         Map<String, TFacility> facilityMapping = getDownloadPluginMapping();
 
         for (DownloadModel downloadModel : downloadModels) {
             DownloadModel updatedDownloadModel = null;
             if (downloadModel.getPluginName().equalsIgnoreCase(Constants.IDS)) {
-
-                logger.debug("checkForFinalStatus: " + downloadModel.getDownloadName());
-
                 updatedDownloadModel = checkForFinalStatusIDS(facilityMapping.get(downloadModel.getFacilityName()).getDownloadServiceUrl(), downloadModel);
             }
 
@@ -246,7 +237,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      * @throws TopcatException
      */
     private DownloadModel checkForFinalStatusIDS(String downloadServiceUrl, DownloadModel downloadModel) throws TopcatException {
-        if (logger.isDebugEnabled()) {
+        if (debugEnabled) {
             logger.debug("checkForFinalStatusIDS: downloadModel.getId() (" + downloadModel.getId() + ")");
         }
 
@@ -274,9 +265,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      * @throws TopcatException
      */
     private DownloadModel getDownloadStatus(String downloadServiceUrl, DownloadModel downloadModel) throws TopcatException {
-        logger.debug("getDownloadStatus called");
-
-        if (logger.isDebugEnabled()) {
+        if (debugEnabled) {
             logger.debug("getDownloadStatus: downloadServiceUrl (" + downloadServiceUrl + "), downloadModel.getId() (" + downloadModel.getId() + ")");
         }
 
@@ -297,18 +286,13 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
                 isAvailable = isPreparedAvailable(downloadServiceUrl, downloadModel);
 
                 if (isAvailable == true) {
-                    // this one is recently finished
-                    logger.debug("getDownloadStatus: status updated to " + Constants.STATUS_AVAILABLE);
-
                     URL downloadUrl = null;
 
                     if (downloadModel.getDownloadName().isEmpty()) {
                         downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), null);
-                        logger.debug("getDownloadStatus: downloadUrl: " + downloadUrl.toString());
                         downloadModel.setUrl(downloadUrl.toString());
                     } else {
                         downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());
-                        logger.debug("getDownloadStatus: downloadUrl: " + downloadUrl.toString());
                         downloadModel.setUrl(downloadUrl.toString());
                     }
 
@@ -317,17 +301,8 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
                     downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(), downloadModel.getStatus());
 
                 } else if (isAvailable == false) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("getDownloadStatus: status updated to " + Constants.STATUS_IN_PROGRESS);
-                    }
-
                     URL downloadUrl = null;
-
-                    downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());
-
-                    logger.debug("getDownloadStatus: downloadUrl: " + downloadUrl.toString());
-
-                    downloadModel.setUrl(downloadUrl.toString());
+                    downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());                    downloadModel.setUrl(downloadUrl.toString());
                     downloadModel.setStatus(Constants.STATUS_IN_PROGRESS);
                     downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(), downloadModel.getStatus());
                 }
@@ -339,90 +314,6 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
             } catch(BadRequestException | NotImplementedException e) {
                 downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(), Constants.STATUS_ERROR, e.getMessage());
             }
-
-
-    		/*
-            boolean isPrepared;
-
-            try {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("getStatusIDS: preparedId (" + downloadModel.getPreparedId() + ")");
-                }
-                isPrepared = ids.isPrepared(downloadModel.getPreparedId());
-
-                if (logger.isTraceEnabled()) {
-                    logger.trace("getStatusIDS: isPrepared:" + isPrepared);
-                }
-            } catch (NotFoundException e) {
-                logger.debug("getStatusIDS: NotFoundException downloadModel.getId() (" + downloadModel.getId() + ")" + e.getMessage());
-                isPrepared = false;
-                downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(), Constants.STATUS_EXPIRED);
-
-                //downloadManager.delete(getSessionId(), downloadModel.getId());
-                //downloadModel.setStatus(Constants.STATUS_EXPIRED);
-                return downloadModel;
-            } catch (BadRequestException e) {
-                logger.error("getStatusIDS: BadRequestException " + e.getMessage());
-
-                if (e.getMessage().startsWith("Generated URI is of length")) {
-                    throw new InternalException("Error returned from the download service. " + e.getMessage() + ". Please reduce the number of items selected for download.");
-                } else {
-                    throw new InternalException("Error returned from the download service. " + e.getMessage());
-                }
-            } catch (IdsException e) {
-                // something has gone wrong
-                logger.error("getStatusIDS: IdsException" + e.getMessage());
-                throw new InternalException("Error returned from the download service. " + e.getMessage());
-            }
-
-
-            if (isPrepared == true) {
-                // this one is recently finished
-                if (logger.isTraceEnabled()) {
-                    logger.trace("getStatusIDS: status updated to " + Constants.STATUS_AVAILABLE);
-                }
-
-                URL downloadUrl = null;
-
-                if (downloadModel.getDownloadName().isEmpty()) {
-                    downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), null);
-                    logger.debug("getStatusIDS: downloadUrl: " + downloadUrl.toString());
-                    downloadModel.setUrl(downloadUrl.toString());
-                } else {
-                    downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());
-                    logger.debug("getStatusIDS: downloadUrl: " + downloadUrl.toString());
-                    downloadModel.setUrl(downloadUrl.toString());
-                }
-
-                downloadModel.setStatus(Constants.STATUS_AVAILABLE);
-                downloadModel.setStartDownload(true);
-                downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(), downloadModel.getStatus());
-
-            } else if (isPrepared == false) {
-                // this one is recently finished
-                // TODO what to do, give the user an incomplete set?
-                if (logger.isTraceEnabled()) {
-                    logger.trace("getStatusIDS: status updated to " + Constants.STATUS_IN_PROGRESS);
-                }
-
-                URL downloadUrl = null;
-
-                downloadUrl = ids.getDataUrl(downloadModel.getPreparedId(), downloadModel.getDownloadName());
-
-                logger.debug("getStatusIDS: downloadUrl: " + downloadUrl.toString());
-
-                downloadModel.setUrl(downloadUrl.toString());
-                downloadModel.setStatus(Constants.STATUS_IN_PROGRESS);
-                downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(),
-                        downloadModel.getStatus());
-            }
-
-
-            if (logger.isTraceEnabled()) {
-                logger.trace("getStatusIDS: return downloadModel id ( " + downloadModel.getId() + ") status ( "
-                        + downloadModel.getStatus() + ")");
-            }
-            */
         }
 
         return downloadModel;
@@ -454,9 +345,10 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      */
     private DownloadModel prepareDataObjectsForDownloadIDS(TFacility facility,
             TopcatDataSelection dataSelection, String downloadName, IdsFlag flag) throws TopcatException {
-
-        logger.debug("prepareDataObjectsForDownloadIDS: facility(" + facility.toString() + "), dataselection (" +
-                dataSelection.getParameters().toString() + "), downloadName (" + downloadName + "), flag ( " + flag.toString() + " )");
+        if (debugEnabled) {
+            logger.debug("prepareDataObjectsForDownloadIDS: facility(" + facility.toString() + "), dataselection (" +
+                    dataSelection.getParameters().toString() + "), downloadName (" + downloadName + "), flag ( " + flag.toString() + " )");
+        }
 
         String sessionId = userManager.getIcatSessionId(getSessionId(), facility.getName());
         Date submitTime = new Date(System.currentTimeMillis());
@@ -473,7 +365,6 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
 
         try {
             preparedId = ids.prepareData(sessionId, idsDataSelection, getCompressionFlag(flag));
-
         } catch (InsufficientPrivilegesException e) {
             throw new SessionException();
         } catch (NotImplementedException e) {
@@ -528,9 +419,10 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
     @Override
     public DownloadModel directDownloadFromIDS(TFacility facility,
             TopcatDataSelection dataSelection, String downloadName, IdsFlag flag) throws TopcatException {
-
-        logger.debug("prepareDataObjectsForDownloadIDS: facility(" + facility.toString() + "), dataselection (" +
-                dataSelection.getParameters().toString() + "), downloadName (" + downloadName + "), flag ( " + flag.toString() + " )");
+        if (debugEnabled) {
+            logger.debug("prepareDataObjectsForDownloadIDS: facility(" + facility.toString() + "), dataselection (" +
+                    dataSelection.getParameters().toString() + "), downloadName (" + downloadName + "), flag ( " + flag.toString() + " )");
+        }
 
         String sessionId = userManager.getIcatSessionId(getSessionId(), facility.getName());
         IdsClient ids;
@@ -580,10 +472,12 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
             downloadUrl = ids.getDataUrl(sessionId, idsDataSelection, getCompressionFlag(flag), downloadName);
 
             if (downloadUrl != null) {
-                logger.debug("directDownloadFromIDS: downloadUrl: " + downloadUrl.toString());
+                if (infoEnabled) {
+                    logger.info("directDownloadFromIDS: downloadUrl: " + downloadUrl.toString());
+                }
                 dm.setUrl(downloadUrl.toString());
             } else {
-                logger.debug("directDownloadFromIDS: downloadUrl: Unable to retrieve download url from ids");
+                logger.error("directDownloadFromIDS: downloadUrl: Unable to retrieve download url from ids");
                 throw new TopcatException("Unable to retrieve download url from ids");
             }
         }
@@ -643,8 +537,6 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      * @throws MalformedURLException
      */
     private IdsClient getIDSClient(String url) throws InternalException, MalformedURLException {
-        logger.debug("getIDSClient: url (" + url + ")");
-
         URL urlObject = new URL(url);
 
         IdsClient ids = null;
@@ -678,158 +570,13 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
         return dm;
     }
 
-    /*
-    @Deprecated
-    private DownloadModel checkForFinalStatusRDS(DownloadModel downloadModel) throws SessionException {
-        BufferedReader in = null;
-        try {
-            // get the status from the download service
-            String requestUrl = downloadModel.getUrl();
-            URL statusUrl = new URL(requestUrl + "/Status");
-            URLConnection conn = statusUrl.openConnection();
-            try {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } catch (IOException e) {
-                if (((HttpURLConnection) statusUrl.openConnection()).getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    // assume this one is finished, possibly expired
-                    downloadManager.delete(getSessionId(), downloadModel.getId());
-                    downloadModel.setStatus(Constants.STATUS_EXPIRED);
-                    return downloadModel;
-                } else {
-                    logger.error("checkForFinalStatusRDS: " + e.getMessage());
-                    throw new IOException(e);
-                }
-            }
-            String inputLine = in.readLine();
-            if (inputLine.equalsIgnoreCase("COMPLETED")) {
-                // this one is finished
-                downloadModel.setStatus(Constants.STATUS_AVAILABLE);
-                downloadModel.setStartDownload(true);
-                downloadModel.setUrl(requestUrl + "/Download?Filename=" + downloadModel.getDownloadName());
-                downloadManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
-                        requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(),
-                        Constants.STATUS_AVAILABLE);
-                return downloadModel;
-            } else if (inputLine.equalsIgnoreCase("ERROR")) {
-                // this one is finished
-                downloadModel.setStatus(Constants.STATUS_ERROR);
-                downloadModel.setUrl(requestUrl + "/Download?Filename=" + downloadModel.getDownloadName());
-                downloadManager.updateDownloadStatus(getSessionId(), downloadModel.getFacilityName(), requestUrl,
-                        requestUrl + "/Download?Filename=" + downloadModel.getDownloadName(), Constants.STATUS_ERROR);
-                return downloadModel;
-            }
-            in.close();
-        } catch (IOException e) {
-            // download service unavailable
-            logger.error("checkForFinalStatusRDS: " + e.getMessage());
-            try {
-                in.close();
-            } catch (IOException e1) {
-            } catch (NullPointerException e1) {
-            }
-        }
-        return null;
-    }
-    */
 
-    /*
-    @Deprecated
-    @Override
-    public DownloadModel getDatafilesDownloadURL(String facilityName, List<Long> datafileIds, String downloadName)
-            throws TopcatException {
-        if (logger.isInfoEnabled()) {
-            logger.info("getDatafilesDownloadURL: facilityName (" + facilityName + "), datafileIds.size ("
-                    + datafileIds.size() + "), downloadName (" + downloadName + ")");
-        }
-        String status;
-        boolean startDownload = false;
-        Date submitTime = new Date(System.currentTimeMillis());
-        Date expiryTime = null;
-        Long id = null;
-        String url = downloadManager.getDatafilesDownloadURL(getSessionId(), facilityName, datafileIds);
-        Map<String, TFacility> facilityMapping = getDownloadPluginMapping();
-        String downloadPluginName = facilityMapping.get(facilityName).getDownloadPluginName();
-        if (downloadPluginName != null && downloadPluginName.equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
-            status = Constants.STATUS_IN_PROGRESS;
-            expiryTime = getExpiryTime(url);
-            id = downloadManager.add(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url,
-                    null);
-        } else {
-            status = Constants.STATUS_AVAILABLE;
-            startDownload = true;
-        }
-        DownloadModel dm = new DownloadModel();
-        dm.setDownloadName(downloadName);
-        dm.setExpiryTime(expiryTime);
-        dm.setFacilityName(facilityName);
-        dm.setId(id);
-        dm.setPluginName(downloadPluginName);
-        dm.setStartDownload(startDownload);
-        dm.setStatus(status);
-        dm.setSubmitTime(submitTime);
-        dm.setUrl(url);
-        return dm;
-    }
-    */
-
-    /*
-    @Deprecated
-    @Override
-    public DownloadModel getDatasetDownloadURL(String facilityName, Long datasetId, String downloadName)
-            throws TopcatException {
-        if (logger.isInfoEnabled()) {
-            logger.info("getDatasetDownloadURL: facilityName (" + facilityName + "), datasetId (" + datasetId
-                    + "), downloadName (" + downloadName + ")");
-        }
-        String status;
-        boolean startDownload = false;
-        Date submitTime = new Date(System.currentTimeMillis());
-        Date expiryTime = null;
-        Long id = null;
-        String url = downloadManager.getDatasetDownloadURL(getSessionId(), facilityName, datasetId);
-        Map<String, TFacility> facilityMapping = getDownloadPluginMapping();
-        String downloadPluginName = facilityMapping.get(facilityName).getDownloadPluginName();
-        if (downloadPluginName.equalsIgnoreCase(RESTFUL_DOWNLOAD_SERVICE)) {
-            status = Constants.STATUS_IN_PROGRESS;
-            expiryTime = getExpiryTime(url);
-            id = downloadManager.add(getSessionId(), facilityName, submitTime, downloadName, status, expiryTime, url,
-                    null);
-        } else {
-            status = Constants.STATUS_AVAILABLE;
-            startDownload = true;
-        }
-        DownloadModel dm = new DownloadModel();
-        dm.setDownloadName(downloadName);
-        dm.setExpiryTime(expiryTime);
-        dm.setFacilityName(facilityName);
-        dm.setId(id);
-        dm.setPluginName(downloadPluginName);
-        dm.setStartDownload(startDownload);
-        dm.setStatus(status);
-        dm.setSubmitTime(submitTime);
-        dm.setUrl(url);
-        return dm;
-    }
-    */
-    /*
-    private Date getExpiryTime(String url) {
-        Date expiryTime = null;
-        try {
-            URL statusUrl = new URL(url + "/ExpiryTime");
-            BufferedReader in = new BufferedReader(new InputStreamReader(statusUrl.openStream()));
-            SimpleDateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-            expiryTime = df.parse(in.readLine());
-            in.close();
-        } catch (IOException e) {
-            logger.error("getExpiryTime: " + e.getMessage());
-        } catch (ParseException e) {
-            logger.error("getExpiryTime: " + e.getMessage());
-        }
-        return expiryTime;
-    }
-    */
-
-
+    /**
+     * Returns server side IDS Flag from client side topcat IdsFlag
+     *
+     * @param flag
+     * @return
+     */
     private Flag getCompressionFlag(IdsFlag flag) {
         if (flag == IdsFlag.ZIP_AND_COMPRESS) {
             return Flag.ZIP_AND_COMPRESS;
@@ -847,6 +594,12 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
 
     }
 
+    /**
+     * Returns server side DataSelection object from client side topcat TopcatDataSelection object
+     *
+     * @param topcatDataselection
+     * @return
+     */
     private DataSelection convertToIdsDataSelection(TopcatDataSelection topcatDataselection) {
         DataSelection dataSelection = new DataSelection();
 
@@ -858,20 +611,67 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
 
     }
 
+    /**
+     * Delete a download
+     *
+     */
     @Override
     public boolean deleteDownload(String facility, DownloadModel downloadModel) throws TopcatException {
         //check user owns the download
+        //TODO
         String topcatSessionId = getSessionId();
 
         try {
             downloadManager.delete(getSessionId(), downloadModel.getId());
-            logger.info("deleteDownload: download with id " + downloadModel.getId() + " named " +  downloadModel.getDownloadName() + " deleted");
+
+            if (infoEnabled) {
+                logger.info("deleteDownload: download with id " + downloadModel.getId() + " named " +  downloadModel.getDownloadName() + " deleted");
+            }
         } catch (Exception e) {
-            logger.debug("deleteDownload:" + e.getMessage());
+            logger.error("deleteDownload:" + e.getMessage());
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Get the size of a download
+     */
+    @Override
+    public Long getDataSelectionSize(TFacility facility, TopcatDataSelection topcatDataSelection) throws TopcatException {
+        Long size = 0L;
+
+        IdsClient ids;
+        try {
+            ids = getIDSClient(facility.getDownloadServiceUrl());
+        } catch (MalformedURLException e) {
+            //invalid url
+            logger.error("getDataSelectionSize: " + e.getMessage());
+            throw new InternalException("Unable to contact the data service, " + facility.getDownloadServiceUrl() + " url appears to be invalid.");
+        }
+
+        String sessionId = userManager.getIcatSessionId(getSessionId(), facility.getName());
+        try {
+            size = ids.getSize(sessionId, convertToIdsDataSelection(topcatDataSelection));
+
+            if(infoEnabled) {
+                logger.info("getDataSelectionSize: Facility (" + facility + "), Download size (" + size + ")");
+            }
+        } catch (BadRequestException e) {
+            logger.error("getDataSelectionSize: " + "bad request error " + e.getMessage());
+
+            if (e.getMessage().startsWith("Generated URI is of length")) {
+                throw new InternalException("Unable to retrieve size from data service: Please reduce the number of items selected.");
+            } else {
+                throw new InternalException("Unable to retrieve size from data service: " + e.getMessage());
+            }
+        } catch (IdsException e) {
+            logger.error("getDataSelectionSize: " + e.getMessage());
+            throw new InternalException("Unable to retrieve size from data service: " + e.getMessage());
+        }
+
+        return size;
     }
 
 

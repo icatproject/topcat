@@ -77,6 +77,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 import java.util.List;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
+import uk.ac.stfc.topcat.gwt.shared.DataSelectionType;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 /**
  * This widget shows a tree to browse user data (User is the investigator). the
@@ -197,11 +199,34 @@ public class MyDataPanel extends Composite {
             }
         });
 
+        MenuItem showSize = new MenuItem();
+        showSize.setText("Show Investigation Size");
+        showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        showSize.setStyleAttribute("margin-left", "25px");
+        showSize.addStyleName("fixContextMenuIcon2");
+
+        //TODO enable when icat bug fixed
+        showSize.disable();
+
+        contextMenu.add(showSize);
+        showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (grid.getSelectionModel().getSelectedItem() != null) {
+                    TopcatInvestigation inv = (TopcatInvestigation) grid.getSelectionModel().getSelectedItem();
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addInvestigation(new Long(inv.getInvestigationId()));
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(inv.getFacilityName(), topcatDataSelection, DataSelectionType.INVESTIGATION);
+                }
+            }
+        });
+
+
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data Sets");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
         showDS.setStyleAttribute("margin-left", "25px");
-        showDS.addStyleName("fixContextMenuIcon2");
+        showDS.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -215,7 +240,7 @@ public class MyDataPanel extends Composite {
         addDataset.setText("Add Data Set");
         addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));
         addDataset.setStyleAttribute("margin-left", "25px");
-        addDataset.addStyleName("fixContextMenuIcon3");
+        addDataset.addStyleName("fixContextMenuIcon4");
         contextMenu.add(addDataset);
         addDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {

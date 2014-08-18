@@ -69,6 +69,7 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.WindowLogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.exception.WindowsNotAvailableExcecption;
 import uk.ac.stfc.topcat.gwt.client.factory.MyCookieFactory;
+import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.manager.TopcatWindowManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
@@ -86,6 +87,8 @@ import uk.ac.stfc.topcat.gwt.client.widget.ParameterDownloadForm;
 import uk.ac.stfc.topcat.gwt.client.widget.ParameterWindow;
 import uk.ac.stfc.topcat.gwt.client.widget.UploadDataFileWindow;
 import uk.ac.stfc.topcat.gwt.client.widget.WaitDialog;
+import uk.ac.stfc.topcat.gwt.shared.DataSelectionType;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -903,8 +906,12 @@ public class EventPipeLine implements LoginInterface {
     public void showUploadDatasetWindow(String facilityName, String dataSetId, BaseModelData node, final String source) {
         UploadDataFileWindow addNewDatasetWindow = new UploadDataFileWindow(dataSetId, facilityName, source, node);
         addNewDatasetWindow.show();
+    }
 
 
+
+    public void showDataSelectionSizeDialog(String facilityName, TopcatDataSelection topcatDataSelection, DataSelectionType dataSelectionType) {
+        DownloadManager.getInstance().getDataSelectionSize(facilityName, topcatDataSelection, dataSelectionType);
     }
 
 

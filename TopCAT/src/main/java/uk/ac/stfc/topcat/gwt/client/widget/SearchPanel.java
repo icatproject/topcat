@@ -41,6 +41,8 @@ import uk.ac.stfc.topcat.gwt.client.event.SearchAllButtonEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.AddInvestigationDetailsEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
+import uk.ac.stfc.topcat.gwt.shared.DataSelectionType;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -544,11 +546,34 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
             }
         });
 
+
+        MenuItem showSize = new MenuItem();
+        showSize.setText("Show Investigation Size");
+        showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        showSize.setStyleAttribute("margin-left", "25px");
+        showSize.addStyleName("fixContextMenuIcon2");
+
+        //TODO enable when icat bug fixed
+        showSize.disable();
+
+        contextMenu.add(showSize);
+        showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (grid.getSelectionModel().getSelectedItem() != null) {
+                    TopcatInvestigation inv = (TopcatInvestigation) grid.getSelectionModel().getSelectedItem();
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addInvestigation(new Long(inv.getInvestigationId()));
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(inv.getFacilityName(), topcatDataSelection, DataSelectionType.INVESTIGATION);
+                }
+            }
+        });
+
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data Sets");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
         showDS.setStyleAttribute("margin-left", "25px");
-        showDS.addStyleName("fixContextMenuIcon2");
+        showDS.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override

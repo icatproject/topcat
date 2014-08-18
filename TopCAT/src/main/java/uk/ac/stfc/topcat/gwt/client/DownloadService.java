@@ -31,8 +31,8 @@ import java.util.Set;
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
-import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 
 import com.google.gwt.core.client.GWT;
@@ -158,7 +158,7 @@ public interface DownloadService extends RemoteService {
 
 
     /**
-     * Contact the I.D.S. and delete a given download.
+     * Contact the server and delete a given download.
      *
      * @param facility
      *            the facility data
@@ -167,6 +167,19 @@ public interface DownloadService extends RemoteService {
      * @throws TopcatException
      */
     public boolean deleteDownload(String facility, DownloadModel downloadModel) throws TopcatException;
+
+
+    /**
+     * Contact the server and delete a given download.
+     *
+     * @param facility
+     *            the facility data
+     * @param DownloadModel
+     *            download to delete
+     * @throws TopcatException
+     */
+    public Long getDataSelectionSize(TFacility facility, TopcatDataSelection topcatDataSelection) throws TopcatException;
+
 
 
 }

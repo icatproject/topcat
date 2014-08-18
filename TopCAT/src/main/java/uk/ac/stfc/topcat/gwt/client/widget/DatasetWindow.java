@@ -47,6 +47,7 @@ import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
 import uk.ac.stfc.topcat.gwt.client.model.TopcatInvestigation;
+import uk.ac.stfc.topcat.gwt.shared.DataSelectionType;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
@@ -200,36 +201,40 @@ public class DatasetWindow extends Window {
         });
 
 
+        MenuItem showSize = new MenuItem();
+        showSize.setText("Show Data Set Size");
+        showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        showSize.setStyleAttribute("margin-left", "25px");
+        showSize.addStyleName("fixContextMenuIcon2");
+
+        //TODO enable when icat bug fixed
+        showSize.disable();
+
+        contextMenu.add(showSize);
+        showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (grid.getSelectionModel().getSelectedItem() != null) {
+                    DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addDataset(new Long(dsm.getId()));
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(dsm.getFacilityName(), topcatDataSelection, DataSelectionType.DATASET);
+                }
+            }
+        });
+
+
         MenuItem showFS = new MenuItem();
         showFS.setText("Show Data Files");
         showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDatafile()));
         showFS.setStyleAttribute("margin-left", "25px");
-        showFS.addStyleName("fixContextMenuIcon2");
+        showFS.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 ArrayList<DatasetModel> dsmList = new ArrayList<DatasetModel>();
                 dsmList.add((DatasetModel) grid.getSelectionModel().getSelectedItem());
                 EventPipeLine.getInstance().showDatafileWindowWithHistory(dsmList);
-            }
-        });
-
-
-        //create add datafile content menu. Note: menu item is not added to the menu until setDataset is called as facility
-        //name is not available until then
-        addDatafileMenuItem = new MenuItem();
-        addDatafileMenuItem.setText("Add Data File");
-        addDatafileMenuItem.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
-        addDatafileMenuItem.setStyleAttribute("margin-left", "25px");
-        addDatafileMenuItem.addStyleName("fixContextMenuIcon3");
-        addDatafileMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
-                DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
-
-                EventPipeLine.getInstance().showUploadDatasetWindow(dsm.getFacilityName(),
-                        dsm.getId(),
-                        dsm,
-                        SOURCE);
             }
         });
 
@@ -246,6 +251,25 @@ public class DatasetWindow extends Window {
                 topcatDataSelection.addDataset(new Long(dsm.getId()));
 
                 DownloadManager.getInstance().downloadData(dsm.getFacilityName(), topcatDataSelection, dsm.getName(), IdsFlag.ZIP_AND_COMPRESS);
+            }
+        });
+
+
+        //create add datafile content menu. Note: menu item is not added to the menu until setDataset is called as facility
+        //name is not available until then
+        addDatafileMenuItem = new MenuItem();
+        addDatafileMenuItem.setText("Add Data File");
+        addDatafileMenuItem.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
+        addDatafileMenuItem.setStyleAttribute("margin-left", "25px");
+        addDatafileMenuItem.addStyleName("fixContextMenuIcon5");
+        addDatafileMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
+
+                EventPipeLine.getInstance().showUploadDatasetWindow(dsm.getFacilityName(),
+                        dsm.getId(),
+                        dsm,
+                        SOURCE);
             }
         });
 
@@ -279,16 +303,31 @@ public class DatasetWindow extends Window {
         });
         toolBar.add(btnDownloadDataset);
 
-        /*
-        Button btnView = new Button("View", AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
-        btnView.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        Button btnCheckSelectedSize = new Button("Check selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        btnCheckSelectedSize.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                viewDatafileWindow();
+                List<DatasetModel> selectedModels = (ArrayList<DatasetModel>) getSelectedModels(pageProxy);
+
+                if (selectedModels.size() > 0) {
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+
+                    for(DatasetModel datasetModel : selectedModels){
+                        topcatDataSelection.addDataset(new Long(datasetModel.getId()));
+                    }
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(facilityName, topcatDataSelection, DataSelectionType.MIXED);
+                } else {
+                    EventPipeLine.getInstance().showMessageDialog("Nothing selected to check.");
+                }
             }
         });
-        toolBar.add(btnView);
-        */
+
+        //TODO enable when icat bug fixed
+        btnCheckSelectedSize.disable();
+
+        toolBar.add(btnCheckSelectedSize);
+
 
         btnShowAddDataset = new Button("Add Data Set", AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));
         btnShowAddDataset.addSelectionListener(new SelectionListener<ButtonEvent>() {

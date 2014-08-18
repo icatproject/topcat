@@ -49,9 +49,10 @@ import uk.ac.stfc.topcat.gwt.client.manager.HistoryManager;
 import uk.ac.stfc.topcat.gwt.client.model.DatafileModel;
 import uk.ac.stfc.topcat.gwt.client.model.DatasetModel;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
-import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
+import uk.ac.stfc.topcat.gwt.shared.DataSelectionType;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.core.El;
@@ -111,6 +112,7 @@ public class DatafileWindow extends Window {
     private Button btnDownload;
     private Button btnDownloadDataset;
     private Button btnUploadDatafile;
+    private Button btnCheckSelectedSize;
 
 
     boolean historyVerified;
@@ -232,12 +234,36 @@ public class DatafileWindow extends Window {
             }
         });
 
+        MenuItem showSize = new MenuItem();
+        showSize.setText("Show Data File Size");
+        showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        showSize.setStyleAttribute("margin-left", "25px");
+        showSize.addStyleName("fixContextMenuIcon2");
+
+        //TODO enable when icat bug fixed
+        showSize.disable();
+
+        contextMenu.add(showSize);
+        showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (grid.getSelectionModel().getSelectedItem() != null) {
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addInvestigation(new Long(grid.getSelectionModel().getSelectedItem().getId()));
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(
+                            grid.getSelectionModel().getSelectedItem().getFacilityName(),
+                            topcatDataSelection,
+                            DataSelectionType.DATAFILE);
+                }
+            }
+        });
+
 
         MenuItem showFS = new MenuItem();
         showFS.setText("Download Data File");
         showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
         showFS.setStyleAttribute("margin-left", "25px");
-        showFS.addStyleName("fixContextMenuIcon2");
+        showFS.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -316,7 +342,6 @@ public class DatafileWindow extends Window {
 
     }
 
-
     private void addDownloadDatafileButton(ToolBar toolBar) {
         btnDownload = new DownloadButton("Download selected Data File", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()), ICATNodeType.DATAFILE, datafileSelectionModel);
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -326,6 +351,33 @@ public class DatafileWindow extends Window {
             }
         });
         toolBar.add(btnDownload);
+    }
+
+    private void addCheckSelectedSizeButton(ToolBar toolBar) {
+        btnCheckSelectedSize = new Button("Check selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        btnCheckSelectedSize.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<Long> selectedItems = new ArrayList<Long>(selectedFiles);
+
+                if (selectedItems.size() > 0) {
+                    @SuppressWarnings("unchecked")
+                    String facilityName = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
+
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addDatafiles(selectedItems);
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(facilityName, topcatDataSelection, DataSelectionType.MIXED);
+                } else {
+                    EventPipeLine.getInstance().showMessageDialog("Nothing selected to check.");
+                }
+            }
+        });
+
+        //TODO enable when icat bug fixed
+        btnCheckSelectedSize.disable();
+
+        toolBar.add(btnCheckSelectedSize);
     }
 
 
@@ -345,6 +397,10 @@ public class DatafileWindow extends Window {
 
     public Button getBtnDownloadDataset() {
         return btnDownloadDataset;
+    }
+
+    public Button getBtnCheckSelectedSize() {
+        return btnCheckSelectedSize;
     }
 
 
@@ -376,6 +432,7 @@ public class DatafileWindow extends Window {
             addDownloadDatasetButton(datasetList.get(0), getToolBar());
         }
         addDownloadDatafileButton(getToolBar());
+        addCheckSelectedSizeButton(getToolBar());
         addUploadFileButton(datasetList, getToolBar());
     }
 
@@ -674,12 +731,12 @@ public class DatafileWindow extends Window {
         List<Long> selectedItems = new ArrayList<Long>(selectedFiles);
 
         @SuppressWarnings("unchecked")
-        String facility = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
+        String facilityName = ((List<DatafileModel>) pageProxy.getData()).get(0).getFacilityName();
 
         TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
         topcatDataSelection.addDatafiles(selectedItems);
 
-        DownloadManager.getInstance().downloadData(facility, topcatDataSelection, downloadName, IdsFlag.ZIP_AND_COMPRESS);
+        DownloadManager.getInstance().downloadData(facilityName, topcatDataSelection, downloadName, IdsFlag.ZIP_AND_COMPRESS);
         /*
         EventPipeLine.getInstance().showMessageDialog(
                 "Your data is being retrieved, this may be from tape, and will automatically start downloading shortly "

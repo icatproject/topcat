@@ -30,8 +30,8 @@ import java.util.Set;
 
 import uk.ac.stfc.topcat.core.gwt.module.TFacility;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
-import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -146,5 +146,9 @@ public interface DownloadServiceAsync {
      *            the name to give the down load file
      */
     public void deleteDownload(String facility, DownloadModel downloadModel, AsyncCallback<Boolean> asyncCallback);
+
+
+
+    public void getDataSelectionSize(TFacility facility, TopcatDataSelection topcatDataSelection, AsyncCallback<Long> asyncCallback);
 
 }

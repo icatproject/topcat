@@ -145,7 +145,6 @@ public class DownloadModel extends BaseModelData implements Serializable {
      *
      * @param expiryTime
      */
-    @Deprecated
     public void setExpiryTime(Date expiryTime) {
         set("expiryTime", expiryTime);
     }

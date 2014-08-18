@@ -54,6 +54,18 @@ h1 {
     margin-top: 51px;   
 }
 
+.fixContextMenuIcon5 img{
+    margin-top: 68px;   
+}
+
+.fixContextMenuIcon6 img{
+    margin-top: 85px;   
+}
+
+.fixContextMenuIcon7 img{
+    margin-top: 102px;   
+}
+
 .context-menu > .x-menu-list > .x-menu-list-item {
 	height: 16px;
 }

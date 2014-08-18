@@ -52,9 +52,10 @@ import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.manager.DownloadManager;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNode;
 import uk.ac.stfc.topcat.gwt.client.model.ICATNodeType;
-import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
+import uk.ac.stfc.topcat.gwt.shared.DataSelectionType;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
 import uk.ac.stfc.topcat.gwt.shared.Utils;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -74,6 +75,7 @@ import com.extjs.gxt.ui.client.widget.Composite;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -104,8 +106,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 public class BrowsePanel extends Composite {
     private final UtilityServiceAsync utilityService = UtilityService.Util.getInstance();
     private BaseTreeLoader<ICATNode> loader;
-    TreePanel<ICATNode> tree;
-    HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
+    private TreePanel<ICATNode> tree;    private HashMap<String, ArrayList<ICATNode>> logfilesMap = new HashMap<String, ArrayList<ICATNode>>();
     private InvestigationPanel investigationPanel;
     private static final String SOURCE = "BrowsePanel";
     private ICATNode node;
@@ -218,6 +219,31 @@ public class BrowsePanel extends Composite {
             }
         });
         buttonBar.add(btnDownload);
+
+        Button btnCheckSelectedSize = new Button("Check selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        btnCheckSelectedSize.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<ICATNode> selectedItems = tree.getCheckedSelection();
+                Map<String, TopcatDataSelection> dataSelectionMap = reduceToDataSelection(selectedItems);
+
+                if (dataSelectionMap.size() > 0) {
+                    for(Map.Entry<String, TopcatDataSelection> entry : dataSelectionMap.entrySet()) {
+                        EventPipeLine.getInstance().showDataSelectionSizeDialog(entry.getKey(), entry.getValue(), DataSelectionType.MIXED);
+                    }
+                } else {
+                    EventPipeLine.getInstance().showMessageDialog("Nothing selected to check.");
+                }
+            }
+        });
+
+        //TODO bug in icat cause incorrect file size. Enable when fixed
+        btnCheckSelectedSize.disable();
+
+        buttonBar.add(btnCheckSelectedSize);
+
+
+
         toolBar.add(buttonBar);
         return toolBar;
     }
@@ -422,11 +448,31 @@ public class BrowsePanel extends Composite {
             }
         });
 
+        MenuItem showSize = new MenuItem();
+        showSize.setText("Show Investigation Size");
+        showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        showSize.setStyleAttribute("margin-left", "25px");
+        showSize.addStyleName("fixContextMenuIcon2");
+        contextMenu.add(showSize);
+        showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (tree.getSelectionModel().getSelectedItem() != null) {
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addInvestigation(new Long(tree.getSelectionModel().getSelectedItem().getInvestigationId()));
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(
+                            tree.getSelectionModel().getSelectedItem().getFacility(),
+                            topcatDataSelection,
+                            DataSelectionType.INVESTIGATION);
+                }
+            }
+        });
+
         MenuItem showDataSet = new MenuItem();
         showDataSet.setText("Show Data Sets");
         showDataSet.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
         showDataSet.setStyleAttribute("margin-left", "25px");
-        showDataSet.addStyleName("fixContextMenuIcon2");
+        showDataSet.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showDataSet);
         showDataSet.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -441,7 +487,7 @@ public class BrowsePanel extends Composite {
         downloadInvestigation.setText("Download this Investigation");
         downloadInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadInvestigation()));
         downloadInvestigation.setStyleAttribute("margin-left", "25px");
-        downloadInvestigation.addStyleName("fixContextMenuIcon3");
+        downloadInvestigation.addStyleName("fixContextMenuIcon4");
         contextMenu.add(downloadInvestigation);
         downloadInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -461,7 +507,7 @@ public class BrowsePanel extends Composite {
             addDataset.setText("Add Data Set");
             addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));
             addDataset.setStyleAttribute("margin-left", "25px");
-            addDataset.addStyleName("fixContextMenuIcon4");
+            addDataset.addStyleName("fixContextMenuIcon5");
             contextMenu.add(addDataset);
             addDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -501,13 +547,33 @@ public class BrowsePanel extends Composite {
             }
         });
 
-        MenuItem donloadDataset = new MenuItem();
-        donloadDataset.setText("Download this Data Set");
-        donloadDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()));
-        donloadDataset.setStyleAttribute("margin-left", "25px");
-        donloadDataset.addStyleName("fixContextMenuIcon2");
-        contextMenu.add(donloadDataset);
-        donloadDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
+        MenuItem showSize = new MenuItem();
+        showSize.setText("Show Data Set Size");
+        showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        showSize.setStyleAttribute("margin-left", "25px");
+        showSize.addStyleName("fixContextMenuIcon2");
+        contextMenu.add(showSize);
+        showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (tree.getSelectionModel().getSelectedItem() != null) {
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addDataset(new Long(tree.getSelectionModel().getSelectedItem().getDatasetId()));
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(
+                            tree.getSelectionModel().getSelectedItem().getFacility(),
+                            topcatDataSelection,
+                            DataSelectionType.DATASET);
+                }
+            }
+        });
+
+        MenuItem downloadDataset = new MenuItem();
+        downloadDataset.setText("Download this Data Set");
+        downloadDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()));
+        downloadDataset.setStyleAttribute("margin-left", "25px");
+        downloadDataset.addStyleName("fixContextMenuIcon3");
+        contextMenu.add(downloadDataset);
+        downloadDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
                 topcatDataSelection.addDataset(new Long(tree.getSelectionModel().getSelectedItem().getDatasetId()));
@@ -525,7 +591,7 @@ public class BrowsePanel extends Composite {
             addDatafile.setText("Add Data File");
             addDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
             addDatafile.setStyleAttribute("margin-left", "25px");
-            addDatafile.addStyleName("fixContextMenuIcon3");
+            addDatafile.addStyleName("fixContextMenuIcon4");
             contextMenu.add(addDatafile);
             addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -563,11 +629,31 @@ public class BrowsePanel extends Composite {
             }
         });
 
+        MenuItem showSize = new MenuItem();
+        showSize.setText("Show Data File Size");
+        showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        showSize.setStyleAttribute("margin-left", "25px");
+        showSize.addStyleName("fixContextMenuIcon2");
+        contextMenu.add(showSize);
+        showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
+                if (tree.getSelectionModel().getSelectedItem() != null) {
+                    TopcatDataSelection topcatDataSelection = new TopcatDataSelection();
+                    topcatDataSelection.addDatafile(new Long(tree.getSelectionModel().getSelectedItem().getDatafileId()));
+
+                    EventPipeLine.getInstance().showDataSelectionSizeDialog(
+                            tree.getSelectionModel().getSelectedItem().getFacility(),
+                            topcatDataSelection,
+                            DataSelectionType.DATAFILE);
+                }
+            }
+        });
+
         MenuItem showDatafileDownload = new MenuItem();
         showDatafileDownload.setText("Download Data File");
         showDatafileDownload.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
         showDatafileDownload.setStyleAttribute("margin-left", "25px");
-        showDatafileDownload.addStyleName("fixContextMenuIcon2");
+        showDatafileDownload.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showDatafileDownload);
         showDatafileDownload.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -578,6 +664,12 @@ public class BrowsePanel extends Composite {
         return contextMenu;
     }
 
+    /**
+     * Download a single datafile
+     * The download name will be the filename and the file will be uncompressed
+     *
+     * @param node
+     */
     private void downloadSingleFile(ICATNode node) {
         //make sure it a data file node type
         if (node.getNodeType() == ICATNodeType.DATAFILE) {
@@ -590,6 +682,8 @@ public class BrowsePanel extends Composite {
 
     /**
      * Download selected datasets and datafiles.
+     *
+     * USer will be promtped for download name and files will be a compressed zip
      */
     private void download(String downloadName) {
         List<ICATNode> selectedItems = tree.getCheckedSelection();
@@ -713,7 +807,7 @@ public class BrowsePanel extends Composite {
 
 
     /**
-     * This method reduced the ICATNode list to a map of the selected investigation, dataset and datafiles.
+     * This method reduced an ICATNode list to a map of the selected investigation, dataset and datafiles.
      * Child dataset and datafiles are removed
      *
      * @param selectedItems
@@ -849,8 +943,5 @@ public class BrowsePanel extends Composite {
 
         return dataSelectionMap;
     }
-
-
-
 
 }

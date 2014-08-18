@@ -52,8 +52,10 @@ import uk.ac.stfc.topcat.gwt.client.event.UpdateDownloadStatusEvent;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LoginEventHandler;
 import uk.ac.stfc.topcat.gwt.client.eventHandler.LogoutEventHandler;
 import uk.ac.stfc.topcat.gwt.client.model.DownloadModel;
-import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
+import uk.ac.stfc.topcat.gwt.shared.DataSelectionType;
 import uk.ac.stfc.topcat.gwt.shared.IdsFlag;
+import uk.ac.stfc.topcat.gwt.shared.Utils;
+import uk.ac.stfc.topcat.gwt.shared.model.TopcatDataSelection;
 
 public class DownloadManager {
     private final DownloadServiceAsync downloadService = DownloadService.Util.getInstance();
@@ -241,10 +243,9 @@ public class DownloadManager {
      *        downloadModel
      *            the downlod to delete
      */
-    public void deleteDownload(String facility, DownloadModel downloadModel) {
-
+    public void deleteDownload(String facilityName, DownloadModel downloadModel) {
         eventPipeLine.showRetrievingData();
-        downloadService.deleteDownload(facility, downloadModel, new AsyncCallback<Boolean>() {
+        downloadService.deleteDownload(facilityName, downloadModel, new AsyncCallback<Boolean>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -262,6 +263,41 @@ public class DownloadManager {
                 }
             }
         });
+    }
+
+
+    public void getDataSelectionSize(String facilityName, TopcatDataSelection topcatDataSelection, final DataSelectionType dataSelectionType) {
+        eventPipeLine.showRetrievingData();
+
+        TFacility facility = EventPipeLine.getInstance().getFacility(facilityName);
+
+        downloadService.getDataSelectionSize(facility, topcatDataSelection, new AsyncCallback<Long>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                eventPipeLine.hideRetrievingData();
+                EventPipeLine.getInstance().showErrorDialog(caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Long size) {
+                eventPipeLine.hideRetrievingData();
+                String message = null;
+
+                if (dataSelectionType == DataSelectionType.MIXED) {
+                    message = "Selection is " + Utils.byteCountToDisplaySizeForClient(size, false) + ".";
+                } else if (dataSelectionType == DataSelectionType.INVESTIGATION) {
+                    message = "Investigation is " + Utils.byteCountToDisplaySizeForClient(size, false) + ".";
+                } else if (dataSelectionType == DataSelectionType.DATASET) {
+                    message = "Data Set is " + Utils.byteCountToDisplaySizeForClient(size, false) + ".";
+                } else if (dataSelectionType == DataSelectionType.DATAFILE) {
+                    message = "Data File is " + Utils.byteCountToDisplaySizeForClient(size, false) + ".";
+                }
+
+                EventPipeLine.getInstance().showMessageDialog(message);
+            }
+        });
+
+
     }
 
 
