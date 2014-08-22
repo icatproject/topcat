@@ -76,12 +76,12 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.CheckCascade;
@@ -208,7 +208,7 @@ public class BrowsePanel extends Composite {
      */
     private ToolBar getToolBar() {
         ToolBar toolBar = new ToolBar();
-        ButtonBar buttonBar = new ButtonBar();
+
         DownloadButton btnDownload = new DownloadButton("Download", AbstractImagePrototype.create(Resource.ICONS.iconDownload()), tree);
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -218,9 +218,9 @@ public class BrowsePanel extends Composite {
                 download(downloadName);
             }
         });
-        buttonBar.add(btnDownload);
+        toolBar.add(btnDownload);
 
-        Button btnCheckSelectedSize = new Button("Check selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        Button btnCheckSelectedSize = new Button("Check Selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
         btnCheckSelectedSize.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -240,11 +240,27 @@ public class BrowsePanel extends Composite {
         //TODO bug in icat cause incorrect file size. Enable when fixed
         btnCheckSelectedSize.disable();
 
-        buttonBar.add(btnCheckSelectedSize);
+        toolBar.add(btnCheckSelectedSize);
 
+        toolBar.add(new SeparatorToolItem());
 
+        Button clearAllButton = new Button("Clear All Selected", AbstractImagePrototype.create(Resource.ICONS.clearAll()));
+        clearAllButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                tree.setCheckedSelection(new ArrayList<ICATNode>());
+            }
+        });
 
-        toolBar.add(buttonBar);
+        toolBar.add(clearAllButton);
+
+        Button collapseAllButton = new Button("Collapse All", AbstractImagePrototype.create(Resource.ICONS.collapseAll()));
+        collapseAllButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+              tree.collapseAll();
+            }
+        });
+        toolBar.add(collapseAllButton);
+
         return toolBar;
     }
 

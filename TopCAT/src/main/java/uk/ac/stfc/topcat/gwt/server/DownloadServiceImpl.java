@@ -420,7 +420,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
     public DownloadModel directDownloadFromIDS(TFacility facility,
             TopcatDataSelection dataSelection, String downloadName, IdsFlag flag) throws TopcatException {
         if (debugEnabled) {
-            logger.debug("prepareDataObjectsForDownloadIDS: facility(" + facility.toString() + "), dataselection (" +
+            logger.debug("directDownloadFromIDS: facility(" + facility.toString() + "), dataselection (" +
                     dataSelection.getParameters().toString() + "), downloadName (" + downloadName + "), flag ( " + flag.toString() + " )");
         }
 
@@ -617,9 +617,6 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
      */
     @Override
     public boolean deleteDownload(String facility, DownloadModel downloadModel) throws TopcatException {
-        //check user owns the download
-        //TODO
-        String topcatSessionId = getSessionId();
 
         try {
             downloadManager.delete(getSessionId(), downloadModel.getId());

@@ -19,10 +19,15 @@
                 <li>Fixed deployment issue when topcat is behind a reverse proxy (See installation doc. for <a href="installation.html#Deployment_Behind_Reverse_proxy">example apache configuration</a>). </li>
                 <li>Removed the 200 investigation limit on the Browse All data tree</li>
                 <li>Resolved issue where large number of datafiles download requests would exceed the max url length limit</li>
+                <li>Added support for archived storage with IDS 1.2.0</li>
+                <li>Added various download buttons and context menu items. A single datafile downloaded using the context menu will be uncompressed.</li>
+                <li>Downloads are no longer split</li>
+                <li>Added ability to delete downloads in "My Downloads"</li>
                 <li>Bug fixes</li>
                 <li>schema changes (See <a href="installation.html#Schema_Upgrade"> schema upgrade instructions</a>):
                     <ul>                        
-                        <li>Add ALLOW_UPLOAD and ALLOW_CREATE_DATASET column to TOPCAT_ICAT_SERVER</li>                        
+                        <li>Add ALLOW_UPLOAD and ALLOW_CREATE_DATASET column to TOPCAT_ICAT_SERVER</li>
+                        <li>Add MESSAGE column to TOPCAT_USER_DOWNLOAD</li>
                     </ul>
                 </li>
             </ul>

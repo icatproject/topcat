@@ -83,4 +83,10 @@ public interface IconResource extends ClientBundle  {
 	  @Source ("chart_bar.png")
       ImageResource iconFileSize();
 
+	  @Source ("arrow_in.png")
+	  ImageResource collapseAll();
+
+      @Source ("arrow_rotate_clockwise.png")
+      ImageResource clearAll();
+
 }

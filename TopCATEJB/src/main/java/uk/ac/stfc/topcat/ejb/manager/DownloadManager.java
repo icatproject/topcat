@@ -37,6 +37,7 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.NoSuchObjectException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 import uk.ac.stfc.topcat.core.icat.ICATWebInterfaceBase;
 import uk.ac.stfc.topcat.ejb.entity.TopcatIcatServer;
+import uk.ac.stfc.topcat.ejb.entity.TopcatUser;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserDownload;
 import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 
@@ -100,8 +101,16 @@ public class DownloadManager {
         if (logger.isInfoEnabled()) {
             logger.info("delete: topcatSessionId (" + topcatSessionId + "), id (" + id + ")");
         }
-        manager.createNamedQuery("TopcatUserDownload.deleteById").setParameter("id", id).executeUpdate();
-        manager.flush();
+
+        @SuppressWarnings("unchecked")
+        List<TopcatUserSession> topcatSessions = (List<TopcatUserSession>) manager.createNamedQuery("TopcatUserSession.findByTopcatSessionId").setParameter("topcatSessionId", topcatSessionId).setMaxResults(1).getResultList();
+
+        if (topcatSessions.size() > 0) {
+            TopcatUser user = topcatSessions.get(0).getUserId();
+
+            manager.createNamedQuery("TopcatUserDownload.deleteByIdandUserId").setParameter("id", id).setParameter("userId", user.getId()).executeUpdate();
+            manager.flush();
+        }
     }
 
 

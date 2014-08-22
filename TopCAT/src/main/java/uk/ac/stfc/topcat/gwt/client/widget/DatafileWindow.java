@@ -343,7 +343,7 @@ public class DatafileWindow extends Window {
     }
 
     private void addDownloadDatafileButton(ToolBar toolBar) {
-        btnDownload = new DownloadButton("Download selected Data File", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()), ICATNodeType.DATAFILE, datafileSelectionModel);
+        btnDownload = new DownloadButton("Download Selected Data File", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()), ICATNodeType.DATAFILE, datafileSelectionModel);
         btnDownload.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -354,7 +354,7 @@ public class DatafileWindow extends Window {
     }
 
     private void addCheckSelectedSizeButton(ToolBar toolBar) {
-        btnCheckSelectedSize = new Button("Check selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        btnCheckSelectedSize = new Button("Check Selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
         btnCheckSelectedSize.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -438,7 +438,8 @@ public class DatafileWindow extends Window {
 
     /**
      * Set the datafile list to be displayed in the window.
-     *
+     * @param facilityName
+     *            facility name
      * @param datafileList
      *            an array of <code>DatafileModel</code>
      */
@@ -747,8 +748,8 @@ public class DatafileWindow extends Window {
     /**
      * Download datasets.
      *
-     * @param downloadName
-     *            the display name for the download
+     * @param dataset
+     *            the dataset model
      */
     private void downloadDataset(DatasetModel dataset) {
         TopcatDataSelection topcatDataSelection = new TopcatDataSelection();

@@ -176,7 +176,8 @@
             <subsection name="Schema Upgrade">                
                 <p>The following changes have been made to the schema in topcat 1.12.0:</p>
                 <ul>                    
-                    <li>ALLOW_UPLOAD and ALLOW_CREATE_DATASET columns were added to TOPCAT_ICAT_SERVER</li> 
+                    <li>ALLOW_UPLOAD and ALLOW_CREATE_DATASET columns added to TOPCAT_ICAT_SERVER</li> 
+                    <li>MESSAGE columns were added to TOPCAT_USER_DOWNLOAD</li>
                 </ul>
                                     
                 <p>To upgrade an existing database from topcat 1.11.0 to 1.12.0, run the following sql queries for your particular database:</p>               
@@ -184,14 +185,17 @@
                     <li>
                         <p>Oracle:</p>                        
                         <p>ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD NUMBER(1), ALLOW_CREATE_DATASET NUMBER(1));</p>
+                        <p>ALTER TABLE TOPCAT_USER_DOWNLOAD ADD MESSAGE VARCHAR2(255);</p>
                     </li>
                     <li>
                         <p>MySql:</p>                        
                         <p>ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD TINYINT(1), ALLOW_CREATE_DATASET TINYINT(1));</p>
+                        <p>ALTER TABLE TOPCAT_USER_DOWNLOAD ADD MESSAGE VARCHAR(255);</p>
                     </li>
                     <li>
                         <p>Derby:</p>                        
                         <p>ALTER TABLE TOPCAT_ICAT_SERVER ADD (ALLOW_UPLOAD SMALLINT, ALLOW_CREATE_DATASET SMALLINT);</p>
+                        <p>ALTER TABLE TOPCAT_USER_DOWNLOAD ADD MESSAGE VARCHAR(255);</p>
                     </li>
                 </ul>                
             </subsection>
@@ -272,18 +276,7 @@ ProxyPassReverse /topcatadmin/ https://localhost:8181/&lt;your topcatadmin path&
                 
                 <p>The upload functionality can be enabled/disabled in topcatadmin.</p>
             </subsection>
-            
-            
         </section>
-        
-        
-        
-        
-        
-        
-        
-        
-        
     </body>
 </document>
             

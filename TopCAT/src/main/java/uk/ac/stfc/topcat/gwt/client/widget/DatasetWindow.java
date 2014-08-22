@@ -294,7 +294,7 @@ public class DatasetWindow extends Window {
         });
         toolBar.add(btnDownloadInvestigation);
 
-        Button btnDownloadDataset = new DownloadButton("Download selected Data Sets", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()), ICATNodeType.DATASET, datasetSelectionModel);
+        Button btnDownloadDataset = new DownloadButton("Download Selected Data Sets", AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()), ICATNodeType.DATASET, datasetSelectionModel);
         btnDownloadDataset.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -303,7 +303,7 @@ public class DatasetWindow extends Window {
         });
         toolBar.add(btnDownloadDataset);
 
-        Button btnCheckSelectedSize = new Button("Check selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
+        Button btnCheckSelectedSize = new Button("Check Selected Size", AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
         btnCheckSelectedSize.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -412,7 +412,7 @@ public class DatasetWindow extends Window {
         }
 
         //add the upload file context menu as facilityName is set
-        addUploadContextMenu(facilityName, getContextMenu(), getaddDatafileMenuItem());
+        addUploadContextMenu(facilityName, getContextMenu(), getAddDatafileMenuItem());
 
         //add the download dataset context menu as facilityName is set
         addDownloadContextMenu(facilityName, getContextMenu(), getDownloadDatasetMenuItem());
@@ -432,7 +432,7 @@ public class DatasetWindow extends Window {
     }
 
 
-    public MenuItem getaddDatafileMenuItem() {
+    public MenuItem getAddDatafileMenuItem() {
         return addDatafileMenuItem;
     }
 
