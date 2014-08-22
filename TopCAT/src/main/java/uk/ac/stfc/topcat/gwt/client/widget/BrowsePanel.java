@@ -469,6 +469,10 @@ public class BrowsePanel extends Composite {
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
         showSize.setStyleAttribute("margin-left", "25px");
         showSize.addStyleName("fixContextMenuIcon2");
+
+        //TODO enable when icat bug fixed
+        showSize.disable();
+
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -568,6 +572,10 @@ public class BrowsePanel extends Composite {
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
         showSize.setStyleAttribute("margin-left", "25px");
         showSize.addStyleName("fixContextMenuIcon2");
+
+        //TODO enable when icat bug fixed
+        showSize.disable();
+
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -650,6 +658,10 @@ public class BrowsePanel extends Composite {
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
         showSize.setStyleAttribute("margin-left", "25px");
         showSize.addStyleName("fixContextMenuIcon2");
+
+        //TODO enable when icat bug fixed
+        showSize.disable();
+
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
