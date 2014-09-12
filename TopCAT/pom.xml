@@ -14,7 +14,7 @@
         <gwt.version>2.5.1</gwt.version>
         <gwt.plugin.version>2.5.1</gwt.plugin.version>
         <gxt.version>2.3.1-gwt22</gxt.version>
-        <ids.version>1.1.0-SNAPSHOT</ids.version>
+        <ids.version>1.1.0</ids.version>
         <runTarget>index.html</runTarget>
         <skip.deploy>true</skip.deploy>
     </properties>
