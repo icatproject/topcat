@@ -42,7 +42,7 @@
                 <ol>
                     <li>
                         If you have an earlier installation of TopCAT then either
-                        <a href=#Schema_Upgrade>upgrade the schema</a>
+                        <a href="#Schema_Upgrade">upgrade the schema</a>
                         or drop the database and create a new one - which will lose any existing configuration information.
                     </li>
                     <li>
