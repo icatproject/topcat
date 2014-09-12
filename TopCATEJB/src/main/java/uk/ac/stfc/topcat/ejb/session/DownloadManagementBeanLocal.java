@@ -47,6 +47,7 @@ public interface DownloadManagementBeanLocal {
      * @param submitTime
      * @param downloadName
      * @param status
+     * @param message
      * @param expiryTime
      * @param url
      * @param preparedId
