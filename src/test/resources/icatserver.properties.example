@@ -1,0 +1,21 @@
+# The icat server to test against
+# icat.server.name is just an identifier and can be anything 
+# Note if your icat server is using a self signed certificate, you will
+# need to import the certificate into your cacerts keystore for the  
+# jdk you are using (JDK_PATH/jre/lib/security/cacerts)
+icat.server.url = https://icatdev.isis.cclrc.ac.uk
+icat.server.name = ISIS
+icat.server.version = v43
+
+
+# icat authentication type: db, ldap, uows, anonymous
+icat.login.authentication.type = AUTHENTICATION_TYPE
+
+# your icat username
+icat.login.username = USERNAME
+
+# your icat password
+icat.login.password = PASSWORD
+
+# your username in icat, it may be different to icat.login.username
+icat.my.icatusername = ICATUSERNAME
