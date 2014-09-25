@@ -8,8 +8,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.icatproject.topcat.Constants;
 import org.icatproject.topcat.domain.SortOrder;
 import org.icatproject.topcat.domain.TDatafileFormat;
 import org.icatproject.topcat.domain.TDataset;
@@ -22,8 +25,12 @@ import org.icatproject.topcat.domain.TInvestigationType;
 import org.icatproject.topcat.domain.TParameterType;
 import org.icatproject.topcat.domain.TParameterValueType;
 import org.icatproject.topcat.exceptions.AuthenticationException;
+import org.icatproject.topcat.exceptions.BadRequestException;
+import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
+import org.icatproject.topcat.exceptions.NotFoundException;
+import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientInterface;
 import org.icatproject.topcat.utils.XMLGregorianCalendarConversionUtil;
 import org.icatproject_4_3_0.DatafileFormat;
@@ -33,6 +40,7 @@ import org.icatproject_4_3_0.Facility;
 import org.icatproject_4_3_0.FacilityCycle;
 import org.icatproject_4_3_0.ICAT;
 import org.icatproject_4_3_0.ICATService;
+import org.icatproject_4_3_0.IcatExceptionType;
 import org.icatproject_4_3_0.IcatException_Exception;
 import org.icatproject_4_3_0.Instrument;
 import org.icatproject_4_3_0.Investigation;
@@ -113,15 +121,16 @@ public class ICATClient43 implements ICATClientInterface {
      *
      * @param icatSessionId the icat session id
      * @return the icat user name
+     * @throws TopcatException
      */
     @Override
-    public String getUserName(String icatSessionId) throws IcatException {
+    public String getUserName(String icatSessionId) throws TopcatException {
         String result = null;
 
         try {
             result = service.getUserName(icatSessionId);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         return result;
@@ -180,15 +189,16 @@ public class ICATClient43 implements ICATClientInterface {
      * Resets the time-to-live of the icat session
      *
      * @param icatSessionId the icat session id
+     * @throws TopcatException
      *
      */
     @Override
-    public void refresh(String icatSessionId) throws IcatException {
+    public void refresh(String icatSessionId) throws TopcatException {
         try {
             service.refresh(icatSessionId);
         } catch (IcatException_Exception e) {
             logger.info("logout: " + e.getMessage());
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
     }
@@ -197,15 +207,16 @@ public class ICATClient43 implements ICATClientInterface {
      * This invalidates the sessionId.
      *
      * @param icatSessionId the icat session id
+     * @throws TopcatException
      *
      */
     @Override
-    public void logout(String icatSessionId) throws IcatException {
+    public void logout(String icatSessionId) throws TopcatException {
         try {
             service.logout(icatSessionId);
         } catch (IcatException_Exception e) {
             logger.info("logout: " + e.getMessage());
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
     }
@@ -216,10 +227,11 @@ public class ICATClient43 implements ICATClientInterface {
      *
      * @param icatSessionId the icat session id
      * @return list of facilities
+     * @throws TopcatException
      *
      */
     @Override
-    public List<TFacility> getFacilities(String icatSessionId) throws IcatException {
+    public List<TFacility> getFacilities(String icatSessionId) throws TopcatException {
         List<TFacility> facilities = new ArrayList<TFacility>();
         List<Object> results = new ArrayList<Object>();
 
@@ -227,7 +239,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -243,10 +255,11 @@ public class ICATClient43 implements ICATClientInterface {
      *
      * @param icatSessionId the icat session id
      * @return list of facilities
+     * @throws TopcatException
      *
      */
     @Override
-    public TFacility getFacilityById(String icatSessionId, Long id) throws IcatException {
+    public TFacility getFacilityById(String icatSessionId, Long id) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         TFacility facility = null;
 
@@ -254,7 +267,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         if (results.size() > 0) {
@@ -271,10 +284,11 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param facilitId the id of the facility
      * @return list of facility cycles
+     * @throws TopcatException
      *
      */
     @Override
-    public List<TFacilityCycle> getFacilityCyclesByFacilityId(String icatSessionId, Long facilityId) throws IcatException {
+    public List<TFacilityCycle> getFacilityCyclesByFacilityId(String icatSessionId, Long facilityId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TFacilityCycle> facilityCycles = new ArrayList<TFacilityCycle>();
 
@@ -282,7 +296,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -298,11 +312,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param facilitId the id of the facility
      * @return list of data types
+     * @throws TopcatException
      *
      */
     @Override
     public List<TDatasetType> getDatasetTypesByFacilityId(String icatSessionId,
-            Long facilityId) throws IcatException {
+            Long facilityId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TDatasetType> tDatasetTypes = new ArrayList<TDatasetType>();
 
@@ -310,7 +325,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -326,11 +341,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param facilitId the id of the facility
      * @return list of datafile formats
+     * @throws TopcatException
      *
      */
     @Override
     public List<TDatafileFormat> getDatafileFormatsByFacilityId(
-            String icatSessionId, Long facilityId) throws IcatException {
+            String icatSessionId, Long facilityId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TDatafileFormat> tDatafileFormats = new ArrayList<TDatafileFormat>();
 
@@ -338,7 +354,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -354,11 +370,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param facilitId the id of the facility
      * @return list of parameter types
+     * @throws TopcatException
      *
      */
     @Override
     public List<TParameterType> getParameterTypesByFacilityId(
-            String icatSessionId, Long facilityId) throws IcatException {
+            String icatSessionId, Long facilityId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TParameterType> tParameterTypes = new ArrayList<TParameterType>();
 
@@ -366,7 +383,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -383,11 +400,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param facilitId the id of the facility
      * @return list of investigation types
+     * @throws TopcatException
      *
      */
     @Override
     public List<TInvestigationType> getInvestigationTypesByFacilityId(
-            String icatSessionId, Long facilityId) throws IcatException {
+            String icatSessionId, Long facilityId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TInvestigationType> tInvestigationTypes = new ArrayList<TInvestigationType>();
 
@@ -395,7 +413,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -411,11 +429,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param facilitId the id of the facility
      * @return list of instruments
+     * @throws TopcatException
      *
      */
     @Override
     public List<TInstrument> getInstrumentsByfacilityId(String icatSessionId,
-            Long facilityId) throws IcatException {
+            Long facilityId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TInstrument> tInstruments = new ArrayList<TInstrument>();
 
@@ -423,7 +442,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -439,11 +458,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param instrumentId the id of the instrument
      * @return list of investigations
+     * @throws TopcatException
      *
      */
     @Override
     public List<TInvestigation> getInvestigationsByInstrumentId(
-            String icatSessionId, Long instrumentId) throws IcatException {
+            String icatSessionId, Long instrumentId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TInvestigation> tInvestigations = new ArrayList<TInvestigation>();
 
@@ -452,7 +472,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         logger.debug("getInvestigationsByInstrumentId size: " + results.size());
@@ -471,10 +491,11 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param instrumentId the id of the instrument
      * @return an investigations
+     * @throws TopcatException
      */
     @Override
     public Long getInvestigationsByInstrumentIdCount(String icatSessionId,
-            Long instrumentId) throws IcatException {
+            Long instrumentId) throws TopcatException {
         Long count = 0L;
         List<Object> results = new ArrayList<Object>();
 
@@ -484,7 +505,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         if (results.size() != 0) {
@@ -505,11 +526,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param sortBy the field to sort by. see icat schema
      * @param order the order to sort by SortOrder.ASC or SortOrder.DESC
      * @return list of investigations
+     * @throws TopcatException
      *
      */
     @Override
     public List<TInvestigation> getInvestigationsByInstrumentIdPaginated(
-            String icatSessionId, Long instrumentId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws IcatException {
+            String icatSessionId, Long instrumentId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TInvestigation> tInvestigations = new ArrayList<TInvestigation>();
 
@@ -519,7 +541,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -534,10 +556,11 @@ public class ICATClient43 implements ICATClientInterface {
      *
      * @param icatSessionId the icat session id
      * @param id the id of the investigation
+     * @throws TopcatException
      */
     @Override
     public TInvestigation getInvestigationById(String icatSessionId, Long investigationId)
-            throws IcatException {
+            throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         TInvestigation investigation = null;
 
@@ -545,7 +568,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         if (results.size() > 0) {
@@ -561,10 +584,11 @@ public class ICATClient43 implements ICATClientInterface {
      *
      * @param icatSessionId the icat session id
      * @param id the id of the investigation
+     * @throws TopcatException
      */
     @Override
     public List<TDataset> getDatasetsByInvestigationId(String icatSessionId,
-            Long investigationId) throws IcatException {
+            Long investigationId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TDataset> tDataset = new ArrayList<TDataset>();
 
@@ -573,7 +597,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -590,10 +614,11 @@ public class ICATClient43 implements ICATClientInterface {
      * @param icatSessionId the icat session id
      * @param instrumentId the id of the instrument
      * @return an investigations
+     * @throws TopcatException
      */
     @Override
     public Long getDatasetsByInvestigationIdCount(String icatSessionId,
-            Long investigationId) throws IcatException {
+            Long investigationId) throws TopcatException {
         Long count = 0L;
         List<Object> results = new ArrayList<Object>();
 
@@ -602,7 +627,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         if (results.size() != 0) {
@@ -623,11 +648,12 @@ public class ICATClient43 implements ICATClientInterface {
      * @param sortBy the field to sort by. see icat schema
      * @param order the order to sort by SortOrder.ASC or SortOrder.DESC
      * @return list of investigations
+     * @throws TopcatException
      *
      */
     @Override
     public List<TDataset> getDatasetsByInvestigationIdPaginated(
-            String icatSessionId, Long investigationId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws IcatException {
+            String icatSessionId, Long investigationId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TDataset> tDataset = new ArrayList<TDataset>();
 
@@ -636,7 +662,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         logger.debug("getDatasetByInvestigationIdPaginated size: " + results.size());
@@ -803,7 +829,7 @@ public class ICATClient43 implements ICATClientInterface {
 
     @Override
     public List<TInvestigation> getInvestigationsByFacilityCycleId(
-            String icatSessionId, Long facilityCycleId) throws IcatException {
+            String icatSessionId, Long facilityCycleId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TInvestigation> tInvestigations = new ArrayList<TInvestigation>();
 
@@ -811,21 +837,12 @@ public class ICATClient43 implements ICATClientInterface {
                 + "i.startDate >= c.startDate AND i.endDate <= c.endDate AND "
                 + "c.id = '" + facilityCycleId + "' ORDER BY i.id";
 
-        //TODO check number of result discrepancy. for facility id of 70, database query give 380 results.
-        //however the above query or the query below using specific dates give 108 results
-
-        //String query = "SELECT i FROM Investigation i WHERE i.startDate >= {ts 2013-07-01 00:00:00} AND i.endDate <= {ts 2013-08-31 00:00:00}";
-
-        //sql queries
-        //SELECT i.title, c.create_time FROM investigation i, facilitycycle c WHERE i.startdate >= c.startdate AND i.enddate <= c.enddate AND c.id = 70 order by i.title
-        //"SELECT i.title, c.create_time FROM investigation i, facilitycycle c, investigationinstrument ii WHERE i.startdate >= c.startdate AND i.enddate <= c.enddate AND c.id = 70 AND ii.investigation_id = i.id AND ii.instrument_id = 23 order by i.title"
-
         logger.debug(query);
 
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         logger.debug("getInvestigationByFacilityCycleId size: " + results.size());
@@ -839,7 +856,7 @@ public class ICATClient43 implements ICATClientInterface {
 
     @Override
     public Long getInvestigationsByFacilityCycleIdCount(String icatSessionId,
-            Long facilityCycleId) throws IcatException {
+            Long facilityCycleId) throws TopcatException {
         Long count = 0L;
         List<Object> results = new ArrayList<Object>();
 
@@ -850,7 +867,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         if (results.size() != 0) {
@@ -864,7 +881,7 @@ public class ICATClient43 implements ICATClientInterface {
     public List<TInvestigation> getInvestigationsByFacilityCycleIdPaginated(
             String icatSessionId, Long facilityCycleId, Integer offset,
             Integer numberOfRows, String sortBy, SortOrder order)
-            throws IcatException {
+            throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TInvestigation> tInvestigations = new ArrayList<TInvestigation>();
 
@@ -876,7 +893,7 @@ public class ICATClient43 implements ICATClientInterface {
         try {
             results  = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         for(Object result : results) {
@@ -888,15 +905,9 @@ public class ICATClient43 implements ICATClientInterface {
 
     @Override
     public List<TFacilityCycle> getFacilityCycleByInstrumentId(
-            String icatSessionId, Long instrumentId) throws IcatException {
+            String icatSessionId, Long instrumentId) throws TopcatException {
         List<Object> results = new ArrayList<Object>();
         List<TFacilityCycle> tFacilityCycle = new ArrayList<TFacilityCycle>();
-
-        //String query = "SELECT i FROM Investigation i WHERE i.startDate >= {ts 2013-07-01 00:00:00} AND i.endDate <= {ts 2013-08-31 00:00:00}";
-
-        //sql queries
-        //SELECT i.title, c.create_time FROM investigation i, facilitycycle c WHERE i.startdate >= c.startdate AND i.enddate <= c.enddate AND c.id = 70 order by i.title
-        //"SELECT i.title, c.create_time FROM investigation i, facilitycycle c, investigationinstrument ii WHERE i.startdate >= c.startdate AND i.enddate <= c.enddate AND c.id = 70 AND ii.investigation_id = i.id AND ii.instrument_id = 23 order by i.title"
 
         Object minInvestigationStartDate;
         Object maxInvestigationStartDate;
@@ -928,7 +939,9 @@ public class ICATClient43 implements ICATClientInterface {
 
             results = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
+        } catch (IndexOutOfBoundsException e) {
+            return tFacilityCycle;
         }
 
         logger.debug("getFacilityCycleByInstrumentId size: " + results.size());
@@ -942,7 +955,7 @@ public class ICATClient43 implements ICATClientInterface {
 
     @Override
     public Long getFacilityCycleByInstrumentIdCount(String icatSessionId,
-            Long instrumentId) throws IcatException {
+            Long instrumentId) throws TopcatException {
         Long count = 0L;
         List<Object> results = new ArrayList<Object>();
 
@@ -971,7 +984,7 @@ public class ICATClient43 implements ICATClientInterface {
 
             results = service.search(icatSessionId, query);
         } catch (IcatException_Exception e) {
-            throw new IcatException(e.getMessage());
+            throwNewICATException(e);
         }
 
         if (results.size() != 0) {
@@ -1030,6 +1043,50 @@ public class ICATClient43 implements ICATClientInterface {
         }
 
         return tFacilityCycle;
+    }
+
+
+    //TODO
+    /**
+     * Determine if an IcatException_Exception is an INSUFFICIENT_PRIVILEGES or SESSION type
+     * exception
+     *
+     * @param e
+     * @throws AuthenticationException
+     * @throws IcatException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
+    private void throwNewICATException(IcatException_Exception e) throws TopcatException {
+        logger.debug("icatExceptionType: " + e.getFaultInfo().getType());
+
+        switch(e.getFaultInfo().getType()) {
+        case INSUFFICIENT_PRIVILEGES:
+            throw new ForbiddenException(e.getMessage());
+        case BAD_PARAMETER:
+            throw new BadRequestException(e.getMessage());
+        case INTERNAL:
+            throw new IcatException(e.getMessage());
+        case SESSION:
+            throw new AuthenticationException(e.getMessage());
+        case NO_SUCH_OBJECT_FOUND:
+            throw new NotFoundException(e.getMessage());
+        case VALIDATION:
+            throw new IcatException(e.getMessage());
+        default:
+            throw new IcatException(e.getMessage());
+        }
+
+        /*
+        if (e.getFaultInfo().getType() == IcatExceptionType.INSUFFICIENT_PRIVILEGES || e.getFaultInfo().getType() == IcatExceptionType.SESSION) {
+            throw new AuthenticationException(e.getMessage());
+        } else {
+            throw new IcatException(e.getMessage());
+        }
+        */
+
+
     }
 
 

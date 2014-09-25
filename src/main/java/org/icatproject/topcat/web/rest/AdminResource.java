@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,12 +42,12 @@ import org.icatproject.topcat.domain.TInvestigationType;
 import org.icatproject.topcat.domain.TParameterType;
 import org.icatproject.topcat.domain.TopcatIcatServer;
 import org.icatproject.topcat.domain.TopcatStringValue;
-import org.icatproject.topcat.domain.TopcatUser;
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.NotFoundException;
+import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.ServerRepository;
 import org.icatproject.topcat.utils.PagerHelper;
@@ -81,18 +82,18 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/facilities/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilities(@PathParam("serverName") String serverName, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getFacilities(@PathParam("serverName") String serverName, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TFacility> facilities = icatClientService.getFacilities(serverName, icatSessionId);
 
         return Response.ok().entity(new GenericEntity<List<TFacility>>(facilities){}).build();
     }
 
     @GET
-    @Path("/servers/{serverName}/facilities/{id}/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilityById(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException, NotFoundException {
+    public Response getFacilityById(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         TFacility facility = icatClientService.getFacilityById(serverName, icatSessionId, id);
 
         if (facility == null) {
@@ -103,9 +104,9 @@ public class AdminResource {
     }
 
     @GET
-    @Path("/servers/{serverName}/facilities/{id}/facility-cycles/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities/{id}/facility-cycles")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilityCyclesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getFacilityCyclesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TFacilityCycle> facilityCycles = icatClientService.getFacilityCyclesByFacilityId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TFacilityCycle>>(facilityCycles){}).build();
@@ -113,9 +114,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/facilities/{id}/dataset-types/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities/{id}/dataset-types")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDatasetTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getDatasetTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TDatasetType> datasetTypes = icatClientService.getDatasetTypesByFacilityId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TDatasetType>>(datasetTypes){}).build();
@@ -123,9 +124,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/facilities/{id}/datafile-formats/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities/{id}/datafile-formats")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDatafielFormatsByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getDatafielFormatsByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TDatafileFormat> tDatafileFormats = icatClientService.getDatafileFormatsByFacilityId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TDatafileFormat>>(tDatafileFormats){}).build();
@@ -133,9 +134,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/facilities/{id}/parameter-types/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities/{id}/parameter-types")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getParameterTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getParameterTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TParameterType> tParameterTypes = icatClientService.getParameterTypesByFacilityId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TParameterType>>(tParameterTypes){}).build();
@@ -143,9 +144,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/facilities/{id}/investigation-types/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities/{id}/investigation-types")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getInvestigationTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TInvestigationType> tInvestigationTypes = icatClientService.getInvestigationTypesByFacilityId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TInvestigationType>>(tInvestigationTypes){}).build();
@@ -153,9 +154,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/facilities/{id}/instruments/{icatSessionId}")
+    @Path("/servers/{serverName}/facilities/{id}/instruments")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getInstrumentsByfacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getInstrumentsByfacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TInstrument> tInstruments = icatClientService.getInstrumentsByfacilityId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TInstrument>>(tInstruments){}).build();
@@ -163,25 +164,25 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/instruments/{id}/investigations/{icatSessionId}")
+    @Path("/servers/{serverName}/instruments/{id}/investigations")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationsByInstrumentId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getInvestigationsByInstrumentId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TInvestigation> tInvestigations = icatClientService.getInvestigationsByInstrumentId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TInvestigation>>(tInvestigations){}).build();
     }
 
     @GET
-    @Path("/servers/{serverName}/instruments/{id}/investigations/{page}/{icatSessionId}")
+    @Path("/servers/{serverName}/instruments/{id}/investigations/{page}")
     @Produces({ MediaType.APPLICATION_JSON })
     public Response getInvestigationsByInstrumentIdPaginated(
             @Context UriInfo uriInfo,
             @PathParam("serverName") String serverName,
             @PathParam("id") Long id, @PathParam("page") Integer page,
-            @PathParam("icatSessionId") String icatSessionId,
+            @HeaderParam("icatSessionId") String icatSessionId,
             @QueryParam("sort") String sort,
             @QueryParam("order") String order)
-            throws IcatException, InternalException, MalformedURLException, BadRequestException, NotFoundException {
+            throws TopcatException, MalformedURLException {
         //deal with negative or 0 page numbers
         if (page < 1) {
             throw new NotFoundException("Page not found");
@@ -209,9 +210,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/investigations/{id}/{icatSessionId}")
+    @Path("/servers/{serverName}/investigations/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationById(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException, NotFoundException {
+    public Response getInvestigationById(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         TInvestigation investigation = icatClientService.getInvestigationById(serverName, icatSessionId, id);
 
         if (investigation == null) {
@@ -223,25 +224,25 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/investigations/{id}/datasets/{icatSessionId}")
+    @Path("/servers/{serverName}/investigations/{id}/datasets")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDatasetByInvestigationId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getDatasetByInvestigationId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         List<TDataset> tDatasets = icatClientService.getDatasetsByInvestigationId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TDataset>>(tDatasets){}).build();
     }
 
     @GET
-    @Path("/servers/{serverName}/investigations/{id}/datasets/{page}/{icatSessionId}")
+    @Path("/servers/{serverName}/investigations/{id}/datasets/{page}")
     @Produces({ MediaType.APPLICATION_JSON })
     public Response getDatasetByInvestigationIdPaginated(
             @Context UriInfo uriInfo,
             @PathParam("serverName") String serverName,
             @PathParam("id") Long id, @PathParam("page") Integer page,
-            @PathParam("icatSessionId") String icatSessionId,
+            @HeaderParam("icatSessionId") String icatSessionId,
             @QueryParam("sort") String sort,
             @QueryParam("order") String order)
-            throws IcatException, InternalException, MalformedURLException, BadRequestException, NotFoundException {
+            throws TopcatException, MalformedURLException {
         //deal with negative or 0 page numbers
         if (page < 1) {
             throw new NotFoundException("Page not found");
@@ -270,25 +271,25 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/facility-cycles/{id}/investigations/{icatSessionId}")
+    @Path("/servers/{serverName}/facility-cycles/{id}/investigations")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationByFacilityCycleId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getInvestigationByFacilityCycleId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws MalformedURLException, TopcatException {
         List<TInvestigation> tInvestigations = icatClientService.getInvestigationsByFacilityCycleId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TInvestigation>>(tInvestigations){}).build();
     }
 
     @GET
-    @Path("/servers/{serverName}/facility-cycles/{id}/investigations/{page}/{icatSessionId}")
+    @Path("/servers/{serverName}/facility-cycles/{id}/investigations/{page}")
     @Produces({ MediaType.APPLICATION_JSON })
     public Response getInvestigationByFacilityCycleIdPaginated(
             @Context UriInfo uriInfo,
             @PathParam("serverName") String serverName,
             @PathParam("id") Long id, @PathParam("page") Integer page,
-            @PathParam("icatSessionId") String icatSessionId,
+            @HeaderParam("icatSessionId") String icatSessionId,
             @QueryParam("sort") String sort,
             @QueryParam("order") String order)
-            throws IcatException, InternalException, MalformedURLException, BadRequestException, NotFoundException {
+            throws MalformedURLException, TopcatException {
         //deal with negative or 0 page numbers
         if (page < 1) {
             throw new NotFoundException("Page not found");
@@ -316,9 +317,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/instruments/{id}/facility-cycles/{icatSessionId}")
+    @Path("/servers/{serverName}/instruments/{id}/facility-cycles")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilityCycleByInstrumentId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getFacilityCycleByInstrumentId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws MalformedURLException, TopcatException {
         List<TFacilityCycle> tFacilityCycle = icatClientService.getFacilityCycleByInstrumentId(serverName, icatSessionId, id);
 
         return Response.ok().entity(new GenericEntity<List<TFacilityCycle>>(tFacilityCycle){}).build();
@@ -326,16 +327,16 @@ public class AdminResource {
 
 
     @GET
-    @Path("/servers/{serverName}/instruments/{id}/facility-cycles/{page}/{icatSessionId}")
+    @Path("/servers/{serverName}/instruments/{id}/facility-cycles/{page}")
     @Produces({ MediaType.APPLICATION_JSON })
     public Response getFacilityCycleByInstrumentIdPaginated(
             @Context UriInfo uriInfo,
             @PathParam("serverName") String serverName,
             @PathParam("id") Long id, @PathParam("page") Integer page,
-            @PathParam("icatSessionId") String icatSessionId,
+            @HeaderParam("icatSessionId") String icatSessionId,
             @QueryParam("sort") String sort,
             @QueryParam("order") String order)
-            throws IcatException, InternalException, MalformedURLException, BadRequestException, NotFoundException {
+            throws TopcatException, MalformedURLException {
 
         //deal with negative or 0 page numbers
         if (page < 1) {
@@ -427,7 +428,7 @@ public class AdminResource {
     @GET
     @Path("/session/{serverName}/{icatSessionId}/valid")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response isSessionValid(@PathParam("serverName") String serverName, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response isSessionValid(@PathParam("serverName") String serverName, @QueryParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         Boolean result = icatClientService.isSessionValid(serverName, icatSessionId);
         BooleanValue value = new BooleanValue(result);
 
@@ -438,7 +439,7 @@ public class AdminResource {
     @GET
     @Path("/session/{serverName}/{icatSessionId}/remain")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getTimeRemaining(@PathParam("serverName") String serverName, @PathParam("icatSessionId") String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Response getTimeRemaining(@PathParam("serverName") String serverName, @QueryParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
         Long result = icatClientService.getRemainingMinutes(serverName, icatSessionId);
         LongValue value = new LongValue(result);
 

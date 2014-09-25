@@ -21,6 +21,7 @@ import org.icatproject.topcat.domain.TopcatIcatServer;
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
+import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.repository.ServerRepository;
 
 @Stateless
@@ -51,11 +52,10 @@ public class ICATClientBean {
      * @param serverName the server name
      * @param icatSessionId the icat session id
      * @return whether the session id valid or not
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public boolean isSessionValid(String serverName, String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public boolean isSessionValid(String serverName, String icatSessionId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.isSessionValid(icatSessionId);
@@ -68,11 +68,10 @@ public class ICATClientBean {
      * @param serverName the server name
      * @param icatSessionId the icat session id
      * @return the remaining minutes or -1 if session is no valid
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public Long getRemainingMinutes(String serverName, String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public Long getRemainingMinutes(String serverName, String icatSessionId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getRemainingMinutes(icatSessionId);
@@ -85,11 +84,10 @@ public class ICATClientBean {
      * @param serverName
      * @param icatSessionId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TFacility> getFacilities(String serverName, String icatSessionId) throws IcatException, InternalException, MalformedURLException {
+    public List<TFacility> getFacilities(String serverName, String icatSessionId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getFacilities(icatSessionId);
@@ -102,11 +100,10 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param id
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public TFacility getFacilityById(String serverName, String icatSessionId, Long id) throws IcatException, InternalException, MalformedURLException {
+    public TFacility getFacilityById(String serverName, String icatSessionId, Long id) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getFacilityById(icatSessionId, id);
@@ -119,11 +116,10 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param facilityId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TFacilityCycle> getFacilityCyclesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public List<TFacilityCycle> getFacilityCyclesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getFacilityCyclesByFacilityId(icatSessionId, facilityId);
@@ -136,11 +132,10 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param facilityId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TDatasetType> getDatasetTypesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public List<TDatasetType> getDatasetTypesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getDatasetTypesByFacilityId(icatSessionId, facilityId);
@@ -153,11 +148,10 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param facilityId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TDatafileFormat> getDatafileFormatsByFacilityId(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public List<TDatafileFormat> getDatafileFormatsByFacilityId(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getDatafileFormatsByFacilityId(icatSessionId, facilityId);
@@ -172,11 +166,10 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param facilityId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TParameterType> getParameterTypesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public List<TParameterType> getParameterTypesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getParameterTypesByFacilityId(icatSessionId, facilityId);
@@ -189,11 +182,10 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param facilityId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TInvestigationType> getInvestigationTypesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public List<TInvestigationType> getInvestigationTypesByFacilityId(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationTypesByFacilityId(icatSessionId, facilityId);
@@ -206,11 +198,10 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param facilityId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TInstrument> getInstrumentsByfacilityId(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public List<TInstrument> getInstrumentsByfacilityId(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInstrumentsByfacilityId(icatSessionId, facilityId);
@@ -223,95 +214,94 @@ public class ICATClientBean {
      * @param icatSessionId
      * @param facilityId
      * @return
-     * @throws IcatException
-     * @throws InternalException
      * @throws MalformedURLException
+     * @throws TopcatException
      */
-    public List<TInvestigation> getInvestigationsByInstrumentId(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public List<TInvestigation> getInvestigationsByInstrumentId(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationsByInstrumentId(icatSessionId, facilityId);
     }
 
 
-    public Long getInvestigationsByInstrumentIdCount(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public Long getInvestigationsByInstrumentIdCount(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationsByInstrumentIdCount(icatSessionId, facilityId);
     }
 
 
-    public List<TInvestigation> getInvestigationsByInstrumentIdPaginated(String serverName, String icatSessionId, Long facilityId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws IcatException, InternalException, MalformedURLException {
+    public List<TInvestigation> getInvestigationsByInstrumentIdPaginated(String serverName, String icatSessionId, Long facilityId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationsByInstrumentIdPaginated(icatSessionId, facilityId, offset, numberOfRows, sortBy, order);
     }
 
 
-    public TInvestigation getInvestigationById(String serverName, String icatSessionId, Long id) throws IcatException, InternalException, MalformedURLException {
+    public TInvestigation getInvestigationById(String serverName, String icatSessionId, Long id) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationById(icatSessionId, id);
     }
 
 
-    public List<TDataset> getDatasetsByInvestigationId(String serverName, String icatSessionId, Long id) throws IcatException, InternalException, MalformedURLException {
+    public List<TDataset> getDatasetsByInvestigationId(String serverName, String icatSessionId, Long id) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getDatasetsByInvestigationId(icatSessionId, id);
     }
 
 
-    public Long getDatasetsByInvestigationIdCount(String serverName, String icatSessionId, Long facilityId) throws IcatException, InternalException, MalformedURLException {
+    public Long getDatasetsByInvestigationIdCount(String serverName, String icatSessionId, Long facilityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getDatasetsByInvestigationIdCount(icatSessionId, facilityId);
     }
 
 
-    public List<TDataset> getDatasetsByInvestigationIdPaginated(String serverName, String icatSessionId, Long investigationId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws IcatException, InternalException, MalformedURLException {
+    public List<TDataset> getDatasetsByInvestigationIdPaginated(String serverName, String icatSessionId, Long investigationId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getDatasetsByInvestigationIdPaginated(icatSessionId, investigationId, offset, numberOfRows, sortBy, order);
     }
 
 
-    public List<TInvestigation> getInvestigationsByFacilityCycleId(String serverName, String icatSessionId, Long facilityCycleId) throws IcatException, InternalException, MalformedURLException {
+    public List<TInvestigation> getInvestigationsByFacilityCycleId(String serverName, String icatSessionId, Long facilityCycleId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationsByFacilityCycleId(icatSessionId, facilityCycleId);
     }
 
 
-    public Long getInvestigationsByFacilityCycleIdCount(String serverName, String icatSessionId, Long facilityCycleId) throws IcatException, InternalException, MalformedURLException {
+    public Long getInvestigationsByFacilityCycleIdCount(String serverName, String icatSessionId, Long facilityCycleId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationsByFacilityCycleIdCount(icatSessionId, facilityCycleId);
     }
 
 
-    public List<TInvestigation> getInvestigationsByFacilityCycleIdPaginated(String serverName, String icatSessionId, Long facilityCycleId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws IcatException, InternalException, MalformedURLException {
+    public List<TInvestigation> getInvestigationsByFacilityCycleIdPaginated(String serverName, String icatSessionId, Long facilityCycleId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getInvestigationsByFacilityCycleIdPaginated(icatSessionId, facilityCycleId, offset, numberOfRows, sortBy, order);
     }
 
 
-    public List<TFacilityCycle> getFacilityCycleByInstrumentId(String serverName, String icatSessionId, Long instrumentId) throws IcatException, InternalException, MalformedURLException {
+    public List<TFacilityCycle> getFacilityCycleByInstrumentId(String serverName, String icatSessionId, Long instrumentId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getFacilityCycleByInstrumentId(icatSessionId, instrumentId);
     }
 
 
-    public Long getFacilityCycleByInstrumentIdCount(String serverName, String icatSessionId, Long instrumentId) throws IcatException, InternalException, MalformedURLException {
+    public Long getFacilityCycleByInstrumentIdCount(String serverName, String icatSessionId, Long instrumentId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getFacilityCycleByInstrumentIdCount(icatSessionId, instrumentId);
     }
 
 
-    public List<TFacilityCycle> getFacilityCycleByInstrumentIdPaginated(String serverName, String icatSessionId, Long instrumentId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws IcatException, InternalException, MalformedURLException {
+    public List<TFacilityCycle> getFacilityCycleByInstrumentIdPaginated(String serverName, String icatSessionId, Long instrumentId, Integer offset, Integer numberOfRows, String sortBy, SortOrder order) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(serverName);
 
         return service.getFacilityCycleByInstrumentIdPaginated(icatSessionId, instrumentId, offset, numberOfRows, sortBy, order);

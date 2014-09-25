@@ -10,5 +10,4 @@ public class Constants {
     public static final Integer MAX_DATASETS_PER_PAGE = 50;
     public static final Integer MAX_FACILITYCYCLE_PER_PAGE = 20;
 
-
 }

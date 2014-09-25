@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
+import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.icatclient.ICATClientFactory;
 import org.icatproject.topcat.icatclient.ICATClientInterface;
@@ -96,9 +97,7 @@ public class ICATClient43Test {
 
         try {
             sessionId = service.login(authenticationType, parameters);
-        } catch (AuthenticationException e) {
-            fail(e.getMessage());
-        } catch (InternalException e) {
+        } catch (AuthenticationException | InternalException e) {
             fail(e.getMessage());
         }
 
@@ -113,7 +112,7 @@ public class ICATClient43Test {
 
         try {
             timeRemaining = service.getRemainingMinutes(icatSessionId);
-        } catch (IcatException e) {
+        } catch (TopcatException e) {
             fail(e.getMessage());
         }
 
@@ -159,7 +158,7 @@ public class ICATClient43Test {
 
         try {
             username = service.getUserName(icatSessionId);
-        } catch (IcatException e) {
+        } catch (TopcatException e) {
             fail(e.getMessage());
         }
 
@@ -174,7 +173,7 @@ public class ICATClient43Test {
 
         try {
             isValid = service.isSessionValid(icatSessionId);
-        } catch (IcatException e) {
+        } catch (TopcatException e) {
             fail(e.getMessage());
         }
 
@@ -188,7 +187,7 @@ public class ICATClient43Test {
 
         try {
             isValid = service.isSessionValid(icatSessionId);
-        } catch (IcatException e) {
+        } catch (TopcatException e) {
             fail(e.getMessage());
         }
 
@@ -198,7 +197,7 @@ public class ICATClient43Test {
 
         try {
             service.logout(icatSessionId);
-        } catch (IcatException e) {
+        } catch (TopcatException e) {
             fail(e.getMessage());
         }
 
@@ -206,7 +205,7 @@ public class ICATClient43Test {
 
         try {
             isValid = service.isSessionValid(icatSessionId);
-        } catch (IcatException e) {
+        } catch (TopcatException e) {
             fail(e.getMessage());
         }
 
