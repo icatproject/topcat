@@ -94,7 +94,7 @@ public class MyDownloadPanel extends Composite {
                     ListStore<DownloadModel> store, Grid<DownloadModel> grid) {
 
                 Label status = new Label(model.getStatus());
-                if (model.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR) || model.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED)) {
+                if (model.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR) || model.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED) || model.getStatus().equalsIgnoreCase(Constants.STATUS_IDS_ERROR)) {
                     //status.setToolTip(model.getMessage() + ". This download will will remove from " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(model.getExpiryTime()) + "."); //breaks grid for some reason
                     status.setToolTip(model.getMessage());
                 }
@@ -120,13 +120,9 @@ public class MyDownloadPanel extends Composite {
 
                 if (model.getStatus().equalsIgnoreCase(Constants.STATUS_AVAILABLE)) {
                     b.setEnabled(true);
-                } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR)) {
+                } else {
                     b.setEnabled(false);
-                } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED)) {
-                    b.setEnabled(false);
-                } else if (model.getStatus().equalsIgnoreCase(Constants.STATUS_IN_PROGRESS)){
-                    b.setEnabled(false);
-                }
+                } 
 
                 b.setWidth(grid.getColumnModel().getColumnWidth(colIndex) - 10);
                 b.setText(Constants.DOWNLOAD);

@@ -198,7 +198,7 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
     @Override
     public ArrayList<String> listInstruments(String sessionId) throws TopcatException {
         logger.info("listInstruments: sessionId (" + sessionId + ")");
-        return searchList(sessionId, "DISTINCT Instrument.fullName", "listInstruments");
+        return searchList(sessionId, "DISTINCT Instrument.fullName ORDER BY fullName", "listInstruments");
     }
 
     @Override
@@ -393,18 +393,18 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         logger.info("getDatasetsInInvestigation: sessionId (" + sessionId + "), " + investigationId + ")");
         ArrayList<TDataset> datasetList = new ArrayList<TDataset>();
         try {
-            Investigation resultInv = (Investigation) service.get(sessionId,
-                    "Investigation INCLUDE Dataset, DatasetType", investigationId);
-            List<Dataset> dList = resultInv.getDatasets();
-            for (Dataset dataset : dList) {
+            List<Object> results = new ArrayList<Object>();
+            results = service.search(sessionId, "Dataset ORDER BY name INCLUDE DatasetType <-> Investigation[id = " + investigationId + "]");
+
+            for (Object dataset : results) {
+                Dataset ds = (Dataset) dataset;
                 String status;
-                if (dataset.isComplete()) {
+                if (ds.isComplete()) {
                     status = "complete";
                 } else {
                     status = "in progress";
                 }
-                datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
-                        .getDescription(), dataset.getType().getName(), status));
+                datasetList.add(new TDataset(serverName, null, ds.getId().toString(), ds.getName(), ds.getDescription(), ds.getType().getName(), status));
             }
         } catch (IcatException_Exception e) {
             convertToTopcatException(e, "getDatasetsInInvestigation");
@@ -489,10 +489,12 @@ public class ICATInterfacev420 extends ICATWebInterfaceBase {
         logger.info("getDatafilesInDataset: sessionId (" + sessionId + "), datasetId (" + datasetId + ")");
         ArrayList<TDatafile> datafileList = new ArrayList<TDatafile>();
         try {
-            Dataset resultInv = (Dataset) service.get(sessionId, "Dataset INCLUDE Datafile, DatafileFormat", datasetId);
-            List<Datafile> dList = resultInv.getDatafiles();
-            for (Datafile datafile : dList) {
-                datafileList.add(copyDatafileToTDatafile(serverName, datafile));
+
+            List<Object> results = new ArrayList<Object>();
+            results = service.search(sessionId, "DISTINCT Datafile INCLUDE DatafileFormat ORDER BY name <-> Dataset[id = " + datasetId + "]");
+
+            for (Object datafile : results) {
+                datafileList.add(copyDatafileToTDatafile(serverName, (Datafile) datafile));
             }
         } catch (IcatException_Exception e) {
             convertToTopcatException(e, "getDatafilesInDataset");

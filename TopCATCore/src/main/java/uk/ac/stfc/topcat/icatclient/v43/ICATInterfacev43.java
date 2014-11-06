@@ -222,7 +222,7 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
     @Override
     public ArrayList<String> listInstruments(String sessionId) throws TopcatException {
         logger.info("listInstruments: sessionId (" + sessionId + ")");
-        return searchList(sessionId, "DISTINCT Instrument.fullName", "listInstruments");
+        return searchList(sessionId, "DISTINCT Instrument.fullName ORDER BY fullName", "listInstruments");
     }
 
     @Override
@@ -481,37 +481,6 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         return investigationList;
     }
 
-    /*
-    @Override
-    public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId)
-            throws TopcatException {
-        logger.info("getDatasetsInInvestigation: sessionId (" + sessionId + "), " + investigationId + ")");
-        ArrayList<TDataset> datasetList = new ArrayList<TDataset>();
-        try {
-            Investigation resultInv = (Investigation) service.get(sessionId,
-                    "Investigation INCLUDE Dataset, DatasetType", investigationId);
-            List<Dataset> dList = resultInv.getDatasets();
-            for (Dataset dataset : dList) {
-                String status;
-                if (dataset.isComplete()) {
-                    status = "complete";
-                } else {
-                    status = "in progress";
-                }
-                datasetList.add(new TDataset(serverName, null, dataset.getId().toString(), dataset.getName(), dataset
-                        .getDescription(), dataset.getType().getName(), status));
-            }
-        } catch (IcatException_Exception e) {
-            convertToTopcatException(e, "getDatasetsInInvestigation");
-        } catch (Throwable e) {
-            logger.error("getDatasetsInInvestigation caught an unexpected exception: " + e.toString());
-            throw new InternalException(
-                    "Internal error, getDatasetsInInvestigation threw an unexpected exception, see server logs for details");
-        }
-        return datasetList;
-    }
-    */
-
     @Override
     public ArrayList<TDataset> getDatasetsInInvestigation(String sessionId, Long investigationId)
             throws TopcatException {
@@ -644,7 +613,6 @@ public class ICATInterfacev43 extends ICATWebInterfaceBase {
         try {
             Datafile df = (Datafile) service.get(sessionId, "Datafile INCLUDE DatafileParameter, ParameterType",
                     datafileId);
-
             List<DatafileParameter> dfList = df.getParameters();
             for (DatafileParameter dfParam : dfList) {
                 if (dfParam.getType().getValueType() == ParameterValueType.NUMERIC) {

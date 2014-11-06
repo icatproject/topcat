@@ -188,7 +188,6 @@ public class DatasetWindow extends Window {
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data Set Parameters");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatasetParameter()));
-        showDS.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -204,11 +203,6 @@ public class DatasetWindow extends Window {
         MenuItem showSize = new MenuItem();
         showSize.setText("Show Data Set Size");
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
-        showSize.setStyleAttribute("margin-left", "25px");
-        showSize.addStyleName("fixContextMenuIcon2");
-
-        //TODO enable when icat bug fixed
-        showSize.disable();
 
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -227,8 +221,6 @@ public class DatasetWindow extends Window {
         MenuItem showFS = new MenuItem();
         showFS.setText("Show Data Files");
         showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDatafile()));
-        showFS.setStyleAttribute("margin-left", "25px");
-        showFS.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -242,8 +234,6 @@ public class DatasetWindow extends Window {
         downloadDatasetMenuItem = new MenuItem();
         downloadDatasetMenuItem.setText("Download this Data Set");
         downloadDatasetMenuItem.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()));
-        downloadDatasetMenuItem.setStyleAttribute("margin-left", "25px");
-        downloadDatasetMenuItem.addStyleName("fixContextMenuIcon4");
         downloadDatasetMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
@@ -260,8 +250,6 @@ public class DatasetWindow extends Window {
         addDatafileMenuItem = new MenuItem();
         addDatafileMenuItem.setText("Add Data File");
         addDatafileMenuItem.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
-        addDatafileMenuItem.setStyleAttribute("margin-left", "25px");
-        addDatafileMenuItem.addStyleName("fixContextMenuIcon5");
         addDatafileMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 DatasetModel dsm = (DatasetModel) grid.getSelectionModel().getSelectedItem();
@@ -322,9 +310,6 @@ public class DatasetWindow extends Window {
                 }
             }
         });
-
-        //TODO enable when icat bug fixed
-        btnCheckSelectedSize.disable();
 
         toolBar.add(btnCheckSelectedSize);
 

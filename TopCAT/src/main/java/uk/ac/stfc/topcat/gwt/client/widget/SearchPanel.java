@@ -536,7 +536,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         MenuItem showInvestigation = new MenuItem();
         showInvestigation.setText("Show Investigation Details");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
-        showInvestigation.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
@@ -550,11 +549,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         MenuItem showSize = new MenuItem();
         showSize.setText("Show Investigation Size");
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
-        showSize.setStyleAttribute("margin-left", "25px");
-        showSize.addStyleName("fixContextMenuIcon2");
-
-        //TODO enable when icat bug fixed
-        showSize.disable();
 
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -572,8 +566,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data Sets");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
-        showDS.setStyleAttribute("margin-left", "25px");
-        showDS.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override

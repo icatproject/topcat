@@ -224,7 +224,6 @@ public class DatafileWindow extends Window {
         MenuItem showDS = new MenuItem();
         showDS.setText("Show Data File Parameters");
         showDS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatafileParameter()));
-        showDS.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showDS);
         showDS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -237,11 +236,6 @@ public class DatafileWindow extends Window {
         MenuItem showSize = new MenuItem();
         showSize.setText("Show Data File Size");
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
-        showSize.setStyleAttribute("margin-left", "25px");
-        showSize.addStyleName("fixContextMenuIcon2");
-
-        //TODO enable when icat bug fixed
-        showSize.disable();
 
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -262,8 +256,6 @@ public class DatafileWindow extends Window {
         MenuItem showFS = new MenuItem();
         showFS.setText("Download Data File");
         showFS.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
-        showFS.setStyleAttribute("margin-left", "25px");
-        showFS.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showFS);
         showFS.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -373,9 +365,6 @@ public class DatafileWindow extends Window {
                 }
             }
         });
-
-        //TODO enable when icat bug fixed
-        btnCheckSelectedSize.disable();
 
         toolBar.add(btnCheckSelectedSize);
     }

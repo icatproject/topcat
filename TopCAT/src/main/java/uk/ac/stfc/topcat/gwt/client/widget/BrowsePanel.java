@@ -237,9 +237,6 @@ public class BrowsePanel extends Composite {
             }
         });
 
-        //TODO bug in icat cause incorrect file size. Enable when fixed
-        btnCheckSelectedSize.disable();
-
         toolBar.add(btnCheckSelectedSize);
 
         toolBar.add(new SeparatorToolItem());
@@ -454,7 +451,6 @@ public class BrowsePanel extends Composite {
         MenuItem showInvestigation = new MenuItem();
         showInvestigation.setText("Show Investigation Details");
         showInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowInvestigationDetails()));
-        showInvestigation.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showInvestigation);
         showInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -467,11 +463,6 @@ public class BrowsePanel extends Composite {
         MenuItem showSize = new MenuItem();
         showSize.setText("Show Investigation Size");
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
-        showSize.setStyleAttribute("margin-left", "25px");
-        showSize.addStyleName("fixContextMenuIcon2");
-
-        //TODO enable when icat bug fixed
-        showSize.disable();
 
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -491,8 +482,6 @@ public class BrowsePanel extends Composite {
         MenuItem showDataSet = new MenuItem();
         showDataSet.setText("Show Data Sets");
         showDataSet.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconOpenDataset()));
-        showDataSet.setStyleAttribute("margin-left", "25px");
-        showDataSet.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showDataSet);
         showDataSet.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -506,8 +495,6 @@ public class BrowsePanel extends Composite {
         MenuItem downloadInvestigation = new MenuItem();
         downloadInvestigation.setText("Download this Investigation");
         downloadInvestigation.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadInvestigation()));
-        downloadInvestigation.setStyleAttribute("margin-left", "25px");
-        downloadInvestigation.addStyleName("fixContextMenuIcon4");
         contextMenu.add(downloadInvestigation);
         downloadInvestigation.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -526,8 +513,6 @@ public class BrowsePanel extends Composite {
             MenuItem addDataset = new MenuItem();
             addDataset.setText("Add Data Set");
             addDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDataset()));
-            addDataset.setStyleAttribute("margin-left", "25px");
-            addDataset.addStyleName("fixContextMenuIcon5");
             contextMenu.add(addDataset);
             addDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -556,7 +541,6 @@ public class BrowsePanel extends Composite {
         MenuItem showDataset = new MenuItem();
         showDataset.setText("Show Data Set Parameters");
         showDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatasetParameter()));
-        showDataset.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showDataset);
         showDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -570,11 +554,6 @@ public class BrowsePanel extends Composite {
         MenuItem showSize = new MenuItem();
         showSize.setText("Show Data Set Size");
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
-        showSize.setStyleAttribute("margin-left", "25px");
-        showSize.addStyleName("fixContextMenuIcon2");
-
-        //TODO enable when icat bug fixed
-        showSize.disable();
 
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -594,8 +573,6 @@ public class BrowsePanel extends Composite {
         MenuItem downloadDataset = new MenuItem();
         downloadDataset.setText("Download this Data Set");
         downloadDataset.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDataset()));
-        downloadDataset.setStyleAttribute("margin-left", "25px");
-        downloadDataset.addStyleName("fixContextMenuIcon3");
         contextMenu.add(downloadDataset);
         downloadDataset.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -614,8 +591,6 @@ public class BrowsePanel extends Composite {
             MenuItem addDatafile = new MenuItem();
             addDatafile.setText("Add Data File");
             addDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconAddDatafile()));
-            addDatafile.setStyleAttribute("margin-left", "25px");
-            addDatafile.addStyleName("fixContextMenuIcon4");
             contextMenu.add(addDatafile);
             addDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
                 public void componentSelected(MenuEvent ce) {
@@ -642,7 +617,6 @@ public class BrowsePanel extends Composite {
         MenuItem showDatafile = new MenuItem();
         showDatafile.setText("Show Data File Parameters");
         showDatafile.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconShowDatafileParameter()));
-        showDatafile.setStyleAttribute("margin-left", "25px");
         contextMenu.add(showDatafile);
         showDatafile.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -656,11 +630,6 @@ public class BrowsePanel extends Composite {
         MenuItem showSize = new MenuItem();
         showSize.setText("Show Data File Size");
         showSize.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconFileSize()));
-        showSize.setStyleAttribute("margin-left", "25px");
-        showSize.addStyleName("fixContextMenuIcon2");
-
-        //TODO enable when icat bug fixed
-        showSize.disable();
 
         contextMenu.add(showSize);
         showSize.addSelectionListener(new SelectionListener<MenuEvent>() {
@@ -680,8 +649,6 @@ public class BrowsePanel extends Composite {
         MenuItem showDatafileDownload = new MenuItem();
         showDatafileDownload.setText("Download Data File");
         showDatafileDownload.setIcon(AbstractImagePrototype.create(Resource.ICONS.iconDownloadDatafile()));
-        showDatafileDownload.setStyleAttribute("margin-left", "25px");
-        showDatafileDownload.addStyleName("fixContextMenuIcon3");
         contextMenu.add(showDatafileDownload);
         showDatafileDownload.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {

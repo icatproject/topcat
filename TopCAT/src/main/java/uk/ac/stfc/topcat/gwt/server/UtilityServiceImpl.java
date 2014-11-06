@@ -155,10 +155,7 @@ public class UtilityServiceImpl extends UrlBasedRemoteServiceServlet implements 
             }
         } else if (node.getNodeType() == ICATNodeType.DATASET) {
             result.addAll(createDatafileNodesInDataset(node));
-        }
-        if (node != null && node.getNodeType() != ICATNodeType.INSTRUMENT) {
-            Collections.sort(result);
-        }
+        }               
         
         return result;
     }

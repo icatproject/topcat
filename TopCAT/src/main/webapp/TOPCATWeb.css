@@ -40,32 +40,3 @@ h1 {
 .footer-links a:visited {text-decoration: none; color: #453E3E;}
 .footer-links a:visited:active {text-decoration: none; color: #fcfcfc; background-color: #093F7D;}
 .footer-links a:hover {text-decoration: underline;}
-
-
-.fixContextMenuIcon2 img{
-	margin-top: 17px;	
-}
-
-.fixContextMenuIcon3 img{
-    margin-top: 34px;   
-}
-
-.fixContextMenuIcon4 img{
-    margin-top: 51px;   
-}
-
-.fixContextMenuIcon5 img{
-    margin-top: 68px;   
-}
-
-.fixContextMenuIcon6 img{
-    margin-top: 85px;   
-}
-
-.fixContextMenuIcon7 img{
-    margin-top: 102px;   
-}
-
-.context-menu > .x-menu-list > .x-menu-list-item {
-	height: 16px;
-}

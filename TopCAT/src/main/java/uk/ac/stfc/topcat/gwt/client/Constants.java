@@ -44,6 +44,9 @@ public class Constants {
     /** Download status */
     public static final String STATUS_ERROR = "error";
 
+        /** Download status */
+    public static final String STATUS_IDS_ERROR = "ids error";
+
     /** Download */
     public static final String DOWNLOAD = "Download";
 
@@ -79,5 +82,8 @@ public class Constants {
 
     /** Polling refresh interval for messages **/
     public static final int MESSAGE_REFRESH_INTERVAL = 30000;
+
+    /** Number of days before the previous login cookie expires **/
+    public static final int LOGIN_COOKIE_NUMBER_OF_DAYS_EXPIRY = 365;
 
 }

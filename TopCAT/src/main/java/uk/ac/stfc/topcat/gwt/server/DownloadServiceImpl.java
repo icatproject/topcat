@@ -130,7 +130,7 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
                     }
 
                     //only process in progress or available downloads
-                    if (downloadModel.getStatus().equals(Constants.STATUS_IN_PROGRESS) || downloadModel.getStatus().equals(Constants.STATUS_AVAILABLE)) {
+                    if (downloadModel.getStatus().equals(Constants.STATUS_IN_PROGRESS) || downloadModel.getStatus().equals(Constants.STATUS_AVAILABLE) || downloadModel.getStatus().equals(Constants.STATUS_IDS_ERROR)) {
                         boolean isAvailable = false;
 
                         try {
@@ -153,6 +153,8 @@ public class DownloadServiceImpl extends UrlBasedRemoteServiceServlet implements
                             continue;
                         } catch (org.icatproject.ids.client.InternalException e) {
                             logger.error("getMyDownloads: IDS Internal Exception:" + e.getMessage());
+                            String message = "An error occurred trying to retrieve the status of preparedId " + downloadModel.getPreparedId();
+                            downloadManager.update(getSessionId(), downloadModel.getId(), downloadModel.getUrl(), Constants.STATUS_IDS_ERROR, message);
                             result.add(downloadModel);
                         } catch(BadRequestException | NotImplementedException e) {
                             if (downloadModel.getExpiryTime() == null) {

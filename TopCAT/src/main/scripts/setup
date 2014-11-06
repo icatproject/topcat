@@ -38,7 +38,7 @@ if arg == "INSTALL":
             
         actions.asadmin('create-jdbc-connection-pool --datasourceclassname ' + props["driver"] + 
                 ' --restype javax.sql.DataSource --failconnection=true --steadypoolsize 2' + 
-                ' --maxpoolsize 8 --ping --property ' + props["dbProperties"] + ' TopCATDB', printOutput=True)
+                ' --maxpoolsize 32 --ping --property ' + props["dbProperties"] + ' TopCATDB', printOutput=True)
         
         actions.asadmin("create-jdbc-resource --connectionpoolid TopCATDB jdbc/TopCATDB")
       

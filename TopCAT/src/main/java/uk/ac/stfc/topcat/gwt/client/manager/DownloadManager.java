@@ -492,7 +492,7 @@ public class DownloadManager {
                     }
 
                     //remove item with error or expired status
-                    if (download.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR) || download.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED)) {
+                    if (download.getStatus().equalsIgnoreCase(Constants.STATUS_ERROR) || download.getStatus().equalsIgnoreCase(Constants.STATUS_EXPIRED) || download.getStatus().equalsIgnoreCase(Constants.STATUS_IDS_ERROR)) {
                         it.remove();
                     }
                 }
