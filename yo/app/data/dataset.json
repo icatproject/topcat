@@ -1,0 +1,84 @@
+[
+    {
+        "doi": "10.5286/ISIS.E.24079852",
+        "endDate": "2010-04-28T14:18:17",
+        "id": 24079852,
+        "name": "920027",
+        "releaseDate": "2013-04-28T14:18:17",
+        "startDate": "2010-04-24T20:38:04",
+        "summary": "Solventless protein liquids (SPLS) represent a novel form of biological matter.  Recently we reported on the preparation and properties of a solvent-free liquid protein based on a stoichiometric ferritin-polymer nanoscale construct, with surface modifications that extend the range of intermolecular interactions to a length scale that is commensurate with fluidity1.  The aim of this investigation is to use contrast variation SANS (CV-SANS) with deuterated surfactants to study these new protein-surfactant conjugates in the aqueous phase and as the solvent-free fluid. Only through CV-SANS will it be possible to elucidate the nanostructure of these conjugates. ",
+        "title": "Solventless protein liquids:  a novel form of biological matter",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "doi": "10.5286/ISIS.E.24079866",
+        "endDate": "2010-05-09T09:59:31",
+        "id": 24079866,
+        "name": "920146",
+        "releaseDate": "2013-05-09T09:59:31",
+        "startDate": "2010-05-06T10:28:53",
+        "summary": "The proposed research project is targeted to the investigation of the characteristics of eumelanin, a heterogeneous material insoluble in water and in any organic solvent, as well as on the kinetic evolution of its formation, starting from the precursor 5,6-dihydroxyindole.Preliminary Light Scattering Measurements have shown to observe a continuous growth of the eumelanin up to ~1200 nm of hydrodynamic radius. SANS investigations can help to gain information on the polymerization process, revealing the time evolution in size and shape of aggregates present in solution, and to work out a kinetic model of the eumelanin growth",
+        "title": "Kinetics of the formation of eumelanin and its intermediates",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "doi": "10.5286/ISIS.E.24079869",
+        "endDate": "2010-05-06T10:28:49",
+        "id": 24079869,
+        "name": "920226",
+        "releaseDate": "2013-05-06T10:28:49",
+        "startDate": "2010-05-04T09:32:57",
+        "summary": "We have been developing hydroxypropylmethyl cellulose (HPMC) microspheres for delivering poorly water-soluble drugs. The in vitro dissolution data showed that the presence of SDS is essential for obtaining a high level of drug release. The higher the level of drug that is released from the formulations, the greater the absorption and bioavailability of the formulation. Previous SANS data revealed some detail of the structure of the polymer-SDS complex and we have shown it is reasonable to hypothesise that the drug molecules may be encapsulated into the polymer-surfactant complex which leads to the improved dissolution of the poorly water-soluble model drug. Therefore the objectives of this proposed study are to investigate the influence of drug incorporation on the structure of the polymer-surfactant complex, and to expand the range of concentrations studied.",
+        "title": "interaction of a pharmaceutical water-soluble polymer with bio-relevant surfactants",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "doi": "10.5286/ISIS.E.24079886",
+        "endDate": "2010-05-04T09:32:54",
+        "id": 24079886,
+        "name": "920411",
+        "releaseDate": "2013-05-04T09:32:54",
+        "startDate": "2010-05-01T08:45:00",
+        "summary": "We will use SANS to characterize dispersions of gold nanoparticles functionalized with poly(dimethyl aminoethyl methacrylate) brushes grafted from 25 nm gold nanoparticle interfaces by surface-initiated ATRP. We will characterize the response of the polymer layers to pH and at at low pH, where the polymer is cationically charged, to electrolyte concentration. Our main focus however will be to determine the nature of the surfactant aggregates formed in the brushes at concentrations of surfactant that lead to peaks in the surface tension of the dispersions at pH=3 and 10 and also lead to the formation of multilayer structures in equivalent brushes formed at planar interfaces. We will measure under particle-matching contrast, for dispersions bearing hydrogenous pDMAMEA and particle-matching DMAEMA with particle-matching SDS and hydrogenous SDS respectively.",
+        "title": "Responsive polymer brushes grafted from gold nanoparticles: interaction with surfactant",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "endDate": "2010-03-17T15:41:23",
+        "id": 24080013,
+        "name": "920158",
+        "releaseDate": "2013-03-17T15:41:23",
+        "startDate": "2010-03-15T09:08:36",
+        "summary": "We wish to determine a structure we have observed in a dodecane/surfactant/water system. Initial experimentation has suggested the possibility of spontaneous formation of a bilayer structure within a non-aqueous environment, which could potentially be indicative of the formation of reverse vesicle-type structures. SANS will enable us to confirm/refute this and to follow the dynamics of formation of such structures.",
+        "title": "SANS study of self assembled structures formed from salicylate surfactant in dodecane with water",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "endDate": "2010-03-15T09:08:32",
+        "id": 24080016,
+        "name": "920186",
+        "releaseDate": "2013-03-15T09:08:32",
+        "startDate": "2010-03-09T11:34:05",
+        "summary": "GluR0 is a glutamate sensitive potassium ion channel from the cyanobacterium Synechocystis which has been identified via primary structural sequencing to be similar to eukaryotic channels involved in neurotransmitter binding (particularly in the mammalian central nervous system). No high or low resolution structure is currently available for the full structure of any member of this important class of signalling proteins. GluR0 opens in the presence of glutamate to allow potassium ions to move across the membrane. We propose studying the structure of this channel solublized in surfactant solutions in both its open and closed conformations using SANS. A contrast variation approach will allow the relative contributions of the surfactant and the protein to be deconvoluted to provide novel information on the relationship of structure and function in this important family of proteins.",
+        "title": "Examining the Structural Changes of a Central Nervous System Neurotransmitter Signaling Channel Homolog upon Ligand Binding. ",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "endDate": "2010-03-08T11:53:39",
+        "id": 24080065,
+        "name": "CAL_SANS2D_2010-02-26T16:39:50",
+        "releaseDate": "2011-02-26T16:12:39",
+        "startDate": "2009-12-22T12:36:03",
+        "title": "Quiet counts - rear (now front det) only",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "endDate": "2010-03-08T17:07:33",
+        "id": 24080066,
+        "name": "CAL_SANS2D_2010-03-08T15:59:51",
+        "releaseDate": "2011-02-26T16:12:52",
+        "startDate": "2010-03-08T11:53:43",
+        "title": "L1 4m, polymer, A6 trans",
+        "visitId": "1 - SANS2D"
+    }
+]

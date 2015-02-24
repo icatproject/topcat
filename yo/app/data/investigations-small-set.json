@@ -1,0 +1,46 @@
+[
+    {
+        "doi": "10.5286/ISIS.E.24079299",
+        "endDate": "2011-10-28T09:29:54",
+        "id": 24079299,
+        "name": "1010023",
+        "releaseDate": "2014-10-28T09:29:54",
+        "startDate": "2011-07-11T09:42:09",
+        "summary": "The spontaneous formation of multilayer structures at interfaces from surfactant self-assembly is an important structural signature associated with a wide range of technological applications and biological function. This proposal is part of a new programme (EPSRC, EP/G065705) to characterise such structures and to determine the major factor with control their formation and kinetics. We have reported the formation of such surface structures for the anionic surfactant LAS with Ca2+ ions. The kinetics of formation and the ultimate structure formed depends upon when the Ca2+ is added. This is not the case for the single chain systems, SLES. We attribute this to slow association /dissociation kinetics in the Ca2+ induced LAS lamellar structures. We request here beam time on SANS2D to determine the differences in aggregate association / dissociation rates for LAS and SLES by stopped-flow.",
+        "title": "How aggregate lifetimes affect the kinetics of surfactant surface multilayer formation",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "doi": "10.5286/ISIS.E.24079323",
+        "endDate": "2011-10-25T08:58:41",
+        "id": 24079323,
+        "name": "1010084",
+        "releaseDate": "2014-10-25T08:58:41",
+        "startDate": "2011-10-24T09:22:05",
+        "summary": "The formation of stable particle dispersions are essential to the success of a wide range of commercial products from inks, paints and foodstuffs to cosmetic and pharmaceutical formulations. Polymers and surfactants are used routinely to stabilize aqueous dispersions, and these systems have been studied widely. However, significantly less is known about the detailed molecular assembly of polymers adosrbed to the surfaces of drug particles suspended in fluorinated media. Our previous work - through industrial time at the ILL - has shown a complex behaviour. Here we wish to examine the adsoprtion of a series of representative polymer excipients (essentially, poly(ethylene oxide) and their derivatives) to dispersions ofsilica particles in the partially fluorinated solvent, 2H,3H-perfluoropentane (HPFP).",
+        "title": "Polymer adsorption from fluorinated media in polymer stabilised drug suspensions",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "doi": "10.5286/ISIS.E.24079527",
+        "endDate": "2011-11-01T15:50:55",
+        "id": 24079527,
+        "name": "1010543",
+        "releaseDate": "2014-11-01T15:50:55",
+        "startDate": "2011-10-30T11:43:36",
+        "summary": "We propose to look at the interaction of the aggregates two phospholipids form with two phospholipase (PL) enzymes, PLA2 and PLC, which hydrolyse different ester groups in the lipid molecule and therefore produce different reaction products. It is well known that the length of the fatty acid chain in a phopholipid molecule dictates the nature and size of the aggregates a phospholipid forms upon dispersal in water and consequently its interaction with PL. In the present study we have chosen two small phosphocholine lipids, one with a 7-carbon and one with a 6-carbon fatty acid chain, where the latter forms spherical micelles while the former rod-shaped micelles. SANS measurements coupled with stopped flow methodology and using contrast variation will be used to determine the kinetics of the interaction and the rate of destruction of the micellar aggregates.",
+        "title": "Changes of phospholipid aggregate morphology induced by phospholipase hydrolysis",
+        "visitId": "1 - SANS2D"
+    },
+    {
+        "doi": "10.5286/ISIS.E.24079594",
+        "endDate": "2011-05-28T09:01:16",
+        "id": 24079594,
+        "name": "920033",
+        "releaseDate": "2014-05-28T09:01:16",
+        "startDate": "2011-05-24T09:03:33",
+        "summary": "Hydrophobins are secreted fungal proteins and are small lipopeptide biosurfactants. They are strongly surface active and self-assemble at interface, and these  unique film forming properties have stimulated applications where emulsion and foam stability is important. Due to their favourable properties they are now part of a strong environmental drive for the development of more biocompatible / biosustainable surfactant based products. We have recently made some progress on understanding their self-assembly in solution and their adsorption behavior at the air-water and liquid-solid interfaces in conjunction with conventional surfactants. We request here SANS beam time on SANS2D to study the adsorption of Hydrophobin 2 and Hydrophobin 2/ surfactant mixtures at the oil-water interface.",
+        "title": "Adsorption of of hydrophobin and hydrophobin / surfactant mixtures at the oil/water interface",
+        "visitId": "1 - SANS2D"
+    }
+]

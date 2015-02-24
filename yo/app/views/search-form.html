@@ -1,0 +1,67 @@
+<div class="searchForm">
+    <form role="form">
+        <div class="form-group has-feedback">
+            <label class="control-label sr-only" for="searchText"></label>
+            <input type="text" class="form-control input-sm" id="searchText" placeholder="Search Text" ng-model="searchForm.query">
+            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+        </div>
+        <div class="form-group">
+            <select class="form-control input-sm" ng-options="item.id as item.name for item in searchTypeItems" ng-model="searchForm.type">
+                <option style="display:none" value="">Select a Search Type</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select class="form-control input-sm" ng-options="item.id as item.name for item in facilityItems" ng-model="searchForm.facility" id="facility" name="facility">
+                <option style="display:none" value="">Select a facility</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <p class="input-group">
+                <input type="text" class="form-control input-sm" datepicker-popup="{{ format }}" ng-model="searchForm.startDate" is-open="datepickers.startDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" close-text="Close" placeholder="Start Date"/>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default input-sm" ng-click="open($event, 'startDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </p>
+        </div>
+        <div class="form-group">
+            <p class="input-group">
+                <input type="text" class="form-control input-sm" datepicker-popup="{{ format }}" ng-model="searchForm.endDate" is-open="datepickers.endDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" close-text="Close" placeholder="End Date"/>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default input-sm" ng-click="open($event, 'endDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </p>
+        </div>
+        <div class="form-group" ng-controller="AddParameterModalController">
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="form-control btn btn-default btn-sm" ng-click="open('parameter', 'sm', searchForm)">Add Parameter</button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button class="form-control btn btn-default btn-sm" ng-click="open('sample', 'sm', searchForm)">Add Sample</button>
+                </div>
+            </div>
+            <!--
+            searchForm.searchText: {{searchForm.query}}<br />
+            searchForm.searchType: {{searchForm.type}}<br />
+            searchForm.facility: {{searchForm.facility}}<br />
+            searchForm.startDate: {{searchForm.startDate}}<br />
+            searchForm.endDate: {{searchForm.endDate}}<br />
+            searchForm.name: {{searchForm.name}}<br />
+             -->
+            searchForm: {{searchForm}}
+            <ul class="list-unstyled">
+                <li ng-repeat="param in formData">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <span class="text-left"><a href="" title="Type: {{param.type}}, Value Type: {{param.valueType}}, Value: {{param.value}} ">{{param.name}}</a></span>
+                    </div>
+                    <div class="col-sm-1">
+                        <span class="text-right"><a href="#">[x]</a></span>
+                    </div>
+                 </div>
+                 </li>
+            </ul>
+        </div>
+        <button type="submit" class="form-control btn btn-default" ng-click="search()">Search</button>
+    </form>
+</div>

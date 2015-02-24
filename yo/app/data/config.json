@@ -1,0 +1,108 @@
+{
+    "servers": [
+        {
+            "name": "dls",
+            "facility": [
+                {
+                    "name": "dls",
+                    "struture" : ["instrument", "investigation", "dataset", "datafile"],
+                    "browseColumns" : {
+                        "instrument" : [
+                            {
+                                "name" : "id",
+                                "title" : "ID"
+                            },
+                            {
+                                "name" : "firstName",
+                                "title" : "First name"
+                            },
+                            {
+                                "name" : "lastName",
+                                "title" : "LastName"
+                            }
+                        ],
+                        "investigation" : [
+                            {
+                                "name" : "id",
+                                "title" : "Id",
+                                "style" : "firstColumn",
+                                "notSortable" : true,
+                                "notVisible" : true
+                            },
+                            {
+                                "name" : "title",
+                                "title" : "Title",
+                                "style" : "secondColumn",
+                                "notSortable" : true,
+                                "expressionFilter" : {
+                                    "type" : "string",
+                                    "name" : "characters",
+                                    "characters" : 80
+
+                                }
+
+                            },
+                            {
+                                "name" : "visitId",
+                                "title" : "Visit Id"
+                            },
+                            {
+                                "name" : "startDate",
+                                "title" : "Start Date",
+                                "expressionFilter" : {
+                                    "type" : "date",
+                                    "is" : "endDate",
+                                    "name" : "date",
+                                    "format" : "dd-MM-yyyy",
+                                    "timezone" : "UTC"
+                                }
+                            },
+                            {
+                                "name" : "endDate",
+                                "title" : "End Date",
+                                "expressionFilter" : {
+                                    "type" : "date",
+                                    "is" : "endDate",
+                                    "name" : "date",
+                                    "format" : "dd-MM-yyyy",
+                                    "timezone" : "UTC"
+                                }
+                            }
+                        ],
+                        "dataset" : [
+                            {
+                                "name" : "title",
+                                "title" : "Title",
+                                "expressionFilter" : {
+                                    "type" : "string",
+                                    "name" : "characters",
+                                    "characters" : 80
+
+                                }
+
+                            },
+                            {
+                                "name" : "startDate",
+                                "title" : "Start Date",
+                                "expressionFilter" : {
+                                    "type" : "date",
+                                    "is" : "endDate",
+                                    "name" : "date",
+                                    "format" : "dd-MM-yyyy",
+                                    "timezone" : "UTC"
+                                }
+                            },
+                            {
+                                "name" : "endDate",
+                                "title" : "End Date"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "site": {
+        "pagingType": "scroll"
+    }
+}

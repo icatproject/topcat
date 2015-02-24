@@ -1,0 +1,219 @@
+[
+    {
+        "description": "\"ALF is an alignment facility for single crystals. Out aim is to provide a quick, intuitive, rapid access facility for the alignment and assessment of single crystals for users of the main ISIS excitation instruments.\"",
+        "fullName": "ALF",
+        "id": 23,
+        "type": "Excitations"
+    },
+    {
+        "fullName": "ARGUS",
+        "id": 24
+    },
+    {
+        "description": "\"CRISP Reflectometer. CRISP is one of two Neutron Reflectometers (NR) at ISIS. It is the original instrument and was designed for high resolution studies of a wide range of interfacial phenomena. The instrument is highly automated, allowing reproducible measurements to be made with high precision, and the sample geometry is horizontal to facilitate the study of liquid surfaces. CRISP, unlike its sister instrument SURF, can also perform polarised neutron reflectivity (PNR) measurements with full polarisation analysis. There is also overhead crane access for the installation of large items of sample environment.\"",
+        "fullName": "CRISP",
+        "id": 25,
+        "type": "Large Scale Structures"
+    },
+    {
+        "fullName": "DEVA",
+        "id": 26,
+        "type": "Muons"
+    },
+    {
+        "description": "\"EMU is a 32-detector ¿SR spectrometer which is optimised for zero field and longitudinal field measurements. Fields of up to 4000 G can be applied, and sample temperatures in the range of 350mK to 1000K can be produced using a variety of sample environment equipment.\"",
+        "fullName": "EMU",
+        "id": 27,
+        "type": "Muons"
+    },
+    {
+        "description": "ENG",
+        "fullName": "ENGINX",
+        "id": 22
+    },
+    {
+        "description": "EVS",
+        "fullName": "EVS",
+        "id": 19
+    },
+    {
+        "description": "\"GEM The General Materials Diffractometer is a new generation neutron diffractometer recently constructed at the ISIS pulsed neutron source. GEM can be used to perform high intensity, high resolution experiments to study the structure of disordered materials and crystalline powders. Click here for a recent paper with a detailed description of GEM.\"",
+        "fullName": "GEM",
+        "id": 28,
+        "type": "Crystallography"
+    },
+    {
+        "description": "\"Het Spectrometer. Investigations on Het have broadened from studies of high energy magnetic excitations and the dynamics of hydrogen metal systems into the fields of quantum magnetism and non-Fermi liquids. Het is optimised to measure high energy magnetic excitations. Although originally optimised for magnetic studies with most of its detectors positioned at angles below 30¿, it is also used for investigations of dynamics in many other materials including disordered and biological systems. It has produced a large number of important results from powders, amorphous materials and single crystals.\"",
+        "fullName": "HET",
+        "id": 29,
+        "type": "Excitations"
+    },
+    {
+        "fullName": "HIFI",
+        "id": 5,
+        "type": "Muons"
+    },
+    {
+        "description": "\"HRPD, the High Resolution Powder Diffractometer, is the highest resolution neutron powder diffractometer of its type in the world.\"",
+        "fullName": "HRPD",
+        "id": 30,
+        "type": "Crystallography"
+    },
+    {
+        "fullName": "INES",
+        "id": 32
+    },
+    {
+        "description": "\"Inter builds upon the success of the world-leading Surf instrument at ISIS and will provide a unique facility for the study of air/liquid, liquid/liquid, air/solid and liquid/solid interfaces.\"",
+        "fullName": "INTER",
+        "id": 35,
+        "type": "Reflectometers"
+    },
+    {
+        "description": "\"I R I S : A High Resolution Quasi-Elastic and Inelastic Neutron Scattering Spectrometer with long d-spacing diffraction capabilities. IRIS is a time-of-flight inverted-geometry crystal analyser spectrometer designed for quasi-elastic and low-energy high resolution inelastic spectroscopy Neutrons scattered from the sample are energy-analysed by means of Bragg reflection from one of two large single crystal arrays (pyrolytic graphite and muscovite mica) in close to back-scattering geometry. Each analyser is associated with its own bank of 51 ZnS scintillator detectors The two analyser banks, which can operate simultaneously, afford high resolution over wide energy and momentum transfer ranges In addition, a 25 K beryllium filter is also available when using the graphite analyser to extend the  energy transfer range accessible.  Furthermore, the graphite analyser bank itself is cooled close to liquid helium temperature to reduce background contributions from Thermal Diffuse Scattering The diffraction detector bank at two theta ~ 170 deg. can be used either as a diagnostic tool for samples under spectroscopic study or as a dedicated long d-spacing diffractometer with good resolution and high intensity.\"",
+        "fullName": "IRIS",
+        "id": 31,
+        "type": "Molecular Spectroscopy"
+    },
+    {
+        "description": "LAD",
+        "fullName": "LAD",
+        "id": 20
+    },
+    {
+        "description": "\"Let will introduce unique flexibility to low-energy spectroscopy, with the ability to make quasi-elastic and inelastic measurements over a wide dynamic range.\"",
+        "fullName": "LET",
+        "id": 4,
+        "type": "High-resolution spectroscopy"
+    },
+    {
+        "description": "\"LOQ is the only Small-Angle Neutron Scattering (SANS) instrument at ISIS, and one of the most popular ISIS instruments. LOQ may be used to investigate the shape and size of large molecules, small particles or porous materials with dimensions in the range 1 - 100 nm. Length scales of up to 400 nm can be probed in highly anisotropic systems. This instrument should therefore be of interest to anyone involved in the study of colloids, polymers, biomolecules, alloys, composites or porous systems. The principle benefit of conducting SANS experiments at ISIS is that a \"\"white\"\" incident beam is combined with time-of-flight detection techniques to give LOQ a very large dynamic range in scattering vector, Q, all of which is accessible in a single measurement without any need to reconfigure the instrument.\"",
+        "fullName": "LOQ",
+        "id": 6,
+        "type": "Large Scale Structures"
+    },
+    {
+        "description": "\"Maps has changed the way the neutron community thinks about inelastic neutron scattering. Its huge array of position sensitive detectors has created a survey technique that is able to map vast areas of the Brillouin zone, making it possible to see the unexpected. It is able to reveal broad features which could easily be dismissed as background on a triple-axis machine.Computer model of Mas spectrometer The position sensitive detectors give near-continuous coverage over a large solid angle detector array in the forward direction. The pixel size in reciprocal space is significantly smaller than the resolution volume defined by the other instrumental contributions. In contrast, conventional detectors on Het and Mari integrate along one direction in reciprocal space, which overwhelms the intrinsic resolution in that direction. With MAPS there there is complete freedom to construct scans along any direction in reciprocal space and project data onto any plane in reciprocal space. Maps is optimised to measure high energy magnetic excitations in single crystals with varying energy resolution depending on choice of monochromating chopper.\"",
+        "fullName": "MAPS",
+        "id": 7,
+        "type": "Excitations"
+    },
+    {
+        "description": "\"MARI is a chopper spectrometer with continuous detector bank coverage ranging from 3¿ to 134¿ degrees. Mari is a uniquely versatile instrument and has contributed seminal work in fields such as quantum-fluids, the dynamics of disordered materials and low-dimensional magnetism. It is also used for studies of biological and polymeric materials, catalysts, thermo-electric materials, geological samples, high-temperature superconductors and liquid dynamics. The MARI spectrometer was funded by the Japanese Ministry of Education, Science and Culture (Monbusho) as part of the UK-Japan Collaboration on neutron scattering. This collaboration initiated in 1986, was the creation of the late Professor Yoshikazu Ishikawa. The spectrometer is named after Professor Ishikawa's daughter, MARI. The Japanese Symbol for MARI also happens to be the Japanese for truth.\"",
+        "fullName": "MARI",
+        "id": 8,
+        "type": "Excitations"
+    },
+    {
+        "fullName": "MERLIN",
+        "id": 33
+    },
+    {
+        "description": "\"MuSR is a 64-detector ¿SR spectrometer which can be rotated through 90o to enable both longitudinal and transverse measurements to be made. Fields of up to 2500 G can be applied, and sample temperatures in the range of 40mK to 1000K can be produced using a variety of sample environment equipment.\"",
+        "fullName": "MUSR",
+        "id": 9,
+        "type": "Muons"
+    },
+    {
+        "description": "\"Nimrod is a total scattering instrument that will offer greater insight into the subtle balance between short-, medium- and long-range interactions found in many materials.\"",
+        "fullName": "NIMROD",
+        "id": 2,
+        "type": "Intermediate range order"
+    },
+    {
+        "description": "\"Offspec will characterise the increasingly important area of in-plane interface structure using the spin-echo technique. Through delicate manipulation of polarised neutrons, small structures with sizes from 10-1000 nm can be examined in thin-film samples.\"",
+        "fullName": "OFFSPEC",
+        "id": 36,
+        "type": "Reflectometers"
+    },
+    {
+        "description": "OSIRIS combines two instruments in one:  Long-wavelength diffractometer; Backscattering crystal-analyser spectrometer; Future development: full polarisation analysis .",
+        "fullName": "OSIRIS",
+        "id": 10,
+        "type": "Molecular Spectroscopy"
+    },
+    {
+        "description": "\"HiPr: The PEARL High Pressure Facility, is a medium resolution high-flux diffractometer optimised for data collection from the Paris-Edinburgh pressure cell. Since April 1998, HiPr has been available to the general ISIS user community, forming part of the CLRC high pressure diffraction programme. The application of high pressure can induce dramatic changes in the physical properties of condensed matter. For example, upon applying a modest pressure of ~2.5 GPa (25 kbar) water transforms to a crystal structure (phase VII) that does not melt until 100¿C. High pressure studies of condensed matter can provide fundamental information concerning the density dependence of interatomic interactions. However, until a decade ago, high-pressure neutron diffraction studies were confined to the rather limited pressure range 0-3 GPa. The development of the Paris-Edinburgh pressure cell for use at ISIS has now extended this range by almost a full order of magnitude up to ~25 GPa. The recently completed PEARL High Pressure Station (HiPr) - funded by the EPSRC and constructed as a result of a close collaboration between the University of Edinburgh, the University of Paris VI and ISIS - is a high-flux medium resolution diffractometer specifically designed to take full advantage of the capabilities of the Paris-Edinburgh cell. Funding for the further developments of HiPr - e.g. higher pressures, external and internal anvil heating, single crystal data collection and data treatment and visualisation - has recently been obtained by the Paris-Edinburgh collaboration.\"",
+        "fullName": "PEARL (HIPR)",
+        "id": 34,
+        "type": "Crystallography"
+    },
+    {
+        "description": "\"POLARIS, the medium resolution, high intensity powder diffractometer, is the ideal complement to high resolution powder diffractometer HRPD. The strengths of POLARIS lie in the rapid characterisation of structures, the study of small amounts of materials (as little as ~1mm3), the collection of data sets in rapid time (with data collection times down to ~5 minutes) and the studies of materials under non-ambient conditions, where the ability of time-of-flight powder diffraction to collect an entire diffraction pattern at a single, fixed scattering angle is a very powerful attribute. In particular, detector banks at 2q ~ 90¿ allow studies of samples within complex sample environment equipment, such as high pressure cells or reaction vessels, where suitable collimation of the incident and scattered beams eliminates contamination of the diffraction pattern by Bragg peaks from the cell components. The uniquely high flux of epithermal neutrons available at a spallation neutron source enable extremely short d-spacings, as low as 0.3 ¿ to be measured on POLARIS. The very wide Q range thus accessed is invaluable in the refinement of site occupancies and temperature factors in disordered materials, such as solid electrolytes and high Tc superconductors, using powder diffraction data. More routinely, POLARIS has also been used in structural studies of zeolites, for real time in situ studies of structural changes in industrially important materials such as batteries and toughened ceramics, and has been instrumental in allowing the development of high pressure powder neutron diffraction to 25 GPa and beyond.\"",
+        "fullName": "POLARIS",
+        "id": 11,
+        "type": "Crystallography"
+    },
+    {
+        "description": "Polref is a polarised neutron reflectometer designed for the study of the magnetic ordering in and between the layers and surfaces of thin film materials. Three-directional polarisation control will allow unique information to be obtained on the size and direction of the magnetism as a function of depth in multi-layer structures.",
+        "fullName": "POLREF",
+        "id": 37,
+        "type": "Reflectometers"
+    },
+    {
+        "description": "PRL",
+        "fullName": "PEARL",
+        "id": 21
+    },
+    {
+        "description": "\"PRISMA is an inverse geometry crystal-analyser spectrometer and high resolution diffractometer designed to measure excitations, critical scattering and diffuse scattering in single crystal samples. In diffraction mode it can be used for reciprocal space surveys with large Q coverage and good signal:noise, and is particularly well suited for magnetism due to the large flux of long wavelength neutrons delivered by the supermirror guide system in the primary spectrometer.   In inelastic mode, data can be collected along a single Q-w line in reciprocal space parallel to ki (PRISMA scan) or individual analysers can be set up to measure several different Q-w lines parallel to ki. The inelastic and diffraction modules are located on opposite sides of the incoming neutron beam, enabling experiment modes to be changed without disturbing sample environment equipment.\"",
+        "fullName": "PRISMA",
+        "id": 12,
+        "type": "Excitations"
+    },
+    {
+        "description": "\"ROTAX is operated as a multipurpose time-of-flight diffractometer. The modular instrument design, large blockhouse, and ample sample space allow ROTAX to be used for a variety of different applications. According to the physical specifications and following the high user demand for powder diffraction the instrument has been optimized accordingly.\"",
+        "fullName": "ROTAX",
+        "id": 13,
+        "type": "Excitations"
+    },
+    {
+        "description": "\"Sans-2d represents a new concept in small angle scattering, using multiple position sensitive detectors to give unsurpassed simultaneous data collection across a wide range of length scales. It will be well-placed to exploit the trend towards studying non-equilibrium and multi-component chemical systems.\"",
+        "fullName": "SANS2D",
+        "id": 1,
+        "type": "Small-angle scattering"
+    },
+    {
+        "description": "\"SANDALS is a small angle diffractometer especially built for investigating the structure of liquids and amorphous materials. The instrument saw its first neutrons in 1989. Using SANDALS it is possible to measure the static structure factor, S(Q), of a disordered material over a wide range of momentum transfers. SANDALS experiments usually employ the powerful technique of isotopic substitution technique to perform in depth structural studies on the atomic scale. The combination of an intense pulsed neutron source and a large number of detectors at low angles make SANDALS particularly useful for measuring structure factors containing light atoms such as hydrogen and deuterium.\"",
+        "fullName": "SANDALS",
+        "id": 14,
+        "type": "Disordered Materials"
+    },
+    {
+        "description": "\"SURF is the newer of the two Neutron Reflectometers (NR) at ISIS. Compared to its sister instrument CRISP, SURF is optimised for higher flux. With horizontal sample geometry it is therefore ideally suited for the study of liquid surfaces.\"",
+        "fullName": "SURF",
+        "id": 15,
+        "type": "Large Scale Structures"
+    },
+    {
+        "description": "\"SXD, the Single Crystal Diffractometer, uses the time-of-flight Laue technique to access large 3-D volumes of reciprocal space in a single measurement. This makes SXD especially powerful in applications involving surveys of reciprocal space, such as phase transitions and incommensurate structures, and also in applications where sample orientation may be restricted. Applications of SXD have included routine structural studies and diffuse scattering. The structure determination programme reflects the strength of single crystal neutron diffraction in studies of non-bonded contacts, specifically those involving hydrogen atoms, thermal parameter analysis, and in the area of charge density studies where neutron diffraction data provide complementary information to high resolution X-ray studies. A recent innovation has resulted from exploitation of the flexible data collection method offered by the time-of-flight Laue technique, which allows data sets to be collected in relatively short periods of time. The ability to measure a structure at more than one temperature can have significant benefits, either to characterise thermal parameter behaviour (methyl group librations in paracetamol) or to study disorder (proton transfer in benzoic acid). Diffuse scattering caused by both dynamic and static effects can be studied, allowing short range structure, defect structure and local orientational correlations to be probed. A major area of interest is in developing methods to allow the Bragg and diffuse scattering to be used together in an integrated way to give a full picture of the structure under study. Much of the potential of SXD has been realised since the installation of a second position- sensitive detector, which increased the volume of reciprocal space accessed and hence the data collection rate. Recently, in October 1999, a grant of ¿1million was awarded by EPSRC to upgrade the SXD detectors. This will allow the provision of a total of 11 detectors, almost completely surrounding the sample position. These are scheduled to be installed during spring 2001.\"",
+        "fullName": "SXD",
+        "id": 16,
+        "type": "Crystallography"
+    },
+    {
+        "description": "The Time Focused Crystal Analyser (TFXA) was an indirect geometry instrument at 12m from an ambient water moderator. ",
+        "fullName": "TFXA",
+        "id": 46822951,
+        "type": "Molecular Spectroscopy",
+        "url": "http://www.isis.stfc.ac.uk/instruments/tosca/tosca-history8979.html"
+    },
+    {
+        "description": "TOSCA: A World Class Inelastic Neutron Spectrometer",
+        "fullName": "TOSCA",
+        "id": 17,
+        "type": "Molecular Spectroscopy"
+    },
+    {
+        "description": "\"VESUVIO is a unique neutron spectrometer, which uses the high intensity of neutrons in the eV energy range and the pulsed nature of the ISIS source to measure atomic momentum distributions in a variety of condensed matter systems. Energy transfers in the 1-100 eV region and wavevector transfers between 30 and 200 ¿1 are achieved using a filter difference technique. The energy of the scattered neutron is fixed by a nuclear resonance absorption foil and the incident energy and hence energy and momentum transfers are determined using standard time of flight techniques. For further details on the VESUVIO instrument and related projects on electron Volt spectroscopy please visit the  \"",
+        "fullName": "VESUVIO",
+        "id": 18,
+        "type": "Molecular Spectroscopy"
+    },
+    {
+        "description": "\"Wish is a long-wavelength instrument optimised for studying magnetism at an atomic level. Designed for powder diffraction at long d-spacing in magnetic and large unit-cell systems, it will specialise in such topics as magnetic clusters, extreme conditions of magnetic field and pressure, and new designer magnetic systems tailored for specific applications.\"",
+        "fullName": "WISH",
+        "id": 3,
+        "type": "High-resolution magnetic diffraction"
+    }
+]

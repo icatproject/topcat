@@ -1,77 +1,112 @@
-<!doctype html>
-<html class="no-js">
+<!DOCTYPE html>
+<html lang="en" class="no-js">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>TopCAT v2</title>
+
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/normalize-css/normalize.css" />
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/datatables/media/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="bower_components/datatables-scroller/css/dataTables.scroller.css" />
+    <link rel="stylesheet" href="bower_components/angular-datatables-scroller-css/index.css" />
     <!-- endbower -->
     <!-- endbuild -->
+
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="angularApp">
-    <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="#">Home</a></li>
-          <li><a ng-href="#/about">About</a></li>
-          <li><a ng-href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">angular</h3>
-      </div>	
-      <div ng-view=""></div>
-      
-      <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+  <body>
+    <!-- Begin page content -->
+    <div class="container-fluid">
+      <div class="page-header">
+        <!-- Fixed navbar -->
+          <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">TopCAT v2</a>
+              </div>
+              <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li class="active">
+                    <a href="#/browse/meta-1">Home</a>
+                  </li>
+                  <li>
+                    <a href="#about">About</a>
+                  </li>
+                  <li>
+                    <a href="#contact">Contact</a>
+                  </li>
+                </ul>
+              </div><!--/.nav-collapse -->
+            </div>
+          </div>
       </div>
-    </div>	
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      <!-- content -->
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
+      <div ui-view></div>
 
+      <!-- /content -->
+    </div>
+
+    <footer class="footer">
+      <div class="container-liquid">
+        <p class="text-muted">Place sticky footer content here.</p>
+      </div>
+    </footer>
     <!-- build:js(.) scripts/oldieshim.js -->
-    <!--[if lt IE 9]>
-    <script src="bower_components/es5-shim/es5-shim.js"></script>
-    <script src="bower_components/json3/lib/json3.min.js"></script>
-    <![endif]-->
-    <!-- endbuild -->
+        <!--[if lt IE 9]>
+        <script src="bower_components/es5-shim/es5-shim.js"></script>
+        <script src="bower_components/json3/lib/json3.min.js"></script>
+        <![endif]-->
+        <!-- endbuild -->
 
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/json3/lib/json3.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
+        <!-- build:js(.) scripts/vendor.js -->
+        <!-- bower:js -->
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/json3/lib/json3.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.js"></script>
+        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="bower_components/angular-ui-router-tabs/src/ui-router-tabs.js"></script>
+        <script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
+        <script src="bower_components/angular-datatables/dist/angular-datatables.js"></script>
+        <script src="bower_components/datatables-scroller/js/dataTables.scroller.js"></script>
+        <script src="bower_components/angular-datatables-scroller/index.js"></script>
+        <script src="bower_components/angular-deferred-bootstrap/angular-deferred-bootstrap.js"></script>
+        <script src="bower_components/angularjs-truncate/src/truncate.js"></script>
+        <!-- endbower -->
+        <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
+        <script src="scripts/controllers/HomeController.js"></script>
+        <script src="scripts/controllers/BrowseController.js"></script>
+        <script src="scripts/controllers/SearchFormController.js"></script>
+        <script src="scripts/controllers/AddParameterModalController.js"></script>
+        <script src="scripts/controllers/BrowseDataController.js"></script>
         <!-- endbuild -->
-</body>
+
+  </body>
 </html>
