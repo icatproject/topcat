@@ -53,8 +53,8 @@ The icatSessionId key/value pair must be passed in the header for each request
 icatSessionId   46df7c6b-fba3-4b07-9fd6-cdcd41bae37
 
 
-To get an icatSessionId send a request to http://localhost:8080/topcat/webapi/v1/login
-with the following key/value headers:
+To get an icatSessionId post a request to http://localhost:8080/topcat/webapi/v1/login
+with the following key/value using application/x-www-form-urlencoded:
 
 serverName : ISIS
 username : YOUR_FEDERAL_ID
