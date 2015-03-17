@@ -8,7 +8,7 @@ window.deferredBootstrapper.bootstrap({
   module : 'angularApp',
   resolve : {
     APP_CONFIG : [ '$http', function($http) {
-      return $http.get('/data/config.json');
+      return $http.get('data/config.json');
     } ]
   }
 });

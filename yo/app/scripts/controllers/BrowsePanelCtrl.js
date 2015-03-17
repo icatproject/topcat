@@ -15,7 +15,7 @@ var BrowsePanelCtrl = ['$rootScope', '$state', '$scope', '$filter', '$compile', 
   //determine paging style type. Options are page and scroll where scroll is the default
   switch(pagingType) {
     case 'page':
-      dtOptions = DTOptionsBuilder.fromSource('/data/investigations.json')
+      dtOptions = DTOptionsBuilder.fromSource('data/investigations.json')
         .withPaginationType('full_numbers')
         .withDOM('frtip')
         .withDisplayLength(5)
@@ -27,7 +27,7 @@ var BrowsePanelCtrl = ['$rootScope', '$state', '$scope', '$filter', '$compile', 
     case 'scroll':
     /* falls through */
     default:
-      dtOptions = DTOptionsBuilder.fromSource('/data/investigations-small-set.json')
+      dtOptions = DTOptionsBuilder.fromSource('data/investigations-small-set.json')
         .withDOM('frti')
         .withScroller()
         .withOption('deferRender', true)
