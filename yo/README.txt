@@ -1,6 +1,6 @@
 #### Topcat v2 Notes ####
 
-The development stack used to develop Topcatv2 is Yeoman
+The angularJS development stack used to develop Topcatv2 is Yeoman
 
 In addition to AngularJS, the following modules were used:
 
@@ -11,6 +11,25 @@ In addition to AngularJS, the following modules were used:
     * angular-deferred-bootstrap: Used for initialising AngularJS app with constants (https://github.com/philippd/angular-deferred-bootstrap)
 
 
+== Installation ==
+
+Checkout the topcatv2 branch
+
+prerequisites:
+
+    node.js
+    npm
+    git
+
+
+Checkout maven project from SCM from the location http://topcat.googlecode.com/svn/branches/topcatv2
+
+From a command line run the following commands:
+
+    cd topcat/yo
+    npm install
+    bower install
+    grunt serve
 
 
 == Bower commands ==
@@ -98,9 +117,9 @@ http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787
 
 
 
+== Structure ==
 
-
-facility, cycle, instrument, investigation dataset, datafile
+Possible combinations of facility, cycle, instrument, investigation, dataset, datafile
 
 facility > cycle
 facility > cycle > investigation
@@ -162,6 +181,9 @@ list the datafiles for a facility
 == Searching ==
 
 /#/search?query&type&facility&startDate&endDate&parameters[]&samples[]
+
+
+/#/cart
 
 
 

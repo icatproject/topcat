@@ -1,0 +1,11 @@
+<h1>Cart</h1>
+<h1>{{random}}</h1>
+<p>Number should not change betweeen tabs</p>
+
+cart: {{ cart }}
+
+<ul>
+    <li ng-repeat="item in cart.cart.cart">
+        Facility: {{ item.facility }}, Type: {{ item.type }}, Id: {{item.id}}
+    </li>
+</ul>

@@ -1,4 +1,4 @@
-// Generated on 2014-07-18 using generator-angular 0.9.5
+// Generated on 2015-02-24 using generator-angular 0.9.5
 'use strict';
 
 // # Globbing
@@ -69,7 +69,6 @@ module.exports = function (grunt) {
         port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
-        //hostname: '0.0.0.0',
         livereload: 35729
       },
       livereload: {
@@ -407,7 +406,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', [
     'newer:jshint',
-    //'test',
+    'test',
     'build'
   ]);
 };

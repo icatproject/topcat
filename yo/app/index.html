@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" class="no-js">
+<!doctype html>
+<html class="no-js">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
     <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
-
-    <title>TopCAT v2</title>
-
+    <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
@@ -20,12 +15,10 @@
     <link rel="stylesheet" href="bower_components/angular-datatables-scroller-css/index.css" />
     <!-- endbower -->
     <!-- endbuild -->
-
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-
   <body>
     <!-- Begin page content -->
     <div class="container-fluid">
@@ -39,18 +32,18 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">TopCAT v2</a>
+                <a class="navbar-brand"="home.browse">TopCAT v2</a>
               </div>
               <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                   <li class="active">
-                    <a href="#/browse/meta-1">Home</a>
+                    <a ui-sref="home.browse.main.facilities.meta1">Home</a>
                   </li>
                   <li>
-                    <a href="#about">About</a>
+                    <a ui-sref="about">About</a>
                   </li>
                   <li>
-                    <a href="#contact">Contact</a>
+                    <a ui-sref="contact">Contact</a>
                   </li>
                 </ul>
               </div><!--/.nav-collapse -->
@@ -70,43 +63,50 @@
         <p class="text-muted">Place sticky footer content here.</p>
       </div>
     </footer>
-    <!-- build:js(.) scripts/oldieshim.js -->
-        <!--[if lt IE 9]>
-        <script src="bower_components/es5-shim/es5-shim.js"></script>
-        <script src="bower_components/json3/lib/json3.min.js"></script>
-        <![endif]-->
-        <!-- endbuild -->
 
-        <!-- build:js(.) scripts/vendor.js -->
-        <!-- bower:js -->
-        <script src="bower_components/jquery/dist/jquery.js"></script>
-        <script src="bower_components/angular/angular.js"></script>
-        <script src="bower_components/json3/lib/json3.js"></script>
-        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="bower_components/angular-resource/angular-resource.js"></script>
-        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-        <script src="bower_components/angular-route/angular-route.js"></script>
-        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-        <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-        <script src="bower_components/angular-ui-router-tabs/src/ui-router-tabs.js"></script>
-        <script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
-        <script src="bower_components/angular-datatables/dist/angular-datatables.js"></script>
-        <script src="bower_components/datatables-scroller/js/dataTables.scroller.js"></script>
-        <script src="bower_components/angular-datatables-scroller/index.js"></script>
-        <script src="bower_components/angular-deferred-bootstrap/angular-deferred-bootstrap.js"></script>
-        <script src="bower_components/angularjs-truncate/src/truncate.js"></script>
-        <!-- endbower -->
-        <!-- endbuild -->
+    <!-- build:js(.) scripts/oldieshim.js -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+    <!-- endbuild -->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
+    <script src="bower_components/angular-datatables/dist/angular-datatables.js"></script>
+    <script src="bower_components/datatables-scroller/js/dataTables.scroller.js"></script>
+    <script src="bower_components/angular-datatables-scroller/index.js"></script>
+    <script src="bower_components/angular-deferred-bootstrap/angular-deferred-bootstrap.js"></script>
+    <script src="bower_components/angularjs-truncate/src/truncate.js"></script>
+    <script src="bower_components/ui-router-extras/release/ct-ui-router-extras.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/HomeController.js"></script>
-        <script src="scripts/controllers/BrowseController.js"></script>
-        <script src="scripts/controllers/SearchFormController.js"></script>
-        <script src="scripts/controllers/AddParameterModalController.js"></script>
-        <script src="scripts/controllers/BrowseDataController.js"></script>
-        <!-- endbuild -->
+        <script src="scripts/services/CartData.js"></script>
+        <script src="scripts/controllers/HomeCtrl.js"></script>
+        <script src="scripts/controllers/SearchFormCtrl.js"></script>
+        <script src="scripts/controllers/ParameterModalCtrl.js"></script>
+        <script src="scripts/controllers/MetaPanelCtrl.js"></script>
+        <script src="scripts/controllers/BrowsePanelCtrl.js"></script>
+        <script src="scripts/controllers/ModalInstanceCtrl.js"></script>
+        <script src="scripts/controllers/CartCtrl.js"></script>
 
-  </body>
+
+
+        <!--<script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/about.js"></script> -->
+        <!-- endbuild -->
+</body>
 </html>

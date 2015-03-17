@@ -19,12 +19,11 @@ body {
 
 
 .browse-box {
-	height: 320px;
-	overflow: auto;
+  height: 320px;
+  overflow: auto;
 
 }
 
 .searchForm {
-	margin: 10px 0;
+  margin: 10px 0;
 }
-
