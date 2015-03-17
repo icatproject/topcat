@@ -37,7 +37,7 @@ Run from the command line:
 Note: Visual Studio Express (VCBUild.exe) is used by the module node-gyp to compile native addons. On windows, if you run "npm install", you probably will get an error complaining about MSBuild. I think the node-gyp module is used to build the Socket.io-client module used by karma. If you don't use websocket for testing, you may not need it and just igmnore the error. Installing Visual Studio Express 2013 with Update 4 for Windows Desktop (Must be the desktop vesrion) did fix the issue for me.
 
 
-## RESTFUL API
+## RESTFUL API (TEST ONLY)
 
 Included in the project is a RESTFul API developed using jersey.
 
@@ -86,7 +86,7 @@ http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787/data
 List the 1st page datasets for an investigation
 http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787/datasets/1
 
-List the 1st page datasets for an investigation sort by name and
+List the 1st page datasets for an investigation sort by name in descending order
 http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787/datasets/1?sort=name&order=desc
 
 Get an investigation by id
