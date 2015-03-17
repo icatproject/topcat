@@ -1,17 +1,20 @@
-#### Topcat v2 Notes ####
+## Topcat v2 Notes
 
 The angularJS development stack used to develop Topcatv2 is Yeoman http://yeoman.io/
 
 In addition to AngularJS, the following modules were used:
 
-    * angular-bootstrap: Provides native AngularJS directives for Bootstrap components (http://angular-ui.github.io/bootstrap/)
-    * angular-ui-router: Provides routing with nested views. Necessary for tabs with routing (bookmarkable tabs) (https://github.com/angular-ui/ui-router)
-    * angular-ui-router-tab: Provides tabs directive with routing support (https://github.com/rpocklin/ui-router-tabs)
-    * angular-datatables: Provides functionality to display data in grid table  (http://l-lin.github.io/angular-datatables)
-    * angular-deferred-bootstrap: Used for initialising AngularJS app with constants (https://github.com/philippd/angular-deferred-bootstrap)
+  - _angular-bootstrap_: Provides native AngularJS directives for Bootstrap components (http://angular-ui.github.io/bootstrap/)
+  - _angular-ui-router_: Provides routing with nested views. Necessary for tabs with routing (bookmarkable tabs) (https://github.com/angular-ui/ui-router)
+  - _angular-ui-router-tab_: Provides tabs directive with routing support (https://github.com/rpocklin/ui-router-tabs)
+  - _angular-datatables_: Provides functionality to display data in grid table  (http://l-lin.github.io/angular-datatables)
+  - _datatables-scroller_: Plugin for angular-datatables to add scrolling pagainator
+  - _angular-deferred-bootstrap_: Used for initialising AngularJS app with constants (https://github.com/philippd/angular-deferred-bootstrap)
+  - _angularjs-truncate_: Used to truncate strings
+  - _ui-router-extras_: Provides sticky state essential for navigating between tabs with routing and not resetting states
 
 
-== Installation (On windows) for AngularJS Development ==
+## Installation (On windows) for AngularJS Development
 
 Install Git
 
@@ -31,19 +34,19 @@ Run from the command line:
     grunt serve
 
 
-== RESTFUL API ==
+Note: Visual Studio Express (VCBUild.exe) is used by the module node-gyp to compile native addons. On windows, if you run "npm install", you probably will get an error complaining about MSBuild. I think the node-gyp module is used to build the Socket.io-client module used by karma. If you don't use websocket for testing, you may not need it and just igmnore the error. Installing Visual Studio Express 2013 with Update 4 for Windows Desktop (Must be the desktop vesrion) did fix the issue for me.
+
+
+## RESTFUL API
 
 Included in the project is a RESTFul API developed using jersey.
 
-The pom.xml includes the yeoman-maven-plugin. This builds the angularJS project to the yo/dist directory and
-is then copied the target directory to be include into the war.
+The pom.xml includes the yeoman-maven-plugin. This builds the angularJS project to the yo/dist directory and is then copied the target directory to be include into the war.
 
-To pass test, copy the src/test/resources/icatserver.properties.example to src/test/resources/icatserver.properties
-and edit your ICAT server configuration and a valid user
+To pass test, copy the src/test/resources/icatserver.properties.example to src/test/resources/icatserver.properties and edit your ICAT server configuration and a valid user
 
 
-
-== Example RESTFUL API urls ==
+## Example RESTFUL API urls
 
 The icatSessionId key/value pair must be passed in the header for each request
 
@@ -91,44 +94,54 @@ http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787
 
 
 
-== Bower Command Reference ==
+## Bower Command Reference
 
-#search for a package
-bower search <package>
+search for a package
 
-#install a particular package
-bower install <package>
+    bower search <package>
 
-#install a particular package version
-bower install <package>#<version>
+install a particular package
 
-#install the packages specified in bower.json
-bower install
+    bower install <package>
 
-#list installed packages
-bower list
+install a particular package version
 
-#creates a bower.json file for your project
-bower init
+    bower install <package>#<version>
 
-#update packages
-bower update
+install the packages specified in bower.json
 
-#update a particular package
-bower update <package>
+    bower install
 
-#uninstall a particular package
-bower uninstall <package>
+list installed packages
+
+    bower list
+
+creates a bower.json file for your project
+
+    bower init
+
+update packages
+
+    bower update
+
+update a particular package
+
+    bower update <package>
+
+uninstall a particular package
+
+    bower uninstall <package>
 
 
-== Grunt commands ==
+## Grunt commands
 
-#Start up web service
-grunt serve
+Start up web service
+
+    grunt serve
 
 
 
-== Structure ==
+## Structure ==
 
 Possible combinations of facility, cycle, instrument, investigation, dataset, datafile
 
@@ -144,86 +157,92 @@ facility > dataset
 facility > dataset > datafile
 facility > datafile
 
-=== Route/State urls ===
+## Route/State urls
 
-== Browsing ==
+### Browsing
 
 list the facilities
-/#/browse/facilities/
+
+    /#/browse/facilities/
 
 list the facility cycles for a facility
-/#/browse/facilities/{facility.id}/cycles
+
+    /#/browse/facilities/{facility.id}/cycles
 
 list the investigations for a facility cycle of a facility
-/#/browse/facilities/{facility.id}/cycles/{facilityCycle.id}/investigations
+
+    /#/browse/facilities/{facility.id}/cycles/{facilityCycle.id}/investigations
 
 list the instruments for a facility
-/#/browse/facilities/{facility.id}/instruments
+
+    /#/browse/facilities/{facility.id}/instruments
 
 list the facility cycles for an instrument
-/#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles
+
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles
 
 list the investigations of a facility cycles for an instrument
-/#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
 
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
 
 list the investigation for an instrument
-/#/browse/facilities/{facility.id}/instruments/{intrument.id}/investigations
+
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/investigations
 
 list the investigations for a facility
-/#/browse/facilities/{facility.id}/investigations
-
-list the datasets for an investigation
-/#/browse/facilities/{facility.id}/investigations/{investigation.id}/datasets
-
-list the datasets for a facility
-/#/browse/facilities/{facility.id}/datasets
-
-list the datafiles for an investigation
-/#/browse/facilities/{facility.id}/investigations/{investigation.id}/datafiles
-
-list the datafiles for a dataset
-/#/browse/facilities/{facility.id}/datasets/{dataset.id}/datafiles
-
-list the datafiles for a facility
-/#/browse/facilities/{facility.id}/datafiles
-
-
-== Searching ==
-
-/#/search?query&type&facility&startDate&endDate&parameters[]&samples[]
-
-
-/#/cart
-
-
-
-=== Options to interpret "my data" ===
-
-1. via url. Example:
 
     /#/browse/facilities/{facility.id}/investigations
-    /#/browse/facilities/{facility.id}/mydata/investigations
+
+list the datasets for an investigation
+
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datasets
+
+list the datasets for a facility
+
+    /#/browse/facilities/{facility.id}/datasets
+
+list the datafiles for an investigation
+
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datafiles
+
+list the datafiles for a dataset
+
+    /#/browse/facilities/{facility.id}/datasets/{dataset.id}/datafiles
+
+list the datafiles for a facility
+
+    /#/browse/facilities/{facility.id}/datafiles
+
+
+### Searching
+
+    /#/search?query&type&facility&startDate&endDate&parameters[]&samples[]
+
+
+### Cart
+
+    /#/cart
+
+
+
+## Options to interpret "my data"
+
+  1. via url. Example:
+
+      /#/browse/facilities/{facility.id}/investigations
+      /#/browse/facilities/{facility.id}/mydata/investigations
 
     The "mydata" parameter has to be maintained throughout the url of the site when the
     "my data" button is toggled.
 
-2. via query parameter. Example:
+  2. via query parameter. Example:
 
-    /#/browse/facilities/{facility.id}/investigations
-    /#/browse/facilities/{facility.id}/investigations?mydata=true
+      /#/browse/facilities/{facility.id}/investigations
+      /#/browse/facilities/{facility.id}/investigations?mydata=true
 
     The "mydata" query parameter has to be maintained throughout the url of the site when the
     "my data" button is toggled
 
-3. via cookie. This means users will not be able to directly access a "my data" browse page.
-   They will go to the page and then toggle on the "my data" button.
-
-
-
-
-
-
-
-
+  3. via cookie. This means users will not be able to directly access a "my data" browse page.
+    They will go to the page and then toggle on the "my data" button.
 
