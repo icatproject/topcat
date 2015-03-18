@@ -1,6 +1,12 @@
 'use strict';
 
-var CartData = function(){
+angular
+    .module('angularApp')
+    .factory('CartData', CartData);
+
+CartData.$inject = [];
+
+function CartData(){
     return {
         cart: [
             {
@@ -15,8 +21,5 @@ var CartData = function(){
             }
         ]
     };
-};
-
-angular.module('angularApp').factory('CartData', CartData);
-
+}
 

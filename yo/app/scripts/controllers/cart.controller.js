@@ -1,6 +1,12 @@
 'use strict';
 
-var CartCtrl = ['$scope', 'CartData', function($scope, CartData) {
+angular
+    .module('angularApp')
+    .controller('CartController', CartController);
+
+CartController.$inject = ['$scope', 'CartData'];
+
+function CartController($scope, CartData) {
     var vm = this;
 
     var random;
@@ -10,11 +16,7 @@ var CartCtrl = ['$scope', 'CartData', function($scope, CartData) {
     }
 
     vm.random = random;
-
     vm.cart = CartData;
-
     console.log(CartData);
+}
 
-}];
-
-angular.module('angularApp').controller('CartCtrl', CartCtrl);

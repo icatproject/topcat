@@ -1,6 +1,13 @@
 'use strict';
 
-var BrowsePanelCtrl = ['$rootScope', '$state', '$scope', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', function($rootScope, $state, $scope, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG) {
+angular
+    .module('angularApp')
+    .controller('BrowsePanelContoller', BrowsePanelContoller);
+
+
+BrowsePanelContoller.$inject = ['$rootScope', '$state', '$scope', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'ICATService'];
+
+function BrowsePanelContoller($rootScope, $state, $scope, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, ICATService) {
   //$log.info(APP_CONFIG);
 
   //$state.transitionTo('home.browse');
@@ -12,10 +19,16 @@ var BrowsePanelCtrl = ['$rootScope', '$state', '$scope', '$filter', '$compile', 
   var browseType = 'dataset';    //possible options: facility, cycle, instrument, investigation dataset, datafile
   var column = APP_CONFIG.servers[0].facility[0].browseColumns[browseType]; //the column configuration
 
+
+  //console.log(ICATService.getInvestigationsByInstrumentId(1));
+
+
   //determine paging style type. Options are page and scroll where scroll is the default
   switch(pagingType) {
     case 'page':
-      dtOptions = DTOptionsBuilder.fromSource('data/investigations.json')
+      dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+          //return ICATService.getDatasetByFacilityId(null).$promise;
+        })
         .withPaginationType('full_numbers')
         .withDOM('frtip')
         .withDisplayLength(5)
@@ -27,7 +40,9 @@ var BrowsePanelCtrl = ['$rootScope', '$state', '$scope', '$filter', '$compile', 
     case 'scroll':
     /* falls through */
     default:
-      dtOptions = DTOptionsBuilder.fromSource('data/investigations-small-set.json')
+      dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+          return ICATService.getInvestigationsByInstrumentId(1);
+        })
         .withDOM('frti')
         .withScroller()
         .withOption('deferRender', true)
@@ -39,6 +54,8 @@ var BrowsePanelCtrl = ['$rootScope', '$state', '$scope', '$filter', '$compile', 
         });
       break;
   }
+
+  console.log(dtOptions);
 
   vm.dtOptions = dtOptions;
 
@@ -97,6 +114,4 @@ var BrowsePanelCtrl = ['$rootScope', '$state', '$scope', '$filter', '$compile', 
     function(event, toState, toParams, fromState, fromParams){
       $scope.data = toParams;
     });*/
-}];
-
-angular.module('angularApp').controller('BrowsePanelCtrl', BrowsePanelCtrl);
+}

@@ -1,6 +1,12 @@
 'use strict';
 
-var TestCtrl = function() {
+angular
+    .module('angularApp')
+    .controller('TestController', TestController);
+
+TestController.$inject = [];
+
+function TestController() {
     var vm = this;
 
     var random;
@@ -10,6 +16,5 @@ var TestCtrl = function() {
     }
 
     vm.random = random;
-};
+}
 
-angular.module('angularApp').controller('TestCtrl', TestCtrl);

@@ -1,7 +1,12 @@
 'use strict';
 
-var SearchFormCtrl = ['$state', '$filter', function($state, $filter) {
+angular
+    .module('angularApp')
+    .controller('SearchFormController', SearchFormController);
 
+SearchFormController.$inject = ['$state', '$filter'];
+
+function SearchFormController($state, $filter) {
     var vm = this;
     vm.form = {};
 
@@ -56,10 +61,9 @@ var SearchFormCtrl = ['$state', '$filter', function($state, $filter) {
 
 
     //$scope.initialise();
-}];
+}
 
 
-angular.module('angularApp').controller('SearchFormCtrl', SearchFormCtrl);
 
 
 /**
@@ -102,5 +106,4 @@ function searchFormToQueryParams($filter, data) {
     }
 
     return data;
-
 }

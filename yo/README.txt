@@ -37,6 +37,11 @@ Run from the command line:
 Note: Visual Studio Express (VCBUild.exe) is used by the module node-gyp to compile native addons. On windows, if you run "npm install", you probably will get an error complaining about MSBuild. I think the node-gyp module is used to build the Socket.io-client module used by karma. If you don't use websocket for testing, you may not need it and just igmnore the error. Installing Visual Studio Express 2013 with Update 4 for Windows Desktop (Must be the desktop vesrion) did fix the issue for me.
 
 
+## AngularJS Development style guide
+
+https://github.com/johnpapa/angular-styleguide#modules
+
+
 ## RESTFUL API (TEST ONLY)
 
 Included in the project is a RESTFul API developed using jersey.

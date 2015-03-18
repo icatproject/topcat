@@ -1,6 +1,12 @@
 'use strict';
 
-var ModalInstanceCtrl = ['$modalInstance', 'searchFormData', function($modalInstance, searchFormData) {
+angular
+    .module('angularApp')
+    .controller('ModalInstanceController', ModalInstanceController);
+
+ModalInstanceController.$inject = ['$modalInstance', 'searchFormData'];
+
+function ModalInstanceController($modalInstance, searchFormData) {
     //modal
     var vm = this;
 
@@ -22,7 +28,7 @@ var ModalInstanceCtrl = ['$modalInstance', 'searchFormData', function($modalInst
     vm.cancel = function() {
         $modalInstance.dismiss('cancel');
     };
-}];
+}
 
 
-angular.module('angularApp').controller('ModalInstanceCtrl', ModalInstanceCtrl);
+
