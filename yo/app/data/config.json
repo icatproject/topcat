@@ -5,8 +5,15 @@
             "facility": [
                 {
                     "name": "dls",
-                    "struture" : ["instrument", "investigation", "dataset", "datafile"],
+                    "struture" : ["facility", "investigation", "dataset", "datafile"],
                     "browseColumns" : {
+                        "facility" : [
+                            {
+                                "name" : "name",
+                                "title" : "Name",
+                                "link" : true
+                            }
+                        ],
                         "instrument" : [
                             {
                                 "name" : "id",
@@ -34,12 +41,13 @@
                                 "title" : "Title",
                                 "style" : "secondColumn",
                                 "notSortable" : true,
+                                "link" : true,
                                 "expressionFilter" : {
                                     "type" : "string",
                                     "name" : "characters",
                                     "characters" : 80
-
                                 }
+
 
                             },
                             {
@@ -73,11 +81,11 @@
                             {
                                 "name" : "title",
                                 "title" : "Title",
+                                "link" : true,
                                 "expressionFilter" : {
                                     "type" : "string",
                                     "name" : "characters",
                                     "characters" : 80
-
                                 }
 
                             },

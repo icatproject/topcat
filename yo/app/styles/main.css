@@ -27,3 +27,8 @@ body {
 .searchForm {
   margin: 10px 0;
 }
+
+/* make notification message go above the top navigation bar */
+.inform-fixed {
+  z-index: 2002;
+}

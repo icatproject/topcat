@@ -1,20 +1,21 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular
-    .module('angularApp')
-    .controller('TestController', TestController);
+    angular
+        .module('angularApp')
+        .controller('TestController', TestController);
 
-TestController.$inject = [];
+    TestController.$inject = [];
 
-function TestController() {
-    var vm = this;
+    function TestController() {
+        var vm = this;
 
-    var random;
+        var random;
 
-    if (!random) {
-        random = Math.round(Math.random()*10000);
+        if (!random) {
+            random = Math.round(Math.random()*10000);
+        }
+
+        vm.random = random;
     }
-
-    vm.random = random;
-}
-
+})();

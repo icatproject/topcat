@@ -251,3 +251,10 @@ list the datafiles for a facility
   3. via cookie. This means users will not be able to directly access a "my data" browse page.
     They will go to the page and then toggle on the "my data" button.
 
+
+## JSHINT
+
+To suppress an errors, look up the code in https://github.com/jshint/jshint/blob/2.1.4/src/shared/messages.js.
+
+Add the comment /*jshint -CODE_NUMBER */ just above the line of code to suppress the warning.
+

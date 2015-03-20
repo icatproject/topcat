@@ -1,22 +1,23 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular
-    .module('angularApp')
-    .controller('CartController', CartController);
+    angular
+        .module('angularApp')
+        .controller('CartController', CartController);
 
-CartController.$inject = ['$scope', 'CartData'];
+    CartController.$inject = ['$scope', 'CartData'];
 
-function CartController($scope, CartData) {
-    var vm = this;
+    function CartController($scope, CartData) {
+        var vm = this;
 
-    var random;
+        var random;
 
-    if (!$scope.random) {
-        $scope.random = Math.round(Math.random()*10000);
+        if (!$scope.random) {
+            $scope.random = Math.round(Math.random()*10000);
+        }
+
+        vm.random = random;
+        vm.cart = CartData;
+        console.log(CartData);
     }
-
-    vm.random = random;
-    vm.cart = CartData;
-    console.log(CartData);
-}
-
+})();

@@ -1,19 +1,20 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular
-    .module('angularApp')
-    .controller('MetaPanelController', MetaPanelController);
+    angular
+        .module('angularApp')
+        .controller('MetaPanelController', MetaPanelController);
 
-MetaPanelController.$inject = [];
+    MetaPanelController.$inject = [];
 
-function MetaPanelController(){
-    var vm = this;
+    function MetaPanelController(){
+        var vm = this;
 
-    //tabs config
-    var data = [
+        //tabs config
+        var data = [
 
-    ];
+        ];
 
-    vm.data = data;
-}
-
+        vm.data = data;
+    }
+})();

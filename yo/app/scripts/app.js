@@ -1,132 +1,150 @@
-'use strict';
+(function() {
+    'use strict';
 
-/**
- * deferred bootstrap to load main configuration to APP_CONFIG
- */
-window.deferredBootstrapper.bootstrap({
-  element : document.body,
-  module : 'angularApp',
-  resolve : {
-    APP_CONFIG : [ '$http', function($http) {
-      return $http.get('data/config.json');
-    } ]
-  }
-});
+    /**
+     * deferred bootstrap to load main configuration to APP_CONFIG
+     */
+    window.deferredBootstrapper.bootstrap({
+        element : document.body,
+        module : 'angularApp',
+        resolve : {
+            APP_CONFIG : [ '$http', function($http) {
+                return $http.get('data/config.json');
+            } ]
+        }
+    });
 
-/**
- * @ngdoc overview
- * @name angularApp
- * @description
- * # angularApp
- *
- * Main module of the application.
- */
-angular
-    .module('angularApp', [
-        'ngResource',
-        //'ngRoute',
-        'ngSanitize',
-        'ui.router',
-        'ct.ui.router.extras.sticky',
-        'ui.bootstrap',
-        'datatables',
-        'datatables.scroller',
-        'truncate'
-    ])
-    .config(function($stateProvider, $urlRouterProvider) {
+    /**
+     * @ngdoc overview
+     * @name angularApp
+     * @description
+     * # angularApp
+     *
+     * Main module of the application.
+     */
+    angular
+        .module('angularApp', [
+            'ngResource',
+            //'ngRoute',
+            'ngSanitize',
+            'ui.router',
+            'ct.ui.router.extras.sticky',
+            'ui.bootstrap',
+            'datatables',
+            'datatables.scroller',
+            'truncate',
+            'inform',
+            'inform-exception'
 
-        $urlRouterProvider.otherwise('/browse/facilities/meta1');
-        $urlRouterProvider.when('/browse', '/browse/facilities/meta1'); //redirect TODO is this nescessary?
+        ])
+        .config(function($stateProvider, $urlRouterProvider) {
 
-        $stateProvider
-            .state('home', {
-                abstract: true,
-                //url: '',
-                templateUrl: 'views/abstract-home.html',
-                controller: 'HomeController'
-            })
-            .state('home.browse', {
-                abstract: true,
-                url: '/browse',
-                views: {
-                  'browse': {
-                    template: '<div ui-view></div>'
-                  }
-                },
-                sticky: true,
-                deepStateRedirect: true
-            })
-            .state('home.browse.main', {
-                url: '',
-                abstract: true,
-                templateUrl: 'views/main-browse.html'
-            })
-            .state('home.browse.main.facilities', {
-                abstract: true,
-                url: '/facilities',
-                views: {
-                  'search-form-view': {
-                    templateUrl: 'views/partial-search-form.html',
-                    controller: 'SearchFormController as searchForm'
-                  },
-                  'browse-view': {
-                    templateUrl: 'views/partial-browse-panel.html',
-                    controller: 'BrowsePanelContoller as browse'
-                  },
-                  'meta-view': {
-                    templateUrl: 'views/partial-meta-panel.html'
-                  }
-                }
-            })
+            $urlRouterProvider.otherwise('/browse/facilities/meta1');
+            $urlRouterProvider.when('/browse', '/browse/facilities/meta1'); //redirect TODO is this nescessary?
 
-            .state('home.browse.main.facilities.meta1', {
-                url: '/meta1',
-                views: {
-                  'meta1': {
-                    templateUrl: 'views/meta-panel/1.html'
-                  },
-                },
-                sticky: true,
-                deepStateRedirect: true
-            })
-            .state('home.browse.main.facilities.meta2', {
-                url: '/meta2',
-                views: {
-                  'meta2': {
-                    templateUrl: 'views/meta-panel/2.html'
-                  },
-                },
-                sticky: true,
-                deepStateRedirect: true
-            })
+            $stateProvider
+                .state('home', {
+                    abstract: true,
+                    //url: '',
+                    templateUrl: 'views/abstract-home.html',
+                    controller: 'HomeController'
+                })
+                .state('home.browse', {
+                    abstract: true,
+                    url: '/browse',
+                    views: {
+                      'browse': {
+                        template: '<div ui-view></div>'
+                      }
+                    },
+                    sticky: true,
+                    deepStateRedirect: true
+                })
+                .state('home.browse.main', {
+                    url: '',
+                    abstract: true,
+                    templateUrl: 'views/main-browse.html'
+                })
+                .state('home.browse.main.facilities', {
+                    abstract: true,
+                    url: '/facilities',
+                    views: {
+                        '': {
+                            template: '<div ui-view></div>',
+                            controller: 'BrowsePanelContoller as browse'
+                        },
+                        'search-form-view': {
+                            templateUrl: 'views/partial-search-form.html',
+                            controller: 'SearchFormController as searchForm'
+                        },
+                        'meta-view': {
+                            templateUrl: 'views/partial-meta-panel.html'
+                        }
+                    }
+                })
+                .state('home.browse.main.facilities.entitylist', {
+                    url: '/{facility}/{entityType}',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    }
 
-            .state('home.cart', {
-                url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',
-                views: {
-                  'cart': {
-                    templateUrl: 'views/main-cart.html',
-                    controller: 'CartController as cart'
-                  }
-                },
-                sticky: true,
-                deepStateRedirect: true
-            })
-            // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
-            .state('about', {
-                url: '/about',
-                templateUrl: 'views/main-about.html'
-            })
-            .state('contact', {
-                url: '/contact',
-                templateUrl: 'views/main-contact.html'
-            });
+                })
 
-    })
-/*.config(function($stickyStateProvider) {
-  $stickyStateProvider.enableDebug(true);
-})*/
-    .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
-        $rootScope.$state = $state;
-        $rootScope.$stateParams = $stateParams;
-}]);
+                .state('home.browse.main.facilities.meta1', {
+                    url: '/meta1',
+                    views: {
+                        'meta1': {
+                            templateUrl: 'views/meta-panel/1.html'
+                        },
+                        '' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    sticky: true,
+                    deepStateRedirect: true
+                })
+                .state('home.browse.main.facilities.meta2', {
+                    url: '/meta2',
+                    views: {
+                        'meta2': {
+                            templateUrl: 'views/meta-panel/2.html'
+                        },
+                    },
+                    sticky: true,
+                    deepStateRedirect: true
+                })
 
+                .state('home.cart', {
+                    url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    views: {
+                      'cart': {
+                        templateUrl: 'views/main-cart.html',
+                        controller: 'CartController as cart'
+                      }
+                    },
+                    sticky: true,
+                    deepStateRedirect: true
+                })
+                // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
+                .state('about', {
+                    url: '/about',
+                    templateUrl: 'views/main-about.html'
+                })
+                .state('contact', {
+                    url: '/contact',
+                    templateUrl: 'views/main-contact.html'
+                });
+
+        })
+    /*.config(function($stickyStateProvider) {
+      $stickyStateProvider.enableDebug(true);
+    })*/
+        .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
+            $rootScope.$state = $state;
+            $rootScope.$stateParams = $stateParams;
+    }]);
+})();

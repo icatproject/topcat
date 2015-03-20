@@ -1,14 +1,15 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular
-    .module('angularApp')
-    .controller('HomeController', HomeController);
+    angular
+        .module('angularApp')
+        .controller('HomeController', HomeController);
 
-HomeController.$inject = ['$scope'];
+    HomeController.$inject = ['$scope'];
 
-function HomeController($scope) {
-    if (!$scope.random) {
-        $scope.random = Math.round(Math.random()*10000);
+    function HomeController($scope) {
+        if (!$scope.random) {
+            $scope.random = Math.round(Math.random()*10000);
+        }
     }
-}
-
+})();

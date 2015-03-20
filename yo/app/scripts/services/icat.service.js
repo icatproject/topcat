@@ -10,7 +10,7 @@ function ICATService($http, $q) {
     var data = {};
 
     /** get facilities */
-    data.getFacilties = function(facilityId) {
+    data.getFacilties = function() {
         return $http.get('data/facilities.json');
     };
 
@@ -40,19 +40,7 @@ function ICATService($http, $q) {
     };
 
     data.getInvestigationsByInstrumentId = function(facilityId, instrumentId) {
-        var def = $q.defer();
-
-        $http.get('data/investigations-small-set.json')
-            .success(function(data) {
-                    def.resolve(data);
-            })
-            .error(function() {
-                def.reject("Failed to get data");
-            });
-
-        return def.promise;
-
-        //$http.get('data/investigations-small-set.json');
+        return $http.get('data/investigations-small-set.json');
     };
 
     data.getInvestigationsByInstrumentIdByCycleId = function(facilityId, instrumentId, cycleId) {
