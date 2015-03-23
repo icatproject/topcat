@@ -37,6 +37,11 @@ Run from the command line:
 Note: Visual Studio Express (VCBUild.exe) is used by the module node-gyp to compile native addons. On windows, if you run "npm install", you probably will get an error complaining about MSBuild. I think the node-gyp module is used to build the Socket.io-client module used by karma. If you don't use websocket for testing, you may not need it and just igmnore the error. Installing Visual Studio Express 2013 with Update 4 for Windows Desktop (Must be the desktop vesrion) did fix the issue for me.
 
 
+Proxy setting note: npm does not use environment variables for proxy. Instead use the following commands
+
+    npm config set proxy http://proxy.company.com:8080
+    npm config set https-proxy http://proxy.company.com:8080
+
 ## AngularJS Development style guide
 
 https://github.com/johnpapa/angular-styleguide#modules
@@ -97,7 +102,19 @@ http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787/data
 Get an investigation by id
 http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787
 
+## ICAT REST API CALLS
 
+### https://facilities02.esc.rl.ac.uk:8181/icat/session
+POST x-www-form-urlencoded
+
+Key: json
+Value: {"plugin": "YOUR_AUTHENTICATION_TYPE","credentials" : [{"username":"YOUR_USERNAME"}, {"password":"YOUR_PASSWORD"}]}
+
+Possible values for YOUR_AUTHENTICATION_TYPE [ldap, db, uows]
+
+
+### Get Data
+GET https://facilities02.esc.rl.ac.uk:8181/icat/entityManager?sessionId=053959b9-a822-480c-871f-f06131e410e8&query=
 
 ## Bower Command Reference
 
@@ -227,6 +244,58 @@ list the datafiles for a facility
 ### Cart
 
     /#/cart
+
+
+
+## Grouping url by number of parameters
+
+    1 param
+
+
+    2 params
+    /#/browse/facilities/
+
+
+    3 params
+
+
+    4 params
+    /#/browse/facilities/{facility.id}/cycles
+    /#/browse/facilities/{facility.id}/instruments
+    /#/browse/facilities/{facility.id}/investigations
+    /#/browse/facilities/{facility.id}/datasets
+    /#/browse/facilities/{facility.id}/datafiles
+
+
+    5 params:
+
+
+    6 params:
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/investigations
+    /#/browse/facilities/{facility.id}/cycles/{facilityCycle.id}/investigations
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datasets
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datafiles
+    /#/browse/facilities/{facility.id}/datasets/{dataset.id}/datafiles
+
+
+    7 params:
+
+
+    8 params:
+
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
+
+
+
+
+
+
+
+
+
+
+    /#/search?query&type&facility&startDate&endDate&parameters[]&samples[]
 
 
 

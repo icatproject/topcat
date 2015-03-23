@@ -1,0 +1,382 @@
+[
+    {
+        "Datafile": {
+            "id": 28809636,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:38:53.000+01:00",
+            "datafileModTime": "2010-08-10T01:38:53.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185869.tif",
+            "name": "test2185869.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809637,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:36:47.000+01:00",
+            "datafileModTime": "2010-08-10T01:36:47.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185843.tif",
+            "name": "test2185843.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809638,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:28:53.000+01:00",
+            "datafileModTime": "2010-08-10T01:28:53.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185743.tif",
+            "name": "test2185743.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809639,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:26:13.000+01:00",
+            "datafileModTime": "2010-08-10T01:26:13.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185709.tif",
+            "name": "test2185709.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809640,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:41:56.000+01:00",
+            "datafileModTime": "2010-08-10T01:41:56.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185902.tif",
+            "name": "test2185902.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809641,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:38:36.000+01:00",
+            "datafileModTime": "2010-08-10T01:38:36.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185865.tif",
+            "name": "test2185865.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809642,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:31:00.000+01:00",
+            "datafileModTime": "2010-08-10T01:31:00.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185779.tif",
+            "name": "test2185779.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809643,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:28:32.000+01:00",
+            "datafileModTime": "2010-08-10T01:28:32.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185738.tif",
+            "name": "test2185738.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809644,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:32:27.000+01:00",
+            "datafileModTime": "2010-08-10T01:32:27.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185789.tif",
+            "name": "test2185789.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809645,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:36:15.000+01:00",
+            "datafileModTime": "2010-08-10T01:36:15.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185836.tif",
+            "name": "test2185836.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809646,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:27:11.000+01:00",
+            "datafileModTime": "2010-08-10T01:27:11.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185722.tif",
+            "name": "test2185722.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809647,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:38:57.000+01:00",
+            "datafileModTime": "2010-08-10T01:38:57.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185870.tif",
+            "name": "test2185870.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809648,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:29:37.000+01:00",
+            "datafileModTime": "2010-08-10T01:29:37.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185751.tif",
+            "name": "test2185751.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809649,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:35:54.000+01:00",
+            "datafileModTime": "2010-08-10T01:35:54.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185831.tif",
+            "name": "test2185831.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809650,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:42:22.000+01:00",
+            "datafileModTime": "2010-08-10T01:42:22.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185908.tif",
+            "name": "test2185908.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809651,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:28:14.000+01:00",
+            "datafileModTime": "2010-08-10T01:28:14.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185734.tif",
+            "name": "test2185734.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809652,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:30:17.000+01:00",
+            "datafileModTime": "2010-08-10T01:30:17.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185762.tif",
+            "name": "test2185762.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809653,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:33:18.000+01:00",
+            "datafileModTime": "2010-08-10T01:33:18.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185801.tif",
+            "name": "test2185801.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809654,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:32:48.000+01:00",
+            "datafileModTime": "2010-08-10T01:32:48.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185794.tif",
+            "name": "test2185794.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    },
+    {
+        "Datafile": {
+            "id": 28809655,
+            "createId": "STORAGED_INGEST",
+            "createTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "modId": "STORAGED_INGEST",
+            "modTime": "Tue Nov 16 17:09:49 GMT 2010",
+            "dataCollectionDatafiles": [],
+            "datafileCreateTime": "2010-08-10T01:39:42.000+01:00",
+            "datafileModTime": "2010-08-10T01:39:42.000+01:00",
+            "description": "unknown",
+            "destDatafiles": [],
+            "fileSize": "383956",
+            "location": "/dls/i16/data/2010/cm1899-5/pilatus100k/test2185877.tif",
+            "name": "test2185877.tif",
+            "parameters": [],
+            "sourceDatafiles": []
+        }
+    }
+]

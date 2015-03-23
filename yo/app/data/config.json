@@ -104,7 +104,35 @@
                                 "name" : "endDate",
                                 "title" : "End Date"
                             }
+                        ],
+                        "datafile" : [
+                            {
+                                "name" : "title",
+                                "title" : "Title",
+                                "expressionFilter" : {
+                                    "type" : "string",
+                                    "name" : "characters",
+                                    "characters" : 80
+                                }
+
+                            },
+                            {
+                                "name" : "startDate",
+                                "title" : "Start Date",
+                                "expressionFilter" : {
+                                    "type" : "date",
+                                    "is" : "endDate",
+                                    "name" : "date",
+                                    "format" : "dd-MM-yyyy",
+                                    "timezone" : "UTC"
+                                }
+                            },
+                            {
+                                "name" : "endDate",
+                                "title" : "End Date"
+                            }
                         ]
+
                     }
                 }
             ]

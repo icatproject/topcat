@@ -82,15 +82,89 @@
                         }
                     }
                 })
-                .state('home.browse.main.facilities.entitylist', {
-                    url: '/{facility}/{entityType}',
+                .state('home.browse.main.facilities.cycle', {
+                    url: '/{facility}/cycles',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        entityType : 'investigation'
+                    }
+                })
+                .state('home.browse.main.facilities.instrument', {
+                    url: '/{facility}/instruments',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        entityType : 'instrument'
+                    }
+                })
+                .state('home.browse.main.facilities.investigation', {
+                    url: '/{facility}/investigations',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        entityType : 'investigation'
+                    }
+
+                })
+                .state('home.browse.main.facilities.dataset', {
+                    url: '/{facility}/datasets',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        entityType : 'dataset'
+                    }
+
+                })
+                .state('home.browse.main.facilities.datafile', {
+                    url: '/{facility}/datafiles',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        entityType : 'datafile'
+                    }
+                })
+                /*.state('home.browse.main.facilities.entitylistbyid', {
+                    url: '/{facility}/{entityType}/{id}',
                     views: {
                         '@home.browse.main.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
                         }
                     }
-
+                })*/
+                .state('home.browse.main.facilities.datasetbyinvestigationid', {
+                    url: '/{facility}/investigations/{id}/datasets',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        idType : 'investigation',
+                        entityType : 'dataset'
+                    }
                 })
 
                 .state('home.browse.main.facilities.meta1', {

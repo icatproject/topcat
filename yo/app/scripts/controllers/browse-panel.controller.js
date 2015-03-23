@@ -15,42 +15,42 @@
         var dtOptions = {}; //dtoptions for the datatable
         var dtColumns = []; //dtColumns for the datatable
         var pagingType = APP_CONFIG.site.pagingType; //the pagination type. 'scroll' or 'page'
-        var browseType = getBrowseType($state);    //possible options: facility, cycle, instrument, investigation dataset, datafile
-        var column = APP_CONFIG.servers[0].facility[0].browseColumns[browseType]; //the column configuration
-        var nextEntityType = getNextEntityType(APP_CONFIG.servers[0].facility[0].struture, browseType);
+        var currentEntityType = getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+        var column = APP_CONFIG.servers[0].facility[0].browseColumns[currentEntityType]; //the column configuration
+        var nextEntityType = getNextEntityType(APP_CONFIG.servers[0].facility[0].struture, currentEntityType);
 
         console.log(APP_CONFIG.servers[0].facility[0].struture);
 
         vm.rowClickHandler = rowClickHandler;
 
 
-        //browseType = $stateParams.facility;
+        //currentEntityType = $stateParams.facility;
         console.log($stateParams);
         console.log($state);
-        console.log('browseType:' + browseType);
+        console.log('currentEntityType:' + currentEntityType);
 
         pagingType = 'page';
 
         //determine paging style type. Options are page and scroll where scroll is the default
-        switch(pagingType) {
+        switch (pagingType) {
             case 'page':
-                dtOptions = DTOptionsBuilder.fromFnPromise(getData($state)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getData(currentEntityType, $state)) //TODO
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
                     .withDisplayLength(5)
                     .withOption('fnRowCallback', rowCallback);
                 break;
             case 'scroll':
-            /* falls through */
+                /* falls through */
             default:
-                dtOptions = DTOptionsBuilder.fromFnPromise(getData($state)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getData(currentEntityType, $state)) //TODO
                     .withDOM('frti')
                     .withScroller()
                     .withOption('deferRender', true)
                     // Do not forget to add the scorllY option!!!
                     .withOption('scrollY', 180)
                     .withOption('fnRowCallback', rowCallback);
-            break;
+                break;
         }
 
 
@@ -87,7 +87,10 @@
          * @return {void}
          */
         function rowClickHandler(aData) {
-            inform.add('Type: ' + browseType + ' Id:' + aData.id, {'ttl': 3000, 'type': 'info'}); //TODO update meta tab with details
+            inform.add('Type: ' + currentEntityType + ' Id:' + aData.id, {
+                'ttl': 3000,
+                'type': 'info'
+            }); //TODO update meta tab with details
         }
 
         /**
@@ -108,7 +111,7 @@
             });
 
             //stop the link from firing the row click event
-            angular.element('td a', nRow).bind('click', function(event){
+            angular.element('td a', nRow).bind('click', function(event) {
                 event.stopPropagation();
             });
 
@@ -119,12 +122,18 @@
         }
 
         /**
-         * Returns the current entity type base on the current route
+         * Returns the current entity type base on the current route param entityType.
+         * Default to facility if non is specified
+         *
          * @param  {Object} the $state object
          * @return {String} the current entity type
          */
-        function getBrowseType($state) {
-            return $state.params.entityType || 'facility';
+        function getCurrentEntityType($state) {
+            if (angular.isDefined($state.current.param)) {
+                return $state.current.param.entityType || 'facility';
+            }
+
+            return 'facility';
         }
 
         /**
@@ -134,19 +143,24 @@
          * @param  {Object} the $state object
          * @return {Object} the data object
          */
-        function getData($state) {
+        function getData(currentEntityType, $state) {
             console.log('entityType: ' + $state.params.entityType);
+            console.log('facility: ' + $state.params.facility);
+            console.log('id: ' + $state.params.id);
 
-            switch($state.params.entityType) {
+            switch (currentEntityType) {
                 case 'facility':
                     console.log('function called: facilities');
                     return getFacilities();
                 case 'investigation':
-                    console.log('function called: getInvestigationsByInstrumentId');
-                    return getInvestigationsByInstrumentId($state.params.entityType);
+                    console.log('function called: getInvestigations');
+                    return getInvestigations($state.params.entityType);
                 case 'dataset':
-                    console.log('function called: getDatasetByFacilityId');
-                    return getDatasetByFacilityId($state.params.entityType);
+                    console.log('function called: getDatasetByInvestigationId');
+                    return getDatasetByInvestigationId($state.params.entityType);
+                case 'datafile':
+                    console.log('function called: getDatafilesByDatasetId');
+                    return getDatafilesByDatasetId($state.params.entityType);
                 default:
                     console.log('function called: default');
                     return getFacilities();
@@ -163,44 +177,111 @@
                 })
                 .error(function() {
                     def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve facility data', {'ttl': 0, 'type': 'danger'});
+                    inform.add('Failed to retrieve data', {
+                        'ttl': 0,
+                        'type': 'danger'
+                    });
                 });
 
             return def.promise;
         }
 
 
-
-        function getInvestigationsByInstrumentId(id) {
+        function getInvestigations(facilityId) {
             var def = $q.defer();
 
-            ICATService.getInvestigationsByInstrumentId(id)
+            ICATService.getInvestigations(facilityId)
                 .success(function(data) {
                     def.resolve(data);
                 })
                 .error(function() {
                     def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve facility data', {'ttl': 0, 'type': 'danger'});
+                    inform.add('Failed to retrieve data', {
+                        'ttl': 0,
+                        'type': 'danger'
+                    });
                 });
 
             return def.promise;
         }
 
 
-        function getDatasetByFacilityId(id) {
+        function getInvestigationsByInstrumentId(instrumentId) { // jshint ignore:line
             var def = $q.defer();
 
-            ICATService.getDatasetByFacilityId(id)
+            ICATService.getInvestigationsByInstrumentId(instrumentId)
                 .success(function(data) {
                     def.resolve(data);
                 })
                 .error(function() {
                     def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve facility data', {'ttl': 0, 'type': 'danger'});
+                    inform.add('Failed to retrieve data', {
+                        'ttl': 0,
+                        'type': 'danger'
+                    });
                 });
 
             return def.promise;
         }
+
+
+        function getDatasetByFacilityId(facilityId) { // jshint ignore:line
+            var def = $q.defer();
+
+            ICATService.getDatasetByFacilityId(facilityId)
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    inform.add('Failed to retrieve data', {
+                        'ttl': 0,
+                        'type': 'danger'
+                    });
+                });
+
+            return def.promise;
+        }
+
+
+        function getDatasetByInvestigationId(investigationId) {
+            var def = $q.defer();
+
+            ICATService.getDatasetByInvestigationId(investigationId)
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    inform.add('Failed to retrieve data', {
+                        'ttl': 0,
+                        'type': 'danger'
+                    });
+                });
+
+            return def.promise;
+        }
+
+
+        function getDatafilesByDatasetId(facilityId, investigationId) {
+            var def = $q.defer();
+
+            ICATService.getDatasetByInvestigationId(facilityId, investigationId)
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    inform.add('Failed to retrieve data', {
+                        'ttl': 0,
+                        'type': 'danger'
+                    });
+                });
+
+            return def.promise;
+        }
+
+
 
         vm.dtOptions = dtOptions;
 
@@ -231,12 +312,16 @@
 
             //TODO should combine link and filter instead of filter overrriding the renderWith
 
-            //creat link if link is set to true
+            //create link if link is set to true
             if (angular.isDefined(column[i].link)) {
                 if (column[i].link === true) {
-                    col.renderWith(function(data, type, full, meta){
+                    col.renderWith(function(data, type, full, meta) {
                         if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true && nextEntityType !== false) {
-                            return '<a ui-sref="^.entitylist({facility: \'isis\', entityType: \'' + nextEntityType + '\'})">' + data + '</a>';
+                            if (currentEntityType === 'facility') {
+                                return '<a ui-sref="home.browse.main.facilities.' + nextEntityType + '({facility : \'' + full.name + '\'})">' + data + '</a>';
+                            } else {
+                                return '<a ui-sref="home.browse.main.facilities.' + nextEntityType + '({facility : \'' + $state.params.facility + '\'})">' + data + '</a>';
+                            }
                         } else {
                             return data;
                         }
@@ -244,15 +329,18 @@
                 }
             }
 
-            //set the expressionFilter
+            //if expressionFilter is set
             if (angular.isDefined(column[i].expressionFilter)) {
                 var expressionFilter = column[i].expressionFilter;
 
                 if (angular.isDefined(expressionFilter.type)) {
                     if ('string' === expressionFilter.type) {
-                        col.renderWith(function(data, type, full, meta){
+                        col.renderWith(function(data, type, full, meta) {
+
+                            //console.log(full);
+
                             if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true && nextEntityType !== false) {
-                                return '<a ui-sref="{facility: \'isis\', entityType: \'' + nextEntityType + '\'}">' + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>';
+                                return '<a ui-sref="home.browse.main.facilities.' + nextEntityType + '({facility : \'' + $state.params.facility + '\'})">' + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>';
                             } else {
                                 return $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters);
                             }
@@ -260,7 +348,7 @@
                     }
 
                     if (expressionFilter.type === 'date') {
-                        col.renderWith(function(data, type, full, meta){
+                        col.renderWith(function(data, type, full, meta) {
                             return $filter('date')(data, column[meta.col].expressionFilter.format, column[meta.col].expressionFilter.timezone);
                         });
                     }

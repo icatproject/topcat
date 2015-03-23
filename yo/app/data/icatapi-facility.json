@@ -1,0 +1,25 @@
+[
+    {
+        "Facility": {
+            "id": 1,
+            "createId": "Import from Spreadsheet",
+            "createTime": "Mon Sep 08 16:12:50 BST 2008",
+            "modId": "Import from Spreadsheet",
+            "modTime": "Mon Sep 08 16:12:50 BST 2008",
+            "applications": [],
+            "datafileFormats": [],
+            "datasetTypes": [],
+            "daysUntilRelease": "10",
+            "description": "\"Diamond Light Source is a new scientific facility in South Oxfordshire on the Harwell Science and Innovation Campus. This giant machine, called a synchrotron, can be described as a series of \"\"super microscopes\"\". It is housed in a futuristic doughnut-shaped building which covers the area of 5 football pitches. Diamond will ultimately host up to 40 cutting edge research stations, called beamlines, supporting the life, physical and environmental sciences.\"",
+            "facilityCycles": [],
+            "fullName": "Diamond Light Source",
+            "instruments": [],
+            "investigationTypes": [],
+            "investigations": [],
+            "name": "DLS",
+            "parameterTypes": [],
+            "sampleTypes": [],
+            "url": "http://www.diamond.ac.uk"
+        }
+    }
+]
