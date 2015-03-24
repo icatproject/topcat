@@ -40,8 +40,8 @@
         .constant('_', window._)
         .config(function($stateProvider, $urlRouterProvider) {
 
-            $urlRouterProvider.otherwise('/browse/facilities/meta1');
-            $urlRouterProvider.when('/browse', '/browse/facilities/meta1'); //redirect TODO is this nescessary?
+            $urlRouterProvider.otherwise('/browse/facilities');
+            $urlRouterProvider.when('/browse', '/browse/facilities'); //redirect TODO is this nescessary?
 
             $stateProvider
                 .state('home', {
@@ -54,38 +54,38 @@
                     abstract: true,
                     url: '/browse',
                     views: {
-                      'browse': {
-                        template: '<div ui-view></div>'
+                      '': {
+                        templateUrl: 'views/main-browse.html'
                       }
                     },
                     sticky: true,
                     deepStateRedirect: true
                 })
-                .state('home.browse.main', {
+                /*.state('home.browse.main', {
                     url: '',
                     abstract: true,
                     templateUrl: 'views/main-browse.html'
-                })
-                .state('home.browse.main.facilities', {
-                    abstract: true,
+                })*/
+                .state('home.browse.facilities', {
                     url: '/facilities',
                     views: {
-                        '': {
-                            template: '<div ui-view></div>'
+                        '' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
                         },
                         'search-form-view': {
                             templateUrl: 'views/partial-search-form.html',
                             controller: 'SearchFormController as searchForm'
                         },
-                        'meta-view': {
+                        'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html'
                         }
                     }
                 })
-                .state('home.browse.main.facilities.facility-cycle', {
+                .state('home.browse.facilities.facility-cycle', {
                     url: '/{server}/{facility}/cycles',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
                         }
@@ -94,24 +94,30 @@
                         entityType : 'investigation'
                     }
                 })
-                .state('home.browse.main.facilities.facility-instrument', {
+                .state('home.browse.facilities.facility-instrument', {
                     url: '/{server}/{facility}/instruments',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html'
                         }
                     },
                     param: {
                         entityType : 'instrument'
                     }
                 })
-                .state('home.browse.main.facilities.facility-investigation', {
+                .state('home.browse.facilities.facility-investigation', {
                     url: '/{server}/{facility}/investigations',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html'
                         }
                     },
                     param: {
@@ -119,12 +125,15 @@
                     }
 
                 })
-                .state('home.browse.main.facilities.facility-dataset', {
+                .state('home.browse.facilities.facility-dataset', {
                     url: '/{server}/{facility}/datasets',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html'
                         }
                     },
                     param: {
@@ -133,33 +142,39 @@
                     }
 
                 })
-                .state('home.browse.main.facilities.facility-datafile', {
+                .state('home.browse.facilities.facility-datafile', {
                     url: '/{server}/{facility}/datafiles',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html'
                         }
                     },
                     param: {
                         entityType : 'datafile'
                     }
                 })
-                /*.state('home.browse.main.facilities.entitylistbyid', {
+                /*.state('home.browse.facilities.entitylistbyid', {
                     url: '/{facility}/{entityType}/{id}',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
                         }
                     }
                 })*/
-                .state('home.browse.main.facilities.instrument-investigation', {
+                .state('home.browse.facilities.instrument-investigation', {
                     url: '/{server}/{facility}/instruments/{id}/investigations',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html'
                         }
                     },
                     param: {
@@ -168,12 +183,15 @@
 
                     }
                 })
-                .state('home.browse.main.facilities.investigation-dataset', {
+                .state('home.browse.facilities.investigation-dataset', {
                     url: '/{server}/{facility}/investigations/{id}/datasets',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html'
                         }
                     },
                     param: {
@@ -181,12 +199,15 @@
                         entityType : 'dataset'
                     }
                 })
-                .state('home.browse.main.facilities.dataset-datafile', {
+                .state('home.browse.facilities.dataset-datafile', {
                     url: '/{server}/{facility}/datasets/{id}/datafile',
                     views: {
-                        '@home.browse.main.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html'
                         }
                     },
                     param: {
@@ -195,30 +216,26 @@
                     }
                 })
 
-                .state('home.browse.main.facilities.meta1', {
-                    url: '/meta1',
+                /*.state('home.browse.facilities.meta1', {
+                    url: '/?meta1',
                     views: {
                         'meta1': {
                             templateUrl: 'views/meta-panel/1.html'
-                        },
-                        '' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelContoller as browse'
                         }
                     },
                     sticky: true,
                     deepStateRedirect: true
                 })
-                .state('home.browse.main.facilities.meta2', {
-                    url: '/meta2',
+                .state('home.browse.facilities.meta2', {
+                    url: '/?meta2',
                     views: {
                         'meta2': {
                             templateUrl: 'views/meta-panel/2.html'
-                        },
+                        }
                     },
                     sticky: true,
                     deepStateRedirect: true
-                })
+                })*/
 
                 .state('home.cart', {
                     url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',

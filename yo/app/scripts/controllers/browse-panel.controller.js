@@ -24,10 +24,12 @@
         var nextEntityType = getNextEntityType(structure, currentEntityType);
         var browseMaxRows = APP_CONFIG.site.browseMaxRows;
 
-        console.log(APP_CONFIG.servers[server]);
-        console.log('structure=', structure);
+        console.log('$state:', $state);
+        console.log('Current server config :', APP_CONFIG.servers[server]);
+        console.log('structure:', structure);
         console.log('currentEntityType: ' + currentEntityType);
         console.log('nextEntityType: ' + nextEntityType);
+        console.log('currentRouteSegment: ' + currentRouteSegment);
 
         vm.rowClickHandler = rowClickHandler;
 
@@ -340,10 +342,10 @@
                             $stateParams.id = full.id;
 
                             if (currentEntityType === 'facility') {
-                                return '<a ui-sref="home.browse.main.facilities.' + getNextRouteSegmentName(structure, currentEntityType) + '({facility : \'' + full.id + '\', server: \'' +  full.server + '\'})">' + data + '</a>';
+                                return '<a ui-sref="home.browse.facilities.' + getNextRouteSegmentName(structure, currentEntityType) + '({facility : \'' + full.id + '\', server: \'' +  full.server + '\'})">' + data + '</a>';
                             } else {
                                 //not facility has link but no filter applied
-                                return "<a ui-sref='home.browse.main.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
+                                return "<a ui-sref='home.browse.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
                             }
                         } else {
                             return data;
@@ -364,7 +366,7 @@
                                 //add facility id to $stateParams
                                 $stateParams.id = full.id;
 
-                                return "<a ui-sref='home.browse.main.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
+                                return "<a ui-sref='home.browse.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
                             } else {
                                 //no link
                                 return $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters);
