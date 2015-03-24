@@ -6,52 +6,62 @@
         .module('angularApp')
         .controller('BrowsePanelContoller', BrowsePanelContoller);
 
-    BrowsePanelContoller.$inject = ['$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'ICATService', '$q', 'inform'];
+    BrowsePanelContoller.$inject = ['$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'DataManager', '$q', 'inform'];
 
-    function BrowsePanelContoller($scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, ICATService, $q, inform) {
+    function BrowsePanelContoller($scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, DataManager, $q, inform) {
         //$log.info(APP_CONFIG);
 
         var vm = this;
+        var facility = 0;
+        var server = 'dls-server';
         var dtOptions = {}; //dtoptions for the datatable
         var dtColumns = []; //dtColumns for the datatable
         var pagingType = APP_CONFIG.site.pagingType; //the pagination type. 'scroll' or 'page'
         var currentEntityType = getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
-        var column = APP_CONFIG.servers[0].facility[0].browseColumns[currentEntityType]; //the column configuration
-        var nextEntityType = getNextEntityType(APP_CONFIG.servers[0].facility[0].struture, currentEntityType);
+        var structure = APP_CONFIG.servers[server].facility[facility].structure;
+        var column = APP_CONFIG.servers[server].facility[facility].browseColumns[currentEntityType]; //the column configuration
+        var currentRouteSegment = getCurrentRouteSegmentName($state);
+        var nextEntityType = getNextEntityType(structure, currentEntityType);
+        var browseMaxRows = APP_CONFIG.site.browseMaxRows;
 
-        console.log(APP_CONFIG.servers[0].facility[0].struture);
+        console.log(APP_CONFIG.servers[server]);
+        console.log('structure=', structure);
+        console.log('currentEntityType: ' + currentEntityType);
+        console.log('nextEntityType: ' + nextEntityType);
 
         vm.rowClickHandler = rowClickHandler;
 
+        //var login = DataManager.login();
+        //console.log(login);
 
-        //currentEntityType = $stateParams.facility;
-        console.log($stateParams);
-        console.log($state);
-        console.log('currentEntityType:' + currentEntityType);
-
-        pagingType = 'page';
+        var version = DataManager.getVersion();
+        console.log('icat version=', version);
 
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
-                dtOptions = DTOptionsBuilder.fromFnPromise(getData(currentEntityType, $state)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG)) //TODO
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
-                    .withDisplayLength(5)
-                    .withOption('fnRowCallback', rowCallback);
+                    .withDisplayLength(browseMaxRows)
+                    .withOption('fnRowCallback', rowCallback)
+                    .withOption('autoWidth', false);
                 break;
             case 'scroll':
                 /* falls through */
             default:
-                dtOptions = DTOptionsBuilder.fromFnPromise(getData(currentEntityType, $state)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG)) //TODO
                     .withDOM('frti')
                     .withScroller()
                     .withOption('deferRender', true)
                     // Do not forget to add the scorllY option!!!
                     .withOption('scrollY', 180)
-                    .withOption('fnRowCallback', rowCallback);
+                    .withOption('fnRowCallback', rowCallback)
+                    .withOption('autoWidth', false);
                 break;
         }
+
+        vm.dtOptions = dtOptions;
 
 
         /**
@@ -67,18 +77,53 @@
 
             var index;
             for (index = 0; index < structure.length; ++index) {
-                console.log(structure[index]);
                 if (structure[index] === currentEntityType) {
                     break;
                 }
             }
 
-            console.log('matching index found ' + structure[index] + ' index: ' + index);
-            console.log('next index is ' + structure[index + 1] + ' index: ' + (index + 1));
-
             return structure[index + 1];
-
         }
+
+
+        /**
+         * Get the next ui-route name to go up the facility
+         * structure
+         *
+         * @param  {[type]} structure         [description]
+         * @param  {[type]} currentEntityType [description]
+         * @return {[type]}                   [description]
+         */
+        function getNextRouteSegmentName(structure, currentEntityType) {
+            var next = getNextEntityType(structure, currentEntityType);
+            if (angular.isDefined(next)) {
+                return currentEntityType + '-' + next;
+            } else {
+                return currentEntityType;
+            }
+        }
+
+        /**
+         * Returns the last segment of the ui-route name.
+         * This is use to determin which function to us to
+         * get data
+         *
+         * @param  {[type]} $state [description]
+         * @return {[type]}        [description]
+         */
+        function getCurrentRouteSegmentName($state){
+            var routeName = $state.current.name;
+
+            routeName = routeName.substr(routeName.lastIndexOf('.') + 1);
+
+            //this is a hack until we figure out how to do the meta tabs routing!!!
+            if (routeName.indexOf('meta') >= 0) {
+                routeName = 'facility';
+            }
+
+            return routeName;
+        }
+
 
 
         /**
@@ -115,6 +160,11 @@
                 event.stopPropagation();
             });
 
+            angular.element(':checkbox', nRow).bind('click', function(event) {
+                event.stopPropagation();
+            });
+
+
             //perform a compile on the row
             $compile(nRow)($scope);
 
@@ -136,158 +186,127 @@
             return 'facility';
         }
 
-        /**
-         * Call the correct function to returns the required data
-         * based on the current entity type
-         *
-         * @param  {Object} the $state object
-         * @return {Object} the data object
-         */
-        function getData(currentEntityType, $state) {
-            console.log('entityType: ' + $state.params.entityType);
-            console.log('facility: ' + $state.params.facility);
-            console.log('id: ' + $state.params.id);
 
-            switch (currentEntityType) {
+        /**
+         * This is a dummy function to get a list of facilities
+         * The actual function should make a request to all the
+         * connected servers in order to get the id number of the facility.
+         * Currently we have it hard coded in the config.json file.
+         * Somewhere in the config.json file, we need to map a config
+         * to a facility in a ICAT server. Suggest using the name key.
+         *
+         *
+         * @param  {[type]} APP_CONFIG [description]
+         * @return {[type]}            [description]
+         */
+        function getFacilitiesFromConfig(APP_CONFIG){
+            var facilities = [];
+
+            _.each(APP_CONFIG.servers, function(servervalue, serverName) {
+                _.each(servervalue.facility, function(facility) {
+                    var obj = {};
+
+                    _.each(facility, function(value, key){
+                        obj.server = serverName;
+
+                        if (key === 'facilityId') {
+                            obj.id = value;
+                        }
+
+                        if (key === 'name') {
+                            obj.name = value;
+                        }
+
+                        if (key === 'title') {
+                            obj.title = value;
+                        }
+
+                    });
+
+                    facilities.push(obj);
+                });
+            });
+
+            //we need to return a promise
+            var deferred = $q.defer();
+            deferred.resolve(facilities);
+
+            return deferred.promise;
+        }
+
+
+
+
+
+        /**
+         * Get data based on the current ui-route
+         *
+         * @param  {string} currentRouteSegment the last segment of the ui-route name
+         * @param  {Object} APP_CONFIG site configuration object
+         * @return {Object} Promise object
+         */
+        function getDataPromise(currentRouteSegment, APP_CONFIG) {
+            switch (currentRouteSegment) {
                 case 'facility':
-                    console.log('function called: facilities');
-                    return getFacilities();
-                case 'investigation':
-                    console.log('function called: getInvestigations');
-                    return getInvestigations($state.params.entityType);
-                case 'dataset':
-                    console.log('function called: getDatasetByInvestigationId');
-                    return getDatasetByInvestigationId($state.params.entityType);
-                case 'datafile':
+                    console.log('function called: default');
+                    return getFacilitiesFromConfig(APP_CONFIG);
+                case 'facility-instrument':
+                    console.log('function called: getInstruments');
+                    return DataManager.getInstruments($stateParams.facility);
+                case 'facility-cycle':
+                    return DataManager.getFacilities();
+                case 'facility-investigation':
+                    return DataManager.getFacilities();
+                case 'facility-dataset':
+                    return DataManager.getFacilities();
+                case 'facility-datafile':
+                    return DataManager.getFacilities();
+                case 'instrument-cycle':
+                    return DataManager.getFacilities();
+                case 'instrument-investigation':
+                    console.log('function called: getInvestigationsByInstrumentId');
+                    return DataManager.getInvestigationsByInstrumentId($stateParams.facility, $stateParams.id);
+                case 'instrument-datafile':
+                    return DataManager.getFacilities();
+                case 'cycle-instrument':
+                    return DataManager.getFacilities();
+                case 'cycle-investigation':
+                    return DataManager.getFacilities();
+                case 'cycle-dataset':
+                    return DataManager.getFacilities();
+                case 'cycle-datafile':
+                    return DataManager.getFacilities();
+                case 'investigation-dataset':
+                    console.log('function called: getDatasetsByInvestigationId');
+                    return DataManager.getDatasetsByInvestigationId($stateParams.facility, $stateParams.id);
+                case 'investigation-datafile':
+                    return DataManager.getFacilities();
+                case 'dataset-datafile':
                     console.log('function called: getDatafilesByDatasetId');
-                    return getDatafilesByDatasetId($state.params.entityType);
+                    return DataManager.getDatafilesByDatasetId($stateParams.facility, $stateParams.id);
+                case 'cycle-dataset':
+                    return DataManager.getFacilities();
+                case 'datafile':
+                    return DataManager.getFacilities();
                 default:
                     console.log('function called: default');
-                    return getFacilities();
+                    return getFacilitiesFromConfig(APP_CONFIG);
             }
         }
 
 
-        function getFacilities() {
-            var def = $q.defer();
-
-            ICATService.getFacilties()
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve data', {
-                        'ttl': 0,
-                        'type': 'danger'
-                    });
-                });
-
-            return def.promise;
-        }
-
-
-        function getInvestigations(facilityId) {
-            var def = $q.defer();
-
-            ICATService.getInvestigations(facilityId)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve data', {
-                        'ttl': 0,
-                        'type': 'danger'
-                    });
-                });
-
-            return def.promise;
-        }
-
-
-        function getInvestigationsByInstrumentId(instrumentId) { // jshint ignore:line
-            var def = $q.defer();
-
-            ICATService.getInvestigationsByInstrumentId(instrumentId)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve data', {
-                        'ttl': 0,
-                        'type': 'danger'
-                    });
-                });
-
-            return def.promise;
-        }
-
-
-        function getDatasetByFacilityId(facilityId) { // jshint ignore:line
-            var def = $q.defer();
-
-            ICATService.getDatasetByFacilityId(facilityId)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve data', {
-                        'ttl': 0,
-                        'type': 'danger'
-                    });
-                });
-
-            return def.promise;
-        }
-
-
-        function getDatasetByInvestigationId(investigationId) {
-            var def = $q.defer();
-
-            ICATService.getDatasetByInvestigationId(investigationId)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve data', {
-                        'ttl': 0,
-                        'type': 'danger'
-                    });
-                });
-
-            return def.promise;
-        }
-
-
-        function getDatafilesByDatasetId(facilityId, investigationId) {
-            var def = $q.defer();
-
-            ICATService.getDatasetByInvestigationId(facilityId, investigationId)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    inform.add('Failed to retrieve data', {
-                        'ttl': 0,
-                        'type': 'danger'
-                    });
-                });
-
-            return def.promise;
-        }
-
-
-
-        vm.dtOptions = dtOptions;
 
         //set the columns to display from config
         for (var i in column) {
             var col = DTColumnBuilder.newColumn(column[i].name).withTitle(column[i].title).withOption('defaultContent', '');
+
+            if (angular.isDefined(column[i].checkbox) && column[i].checkbox === true) {
+                col.renderWith(function(data, type, full) {
+                    return '<input type="checkbox" ng-model="selected[' + full.id + ']"/>';
+                });
+                dtColumns.push(col);
+                continue;
+            }
 
             //set the css class of the column
             if (angular.isDefined(column[i].style)) {
@@ -308,7 +327,7 @@
                 }
             }
 
-            console.log('nextEntityType: ' + nextEntityType);
+
 
             //TODO should combine link and filter instead of filter overrriding the renderWith
 
@@ -317,10 +336,14 @@
                 if (column[i].link === true) {
                     col.renderWith(function(data, type, full, meta) {
                         if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true && nextEntityType !== false) {
+                            //add facility id to $stateParams
+                            $stateParams.id = full.id;
+
                             if (currentEntityType === 'facility') {
-                                return '<a ui-sref="home.browse.main.facilities.' + nextEntityType + '({facility : \'' + full.name + '\'})">' + data + '</a>';
+                                return '<a ui-sref="home.browse.main.facilities.' + getNextRouteSegmentName(structure, currentEntityType) + '({facility : \'' + full.id + '\', server: \'' +  full.server + '\'})">' + data + '</a>';
                             } else {
-                                return '<a ui-sref="home.browse.main.facilities.' + nextEntityType + '({facility : \'' + $state.params.facility + '\'})">' + data + '</a>';
+                                //not facility has link but no filter applied
+                                return "<a ui-sref='home.browse.main.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
                             }
                         } else {
                             return data;
@@ -329,6 +352,7 @@
                 }
             }
 
+
             //if expressionFilter is set
             if (angular.isDefined(column[i].expressionFilter)) {
                 var expressionFilter = column[i].expressionFilter;
@@ -336,12 +360,13 @@
                 if (angular.isDefined(expressionFilter.type)) {
                     if ('string' === expressionFilter.type) {
                         col.renderWith(function(data, type, full, meta) {
-
-                            //console.log(full);
-
                             if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true && nextEntityType !== false) {
-                                return '<a ui-sref="home.browse.main.facilities.' + nextEntityType + '({facility : \'' + $state.params.facility + '\'})">' + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>';
+                                //add facility id to $stateParams
+                                $stateParams.id = full.id;
+
+                                return "<a ui-sref='home.browse.main.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
                             } else {
+                                //no link
                                 return $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters);
                             }
                         });
@@ -352,6 +377,13 @@
                             return $filter('date')(data, column[meta.col].expressionFilter.format, column[meta.col].expressionFilter.timezone);
                         });
                     }
+
+                    if (expressionFilter.type === 'bytes') {
+                        col.renderWith(function(data, type, full, meta) {
+                            return $filter('prettyBytes')(parseInt(data), column[meta.col].expressionFilter.format, column[meta.col].expressionFilter.timezone);
+                        });
+                    }
+
 
                     expressionFilter = undefined; //unset the filter
                 }

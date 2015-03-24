@@ -12,6 +12,7 @@ In addition to AngularJS, the following modules were used:
   - _angular-deferred-bootstrap_: Used for initialising AngularJS app with constants (https://github.com/philippd/angular-deferred-bootstrap)
   - _angularjs-truncate_: Used to truncate strings
   - _ui-router-extras_: Provides sticky state essential for navigating between tabs with routing and not resetting states
+  - _lodash_: javascript utility library
 
 
 ## Installation (On windows) for AngularJS Development
@@ -45,6 +46,19 @@ Proxy setting note: npm does not use environment variables for proxy. Instead us
 ## AngularJS Development style guide
 
 https://github.com/johnpapa/angular-styleguide#modules
+
+
+
+## Development tools
+
+Using sublime text 3 as text editor with the following plugins installed:
+    - Package Control (Manage sublime plugins)
+    - AngularJS (AngularJS autocomplete)
+    - DocBlockr (add doc blocks)
+    - HTMLBeautify (Format/Beautify HTML)
+    - JsFormats (Format/Beautify javascript)
+    - SidebarEnhancements (Add file management to the side file list)
+    - SublimeLinter-jshint (On the fly jshint validator MUST HAVE!!!!)
 
 
 ## RESTFUL API (TEST ONLY)
@@ -102,19 +116,7 @@ http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787/data
 Get an investigation by id
 http://localhost:8080/topcat/webapi/v1/servers/ISIS/investigations/24089787
 
-## ICAT REST API CALLS
 
-### https://facilities02.esc.rl.ac.uk:8181/icat/session
-POST x-www-form-urlencoded
-
-Key: json
-Value: {"plugin": "YOUR_AUTHENTICATION_TYPE","credentials" : [{"username":"YOUR_USERNAME"}, {"password":"YOUR_PASSWORD"}]}
-
-Possible values for YOUR_AUTHENTICATION_TYPE [ldap, db, uows]
-
-
-### Get Data
-GET https://facilities02.esc.rl.ac.uk:8181/icat/entityManager?sessionId=053959b9-a822-480c-871f-f06131e410e8&query=
 
 ## Bower Command Reference
 
@@ -235,7 +237,6 @@ list the datafiles for a facility
 
     /#/browse/facilities/{facility.id}/datafiles
 
-
 ### Searching
 
     /#/search?query&type&facility&startDate&endDate&parameters[]&samples[]
@@ -244,6 +245,91 @@ list the datafiles for a facility
 ### Cart
 
     /#/cart
+
+
+## Routing possibilities
+
+"structure" : ["facility", "instrument", "cycle", "investigation", "dataset", "datafile"],
+facility-instrument
+instrument-cycle
+cycle-investigation
+investigation-dataset
+dataset-datafile
+datafile
+
+"structure" : ["facility", "instrument", "investigation", "dataset", "datafile"],
+facility-instrument
+instrument-investigation
+investigation-dataset
+dataset-datafile
+datafile
+
+"structure" : ["facility", "instrument", "dataset", "datafile"],
+facility-instrument
+instrument-dataset
+dataset-datafile
+datafile
+
+"structure" : ["facility", "instrument", "datafile"],
+facility-instrument
+instrument-datafile
+datafile
+
+"structure" : ["facility", "cycle", "instrument", "investigation", "dataset", "datafile"],
+facility-cycle
+cycle-instrument
+instrument-investigation
+investigation-dataset
+dataset-datafile
+datafile
+
+
+"structure" : ["facility", "cycle", "investigation", "dataset", "datafile"],
+facility-cycle
+cycle-investigation
+investigation-dataset
+dataset-datafile
+datafile
+
+
+"structure" : ["facility", "cycle", "investigation", "datafile"],
+facility-cycle
+cycle-investigation
+investigation-datafile
+datafile
+
+
+"structure" : ["facility", "cycle", "datafile"],
+facility-cycle
+cycle-datafile
+datafile
+
+
+"structure" : ["facility", "cycle", "dataset", "datafile"],
+facility-cycle
+cycle-dataset
+dataset-datafile
+datafile
+
+
+"structure" : ["facility", "investigation", "dataset", "datafile"],
+facility-investigation
+investigation-dataset
+dataset-datafile
+datafile
+
+"structure" : ["facility", "dataset", "datafile"],
+facility-dataset
+dataset-datafile
+datafile
+
+
+"structure" : ["facility", "datafile"],
+facility-datafile
+datafile
+
+
+
 
 
 
@@ -286,16 +372,6 @@ list the datafiles for a facility
 
     /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
 
-
-
-
-
-
-
-
-
-
-    /#/search?query&type&facility&startDate&endDate&parameters[]&samples[]
 
 
 

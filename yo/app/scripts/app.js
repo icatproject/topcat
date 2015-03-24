@@ -34,9 +34,10 @@
             'datatables.scroller',
             'truncate',
             'inform',
-            'inform-exception'
-
+            'inform-exception',
+            'prettyBytes'
         ])
+        .constant('_', window._)
         .config(function($stateProvider, $urlRouterProvider) {
 
             $urlRouterProvider.otherwise('/browse/facilities/meta1');
@@ -70,8 +71,7 @@
                     url: '/facilities',
                     views: {
                         '': {
-                            template: '<div ui-view></div>',
-                            controller: 'BrowsePanelContoller as browse'
+                            template: '<div ui-view></div>'
                         },
                         'search-form-view': {
                             templateUrl: 'views/partial-search-form.html',
@@ -82,8 +82,8 @@
                         }
                     }
                 })
-                .state('home.browse.main.facilities.cycle', {
-                    url: '/{facility}/cycles',
+                .state('home.browse.main.facilities.facility-cycle', {
+                    url: '/{server}/{facility}/cycles',
                     views: {
                         '@home.browse.main.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -94,8 +94,8 @@
                         entityType : 'investigation'
                     }
                 })
-                .state('home.browse.main.facilities.instrument', {
-                    url: '/{facility}/instruments',
+                .state('home.browse.main.facilities.facility-instrument', {
+                    url: '/{server}/{facility}/instruments',
                     views: {
                         '@home.browse.main.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -106,8 +106,8 @@
                         entityType : 'instrument'
                     }
                 })
-                .state('home.browse.main.facilities.investigation', {
-                    url: '/{facility}/investigations',
+                .state('home.browse.main.facilities.facility-investigation', {
+                    url: '/{server}/{facility}/investigations',
                     views: {
                         '@home.browse.main.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -119,8 +119,8 @@
                     }
 
                 })
-                .state('home.browse.main.facilities.dataset', {
-                    url: '/{facility}/datasets',
+                .state('home.browse.main.facilities.facility-dataset', {
+                    url: '/{server}/{facility}/datasets',
                     views: {
                         '@home.browse.main.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -129,11 +129,12 @@
                     },
                     param: {
                         entityType : 'dataset'
+
                     }
 
                 })
-                .state('home.browse.main.facilities.datafile', {
-                    url: '/{facility}/datafiles',
+                .state('home.browse.main.facilities.facility-datafile', {
+                    url: '/{server}/{facility}/datafiles',
                     views: {
                         '@home.browse.main.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -153,8 +154,22 @@
                         }
                     }
                 })*/
-                .state('home.browse.main.facilities.datasetbyinvestigationid', {
-                    url: '/{facility}/investigations/{id}/datasets',
+                .state('home.browse.main.facilities.instrument-investigation', {
+                    url: '/{server}/{facility}/instruments/{id}/investigations',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        idType : 'instrument',
+                        entityType : 'investigation'
+
+                    }
+                })
+                .state('home.browse.main.facilities.investigation-dataset', {
+                    url: '/{server}/{facility}/investigations/{id}/datasets',
                     views: {
                         '@home.browse.main.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -164,6 +179,19 @@
                     param: {
                         idType : 'investigation',
                         entityType : 'dataset'
+                    }
+                })
+                .state('home.browse.main.facilities.dataset-datafile', {
+                    url: '/{server}/{facility}/datasets/{id}/datafile',
+                    views: {
+                        '@home.browse.main.facilities' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        }
+                    },
+                    param: {
+                        idType : 'dataset',
+                        entityType : 'datafile'
                     }
                 })
 
@@ -218,6 +246,7 @@
       $stickyStateProvider.enableDebug(true);
     })*/
         .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
+            $rootScope._ = window._;
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
     }]);

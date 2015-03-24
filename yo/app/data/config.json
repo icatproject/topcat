@@ -1,144 +1,267 @@
 {
-    "servers": [
+    "servers":
         {
-            "name": "dls",
-            "facility": [
-                {
-                    "name": "dls",
-                    "struture" : ["facility", "investigation", "dataset", "datafile"],
-                    "browseColumns" : {
-                        "facility" : [
-                            {
-                                "name" : "name",
-                                "title" : "Name",
-                                "link" : true
-                            }
-                        ],
-                        "instrument" : [
-                            {
-                                "name" : "id",
-                                "title" : "ID"
-                            },
-                            {
-                                "name" : "firstName",
-                                "title" : "First name"
-                            },
-                            {
-                                "name" : "lastName",
-                                "title" : "LastName"
-                            }
-                        ],
-                        "investigation" : [
-                            {
-                                "name" : "id",
-                                "title" : "Id",
-                                "style" : "firstColumn",
-                                "notSortable" : true,
-                                "notVisible" : true
-                            },
-                            {
-                                "name" : "title",
-                                "title" : "Title",
-                                "style" : "secondColumn",
-                                "notSortable" : true,
-                                "link" : true,
-                                "expressionFilter" : {
-                                    "type" : "string",
-                                    "name" : "characters",
-                                    "characters" : 80
+            "dls-server" : {
+                "host": "https://facilities.esc.rl.ac.uk:8181",
+                "restApiPath" : "/icat/",
+                "facility": [
+                    {
+                        "name": "dls",
+                        "title" : "DIAMOND",
+                        "facilityId" : 1,
+                        "structure" : ["facility", "instrument", "investigation", "dataset", "datafile"],
+                        "browseColumns" : {
+                            "facility" : [
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "link" : true
+                                },
+                                {
+                                    "name" : "fullName",
+                                    "title" : "Full Name"
                                 }
+                            ],
+                            "instrument" : [
+                                {
+                                    "name" : "id",
+                                    "title" : "Id"
+                                },
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "link" : true
+                                },
+                                {
+                                    "name" : "fullName",
+                                    "title" : "Full Name"
+                                }
+                            ],
+                            "investigation" : [
+                                {
+                                    "name" : null,
+                                    "title" : "",
+                                    "checkbox" : true
+                                },
+                                {
+                                    "name" : "id",
+                                    "title" : "Id",
+                                    "style" : "firstColumn",
+                                    "notSortable" : true,
+                                    "notVisible" : false
+                                },
+                                {
+                                    "name" : "title",
+                                    "title" : "Title",
+                                    "style" : "secondColumn",
+                                    "notSortable" : true,
+                                    "link" : true,
+                                    "expressionFilter" : {
+                                        "type" : "string",
+                                        "name" : "characters",
+                                        "characters" : 80
+                                    }
+                                },
+                                {
+                                    "name" : "visitId",
+                                    "title" : "Visit Id"
+                                },
+                                {
+                                    "name" : "startDate",
+                                    "title" : "Start Date",
+                                    "expressionFilter" : {
+                                        "type" : "date",
+                                        "format" : "dd-MM-yyyy",
+                                        "timezone" : "UTC"
+                                    }
+                                },
+                                {
+                                    "name" : "endDate",
+                                    "title" : "End Date",
+                                    "expressionFilter" : {
+                                        "type" : "date",
+                                        "format" : "dd-MM-yyyy",
+                                        "timezone" : "UTC"
+                                    }
+                                }
+                            ],
+                            "dataset" : [
+                                {
+                                    "name" : null,
+                                    "title" : "",
+                                    "checkbox" : true
+                                },
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "link" : true
+                                },
+                                {
+                                    "name" : "createTime",
+                                    "title" : "Create Time"
+                                },
+                                {
+                                    "name" : "modTime",
+                                    "title" : "Modified Time"
+                                }
+                            ],
+                            "datafile" : [
+                                {
+                                    "name" : null,
+                                    "title" : "",
+                                    "checkbox" : true
+                                },
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "expressionFilter" : {
+                                        "type" : "string",
+                                        "name" : "characters",
+                                        "characters" : 80
+                                    }
 
+                                },
+                                {
+                                    "name" : "fileSize",
+                                    "title" : "File Size",
+                                    "expressionFilter" : {
+                                        "type" : "bytes"
+                                    }
+                                },
+                                {
+                                    "name" : "modTime",
+                                    "title" : "Modified Time"
+                                }
+                            ]
 
-                            },
-                            {
-                                "name" : "visitId",
-                                "title" : "Visit Id"
-                            },
-                            {
-                                "name" : "startDate",
-                                "title" : "Start Date",
-                                "expressionFilter" : {
-                                    "type" : "date",
-                                    "is" : "endDate",
-                                    "name" : "date",
-                                    "format" : "dd-MM-yyyy",
-                                    "timezone" : "UTC"
+                        }
+                    },
+                    {
+                        "name": "isis",
+                        "title" : "ISIS Laser",
+                        "facilityId" : 2,
+                        "structure" : ["facility", "instrument", "investigation", "dataset", "datafile"],
+                        "browseColumns" : {
+                            "facility" : [
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "link" : true
                                 }
-                            },
-                            {
-                                "name" : "endDate",
-                                "title" : "End Date",
-                                "expressionFilter" : {
-                                    "type" : "date",
-                                    "is" : "endDate",
-                                    "name" : "date",
-                                    "format" : "dd-MM-yyyy",
-                                    "timezone" : "UTC"
+                            ],
+                            "instrument" : [
+                                {
+                                    "name" : "id",
+                                    "title" : "Id"
+                                },
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "link" : true
+                                },
+                                {
+                                    "name" : "fullName",
+                                    "title" : "Full Name"
                                 }
-                            }
-                        ],
-                        "dataset" : [
-                            {
-                                "name" : "title",
-                                "title" : "Title",
-                                "link" : true,
-                                "expressionFilter" : {
-                                    "type" : "string",
-                                    "name" : "characters",
-                                    "characters" : 80
+                            ],
+                            "investigation" : [
+                                {
+                                    "name" : "id",
+                                    "title" : "Id",
+                                    "style" : "firstColumn",
+                                    "notSortable" : true,
+                                    "notVisible" : false
+                                },
+                                {
+                                    "name" : "title",
+                                    "title" : "Title",
+                                    "style" : "secondColumn",
+                                    "notSortable" : true,
+                                    "link" : true,
+                                    "expressionFilter" : {
+                                        "type" : "string",
+                                        "name" : "characters",
+                                        "characters" : 80
+                                    }
+                                },
+                                {
+                                    "name" : "visitId",
+                                    "title" : "Visit Id"
+                                },
+                                {
+                                    "name" : "startDate",
+                                    "title" : "Start Date",
+                                    "expressionFilter" : {
+                                        "type" : "date",
+                                        "format" : "dd-MM-yyyy",
+                                        "timezone" : "UTC"
+                                    }
+                                },
+                                {
+                                    "name" : "endDate",
+                                    "title" : "End Date",
+                                    "expressionFilter" : {
+                                        "type" : "date",
+                                        "format" : "dd-MM-yyyy",
+                                        "timezone" : "UTC"
+                                    }
                                 }
+                            ],
+                            "dataset" : [
+                                {
+                                    "name" : null,
+                                    "title" : "",
+                                    "checkbox" : true
+                                },
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "link" : true
+                                },
+                                {
+                                    "name" : "createTime",
+                                    "title" : "Create Time"
+                                },
+                                {
+                                    "name" : "modTime",
+                                    "title" : "Modified Time"
+                                }
+                            ],
+                            "datafile" : [
+                                {
+                                    "name" : "name",
+                                    "title" : "Name",
+                                    "expressionFilter" : {
+                                        "type" : "string",
+                                        "name" : "characters",
+                                        "characters" : 80
+                                    }
 
-                            },
-                            {
-                                "name" : "startDate",
-                                "title" : "Start Date",
-                                "expressionFilter" : {
-                                    "type" : "date",
-                                    "is" : "endDate",
-                                    "name" : "date",
-                                    "format" : "dd-MM-yyyy",
-                                    "timezone" : "UTC"
+                                },
+                                {
+                                    "name" : "fileSize",
+                                    "title" : "File Size",
+                                    "expressionFilter" : {
+                                        "type" : "bytes"
+                                    }
+                                },
+                                {
+                                    "name" : "modTime",
+                                    "title" : "Modified Time"
                                 }
-                            },
-                            {
-                                "name" : "endDate",
-                                "title" : "End Date"
-                            }
-                        ],
-                        "datafile" : [
-                            {
-                                "name" : "title",
-                                "title" : "Title",
-                                "expressionFilter" : {
-                                    "type" : "string",
-                                    "name" : "characters",
-                                    "characters" : 80
-                                }
+                            ]
 
-                            },
-                            {
-                                "name" : "startDate",
-                                "title" : "Start Date",
-                                "expressionFilter" : {
-                                    "type" : "date",
-                                    "is" : "endDate",
-                                    "name" : "date",
-                                    "format" : "dd-MM-yyyy",
-                                    "timezone" : "UTC"
-                                }
-                            },
-                            {
-                                "name" : "endDate",
-                                "title" : "End Date"
-                            }
-                        ]
-
+                        }
                     }
-                }
-            ]
+                ]
+            }
         }
-    ],
+    ,
     "site": {
-        "pagingType": "scroll"
+        "pagingType": "page",
+        "useFileForData" : true,
+        "useFileForSession" : true,
+        "browseMaxRows" : 6
+
     }
 }

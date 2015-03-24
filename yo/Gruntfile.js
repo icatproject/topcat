@@ -71,18 +71,50 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      proxies: [
+        {
+          context: '/api', // the context of the data service
+          host: 'facilities02.esc.rl.ac.uk', // wherever the data service is running
+          port: 8181,// the port that the data service is running on
+          https: true,
+          changeOrigin: true,
+          xforward: false,
+          rejectUnauthorized: false,
+          rewrite: {
+            // the key '^/api' is a regex for the path to be rewritten
+            // the value is the context of the data service
+            '^/api': ''
+          }
+        }
+      ],
       livereload: {
         options: {
           open: true,
           middleware: function (connect) {
-            return [
+            var middlewares = [];
+
+            // Setup the proxy
+            middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
+
+            // Serve static files
+            middlewares.push(
+                connect.static('.tmp'),
+                connect().use(
+                    '/bower_components',
+                    connect.static('./bower_components')
+                ),
+                connect.static(appConfig.app)
+            );
+
+            return middlewares;
+            /*return [
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
                 connect.static('./bower_components')
               ),
               connect.static(appConfig.app)
-            ];
+            ];*/
           }
         }
       },
@@ -368,6 +400,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'wiredep',
+      'configureProxies:server',
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
