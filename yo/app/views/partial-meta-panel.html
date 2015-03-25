@@ -5,14 +5,10 @@
 <div ui-view="meta1" ng-show="$state.includes('home.browse.main.facilities.meta1')"></div>
 <div ui-view="meta2" ng-show="$state.includes('home.browse.main.facilities.meta2')"></div>
  -->
+
 <tabset>
-    <tab heading="Meta 1">
-        lipsum
-    </tab>
-    <tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
-      {{tab.content}}
-    </tab>
-    <tab heading="Meta 2">
-      I've got an HTML heading, and a select callback. Pretty cool!
+    <tab ng-repeat="tab in meta.tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
+      <span ng-bind-html='tab.content'></span>
     </tab>
 </tabset>
+

@@ -78,7 +78,8 @@
                             controller: 'SearchFormController as searchForm'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     }
                 })
@@ -102,7 +103,8 @@
                             controller: 'BrowsePanelContoller as browse'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
@@ -117,7 +119,8 @@
                             controller: 'BrowsePanelContoller as browse'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
@@ -133,7 +136,8 @@
                             controller: 'BrowsePanelContoller as browse'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
@@ -150,7 +154,8 @@
                             controller: 'BrowsePanelContoller as browse'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
@@ -174,7 +179,8 @@
                             controller: 'BrowsePanelContoller as browse'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
@@ -191,7 +197,8 @@
                             controller: 'BrowsePanelContoller as browse'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
@@ -207,7 +214,8 @@
                             controller: 'BrowsePanelContoller as browse'
                         },
                         'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html'
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
@@ -236,7 +244,18 @@
                     sticky: true,
                     deepStateRedirect: true
                 })*/
-
+                .state('home.browse.facilities.search', {
+                    url: '^/search?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/search-result.html'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    }
+                })
                 .state('home.cart', {
                     url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',
                     views: {

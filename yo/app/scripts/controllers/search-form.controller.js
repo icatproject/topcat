@@ -55,7 +55,7 @@
             var params = searchFormToQueryParams($filter, vm.form);
 
             //TODO why need reload:true to work
-            $state.transitionTo('home.browse.facilities', params, {'reload' : true});
+            $state.go('home.browse.facilities.search', params, {'reload' : false});
 
 
         };
