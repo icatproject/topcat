@@ -69,6 +69,11 @@
                 })*/
                 .state('home.browse.facilities', {
                     url: '/facilities',
+                    resolve: {
+                        session: function(DataManager){
+                            return DataManager.login();
+                        }
+                    },
                     views: {
                         '' : {
                             templateUrl: 'views/partial-browse-panel.html',

@@ -261,7 +261,7 @@
     "site": {
         "pagingType": "page",
         "useFileForData" : false,
-        "useFileForSession" : false,
+        "useFileForSession" : true,
         "browseMaxRows" : 6
     }
 }

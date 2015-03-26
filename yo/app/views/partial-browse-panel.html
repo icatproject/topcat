@@ -1,4 +1,9 @@
-<h1>{{browse.random}}</h1>
+<ul class="breadcrumb">
+  <li ng-repeat="item in browse.structure">
+        {{ item }}
+    </li>
+</ul>
+
 <div>
     <table datatable="" dt-options="browse.dtOptions" dt-columns="browse.dtColumns" dt-disable-deep-watchers="true" class="row-border hover" width="100%"></table>
 </div>

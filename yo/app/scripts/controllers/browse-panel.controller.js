@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelContoller', BrowsePanelContoller);
 
-    BrowsePanelContoller.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'DataManager', '$q', 'inform'];
+    BrowsePanelContoller.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'DataManager', '$q', 'inform', 'session'];
 
-    function BrowsePanelContoller($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, DataManager, $q, inform) {
+    function BrowsePanelContoller($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, DataManager, $q, inform, session) {
         var vm = this;
         var facility = 0;
         var server = 'dls-server';
@@ -21,6 +21,11 @@
         var currentRouteSegment = getCurrentRouteSegmentName($state);
         var nextEntityType = getNextEntityType(structure, currentEntityType);
         var browseMaxRows = APP_CONFIG.site.browseMaxRows;
+        var sessionId = session.sessionId;
+
+        vm.structure = structure;
+
+        console.log('BrowsePanelContoller session', sessionId);
 
 
         if (! angular.isDefined($rootScope.cart)) {
@@ -257,53 +262,53 @@
                     console.log('function called: getFacilitiesFromConfig');
                     return getFacilitiesFromConfig(APP_CONFIG);
                 case 'facility-instrument':
-                    console.log('function called: getInstruments');
-                    return DataManager.getInstruments($stateParams.facility);
+                    console.log('function called: getInstruments', sessionId);
+                    return DataManager.getInstruments(sessionId, $stateParams.facility);
                 case 'facility-cycle':
                     console.log('function called: getCycles');
-                    return DataManager.getCyclesByFacilityId($stateParams.facility);
+                    return DataManager.getCyclesByFacilityId(sessionId, $stateParams.facility);
                 case 'facility-investigation':
                     console.log('function called: getInvestigations');
-                    return DataManager.getInvestigations($stateParams.facility);
+                    return DataManager.getInvestigations(sessionId, $stateParams.facility);
                 case 'facility-dataset':
                     console.log('function called: getDatasets');
-                    return DataManager.getDatasets($stateParams.facility);
+                    return DataManager.getDatasets(sessionId, $stateParams.facility);
                 case 'facility-datafile':
                     console.log('function called: getDatafiles');
-                    return DataManager.getDatafiles($stateParams.facility);
+                    return DataManager.getDatafiles(sessionId, $stateParams.facility);
                 case 'instrument-cycle':
                     console.log('function called: getCyclesByInstruments');
-                    return DataManager.getCyclesByInstruments($stateParams.facility, $stateParams.id);
+                    return DataManager.getCyclesByInstruments(sessionId, $stateParams.facility, $stateParams.id);
                 case 'instrument-investigation':
                     console.log('function called: getInvestigationsByInstrumentId');
-                    return DataManager.getInvestigationsByInstrumentId($stateParams.facility, $stateParams.id);
+                    return DataManager.getInvestigationsByInstrumentId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'instrument-dataset':
                     console.log('function called: getDatasetsByInstrumentId');
-                    return DataManager.getDatasetsByInstrumentId($stateParams.facility, $stateParams.id);
+                    return DataManager.getDatasetsByInstrumentId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'instrument-datafile':
                     console.log('function called: getDatafilesByInstrumentId');
-                    return DataManager.getDatafilesByInstrumentId($stateParams.facility, $stateParams.id);
+                    return DataManager.getDatafilesByInstrumentId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'cycle-instrument':
                     console.log('function called: getInstrumentsByCycleId');
-                    return DataManager.getInstrumentsByCycleId($stateParams.facility, $stateParams.id);
+                    return DataManager.getInstrumentsByCycleId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'cycle-investigation':
                     console.log('function called: getCyclesByInvestigationId');
-                    return DataManager.getInvestigationsByCycleId($stateParams.facility, $stateParams.id);
+                    return DataManager.getInvestigationsByCycleId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'cycle-dataset':
                     console.log('function called: getDatasetsByCycleId');
-                    return DataManager.getDatasetsByCycleId($stateParams.facility, $stateParams.id);
+                    return DataManager.getDatasetsByCycleId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'cycle-datafile':
                     console.log('function called: getDatafilesByCycleId');
-                    return DataManager.getDatafilesByCycleId($stateParams.facility, $stateParams.id);
+                    return DataManager.getDatafilesByCycleId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'investigation-dataset':
                     console.log('function called: getDatasetsByInvestigationId');
-                    return DataManager.getDatasetsByInvestigationId($stateParams.facility, $stateParams.id);
+                    return DataManager.getDatasetsByInvestigationId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'investigation-datafile':
                     console.log('function called: getDatafilesByInvestigationId');
-                    return DataManager.getDatafilesByInvestigationId($stateParams.facility, $stateParams.id);
+                    return DataManager.getDatafilesByInvestigationId(sessionId, $stateParams.facility, $stateParams.id);
                 case 'dataset-datafile':
                     console.log('function called: getDatafilesByDatasetId');
-                    return DataManager.getDatafilesByDatasetId($stateParams.facility, $stateParams.id);
+                    return DataManager.getDatafilesByDatasetId(sessionId, $stateParams.facility, $stateParams.id);
                 default:
                     console.log('function called: default');
                     return getFacilitiesFromConfig(APP_CONFIG);

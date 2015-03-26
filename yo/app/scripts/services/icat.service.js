@@ -3,32 +3,25 @@
 angular.
     module('angularApp').factory('ICATService', ICATService);
 
-ICATService.$inject = ['$http', '$q', 'APP_CONFIG'];
+ICATService.$inject = ['$http', '$q', 'APP_CONFIG', '$rootScope'];
 
 /*jshint -W098 */
-function ICATService($http, $q, APP_CONFIG) {
+function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
     var useFileForData = angular.isDefined(APP_CONFIG.site.useFileForData) ? APP_CONFIG.site.useFileForData : false;
     var useFileForSession = angular.isDefined(APP_CONFIG.site.useFileForSession) ? APP_CONFIG.site.useFileForSession : false;
     var data = {};
-    var mySessionId = '40960569-1645-4766-ae8f-fea6d40fb46a';
+    //var mySessionId = '297b3916-2080-4e58-9ff5-8a4383be147e';
     var LIMIT = ' LIMIT 0, 1000'; //apply a limit to a query. FOR DEBUG ONLY
 
     console.log('useFileForData:' + useFileForData);
     console.log('useFileForSession:' + useFileForSession);
 
+    console.log('ICATService session', $rootScope.session);
+
     data.login = function() {
         if (useFileForSession) {
-            console.log('mySessionId before: ' + mySessionId);
-            return $http.get('data/icatapi-session.json')
-                .success(function(data) {
-                    //mySessionId = data.sessionId;
-                    //console.log('mySessionId after: ' + mySessionId);
-                })
-                .error(function(error) {
-
-                });
-
+            return $http.get('data/icatapi-session.json');
         } else {
 
             var url = 'api/icat/session';
@@ -66,7 +59,6 @@ function ICATService($http, $q, APP_CONFIG) {
         }
     };
 
-
     data.getVersion = function() {
         var url = 'api/icat/version';
 
@@ -75,7 +67,7 @@ function ICATService($http, $q, APP_CONFIG) {
 
 
     /** get facilities */
-    data.getFacilities = function() {
+    data.getFacilities = function(mySessionId) {
         if (useFileForData) {
             return $http.get('data/icatapi-facility.json');
         } else {
@@ -94,7 +86,9 @@ function ICATService($http, $q, APP_CONFIG) {
     };
 
     /** get instruments **/
-    data.getInstruments = function(facilityId) {
+    data.getInstruments = function(mySessionId, facilityId) {
+        console.log('getInstruments session: ' + mySessionId);
+
         if (useFileForData) {
             return $http.get('data/icatapi-instruments.json');
         } else {
@@ -114,17 +108,17 @@ function ICATService($http, $q, APP_CONFIG) {
 
 
     /** get cycles */
-    data.getCycles = function(facilityId) {
+    data.getCycles = function(mySessionId, facilityId) {
         return $http.get('data/cycles.json');
     };
 
-    data.getCyclesByInstrumentId = function(facilityId, instrumentId) {
+    data.getCyclesByInstrumentId = function(mySessionId, facilityId, instrumentId) {
         return $http.get('data/cycles.json');
     };
 
 
     /** get investigations */
-    data.getInvestigations = function(facilityId) {
+    data.getInvestigations = function(mySessionId, facilityId) {
         if (useFileForData) {
             return $http.get('data/icatapi-investigations.json');
         } else {
@@ -142,11 +136,11 @@ function ICATService($http, $q, APP_CONFIG) {
         }
     };
 
-    data.getInvestigationsByCycleId = function(facilityId, cycleId) {
+    data.getInvestigationsByCycleId = function(mySessionId, facilityId, cycleId) {
         return $http.get('data/icatapi-investigations-5-items.json');
     };
 
-    data.getInvestigationsByInstrumentId = function(facilityId, instrumentId) {
+    data.getInvestigationsByInstrumentId = function(mySessionId, facilityId, instrumentId) {
         if (useFileForData) {
             return $http.get('data/icatapi-investigations-5-items.json');
         } else {
@@ -166,14 +160,14 @@ function ICATService($http, $q, APP_CONFIG) {
 
     };
 
-    data.getInvestigationsByInstrumentIdByCycleId = function(facilityId, instrumentId, cycleId) {
+    data.getInvestigationsByInstrumentIdByCycleId = function(mySessionId, facilityId, instrumentId, cycleId) {
 
         return $http.get('data/icatapi-investigations-5-items.json');
     };
 
 
     /** get datasets **/
-    data.getDatasets = function(facilityId){
+    data.getDatasets = function(mySessionId, facilityId){
         console.log('facilityId: ' + facilityId);
 
         if (useFileForData) {
@@ -194,7 +188,7 @@ function ICATService($http, $q, APP_CONFIG) {
     };
 
 
-    data.getDatasetsByInstrumentId = function(facilityId, instrumentId) {
+    data.getDatasetsByInstrumentId = function(mySessionId, facilityId, instrumentId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
@@ -214,7 +208,7 @@ function ICATService($http, $q, APP_CONFIG) {
 
 
     /** get datasets by investigationid**/
-    data.getDatasetsByInvestigationId = function(facilityId, investigationId) {
+    data.getDatasetsByInvestigationId = function(mySessionId, facilityId, investigationId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datasets.json');
         } else {
@@ -236,7 +230,7 @@ function ICATService($http, $q, APP_CONFIG) {
 
 
     /** get datafiles **/
-    data.getDatafiles = function(facilityId) {
+    data.getDatafiles = function(mySessionId, facilityId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
@@ -255,7 +249,7 @@ function ICATService($http, $q, APP_CONFIG) {
     };
 
 
-    data.getDatafilesByInstrumentId = function(facilityId, instrumentId) {
+    data.getDatafilesByInstrumentId = function(mySessionId, facilityId, instrumentId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
@@ -274,7 +268,7 @@ function ICATService($http, $q, APP_CONFIG) {
     };
 
 
-    data.getDatafilesByInvestigationId = function(facilityId, investigationId) {
+    data.getDatafilesByInvestigationId = function(mySessionId, facilityId, investigationId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
@@ -292,7 +286,7 @@ function ICATService($http, $q, APP_CONFIG) {
         }
     };
 
-    data.getDatafilesByDatasetId = function(facilityId, datasetId) {
+    data.getDatafilesByDatasetId = function(mySessionId, facilityId, datasetId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {

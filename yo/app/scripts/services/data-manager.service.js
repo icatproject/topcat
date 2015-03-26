@@ -54,10 +54,10 @@ function DataManager($http, $q, ICATService) {
 
 
     /** get facilities */
-    manager.getFacilities = function() {
+    manager.getFacilities = function(sessionId) {
         var def = $q.defer();
 
-            ICATService.getFacilities()
+            ICATService.getFacilities(sessionId)
                 .success(function(data) {
                     data = _.pluck(data, 'Facility');
                     def.resolve(data);
@@ -71,10 +71,10 @@ function DataManager($http, $q, ICATService) {
     };
 
     /** get instruments **/
-    manager.getInstruments = function(facilityId){
+    manager.getInstruments = function(sessionId, facilityId){
         var def = $q.defer();
 
-            ICATService.getInstruments(facilityId)
+            ICATService.getInstruments(sessionId, facilityId)
                 .success(function(data) {
                     data = _.pluck(data, 'Instrument');
                     def.resolve(data);
@@ -89,10 +89,10 @@ function DataManager($http, $q, ICATService) {
 
 
     /** get cycles */
-    manager.getCycles = function(facilityId) {
+    manager.getCycles = function(sessionId, facilityId) {
         var def = $q.defer();
 
-            ICATService.getCycles(facilityId)
+            ICATService.getCycles(sessionId, facilityId)
                 .success(function(data) {
                     data = _.pluck(data, 'FacilityCycle');
                     def.resolve(data);
@@ -105,10 +105,10 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    manager.getCyclesByInstrumentId = function(facilityId, instrumentId) {
+    manager.getCyclesByInstrumentId = function(sessionId, facilityId, instrumentId) {
         var def = $q.defer();
 
-            ICATService.getCyclesByInstrumentId(facilityId, instrumentId)
+            ICATService.getCyclesByInstrumentId(sessionId, facilityId, instrumentId)
                 .success(function(data) {
                     data = _.pluck(data, 'FacilityCycle');
                     def.resolve(data);
@@ -123,10 +123,10 @@ function DataManager($http, $q, ICATService) {
 
 
     /** get investigations */
-    manager.getInvestigations = function(facilityId) {
+    manager.getInvestigations = function(sessionId, facilityId) {
         var def = $q.defer();
 
-            ICATService.getInvestigations(facilityId)
+            ICATService.getInvestigations(sessionId, facilityId)
                 .success(function(data) {
                     data = _.pluck(data, 'Investigation');
                     def.resolve(data);
@@ -139,10 +139,10 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    manager.getInvestigationsByCycleId = function(facilityId, cycleId) {
+    manager.getInvestigationsByCycleId = function(sessionId, facilityId, cycleId) {
         var def = $q.defer();
 
-            ICATService.getInvestigationsByCycleId(facilityId, cycleId)
+            ICATService.getInvestigationsByCycleId(sessionId, facilityId, cycleId)
                 .success(function(data) {
                     data = _.pluck(data, 'Investigation');
                     def.resolve(data);
@@ -155,10 +155,10 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    manager.getInvestigationsByInstrumentId = function(facilityId, instrumentId) {
+    manager.getInvestigationsByInstrumentId = function(sessionId, facilityId, instrumentId) {
         var def = $q.defer();
 
-            ICATService.getInvestigationsByInstrumentId(facilityId, instrumentId)
+            ICATService.getInvestigationsByInstrumentId(sessionId, facilityId, instrumentId)
                 .success(function(data) {
                     data = _.pluck(data, 'Investigation');
                     def.resolve(data);
@@ -171,10 +171,10 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    manager.getInvestigationsByInstrumentIdByCycleId = function(facilityId, instrumentId, cycleId) {
+    manager.getInvestigationsByInstrumentIdByCycleId = function(sessionId, facilityId, instrumentId, cycleId) {
         var def = $q.defer();
 
-            ICATService.getInvestigationsByInstrumentIdByCycleId(facilityId, instrumentId, cycleId)
+            ICATService.getInvestigationsByInstrumentIdByCycleId(sessionId, facilityId, instrumentId, cycleId)
                 .success(function(data) {
                     data = _.pluck(data, 'Investigation');
                     def.resolve(data);
@@ -189,10 +189,10 @@ function DataManager($http, $q, ICATService) {
 
 
     /** get datasets **/
-    manager.getDatasets = function(facilityId){
+    manager.getDatasets = function(sessionId, facilityId){
         var def = $q.defer();
 
-            ICATService.getDatasets(facilityId)
+            ICATService.getDatasets(sessionId, facilityId)
                 .success(function(data) {
                     data = _.pluck(data, 'Dataset');
                     def.resolve(data);
@@ -206,10 +206,10 @@ function DataManager($http, $q, ICATService) {
     };
 
 
-    manager.getDatasetsByInstrumentId = function(facilityId, instrumentId) {
+    manager.getDatasetsByInstrumentId = function(sessionId, facilityId, instrumentId) {
         var def = $q.defer();
 
-            ICATService.getDatasetsByInstrumentId(facilityId, instrumentId)
+            ICATService.getDatasetsByInstrumentId(sessionId, facilityId, instrumentId)
                 .success(function(data) {
                     data = _.pluck(data, 'Dataset');
                     def.resolve(data);
@@ -222,10 +222,10 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    manager.getDatasetsByInvestigationId = function(facilityId, investigationId) {
+    manager.getDatasetsByInvestigationId = function(sessionId, facilityId, investigationId) {
         var def = $q.defer();
 
-            ICATService.getDatasetsByInvestigationId(facilityId, investigationId)
+            ICATService.getDatasetsByInvestigationId(sessionId, facilityId, investigationId)
                 .success(function(data) {
                     data = _.pluck(data, 'Dataset');
                     def.resolve(data);
@@ -240,10 +240,10 @@ function DataManager($http, $q, ICATService) {
 
 
     /** get datafiles **/
-    manager.getDatafiles = function(facilityId) {
+    manager.getDatafiles = function(sessionId, facilityId) {
         var def = $q.defer();
 
-            ICATService.getDatafiles(facilityId)
+            ICATService.getDatafiles(sessionId, facilityId)
                 .success(function(data) {
                     data = _.pluck(data, 'Datafile');
                     def.resolve(data);
@@ -256,27 +256,10 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    manager.getDatafilesByDatasetId = function(facilityId, datasetId) {
+    manager.getDatafilesByDatasetId = function(sessionId, facilityId, datasetId) {
         var def = $q.defer();
 
-            ICATService.getDatafilesByDatasetId(facilityId, datasetId)
-                .success(function(data) {
-                    data = _.pluck(data, 'Datafile');
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    throw new MyException('Failed to retrieve data from server');
-                });
-
-            return def.promise;
-    };
-
-
-    manager.getDatafilesByInstrumentId = function(facilityId, instrumentId) {
-        var def = $q.defer();
-
-            ICATService.getDatafilesByInstrumentId(facilityId, instrumentId)
+            ICATService.getDatafilesByDatasetId(sessionId, facilityId, datasetId)
                 .success(function(data) {
                     data = _.pluck(data, 'Datafile');
                     def.resolve(data);
@@ -290,10 +273,27 @@ function DataManager($http, $q, ICATService) {
     };
 
 
-    manager.getDatafilesByInvestigationId = function(facilityId, investigationId) {
+    manager.getDatafilesByInstrumentId = function(sessionId, facilityId, instrumentId) {
         var def = $q.defer();
 
-            ICATService.getDatafilesByInvestigationId(facilityId, investigationId)
+            ICATService.getDatafilesByInstrumentId(sessionId, facilityId, instrumentId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Datafile');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
+
+    manager.getDatafilesByInvestigationId = function(sessionId, facilityId, investigationId) {
+        var def = $q.defer();
+
+            ICATService.getDatafilesByInvestigationId(sessionId, facilityId, investigationId)
                 .success(function(data) {
                     data = _.pluck(data, 'Datafile');
                     def.resolve(data);
