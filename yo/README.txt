@@ -13,6 +13,7 @@ In addition to AngularJS, the following modules were used:
   - _angularjs-truncate_: Used to truncate strings
   - _ui-router-extras_: Provides sticky state essential for navigating between tabs with routing and not resetting states
   - _lodash_: javascript utility library
+  - _angular-pretty-bytes_: filter to display human readable bytes, KB, MB, GB etc
 
 
 ## Installation (On windows) for AngularJS Development
@@ -35,7 +36,7 @@ Run from the command line:
     grunt serve
 
 
-Note: Visual Studio Express (VCBUild.exe) is used by the module node-gyp to compile native addons. On windows, if you run "npm install", you probably will get an error complaining about MSBuild. I think the node-gyp module is used to build the Socket.io-client module used by karma. If you don't use websocket for testing, you may not need it and just igmnore the error. Installing Visual Studio Express 2013 with Update 4 for Windows Desktop (Must be the desktop vesrion) did fix the issue for me.
+Note: Visual Studio Express (VCBUild.exe) is used by the module node-gyp to compile native addons. On windows, if you run "npm install", you will probably  get an error complaining about MSBuild. I think the node-gyp module is used to build the Socket.io-client module used by karma. If you don't use websocket for testing, you may not need it and just ignore the error. Installing Visual Studio Express 2013 with Update 4 for Windows Desktop (Must be the desktop version) did fix the issue for me.
 
 
 Proxy setting note: npm does not use environment variables for proxy. Instead use the following commands
@@ -43,9 +44,31 @@ Proxy setting note: npm does not use environment variables for proxy. Instead us
     npm config set proxy http://proxy.company.com:8080
     npm config set https-proxy http://proxy.company.com:8080
 
+
+
+## Additonal npm
+
+### grunt-connect-proxy
+
+To connect to a remote ICAT server and get around the origin-policy issue with XMLHttpRequest, grunt-connect-proxy is used as a proxy until ICAT starts to support CORS. There is a currently a bug with the latest version (@1.1.11) so version @0.1.10 had to be used. Also, I'm having issues proxying POST requests so cannot get login to work.
+
+To point the proxy to your ICAT, change the proxies setting in Gruntfile.js.
+
+
+## Using Live Data
+
+To use live data, make sure you have grunt-connect-proxy configured and pointing to your ICAT server. In the config.json file, change the useFileForData parameter to false. Next you need to get a session id and paste it in the mySessionId variable in icat.service.js.
+
+You can modify the included icatsession.bat file to get a session id using your icat credentials.
+
+
+
 ## AngularJS Development style guide
 
 https://github.com/johnpapa/angular-styleguide#modules
+
+
+
 
 
 
