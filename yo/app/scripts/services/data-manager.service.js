@@ -205,10 +205,27 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
+
+    manager.getDatasetsByInstrumentId = function(facilityId, instrumentId) {
+        var def = $q.defer();
+
+            ICATService.getDatasetsByInstrumentId(facilityId, instrumentId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Dataset');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
     manager.getDatasetsByInvestigationId = function(facilityId, investigationId) {
         var def = $q.defer();
 
-            ICATService.getDatasetsByInvestigationId(investigationId)
+            ICATService.getDatasetsByInvestigationId(facilityId, investigationId)
                 .success(function(data) {
                     data = _.pluck(data, 'Dataset');
                     def.resolve(data);
@@ -254,6 +271,24 @@ function DataManager($http, $q, ICATService) {
 
             return def.promise;
     };
+
+
+    manager.getDatafilesByInstrumentId = function(facilityId, instrumentId) {
+        var def = $q.defer();
+
+            ICATService.getDatafilesByInstrumentId(facilityId, instrumentId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Datafile');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
 
     manager.getDatafilesByInvestigationId = function(facilityId, investigationId) {
         var def = $q.defer();

@@ -9,7 +9,7 @@
                         "name": "dls",
                         "title" : "DIAMOND",
                         "facilityId" : 1,
-                        "structure" : ["facility", "instrument", "investigation", "dataset", "datafile"],
+                        "structure" : ["facility", "instrument", "dataset", "datafile"],
                         "browseColumns" : {
                             "facility" : [
                                 {
@@ -25,7 +25,8 @@
                             "instrument" : [
                                 {
                                     "name" : "id",
-                                    "title" : "Id"
+                                    "title" : "Id",
+                                    "notVisible" : true
                                 },
                                 {
                                     "name" : "name",
@@ -34,7 +35,8 @@
                                 },
                                 {
                                     "name" : "fullName",
-                                    "title" : "Full Name"
+                                    "title" : "Full Name",
+                                    "notSortable" : true
                                 }
                             ],
                             "investigation" : [
@@ -47,8 +49,7 @@
                                     "name" : "id",
                                     "title" : "Id",
                                     "style" : "firstColumn",
-                                    "notSortable" : true,
-                                    "notVisible" : false
+                                    "notVisible" : true
                                 },
                                 {
                                     "name" : "title",
@@ -259,9 +260,8 @@
     ,
     "site": {
         "pagingType": "page",
-        "useFileForData" : true,
-        "useFileForSession" : true,
+        "useFileForData" : false,
+        "useFileForSession" : false,
         "browseMaxRows" : 6
-
     }
 }

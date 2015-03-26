@@ -142,7 +142,6 @@
                     },
                     param: {
                         entityType : 'dataset'
-
                     }
 
                 })
@@ -184,9 +183,40 @@
                         }
                     },
                     param: {
-                        idType : 'instrument',
                         entityType : 'investigation'
 
+                    }
+                })
+                .state('home.browse.facilities.instrument-dataset', {
+                    url: '/{server}/{facility}/instruments/{id}/datasets',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'dataset'
+                    }
+                })
+                .state('home.browse.facilities.instrument-datafile', {
+                    url: '/{server}/{facility}/instruments/{id}/datafiles',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'datafile'
                     }
                 })
                 .state('home.browse.facilities.investigation-dataset', {
@@ -202,8 +232,23 @@
                         }
                     },
                     param: {
-                        idType : 'investigation',
                         entityType : 'dataset'
+                    }
+                })
+                .state('home.browse.facilities.investigation-datafile', {
+                    url: '/{server}/{facility}/investigations/{id}/datafiles',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowsePanelContoller as browse'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'datafile'
                     }
                 })
                 .state('home.browse.facilities.dataset-datafile', {
@@ -219,7 +264,6 @@
                         }
                     },
                     param: {
-                        idType : 'dataset',
                         entityType : 'datafile'
                     }
                 })

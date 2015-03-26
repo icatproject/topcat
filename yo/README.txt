@@ -61,7 +61,7 @@ Using sublime text 3 as text editor with the following plugins installed:
     - SublimeLinter-jshint (On the fly jshint validator MUST HAVE!!!!)
 
 
-## RESTFUL API (TEST ONLY)
+## RESTFUL API (TEST ONLY/ DEPRECATED)
 
 Included in the project is a RESTFul API developed using jersey.
 
@@ -199,43 +199,43 @@ list the investigations for a facility cycle of a facility
 
 list the instruments for a facility
 
-    /#/browse/facilities/{facility.id}/instruments
+    /#/browse/facilities/{server}/{facility.id}/instruments
 
 list the facility cycles for an instrument
 
-    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles
+    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles
 
 list the investigations of a facility cycles for an instrument
 
-    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
+    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
 
 list the investigation for an instrument
 
-    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/investigations
+    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/investigations
 
 list the investigations for a facility
 
-    /#/browse/facilities/{facility.id}/investigations
+    /#/browse/facilities/{server}/{facility.id}/investigations
 
 list the datasets for an investigation
 
-    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datasets
+    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datasets
 
 list the datasets for a facility
 
-    /#/browse/facilities/{facility.id}/datasets
+    /#/browse/facilities/{server}/{facility.id}/datasets
 
 list the datafiles for an investigation
 
-    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datafiles
+    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datafiles
 
 list the datafiles for a dataset
 
-    /#/browse/facilities/{facility.id}/datasets/{dataset.id}/datafiles
+    /#/browse/facilities/{server}/{facility.id}/datasets/{dataset.id}/datafiles
 
 list the datafiles for a facility
 
-    /#/browse/facilities/{facility.id}/datafiles
+    /#/browse/facilities/{server}/{facility.id}/datafiles
 
 ### Searching
 
