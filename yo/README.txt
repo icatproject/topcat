@@ -346,23 +346,23 @@ datafile
 
 
     4 params
-    /#/browse/facilities/{facility.id}/cycles
-    /#/browse/facilities/{facility.id}/instruments
-    /#/browse/facilities/{facility.id}/investigations
-    /#/browse/facilities/{facility.id}/datasets
-    /#/browse/facilities/{facility.id}/datafiles
+    /#/browse/facilities/{server}/{facility.id}/cycles
+    /#/browse/facilities/{server}/{facility.id}/instruments
+    /#/browse/facilities/{server}/{facility.id}/investigations
+    /#/browse/facilities/{server}/{facility.id}/datasets
+    /#/browse/facilities/{server}/{facility.id}/datafiles
 
 
     5 params:
 
 
     6 params:
-    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles
-    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/investigations
-    /#/browse/facilities/{facility.id}/cycles/{facilityCycle.id}/investigations
-    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datasets
-    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datafiles
-    /#/browse/facilities/{facility.id}/datasets/{dataset.id}/datafiles
+    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles
+    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/investigations
+    /#/browse/facilities/{server}/{facility.id}/cycles/{facilityCycle.id}/investigations
+    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datasets
+    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datafiles
+    /#/browse/facilities/{server}/{facility.id}/datasets/{dataset.id}/datafiles
 
 
     7 params:
