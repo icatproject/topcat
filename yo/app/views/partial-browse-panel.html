@@ -1,6 +1,6 @@
 <ul class="breadcrumb">
-  <li ng-repeat="item in browse.structure">
-        {{ item }}
+    <li ng-repeat="item in browse.structure">
+        <span ng-class="{current : browse.currentEntityType == item}">{{ item }}</span>
     </li>
 </ul>
 

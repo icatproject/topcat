@@ -32,3 +32,8 @@ body {
 .inform-fixed {
   z-index: 2002;
 }
+
+.current {
+   font-weight: bold;
+   color: red;
+}

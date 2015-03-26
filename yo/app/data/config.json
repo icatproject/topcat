@@ -9,7 +9,7 @@
                         "name": "dls",
                         "title" : "DIAMOND",
                         "facilityId" : 1,
-                        "structure" : ["facility", "instrument", "investigation",  "dataset", "datafile"],
+                        "structure" : ["facility", "instrument", "dataset", "datafile"],
                         "browseColumns" : {
                             "facility" : [
                                 {

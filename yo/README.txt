@@ -20,6 +20,11 @@ In addition to AngularJS, the following modules were used:
 
 Install Git
 
+  - When installing git for windows, select the "Run Git from the Windows Command Prompt" or "Run Git and included uni tools from the Windows Command Prompt"
+  - Setting git proxy:
+        git config --global http.proxy http://proxy.server.com:8080
+
+
 Install Python 2.7.X
 
 Install node.js

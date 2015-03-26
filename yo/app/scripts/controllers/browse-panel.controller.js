@@ -24,6 +24,7 @@
         var sessionId = session.sessionId;
 
         vm.structure = structure;
+        vm.currentEntityType = currentEntityType;
 
         console.log('BrowsePanelContoller session', sessionId);
 
@@ -262,7 +263,7 @@
                     console.log('function called: getFacilitiesFromConfig');
                     return getFacilitiesFromConfig(APP_CONFIG);
                 case 'facility-instrument':
-                    console.log('function called: getInstruments', sessionId);
+                    console.log('function called: getInstruments ', sessionId);
                     return DataManager.getInstruments(sessionId, $stateParams.facility);
                 case 'facility-cycle':
                     console.log('function called: getCycles');
