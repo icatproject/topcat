@@ -40,15 +40,8 @@
                     <button class="form-control btn btn-default btn-sm" ng-click="modal.openModal(searchForm.form, 'sm')">Add Sample</button>
                 </div>
             </div>
-            <!--
-            searchForm.searchText: {{searchForm.query}}<br />
-            searchForm.searchType: {{searchForm.type}}<br />
-            searchForm.facility: {{searchForm.facility}}<br />
-            searchForm.startDate: {{searchForm.startDate}}<br />
-            searchForm.endDate: {{searchForm.endDate}}<br />
-            searchForm.name: {{searchForm.name}}<br />
-             -->
-            searchForm: {{searchForm.form}}
+
+            <!-- searchForm: {{searchForm.form}} -->
 
             <ul class="list-unstyled">
                 <li ng-repeat="param in searchForm.form.parameters">

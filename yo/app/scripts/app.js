@@ -35,7 +35,8 @@
             'truncate',
             'inform',
             'inform-exception',
-            'prettyBytes'
+            'prettyBytes',
+            'checklist-model'
         ])
         .constant('_', window._)
         .config(function($stateProvider, $urlRouterProvider) {

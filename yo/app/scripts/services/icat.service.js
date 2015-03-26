@@ -11,7 +11,7 @@ function ICATService($http, $q, APP_CONFIG) {
     var useFileForData = angular.isDefined(APP_CONFIG.site.useFileForData) ? APP_CONFIG.site.useFileForData : false;
     var useFileForSession = angular.isDefined(APP_CONFIG.site.useFileForSession) ? APP_CONFIG.site.useFileForSession : false;
     var data = {};
-    var mySessionId = '14e041d2-baf5-41be-873a-2e4a114a0661';
+    var mySessionId = '40960569-1645-4766-ae8f-fea6d40fb46a';
     var LIMIT = ' LIMIT 0, 1000'; //apply a limit to a query. FOR DEBUG ONLY
 
     console.log('useFileForData:' + useFileForData);

@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('CartController', CartController);
 
-    CartController.$inject = ['$scope', 'CartData'];
+    CartController.$inject = ['$scope'];
 
-    function CartController($scope, CartData) {
+    function CartController($scope) {
         var vm = this;
 
         var random;
@@ -17,7 +17,6 @@
         }
 
         vm.random = random;
-        vm.cart = CartData;
-        console.log(CartData);
+        //vm.cart = CartData;
     }
 })();

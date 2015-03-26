@@ -6,11 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelContoller', BrowsePanelContoller);
 
-    BrowsePanelContoller.$inject = ['$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'DataManager', '$q', 'inform'];
+    BrowsePanelContoller.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'DataManager', '$q', 'inform'];
 
-    function BrowsePanelContoller($scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, DataManager, $q, inform) {
-        //$log.info(APP_CONFIG);
-
+    function BrowsePanelContoller($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, DataManager, $q, inform) {
         var vm = this;
         var facility = 0;
         var server = 'dls-server';
@@ -23,6 +21,12 @@
         var currentRouteSegment = getCurrentRouteSegmentName($state);
         var nextEntityType = getNextEntityType(structure, currentEntityType);
         var browseMaxRows = APP_CONFIG.site.browseMaxRows;
+
+
+        if (! angular.isDefined($rootScope.cart)) {
+            $rootScope.cart = [];
+            $rootScope.ref = [];
+        }
 
         console.log('$state:', $state);
         console.log('Current server config :', APP_CONFIG.servers[server]);
@@ -314,7 +318,17 @@
 
             if (angular.isDefined(column[i].checkbox) && column[i].checkbox === true) {
                 col.renderWith(function(data, type, full) {
-                    return '<input type="checkbox" ng-model="selected[' + full.id + ']"/>';
+                    //return '<input type="checkbox" ng-model="cart.selected[' + full.id + ']"/>';
+
+                    $rootScope.ref[full.id] = {
+                        'id': full.id,
+                        'server' : server,
+                        'facility' : $stateParams.facility,
+                        'entity' : currentEntityType
+
+                    };
+
+                    return '<input type="checkbox" checklist-model="cart" checklist-value="ref[' + full.id + ']" /> ' + full.id;
                 });
                 dtColumns.push(col);
                 continue;
