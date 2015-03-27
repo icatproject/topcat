@@ -31,5 +31,6 @@ for i in range (3, len(args), 2):
     credentials.entry.append(entry)
 
 sessionId = service.login(plugin, credentials)
-print sessionId
+sys.stdout = open('app/data/icatapi-session.json', 'w')
+print '{\n    "sessionId": "' + sessionId +'"\n}'
 
