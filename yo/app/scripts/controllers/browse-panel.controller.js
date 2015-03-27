@@ -334,7 +334,7 @@
 
                     };
 
-                    return '<input type="checkbox" checklist-model="cart" checklist-value="ref[' + full.id + ']" /> ' + full.id;
+                    return '<input type="checkbox" checklist-model="cart" checklist-value="ref[' + full.id + ']" />';
                 });
                 dtColumns.push(col);
                 continue;

@@ -193,7 +193,7 @@ Start up web service
 
 
 
-## Structure ==
+## Structure
 
 Possible combinations of facility, cycle, instrument, investigation, dataset, datafile
 
@@ -357,23 +357,24 @@ facility-datafile
 datafile
 
 
-
-
-
-
 ## Grouping url by number of parameters
 
     1 param
+    /#/cart
+    /#/about
+    /#/contact
 
 
     2 params
     /#/browse/facilities/
 
 
-    3 params
+    3 params:
 
+    4 params:
 
-    4 params
+    5 params:
+
     /#/browse/facilities/{server}/{facility.id}/cycles
     /#/browse/facilities/{server}/{facility.id}/instruments
     /#/browse/facilities/{server}/{facility.id}/investigations
@@ -381,10 +382,11 @@ datafile
     /#/browse/facilities/{server}/{facility.id}/datafiles
 
 
-    5 params:
-
-
     6 params:
+
+
+    7 params:
+
     /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles
     /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/investigations
     /#/browse/facilities/{server}/{facility.id}/cycles/{facilityCycle.id}/investigations
@@ -393,12 +395,12 @@ datafile
     /#/browse/facilities/{server}/{facility.id}/datasets/{dataset.id}/datafiles
 
 
-    7 params:
-
-
     8 params:
 
-    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
+
+    9 params:
+
+    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
 
 
 
