@@ -346,15 +346,15 @@
             }
 
             //hide the column
-            if (angular.isDefined(column[i].notVisible)) {
-                if (column[i].notVisible === true) {
+            if (angular.isDefined(column[i].visible)) {
+                if (column[i].visible === false) {
                     col.notVisible();
                 }
             }
 
             //set the column as not sortable
-            if (angular.isDefined(column[i].notSortable)) {
-                if (column[i].notSortable === true) {
+            if (angular.isDefined(column[i].sortable)) {
+                if (column[i].notSortable === false) {
                     col.notSortable();
                 }
             }

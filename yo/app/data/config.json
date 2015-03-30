@@ -26,7 +26,7 @@
                                 {
                                     "name" : "id",
                                     "title" : "Id",
-                                    "notVisible" : true
+                                    "visible" : false
                                 },
                                 {
                                     "name" : "name",
@@ -36,7 +36,7 @@
                                 {
                                     "name" : "fullName",
                                     "title" : "Full Name",
-                                    "notSortable" : true
+                                    "sortable" : false
                                 }
                             ],
                             "investigation" : [
@@ -49,13 +49,13 @@
                                     "name" : "id",
                                     "title" : "Id",
                                     "style" : "firstColumn",
-                                    "notVisible" : true
+                                    "visible" : false
                                 },
                                 {
                                     "name" : "title",
                                     "title" : "Title",
                                     "style" : "secondColumn",
-                                    "notSortable" : true,
+                                    "sortable" : false,
                                     "link" : true,
                                     "expressionFilter" : {
                                         "type" : "string",
@@ -170,14 +170,13 @@
                                     "name" : "id",
                                     "title" : "Id",
                                     "style" : "firstColumn",
-                                    "notSortable" : true,
-                                    "notVisible" : false
+                                    "visible" : false
                                 },
                                 {
                                     "name" : "title",
                                     "title" : "Title",
                                     "style" : "secondColumn",
-                                    "notSortable" : true,
+                                    "sortable" : false,
                                     "link" : true,
                                     "expressionFilter" : {
                                         "type" : "string",

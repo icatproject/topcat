@@ -1,5 +1,5 @@
 
-<ul class="breadcrumb" style="position: absolute;">
+<ul class="breadcrumb" style="position: absolute;" ng-show="browse.currentEntityType != 'facility'">
     <li ng-repeat="item in browse.structure">
         <span ng-class="{current : browse.currentEntityType == item}">{{ item }}</span>
     </li>

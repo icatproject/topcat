@@ -1,2 +1,2 @@
 @echo off
-python icatsession.py  ldap username  password 
+python icatsession.py https://facilities02.esc.rl.ac.uk:8181 ldap username vcf21513 password -
