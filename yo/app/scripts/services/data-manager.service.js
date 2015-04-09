@@ -17,8 +17,22 @@ function DataManager($http, $q, ICATService) {
     MyException.prototype.constructor = MyException;
 
 
+    /**
+     * Get the session value for the facility that was passed
+     * @param  {[type]} session  [description]
+     * @param  {[type]} facility [description]
+     * @return {[type]}          [description]
+     */
+    function getSessionValueForFacility(session, facilityName) {
+        return session[facilityName].sessionId;
+    }
 
-    /** login **/
+
+    /**
+     * Perform a login
+     * @TODO need to specify the facility/server to login
+     * @return {object} a promise containing an icat session
+     */
     manager.login = function() {
         var def = $q.defer();
 
@@ -34,11 +48,15 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    /** login **/
-    manager.getVersion = function() {
+    /**
+     * Get the icat version of a facility
+     * @param  {Object} facility config object
+     * @return {Object} a promise containing the version number
+     */
+    manager.getVersion = function(facility) {
         var def = $q.defer();
 
-            ICATService.getVersion()
+            ICATService.getVersion(facility)
                 .success(function(data) {
                     def.resolve(data);
                 })
@@ -53,11 +71,18 @@ function DataManager($http, $q, ICATService) {
 
 
 
-    /** get facilities */
-    manager.getFacilities = function(sessionId) {
-        var def = $q.defer();
+    /**
+     * Get the list of facilities
+     * @TODO doesn't make sense to pass a facility to get a list of faciltities
+     * @param  {[type]} sessions [description]
+     * @param  {[type]} facility [description]
+     * @return {[type]}          [description]
+     */
+    manager.getFacilities = function(sessions, facility) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
 
-            ICATService.getFacilities(sessionId)
+        var def = $q.defer();
+            ICATService.getFacilities(sessionId, facility)
                 .success(function(data) {
                     data = _.pluck(data, 'Facility');
                     def.resolve(data);
@@ -70,11 +95,18 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    /** get instruments **/
-    manager.getInstruments = function(sessionId, facilityId){
+    /**
+     * Get the instruments in facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @return {Object}          a promise containing the list of instruments
+     */
+    manager.getInstruments = function(sessions, facility){
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
         var def = $q.defer();
 
-            ICATService.getInstruments(sessionId, facilityId)
+            ICATService.getInstruments(sessionId, facility)
                 .success(function(data) {
                     data = _.pluck(data, 'Instrument');
                     def.resolve(data);
@@ -88,11 +120,18 @@ function DataManager($http, $q, ICATService) {
     };
 
 
-    /** get cycles */
-    manager.getCycles = function(sessionId, facilityId) {
+    /**
+     * Get the facility cycles in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @return {Object}          a promise containing the list of cycles
+     */
+    manager.getCycles = function(sessions, facility) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
         var def = $q.defer();
 
-            ICATService.getCycles(sessionId, facilityId)
+            ICATService.getCycles(sessionId, facility)
                 .success(function(data) {
                     data = _.pluck(data, 'FacilityCycle');
                     def.resolve(data);
@@ -105,10 +144,20 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
-    manager.getCyclesByInstrumentId = function(sessionId, facilityId, instrumentId) {
+
+    /**
+     * Get the facility cycles for an intrument in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} instrumentId the id of the instrument
+     * @return {Object}          a promise containing the list of cycles
+     */
+    manager.getCyclesByInstrumentId = function(sessions, facility, instrumentId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
         var def = $q.defer();
 
-            ICATService.getCyclesByInstrumentId(sessionId, facilityId, instrumentId)
+            ICATService.getCyclesByInstrumentId(sessionId, facility, instrumentId)
                 .success(function(data) {
                     data = _.pluck(data, 'FacilityCycle');
                     def.resolve(data);
@@ -122,59 +171,18 @@ function DataManager($http, $q, ICATService) {
     };
 
 
-    /** get investigations */
-    manager.getInvestigations = function(sessionId, facilityId) {
+    /**
+     * Get the investigation in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @return {Object}          a promise containing the list of investigations
+     */
+    manager.getInvestigations = function(sessions, facility) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
         var def = $q.defer();
 
-            ICATService.getInvestigations(sessionId, facilityId)
-                .success(function(data) {
-                    data = _.pluck(data, 'Investigation');
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    throw new MyException('Failed to retrieve data from server');
-                });
-
-            return def.promise;
-    };
-
-    manager.getInvestigationsByCycleId = function(sessionId, facilityId, cycleId) {
-        var def = $q.defer();
-
-            ICATService.getInvestigationsByCycleId(sessionId, facilityId, cycleId)
-                .success(function(data) {
-                    data = _.pluck(data, 'Investigation');
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    throw new MyException('Failed to retrieve data from server');
-                });
-
-            return def.promise;
-    };
-
-    manager.getInvestigationsByInstrumentId = function(sessionId, facilityId, instrumentId) {
-        var def = $q.defer();
-
-            ICATService.getInvestigationsByInstrumentId(sessionId, facilityId, instrumentId)
-                .success(function(data) {
-                    data = _.pluck(data, 'Investigation');
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    throw new MyException('Failed to retrieve data from server');
-                });
-
-            return def.promise;
-    };
-
-    manager.getInvestigationsByInstrumentIdByCycleId = function(sessionId, facilityId, instrumentId, cycleId) {
-        var def = $q.defer();
-
-            ICATService.getInvestigationsByInstrumentIdByCycleId(sessionId, facilityId, instrumentId, cycleId)
+            ICATService.getInvestigations(sessionId, facility)
                 .success(function(data) {
                     data = _.pluck(data, 'Investigation');
                     def.resolve(data);
@@ -188,11 +196,145 @@ function DataManager($http, $q, ICATService) {
     };
 
 
-    /** get datasets **/
-    manager.getDatasets = function(sessionId, facilityId){
+    /**
+     * Get the investigations for a cycle in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} cycleId the id of the cycle
+     * @return {Object}          a promise containing the list of investigations
+     */
+    manager.getInvestigationsByCycleId = function(sessions, facility, cycleId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
         var def = $q.defer();
 
-            ICATService.getDatasets(sessionId, facilityId)
+            ICATService.getInvestigationsByCycleId(sessionId, facility, cycleId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Investigation');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
+    /**
+     * Get the investigations for an instrument in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} instrumentId the id of the instrument
+     * @return {Object}          a promise containing the list of investigations
+     */
+    manager.getInvestigationsByInstrumentId = function(sessions, facility, instrumentId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
+        var def = $q.defer();
+
+            ICATService.getInvestigationsByInstrumentId(sessionId, facility, instrumentId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Investigation');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
+    /**
+     * Get the investigations for an instrument and cycle in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} instrumentId the id of the instrument
+     * @param  {int} cycleId the id of the cycle
+     * @return {Object}          a promise containing the list of investigations
+     */
+    manager.getInvestigationsByInstrumentIdByCycleId = function(sessions, facility, instrumentId, cycleId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
+        var def = $q.defer();
+
+            ICATService.getInvestigationsByInstrumentIdByCycleId(sessionId, facility, instrumentId, cycleId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Investigation');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
+
+    /**
+     * Get the datasets in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @return {Object}          a promise containing the list of datasets
+     */
+    manager.getDatasets = function(sessions, facility){
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
+        var def = $q.defer();
+
+            ICATService.getDatasets(sessionId, facility)
+                .success(function(data) {
+                    data = _.pluck(data, 'Dataset');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
+    /**
+     * Get the datasets for an instrument in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} instrumentId the id of the instrument
+     * @return {Object}          a promise containing the list of datasets
+     */
+    manager.getDatasetsByInstrumentId = function(sessions, facility, instrumentId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
+        var def = $q.defer();
+
+            ICATService.getDatasetsByInstrumentId(sessionId, facility, instrumentId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Dataset');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
+    /**
+     * Get the datasets for an investigation in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} investigationId the id of the investigation
+     * @return {Object}          a promise containing the list of datasets
+     */
+    manager.getDatasetsByInvestigationId = function(sessions, facility, investigationId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
+        var def = $q.defer();
+
+            ICATService.getDatasetsByInvestigationId(sessionId, facility, investigationId)
                 .success(function(data) {
                     data = _.pluck(data, 'Dataset');
                     def.resolve(data);
@@ -206,60 +348,18 @@ function DataManager($http, $q, ICATService) {
     };
 
 
-    manager.getDatasetsByInstrumentId = function(sessionId, facilityId, instrumentId) {
+    /**
+     * Get the datafiles in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @return {Object}          a promise containing the list of datafiles
+     */
+    manager.getDatafiles = function(sessions, facility) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
         var def = $q.defer();
 
-            ICATService.getDatasetsByInstrumentId(sessionId, facilityId, instrumentId)
-                .success(function(data) {
-                    data = _.pluck(data, 'Dataset');
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    throw new MyException('Failed to retrieve data from server');
-                });
-
-            return def.promise;
-    };
-
-    manager.getDatasetsByInvestigationId = function(sessionId, facilityId, investigationId) {
-        var def = $q.defer();
-
-            ICATService.getDatasetsByInvestigationId(sessionId, facilityId, investigationId)
-                .success(function(data) {
-                    data = _.pluck(data, 'Dataset');
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    throw new MyException('Failed to retrieve data from server');
-                });
-
-            return def.promise;
-    };
-
-
-    /** get datafiles **/
-    manager.getDatafiles = function(sessionId, facilityId) {
-        var def = $q.defer();
-
-            ICATService.getDatafiles(sessionId, facilityId)
-                .success(function(data) {
-                    data = _.pluck(data, 'Datafile');
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data');
-                    throw new MyException('Failed to retrieve data from server');
-                });
-
-            return def.promise;
-    };
-
-    manager.getDatafilesByDatasetId = function(sessionId, facilityId, datasetId) {
-        var def = $q.defer();
-
-            ICATService.getDatafilesByDatasetId(sessionId, facilityId, datasetId)
+            ICATService.getDatafiles(sessionId, facility)
                 .success(function(data) {
                     data = _.pluck(data, 'Datafile');
                     def.resolve(data);
@@ -273,10 +373,19 @@ function DataManager($http, $q, ICATService) {
     };
 
 
-    manager.getDatafilesByInstrumentId = function(sessionId, facilityId, instrumentId) {
+    /**
+     * Get the datafiles for a dataset in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} datasetId the id of the dataset
+     * @return {Object}          a promise containing the list of datafiles
+     */
+    manager.getDatafilesByDatasetId = function(sessions, facility, datasetId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
         var def = $q.defer();
 
-            ICATService.getDatafilesByInstrumentId(sessionId, facilityId, instrumentId)
+            ICATService.getDatafilesByDatasetId(sessionId, facility, datasetId)
                 .success(function(data) {
                     data = _.pluck(data, 'Datafile');
                     def.resolve(data);
@@ -289,11 +398,44 @@ function DataManager($http, $q, ICATService) {
             return def.promise;
     };
 
+    /**
+     * Get the datafiles for an instrument in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} instrumentId the id of the instrument
+     * @return {Object}          a promise containing the list of datafiles
+     */
+    manager.getDatafilesByInstrumentId = function(sessions, facility, instrumentId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
 
-    manager.getDatafilesByInvestigationId = function(sessionId, facilityId, investigationId) {
         var def = $q.defer();
 
-            ICATService.getDatafilesByInvestigationId(sessionId, facilityId, investigationId)
+            ICATService.getDatafilesByInstrumentId(sessionId, facility, instrumentId)
+                .success(function(data) {
+                    data = _.pluck(data, 'Datafile');
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject('Failed to retrieve data');
+                    throw new MyException('Failed to retrieve data from server');
+                });
+
+            return def.promise;
+    };
+
+    /**
+     * Get the datafile for an investigation in a facility
+     * @param  {Object} sessions session object containing logged in sessions
+     * @param  {Object} facility the facility object
+     * @param  {int} investigationId the id of the investigation
+     * @return {Object}          a promise containing the list of datafiles
+     */
+    manager.getDatafilesByInvestigationId = function(sessions, facility, investigationId) {
+        var sessionId = getSessionValueForFacility(sessions, facility.name);
+
+        var def = $q.defer();
+
+            ICATService.getDatafilesByInvestigationId(sessionId, facility, investigationId)
                 .success(function(data) {
                     data = _.pluck(data, 'Datafile');
                     def.resolve(data);
@@ -308,7 +450,3 @@ function DataManager($http, $q, ICATService) {
 
     return manager;
 }
-
-
-
-

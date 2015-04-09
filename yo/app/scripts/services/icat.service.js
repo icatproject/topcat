@@ -19,12 +19,12 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
     console.log('ICATService session', $rootScope.session);
 
-    data.login = function() {
+    data.login = function(facility) {
         if (useFileForSession) {
-            return $http.get('data/icatapi-session.json');
+            return $http.get('data/icatapi-session-multi.json');
         } else {
 
-            var url = 'api/icat/session';
+            var url = 'api/' + facility.connectProxyPath + 'icat/session';
             var data = {
                 'json' : '{"plugin":"ldap","credentials":[{"username":"vcf21513"},{"password":"PASSWORD"}]}'
             };
@@ -59,19 +59,19 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         }
     };
 
-    data.getVersion = function() {
-        var url = 'api/icat/version';
+    data.getVersion = function(facility) {
+        var url = 'api/' + facility.connectProxyPath + 'icat/version';
 
         return $http.get(url);
     };
 
 
     /** get facilities */
-    data.getFacilities = function(mySessionId) {
+    data.getFacilities = function(mySessionId, facility) {
         if (useFileForData) {
             return $http.get('data/icatapi-facility.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
@@ -86,18 +86,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     };
 
     /** get instruments **/
-    data.getInstruments = function(mySessionId, facilityId) {
-        console.log('getInstruments session: ' + mySessionId);
+    data.getInstruments = function(mySessionId, facility) {
+        console.log('getInstruments session: ', mySessionId);
 
         if (useFileForData) {
             return $http.get('data/icatapi-instruments.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facilityId
+                    query : 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facility.facilityId
                 }
 
             };
@@ -108,22 +108,22 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
 
     /** get cycles */
-    data.getCycles = function(mySessionId, facilityId) {
+    data.getCycles = function(mySessionId, facility) {
         return $http.get('data/cycles.json');
     };
 
-    data.getCyclesByInstrumentId = function(mySessionId, facilityId, instrumentId) {
+    data.getCyclesByInstrumentId = function(mySessionId, facility, instrumentId) {
         return $http.get('data/cycles.json');
     };
 
 
     /** get investigations */
-    data.getInvestigations = function(mySessionId, facilityId) {
+    data.getInvestigations = function(mySessionId, facility) {
         if (useFileForData) {
             return $http.get('data/icatapi-investigations.json');
         } else {
 
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
@@ -136,15 +136,15 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         }
     };
 
-    data.getInvestigationsByCycleId = function(mySessionId, facilityId, cycleId) {
+    data.getInvestigationsByCycleId = function(mySessionId, facility, cycleId) {
         return $http.get('data/icatapi-investigations-5-items.json');
     };
 
-    data.getInvestigationsByInstrumentId = function(mySessionId, facilityId, instrumentId) {
+    data.getInvestigationsByInstrumentId = function(mySessionId, facility, instrumentId) {
         if (useFileForData) {
             return $http.get('data/icatapi-investigations-5-items.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
@@ -160,25 +160,25 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
     };
 
-    data.getInvestigationsByInstrumentIdByCycleId = function(mySessionId, facilityId, instrumentId, cycleId) {
+    data.getInvestigationsByInstrumentIdByCycleId = function(mySessionId, facility, instrumentId, cycleId) {
 
         return $http.get('data/icatapi-investigations-5-items.json');
     };
 
 
     /** get datasets **/
-    data.getDatasets = function(mySessionId, facilityId){
-        console.log('facilityId: ' + facilityId);
+    data.getDatasets = function(mySessionId, facility){
+        console.log('facilityId: ' + facility.facilityId);
 
         if (useFileForData) {
             return $http.get('data/icatapi-datasets.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facilityId + LIMIT
+                    query : 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + LIMIT
                 }
 
             };
@@ -188,16 +188,16 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     };
 
 
-    data.getDatasetsByInstrumentId = function(mySessionId, facilityId, instrumentId) {
+    data.getDatasetsByInstrumentId = function(mySessionId, facility, instrumentId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT d FROM Dataset d, d.investigation i, i.facility f ,i.investigationInstruments ii, ii.instrument ins where f.id = ' + facilityId + ' AND ins.id = ' + instrumentId + LIMIT
+                    query : 'SELECT d FROM Dataset d, d.investigation i, i.facility f ,i.investigationInstruments ii, ii.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId + LIMIT
                 }
 
             };
@@ -208,16 +208,16 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
 
     /** get datasets by investigationid**/
-    data.getDatasetsByInvestigationId = function(mySessionId, facilityId, investigationId) {
+    data.getDatasetsByInvestigationId = function(mySessionId, facility, investigationId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datasets.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facilityId + ' AND i.id = ' + investigationId + LIMIT
+                    query : 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND i.id = ' + investigationId + LIMIT
                 }
 
             };
@@ -230,16 +230,16 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
 
     /** get datafiles **/
-    data.getDatafiles = function(mySessionId, facilityId) {
+    data.getDatafiles = function(mySessionId, facility) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facilityId + LIMIT
+                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + LIMIT
                 }
 
             };
@@ -249,16 +249,16 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     };
 
 
-    data.getDatafilesByInstrumentId = function(mySessionId, facilityId, instrumentId) {
+    data.getDatafilesByInstrumentId = function(mySessionId, facility, instrumentId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f, i.investigationInstruments ii, ii.instrument ins where f.id = ' + facilityId + ' AND ins.id = ' + instrumentId + LIMIT
+                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f, i.investigationInstruments ii, ii.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId + LIMIT
                 }
 
             };
@@ -268,16 +268,16 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     };
 
 
-    data.getDatafilesByInvestigationId = function(mySessionId, facilityId, investigationId) {
+    data.getDatafilesByInvestigationId = function(mySessionId, facility, investigationId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facilityId + ' AND i.id = ' + investigationId + LIMIT
+                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND i.id = ' + investigationId + LIMIT
                 }
 
             };
@@ -286,16 +286,16 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         }
     };
 
-    data.getDatafilesByDatasetId = function(mySessionId, facilityId, datasetId) {
+    data.getDatafilesByDatasetId = function(mySessionId, facility, datasetId) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/icat/entityManager';
+            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facilityId + ' AND d.id = ' + datasetId + LIMIT
+                    query : 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND d.id = ' + datasetId + LIMIT
                 }
 
             };

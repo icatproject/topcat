@@ -1,7 +1,7 @@
 // Karma configuration
 // http://karma-runner.github.io/0.12/config/configuration-file.html
-// Generated on 2015-02-24 using
-// generator-karma 0.8.3
+// Generated on 2015-04-01 using
+// generator-karma 0.9.0
 
 module.exports = function(config) {
   'use strict';
@@ -18,20 +18,53 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      // bower:js
+      'bower_components/jquery/dist/jquery.js',
+      'bower_components/es5-shim/es5-shim.js',
       'bower_components/angular/angular.js',
-      'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/json3/lib/json3.js',
+      'bower_components/bootstrap/dist/js/bootstrap.js',
       'bower_components/angular-resource/angular-resource.js',
-      'bower_components/angular-route/angular-route.js',
       'bower_components/angular-sanitize/angular-sanitize.js',
+      'bower_components/angular-route/angular-route.js',
+      'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'bower_components/angular-ui-router/release/angular-ui-router.js',
+      'bower_components/datatables/media/js/jquery.dataTables.js',
+      'bower_components/angular-datatables/dist/angular-datatables.js',
+      'bower_components/datatables-scroller/js/dataTables.scroller.js',
+      'bower_components/angular-datatables-scroller/index.js',
       'bower_components/angular-deferred-bootstrap/angular-deferred-bootstrap.js',
+      'bower_components/angularjs-truncate/src/truncate.js',
+      'bower_components/ui-router-extras/release/ct-ui-router-extras.js',
+      'bower_components/angular-inform/dist/angular-inform.js',
+      'bower_components/lodash/lodash.js',
+      'bower_components/pretty-bytes/pretty-bytes.js',
+      'bower_components/angular-pretty-bytes/angular-pretty-bytes.js',
+      'bower_components/checklist-model/checklist-model.js',
+      'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/karma-read-json/karma-read-json.js',
+      // endbower
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js',
-      //'app/data/**/*.json'
+
+      // JSON fixture
+      {
+        pattern:  'app/data/*.json',
+        watched:  true,
+        served:   true,
+        included: false
+      }
+
     ],
 
     // list of files / patterns to exclude
-    exclude: [],
+    exclude: [
+    ],
+
+    proxies:  {
+      'data/config': 'app/data/config'
+    },
 
     // web server port
     port: 8080,
@@ -62,7 +95,8 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    //logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DEBUG,
 
     // Uncomment the following lines if you are using grunt's server to run the tests
     // proxies: {
@@ -70,5 +104,9 @@ module.exports = function(config) {
     // },
     // URL root prevent conflicts with the site root
     // urlRoot: '_karma_'
+
+    client : {
+      captureConsole: true
+    }
   });
 };

@@ -4,29 +4,26 @@
     /*jshint -W083 */
     angular
         .module('angularApp')
-        .controller('BrowsePanelController', BrowsePanelController);
+        .controller('BrowseFacilitiesController', BrowseFacilitiesController);
 
-    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'DataManager', '$q', 'inform', 'sessions'];
+    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'DataManager', '$q', 'inform'];
 
-    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, DataManager, $q, inform, sessions) {
+    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, DataManager, $q, inform) {
         var vm = this;
         //var facility = 0;
-        var facilityName = $stateParams.facilityName;
-
-        //var server = 'dls-server';
+        var server = 'dls-server';
         var dtOptions = {}; //dtoptions for the datatable
         var dtColumns = []; //dtColumns for the datatable
-        var pagingType = APP_CONFIG.site.pagingType; //the pagination type. 'scroll' or 'page'
+        var pagingType = Config.getSiteConfig(APP_CONFIG).pagingType; //the pagination type. 'scroll' or 'page'
         var currentEntityType = getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
-        var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
-        var column = Config.getColumnsByFacilityName(APP_CONFIG, facilityName)[currentEntityType]; //the column configuration
-        var currentRouteSegment = getCurrentRouteSegmentName($state);
-        var nextEntityType = getNextEntityType(structure, currentEntityType);
+        //var structure = APP_CONFIG.servers[server].facility[facility].structure;
+        var column = Config.getFacilitiesColumns(APP_CONFIG); //the facilities column configuration
+
+        //var nextEntityType = getNextEntityType(structure, currentEntityType);
         var browseMaxRows = APP_CONFIG.site.browseMaxRows;
 
-        vm.structure = structure;
+        //vm.structure = structure;
         vm.currentEntityType = currentEntityType;
-
 
         if (! angular.isDefined($rootScope.cart)) {
             $rootScope.cart = [];
@@ -34,26 +31,20 @@
         }
 
         console.log('$state:', $state);
-        console.log('$stateParams:', $stateParams);
-        console.log('Current facility name :', facilityName);
-        console.log('structure:', structure);
         console.log('currentEntityType: ' + currentEntityType);
-        console.log('nextEntityType: ' + nextEntityType);
-        console.log('currentRouteSegment: ' + currentRouteSegment);
-        console.log('sessions: ', sessions);
 
         vm.rowClickHandler = rowClickHandler;
 
         //var login = DataManager.login();
         //console.log(login);
 
-        var version = DataManager.getVersion(Config.getFacilityByName(APP_CONFIG, facilityName));
-        console.log('icat version=', version);
+        //var version = DataManager.getVersion();
+        //console.log('icat version=', version);
 
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(APP_CONFIG)) //TODO
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
                     .withDisplayLength(browseMaxRows)
@@ -63,7 +54,7 @@
             case 'scroll':
                 /* falls through */
             default:
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(APP_CONFIG)) //TODO
                     .withDOM('frti')
                     .withScroller()
                     .withOption('deferRender', true)
@@ -115,28 +106,6 @@
                 return currentEntityType;
             }
         }
-
-        /**
-         * Returns the last segment of the ui-route name.
-         * This is use to determin which function to us to
-         * get data
-         *
-         * @param  {[type]} $state [description]
-         * @return {[type]}        [description]
-         */
-        function getCurrentRouteSegmentName($state){
-            var routeName = $state.current.name;
-
-            routeName = routeName.substr(routeName.lastIndexOf('.') + 1);
-
-            //this is a hack until we figure out how to do the meta tabs routing!!!
-            if (routeName.indexOf('meta') >= 0) {
-                routeName = 'facility';
-            }
-
-            return routeName;
-        }
-
 
 
         /**
@@ -200,6 +169,41 @@
         }
 
 
+        /**
+         * This is a dummy function to get a list of facilities
+         * The actual function should make a request to all the
+         * connected servers in order to get the id number of the facility.
+         * Currently we have it hard coded in the config.json file.
+         * Somewhere in the config.json file, we need to map a config
+         * to a facility in a ICAT server. Suggest using the name key.
+         *
+         *
+         * @param  {[type]} APP_CONFIG [description]
+         * @return {[type]}            [description]
+         */
+        function getFacilitiesFromConfig(APP_CONFIG){
+            var facilities = Config.getFacilities(APP_CONFIG);
+            var data = [];
+
+
+            _.each(facilities, function(value){
+                var obj = {};
+                obj.id = value.facilityId;
+                obj.name = value.name;
+                obj.title = value.title;
+
+                data.push(obj);
+            });
+
+            console.log('data', data);
+
+            //we need to return a promise
+            var deferred = $q.defer();
+            deferred.resolve(data);
+
+            return deferred.promise;
+        }
+
 
         /**
          * Get data based on the current ui-route
@@ -208,64 +212,8 @@
          * @param  {Object} APP_CONFIG site configuration object
          * @return {Object} Promise object
          */
-        function getDataPromise(currentRouteSegment, APP_CONFIG) {
-            var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
-
-            console.log('getDataPromise facility', facility);
-
-            switch (currentRouteSegment) {
-                case 'facility-instrument':
-                    console.log('function called: getInstruments');
-                    return DataManager.getInstruments(sessions, facility);
-                case 'facility-cycle':
-                    console.log('function called: getCycles');
-                    return DataManager.getCyclesByFacilityId(sessions, facility);
-                case 'facility-investigation':
-                    console.log('function called: getInvestigations');
-                    return DataManager.getInvestigations(sessions, facility);
-                case 'facility-dataset':
-                    console.log('function called: getDatasets');
-                    return DataManager.getDatasets(sessions, facility);
-                case 'facility-datafile':
-                    console.log('function called: getDatafiles');
-                    return DataManager.getDatafiles(sessions, facility);
-                case 'instrument-cycle':
-                    console.log('function called: getCyclesByInstruments');
-                    return DataManager.getCyclesByInstruments(sessions, facility, $stateParams.id);
-                case 'instrument-investigation':
-                    console.log('function called: getInvestigationsByInstrumentId');
-                    return DataManager.getInvestigationsByInstrumentId(sessions, facility, $stateParams.id);
-                case 'instrument-dataset':
-                    console.log('function called: getDatasetsByInstrumentId');
-                    return DataManager.getDatasetsByInstrumentId(sessions, facility, $stateParams.id);
-                case 'instrument-datafile':
-                    console.log('function called: getDatafilesByInstrumentId');
-                    return DataManager.getDatafilesByInstrumentId(sessions, facility, $stateParams.id);
-                case 'cycle-instrument':
-                    console.log('function called: getInstrumentsByCycleId');
-                    return DataManager.getInstrumentsByCycleId(sessions, facility, $stateParams.id);
-                case 'cycle-investigation':
-                    console.log('function called: getCyclesByInvestigationId');
-                    return DataManager.getInvestigationsByCycleId(sessions, facility, $stateParams.id);
-                case 'cycle-dataset':
-                    console.log('function called: getDatasetsByCycleId');
-                    return DataManager.getDatasetsByCycleId(sessions, facility, $stateParams.id);
-                case 'cycle-datafile':
-                    console.log('function called: getDatafilesByCycleId');
-                    return DataManager.getDatafilesByCycleId(sessions, facility, $stateParams.id);
-                case 'investigation-dataset':
-                    console.log('function called: getDatasetsByInvestigationId');
-                    return DataManager.getDatasetsByInvestigationId(sessions, facility, $stateParams.id);
-                case 'investigation-datafile':
-                    console.log('function called: getDatafilesByInvestigationId');
-                    return DataManager.getDatafilesByInvestigationId(sessions, facility, $stateParams.id);
-                case 'dataset-datafile':
-                    console.log('function called: getDatafilesByDatasetId');
-                    return DataManager.getDatafilesByDatasetId(sessions, facility, $stateParams.id);
-                default:
-                    console.log('function called: default');
-                    return;
-            }
+        function getDataPromise(APP_CONFIG) {
+            return getFacilitiesFromConfig(APP_CONFIG);
         }
 
 
@@ -280,7 +228,8 @@
 
                     $rootScope.ref[full.id] = {
                         'id': full.id,
-                        'facility' : facilityName,
+                        'server' : server,
+                        'facility' : $stateParams.facility,
                         'entity' : currentEntityType
 
                     };
@@ -318,12 +267,20 @@
             if (angular.isDefined(column[i].link)) {
                 if (column[i].link === true) {
                     col.renderWith(function(data, type, full, meta) {
-                        if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true && nextEntityType !== false) {
+                        if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true) {
                             //add facility id to $stateParams
                             $stateParams.id = full.id;
 
-                            return "<a ui-sref='home.browse.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + ' bb</a>'; // jshint ignore:line
+                            var structure = Config.getHierarchyByFacilityName(APP_CONFIG, full.name);
 
+                            console.log('structure', structure);
+
+                            var nextRouteSegement = getNextRouteSegmentName(structure, currentEntityType);
+
+                            if (currentEntityType === 'facility') {
+                                return '<a ui-sref="home.browse.facilities.' + nextRouteSegement + '({facilityName : \'' + full.name + '\'})">' + data + ' fff</a>';
+                                //return '<a ui-sref="home.browse.facilities.' + getNextRouteSegmentName(structure, currentEntityType) + '({facility : \'' + full.id + '\', server: \'' +  full.server + '\'})">' + data + '</a>';
+                            }
                         } else {
                             return data;
                         }
@@ -339,7 +296,7 @@
                 if (angular.isDefined(expressionFilter.type)) {
                     if ('string' === expressionFilter.type) {
                         col.renderWith(function(data, type, full, meta) {
-                            if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true && nextEntityType !== false) {
+                            if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true) {
                                 //add facility id to $stateParams
                                 $stateParams.id = full.id;
 

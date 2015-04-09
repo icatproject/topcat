@@ -227,43 +227,43 @@ list the investigations for a facility cycle of a facility
 
 list the instruments for a facility
 
-    /#/browse/facilities/{server}/{facility.id}/instruments
+    /#/browse/facilities/{facility.id}/instruments
 
 list the facility cycles for an instrument
 
-    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles
 
 list the investigations of a facility cycles for an instrument
 
-    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
 
 list the investigation for an instrument
 
-    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/investigations
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/investigations
 
 list the investigations for a facility
 
-    /#/browse/facilities/{server}/{facility.id}/investigations
+    /#/browse/facilities/{facility.id}/investigations
 
 list the datasets for an investigation
 
-    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datasets
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datasets
 
 list the datasets for a facility
 
-    /#/browse/facilities/{server}/{facility.id}/datasets
+    /#/browse/facilities/{facility.id}/datasets
 
 list the datafiles for an investigation
 
-    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datafiles
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datafiles
 
 list the datafiles for a dataset
 
-    /#/browse/facilities/{server}/{facility.id}/datasets/{dataset.id}/datafiles
+    /#/browse/facilities/{facility.id}/datasets/{dataset.id}/datafiles
 
 list the datafiles for a facility
 
-    /#/browse/facilities/{server}/{facility.id}/datafiles
+    /#/browse/facilities/{facility.id}/datafiles
 
 ### Searching
 
@@ -368,39 +368,37 @@ datafile
     2 params
     /#/browse/facilities/
 
-
     3 params:
+
 
     4 params:
 
-    5 params:
+    /#/browse/facilities/{facility.id}/cycles
+    /#/browse/facilities/{facility.id}/instruments
+    /#/browse/facilities/{facility.id}/investigations
+    /#/browse/facilities/{facility.id}/datasets
+    /#/browse/facilities/{facility.id}/datafiles
 
-    /#/browse/facilities/{server}/{facility.id}/cycles
-    /#/browse/facilities/{server}/{facility.id}/instruments
-    /#/browse/facilities/{server}/{facility.id}/investigations
-    /#/browse/facilities/{server}/{facility.id}/datasets
-    /#/browse/facilities/{server}/{facility.id}/datafiles
+
+    5 params:
 
 
     6 params:
 
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/investigations
+    /#/browse/facilities/{facility.id}/cycles/{facilityCycle.id}/investigations
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datasets
+    /#/browse/facilities/{facility.id}/investigations/{investigation.id}/datafiles
+    /#/browse/facilities/{facility.id}/datasets/{dataset.id}/datafiles
+
 
     7 params:
-
-    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles
-    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/investigations
-    /#/browse/facilities/{server}/{facility.id}/cycles/{facilityCycle.id}/investigations
-    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datasets
-    /#/browse/facilities/{server}/{facility.id}/investigations/{investigation.id}/datafiles
-    /#/browse/facilities/{server}/{facility.id}/datasets/{dataset.id}/datafiles
 
 
     8 params:
 
-
-    9 params:
-
-    /#/browse/facilities/{server}/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
+    /#/browse/facilities/{facility.id}/instruments/{intrument.id}/cycles/{facilityCycle.id}/investigations
 
 
 
