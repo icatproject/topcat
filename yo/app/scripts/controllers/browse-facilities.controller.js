@@ -6,21 +6,21 @@
         .module('angularApp')
         .controller('BrowseFacilitiesController', BrowseFacilitiesController);
 
-    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'DataManager', '$q', 'inform'];
+    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform'];
 
-    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, DataManager, $q, inform) {
+    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform) {
         var vm = this;
         //var facility = 0;
         var server = 'dls-server';
         var dtOptions = {}; //dtoptions for the datatable
         var dtColumns = []; //dtColumns for the datatable
         var pagingType = Config.getSiteConfig(APP_CONFIG).pagingType; //the pagination type. 'scroll' or 'page'
-        var currentEntityType = getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+        var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
         //var structure = APP_CONFIG.servers[server].facility[facility].structure;
         var column = Config.getFacilitiesColumns(APP_CONFIG); //the facilities column configuration
 
         //var nextEntityType = getNextEntityType(structure, currentEntityType);
-        var browseMaxRows = APP_CONFIG.site.browseMaxRows;
+        var browseMaxRows = Config.getSiteConfig(APP_CONFIG).browseMaxRows;
 
         //vm.structure = structure;
         vm.currentEntityType = currentEntityType;
@@ -44,69 +44,30 @@
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(APP_CONFIG)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(Config.getFacilities(APP_CONFIG)))
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
                     .withDisplayLength(browseMaxRows)
                     .withOption('fnRowCallback', rowCallback)
-                    .withOption('autoWidth', false);
+                    .withOption('autoWidth', false)
+                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column));
                 break;
             case 'scroll':
                 /* falls through */
             default:
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(APP_CONFIG)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(Config.getFacilities(APP_CONFIG)))
                     .withDOM('frti')
                     .withScroller()
                     .withOption('deferRender', true)
                     // Do not forget to add the scorllY option!!!
                     .withOption('scrollY', 180)
                     .withOption('fnRowCallback', rowCallback)
-                    .withOption('autoWidth', false);
+                    .withOption('autoWidth', false)
+                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column));
                 break;
         }
 
         vm.dtOptions = dtOptions;
-
-
-        /**
-         * [getNextEntityType description]
-         * @param  {Array} the array structure of the facility
-         * @param  {String} the current entity type
-         * @return {String || false} Returns the next item in the array or false if already last item
-         */
-        function getNextEntityType(structure, currentEntityType) {
-            if (structure[structure.length] === currentEntityType) {
-                return false;
-            }
-
-            var index;
-            for (index = 0; index < structure.length; ++index) {
-                if (structure[index] === currentEntityType) {
-                    break;
-                }
-            }
-
-            return structure[index + 1];
-        }
-
-
-        /**
-         * Get the next ui-route name to go up the facility
-         * structure
-         *
-         * @param  {[type]} structure         [description]
-         * @param  {[type]} currentEntityType [description]
-         * @return {[type]}                   [description]
-         */
-        function getNextRouteSegmentName(structure, currentEntityType) {
-            var next = getNextEntityType(structure, currentEntityType);
-            if (angular.isDefined(next)) {
-                return currentEntityType + '-' + next;
-            } else {
-                return currentEntityType;
-            }
-        }
-
 
         /**
          * click handler when a row is clicked on the datatable
@@ -153,57 +114,6 @@
             return nRow;
         }
 
-        /**
-         * Returns the current entity type base on the current route param entityType.
-         * Default to facility if non is specified
-         *
-         * @param  {Object} the $state object
-         * @return {String} the current entity type
-         */
-        function getCurrentEntityType($state) {
-            if (angular.isDefined($state.current.param)) {
-                return $state.current.param.entityType || 'facility';
-            }
-
-            return 'facility';
-        }
-
-
-        /**
-         * This is a dummy function to get a list of facilities
-         * The actual function should make a request to all the
-         * connected servers in order to get the id number of the facility.
-         * Currently we have it hard coded in the config.json file.
-         * Somewhere in the config.json file, we need to map a config
-         * to a facility in a ICAT server. Suggest using the name key.
-         *
-         *
-         * @param  {[type]} APP_CONFIG [description]
-         * @return {[type]}            [description]
-         */
-        function getFacilitiesFromConfig(APP_CONFIG){
-            var facilities = Config.getFacilities(APP_CONFIG);
-            var data = [];
-
-
-            _.each(facilities, function(value){
-                var obj = {};
-                obj.id = value.facilityId;
-                obj.name = value.name;
-                obj.title = value.title;
-
-                data.push(obj);
-            });
-
-            console.log('data', data);
-
-            //we need to return a promise
-            var deferred = $q.defer();
-            deferred.resolve(data);
-
-            return deferred.promise;
-        }
-
 
         /**
          * Get data based on the current ui-route
@@ -212,8 +122,8 @@
          * @param  {Object} APP_CONFIG site configuration object
          * @return {Object} Promise object
          */
-        function getDataPromise(APP_CONFIG) {
-            return getFacilitiesFromConfig(APP_CONFIG);
+        function getDataPromise(facilities) {
+            return ConfigUtils.getFacilitiesFromConfig(facilities);
         }
 
 
@@ -272,17 +182,14 @@
                             $stateParams.id = full.id;
 
                             var structure = Config.getHierarchyByFacilityName(APP_CONFIG, full.name);
-
-                            console.log('structure', structure);
-
-                            var nextRouteSegement = getNextRouteSegmentName(structure, currentEntityType);
+                            var nextRouteSegement = RouteUtils.getNextRouteSegmentName(structure, currentEntityType);
 
                             if (currentEntityType === 'facility') {
-                                return '<a ui-sref="home.browse.facilities.' + nextRouteSegement + '({facilityName : \'' + full.name + '\'})">' + data + ' fff</a>';
+                                return '<a ui-sref="home.browse.facilities.' + nextRouteSegement + '({facilityName : \'' + full.name + '\'})">' + full.title + '</a>';
                                 //return '<a ui-sref="home.browse.facilities.' + getNextRouteSegmentName(structure, currentEntityType) + '({facility : \'' + full.id + '\', server: \'' +  full.server + '\'})">' + data + '</a>';
                             }
                         } else {
-                            return data;
+                            return full.title;
                         }
                     });
                 }
@@ -299,8 +206,10 @@
                             if (angular.isDefined(column[meta.col].link) && column[meta.col].link === true) {
                                 //add facility id to $stateParams
                                 $stateParams.id = full.id;
+                                var structure = Config.getHierarchyByFacilityName(APP_CONFIG, full.name);
+                                var nextRouteSegement = RouteUtils.getNextRouteSegmentName(structure, currentEntityType);
 
-                                return "<a ui-sref='home.browse.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
+                                return "<a ui-sref='home.browse.facilities." + nextRouteSegement + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
                             } else {
                                 //no link
                                 return $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters);

@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelController', BrowsePanelController);
 
-    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'DataManager', '$q', 'inform', 'sessions'];
+    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', 'sessions'];
 
-    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, DataManager, $q, inform, sessions) {
+    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform, sessions) {
         var vm = this;
         //var facility = 0;
         var facilityName = $stateParams.facilityName;
@@ -16,13 +16,13 @@
         //var server = 'dls-server';
         var dtOptions = {}; //dtoptions for the datatable
         var dtColumns = []; //dtColumns for the datatable
-        var pagingType = APP_CONFIG.site.pagingType; //the pagination type. 'scroll' or 'page'
-        var currentEntityType = getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+        var pagingType = Config.getSiteConfig(APP_CONFIG).pagingType; //the pagination type. 'scroll' or 'page'
+        var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
         var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
         var column = Config.getColumnsByFacilityName(APP_CONFIG, facilityName)[currentEntityType]; //the column configuration
-        var currentRouteSegment = getCurrentRouteSegmentName($state);
-        var nextEntityType = getNextEntityType(structure, currentEntityType);
-        var browseMaxRows = APP_CONFIG.site.browseMaxRows;
+        var currentRouteSegment = RouteUtils.getCurrentRouteSegmentName($state);
+        var nextEntityType = RouteUtils.getNextEntityType(structure, currentEntityType);
+        var browseMaxRows = Config.getSiteConfig(APP_CONFIG).browseMaxRows;
 
         vm.structure = structure;
         vm.currentEntityType = currentEntityType;
@@ -58,7 +58,8 @@
                     .withDOM('frtip')
                     .withDisplayLength(browseMaxRows)
                     .withOption('fnRowCallback', rowCallback)
-                    .withOption('autoWidth', false);
+                    .withOption('autoWidth', false)
+                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column));
                 break;
             case 'scroll':
                 /* falls through */
@@ -70,73 +71,12 @@
                     // Do not forget to add the scorllY option!!!
                     .withOption('scrollY', 180)
                     .withOption('fnRowCallback', rowCallback)
-                    .withOption('autoWidth', false);
+                    .withOption('autoWidth', false)
+                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column));
                 break;
         }
 
         vm.dtOptions = dtOptions;
-
-
-        /**
-         * [getNextEntityType description]
-         * @param  {Array} the array structure of the facility
-         * @param  {String} the current entity type
-         * @return {String || false} Returns the next item in the array or false if already last item
-         */
-        function getNextEntityType(structure, currentEntityType) {
-            if (structure[structure.length] === currentEntityType) {
-                return false;
-            }
-
-            var index;
-            for (index = 0; index < structure.length; ++index) {
-                if (structure[index] === currentEntityType) {
-                    break;
-                }
-            }
-
-            return structure[index + 1];
-        }
-
-
-        /**
-         * Get the next ui-route name to go up the facility
-         * structure
-         *
-         * @param  {[type]} structure         [description]
-         * @param  {[type]} currentEntityType [description]
-         * @return {[type]}                   [description]
-         */
-        function getNextRouteSegmentName(structure, currentEntityType) {
-            var next = getNextEntityType(structure, currentEntityType);
-            if (angular.isDefined(next)) {
-                return currentEntityType + '-' + next;
-            } else {
-                return currentEntityType;
-            }
-        }
-
-        /**
-         * Returns the last segment of the ui-route name.
-         * This is use to determin which function to us to
-         * get data
-         *
-         * @param  {[type]} $state [description]
-         * @return {[type]}        [description]
-         */
-        function getCurrentRouteSegmentName($state){
-            var routeName = $state.current.name;
-
-            routeName = routeName.substr(routeName.lastIndexOf('.') + 1);
-
-            //this is a hack until we figure out how to do the meta tabs routing!!!
-            if (routeName.indexOf('meta') >= 0) {
-                routeName = 'facility';
-            }
-
-            return routeName;
-        }
-
 
 
         /**
@@ -183,22 +123,6 @@
 
             return nRow;
         }
-
-        /**
-         * Returns the current entity type base on the current route param entityType.
-         * Default to facility if non is specified
-         *
-         * @param  {Object} the $state object
-         * @return {String} the current entity type
-         */
-        function getCurrentEntityType($state) {
-            if (angular.isDefined($state.current.param)) {
-                return $state.current.param.entityType || 'facility';
-            }
-
-            return 'facility';
-        }
-
 
 
         /**
@@ -322,7 +246,7 @@
                             //add facility id to $stateParams
                             $stateParams.id = full.id;
 
-                            return "<a ui-sref='home.browse.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + ' bb</a>'; // jshint ignore:line
+                            return "<a ui-sref='home.browse.facilities." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
 
                         } else {
                             return data;
@@ -343,7 +267,7 @@
                                 //add facility id to $stateParams
                                 $stateParams.id = full.id;
 
-                                return "<a ui-sref='home.browse.facilities." + getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
+                                return "<a ui-sref='home.browse.facilities." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
                             } else {
                                 //no link
                                 return $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters);

@@ -15,6 +15,7 @@ function Config(){
          * @return {[type]}        [description]
          */
         getFacilities : function(config) {
+            console.log('Config.getFacilities called');
             return config.facilities;
         },
 

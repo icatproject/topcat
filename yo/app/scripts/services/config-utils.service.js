@@ -21,8 +21,7 @@ function ConfigUtils($q){
 
 
         /**
-         * This is a function to get a list of facilities from the config file
-         *
+         * This is a dummy function to get a list of facilities
          * The actual function should make a request to all the
          * connected servers in order to get the id number of the facility.
          * Currently we have it hard coded in the config.json file.
@@ -30,42 +29,55 @@ function ConfigUtils($q){
          * to a facility in a ICAT server. Suggest using the name key.
          *
          *
-         * @param  {[type]} APP_CONFIG [description]
-         * @return {[type]}            [description]
+         * @param  {Object} facilities the list of facility objects
+         * @return {Object}            a promise containing the list of facilities as expected by datatables
          */
-        getFacilitiesFromConfig : function(APP_CONFIG){
-            var facilities = [];
+        getFacilitiesFromConfig : function(facilities){
+            var data = [];
 
-            _.each(APP_CONFIG.servers, function(servervalue, serverName) {
-                _.each(servervalue.facility, function(facility) {
-                    var obj = {};
+            _.each(facilities, function(value){
+                var obj = {};
+                obj.id = value.facilityId;
+                obj.name = value.keyName;
+                obj.title = value.title;
 
-                    _.each(facility, function(value, key){
-                        obj.server = serverName;
-
-                        if (key === 'facilityId') {
-                            obj.id = value;
-                        }
-
-                        if (key === 'name') {
-                            obj.name = value;
-                        }
-
-                        if (key === 'title') {
-                            obj.title = value;
-                        }
-
-                    });
-
-                    facilities.push(obj);
-                });
+                data.push(obj);
             });
+
+            console.log('getFacilitiesFromConfig', data);
 
             //we need to return a promise
             var deferred = $q.defer();
-            deferred.resolve(facilities);
+            deferred.resolve(data);
 
             return deferred.promise;
+        },
+
+
+        /**
+         * Returns the default sort column and order array expected by datatables options.
+         * The array is in the form [index number of the column to sort, the order string 'asc' or 'desc']
+         * If none is configured, default to using the first column and sort by ascending order
+         * @param  {object} column the browser column config
+         * @return {Array}        the column index and sort order array expected by dataTable options
+         */
+        getDefaultSortArray : function(column) {
+            //default to sort by first column and in ascending order
+            var defaultSort = [0, 'asc'];
+
+            //find the first column index where there is a key named 'sortByDefault'
+            var sortColumnIndex = _.findIndex(column, function(field) {
+                return _.contains(_.keys(field), 'sortByDefault');
+            });
+
+            //set default order if one is found
+            if (angular.isDefined(sortColumnIndex) && sortColumnIndex !== -1) {
+                defaultSort = [sortColumnIndex, column[sortColumnIndex].sortByDefault];
+            }
+            console.log('column', column);
+            console.log('defaultSort', defaultSort);
+
+            return defaultSort;
         }
 
     };

@@ -1,7 +1,7 @@
 {
     "facilities": {
         "dls": {
-            "name": "dls",
+            "keyName": "dls",
             "title": "DIAMOND",
             "icatUrl": "https://facilities02.esc.rl.ac.uk:8181/icat/",
             "connectProxyPath": "dls/",
@@ -15,17 +15,6 @@
                 "datafile"
             ],
             "browseColumns": {
-                "facility": [
-                    {
-                        "name": "name",
-                        "title": "Name",
-                        "link": true
-                    },
-                    {
-                        "name": "fullName",
-                        "title": "Full Name"
-                    }
-                ],
                 "instrument": [
                     {
                         "name": "id",
@@ -35,7 +24,8 @@
                     {
                         "name": "name",
                         "title": "Name",
-                        "link": true
+                        "link": true,
+                        "sortByDefault" : "asc"
                     },
                     {
                         "name": "fullName",
@@ -65,7 +55,8 @@
                             "type": "string",
                             "name": "characters",
                             "characters": 80
-                        }
+                        },
+                        "sortByDefault" : "asc"
                     },
                     {
                         "name": "visitId",
@@ -94,7 +85,8 @@
                     {
                         "name": null,
                         "title": "",
-                        "checkbox": true
+                        "checkbox": true,
+                        "sortByDefault" : "asc"
                     },
                     {
                         "name": "name",
@@ -123,7 +115,8 @@
                             "type": "string",
                             "name": "characters",
                             "characters": 80
-                        }
+                        },
+                        "sortByDefault" : "asc"
                     },
                     {
                         "name": "fileSize",
@@ -140,7 +133,7 @@
             }
         },
         "isis": {
-            "name": "isis",
+            "keyName": "isis",
             "title": "ISIS Laser",
             "icatUrl": "https://icatdev.isis.cclrc.ac.uk/icat/",
             "connectProxyPath": "isis/",
@@ -154,13 +147,6 @@
                 "datafile"
             ],
             "browseColumns": {
-                "facility": [
-                    {
-                        "name": "name",
-                        "title": "Name",
-                        "link": true
-                    }
-                ],
                 "instrument": [
                     {
                         "name": "id",
@@ -272,7 +258,8 @@
             {
                 "name": "name",
                 "title": "Name",
-                "link": true
+                "link": true,
+                "sortByDefault": "asc"
             },
             {
                 "name": "fullName",
