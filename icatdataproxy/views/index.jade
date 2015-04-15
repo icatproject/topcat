@@ -1,0 +1,261 @@
+extends layout
+
+block content
+  h1= title
+  p This is a wrapper REST service to retrieve data from ICAT in a format more suited for pagination.
+  p The API is as below:
+
+  h3 Version
+  p Description: Get the icat version
+  p Url: /icat/version
+  p Method: GET
+  p Query parameters:
+  ul
+    li server - the server url
+
+  p Example: &nbsp;
+    a(href='/icat/version?server=https://facilities02.esc.rl.ac.uk:8181', target="_blank") /icat/version?server=https://facilities02.esc.rl.ac.uk:8181
+
+
+
+  h3 Session
+  p Description: Authenticate and get an ICAT session token
+  p Url: /icat/session
+  p Method: POST
+  p Form Parameters (Key value pairs):
+  ul
+    li server
+    li plugin
+    li username
+    li password
+  p Note: Header Content-Type must be application/x-www-form-urlencoded
+  p Example:
+  form(name="sessionForm", action="/icat/session", method="post", id="sessionForm")
+    p server:
+      select(name="server", class="server")
+        option(value="https://facilities02.esc.rl.ac.uk:8181") https://facilities02.esc.rl.ac.uk:8181
+        option(value="https://icatdev.isis.cclrc.ac.uk") https://icatdev.isis.cclrc.ac.uk
+    p plugin:
+      select(name="plugin")
+        option(value="ldap") ldap
+        option(value="db") db
+        option(value="uows") uows
+    p username:
+      input(type="text", name="username")
+    p password:
+      input(type="password", name="password")
+    input(type="submit" value="Get Session")
+  div
+    pre(class="sessionId", style="color:green")
+
+  h3 Entities
+  p Description: Get entities from ICAT
+  p Url: /icat/entityManager
+  p Method: GET
+  p Querystring Parameters:
+  ul
+    li host - the hostname
+    li sessionId - The session id
+    li query - The query to Send
+    li countQuery (Optional) - The JPQL query used to get the totalRecord count. If countQuery is specified, paginated result format will be returned
+    li entity (Optional) - the ICAT REST API returns the JSON objects with the entity name as keys. This option removes the key by specifying the entity name (e.g &entity=Investigation, &entity=Instrument)
+    li page (Optional) - The draw/page number which is returned in paginated results. This is used for sequencing as the are no guarantee with ajax calls the results are required in sequence.
+
+  p Examples:
+
+  p Login in above session to see example links or
+    = ' '
+    a(href='', class="toggleLinkExample") click here
+    = ' '
+    = 'to see non working examples and exmplae JSON data'
+
+  div(class="exampleQuery")
+    p
+      strong  Returns entities in paginated format containing total records. Paginated form is returned if you the query contains a queryCount
+    p /icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=12f7d6e4-dca8-437d-937d-3f5c95de778e&query=select ins from Instrument ins&entity=Instrument&countQuery=select count(ins) from Instrument ins&page=1
+
+    p Example returned JSON:
+    pre(style="white-space: pre-wrap;")
+      |  {
+      |    "page": "1",
+      |    "recordsTotal": 2,
+      |    "recordsFiltered": 2,
+      |    "data": [
+      |        {
+      |            "id": 35,
+      |            "createId": "FROM PROPAGATION",
+      |            "createTime": "Mon Aug 12 11:57:37 BST 2013",
+      |            "modId": "PROPAGATION",
+      |            "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |            "description": "Soft X-ray Microscope for the Life Sciences",
+      |            "fullName": "b24",
+      |            "instrumentScientists": [],
+      |            "investigationInstruments": [],
+      |            "name": "b24",
+      |            "type": "Soft X-ray Microscope for the Life Sciences"
+      |        },
+      |        {
+      |            "id": 1,
+      |            "createId": "FROM PROPAGATION",
+      |            "createTime": "Mon Oct 04 16:40:04 BST 2010",
+      |            "modId": "PROPAGATION",
+      |            "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |            "description": "Beamline for Advanced Dichroism",
+      |            "fullName": "i10",
+      |            "instrumentScientists": [],
+      |            "investigationInstruments": [],
+      |            "name": "i10",
+      |            "type": "Beamline for Advanced Dichroism"
+      |        }
+      |      }
+      |  }
+
+    p
+      strong Returns just the entities
+    p /icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=12f7d6e4-dca8-437d-937d-3f5c95de778e&query=select ins from Instrument ins
+
+    p Example returned JSON:
+    pre(style="white-space: pre-wrap;")
+      |[
+      |    {
+      |        "Instrument": {
+      |            "id": 35,
+      |            "createId": "FROM PROPAGATION",
+      |           "createTime": "Mon Aug 12 11:57:37 BST 2013",
+      |            "modId": "PROPAGATION",
+      |            "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |            "description": "Soft X-ray Microscope for the Life Sciences",
+      |            "fullName": "b24",
+      |            "instrumentScientists": [],
+      |            "investigationInstruments": [],
+      |            "name": "b24",
+      |            "type": "Soft X-ray Microscope for the Life Sciences"
+      |        }
+      |    },
+      |    {
+      |        "Instrument": {
+      |            "id": 1,
+      |            "createId": "FROM PROPAGATION",
+      |            "createTime": "Mon Oct 04 16:40:04 BST 2010",
+      |            "modId": "PROPAGATION",
+      |           "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |           "description": "Beamline for Advanced Dichroism",
+      |            "fullName": "i10",
+      |            "instrumentScientists": [],
+      |            "investigationInstruments": [],
+      |           "name": "i10",
+      |           "type": "Beamline for Advanced Dichroism"
+      |        }
+      |    }
+      |]
+
+    p
+      strong Returns just the entities with entity key removed
+    p /icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=12f7d6e4-dca8-437d-937d-3f5c95de778e&query=select ins from Instrument ins&entity=Instrument
+
+    p Example returned JSON:
+    pre(style="white-space: pre-wrap;")
+      |[
+      |    {
+      |        "id": 35,
+      |        "createId": "FROM PROPAGATION",
+      |        "createTime": "Mon Aug 12 11:57:37 BST 2013",
+      |        "modId": "PROPAGATION",
+      |        "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |        "description": "Soft X-ray Microscope for the Life Sciences",
+      |        "fullName": "b24",
+      |        "instrumentScientists": [],
+      |        "investigationInstruments": [],
+      |        "name": "b24",
+      |        "type": "Soft X-ray Microscope for the Life Sciences"
+      |    },
+      |    {
+      |        "id": 1,
+      |        "createId": "FROM PROPAGATION",
+      |        "createTime": "Mon Oct 04 16:40:04 BST 2010",
+      |        "modId": "PROPAGATION",
+      |        "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |        "description": "Beamline for Advanced Dichroism",
+      |        "fullName": "i10",
+      |        "instrumentScientists": [],
+      |        "investigationInstruments": [],
+      |        "name": "i10",
+      |        "type": "Beamline for Advanced Dichroism"
+      |    }
+      |]
+
+
+  div(class="exampleQueryLinks")
+
+  script(type="text/javascript").
+    $(document).ready(function(){
+      $(".exampleQuery").hide();
+
+      $(".toggleLinkExample").click(function(event){
+        event.preventDefault();
+        $(".exampleQuery").toggle();
+      });
+
+      $("#sessionForm").submit(function(event) {
+
+        /* stop form from submitting normally */
+        event.preventDefault();
+
+        /* get some values from elements on the page: */
+        var $form = $(this);
+        var url = $form.attr('action');
+
+        /* Send the data using post */
+        var posting = $.post(url, $('#sessionForm').serialize());
+
+        /* Alerts the results */
+        posting.done(function(data) {
+          $('.sessionId').text(data);
+          var json = JSON.parse(data);
+
+          if (typeof json.sessionId !== 'undefined') {
+            var server = $('.server').find(":selected").text();
+
+            $('.exampleQueryLinks').html("<p><strong>Returns entities in paginated format containing total records. Paginated form is returned if you the query contains a queryCount</strong></p>");
+
+            var href = '/icat/entityManager?server=' + server +'&sessionId=' + json.sessionId + '&query=select ins from Instrument ins&entity=Instrument&countQuery=select count(ins) from Instrument ins&page=1';
+
+            var link = $("<a />", {
+              href : href,
+              text : href,
+              target: '_blank'
+            });
+
+            $('.exampleQueryLinks').append(link);
+
+            $('.exampleQueryLinks').append("<p><strong>Returns just the entities</strong></p>");
+
+            href = '/icat/entityManager?server=' + server +'&sessionId=' + json.sessionId + '&query=select ins from Instrument ins';
+
+            link = $("<a />", {
+              href : href,
+              text : href,
+              target: '_blank'
+            });
+
+            $('.exampleQueryLinks').append(link);
+
+            $('.exampleQueryLinks').append("<p><strong>Returns just the entities with entity key removed</strong></p>");
+
+            href = '/icat/entityManager?server=' + server +'&sessionId=' + json.sessionId + '&query=select ins from Instrument ins&entity=Instrument';
+
+            link = $("<a />", {
+              href : href,
+              text : href,
+              target: '_blank'
+            });
+
+            $('.exampleQueryLinks').append(link);
+
+          }
+        });
+      });
+    });
+
+
+
