@@ -3,9 +3,9 @@
         "dls": {
             "keyName": "dls",
             "title": "DIAMOND",
-            "icatUrl": "https://facilities02.esc.rl.ac.uk:8181/icat/",
+            "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
             "connectProxyPath": "dls/",
-            "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181/ids/",
+            "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181",
             "facilityId": 1,
             "hierarchy": [
                 "facility",
@@ -135,9 +135,9 @@
         "isis": {
             "keyName": "isis",
             "title": "ISIS Laser",
-            "icatUrl": "https://icatdev.isis.cclrc.ac.uk/icat/",
+            "icatUrl": "https://icatdev.isis.cclrc.ac.uk",
             "connectProxyPath": "isis/",
-            "idsUrl": "https://facilities.esc.rl.ac.uk:8181/ids/",
+            "idsUrl": "https://facilities.esc.rl.ac.uk:8181",
             "facilityId": 1,
             "hierarchy": [
                 "facility",

@@ -28,7 +28,7 @@ with open(jsonConfigFile) as file:
 
 #do for each server in config
 for key in data['facilities']:
-    host = data['facilities'][key]['icatUrl']
+    host = data['facilities'][key]['icatUrl'] + '/icat/'
 
     #get password
     print "please enter password for %s" % key

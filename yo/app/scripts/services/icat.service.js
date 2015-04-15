@@ -13,6 +13,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     var data = {};
     //var mySessionId = '297b3916-2080-4e58-9ff5-8a4383be147e';
     var LIMIT = ' LIMIT 0, 1000'; //apply a limit to a query. FOR DEBUG ONLY
+    var ICATDATAPROXYURL = 'https://localhost:3001';
 
     console.log('useFileForData:' + useFileForData);
     console.log('useFileForSession:' + useFileForSession);
@@ -46,6 +47,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
      * @return {[type]}        [description]
      */
     var appendOptionsToQuery = function(options, query) {
+        if (!angular.isDefined(options)) {
+            return query;
+        }
+
         var opt = '';
 
         if (angular.isDefined(options.sort)) {
@@ -98,38 +103,12 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     };
 
 
-    /**
-     * Returns the params expected by $http to build the querystring
-     * for the ICAT REST API
-     *
-     * @param  {[type]} mySessionId [description]
-     * @param  {[type]} query       [description]
-     * @param  {[type]} options     [description]
-     * @return {[type]}             [description]
-     */
-    var getBuildParams = function(mySessionId, query, options) {
-        if (angular.isDefined(options)) {
-            query = appendOptionsToQuery(options, query);
-        }
-
-        var params = {
-            params : {
-                sessionId : mySessionId,
-                query : query
-            }
-
-        };
-
-        return params;
-    };
-
-
     data.login = function(facility) {
         if (useFileForSession) {
             return $http.get('data/icatapi-session-multi.json');
         } else {
 
-            var url = 'api/' + facility.connectProxyPath + 'icat/session';
+            var url = ICATDATAPROXYURL + '/icat/session';
             var data = {
                 'json' : '{"plugin":"ldap","credentials":[{"username":"vcf21513"},{"password":"PASSWORD"}]}'
             };
@@ -165,9 +144,13 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     };
 
     data.getVersion = function(facility) {
-        var url = 'api/' + facility.connectProxyPath + 'icat/version';
+        var url = ICATDATAPROXYURL + '/icat/version';
 
-        return $http.get(url);
+        return $http.get(url, {
+                params: {
+                    server: facility.icatUrl
+                }
+            });
     };
 
 
@@ -176,13 +159,14 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-facility.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT f FROM Facility f';
 
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : query
+                    query : query,
+                    entity : 'Facility'
                 }
 
             };
@@ -199,9 +183,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-instruments.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facility.facilityId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Instrument',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -224,10 +217,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-investigations.json');
         } else {
 
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT i FROM Investigation i, i.facility f where f.id = 1 LIMIT 0, 5000';
+            query = appendOptionsToQuery(options, query);
 
-            var params = getBuildParams(mySessionId, query, options);
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Investigation',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -241,9 +242,20 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-investigations-5-items.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT i FROM Investigation i, i.investigationInstruments ii, ii.instrument ins where ins.id = ' + instrumentId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            console.log('query', query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Investigation',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -264,9 +276,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-datasets.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Dataset',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -277,9 +298,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT d FROM Dataset d, d.investigation i, i.facility f ,i.investigationInstruments ii, ii.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Dataset',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -291,9 +321,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-datasets.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND i.id = ' + investigationId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Dataset',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -305,9 +344,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Datafile',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -318,9 +366,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f, i.investigationInstruments ii, ii.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Datafile',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -331,9 +388,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND i.id = ' + investigationId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Datafile',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }
@@ -343,9 +409,18 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
-            var url = 'api/' + facility.connectProxyPath + 'icat/entityManager';
+            var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND d.id = ' + datasetId;
-            var params = getBuildParams(mySessionId, query, options);
+            query = appendOptionsToQuery(options, query);
+
+            var params = {
+                params : {
+                    sessionId : mySessionId,
+                    query : query,
+                    entity : 'Datafile',
+                    server : facility.icatUrl
+                }
+            };
 
             return $http.get(url, params);
         }

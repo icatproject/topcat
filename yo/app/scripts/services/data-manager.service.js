@@ -84,7 +84,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getFacilities(sessionId, facility)
             .success(function(data) {
-                data = _.pluck(data, 'Facility');
                 def.resolve(data);
             })
             .error(function(error) {
@@ -107,7 +106,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getInstruments(sessionId, facility, options)
             .success(function(data) {
-                data = _.pluck(data, 'Instrument');
                 def.resolve(data);
             })
             .error(function() {
@@ -131,7 +129,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getCycles(sessionId, facility, options)
             .success(function(data) {
-                data = _.pluck(data, 'FacilityCycle');
                 def.resolve(data);
             })
             .error(function() {
@@ -156,7 +153,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getCyclesByInstrumentId(sessionId, facility, instrumentId, options)
             .success(function(data) {
-                data = _.pluck(data, 'FacilityCycle');
                 def.resolve(data);
             })
             .error(function() {
@@ -180,7 +176,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getInvestigations(sessionId, facility, options)
             .success(function(data) {
-                data = _.pluck(data, 'Investigation');
                 def.resolve(data);
             })
             .error(function() {
@@ -205,7 +200,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getInvestigationsByCycleId(sessionId, facility, cycleId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Investigation');
                 def.resolve(data);
             })
             .error(function() {
@@ -229,7 +223,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getInvestigationsByInstrumentId(sessionId, facility, instrumentId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Investigation');
                 def.resolve(data);
             })
             .error(function() {
@@ -254,7 +247,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getInvestigationsByInstrumentIdByCycleId(sessionId, facility, instrumentId, cycleId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Investigation');
                 def.resolve(data);
             })
             .error(function() {
@@ -278,7 +270,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getDatasets(sessionId, facility, options)
             .success(function(data) {
-                data = _.pluck(data, 'Dataset');
                 def.resolve(data);
             })
             .error(function() {
@@ -302,7 +293,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getDatasetsByInstrumentId(sessionId, facility, instrumentId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Dataset');
                 def.resolve(data);
             })
             .error(function() {
@@ -326,7 +316,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getDatasetsByInvestigationId(sessionId, facility, investigationId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Dataset');
                 def.resolve(data);
             })
             .error(function() {
@@ -350,7 +339,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getDatafiles(sessionId, facility, options)
             .success(function(data) {
-                data = _.pluck(data, 'Datafile');
                 def.resolve(data);
             })
             .error(function() {
@@ -375,7 +363,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getDatafilesByDatasetId(sessionId, facility, datasetId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Datafile');
                 def.resolve(data);
             })
             .error(function() {
@@ -399,7 +386,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getDatafilesByInstrumentId(sessionId, facility, instrumentId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Datafile');
                 def.resolve(data);
             })
             .error(function() {
@@ -423,7 +409,6 @@ function DataManager($http, $q, ICATService) {
 
         ICATService.getDatafilesByInvestigationId(sessionId, facility, investigationId, options)
             .success(function(data) {
-                data = _.pluck(data, 'Datafile');
                 def.resolve(data);
             })
             .error(function() {
