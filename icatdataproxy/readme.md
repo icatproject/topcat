@@ -27,3 +27,5 @@ For development, it is recommended you install nodemon as it watched for file ch
 
     npm install -g nodemon
 
+If running icatdataproxy behind a web proxy, make you you have http_proxy set in your environment.
+

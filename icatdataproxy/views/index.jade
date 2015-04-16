@@ -3,6 +3,11 @@ extends layout
 block content
   h1= title
   p This is a wrapper REST service to retrieve data from ICAT in a format more suited for pagination.
+
+  p(style="color: red")
+    strong
+      | If running icatdataproxy behind a web proxy, make you you have http_proxy set in your environment.
+
   p The API is as below:
 
   h3 Version
@@ -15,7 +20,6 @@ block content
 
   p Example: &nbsp;
     a(href='/icat/version?server=https://facilities02.esc.rl.ac.uk:8181', target="_blank") /icat/version?server=https://facilities02.esc.rl.ac.uk:8181
-
 
 
   h3 Session
