@@ -18,7 +18,7 @@ router.get('/version', function(req, res, next) {
 });
 
 /**
- * Session route
+ * login route
  */
 router.post('/session', function(req, res, next) {
     var data = {
@@ -45,6 +45,63 @@ router.post('/session', function(req, res, next) {
         }
     );
 });
+
+/**
+ * Get session info route
+ */
+router.get('/session/:sessionId', function(req, res, next) {
+    request(
+        {
+            url: req.query.server + '/icat/session/' + req.params.sessionId,
+            method: 'GET'
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                res.end(body);
+            } else {
+                res.json(body);
+            }
+        }
+    );
+});
+
+
+/**
+ * Refresh session route
+ */
+router.put('/session/:sessionId', function(req, res, next) {
+    request(
+        {
+            url: req.query.server + '/icat/session/' + req.params.sessionId,
+            method: 'PUT'
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                res.end();
+            } else {
+                res.json(body);
+            }
+        }
+    );
+});
+
+
+/**
+ * logout route
+ */
+router.delete('/session/:sessionId', function(req, res, next) {
+    request(
+        {
+            url: req.query.server + '/icat/session/' + req.params.sessionId,
+            method: 'DELETE'
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                res.end();
+            } else {
+                res.json(body);
+            }
+        }
+    );
+});
+
 
 /**
  * Entities route
