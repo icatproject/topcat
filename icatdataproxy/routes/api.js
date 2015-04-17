@@ -12,7 +12,7 @@ router.get('/version', function(req, res, next) {
         if (!error && response.statusCode == 200) {
             res.end(body);
         } else {
-            res.end("Failed");
+            res.status(response.statusCode).end("Failed");
         }
     });
 });
@@ -40,7 +40,7 @@ router.post('/session', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end(body);
             } else {
-                res.json(body);
+                res.status(response.statusCode).json(body);
             }
         }
     );
@@ -58,7 +58,7 @@ router.get('/session/:sessionId', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end(body);
             } else {
-                res.json(body);
+                res.status(response.statusCode).json(body);
             }
         }
     );
@@ -77,7 +77,7 @@ router.put('/session/:sessionId', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end();
             } else {
-                res.json(body);
+                res.status(response.statusCode).json(body);
             }
         }
     );
@@ -96,7 +96,7 @@ router.delete('/session/:sessionId', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end();
             } else {
-                res.json(body);
+                res.status(response.statusCode).json(body);
             }
         }
     );
@@ -124,7 +124,7 @@ router.get('/entityManager', function(req, res, next) {
                     }
                     res.json(body);
                 } else {
-                    res.json(body);
+                    res.status(response.statusCode).json(body);
                 }
             }
         );
@@ -149,7 +149,7 @@ router.get('/entityManager', function(req, res, next) {
                         if (!error && response.statusCode == 200) {
                             callback(null, body);
                         } else {
-                            callback(body);
+                            callback(response, body);
                         }
                     }
                 );
@@ -174,7 +174,7 @@ router.get('/entityManager', function(req, res, next) {
 
                             callback(null, body);
                         } else {
-                            callback(body);
+                            callback(response, body);
                             /*if (response.statusCode == 403){
                                 callback({name: 'session', message: 'Session invalid'});
                             }
@@ -204,7 +204,7 @@ router.get('/entityManager', function(req, res, next) {
         ],
         function(err, results){
             if (err) {
-                res.json(err);
+                res.status(err.statusCode).json(results);
                 res.end();
             } else {
                 var total;
