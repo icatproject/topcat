@@ -252,7 +252,7 @@
     "site": {
         "pagingType": "page",
         "useFileForData": false,
-        "useFileForSession": true,
+        "useFileForSession": false,
         "browseMaxRows": 6,
         "facilitiesColumns": [
             {

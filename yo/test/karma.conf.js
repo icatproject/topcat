@@ -41,6 +41,7 @@ module.exports = function(config) {
       'bower_components/pretty-bytes/pretty-bytes.js',
       'bower_components/angular-pretty-bytes/angular-pretty-bytes.js',
       'bower_components/checklist-model/checklist-model.js',
+      'bower_components/ngstorage/ngStorage.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/karma-read-json/karma-read-json.js',
       // endbower

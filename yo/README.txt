@@ -14,6 +14,7 @@ In addition to AngularJS, the following modules were used:
   - _ui-router-extras_: Provides sticky state essential for navigating between tabs with routing and not resetting states
   - _lodash_: javascript utility library
   - _angular-pretty-bytes_: filter to display human readable bytes, KB, MB, GB etc
+  - _ngstorage_: No need to serialize and unserialize data to and from localstorage and sessionstorage
 
 
 ## Installation (On windows) for AngularJS Development
@@ -51,29 +52,22 @@ Proxy setting note: npm does not use environment variables for proxy. Instead us
 
 
 
-## Additonal npm
-
-### grunt-connect-proxy
-
-To connect to a remote ICAT server and get around the origin-policy issue with XMLHttpRequest, grunt-connect-proxy is used as a proxy until ICAT starts to support CORS. There is a currently a bug with the latest version (@1.1.11) so version @0.1.10 had to be used. Also, I'm having issues proxying POST requests so cannot get login to work.
-
-To point the proxy to your ICAT, change the proxies setting in Gruntfile.js.
-
-
 ## Using Live Data
 
-To use live data, make sure you have grunt-connect-proxy configured and pointing to your ICAT server. In the config.json file, change the useFileForData parameter to false. Next you need to get a session id and paste it in the mySessionId variable in icat.service.js.
+As the ICAT REST API (<4.4.0) is not yet CORS enabled and not yet finalised, we need a proxy service to get data from an ICAT server when using XMLHttpRequest.
 
-You can modify the included icatsession.bat file to get a session id using your icat credentials.
+The ICAT Data Proxy is used for this purpose. ICAT Data Proxy is available at http://topcat.googlecode.com/svn/branches/topcatv2/icatdataproxy/. Checkout the project using:
 
+    svn checkout http://topcat.googlecode.com/svn/branches/topcatv2/icatdataproxy/ icatdataproxy
+
+Read readme.md file to install and start the service.
+
+You must start the service for TopCAT to load live data.
 
 
 ## AngularJS Development style guide
 
 https://github.com/johnpapa/angular-styleguide#modules
-
-
-
 
 
 
@@ -87,6 +81,10 @@ Using sublime text 3 as text editor with the following plugins installed:
     - JsFormats (Format/Beautify javascript)
     - SidebarEnhancements (Add file management to the side file list)
     - SublimeLinter-jshint (On the fly jshint validator MUST HAVE!!!!)
+
+## Development Build
+
+Before committing code, make sure you perform a "grunt build" and test the build using "grunt serve:dist". This is to ensure the application still works after minification as the build is the one that will be deployed!!!!
 
 
 ## RESTFUL API (TEST ONLY/ DEPRECATED)

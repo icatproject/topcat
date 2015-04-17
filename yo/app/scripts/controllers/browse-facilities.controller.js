@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowseFacilitiesController', BrowseFacilitiesController);
 
-    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform'];
+    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
 
-    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform) {
+    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
         var vm = this;
         //var facility = 0;
         var server = 'dls-server';
@@ -18,6 +18,8 @@
         var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
         //var structure = APP_CONFIG.servers[server].facility[facility].structure;
         var column = Config.getFacilitiesColumns(APP_CONFIG); //the facilities column configuration
+
+
 
         //var nextEntityType = getNextEntityType(structure, currentEntityType);
         var browseMaxRows = Config.getSiteConfig(APP_CONFIG).browseMaxRows;
@@ -44,7 +46,7 @@
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(Config.getFacilities(APP_CONFIG)))
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(Config.getFacilities(APP_CONFIG), $sessionStorage.sessions))
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
                     .withDisplayLength(browseMaxRows)
@@ -55,7 +57,7 @@
             case 'scroll':
                 /* falls through */
             default:
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(Config.getFacilities(APP_CONFIG)))
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(Config.getFacilities(APP_CONFIG, $sessionStorage.sessions)))
                     .withDOM('frti')
                     .withScroller()
                     .withOption('deferRender', true)
@@ -122,8 +124,9 @@
          * @param  {Object} APP_CONFIG site configuration object
          * @return {Object} Promise object
          */
-        function getDataPromise(facilities) {
-            return ConfigUtils.getFacilitiesFromConfig(facilities);
+        function getDataPromise(facilities, $sessions) {
+            return ConfigUtils.getLoggedInFacilitiesFromConfig(facilities, $sessions);
+            //return ConfigUtils.getFacilitiesFromConfig(facilities);
         }
 
 

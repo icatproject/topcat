@@ -29,6 +29,7 @@
             'ngSanitize',
             'ui.router',
             'ct.ui.router.extras.sticky',
+            //'ct.ui.router.extras.previous',
             'ui.bootstrap',
             'datatables',
             'datatables.scroller',
@@ -36,13 +37,16 @@
             'inform',
             'inform-exception',
             'prettyBytes',
-            'checklist-model'
+            'checklist-model',
+            'ngStorage'
         ])
         .constant('_', window._)
         .config(function($stateProvider, $urlRouterProvider) {
-
-            $urlRouterProvider.otherwise('/browse/facilities');
-            $urlRouterProvider.when('/browse', '/browse/facilities'); //redirect TODO is this nescessary?
+            //workaround https://github.com/angular-ui/ui-router/issues/1022
+            $urlRouterProvider.otherwise(function($injector) {
+              var $state = $injector.get('$state');
+              $state.go('home.browse.facilities');
+            });
 
             $stateProvider
                 .state('home', {
@@ -70,9 +74,12 @@
                 .state('home.browse.facilities', {
                     url: '/facilities',
                     resolve: {
-                        sessions: function(DataManager){
+                        /*sessions: ['DataManager', function(DataManager){
                             return DataManager.login();
-                        }
+                        }],*/
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
                     },
                     views: {
                         '' : {
@@ -319,10 +326,16 @@
                 })
                 // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
                 .state('about', {
+                    /*resolve : {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    },*/
                     url: '/about',
                     templateUrl: 'views/main-about.html'
                 })
                 .state('contact', {
+
                     url: '/contact',
                     templateUrl: 'views/main-contact.html'
                 })
@@ -330,15 +343,42 @@
                     url: '/test',
                     templateUrl: 'views/test.html',
                     controller: 'TestController as test'
-                });
+                })
+                .state('login', {
+                    url: '/login',
+                    templateUrl: 'views/login.html',
+                    controller: 'LoginController as vm'
+                })
+                .state('logout', {
+                    url: '/logout',
+                    controller: 'LogoutController'
+                })
+                ;
 
         })
     /*.config(function($stickyStateProvider) {
       $stickyStateProvider.enableDebug(true);
     })*/
+        //for lodash and make $state and $stateParams available at rootscope.
         .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
             $rootScope._ = window._;
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
-    }]);
+        }])
+        .run(['$rootScope', '$state', function ($rootScope, $state) {
+            //watch for state change resolve authentication errors
+            $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+                console.log('$stateChangeError called', error);
+                if (error && error.isAuthenticated === false) {
+                    $state.go('login');
+                }
+            });
+
+            //save last page to rootscope
+            /*$rootScope.$on('$stateChangeStart', function() {
+                console.log('previous state', $previousState.get() !== null ? $previousState.get().state.name : $previousState.get());
+                $rootScope.previousState = $previousState.get();
+            });*/
+
+        }]);
 })();

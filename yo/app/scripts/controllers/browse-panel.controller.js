@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelController', BrowsePanelController);
 
-    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', 'sessions'];
+    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
 
-    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform, sessions) {
+    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
         var vm = this;
         //var facility = 0;
         var facilityName = $stateParams.facilityName;
@@ -23,6 +23,7 @@
         var currentRouteSegment = RouteUtils.getCurrentRouteSegmentName($state);
         var nextEntityType = RouteUtils.getNextEntityType(structure, currentEntityType);
         var browseMaxRows = Config.getSiteConfig(APP_CONFIG).browseMaxRows;
+        var sessions = $sessionStorage.sessions;
 
         vm.structure = structure;
         vm.currentEntityType = currentEntityType;

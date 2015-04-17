@@ -103,25 +103,19 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     };
 
 
-    data.login = function(facility) {
+    data.login = function(facility, credential) {
+        console.log('login called for facility' , facility);
         if (useFileForSession) {
+            console.log('login returning json file');
             return $http.get('data/icatapi-session-multi.json');
         } else {
-
             var url = ICATDATAPROXYURL + '/icat/session';
             var data = {
-                'json' : '{"plugin":"ldap","credentials":[{"username":"vcf21513"},{"password":"PASSWORD"}]}'
+                server : facility.icatUrl,
+                plugin : credential.plugin,
+                username : credential.credentials.username,
+                password : credential.credentials.password
             };
-
-            /*var data = {
-                'plugin': 'ldap',
-                'credentials': [
-                    {'username': 'vcf21513'},
-                    {'password': 'PASSWORD'}
-                ]
-            };
-
-            data = 'json=' + encodeURIComponent(JSON.stringify(data));*/
 
             var options = {
                 'headers': {

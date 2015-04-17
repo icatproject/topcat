@@ -10,7 +10,7 @@ function DataManager($http, $q, ICATService) {
     var manager = {};
 
     function MyException(message) {
-      this.name = 'Data Error';
+      this.name = name;
       this.message = message;
     }
     MyException.prototype = new Error();
@@ -23,8 +23,8 @@ function DataManager($http, $q, ICATService) {
      * @param  {[type]} facility [description]
      * @return {[type]}          [description]
      */
-    function getSessionValueForFacility(session, facility) {
-        return session[facility.keyName].sessionId;
+    function getSessionValueForFacility(sessions, facility) {
+        return sessions[facility.keyName].sessionId;
     }
 
 
@@ -33,10 +33,10 @@ function DataManager($http, $q, ICATService) {
      * @TODO need to specify the facility/server to login
      * @return {object} a promise containing an icat session
      */
-    manager.login = function() {
+    manager.login = function(facility, credential) {
         var def = $q.defer();
 
-        ICATService.login()
+        ICATService.login(facility, credential)
             .success(function(data) {
                 def.resolve(data);
             })

@@ -55,6 +55,41 @@ function ConfigUtils($q){
 
 
         /**
+         * Return the list of logged in facilities from the config as a promise
+         * @param  {[type]} facilities [description]
+         * @param  {[type]} sessions   [description]
+         * @return {[type]}            [description]
+         */
+        getLoggedInFacilitiesFromConfig : function(facilities, sessions){
+            var data = [];
+            var loggedIn = _.keys(sessions);
+
+            console.log(loggedIn);
+
+            if (_.size(loggedIn) !== 0) {
+                _.each(facilities, function(value){
+                    if(_.indexOf(loggedIn, value.keyName) !== -1) {
+                        var obj = {};
+                        obj.id = value.facilityId;
+                        obj.name = value.keyName;
+                        obj.title = value.title;
+
+                        data.push(obj);
+                    }
+                });
+
+                console.log('getLoggedInFacilitiesFromConfig', data);
+            }
+
+            //we need to return a promise
+            var deferred = $q.defer();
+            deferred.resolve(data);
+
+            return deferred.promise;
+        },
+
+
+        /**
          * Returns the default sort column and order array expected by datatables options.
          * The array is in the form [index number of the column to sort, the order string 'asc' or 'desc']
          * If none is configured, default to using the first column and sort by ascending order

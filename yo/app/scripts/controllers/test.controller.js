@@ -5,20 +5,21 @@
         .module('angularApp')
         .controller('TestController', TestController);
 
-    TestController.$inject = ['APP_CONFIG', 'Config'];
+    TestController.$inject = ['APP_CONFIG', 'Config', 'DataManager'];
 
-    function TestController(APP_CONFIG, Config) {
+    function TestController(APP_CONFIG, Config, DataManager) {
         var vm = this;
 
-        var random;
+        var facility = Config.getFacilityByName(APP_CONFIG, 'dls');
+        var promise = DataManager.login(facility);
 
-        if (!random) {
-            random = Math.round(Math.random()*10000);
-        }
+        promise.then(function(data){
+            vm.session = data;
+        });
 
-        vm.random = random;
 
-        console.log('getFacilities', Config.getFacilities(APP_CONFIG));
+
+        /*console.log('getFacilities', Config.getFacilities(APP_CONFIG));
 
         console.log('getFacilityByName isis', Config.getFacilityByName(APP_CONFIG, 'isis'));
         console.log('getFacilityByName dls', Config.getFacilityByName(APP_CONFIG, 'dls'));
@@ -29,7 +30,7 @@
         console.log('getColumnsByFacilityName isis', Config.getColumnsByFacilityName(APP_CONFIG, 'isis'));
         console.log('getColumnsByFacilityName dls', Config.getColumnsByFacilityName(APP_CONFIG, 'dls'));
 
-        console.log('getFacilitiesColumns dls', Config.getFacilitiesColumns(APP_CONFIG));
+        console.log('getFacilitiesColumns dls', Config.getFacilitiesColumns(APP_CONFIG));*/
 
 
 
