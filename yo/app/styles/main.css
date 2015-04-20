@@ -30,10 +30,24 @@ body {
 
 /* make notification message go above the top navigation bar */
 .inform-fixed {
+  top: 60px;
   z-index: 2002;
 }
 
 .current {
    font-weight: bold;
    color: red;
+}
+
+
+[ng-click] {
+    cursor: pointer;
+}
+
+/* nav bar split button */
+.navbar-nav > li.dropdown-split-right > a {
+  padding-left: 7px;
+}
+.navbar-nav > li.dropdown-split-left > a {
+  padding-right: 0;
 }

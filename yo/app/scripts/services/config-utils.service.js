@@ -20,6 +20,11 @@ function ConfigUtils($q){
         },
 
 
+        getAllFacilityNames : function(facilities) {
+            return _.keys(facilities);
+        },
+
+
         /**
          * This is a dummy function to get a list of facilities
          * The actual function should make a request to all the

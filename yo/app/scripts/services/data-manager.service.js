@@ -30,7 +30,7 @@ function DataManager($http, $q, ICATService) {
 
     /**
      * Perform a login
-     * @TODO need to specify the facility/server to login
+     * @param {Object} the facility object
      * @return {object} a promise containing an icat session
      */
     manager.login = function(facility, credential) {
@@ -40,7 +40,13 @@ function DataManager($http, $q, ICATService) {
             .success(function(data) {
                 def.resolve(data);
             })
-            .error(function(error) {
+            .error(function(error, status) {
+                console.log('login status', status);
+
+                if (status === 0) {
+                    throw new MyException('Unable to contact the facility ' + facility.title);
+                }
+
                 def.reject('Failed to login');
                 throw new MyException('Failed to login:' + error);
             });

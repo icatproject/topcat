@@ -10,6 +10,9 @@
         resolve : {
             APP_CONFIG : [ '$http', function($http) {
                 return $http.get('data/config-multi.json');
+            } ],
+            LANG : [ '$http', function($http) {
+                return $http.get('languages/en.json');
             } ]
         }
     });
@@ -38,9 +41,21 @@
             'inform-exception',
             'prettyBytes',
             'checklist-model',
-            'ngStorage'
+            'ngStorage',
+            'pascalprecht.translate'
         ])
         .constant('_', window._)
+        .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
+            console.log('LANG', LANG);
+
+            $translateProvider.translations('en', LANG);
+
+            $translateProvider.useStaticFilesLoader({
+                prefix: '/languages/',
+                suffix: '.json'
+            });
+            $translateProvider.preferredLanguage('en');
+         }])
         .config(function($stateProvider, $urlRouterProvider) {
             //workaround https://github.com/angular-ui/ui-router/issues/1022
             $urlRouterProvider.otherwise(function($injector) {
@@ -353,6 +368,10 @@
                     url: '/logout',
                     controller: 'LogoutController'
                 })
+                .state('logout.facility', {
+                    url: '/:facilityName',
+                    controller: 'LogoutController'
+                })
                 ;
 
         })
@@ -361,7 +380,7 @@
     })*/
         //for lodash and make $state and $stateParams available at rootscope.
         .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
-            $rootScope._ = window._;
+            //$rootScope._ = window._;
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
         }])

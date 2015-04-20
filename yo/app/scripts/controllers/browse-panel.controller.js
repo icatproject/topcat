@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelController', BrowsePanelController);
 
-    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
+    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
 
-    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
+    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
         var vm = this;
         //var facility = 0;
         var facilityName = $stateParams.facilityName;
@@ -197,7 +197,20 @@
 
         //set the columns to display from config
         for (var i in column) {
-            var col = DTColumnBuilder.newColumn(column[i].name).withTitle(column[i].title).withOption('defaultContent', '');
+            var columnTitle;
+
+            /*if (angular.isDefined(column[i].title)) {
+                columnTitle = column[i].title;
+            }*/
+
+            if (angular.isDefined(column[i].translateTitle)) {
+                console.log('translateTitle', column[i].translateTitle);
+                $translate(column[i].translateTitle).then(function (translation) {
+                    columnTitle = translation;
+                });
+            }
+
+            var col = DTColumnBuilder.newColumn(column[i].name).withTitle(columnTitle).withOption('defaultContent', '');
 
             if (angular.isDefined(column[i].checkbox) && column[i].checkbox === true) {
                 col.renderWith(function(data, type, full) {

@@ -1,0 +1,67 @@
+{
+    "SITE_NAME": "TopCAT v2 FR",
+    "MAIN_NAVIGATION": {
+        "HOME": "Home",
+        "ABOUT": "About",
+        "CONTACT": "Contact",
+        "LOGIN": "Login",
+        "LOGOUT_ALL": "Logout All"
+    },
+    "LANGUAGE" : {
+        "BUTTON_LANG_EN" : "Anglais",
+        "BUTTON_LANG_FR" : "français"
+    },
+    "LOGIN": {
+        "PAGE_TITLE": "Login",
+        "FACILITY": "Facility",
+        "AUTHENTICATION_TYPE": "Authentication Type",
+        "USERNAME": "Username",
+        "PASSWORD": "Password",
+        "USERNAME_PLACEHOLDER": "@:LOGIN.USERNAME",
+        "PASSWORD_PLACEHOLDER": "@:LOGIN.PASSWORD",
+        "LOGIN_BUTTON": "Login",
+        "DEFAULT_LOGIN_ERROR_MESSAGE" : "Login failed"
+    },
+    "INFO" : {
+        "LOGOUT" : {
+            "LOGOUT_ALL" : "You are logged out of all facilities"
+        }
+    },
+    "ERROR": {
+        "LOGOUT" : "Error"
+    },
+    "BROWSE": {
+        "COLUMN": {
+            "FACILITY":{
+                "FULLNAME": "HELLO",
+                "NAME": "WORLD"
+            }
+        },
+        "INTERFACE" : {
+            "EMPTY_TABLE": "No data available in table",
+            "INFO": "Showing _START_ to _END_ of _TOTAL_ entries",
+            "INFO_EMPTY": "Showing 0 to 0 of 0 entries",
+            "INFO_FILTERED": "(filtered from _MAX_ total entries)",
+            "INFO_POST_FIX": "",
+            "THOUSANDS": ",",
+            "LENGTH_MENU": "Show _MENU_ entries",
+            "LOADING_RECORDS": "Loading...",
+            "PROCESSING": "Processing...",
+            "SEARCH": "Filter:",
+            "ZERO_RECORDS": "No matching records found",
+            "PAGINATE": {
+                "FIRST": "First FR",
+                "LAST": "Last",
+                "NEXT": "Next",
+                "PREVIOUS": "Previous"
+            },
+            "ARIA": {
+                "SORT_ASCENDING": ": activate to sort column ascending",
+                "SORT_DESCENDING": ": activate to sort column descending"
+            }
+
+        }
+
+    }
+
+}

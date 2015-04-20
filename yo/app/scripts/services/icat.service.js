@@ -65,7 +65,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
         if (angular.isDefined(options.include)) {
             console.log('optionsToQuery include', options.include);
-            if (! options.include instanceof Array) {
+            if (! (options.include instanceof Array)) {
                 throw {name : 'BAD_OPTION', message: 'INVALID OPTION: include must be an array'};
             }
 

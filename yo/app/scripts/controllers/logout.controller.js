@@ -5,20 +5,36 @@
         .module('angularApp')
         .controller('LogoutController', LogoutController);
 
-    LogoutController.$inject = ['$state', 'APP_CONFIG', 'Config', 'DataManager', '$sessionStorage', 'inform'];
+    LogoutController.$inject = ['$state', '$stateParams', 'APP_CONFIG', 'Config', '$translate', 'DataManager', '$sessionStorage', 'inform'];
 
-    function LogoutController($state, APP_CONFIG, Config, DataManager, $sessionStorage, inform) {
-        if(angular.isDefined($sessionStorage.sessions)) {
+    function LogoutController($state, $stateParams, APP_CONFIG, Config, $translate, DataManager, $sessionStorage, inform) {
+        if(angular.isDefined($state.params.facilityName)) {
+            //logout of single facility
+            delete $sessionStorage.sessions[$state.params.facilityName];
+
+            $translate('INFO.LOGOUT.LOGOUT', {facilityName: $state.params.facilityName}).then(function (translation) {
+                inform.add(translation, {
+                    'ttl': 3000,
+                    'type': 'info'
+                });
+            });
+        } else {
+            //logout of all facility
             $sessionStorage.sessions = {};
+
+            $translate('INFO.LOGOUT.LOGOUT_ALL').then(function (translation) {
+                inform.add(translation, {
+                    'ttl': 3000,
+                    'type': 'info'
+                });
+            });
         }
 
-        var message = 'You are logged out of all facilities';
-
-        inform.add(message, {
-                            'ttl': 3000,
-                            'type': 'danger'
-                        });
-
-        $state.go('login');
+        //Go to login page if not logged into any facility. Else go to facilities list
+        if (_.isEmpty($sessionStorage.sessions)) {
+            $state.go('login');
+        } else {
+            $state.go('home.browse.facilities');
+        }
     }
 })();

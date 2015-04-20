@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body>
+  <body ng-cloak ng-controller="IndexController as vm">
     <!-- Begin page content -->
     <div class="container-fluid">
       <div class="page-header">
@@ -33,25 +33,61 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand"="home.browse">TopCAT v2</a>
+                <a class="navbar-brand"="home.browse">{{'SITE_NAME' | translate}}</a>
               </div>
               <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                   <li class="active">
-                    <a ui-sref="home.browse.facilities">Home</a>
+                    <a ui-sref="home.browse.facilities">{{'MAIN_NAVIGATION.HOME' | translate}}</a>
                   </li>
                   <li>
-                    <a ui-sref="about">About</a>
+                    <a ui-sref="about">{{'MAIN_NAVIGATION.ABOUT' | translate}}</a>
                   </li>
                   <li>
-                    <a ui-sref="contact">Contact</a>
+                    <a ui-sref="contact">{{'MAIN_NAVIGATION.CONTACT' | translate}}</a>
                   </li>
-                  <li>
-                    <a ui-sref="login">Login</a>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                  <!-- <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Language<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                      <li>
+                        <a ng-click="vm.changeLanguage('en')">{{'LANGUAGE.BUTTON_LANG_EN' | translate}}</a>
+                      </li>
+                      <li>
+                        <a ng-click="vm.changeLanguage('fr')">{{'LANGUAGE.BUTTON_LANG_FR' | translate}}</a>
+                      </li>
+                    </ul>
+                  </li> -->
+
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{'MAIN_NAVIGATION.LOGIN' | translate}}<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                      <li>
+                        <a ui-sref="login">{{'MAIN_NAVIGATION.LOGIN' | translate}}</a>
+                      </li>
+                      <li class="divider" ng-if="vm.isLoggedIn()"></li>
+                      <li ng-repeat="facilityName in vm.facilitiesToLogout()" ng-if="vm.isLoggedIn()" >
+                        <a ui-sref="logout.facility({facilityName: facilityName})">{{'MAIN_NAVIGATION.LOGOUT' | translate}} {{facilityName}}</a>
+                      </li>
+                      <li ng-if="vm.isLoggedIn()">
+                        <a ui-sref="logout">{{'MAIN_NAVIGATION.LOGOUT_ALL' | translate}}</a>
+                      </li>
+                    </ul>
                   </li>
-                  <li>
-                    <a ui-sref="logout">Logout All</a>
-                  </li>
+
+                  <!-- navbar split button. Doesn't look very good on mobile -->
+                  <!-- <li class="dropdown-split-left"><a ui-sref="login">{{'MAIN_NAVIGATION.LOGIN' | translate}}</a></li>
+                  <li class="dropdown dropdown-split-right">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <i class="caret"></i>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                      <li>
+                          <a ui-sref="logout">{{'MAIN_NAVIGATION.LOGOUT_ALL' | translate}}</a>
+                      </li>
+                    </ul>
+                  </li> -->
                 </ul>
               </div><!--/.nav-collapse -->
             </div>
@@ -103,6 +139,8 @@
     <script src="bower_components/angular-pretty-bytes/angular-pretty-bytes.js"></script>
     <script src="bower_components/checklist-model/checklist-model.js"></script>
     <script src="bower_components/ngstorage/ngStorage.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.js"></script>
+    <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -115,6 +153,7 @@
         <script src="scripts/services/config-utils.service.js"></script>
         <script src="scripts/services/route-utils.service.js"></script>
         <script src="scripts/services/authenticate.service.js"></script>
+        <script src="scripts/controllers/index.controller.js"></script>
         <script src="scripts/controllers/home.controller.js"></script>
         <script src="scripts/controllers/search-form.controller.js"></script>
         <script src="scripts/controllers/parameter-modal.controller.js"></script>

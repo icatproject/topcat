@@ -14,6 +14,20 @@
                 "dataset",
                 "datafile"
             ],
+            "authenticationType" : [
+                {
+                    "title" : "LDAP",
+                    "plugin" : "ldap"
+                },
+                {
+                    "title" : "DB",
+                    "plugin" : "db"
+                },
+                {
+                    "title" : "Anonymous",
+                    "plugin" : "anon"
+                }
+            ],
             "browseColumns": {
                 "instrument": [
                     {
@@ -146,6 +160,12 @@
                 "dataset",
                 "datafile"
             ],
+            "authenticationType" : [
+                {
+                    "title" : "USER OFFICE",
+                    "plugin" : "uows"
+                }
+            ],
             "browseColumns": {
                 "instrument": [
                     {
@@ -258,12 +278,14 @@
             {
                 "name": "name",
                 "title": "Name",
+                "translateTitle": "BROWSE.COLUMN.FACILITY.NAME",
                 "link": true,
                 "sortByDefault": "asc"
             },
             {
                 "name": "fullName",
-                "title": "Full Name"
+                "title": "Full Name",
+                "translateTitle": "BROWSE.COLUMN.FACILITY.FULLNAME"
             }
         ]
     }

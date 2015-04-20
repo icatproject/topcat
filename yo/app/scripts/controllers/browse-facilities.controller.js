@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowseFacilitiesController', BrowseFacilitiesController);
 
-    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
+    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
 
-    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
+    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
         var vm = this;
         //var facility = 0;
         var server = 'dls-server';
@@ -18,6 +18,29 @@
         var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
         //var structure = APP_CONFIG.servers[server].facility[facility].structure;
         var column = Config.getFacilitiesColumns(APP_CONFIG); //the facilities column configuration
+        var browseLanguage = {
+            'emptyTable': $translate.instant('BROWSE.INTERFACE.EMPTY_TABLE'),
+            'info': $translate.instant('BROWSE.INTERFACE.INFO'),
+            'infoEmpty': $translate.instant('BROWSE.INTERFACE.INFO_EMPTY'),
+            'infoFiltered': $translate.instant('BROWSE.INTERFACE.INFO_FILTERED'),
+            'infoPostFix': $translate.instant('BROWSE.INTERFACE.INFO_POST_FIX'),
+            'thousands': $translate.instant('BROWSE.INTERFACE.THOUSANDS'),
+            'lengthMenu': $translate.instant('BROWSE.INTERFACE.LENGTH_MENU'),
+            'loadingRecords': $translate.instant('BROWSE.INTERFACE.LOADING_RECORDS'),
+            'processing': $translate.instant('BROWSE.INTERFACE.PROCESSING'),
+            'search': $translate.instant('BROWSE.INTERFACE.SEARCH'),
+            'zeroRecords': $translate.instant('BROWSE.INTERFACE.ZERO_RECORDS'),
+            'paginate': {
+                'first': $translate.instant('BROWSE.INTERFACE.PAGINATE.FIRST'),
+                'last': $translate.instant('BROWSE.INTERFACE.PAGINATE.LAST'),
+                'next': $translate.instant('BROWSE.INTERFACE.PAGINATE.NEXT'),
+                'previous': $translate.instant('BROWSE.INTERFACE.PAGINATE.PREVIOUS')
+            },
+            'aria': {
+                'sortAscending': $translate.instant('BROWSE.INTERFACE.ARIA.SORT_ASCENDING'),
+                'sortDescending': $translate.instant('BROWSE.INTERFACE.ARIA.SORT_DESCENDING')
+            }
+        };
 
 
 
@@ -27,7 +50,7 @@
         //vm.structure = structure;
         vm.currentEntityType = currentEntityType;
 
-        if (! angular.isDefined($rootScope.cart)) {
+        if (!angular.isDefined($rootScope.cart)) {
             $rootScope.cart = [];
             $rootScope.ref = [];
         }
@@ -43,6 +66,9 @@
         //var version = DataManager.getVersion();
         //console.log('icat version=', version);
 
+        console.log('browseLanguage', browseLanguage);
+
+
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
@@ -52,7 +78,8 @@
                     .withDisplayLength(browseMaxRows)
                     .withOption('fnRowCallback', rowCallback)
                     .withOption('autoWidth', false)
-                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column));
+                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column))
+                    .withOption('language', browseLanguage);
                 break;
             case 'scroll':
                 /* falls through */
@@ -65,7 +92,9 @@
                     .withOption('scrollY', 180)
                     .withOption('fnRowCallback', rowCallback)
                     .withOption('autoWidth', false)
-                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column));
+                    .withOption('aaSorting', ConfigUtils.getDefaultSortArray(column))
+                    .withOption('language', browseLanguage);
+
                 break;
         }
 
@@ -133,7 +162,22 @@
 
         //set the columns to display from config
         for (var i in column) {
-            var col = DTColumnBuilder.newColumn(column[i].name).withTitle(column[i].title).withOption('defaultContent', '');
+            var columnTitle = $translate.instant(column[i].translateTitle);
+
+            /*if (angular.isDefined(column[i].title)) {
+                columnTitle = column[i].title;
+            }*/
+
+            /*if (angular.isDefined(column[i].translateTitle)) {
+                console.log('translateTitle: ', column[i].translateTitle);
+                $translate(column[i].translateTitle).then(function(translation) {
+                    columnTitle = translation;
+                });
+            }*/
+
+
+
+            var col = DTColumnBuilder.newColumn(column[i].name).withTitle(columnTitle).withOption('defaultContent', '');
 
             if (angular.isDefined(column[i].checkbox) && column[i].checkbox === true) {
                 col.renderWith(function(data, type, full) {
@@ -141,9 +185,9 @@
 
                     $rootScope.ref[full.id] = {
                         'id': full.id,
-                        'server' : server,
-                        'facility' : $stateParams.facility,
-                        'entity' : currentEntityType
+                        'server': server,
+                        'facility': $stateParams.facility,
+                        'entity': currentEntityType
 
                     };
 
