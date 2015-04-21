@@ -114,7 +114,7 @@ router.get('/entityManager', function(req, res, next) {
                 method: 'GET',
                 qs: {
                     sessionId: req.query.sessionId,
-                    query : req.query.query
+                    query : decodeURIComponent(req.query.query)
                 },
                 json: true
             }, function (error, response, body) {
@@ -142,7 +142,7 @@ router.get('/entityManager', function(req, res, next) {
                         method: 'GET',
                         qs: {
                             sessionId: req.query.sessionId,
-                            query : req.query.countQuery
+                            query : decodeURIComponent(req.query.countQuery)
                         },
                         json: true
                     }, function (error, response, body) {
@@ -162,7 +162,7 @@ router.get('/entityManager', function(req, res, next) {
                         method: 'GET',
                         qs: {
                             sessionId: req.query.sessionId,
-                            query : req.query.query
+                            query : decodeURIComponent(req.query.query)
                         },
                         json: true
                     }, function (error, response, body) {
