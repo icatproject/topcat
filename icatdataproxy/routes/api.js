@@ -12,7 +12,11 @@ router.get('/version', function(req, res, next) {
         if (!error && response.statusCode == 200) {
             res.end(body);
         } else {
-            res.status(response.statusCode).end("Failed");
+            if (_.isUndefined(response)) {
+                    res.status(0).json(body);
+            } else {
+                res.status(response.statusCode).end("Failed");
+            }
         }
     });
 });
@@ -40,7 +44,11 @@ router.post('/session', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end(body);
             } else {
-                res.status(response.statusCode).json(body);
+                if (_.isUndefined(response)) {
+                    res.status(0).json(body);
+                } else {
+                    res.status(response.statusCode).json(body);
+                }
             }
         }
     );
@@ -58,7 +66,11 @@ router.get('/session/:sessionId', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end(body);
             } else {
-                res.status(response.statusCode).json(body);
+                if (_.isUndefined(response)) {
+                    res.status(0).json(body);
+                } else {
+                    res.status(response.statusCode).json(body);
+                }
             }
         }
     );
@@ -77,7 +89,11 @@ router.put('/session/:sessionId', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end();
             } else {
-                res.status(response.statusCode).json(body);
+                if (_.isUndefined(response)) {
+                    res.status(0).json(body);
+                } else {
+                    res.status(response.statusCode).json(body);
+                }
             }
         }
     );
@@ -96,7 +112,11 @@ router.delete('/session/:sessionId', function(req, res, next) {
             if (!error && response.statusCode == 200) {
                 res.end();
             } else {
-                res.status(response.statusCode).json(body);
+                if (_.isUndefined(response)) {
+                    res.status(0).json(body);
+                } else {
+                    res.status(response.statusCode).json(body);
+                }
             }
         }
     );
@@ -113,7 +133,7 @@ router.get('/entityManager', function(req, res, next) {
                 url: req.query.server + '/icat/entityManager',
                 method: 'GET',
                 qs: {
-                    sessionId: req.query.sessionId,
+                    sessionId: decodeURIComponent(req.query.sessionId),
                     query : decodeURIComponent(req.query.query)
                 },
                 json: true
@@ -124,7 +144,11 @@ router.get('/entityManager', function(req, res, next) {
                     }
                     res.json(body);
                 } else {
-                    res.status(response.statusCode).json(body);
+                    if (_.isUndefined(response)) {
+                        res.status(0).json(body);
+                    } else {
+                        res.status(response.statusCode).json(body);
+                    }
                 }
             }
         );
@@ -141,7 +165,7 @@ router.get('/entityManager', function(req, res, next) {
                         url: req.query.server + '/icat/entityManager',
                         method: 'GET',
                         qs: {
-                            sessionId: req.query.sessionId,
+                            sessionId: decodeURIComponent(req.query.sessionId),
                             query : decodeURIComponent(req.query.countQuery)
                         },
                         json: true
