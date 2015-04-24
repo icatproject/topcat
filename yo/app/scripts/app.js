@@ -46,8 +46,6 @@
         ])
         .constant('_', window._)
         .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
-            console.log('LANG', LANG);
-
             $translateProvider.translations('en', LANG);
 
             $translateProvider.useStaticFilesLoader({
@@ -56,6 +54,9 @@
             });
             $translateProvider.preferredLanguage('en');
          }])
+        .config(['$httpProvider', function($httpProvider) {
+            $httpProvider.interceptors.push('HttpErrorInterceptor');
+        }])
         .config(function($stateProvider, $urlRouterProvider) {
             //workaround https://github.com/angular-ui/ui-router/issues/1022
             $urlRouterProvider.otherwise(function($injector) {

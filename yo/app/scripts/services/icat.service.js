@@ -119,7 +119,9 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var options = {
                 'headers': {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 },
                 'transformRequest': function(obj) {
                     var str = [];
@@ -161,8 +163,11 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     sessionId : mySessionId,
                     query : query,
                     entity : 'Facility'
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
-
             };
 
             return $http.get(url, params);
@@ -173,6 +178,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
     data.getInstruments = function(mySessionId, facility, options) {
         console.log('getInstruments session: ', mySessionId);
         console.log('getInstruments options: ', options);
+        console.log('getInstruments facility: ', facility);
 
         if (useFileForData) {
             return $http.get('data/icatapi-instruments.json');
@@ -187,6 +193,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Instrument',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -221,6 +231,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Investigation',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -248,6 +262,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Investigation',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -280,6 +298,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Dataset',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -302,6 +324,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Dataset',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -325,6 +351,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Dataset',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -348,6 +378,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Datafile',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -370,6 +404,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Datafile',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -392,6 +430,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Datafile',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 
@@ -413,6 +455,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
                     query : query,
                     entity : 'Datafile',
                     server : facility.icatUrl
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
             };
 

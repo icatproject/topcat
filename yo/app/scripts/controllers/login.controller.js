@@ -19,7 +19,7 @@
         //get available facilities from config
         var allFacilityNames = ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG));
         var loggedInFacilities = _.keys($sessionStorage.sessions);
-        var notLoggedInFacilities = _.difference(allFacilityNames, loggedInFacilities);
+        var notLoggedInFacilities = getNotLoggedInFacilitiesObjects(allFacilityNames, loggedInFacilities, APP_CONFIG, Config);
 
         vm.facilities = notLoggedInFacilities;
         vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, allFacilityNames[0]).authenticationType;
@@ -44,7 +44,7 @@
 
 
         vm.isSingleAuthenticationType = function() {
-            console.log('LoginController.isSingleAuthenticationType', Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length);
+            //console.log('LoginController.isSingleAuthenticationType', Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length);
             if (Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length === 1) {
                 return true;
             }
@@ -114,7 +114,7 @@
 
                 } else {
 
-                    if (angular.isDefined(data.sessionId)) {
+                    if (data !== null && angular.isDefined(data.sessionId)) {
                         //reset the form
                         $sessionStorage.sessions[form.facilityName.$modelValue]  = {
                             sessionId : data.sessionId
@@ -143,15 +143,31 @@
                             if (angular.isDefined(json)) {
                                 message = json.message;
                             }
-                        }
 
-                        inform.add(message !== null ? message : $translate('DEFAULT_LOGIN_ERROR_MESSAGE'), {
+                            inform.add(message !== null ? message : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {
                             'ttl': 0,
                             'type': 'danger'
-                        });
+                            });
+                        }
                     }
                 }
             });
         };
+
+        //get not logged in facilities
+        function getNotLoggedInFacilitiesObjects(allFacilityNames, loggedInFacilities, APP_CONFIG, Config) {
+            var notLoggedInFacilitiesObject = [];
+
+            var notLoggedInFacilitiesNames = _.difference(allFacilityNames, loggedInFacilities);
+
+            console.log('notLoggedInFacilitiesNames', notLoggedInFacilitiesNames);
+
+            _.each(notLoggedInFacilitiesNames, function(facilityName) {
+                console.log('facilityName', facilityName);
+                notLoggedInFacilitiesObject.push(Config.getFacilityByName(APP_CONFIG, facilityName));
+            });
+
+            return notLoggedInFacilitiesObject;
+        }
     }
 })();

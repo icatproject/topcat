@@ -1,11 +1,18 @@
 {
     "SITE_NAME": "TopCAT v2 FR",
     "MAIN_NAVIGATION": {
-        "HOME": "Home",
+        "HOME": "Home FR",
         "ABOUT": "About",
         "CONTACT": "Contact",
+        "LANGUAGE": "Language",
         "LOGIN": "Login",
-        "LOGOUT_ALL": "Logout All"
+        "LOGOUT": "Logout",
+        "LOGOUT_FACILITY" : "Logout {{facilityName}}",
+        "LOGOUT_ALL": "Logout All",
+        "MAIN_TAB" : {
+            "BROWSE" : "Browse",
+            "CART" : "Cart"
+        }
     },
     "LANGUAGE" : {
         "BUTTON_LANG_EN" : "Anglais",
@@ -20,10 +27,14 @@
         "USERNAME_PLACEHOLDER": "@:LOGIN.USERNAME",
         "PASSWORD_PLACEHOLDER": "@:LOGIN.PASSWORD",
         "LOGIN_BUTTON": "Login",
-        "DEFAULT_LOGIN_ERROR_MESSAGE" : "Login failed"
+        "DEFAULT_LOGIN_ERROR_MESSAGE" : "Login failed",
+        "INFO" : {
+            "NO_MORE_FACILITIES" : "You have already logged into all available facilities"
+        }
     },
     "INFO" : {
         "LOGOUT" : {
+            "LOGOUT" : "You logged out of {{facilityName}}",
             "LOGOUT_ALL" : "You are logged out of all facilities"
         }
     },
@@ -59,9 +70,28 @@
                 "SORT_ASCENDING": ": activate to sort column ascending",
                 "SORT_DESCENDING": ": activate to sort column descending"
             }
-
         }
-
+    },
+    "SEARCH" : {
+        "FORM" : {
+            "SEARCH_TEXT_PLACEHOLDER": "F Search Text",
+            "SELECT_TYPE": "F Select a Search Type",
+            "SELECT_FACILITY": "F Select a Facility",
+            "START_DATE_PLACEHOLDER" : "F Start Date",
+            "END_DATE_PLACEHOLDER" : "F Start Date",
+            "ADD_PARAMETER_BUTTON" : "F Add Parameter",
+            "ADD_SAMPLE_BUTTON" : "F Add Sample",
+            "SEARCH_BUTTON" : "F Search"
+        }
+    },
+    "CART" : {
+        "TITLE" : "Cart"
+    },
+    "ABOUT" : {
+        "TITLE" : "About"
+    },
+    "CONTACT" : {
+        "TITLE" : "Contact"
     }
 
 }

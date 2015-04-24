@@ -7,18 +7,12 @@
                 <fieldset>
                     <div class="form-group" ng-hide="vm.isSingleFacility()">
                         <label class="control-label" for="server">{{'LOGIN.FACILITY' | translate}}</label>
-                        <select id="facilityName" name="facilityName" class="form-control" ng-model="vm.user.facilityName" ng-options="facility as facility for facility in vm.facilities" ng-init="vm.user.facilityName = vm.facilities[0]" ng-change="vm.updateAuthenticationTypes(vm.user.facilityName)" required>
-                        <!-- <select id="facilityName" name="facilityName" class="form-control" ng-model="vm.user.facilityName" required> -->
-                            <!-- <option value="dls">dls</option>
-                            <option value="isis">isis</option> -->
+                        <select id="facilityName" name="facilityName" class="form-control" ng-model="vm.user.facilityName" ng-options="facility.keyName as facility.title for facility in vm.facilities" ng-init="vm.user.facilityName = vm.facilities[0].keyName" ng-change="vm.updateAuthenticationTypes(vm.user.facilityName)" required>
                         </select>
                     </div>
                     <div class="form-group" ng-hide="vm.isSingleAuthenticationType()">
                         <label class="control-label" for="plugin">{{'LOGIN.AUTHENTICATION_TYPE' | translate}} </label>
                         <select id="plugin" name="plugin" class="form-control" ng-model="vm.user.plugin" ng-options="authenticationType.plugin as authenticationType.title for authenticationType in vm.getAuthenticationTypes(vm.user.facilityName)" ng-init="vm.user.plugin = vm.getAuthenticationTypes(vm.user.facilityName)[0].plugin" required>
-                            <!-- <option value="ldap">ldap</option>
-                            <option value="db">db</option>
-                            <option value="uows">uows</option> -->
                         </select>
                     </div>
                     <div class="form-group">

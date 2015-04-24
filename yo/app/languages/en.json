@@ -4,10 +4,15 @@
         "HOME": "Home",
         "ABOUT": "About",
         "CONTACT": "Contact",
+        "LANGUAGE": "Language",
         "LOGIN": "Login",
         "LOGOUT": "Logout",
-        "LOGOUT_ALL": "Logout All"
-
+        "LOGOUT_FACILITY" : "Logout {{facilityName}}",
+        "LOGOUT_ALL": "Logout All",
+        "MAIN_TAB" : {
+            "BROWSE" : "Browse",
+            "CART" : "Cart"
+        }
     },
     "LANGUAGE" : {
         "BUTTON_LANG_EN" : "English",
@@ -27,11 +32,13 @@
             "NO_MORE_FACILITIES" : "You have already logged into all available facilities"
         }
     },
+    "SESSION" : {
+        "EXPIRED_ERROR" : "You session has expired. You must login again to the {{facilityTitle}} facility"
+    },
     "INFO" : {
         "LOGOUT" : {
             "LOGOUT" : "You logged out of {{facilityName}}",
             "LOGOUT_ALL" : "You logged out of all facilities"
-
         }
     },
     "ERROR": {
@@ -40,8 +47,8 @@
     "BROWSE": {
         "COLUMN": {
             "FACILITY":{
-                "FULLNAME": "HELLO",
-                "NAME": "WORLD"
+                "FULLNAME": "Full Name",
+                "NAME": "Name"
             }
         },
         "INTERFACE" : {
@@ -66,9 +73,33 @@
                 "SORT_ASCENDING": ": activate to sort column ascending",
                 "SORT_DESCENDING": ": activate to sort column descending"
             }
-
         }
-
+    },
+    "SEARCH" : {
+        "FORM" : {
+            "SEARCH_TEXT_PLACEHOLDER": "Search Text",
+            "SELECT_TYPE": "Select a Search Type",
+            "SELECT_FACILITY": "Select a Facility",
+            "START_DATE_PLACEHOLDER" : "Start Date",
+            "END_DATE_PLACEHOLDER" : "Start Date",
+            "ADD_PARAMETER_BUTTON" : "Add Parameter",
+            "ADD_SAMPLE_BUTTON" : "Add Sample",
+            "SEARCH_BUTTON" : "Search"
+        }
+    },
+    "CART" : {
+        "TITLE" : "Cart"
+    },
+    "ABOUT" : {
+        "TITLE" : "About"
+    },
+    "CONTACT" : {
+        "TITLE" : "Contact"
+    },
+    "RESPONSE": {
+        "ERROR" : {
+            "NO_CONNECTION" : "Unable to contact the facility {{facilityTitle}}"
+        }
     }
 
 }

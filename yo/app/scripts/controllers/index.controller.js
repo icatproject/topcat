@@ -20,6 +20,5 @@
         vm.isLoggedIn = function(){
             return ! (_.isEmpty($sessionStorage.sessions));
         };
-
     }
 })();
