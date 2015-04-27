@@ -43,9 +43,27 @@ function DataManager($http, $q, ICATService) {
             .error(function(error, status) {
                 console.log('login status', status);
 
-                if (status === 0) {
-                    throw new MyException('Unable to contact the facility ' + facility.title);
-                }
+                def.reject('Failed to login');
+                throw new MyException('Failed to login:' + error);
+            });
+
+        return def.promise;
+    };
+
+
+    manager.logout = function(sessions, facility, options) {
+        console.log('DataManager.logout called for facility' , facility);
+        console.log('DataManager.logout called for sessions' , sessions);
+
+        var sessionId = getSessionValueForFacility(sessions, facility);
+        var def = $q.defer();
+
+        ICATService.logout(sessionId, facility, options)
+            .success(function(data) {
+                def.resolve(data);
+            })
+            .error(function(error, status) {
+                console.log('logout status', status);
 
                 def.reject('Failed to login');
                 throw new MyException('Failed to login:' + error);

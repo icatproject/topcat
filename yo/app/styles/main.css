@@ -40,7 +40,7 @@ body {
 }
 
 
-[ng-click] {
+[ng-click], .pointer {
     cursor: pointer;
 }
 

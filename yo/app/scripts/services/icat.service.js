@@ -139,14 +139,45 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         }
     };
 
+    data.logout = function(mySessionId, facility, options) {
+        console.log('icatservice.logout called for facility' , facility);
+        if (useFileForSession) {
+            console.log('logout returning json file');
+            return $http.get('data/icatapi-session-multi.json');
+        } else {
+            var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId;
+            var params = {
+                params : {
+                    server : encodeURIComponent(facility.icatUrl)
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
+                }
+            };
+
+            var data = {
+                server : facility.icatUrl
+            };
+
+            return $http.delete(url, params);
+        }
+    };
+
+
     data.getVersion = function(facility) {
         var url = ICATDATAPROXYURL + '/icat/version';
-
-        return $http.get(url, {
-                params: {
-                    server: facility.icatUrl
+        var params = {
+                params : {
+                    server : encodeURIComponent(facility.icatUrl)
+                },
+                headers : {
+                    'facilityKeyName' : facility.keyName,
+                    'facilityTitle' : facility.title
                 }
-            });
+            };
+
+        return $http.get(url, params);
     };
 
 
@@ -184,15 +215,16 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-instruments.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facility.facilityId;
+            var query = 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facility.facilityId + ' AND UPPER(ins.name) LIKE \'%B%\'';
+            //http://localhost:3000/icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=0e8dc561-cf59-4640-b2e8-e5e8c5e8ceab&query=SELECT ins FROM Instrument ins, ins.facility f where f.id = 1 AND UPPER(ins.name) LIKE '%B%'
             query = appendOptionsToQuery(options, query);
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Instrument',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -227,10 +259,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Investigation',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -258,10 +290,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Investigation',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -294,10 +326,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Dataset',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -321,9 +353,9 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             var params = {
                 params : {
                     sessionId : mySessionId,
-                    query : query,
+                    query : encodeURIComponent(query),
                     entity : 'Dataset',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -347,10 +379,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Dataset',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -374,10 +406,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Datafile',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -400,10 +432,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Datafile',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -426,10 +458,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Datafile',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,
@@ -451,10 +483,10 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
 
             var params = {
                 params : {
-                    sessionId : mySessionId,
-                    query : query,
+                    sessionId : encodeURIComponent(mySessionId),
+                    query : encodeURIComponent(query),
                     entity : 'Datafile',
-                    server : facility.icatUrl
+                    server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
                     'facilityKeyName' : facility.keyName,

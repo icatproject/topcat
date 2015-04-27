@@ -49,6 +49,10 @@
             "FACILITY":{
                 "FULLNAME": "Full Name",
                 "NAME": "Name"
+            },
+            "INSTRUMENT":{
+                "FULLNAME": "Instrument Full Name",
+                "NAME": "Instrument Name"
             }
         },
         "INTERFACE" : {

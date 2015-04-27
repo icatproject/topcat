@@ -38,12 +38,14 @@
                     {
                         "name": "name",
                         "title": "Name",
+                        "translateTitle" : "BROWSE.COLUMN.INSTRUMENT.NAME",
                         "link": true,
                         "sortByDefault" : "asc"
                     },
                     {
                         "name": "fullName",
                         "title": "Full Name",
+                        "translateTitle" : "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                         "sortable": false
                     }
                 ],

@@ -199,15 +199,13 @@
         for (var i in column) {
             var columnTitle;
 
-            /*if (angular.isDefined(column[i].title)) {
+            if (angular.isDefined(column[i].title)) {
                 columnTitle = column[i].title;
-            }*/
+            }
 
             if (angular.isDefined(column[i].translateTitle)) {
                 console.log('translateTitle', column[i].translateTitle);
-                $translate(column[i].translateTitle).then(function (translation) {
-                    columnTitle = translation;
-                });
+                columnTitle = $translate.instant(column[i].translateTitle);
             }
 
             var col = DTColumnBuilder.newColumn(column[i].name).withTitle(columnTitle).withOption('defaultContent', '');
