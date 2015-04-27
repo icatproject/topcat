@@ -35,7 +35,7 @@ router.post('/session', function(req, res, next) {
 
     request(
         {
-            url: req.body.server + '/icat/session',
+            url: decodeURIComponent(req.body.server) + '/icat/session',
             method: 'POST',
             form: {
                 json: JSON.stringify(data)
@@ -60,7 +60,7 @@ router.post('/session', function(req, res, next) {
 router.get('/session/:sessionId', function(req, res, next) {
     request(
         {
-            url: req.query.server + '/icat/session/' + req.params.sessionId,
+            url: decodeURIComponent(req.query.server) + '/icat/session/' + req.params.sessionId,
             method: 'GET'
         }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -83,7 +83,7 @@ router.get('/session/:sessionId', function(req, res, next) {
 router.put('/session/:sessionId', function(req, res, next) {
     request(
         {
-            url: req.query.server + '/icat/session/' + req.params.sessionId,
+            url: decodeURIComponent(req.query.server) + '/icat/session/' + req.params.sessionId,
             method: 'PUT'
         }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -106,7 +106,7 @@ router.put('/session/:sessionId', function(req, res, next) {
 router.delete('/session/:sessionId', function(req, res, next) {
     request(
         {
-            url: req.query.server + '/icat/session/' + req.params.sessionId,
+            url: decodeURIComponent(req.query.server) + '/icat/session/' + req.params.sessionId,
             method: 'DELETE'
         }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -128,13 +128,16 @@ router.delete('/session/:sessionId', function(req, res, next) {
  */
 router.get('/entityManager', function(req, res, next) {
     if (_.isUndefined(req.query.countQuery)) {
+        var query = req.query.query;
+        console.log('query:', decodeURIComponent(req.query.query));
+
         request(
             {
-                url: req.query.server + '/icat/entityManager',
+                url: decodeURIComponent(req.query.server) + '/icat/entityManager',
                 method: 'GET',
                 qs: {
                     sessionId: decodeURIComponent(req.query.sessionId),
-                    query : decodeURIComponent(req.query.query)
+                    query : decodeURIComponent(query)
                 },
                 json: true
             }, function (error, response, body) {
@@ -154,7 +157,7 @@ router.get('/entityManager', function(req, res, next) {
         );
 
     }  else {
-
+        console.log('countQuery:', decodeURIComponent(req.query.countQuery));
         //use async to make calls in parallel to get result and total
         //count and combine them. See https://github.com/caolan/async#parallel
         async.parallel([
@@ -162,7 +165,7 @@ router.get('/entityManager', function(req, res, next) {
                 //query count
                 request(
                     {
-                        url: req.query.server + '/icat/entityManager',
+                        url: decodeURIComponent(req.query.server) + '/icat/entityManager',
                         method: 'GET',
                         qs: {
                             sessionId: decodeURIComponent(req.query.sessionId),
@@ -182,7 +185,7 @@ router.get('/entityManager', function(req, res, next) {
                 //query for entities
                 request(
                     {
-                        url: req.query.server + '/icat/entityManager',
+                        url: decodeURIComponent(req.query.server) + '/icat/entityManager',
                         method: 'GET',
                         qs: {
                             sessionId: req.query.sessionId,
