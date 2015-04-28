@@ -8,7 +8,7 @@ var _ = require('lodash');
  * Version route
  */
 router.get('/version', function(req, res, next) {
-    request(req.query.server + '/icat/version', function (error, response, body) {
+    request(decodeURIComponent(req.query.server) + '/icat/version', function (error, response, body) {
         if (!error && response.statusCode == 200) {
             res.end(body);
         } else {
