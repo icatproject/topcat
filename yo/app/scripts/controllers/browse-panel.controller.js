@@ -9,6 +9,7 @@
     BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
 
     function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
+        $scope.message = null;
         var vm = this;
         //var facility = 0;
         var facilityName = $stateParams.facilityName;
@@ -89,7 +90,9 @@
             inform.add('Type: ' + currentEntityType + ' Id:' + aData.id, {
                 'ttl': 3000,
                 'type': 'info'
-            }); //TODO update meta tab with details
+            });
+            $scope.message = { "Type" : currentEntityType, "Id" : aData.id };
+            $rootScope.$broadcast('rowclick', $scope.message);
         }
 
         /**

@@ -8,11 +8,11 @@ requests.packages.urllib3.disable_warnings()
 
 myDetails = {
     'dls' : {
-        'username' : 'vcf21513',
-        'plugin' : 'ldap'
+        'username' : '',
+        'plugin' : 'db'
     },
     'isis' : {
-        'username' : 'vcf21513',
+        'username' : '',
         'plugin' : 'uows'
     }
 }

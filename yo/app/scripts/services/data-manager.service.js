@@ -93,6 +93,21 @@ function DataManager($http, $q, ICATService) {
     };
 
 
+    manager.getEntityById = function(sessions, facility, entityType, entityId, options) {
+        var sessionId = getSessionValueForFacility(sessions, facility);
+        var def = $q.defer();
+
+        ICATService.getEntityById(sessionId, facility, entityType, entityId, options)
+            .success(function(data) {
+                def.resolve(data);
+            })
+            .error(function() {
+                def.reject('Failed to retrieve data from server');
+                throw new MyException('Failed to retrieve data from server');
+            });
+
+        return def.promise;
+    };
 
 
     /**
@@ -210,7 +225,7 @@ function DataManager($http, $q, ICATService) {
         return def.promise;
     };
 
-
+    
     /**
      * Get the investigations for a cycle in a facility
      * @param  {Object} sessions session object containing logged in sessions
@@ -304,6 +319,7 @@ function DataManager($http, $q, ICATService) {
         return def.promise;
     };
 
+
     /**
      * Get the datasets for an instrument in a facility
      * @param  {Object} sessions session object containing logged in sessions
@@ -367,11 +383,11 @@ function DataManager($http, $q, ICATService) {
             })
             .error(function() {
                 def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+                throw new MyException('Failed to retrieve data from server'); 
             });
 
         return def.promise;
-    };
+    }; 
 
 
     /**

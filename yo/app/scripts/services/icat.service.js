@@ -180,6 +180,25 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         return $http.get(url, params);
     };
 
+    data.getEntityById = function(mySessionId, facility, entityType, entityId, options) {
+        var url = ICATDATAPROXYURL + '/icat/entityManager';
+        var entityIcatName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
+        var query = entityIcatName ;
+        query = appendOptionsToQuery(options, query);
+        query += ' [id=' + entityId + ']';
+
+        var params = {
+            params : {
+                sessionId : mySessionId,
+                query : query,
+                entity : entityIcatName, 
+                server : facility.icatUrl
+            }
+        };
+
+        return $http.get(url, params);
+    };
+
 
     /** get facilities */
     data.getFacilities = function(mySessionId, facility, options) {
@@ -215,7 +234,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-instruments.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facility.facilityId + ' AND UPPER(ins.name) LIKE \'%B%\'';
+            var query = 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facility.facilityId ;
             //http://localhost:3000/icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=0e8dc561-cf59-4640-b2e8-e5e8c5e8ceab&query=SELECT ins FROM Instrument ins, ins.facility f where f.id = 1 AND UPPER(ins.name) LIKE '%B%'
             query = appendOptionsToQuery(options, query);
 
@@ -341,7 +360,6 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         }
     };
 
-
     data.getDatasetsByInstrumentId = function(mySessionId, facility, instrumentId, options) {
         if (useFileForData) {
             return $http.get('data/icatapi-datafiles.json');
@@ -420,7 +438,6 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get(url, params);
         }
     };
-
 
     data.getDatafilesByInstrumentId = function(mySessionId, facility, instrumentId, options) {
         if (useFileForData) {

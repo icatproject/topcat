@@ -78,6 +78,17 @@ function Config(){
          */
         getSiteConfig : function(config) {
             return config.site;
+        },
+
+        /**
+         * Return the realtions to be shown in meta tabs
+         * @param  {[type]} config       [description]
+         * @param  {[type]} facilityName [description]
+         * @param  {[type]} entityType   [description]
+         * @return {[type]}              [description]
+         */
+        getMetaTabsByEntityType : function(config, facilityName, entityType) {
+            return config.facilities[facilityName].metaTabs[entityType];
         }
 
     };

@@ -14,7 +14,7 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType" : [
+			"authenticationType" : [
                 {
                     "title" : "LDAP",
                     "plugin" : "ldap"
@@ -162,12 +162,183 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType" : [
+			"authenticationType" : [
                 {
                     "title" : "USER OFFICE",
                     "plugin" : "uows"
                 }
             ],
+			"metaTabs" : {
+				"instrument" : 
+				[
+					{
+						"title" : "Instrument Details",
+						"icatName" : "instrument",
+						"default" : true,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "fullName"
+							},
+							{	
+								"title" : "Description",
+								"icatName" : "description"
+							},
+							{ 	"title" : "Type",
+								"icatName" : "type"
+							},
+							{	"title" : "URL",
+								"icatName" : "url"
+							}
+						]		
+					},
+					{
+						"title" : "Instrument Scientists",
+						"icatName" : "instrumentScientists",
+						"queryParams" : ["InstrumentScientist", "User"],
+						"default" : false,
+						"data" : [
+							{
+								"icatName" : "user",
+								"default" : false,
+								"data" : [
+									{
+										"title" : "Name",
+										"icatName" : "fullName"
+									}
+								]	
+							}
+						]
+					}
+				],
+				"investigation" : 
+				[
+					{
+						"title" : "Investigation Details",
+						"icatName" : "investigation",
+						"default" : true,
+						"data" : [ 
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Title",
+								"icatName" : "title"
+							},
+							{
+								"title" : "Summary",
+								"icatName" : "summary"
+							},
+							{
+								"title" : "Start Date",
+								"icatName" : "startDate"
+							},
+							{
+								"title" : "End Date",
+								"icatName" : "endDate"
+							}
+						]
+					},
+					{
+						"title" : "Investigation Users",
+						"icatName" : "investigationUsers",
+						"queryParams" : ["InvestigationUser", "User"],
+						"default" : false,
+						"data" : [
+							{
+								"icatName" : "user",
+								"default" : false,
+								"data" : [
+									{
+										"title" : "Name",
+										"icatName" : "fullName"
+									}
+								]
+							}
+						]
+					},
+					{
+						"title" : "Investigation Samples",
+						"icatName" : "samples",
+						"queryParams" : ["Sample"],
+						"default" : "false",
+						"data" : [
+							{	
+								"title" : "Sample Name",
+								"icatName" : "name"
+							}
+						]
+					}
+				],
+				"dataset" : 
+				[
+					{
+						"title" : "Dataset Details",
+						"icatName" : "dataset",
+						"default" : true,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Description",
+								"icatName" : "description"
+							},
+							{
+								"title" : "Start Date",
+								"icatName" : "startDate"
+							},
+							{
+								"title" : "End Date",
+								"icatName" : "endDate"
+							}
+						]					
+					},
+					{
+						"title" : "Dataset Type",
+						"icatName" : "type",
+						"queryParams" : ["DatasetType"],
+						"default" : false,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Description",
+								"icatName" : "description"
+							}
+						]
+					}
+				],
+				"datafile" : [
+					{
+						"title" : "Datafile Details",
+						"icatName" : "datafile",
+						"default" : true,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Description",
+								"icatName" : "description"
+							},
+							{
+								"title" : "Size",
+								"icatName" : "fileSize"
+							},
+							{
+								"title" : "Location",
+								"icatName" : "location"
+							}
+						]					
+					}
+				]
+			},
             "browseColumns": {
                 "instrument": [
                     {
@@ -280,14 +451,12 @@
             {
                 "name": "name",
                 "title": "Name",
-                "translateTitle": "BROWSE.COLUMN.FACILITY.NAME",
                 "link": true,
                 "sortByDefault": "asc"
             },
             {
                 "name": "fullName",
-                "title": "Full Name",
-                "translateTitle": "BROWSE.COLUMN.FACILITY.FULLNAME"
+                "title": "Full Name"
             }
         ]
     }

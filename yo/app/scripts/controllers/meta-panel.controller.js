@@ -5,24 +5,123 @@
         .module('angularApp')
         .controller('MetaPanelController', MetaPanelController);
 
-    MetaPanelController.$inject = [];
+    MetaPanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams','DataManager', 'APP_CONFIG', 'Config', 'RouteUtils', '$sessionStorage'];
 
-    function MetaPanelController(){
+    function MetaPanelController($rootScope, $scope, $state, $stateParams, DataManager, APP_CONFIG, Config, RouteUtils, $sessionStorage){
         var vm = this;
 
-        vm.tabs = [
+        var facilityName = $stateParams.facilityName;
+        var currentEntityType = RouteUtils.getCurrentEntityType($state);
+        var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
+        var nextEntityType = RouteUtils.getNextEntityType(structure, currentEntityType);
+
+        var tabs = Config.getMetaTabsByEntityType(APP_CONFIG, facilityName, currentEntityType);
+
+        var options = getQueryOptions(tabs);
+
+        var sessions = $sessionStorage.sessions;
+
+        console.log('$state: ', $state);
+        console.log('$stateParams: ', $stateParams);
+        console.log('Facility name : ', facilityName);
+        console.log('structure: ', structure);
+        console.log('currentEntityType: ', currentEntityType);
+        console.log('nextEntityType: ', nextEntityType);
+        console.log('sessions: ', sessions);
+
+        $scope.message = null;
+
+        var cleanUpFunc = $rootScope.$on("rowclick", function(event, message){
+
+            $scope.message = message;
+            vm.tabs = [];
+
+            var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
+
+            DataManager.getEntityById(sessions, facility, message.Type, message.Id, options)
+            .then(function(data) {
+                vm.tabs = updateTabs(vm, data, tabs);
+            }), (function(error) {
+                console.log('Error: Failed to get data from icat'); 
+            });
+        })
+
+        $scope.$on('$destroy', function() {
+            cleanUpFunc();
+        });
+    }
+
+    function getQueryOptions(tabConfig) {
+
+        var optionsList = optionsList = {"include" : []};;
+
+        for(var index in tabConfig) 
+        {
+            var tab = tabConfig[index];
+
+            if(typeof tab.queryParams !== 'undefined')
             {
-                title: 'Meta 1',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius eu odio lobortis efficitur. Pellentesque vitae commodo tortor. Fusce placerat lectus a diam facilisis dignissim. Suspendisse efficitur commodo nisl et dictum. Curabitur condimentum arcu nisi, et pretium turpis fermentum non. Donec sodales quam vel lorem tincidunt tempor. Fusce sit amet nisl malesuada, accumsan libero vitae, fermentum lectus. Cras vitae velit lectus. Nulla in arcu ullamcorper dolor eleifend pellentesque vel eu velit.'
-            },
-            {
-                title: 'Meta 2',
-                content: 'Maecenas ultricies sapien suscipit, dictum eros ut, vehicula leo. Duis rhoncus condimentum purus. Maecenas at facilisis elit. Nulla metus quam, aliquet at fermentum nec, imperdiet ac eros. Donec consectetur magna ut ante pretium, et laoreet urna bibendum. Morbi nec consequat nibh. Proin accumsan velit nec commodo placerat. Duis tempor placerat dictum. Nulla facilisi. Integer ornare mi a eros ultricies cursus. Praesent ultrices elementum mauris ac interdum.',
-            },
-            {
-                title: 'Meta 3',
-                content: 'Vivamus convallis odio sit amet felis congue, sit amet sagittis velit blandit. Maecenas elementum elit scelerisque urna cursus accumsan. Proin vel neque sit amet sem molestie convallis vel non quam. Ut in risus dolor. Aenean semper ullamcorper augue. Ut lacus mauris, aliquet in odio at, accumsan fermentum neque. Nullam gravida molestie porta.'
+                optionsList["include"].push(tab.queryParams);
             }
-        ];
+        }
+
+        if(optionsList['include'].length == 0){
+            optionsList = {};
+        }
+
+        return optionsList;
+    }
+
+    function updateTabs(vm, dataResults, tabs) { 
+
+        var tabsUpdated = [];
+
+        for(var i in tabs)
+        {  
+
+            var icatData = dataResults;            
+            var currentTab = tabs[i];
+            var tabTitle = currentTab.title;
+            var tabData = currentTab.data;
+            var tabContent = ''; 
+
+            if(currentTab.default == true) {
+                tabContent += getMetaData(tabData, icatData);
+            } else {
+                tabContent += getMetaData(tabData, icatData[0][currentTab.icatName]);
+            }
+
+            var temp = {title : tabTitle, content : tabContent};
+            tabsUpdated.push(temp);
+        }
+        return tabsUpdated;
+    }
+
+    function getMetaData(dataArray, icatData) {
+
+        var content = '';
+
+        if(!Array.isArray(icatData)){
+            icatData = [icatData];
+        }
+
+        for(var l in icatData){
+
+            var icatDataCurrent = icatData[l];
+
+            for(var counter in dataArray)
+            {
+                var dataV = dataArray[counter];
+
+                if(typeof dataV.data != 'undefined') 
+                {
+                    content += getMetaData(dataV.data, icatDataCurrent[dataV.icatName]);
+                } else {
+                    content += dataV.title + ': '; 
+                    content += icatDataCurrent[dataV.icatName] + '<br>';
+                }
+            }   
+        }
+        return content;
     }
 })();
