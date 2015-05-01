@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelController', BrowsePanelController);
 
-    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage'];
+    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'DataTableQueryBuilder'];
 
-    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage) {
+    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, DataTableQueryBuilder) {
         $scope.message = null;
         var vm = this;
         //var facility = 0;
@@ -55,7 +55,36 @@
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG)) //TODO
+                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG))
+                /*dtOptions = DTOptionsBuilder.newOptions()
+                    .withOption('sAjaxSource', 'https://localhost:3001/icat/entityManager')
+                    .withFnServerData(function serverData(sSource, aoData, fnCallback, oSettings) {
+                    //.withOption('fnServerData', function(sSource, aoData, fnCallback, oSettings) {
+                        console.log('sSource', sSource);
+                        console.log('aoData', aoData);
+                        console.log('fnCallback', fnCallback);
+                        console.log('oSettings', oSettings);
+
+                        var data = {};
+                        _.each(aoData, function(obj) {
+                            data[obj.name] = obj.value;
+                        });
+
+                        oSettings.jqXHR = $.ajax({
+                            'dataType': 'json',
+                            'type': 'GET',
+                            //'url': sSource,
+                            'url' : getDataUrl(currentRouteSegment, APP_CONFIG, {start: data.iDisplayStart, length : data.iDisplayLength}),
+                            'data': aoData,
+                            'success': fnCallback
+                        });
+                    })
+                    .withOption('serverSide', true)
+                    .withOption('fnServerParams', function(aoData) {
+                        console.log('before', aoData);
+                        aoData = [];
+                        console.log('after', aoData);
+                    })*/
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
                     .withDisplayLength(browseMaxRows)
@@ -91,7 +120,7 @@
                 'ttl': 3000,
                 'type': 'info'
             });
-            $scope.message = { "Type" : currentEntityType, "Id" : aData.id };
+            $scope.message = {'Type' : currentEntityType, 'Id' : aData.id };
             $rootScope.$broadcast('rowclick', $scope.message);
         }
 
@@ -126,6 +155,29 @@
             $compile(nRow)($scope);
 
             return nRow;
+        }
+
+
+        /**
+         * Get data based on the current ui-route
+         *
+         * @param  {string} currentRouteSegment the last segment of the ui-route name
+         * @param  {Object} APP_CONFIG site configuration object
+         * @return {Object} Promise object
+         */
+        function getDataUrl(currentRouteSegment, APP_CONFIG, options) {
+            var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
+
+            console.log('getDataPromise facility', facility);
+
+            switch (currentRouteSegment) {
+                case 'facility-instrument':
+                    console.log('function called: getInstruments');
+                    return DataTableQueryBuilder.getInstruments(sessions, facility, options);
+                default:
+                    console.log('function called: default');
+                    return;
+            }
         }
 
 

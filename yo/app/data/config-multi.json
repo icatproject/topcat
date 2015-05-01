@@ -28,6 +28,177 @@
                     "plugin" : "anon"
                 }
             ],
+            "metaTabs" : {
+                "instrument" :
+                [
+                    {
+                        "title" : "Instrument Details",
+                        "icatName" : "instrument",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "fullName"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            },
+                            {   "title" : "Type",
+                                "icatName" : "type"
+                            },
+                            {   "title" : "URL",
+                                "icatName" : "url"
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Instrument Scientists",
+                        "icatName" : "instrumentScientists",
+                        "queryParams" : ["InstrumentScientist", "User"],
+                        "default" : false,
+                        "data" : [
+                            {
+                                "icatName" : "user",
+                                "default" : false,
+                                "data" : [
+                                    {
+                                        "title" : "Name",
+                                        "icatName" : "fullName"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "investigation" :
+                [
+                    {
+                        "title" : "Investigation Details",
+                        "icatName" : "investigation",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Title",
+                                "icatName" : "title"
+                            },
+                            {
+                                "title" : "Summary",
+                                "icatName" : "summary"
+                            },
+                            {
+                                "title" : "Start Date",
+                                "icatName" : "startDate"
+                            },
+                            {
+                                "title" : "End Date",
+                                "icatName" : "endDate"
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Investigation Users",
+                        "icatName" : "investigationUsers",
+                        "queryParams" : ["InvestigationUser", "User"],
+                        "default" : false,
+                        "data" : [
+                            {
+                                "icatName" : "user",
+                                "default" : false,
+                                "data" : [
+                                    {
+                                        "title" : "Name",
+                                        "icatName" : "fullName"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Investigation Samples",
+                        "icatName" : "samples",
+                        "queryParams" : ["Sample"],
+                        "default" : "false",
+                        "data" : [
+                            {
+                                "title" : "Sample Name",
+                                "icatName" : "name"
+                            }
+                        ]
+                    }
+                ],
+                "dataset" :
+                [
+                    {
+                        "title" : "Dataset Details",
+                        "icatName" : "dataset",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            },
+                            {
+                                "title" : "Start Date",
+                                "icatName" : "startDate"
+                            },
+                            {
+                                "title" : "End Date",
+                                "icatName" : "endDate"
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Dataset Type",
+                        "icatName" : "type",
+                        "queryParams" : ["DatasetType"],
+                        "default" : false,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            }
+                        ]
+                    }
+                ],
+                "datafile" : [
+                    {
+                        "title" : "Datafile Details",
+                        "icatName" : "datafile",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            },
+                            {
+                                "title" : "Size",
+                                "icatName" : "fileSize"
+                            },
+                            {
+                                "title" : "Location",
+                                "icatName" : "location"
+                            }
+                        ]
+                    }
+                ]
+            },
             "browseColumns": {
                 "instrument": [
                     {
@@ -169,7 +340,7 @@
                 }
             ],
 			"metaTabs" : {
-				"instrument" : 
+				"instrument" :
 				[
 					{
 						"title" : "Instrument Details",
@@ -180,7 +351,7 @@
 								"title" : "Name",
 								"icatName" : "fullName"
 							},
-							{	
+							{
 								"title" : "Description",
 								"icatName" : "description"
 							},
@@ -190,7 +361,7 @@
 							{	"title" : "URL",
 								"icatName" : "url"
 							}
-						]		
+						]
 					},
 					{
 						"title" : "Instrument Scientists",
@@ -206,18 +377,18 @@
 										"title" : "Name",
 										"icatName" : "fullName"
 									}
-								]	
+								]
 							}
 						]
 					}
 				],
-				"investigation" : 
+				"investigation" :
 				[
 					{
 						"title" : "Investigation Details",
 						"icatName" : "investigation",
 						"default" : true,
-						"data" : [ 
+						"data" : [
 							{
 								"title" : "Name",
 								"icatName" : "name"
@@ -264,14 +435,14 @@
 						"queryParams" : ["Sample"],
 						"default" : "false",
 						"data" : [
-							{	
+							{
 								"title" : "Sample Name",
 								"icatName" : "name"
 							}
 						]
 					}
 				],
-				"dataset" : 
+				"dataset" :
 				[
 					{
 						"title" : "Dataset Details",
@@ -294,7 +465,7 @@
 								"title" : "End Date",
 								"icatName" : "endDate"
 							}
-						]					
+						]
 					},
 					{
 						"title" : "Dataset Type",
@@ -335,10 +506,303 @@
 								"title" : "Location",
 								"icatName" : "location"
 							}
-						]					
+						]
 					}
 				]
 			},
+            "browseColumns": {
+                "instrument": [
+                    {
+                        "name": "id",
+                        "title": "Id"
+                    },
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "link": true
+                    },
+                    {
+                        "name": "fullName",
+                        "title": "Full Name"
+                    }
+                ],
+                "investigation": [
+                    {
+                        "name": "id",
+                        "title": "Id",
+                        "style": "firstColumn",
+                        "visible": false
+                    },
+                    {
+                        "name": "title",
+                        "title": "Title",
+                        "style": "secondColumn",
+                        "sortable": false,
+                        "link": true,
+                        "expressionFilter": {
+                            "type": "string",
+                            "name": "characters",
+                            "characters": 80
+                        }
+                    },
+                    {
+                        "name": "visitId",
+                        "title": "Visit Id"
+                    },
+                    {
+                        "name": "startDate",
+                        "title": "Start Date",
+                        "expressionFilter": {
+                            "type": "date",
+                            "format": "dd-MM-yyyy",
+                            "timezone": "UTC"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "title": "End Date",
+                        "expressionFilter": {
+                            "type": "date",
+                            "format": "dd-MM-yyyy",
+                            "timezone": "UTC"
+                        }
+                    }
+                ],
+                "dataset": [
+                    {
+                        "name": null,
+                        "title": "",
+                        "checkbox": true
+                    },
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "link": true
+                    },
+                    {
+                        "name": "createTime",
+                        "title": "Create Time"
+                    },
+                    {
+                        "name": "modTime",
+                        "title": "Modified Time"
+                    }
+                ],
+                "datafile": [
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "expressionFilter": {
+                            "type": "string",
+                            "name": "characters",
+                            "characters": 80
+                        }
+                    },
+                    {
+                        "name": "fileSize",
+                        "title": "File Size",
+                        "expressionFilter": {
+                            "type": "bytes"
+                        }
+                    },
+                    {
+                        "name": "modTime",
+                        "title": "Modified Time"
+                    }
+                ]
+            }
+        },
+        "sig": {
+            "keyName": "sig",
+            "title": "SIG",
+            "icatUrl": "https://sig-24.esc.rl.ac.uk:8181",
+            "connectProxyPath": "isis/",
+            "idsUrl": "https://sig-24.esc.rl.ac.uk:8181",
+            "facilityId": 5,
+            "hierarchy": [
+                "facility",
+                "instrument",
+                "investigation",
+                "dataset",
+                "datafile"
+            ],
+            "authenticationType" : [
+                {
+                    "title" : "Simple",
+                    "plugin" : "simple"
+                }
+            ],
+            "metaTabs" : {
+                "instrument" :
+                [
+                    {
+                        "title" : "Instrument Details",
+                        "icatName" : "instrument",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "fullName"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            },
+                            {   "title" : "Type",
+                                "icatName" : "type"
+                            },
+                            {   "title" : "URL",
+                                "icatName" : "url"
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Instrument Scientists",
+                        "icatName" : "instrumentScientists",
+                        "queryParams" : ["InstrumentScientist", "User"],
+                        "default" : false,
+                        "data" : [
+                            {
+                                "icatName" : "user",
+                                "default" : false,
+                                "data" : [
+                                    {
+                                        "title" : "Name",
+                                        "icatName" : "fullName"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "investigation" :
+                [
+                    {
+                        "title" : "Investigation Details",
+                        "icatName" : "investigation",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Title",
+                                "icatName" : "title"
+                            },
+                            {
+                                "title" : "Summary",
+                                "icatName" : "summary"
+                            },
+                            {
+                                "title" : "Start Date",
+                                "icatName" : "startDate"
+                            },
+                            {
+                                "title" : "End Date",
+                                "icatName" : "endDate"
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Investigation Users",
+                        "icatName" : "investigationUsers",
+                        "queryParams" : ["InvestigationUser", "User"],
+                        "default" : false,
+                        "data" : [
+                            {
+                                "icatName" : "user",
+                                "default" : false,
+                                "data" : [
+                                    {
+                                        "title" : "Name",
+                                        "icatName" : "fullName"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Investigation Samples",
+                        "icatName" : "samples",
+                        "queryParams" : ["Sample"],
+                        "default" : "false",
+                        "data" : [
+                            {
+                                "title" : "Sample Name",
+                                "icatName" : "name"
+                            }
+                        ]
+                    }
+                ],
+                "dataset" :
+                [
+                    {
+                        "title" : "Dataset Details",
+                        "icatName" : "dataset",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            },
+                            {
+                                "title" : "Start Date",
+                                "icatName" : "startDate"
+                            },
+                            {
+                                "title" : "End Date",
+                                "icatName" : "endDate"
+                            }
+                        ]
+                    },
+                    {
+                        "title" : "Dataset Type",
+                        "icatName" : "type",
+                        "queryParams" : ["DatasetType"],
+                        "default" : false,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            }
+                        ]
+                    }
+                ],
+                "datafile" : [
+                    {
+                        "title" : "Datafile Details",
+                        "icatName" : "datafile",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            },
+                            {
+                                "title" : "Size",
+                                "icatName" : "fileSize"
+                            },
+                            {
+                                "title" : "Location",
+                                "icatName" : "location"
+                            }
+                        ]
+                    }
+                ]
+            },
             "browseColumns": {
                 "instrument": [
                     {

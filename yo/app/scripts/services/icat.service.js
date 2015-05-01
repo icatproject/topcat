@@ -191,7 +191,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             params : {
                 sessionId : mySessionId,
                 query : query,
-                entity : entityIcatName, 
+                entity : entityIcatName,
                 server : facility.icatUrl
             }
         };
@@ -273,7 +273,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         } else {
 
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT i FROM Investigation i, i.facility f where f.id = 1 LIMIT 0, 5000';
+            var query = 'SELECT inv FROM Investigation inv, inv.facility f where f.id = 1 LIMIT 0, 5000';
             query = appendOptionsToQuery(options, query);
 
             var params = {
@@ -302,7 +302,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-investigations-5-items.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT i FROM Investigation i, i.investigationInstruments ii, ii.instrument ins where ins.id = ' + instrumentId;
+            var query = 'SELECT inv FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins where ins.id = ' + instrumentId;
             query = appendOptionsToQuery(options, query);
 
             console.log('query', query);
@@ -340,7 +340,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-datasets.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId;
+            var query = 'SELECT ds FROM Dataset ds, d.investigation inv, inv.facility f where f.id = ' + facility.facilityId;
             query = appendOptionsToQuery(options, query);
 
             var params = {
@@ -365,7 +365,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT d FROM Dataset d, d.investigation i, i.facility f ,i.investigationInstruments ii, ii.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId;
+            var query = 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f ,inv.investigationInstruments invins, invins.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId;
             query = appendOptionsToQuery(options, query);
 
             var params = {
@@ -392,7 +392,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-datasets.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT d FROM Dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND i.id = ' + investigationId;
+            var query = 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f where f.id = ' + facility.facilityId + ' AND inv.id = ' + investigationId;
             query = appendOptionsToQuery(options, query);
 
             var params = {
@@ -419,7 +419,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId;
+            var query = 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f where f.id = ' + facility.facilityId;
             query = appendOptionsToQuery(options, query);
 
             var params = {
@@ -444,7 +444,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f, i.investigationInstruments ii, ii.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId;
+            var query = 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f, inv.investigationInstruments invins, invins.instrument ins where f.id = ' + facility.facilityId + ' AND ins.id = ' + instrumentId;
             query = appendOptionsToQuery(options, query);
 
             var params = {
@@ -470,7 +470,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND i.id = ' + investigationId;
+            var query = 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f where f.id = ' + facility.facilityId + ' AND inv.id = ' + investigationId;
             query = appendOptionsToQuery(options, query);
 
             var params = {
@@ -495,7 +495,7 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
             return $http.get('data/icatapi-datafiles.json');
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
-            var query = 'SELECT df FROM Datafile df, df.dataset d, d.investigation i, i.facility f where f.id = ' + facility.facilityId + ' AND d.id = ' + datasetId;
+            var query = 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f where f.id = ' + facility.facilityId + ' AND ds.id = ' + datasetId;
             query = appendOptionsToQuery(options, query);
 
             var params = {

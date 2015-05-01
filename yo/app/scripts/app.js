@@ -379,9 +379,11 @@
     /*.config(function($stickyStateProvider) {
       $stickyStateProvider.enableDebug(true);
     })*/
-        //for lodash and make $state and $stateParams available at rootscope.
+        .run(['SquelCustomQuery', function(SquelCustomQuery){
+            SquelCustomQuery.init();
+        }])
         .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
-            //$rootScope._ = window._;
+            //make $state and $stateParams available at rootscope.
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
         }])
