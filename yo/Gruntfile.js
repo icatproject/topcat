@@ -21,6 +21,10 @@ module.exports = function (grunt) {
     dist: 'dist'
   };
 
+  var env = process.env.NODE_ENV || 'development';
+
+  grunt.log.ok('Running in ' + env + ' environment.');
+
   // Define the configuration for all the tasks
   grunt.initConfig({
 
@@ -66,9 +70,14 @@ module.exports = function (grunt) {
     // The actual grunt server settings
     connect: {
       options: {
-        port: 9000,
+        //port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost',
+        hostname: (env === 'production') ? '0.0.0.0' : 'localhost',
+        protocol: 'https',
+        port: 9000,
+        key: grunt.file.read('certs/key.pem').toString(),
+        cert: grunt.file.read('certs/cert.pem').toString(),
+        //ca: grunt.file.read('certs/ca.crt').toString(),
         livereload: 35729
       },
       livereload: {
