@@ -247,7 +247,7 @@ router.get('/entityManager', function(req, res, next) {
                 var data = {
                     page: req.query.page,
                     recordsTotal : total,
-                    recordsFiltered : total,
+                    recordsFiltered : records.length,
                     data : records
                 };
 
