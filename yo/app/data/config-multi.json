@@ -922,6 +922,34 @@
                 "name": "fullName",
                 "title": "Full Name"
             }
-        ]
+        ],
+        "facility" : {
+            "metaTabs" : {
+                "facility" :
+                [
+                    {
+                        "title" : "Facility Details",
+                        "icatName" : "facility",
+                        "default" : true,
+                        "data" : [
+                            {
+                                "title" : "Full Name",
+                                "icatName" : "fullName"
+                            },
+                            {
+                                "title" : "Description",
+                                "icatName" : "description"
+                            },
+                            {   "title" : "Name",
+                                "icatName" : "name"
+                            },
+                            {   "title" : "URL",
+                                "icatName" : "url"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 }

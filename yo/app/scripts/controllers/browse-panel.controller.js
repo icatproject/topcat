@@ -26,6 +26,7 @@
         var browseMaxRows = Config.getSiteConfig(APP_CONFIG).browseMaxRows;
         var sessions = $sessionStorage.sessions;
         var stateParamClone = angular.copy($stateParams); //we need this because for some reason when using the filter search box, the call changes the stateParam and change the id to something unexpected
+        var REST_API_URL = 'https://localhost:3001/icat/entityManager';
 
         vm.structure = structure;
         vm.currentEntityType = currentEntityType;
@@ -49,16 +50,9 @@
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
-                //dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG))
                 dtOptions = DTOptionsBuilder.newOptions()
-                    .withOption('sAjaxSource', 'https://localhost:3001/icat/entityManager')
+                    .withOption('sAjaxSource', REST_API_URL)
                     .withFnServerData(function serverData(sSource, aoData, fnCallback, oSettings) {
-                    //.withOption('fnServerData', function(sSource, aoData, fnCallback, oSettings) {
-                        /*console.log('sSource', sSource);
-                        console.log('aoData', aoData);
-                        console.log('fnCallback', fnCallback);
-                        console.log('oSettings', oSettings);*/
-
                         var data = {};
                         _.each(aoData, function(obj) {
                             data[obj.name] = obj.value;
@@ -84,7 +78,6 @@
                             'dataType': 'json',
                             'type': 'GET',
                             'url': sSource,
-                            //'url' : getDataUrl(currentRouteSegment, APP_CONFIG, queryParams),
                             'data': aoData,
                             'success': fnCallback
                         });
@@ -106,7 +99,7 @@
                 /* falls through */
             default:
                 dtOptions = DTOptionsBuilder.newOptions()
-                    .withOption('sAjaxSource', 'https://localhost:3001/icat/entityManager')
+                    .withOption('sAjaxSource', REST_API_URL)
                     .withFnServerData(function serverData(sSource, aoData, fnCallback, oSettings) {
                         var data = {};
                         _.each(aoData, function(obj) {
@@ -133,7 +126,6 @@
                             'dataType': 'json',
                             'type': 'GET',
                             'url': sSource,
-                            //'url' : getDataUrl(currentRouteSegment, APP_CONFIG, queryParams),
                             'data': aoData,
                             'success': fnCallback
                         });
@@ -156,17 +148,18 @@
         vm.dtOptions = dtOptions;
 
 
+        function getfaciityName () {
+            return $stateParams.facilityName;
+        }
+
+
         /**
          * click handler when a row is clicked on the datatable
          * @param  {object} aData the row data object
          * @return {void}
          */
         function rowClickHandler(aData) {
-            inform.add('Type: ' + currentEntityType + ' Id:' + aData.id, {
-                'ttl': 3000,
-                'type': 'info'
-            });
-            $scope.message = {'Type' : currentEntityType, 'Id' : aData.id };
+            $scope.message = {'type' : currentEntityType, 'id' : aData.id, facilityName: aData.facilityName};
             $rootScope.$broadcast('rowclick', $scope.message);
         }
 
@@ -179,6 +172,8 @@
         function rowCallback(nRow, aData) {
             // Unbind first in order to avoid any duplicate handler
             angular.element('td', nRow).unbind('click');
+
+            aData.facilityName = getfaciityName();
 
             //bind click event to the td element of the row
             angular.element('td', nRow).bind('click', function() {
@@ -314,7 +309,7 @@
          * @param  {Object} APP_CONFIG site configuration object
          * @return {Object} Promise object
          */
-        function getDataPromise(currentRouteSegment, APP_CONFIG) {
+        /*function getDataPromise(currentRouteSegment, APP_CONFIG) {
             var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
 
             switch (currentRouteSegment) {
@@ -370,7 +365,7 @@
                     console.log('function called: default');
                     return;
             }
-        }
+        }*/
 
 
 

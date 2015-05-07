@@ -106,10 +106,9 @@
          * @return {void}
          */
         function rowClickHandler(aData) {
-            inform.add('Type: ' + currentEntityType + ' Id:' + aData.id, {
-                'ttl': 3000,
-                'type': 'info'
-            }); //TODO update meta tab with details
+
+            $scope.message = {type : currentEntityType, id : aData.id, facilityName: aData.name };
+            $rootScope.$broadcast('rowclick', $scope.message);
         }
 
         /**

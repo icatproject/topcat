@@ -12,39 +12,48 @@
 
         var facilityName = $stateParams.facilityName;
         var currentEntityType = RouteUtils.getCurrentEntityType($state);
-        var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
-        var nextEntityType = RouteUtils.getNextEntityType(structure, currentEntityType);
+        //var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
+        //var nextEntityType = RouteUtils.getNextEntityType(structure, currentEntityType);
 
-        var tabs = Config.getMetaTabsByEntityType(APP_CONFIG, facilityName, currentEntityType);
+        console.log('$state: ', $state);
+        console.log('$stateParams: ', $stateParams);
+        console.log('Facility name : ', facilityName);
+        //console.log('structure: ', structure);
+        console.log('currentEntityType: ', currentEntityType);
+
+        var tabs = [];
+
+        //if facility then get the facility meta tab config from site, else get config from facility config
+        if (currentEntityType === 'facility') {
+            tabs = Config.getSiteFacilitiesMetaTabs(APP_CONFIG);
+        } else {
+            tabs = Config.getMetaTabsByEntityType(APP_CONFIG, facilityName, currentEntityType);
+        }
 
         var options = getQueryOptions(tabs);
 
         var sessions = $sessionStorage.sessions;
 
-        console.log('$state: ', $state);
-        console.log('$stateParams: ', $stateParams);
-        console.log('Facility name : ', facilityName);
-        console.log('structure: ', structure);
-        console.log('currentEntityType: ', currentEntityType);
-        console.log('nextEntityType: ', nextEntityType);
+
+        //console.log('nextEntityType: ', nextEntityType);
         console.log('sessions: ', sessions);
 
         $scope.message = null;
 
-        var cleanUpFunc = $rootScope.$on("rowclick", function(event, message){
+        var cleanUpFunc = $rootScope.$on('rowclick', function(event, message){
 
             $scope.message = message;
             vm.tabs = [];
 
-            var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
+            var facility = Config.getFacilityByName(APP_CONFIG, message.facilityName);
 
-            DataManager.getEntityById(sessions, facility, message.Type, message.Id, options)
-            .then(function(data) {
-                vm.tabs = updateTabs(vm, data, tabs);
-            }), (function(error) {
-                console.log('Error: Failed to get data from icat'); 
+            DataManager.getEntityById(sessions, facility, message.type, message.id, options)
+                .then(function(data) {
+                    vm.tabs = updateTabs(vm, data, tabs);
+                }, function(error) { // jshint ignore:line
+                console.log('Error: Failed to get data from icat');
             });
-        })
+        });
 
         $scope.$on('$destroy', function() {
             cleanUpFunc();
@@ -53,39 +62,39 @@
 
     function getQueryOptions(tabConfig) {
 
-        var optionsList = optionsList = {"include" : []};;
+        var optionsList = {
+            'include' : []
+        };
 
-        for(var index in tabConfig) 
-        {
+        for(var index in tabConfig) {
             var tab = tabConfig[index];
 
-            if(typeof tab.queryParams !== 'undefined')
-            {
-                optionsList["include"].push(tab.queryParams);
+            if(typeof tab.queryParams !== 'undefined') {
+                optionsList.include.push(tab.queryParams);
             }
         }
 
-        if(optionsList['include'].length == 0){
+        if(optionsList.include.length === 0){
             optionsList = {};
         }
 
         return optionsList;
     }
 
-    function updateTabs(vm, dataResults, tabs) { 
+    function updateTabs(vm, dataResults, tabs) {
 
         var tabsUpdated = [];
 
         for(var i in tabs)
-        {  
+        {
 
-            var icatData = dataResults;            
+            var icatData = dataResults;
             var currentTab = tabs[i];
             var tabTitle = currentTab.title;
             var tabData = currentTab.data;
-            var tabContent = ''; 
+            var tabContent = '';
 
-            if(currentTab.default == true) {
+            if(currentTab.default === true) {
                 tabContent += getMetaData(tabData, icatData);
             } else {
                 tabContent += getMetaData(tabData, icatData[0][currentTab.icatName]);
@@ -105,22 +114,19 @@
             icatData = [icatData];
         }
 
-        for(var l in icatData){
-
+        for(var l in icatData) {
             var icatDataCurrent = icatData[l];
 
-            for(var counter in dataArray)
-            {
+            for(var counter in dataArray) {
                 var dataV = dataArray[counter];
 
-                if(typeof dataV.data != 'undefined') 
-                {
+                if(typeof dataV.data !== 'undefined') {
                     content += getMetaData(dataV.data, icatDataCurrent[dataV.icatName]);
                 } else {
-                    content += dataV.title + ': '; 
+                    content += dataV.title + ': ';
                     content += icatDataCurrent[dataV.icatName] + '<br>';
                 }
-            }   
+            }
         }
         return content;
     }

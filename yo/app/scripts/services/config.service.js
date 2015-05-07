@@ -89,6 +89,14 @@ function Config(){
          */
         getMetaTabsByEntityType : function(config, facilityName, entityType) {
             return config.facilities[facilityName].metaTabs[entityType];
+        },
+
+        /**
+         * [getFacilitiesMetaTabs description]
+         * @return {[type]} [description]
+         */
+        getSiteFacilitiesMetaTabs : function(config) {
+            return config.site.facility.metaTabs.facility;
         }
 
     };
