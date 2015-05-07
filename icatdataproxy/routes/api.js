@@ -129,7 +129,7 @@ router.delete('/session/:sessionId', function(req, res, next) {
 router.get('/entityManager', function(req, res, next) {
     if (typeof req.query.query !== 'undefined' && typeof req.query.countQuery === 'undefined' && typeof req.query.filterCountQuery === 'undefined') {
         var query = req.query.query;
-        console.log('query:', decodeURIComponent(req.query.query));
+        //console.log('query:', decodeURIComponent(req.query.query));
 
         request(
             {
@@ -160,7 +160,7 @@ router.get('/entityManager', function(req, res, next) {
 
 
     if (typeof req.query.query !== 'undefined' && typeof req.query.countQuery !== 'undefined' && typeof req.query.filterCountQuery === 'undefined') {
-        console.log('countQuery y:', decodeURIComponent(req.query.countQuery));
+        //console.log('countQuery:', decodeURIComponent(req.query.countQuery));
         //use async to make calls in parallel to get result and total
         //count and combine them. See https://github.com/caolan/async#parallel
         async.parallel([
@@ -230,6 +230,7 @@ router.get('/entityManager', function(req, res, next) {
                 var data = {
                     page: req.query.page,
                     recordsTotal : total,
+                    recordsFiltered : total,
                     data : records
                 };
 
@@ -241,8 +242,8 @@ router.get('/entityManager', function(req, res, next) {
 
 
     if (typeof req.query.query !== 'undefined' && typeof req.query.countQuery !== 'undefined' && typeof req.query.filterCountQuery !== 'undefined') {
-        console.log('countQuery x:', decodeURIComponent(req.query.countQuery));
-        console.log('filterCountQuery x:', decodeURIComponent(req.query.filterCountQuery));
+        //console.log('countQuery:', decodeURIComponent(req.query.countQuery));
+        //console.log('filterCountQuery:', decodeURIComponent(req.query.filterCountQuery));
         //use async to make calls in parallel to get result and total
         //count and combine them. See https://github.com/caolan/async#parallel
         async.parallel([
