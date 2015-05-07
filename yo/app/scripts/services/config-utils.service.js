@@ -118,6 +118,10 @@ function ConfigUtils($q){
             console.log('defaultSort', defaultSort);
 
             return defaultSort;
+        },
+
+        getSessionValueForFacility : function(sessions, facility) {
+            return sessions[facility.keyName].sessionId;
         }
 
     };

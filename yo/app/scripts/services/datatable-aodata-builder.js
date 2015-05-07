@@ -2,17 +2,14 @@
 
 /**
  * @ngdoc service
- * @name angularApp.DataTableQueryBuilder
+ * @name angularApp.DataTableAODataBuilder
  * @description
- * # DataTableQueryBuilder
+ * # DataTableAODataBuilder
  * Factory in the angularApp.
  */
 angular.module('angularApp')
-    .factory('DataTableQueryBuilder', function() {
+    .factory('DataTableAODataBuilder', function() {
         // Service logic
-
-        var ICATDATAPROXYURL = 'https://localhost:3001';
-        var RESTAPIURL = ICATDATAPROXYURL + '/icat/entityManager';
 
         function forEachSorted(obj, iterator, context) {
             var keys = sortedKeys(obj);
@@ -45,7 +42,7 @@ angular.module('angularApp')
             return true;
         }
 
-        function validateRequiredArguments(mySessionId, facility, queryParams, absUrl) {
+        function validateRequiredArguments(mySessionId, facility, queryParams) {
             //session argument is required and must be a string
             if (!mySessionId && ! angular.isString(mySessionId)) {
                 throw new Error('Invalid arguments. Session string is expected');
@@ -68,14 +65,15 @@ angular.module('angularApp')
                     throw new Error('Invalid arguments. queryParams must be an object');
                 }
             }
+        }
 
-            //url is optional
-            if (angular.isDefined(absUrl)) {
-                //url must be an object
-                if (typeof absUrl !== 'boolean') {
-                    throw new Error('Invalid arguments. url must be a string');
-                }
-            }
+
+        function urlEncodeParameters(params) {
+            var p = _.object(_.map(params, function(v, k) {
+                return [k, encodeURIComponent(v)];
+            }));
+
+            return p;
         }
 
 
@@ -107,8 +105,10 @@ angular.module('angularApp')
             },
 
 
-            getInvestigations: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getInvestigations: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(inv)')
@@ -128,12 +128,25 @@ angular.module('angularApp')
                             .and('f.id = ?', facility.facilityId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
-                        query.where(
-                            squel.expr()
+                        var searchExpr = squel.expr()
                             .or('UPPER(inv.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            .or('UPPER(inv.title) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            .or('UPPER(inv.visitId) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
+
+                        query.where(
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -147,31 +160,22 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     entity: 'Investigation',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
-
-
-
             /** get instruments **/
-            getInstruments: function(mySessionId, facility, queryParams, absUrl) {
-                /*console.log('getInstruments session: ', mySessionId);
-                console.log('getInstruments queryParams: ', queryParams);
-                console.log('getInstruments facility: ', facility);*/
+            getInstruments: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
 
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(ins)')
@@ -191,13 +195,22 @@ angular.module('angularApp')
                             .and('f.id = ?', facility.facilityId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(ins.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(ins.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
-                            //.or('UPPER(ins.fullName) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -211,19 +224,16 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Instrument',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
             getInvestigationsByCycleId: function(){
@@ -231,8 +241,10 @@ angular.module('angularApp')
             },
 
 
-            getInvestigationsByInstrumentId: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getInvestigationsByInstrumentId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(inv)')
@@ -258,14 +270,24 @@ angular.module('angularApp')
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
-                        query.where(
-                            squel.expr()
+                        var searchExpr = squel.expr()
                             .or('UPPER(inv.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
-                            //.or('UPPER(inv.title) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
-                            //.or('UPPER(inv.visitId) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            .or('UPPER(inv.title) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            .or('UPPER(inv.visitId) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
+                        query.where(
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -279,27 +301,26 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Investigation',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
             getInvestigationsByInstrumentIdByCycleId: function() {
 
             },
 
-            getDatasets: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getDatasets: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(ds)')
@@ -321,12 +342,22 @@ angular.module('angularApp')
                             .and('f.id = ?', facility.facilityId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(ds.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(ds.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -340,23 +371,22 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Dataset',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
-            getDatasetsByInstrumentId: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getDatasetsByInstrumentId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(ds)')
@@ -384,12 +414,22 @@ angular.module('angularApp')
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(ds.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(ds.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -403,23 +443,22 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Dataset',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
-            getDatasetsByInvestigationId: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getDatasetsByInvestigationId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(ds)')
@@ -443,12 +482,22 @@ angular.module('angularApp')
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(ds.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(ds.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -462,23 +511,22 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Dataset',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
-            getDatafiles: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getDatafiles: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(df)')
@@ -502,12 +550,22 @@ angular.module('angularApp')
                             .and('f.id = ?', facility.facilityId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -521,23 +579,22 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Datafile',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
-            getDatafilesByInstrumentId: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getDatafilesByInstrumentId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(df)')
@@ -563,12 +620,22 @@ angular.module('angularApp')
                             .and('ds.id = ?', queryParams.datasetId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -582,23 +649,22 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Datafile',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
-            getDatafilesByInvestigationId: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getDatafilesByInvestigationId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(df)')
@@ -624,12 +690,22 @@ angular.module('angularApp')
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -643,23 +719,22 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Datafile',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             },
 
-            getDatafilesByDatasetId: function(mySessionId, facility, queryParams, absUrl) {
-                validateRequiredArguments(mySessionId, facility, queryParams, absUrl);
+            getDatafilesByDatasetId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var params = {};
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(df)')
@@ -685,12 +760,22 @@ angular.module('angularApp')
                             .and('ds.id = ?', queryParams.datasetId)
                     );
 
+                var filterCountQuery = countQuery.clone();
+
                 if (angular.isDefined(queryParams)) {
                     if (angular.isDefined(queryParams.search) && queryParams.search.trim() !== '') {
+                        var searchExpr = squel.expr()
+                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%');
+
                         query.where(
-                            squel.expr()
-                            .or('UPPER(df.name) LIKE ?', '%' + queryParams.search.toUpperCase() + '%')
+                            searchExpr
                         );
+
+                        filterCountQuery.where(
+                            searchExpr
+                        );
+
+                        params.filterCountQuery = filterCountQuery;
                     }
 
                     //set limit
@@ -704,19 +789,16 @@ angular.module('angularApp')
                     }
                 }
 
-                var params = {
+                _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
                     entity: 'Datafile',
                     server: facility.icatUrl
-                };
+                });
 
-                if (absUrl === true) {
-                    return this.buildUrl(RESTAPIURL, params);
-                } else {
-                    return this.buildUrl('', params);
-                }
+                return urlEncodeParameters(params);
             }
         };
     });

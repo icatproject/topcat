@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelController', BrowsePanelController);
 
-    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'DataTableQueryBuilder'];
+    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'DataTableAODataBuilder'];
 
-    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, DataTableQueryBuilder) {
+    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, DataTableAODataBuilder) {
         $scope.message = null;
         var vm = this;
         //var facility = 0;
@@ -25,10 +25,10 @@
         var nextEntityType = RouteUtils.getNextEntityType(structure, currentEntityType);
         var browseMaxRows = Config.getSiteConfig(APP_CONFIG).browseMaxRows;
         var sessions = $sessionStorage.sessions;
+        var stateParamClone = angular.copy($stateParams); //we need this because for some reason when using the filter search box, the call changes the stateParam and change the id to something unexpected
 
         vm.structure = structure;
         vm.currentEntityType = currentEntityType;
-
 
         if (! angular.isDefined($rootScope.cart)) {
             $rootScope.cart = [];
@@ -46,35 +46,45 @@
 
         vm.rowClickHandler = rowClickHandler;
 
-        //var login = DataManager.login();
-        //console.log(login);
-
-        var version = DataManager.getVersion(Config.getFacilityByName(APP_CONFIG, facilityName));
-        console.log('icat version=', version);
-
         //determine paging style type. Options are page and scroll where scroll is the default
         switch (pagingType) {
             case 'page':
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG))
-                /*dtOptions = DTOptionsBuilder.newOptions()
+                //dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG))
+                dtOptions = DTOptionsBuilder.newOptions()
                     .withOption('sAjaxSource', 'https://localhost:3001/icat/entityManager')
                     .withFnServerData(function serverData(sSource, aoData, fnCallback, oSettings) {
                     //.withOption('fnServerData', function(sSource, aoData, fnCallback, oSettings) {
-                        console.log('sSource', sSource);
+                        /*console.log('sSource', sSource);
                         console.log('aoData', aoData);
                         console.log('fnCallback', fnCallback);
-                        console.log('oSettings', oSettings);
+                        console.log('oSettings', oSettings);*/
 
                         var data = {};
                         _.each(aoData, function(obj) {
                             data[obj.name] = obj.value;
                         });
 
+                        var queryParams = {
+                            start: data.iDisplayStart,
+                            numRows: data.iDisplayLength,
+                            search: data.sSearch
+                        };
+
+                        var params = getAoDataParams(currentRouteSegment, APP_CONFIG, queryParams, stateParamClone);
+                        console.log('params', params);
+
+                        _.each(params, function(value, key){
+                            aoData.push({
+                                name: key,
+                                value: value
+                            });
+                        });
+
                         oSettings.jqXHR = $.ajax({
                             'dataType': 'json',
                             'type': 'GET',
-                            //'url': sSource,
-                            'url' : getDataUrl(currentRouteSegment, APP_CONFIG, {start: data.iDisplayStart, length : data.iDisplayLength}),
+                            'url': sSource,
+                            //'url' : getDataUrl(currentRouteSegment, APP_CONFIG, queryParams),
                             'data': aoData,
                             'success': fnCallback
                         });
@@ -84,7 +94,7 @@
                         console.log('before', aoData);
                         aoData = [];
                         console.log('after', aoData);
-                    })*/
+                    })
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
                     .withDisplayLength(browseMaxRows)
@@ -95,7 +105,43 @@
             case 'scroll':
                 /* falls through */
             default:
-                dtOptions = DTOptionsBuilder.fromFnPromise(getDataPromise(currentRouteSegment, APP_CONFIG)) //TODO
+                dtOptions = DTOptionsBuilder.newOptions()
+                    .withOption('sAjaxSource', 'https://localhost:3001/icat/entityManager')
+                    .withFnServerData(function serverData(sSource, aoData, fnCallback, oSettings) {
+                        var data = {};
+                        _.each(aoData, function(obj) {
+                            data[obj.name] = obj.value;
+                        });
+
+                        var queryParams = {
+                            start: data.iDisplayStart,
+                            numRows: data.iDisplayLength,
+                            search: data.sSearch
+                        };
+
+                        var params = getAoDataParams(currentRouteSegment, APP_CONFIG, queryParams, stateParamClone);
+                        console.log('params', params);
+
+                        _.each(params, function(value, key){
+                            aoData.push({
+                                name: key,
+                                value: value
+                            });
+                        });
+
+                        oSettings.jqXHR = $.ajax({
+                            'dataType': 'json',
+                            'type': 'GET',
+                            'url': sSource,
+                            //'url' : getDataUrl(currentRouteSegment, APP_CONFIG, queryParams),
+                            'data': aoData,
+                            'success': fnCallback
+                        });
+                    })
+                    .withOption('serverSide', true)
+                    .withOption('fnServerParams', function(aoData) {
+                        aoData = [];
+                    })
                     .withDOM('frti')
                     .withScroller()
                     .withOption('deferRender', true)
@@ -157,7 +203,6 @@
             return nRow;
         }
 
-
         /**
          * Get data based on the current ui-route
          *
@@ -165,17 +210,98 @@
          * @param  {Object} APP_CONFIG site configuration object
          * @return {Object} Promise object
          */
-        function getDataUrl(currentRouteSegment, APP_CONFIG, options) {
+        function getAoDataParams(currentRouteSegment, APP_CONFIG, queryParams, stateParamClone) {
             var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
-
-            console.log('getDataPromise facility', facility);
+            var mySessionId = ConfigUtils.getSessionValueForFacility(sessions, facility);
+            var absUrl = true;
 
             switch (currentRouteSegment) {
                 case 'facility-instrument':
-                    console.log('function called: getInstruments');
-                    return DataTableQueryBuilder.getInstruments(sessions, facility, options);
+                    console.log('DataTableAODataBuilder.getInstruments() called');
+
+                    return DataTableAODataBuilder.getInstruments(mySessionId, facility, queryParams, absUrl);
+                case 'facility-cycle':
+                    console.log('DataTableAODataBuilder.getCycles() called');
+
+                    return DataTableAODataBuilder.getCyclesByFacilityId(mySessionId, facility, queryParams, absUrl);
+                case 'facility-investigation':
+                    console.log('DataTableAODataBuilder.getInvestigations() called');
+
+                    return DataTableAODataBuilder.getInvestigations(mySessionId, facility, queryParams, absUrl);
+                case 'facility-dataset':
+                    console.log('DataTableAODataBuilder.getDatasets() called');
+
+                    return DataTableAODataBuilder.getDatasets(mySessionId, facility, queryParams, absUrl);
+                case 'facility-datafile':
+                    console.log('DataTableAODataBuilder.getDatafiles() called');
+
+                    return DataTableAODataBuilder.getDatafiles(mySessionId, facility, queryParams, absUrl);
+                case 'instrument-cycle':
+                    console.log('DataTableAODataBuilder.getCyclesByInstruments() called');
+                    queryParams.instrumentId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getCyclesByInstruments(mySessionId, facility, queryParams, absUrl);
+                case 'instrument-investigation':
+                    console.log('DataTableAODataBuilder.getInvestigationsByInstrumentId() called');
+                    queryParams.instrumentId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getInvestigationsByInstrumentId(mySessionId, facility, queryParams, absUrl);
+                case 'instrument-dataset':
+                    console.log('DataTableAODataBuilder.getDatasetsByInstrumentId() called');
+
+                    queryParams.instrumentId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getDatasetsByInstrumentId(mySessionId, facility, queryParams, absUrl);
+                case 'instrument-datafile':
+                    console.log('DataTableAODataBuilder.getDatafilesByInstrumentId() called');
+
+                    queryParams.instrumentId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getDatafilesByInstrumentId(mySessionId, facility, queryParams, absUrl);
+                case 'cycle-instrument':
+                    console.log('DataTableAODataBuilder.getInstrumentsByCycleId() called');
+
+                    queryParams.cycleId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getInstrumentsByCycleId(mySessionId, facility, queryParams, absUrl);
+                case 'cycle-investigation':
+                    console.log('DataTableAODataBuilder.getCyclesByInvestigationId() called');
+
+                    queryParams.cycleId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getInvestigationsByCycleId(mySessionId, facility, queryParams, absUrl);
+                case 'cycle-dataset':
+                    console.log('DataTableAODataBuilder.getDatasetsByCycleId() called');
+
+                    queryParams.cycleId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getDatasetsByCycleId(mySessionId, facility, queryParams, absUrl);
+                case 'cycle-datafile':
+                    console.log('DataTableAODataBuilder.getDatafilesByCycleId() called');
+
+                    queryParams.cycleId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getDatafilesByCycleId(mySessionId, facility, queryParams, absUrl);
+                case 'investigation-dataset':
+                    console.log('DataTableAODataBuilder.getDatasetsByInvestigationId() called');
+
+                    queryParams.investigationId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getDatasetsByInvestigationId(mySessionId, facility, queryParams, absUrl);
+                case 'investigation-datafile':
+                    console.log('DataTableAODataBuilder.getDatafilesByInvestigationId() called');
+
+                    queryParams.investigationId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getDatafilesByInvestigationId(mySessionId, facility, queryParams, absUrl);
+                case 'dataset-datafile':
+                    console.log('DataTableAODataBuilder.getDatafilesByDatasetId() called');
+
+                    queryParams.datasetId = stateParamClone.id;
+
+                    return DataTableAODataBuilder.getDatafilesByDatasetId(mySessionId, facility, queryParams, absUrl);
                 default:
-                    console.log('function called: default');
+                    console.log('default called');
                     return;
             }
         }
@@ -190,8 +316,6 @@
          */
         function getDataPromise(currentRouteSegment, APP_CONFIG) {
             var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
-
-            console.log('getDataPromise facility', facility);
 
             switch (currentRouteSegment) {
                 case 'facility-instrument':
@@ -259,7 +383,6 @@
             }
 
             if (angular.isDefined(column[i].translateTitle)) {
-                console.log('translateTitle', column[i].translateTitle);
                 columnTitle = $translate.instant(column[i].translateTitle);
             }
 
