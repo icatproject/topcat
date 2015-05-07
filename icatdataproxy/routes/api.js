@@ -127,7 +127,7 @@ router.delete('/session/:sessionId', function(req, res, next) {
  * Entities route
  */
 router.get('/entityManager', function(req, res, next) {
-    if (_.isUndefined(req.query.countQuery)) {
+    if (typeof req.query.query !== 'undefined' && typeof req.query.countQuery === 'undefined' && typeof req.query.filterCountQuery === 'undefined') {
         var query = req.query.query;
         console.log('query:', decodeURIComponent(req.query.query));
 
@@ -156,8 +156,11 @@ router.get('/entityManager', function(req, res, next) {
             }
         );
 
-    }  else {
-        console.log('countQuery:', decodeURIComponent(req.query.countQuery));
+    }
+
+
+    if (typeof req.query.query !== 'undefined' && typeof req.query.countQuery !== 'undefined' && typeof req.query.filterCountQuery === 'undefined') {
+        console.log('countQuery y:', decodeURIComponent(req.query.countQuery));
         //use async to make calls in parallel to get result and total
         //count and combine them. See https://github.com/caolan/async#parallel
         async.parallel([
@@ -202,26 +205,6 @@ router.get('/entityManager', function(req, res, next) {
                             callback(null, body);
                         } else {
                             callback(response, body);
-                            /*if (response.statusCode == 403){
-                                callback({name: 'session', message: 'Session invalid'});
-                            }
-
-                            if (response.statusCode == 404){
-                                callback({name: 'notfound', message: 'Not found'});
-                            }
-
-                            if (response.statusCode == 500){
-                                if (body !== null) {
-                                    //icat response of 500 may be a 404
-                                    if(body.message.indexOf('404 Not Found') !== -1) {
-                                        callback({name: 'notfound', message: 'Not found'});
-                                    } else {
-                                        callback({name: 'Internal', message: 'Internal server error'});
-                                    }
-                                }
-
-                            }*/
-
                         }
                     }
                 );
@@ -247,7 +230,6 @@ router.get('/entityManager', function(req, res, next) {
                 var data = {
                     page: req.query.page,
                     recordsTotal : total,
-                    recordsFiltered : records.length,
                     data : records
                 };
 
@@ -256,6 +238,117 @@ router.get('/entityManager', function(req, res, next) {
             }
         });
     }
+
+
+    if (typeof req.query.query !== 'undefined' && typeof req.query.countQuery !== 'undefined' && typeof req.query.filterCountQuery !== 'undefined') {
+        console.log('countQuery x:', decodeURIComponent(req.query.countQuery));
+        console.log('filterCountQuery x:', decodeURIComponent(req.query.filterCountQuery));
+        //use async to make calls in parallel to get result and total
+        //count and combine them. See https://github.com/caolan/async#parallel
+        async.parallel([
+            function(callback) {
+                //query count
+                request(
+                    {
+                        url: decodeURIComponent(req.query.server) + '/icat/entityManager',
+                        method: 'GET',
+                        qs: {
+                            sessionId: decodeURIComponent(req.query.sessionId),
+                            query : decodeURIComponent(req.query.countQuery)
+                        },
+                        json: true
+                    }, function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            callback(null, body);
+                        } else {
+                            callback(response, body);
+                        }
+                    }
+                );
+            },
+            function(callback) {
+                //query for filter count
+                request(
+                    {
+                        url: decodeURIComponent(req.query.server) + '/icat/entityManager',
+                        method: 'GET',
+                        qs: {
+                            sessionId: req.query.sessionId,
+                            query : decodeURIComponent(req.query.filterCountQuery)
+                        },
+                        json: true
+                    }, function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+
+                            callback(null, body);
+                        } else {
+                            callback(response, body);
+                        }
+                    }
+                );
+            },
+            function(callback) {
+                //query for entities
+                request(
+                    {
+                        url: decodeURIComponent(req.query.server) + '/icat/entityManager',
+                        method: 'GET',
+                        qs: {
+                            sessionId: req.query.sessionId,
+                            query : decodeURIComponent(req.query.query)
+                        },
+                        json: true
+                    }, function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            //strip entity wrapper
+                            if (! _.isUndefined(req.query.entity)) {
+                                body = _.pluck(body, req.query.entity);
+                            }
+
+                            callback(null, body);
+                        } else {
+                            callback(response, body);
+                        }
+                    }
+                );
+
+            }
+
+        ],
+        function(err, results){
+            if (err) {
+                res.status(err.statusCode).json(results);
+                res.end();
+            } else {
+                var total;
+                var records;
+                var filterTotal;
+                if (! _.isUndefined(results[0])) {
+                    total = results[0][0];
+                }
+
+                if (! _.isUndefined(results[1])) {
+                    filterTotal = results[1][0];
+                }
+
+                if (! _.isUndefined(results[2])) {
+                    records = results[2];
+                }
+
+                var data = {
+                    page: req.query.page,
+                    recordsTotal : total,
+                    recordsFiltered : filterTotal,
+                    data : records
+                };
+
+                res.json(data);
+                res.end();
+            }
+        });
+    }
+
+
 });
 
 module.exports = router;

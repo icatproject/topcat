@@ -62,6 +62,7 @@ block content
     li sessionId - The session id
     li query - The query to Send
     li countQuery (Optional) - The JPQL query used to get the totalRecord count. If countQuery is specified, paginated result format will be returned
+    li filterCountQuery (Optional) - The JPQL query used to get the filtered totalRecord count. This value is used by the datatable to determine the number of filtered results returned. The recordsFiltered key/value is returned in the result.
     li entity (Optional) - the ICAT REST API returns the JSON objects with the entity name as keys. This option removes the key by specifying the entity name (e.g &entity=Investigation, &entity=Instrument)
     li page (Optional) - The draw/page number which is returned in paginated results. This is used for sequencing as the are no guarantee with ajax calls the results are required in sequence.
 
@@ -75,8 +76,48 @@ block content
 
   div(class="exampleQuery")
     p
-      strong  Returns entities in paginated format containing total records. Paginated form is returned if you the query contains a queryCount
+      strong  Returns entities in paginated format containing total records. Paginated form is returned if the query contains a queryCount
     p /icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=12f7d6e4-dca8-437d-937d-3f5c95de778e&query=select ins from Instrument ins&entity=Instrument&countQuery=select count(ins) from Instrument ins&page=1
+
+    p Example returned JSON:
+    pre(style="white-space: pre-wrap;")
+      |{
+      |    "page": "1",
+      |    "recordsTotal": 2,
+      |    "data": [
+      |        {
+      |            "id": 35,
+      |            "createId": "FROM PROPAGATION",
+      |            "createTime": "Mon Aug 12 11:57:37 BST 2013",
+      |            "modId": "PROPAGATION",
+      |            "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |            "description": "Soft X-ray Microscope for the Life Sciences",
+      |            "fullName": "b24",
+      |            "instrumentScientists": [],
+      |            "investigationInstruments": [],
+      |            "name": "b24",
+      |            "type": "Soft X-ray Microscope for the Life Sciences"
+      |        },
+      |        {
+      |            "id": 1,
+      |            "createId": "FROM PROPAGATION",
+      |            "createTime": "Mon Oct 04 16:40:04 BST 2010",
+      |            "modId": "PROPAGATION",
+      |            "modTime": "Thu Aug 21 15:37:06 BST 2014",
+      |            "description": "Beamline for Advanced Dichroism",
+      |            "fullName": "i10",
+      |            "instrumentScientists": [],
+      |            "investigationInstruments": [],
+      |            "name": "i10",
+      |            "type": "Beamline for Advanced Dichroism"
+      |        }
+      |     ]
+      |}
+
+
+    p
+      strong  Returns entities in paginated format containing total records and filtered total records. Paginated form is returned if the query contains a queryCount and filtered total count when filterCountQuery is give
+    p /icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=12f7d6e4-dca8-437d-937d-3f5c95de778e&query=select ins from Instrument ins&entity=Instrument&countQuery=select count(ins) from Instrument ins&&countQuery=select count(ins) from Instrument ins&page=1
 
     p Example returned JSON:
     pre(style="white-space: pre-wrap;")
