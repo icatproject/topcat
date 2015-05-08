@@ -1,0 +1,433 @@
+{
+    "facilities": {
+        "dls": {
+            "keyName": "dls",
+            "title": "DIAMOND",
+            "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
+            "connectProxyPath": "dls/",
+            "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181",
+            "facilityId": 1,
+            "hierarchy": [
+                "facility",
+                "instrument",
+                "investigation",
+                "dataset",
+                "datafile"
+            ],
+			"authenticationType" : [
+                {
+                    "title" : "LDAP",
+                    "plugin" : "ldap"
+                },
+                {
+                    "title" : "DB",
+                    "plugin" : "db"
+                },
+                {
+                    "title" : "Anonymous",
+                    "plugin" : "anon"
+                }
+            ],
+            "browseColumns": {
+                "instrument": [
+                    {
+                        "name": "id",
+                        "title": "Id",
+                        "visible": false
+                    },
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "translateTitle" : "BROWSE.COLUMN.INSTRUMENT.NAME",
+                        "link": true,
+                        "sortByDefault" : "asc"
+                    },
+                    {
+                        "name": "fullName",
+                        "title": "Full Name",
+                        "translateTitle" : "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
+                        "sortable": false
+                    }
+                ],
+                "investigation": [
+                    {
+                        "name": null,
+                        "title": "",
+                        "checkbox": true
+                    },
+                    {
+                        "name": "id",
+                        "title": "Id",
+                        "style": "firstColumn",
+                        "visible": false
+                    },
+                    {
+                        "name": "title",
+                        "title": "Title",
+                        "style": "secondColumn",
+                        "sortable": false,
+                        "link": true,
+                        "expressionFilter": {
+                            "type": "string",
+                            "name": "characters",
+                            "characters": 80
+                        },
+                        "sortByDefault" : "asc"
+                    },
+                    {
+                        "name": "visitId",
+                        "title": "Visit Id"
+                    },
+                    {
+                        "name": "startDate",
+                        "title": "Start Date",
+                        "expressionFilter": {
+                            "type": "date",
+                            "format": "dd-MM-yyyy",
+                            "timezone": "UTC"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "title": "End Date",
+                        "expressionFilter": {
+                            "type": "date",
+                            "format": "dd-MM-yyyy",
+                            "timezone": "UTC"
+                        }
+                    }
+                ],
+                "dataset": [
+                    {
+                        "name": null,
+                        "title": "",
+                        "checkbox": true,
+                        "sortByDefault" : "asc"
+                    },
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "link": true
+                    },
+                    {
+                        "name": "createTime",
+                        "title": "Create Time"
+                    },
+                    {
+                        "name": "modTime",
+                        "title": "Modified Time"
+                    }
+                ],
+                "datafile": [
+                    {
+                        "name": null,
+                        "title": "",
+                        "checkbox": true
+                    },
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "expressionFilter": {
+                            "type": "string",
+                            "name": "characters",
+                            "characters": 80
+                        },
+                        "sortByDefault" : "asc"
+                    },
+                    {
+                        "name": "fileSize",
+                        "title": "File Size",
+                        "expressionFilter": {
+                            "type": "bytes"
+                        }
+                    },
+                    {
+                        "name": "modTime",
+                        "title": "Modified Time"
+                    }
+                ]
+            }
+        },
+        "isis": {
+            "keyName": "isis",
+            "title": "ISIS Laser",
+            "icatUrl": "https://icatdev.isis.cclrc.ac.uk",
+            "connectProxyPath": "isis/",
+            "idsUrl": "https://facilities.esc.rl.ac.uk:8181",
+            "facilityId": 1,
+            "hierarchy": [
+                "facility",
+                "instrument",
+                "investigation",
+                "dataset",
+                "datafile"
+            ],
+			"authenticationType" : [
+                {
+                    "title" : "USER OFFICE",
+                    "plugin" : "uows"
+                }
+            ],
+			"metaTabs" : {
+				"instrument" : 
+				[
+					{
+						"title" : "Instrument Details",
+						"icatName" : "instrument",
+						"default" : true,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "fullName"
+							},
+							{	
+								"title" : "Description",
+								"icatName" : "description"
+							},
+							{ 	"title" : "Type",
+								"icatName" : "type"
+							},
+							{	"title" : "URL",
+								"icatName" : "url"
+							}
+						]		
+					}
+				],
+				"investigation" : 
+				[
+					{
+						"title" : "Investigation Details",
+						"icatName" : "investigation",
+						"default" : true,
+						"data" : [ 
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Title",
+								"icatName" : "title"
+							},
+							{
+								"title" : "Summary",
+								"icatName" : "summary"
+							},
+							{
+								"title" : "Start Date",
+								"icatName" : "startDate"
+							},
+							{
+								"title" : "End Date",
+								"icatName" : "endDate"
+							}
+						]
+					},
+					{
+						"title" : "Investigation Users",
+						"icatName" : "investigationUsers",
+						"queryParams" : ["InvestigationUser", "User"],
+						"default" : false,
+						"data" : [
+							{
+								"icatName" : "user",
+								"default" : false,
+								"data" : [
+									{
+										"title" : "Name",
+										"icatName" : "fullName"
+									}
+								]
+							}
+						]
+					}
+				],
+				"dataset" : 
+				[
+					{
+						"title" : "Dataset Details",
+						"icatName" : "dataset",
+						"default" : true,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Description",
+								"icatName" : "description"
+							},
+							{
+								"title" : "Start Date",
+								"icatName" : "startDate"
+							},
+							{
+								"title" : "End Date",
+								"icatName" : "endDate"
+							}
+						]					
+					},
+					{
+						"title" : "Dataset Type",
+						"icatName" : "type",
+						"queryParams" : ["DatasetType"],
+						"default" : false,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Description",
+								"icatName" : "description"
+							}
+						]
+					}
+				],
+				"datafile" : [
+					{
+						"title" : "Datafile Details",
+						"icatName" : "datafile",
+						"default" : true,
+						"data" : [
+							{
+								"title" : "Name",
+								"icatName" : "name"
+							},
+							{
+								"title" : "Description",
+								"icatName" : "description"
+							},
+							{
+								"title" : "Size",
+								"icatName" : "fileSize"
+							},
+							{
+								"title" : "Location",
+								"icatName" : "location"
+							}
+						]					
+					}
+				]
+			},
+            "browseColumns": {
+                "instrument": [
+                    {
+                        "name": "id",
+                        "title": "Id"
+                    },
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "link": true
+                    },
+                    {
+                        "name": "fullName",
+                        "title": "Full Name"
+                    }
+                ],
+                "investigation": [
+                    {
+                        "name": "id",
+                        "title": "Id",
+                        "style": "firstColumn",
+                        "visible": false
+                    },
+                    {
+                        "name": "title",
+                        "title": "Title",
+                        "style": "secondColumn",
+                        "sortable": false,
+                        "link": true,
+                        "expressionFilter": {
+                            "type": "string",
+                            "name": "characters",
+                            "characters": 80
+                        }
+                    },
+                    {
+                        "name": "visitId",
+                        "title": "Visit Id"
+                    },
+                    {
+                        "name": "startDate",
+                        "title": "Start Date",
+                        "expressionFilter": {
+                            "type": "date",
+                            "format": "dd-MM-yyyy",
+                            "timezone": "UTC"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "title": "End Date",
+                        "expressionFilter": {
+                            "type": "date",
+                            "format": "dd-MM-yyyy",
+                            "timezone": "UTC"
+                        }
+                    }
+                ],
+                "dataset": [
+                    {
+                        "name": null,
+                        "title": "",
+                        "checkbox": true
+                    },
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "link": true
+                    },
+                    {
+                        "name": "createTime",
+                        "title": "Create Time"
+                    },
+                    {
+                        "name": "modTime",
+                        "title": "Modified Time"
+                    }
+                ],
+                "datafile": [
+                    {
+                        "name": "name",
+                        "title": "Name",
+                        "expressionFilter": {
+                            "type": "string",
+                            "name": "characters",
+                            "characters": 80
+                        }
+                    },
+                    {
+                        "name": "fileSize",
+                        "title": "File Size",
+                        "expressionFilter": {
+                            "type": "bytes"
+                        }
+                    },
+                    {
+                        "name": "modTime",
+                        "title": "Modified Time"
+                    }
+                ]
+            }
+        }
+    },
+    "site": {
+        "pagingType": "page",
+        "useFileForData": false,
+        "useFileForSession": false,
+        "browseMaxRows": 6,
+        "facilitiesColumns": [
+            {
+                "name": "name",
+                "title": "Name",
+                "link": true,
+                "sortByDefault": "asc"
+            },
+            {
+                "name": "fullName",
+                "title": "Full Name"
+            }
+        ]
+    }
+}
