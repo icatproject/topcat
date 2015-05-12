@@ -26,7 +26,7 @@
         var browseMaxRows = Config.getSiteConfig(APP_CONFIG).browseMaxRows;
         var sessions = $sessionStorage.sessions;
         var stateParamClone = angular.copy($stateParams); //we need this because for some reason when using the filter search box, the call changes the stateParam and change the id to something unexpected
-        var REST_API_URL = 'https://localhost:3001/icat/entityManager';
+        var REST_API_URL = Config.getSiteConfig(APP_CONFIG).icatDataProxyHost  + '/icat/entityManager';
 
         vm.structure = structure;
         vm.currentEntityType = currentEntityType;

@@ -3,17 +3,17 @@
 angular.
     module('angularApp').factory('ICATService', ICATService);
 
-ICATService.$inject = ['$http', '$q', 'APP_CONFIG', '$rootScope'];
+ICATService.$inject = ['$http', '$q', 'APP_CONFIG', 'Config', '$rootScope'];
 
 /*jshint -W098 */
-function ICATService($http, $q, APP_CONFIG, $rootScope) {
+function ICATService($http, $q, APP_CONFIG, Config, $rootScope) {
 
     var useFileForData = angular.isDefined(APP_CONFIG.site.useFileForData) ? APP_CONFIG.site.useFileForData : false;
     var useFileForSession = angular.isDefined(APP_CONFIG.site.useFileForSession) ? APP_CONFIG.site.useFileForSession : false;
     var data = {};
     //var mySessionId = '297b3916-2080-4e58-9ff5-8a4383be147e';
     var LIMIT = ' LIMIT 0, 1000'; //apply a limit to a query. FOR DEBUG ONLY
-    var ICATDATAPROXYURL = 'https://localhost:3001';
+    var ICATDATAPROXYURL = Config.getSiteConfig(APP_CONFIG).icatDataProxyHost;
 
     console.log('useFileForData:' + useFileForData);
     console.log('useFileForSession:' + useFileForSession);
@@ -235,7 +235,6 @@ function ICATService($http, $q, APP_CONFIG, $rootScope) {
         } else {
             var url = ICATDATAPROXYURL + '/icat/entityManager';
             var query = 'SELECT ins FROM Instrument ins, ins.facility f where f.id = ' + facility.facilityId ;
-            //http://localhost:3000/icat/entityManager?server=https://facilities02.esc.rl.ac.uk:8181&sessionId=0e8dc561-cf59-4640-b2e8-e5e8c5e8ceab&query=SELECT ins FROM Instrument ins, ins.facility f where f.id = 1 AND UPPER(ins.name) LIKE '%B%'
             query = appendOptionsToQuery(options, query);
 
             var params = {
