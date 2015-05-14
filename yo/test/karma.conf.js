@@ -58,6 +58,10 @@ module.exports = function(config) {
         watched:  true,
         served:   true,
         included: false
+      },
+      {
+        pattern: 'test/mock/data/*.json',
+        included: false
       }
 
     ],
