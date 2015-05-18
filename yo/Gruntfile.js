@@ -78,7 +78,7 @@ module.exports = function (grunt) {
         key: grunt.file.read('certs/key.pem').toString(),
         cert: grunt.file.read('certs/cert.pem').toString(),
         //ca: grunt.file.read('certs/ca.crt').toString(),
-        livereload: 35729
+        livereload: (env === 'production') ? false : 35729
       },
       livereload: {
         options: {
