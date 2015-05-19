@@ -593,6 +593,27 @@ angular.module('angularApp')
                 });
 
                 return urlEncodeParameters(params);
+            },
+
+            getEntityById: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('e')
+                    .from(queryParams.entityType, 'e')
+                    .where(
+                        squel.expr()
+                            .and('e.id = ?', queryParams.entityId)
+                    );
+
+                var params = {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    entity: queryParams.entityType,
+                    server: facility.icatUrl
+                };
+
+                return urlEncodeParameters(params);
             }
         };
     });

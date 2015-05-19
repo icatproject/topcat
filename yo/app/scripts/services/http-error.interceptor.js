@@ -4,15 +4,15 @@ angular
     .module('angularApp')
     .factory('HttpErrorInterceptor', HttpErrorInterceptor);
 
-HttpErrorInterceptor.$inject = ['inform', '$translate', '$sessionStorage', '$injector'];
+HttpErrorInterceptor.$inject = ['inform', '$translate', '$sessionStorage', '$injector', '$log'];
 
-function HttpErrorInterceptor(inform, $translate, $sessionStorage, $injector){
+function HttpErrorInterceptor(inform, $translate, $sessionStorage, $injector, $log){
     return {
         responseError: function(rejection) {
-                console.log('bad response', rejection);
+                $log.debug('bad response', rejection);
                 if(rejection.status === 403){
-                    console.log('HttpErrorInterceptor', rejection);
-                    console.log('HttpErrorInterceptor facilityTitle', rejection.config.headers.facilityTitle);
+                    $log.debug('HttpErrorInterceptor', rejection);
+                    $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.headers.facilityTitle);
 
                     var state = $injector.get('$state');
 
@@ -22,7 +22,7 @@ function HttpErrorInterceptor(inform, $translate, $sessionStorage, $injector){
                     });
 
                     //delete the session
-                    console.log('delete session key: ' + rejection.config.headers.facilityKeyName);
+                    $log.debug('delete session key: ' + rejection.config.headers.facilityKeyName);
                     delete $sessionStorage.sessions[rejection.config.headers.facilityKeyName];
 
                     if (_.size($sessionStorage.sessions) === 0) {

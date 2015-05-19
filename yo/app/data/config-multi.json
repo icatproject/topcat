@@ -544,6 +544,7 @@
             "facilityId": 1,
             "hierarchy": [
                 "facility",
+                "instrument",
                 "investigation",
                 "dataset",
                 "datafile"

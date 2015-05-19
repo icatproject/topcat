@@ -171,6 +171,10 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
                 query : query,
                 entity : entityIcatName,
                 server : facility.icatUrl
+            },
+            headers : {
+                'facilityKeyName' : facility.keyName,
+                'facilityTitle' : facility.title
             }
         };
 
