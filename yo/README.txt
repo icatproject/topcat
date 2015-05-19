@@ -429,3 +429,43 @@ To suppress an errors, look up the code in https://github.com/jshint/jshint/blob
 
 Add the comment /*jshint -CODE_NUMBER */ just above the line of code to suppress the warning.
 
+
+
+## UI-GRID
+
+sort direction:
+
+sort: {
+  direction: uiGridConstants.ASC,
+  priority: 0,
+},
+
+
+Apply a class to a cell:
+
+{ field: 'name', cellClass:'red' },
+{ field: 'company',
+  cellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+    if (grid.getCellValue(row,col) === 'Velity') {
+      return 'blue';
+    }
+  }
+}
+
+
+filter constants:
+
+filter: {
+  STARTS_WITH: 2,
+  ENDS_WITH: 4,
+  EXACT: 8,
+  CONTAINS: 16,
+  GREATER_THAN: 32,
+  GREATER_THAN_OR_EQUAL: 64,
+  LESS_THAN: 128,
+  LESS_THAN_OR_EQUAL: 256,
+  NOT_EQUAL: 512,
+  SELECT: 'select',
+  INPUT: 'input'
+},
+

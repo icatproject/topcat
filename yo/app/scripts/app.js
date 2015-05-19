@@ -34,15 +34,17 @@
             'ct.ui.router.extras.sticky',
             //'ct.ui.router.extras.previous',
             'ui.bootstrap',
-            'datatables',
-            'datatables.scroller',
             'truncate',
             'inform',
             'inform-exception',
             'prettyBytes',
             'checklist-model',
             'ngStorage',
-            'pascalprecht.translate'
+            'pascalprecht.translate',
+            'ui.grid',
+            'ui.grid.pagination',
+            'ui.grid.infiniteScroll',
+            'ui.grid.selection'
         ])
         .constant('_', window._)
         .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
@@ -100,7 +102,7 @@
                     views: {
                         '' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseFacilitiesController as browse'
+                            controller: 'BrowseFacilitiesController as vm'
                         },
                         'search-form-view': {
                             templateUrl: 'views/partial-search-form.html',
@@ -117,7 +119,7 @@
                     views: {
                         '@home.browse.facilities' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         }
                     },
                     param: {
@@ -129,7 +131,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -145,7 +147,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -162,7 +164,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -179,7 +181,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -195,7 +197,7 @@
                     views: {
                         '' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelContoller as browse'
+                            controller: 'BrowsePanelContoller as vm'
                         }
                     }
                 })*/
@@ -204,7 +206,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -221,7 +223,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -237,7 +239,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -253,7 +255,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -269,7 +271,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -285,7 +287,7 @@
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelController as browse'
+                            controller: 'BrowseEntitiesController as vm'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -376,6 +378,9 @@
                 ;
 
         })
+        .config(['$logProvider', function($logProvider) {
+            $logProvider.debugEnabled(true);
+        }])
     /*.config(function($stickyStateProvider) {
       $stickyStateProvider.enableDebug(true);
     })*/

@@ -47,12 +47,53 @@
     "BROWSE": {
         "COLUMN": {
             "FACILITY":{
+                "ID": "Id",
+                "NAME": "Name",
                 "FULLNAME": "Full Name",
-                "NAME": "Name"
+                "DESCRIPTION": "Description",
+                "URL": "Web Site",
+                "DAYS_UNTIL_RELEASE": "Days Until Release"
             },
             "INSTRUMENT":{
+                "ID": "Id",
+                "NAME": "Instrument Name",
                 "FULLNAME": "Instrument Full Name",
-                "NAME": "Instrument Name"
+                "TYPE": "Type",
+                "URL": "Website"
+            },
+            "INVESTIGATION":{
+                "ID": "Id",
+                "NAME": "Name",
+                "TITLE": "Title",
+                "SUMMARY": "Summary",
+                "VISIT_ID": "Visit Id",
+                "START_DATE": "Start Date",
+                "END_DATE": "End Date",
+                "DOI": "Doi",
+                "RELEASE_DATE": "Release Date"
+            },
+            "DATASET":{
+                "ID": "Id",
+                "NAME": "Name",
+                "DESCRIPTION": "Description",
+                "LOCATION": "Location",
+                "START_DATE": "Start Date",
+                "END_DATE": "End Date",
+                "DOI": "Doi",
+                "COMPLETE": "complete",
+                "CREATE_TIME": "Create Time",
+                "MOD_TIME": "Modified Time"
+            },
+            "DATAFILE":{
+                "ID": "Id",
+                "NAME": "Name",
+                "DESCRIPTION": "Description",
+                "LOCATION": "Location",
+                "DOI": "Doi",
+                "FILE_SIZE": "File Size",
+                "CHECKSUM": "Checksum",
+                "DATAFILE_CREATE_TIME": "Create Time",
+                "DATAFILE_MOD_TIME": "Modified Time"
             }
         },
         "INTERFACE" : {

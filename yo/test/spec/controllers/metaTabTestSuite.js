@@ -50,12 +50,11 @@ describe('MetatabTest', function() {
 		dataManager = {};
 		routeUtils = {};
 
-		createMockRouteUtils = function(entityType) {
-			routeUtils.getCurrentEntityType = function(state) 
-			{
+		createMockRouteUtils = function() {
+			routeUtils.getCurrentEntityType = function(state) {
 				return state.current.param.entityType;
-			}
-		}
+			};
+		};
 
 		createDataManager = function(mockResult) {
 			dataManager.getEntityById = function() {

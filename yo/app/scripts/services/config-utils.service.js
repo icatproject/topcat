@@ -77,7 +77,7 @@ function ConfigUtils($q){
                         var obj = {};
                         obj.id = value.facilityId;
                         obj.name = value.keyName;
-                        obj.title = value.title;
+                        obj.fullName = value.title;
 
                         data.push(obj);
                     }

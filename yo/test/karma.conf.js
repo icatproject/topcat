@@ -29,10 +29,6 @@ module.exports = function(config) {
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'bower_components/datatables/media/js/jquery.dataTables.js',
-      'bower_components/angular-datatables/dist/angular-datatables.js',
-      'bower_components/datatables-scroller/js/dataTables.scroller.js',
-      'bower_components/angular-datatables-scroller/index.js',
       'bower_components/angular-deferred-bootstrap/angular-deferred-bootstrap.js',
       'bower_components/angularjs-truncate/src/truncate.js',
       'bower_components/ui-router-extras/release/ct-ui-router-extras.js',
@@ -45,6 +41,7 @@ module.exports = function(config) {
       'bower_components/angular-translate/angular-translate.js',
       'bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'bower_components/squel/squel.js',
+      'bower_components/angular-ui-grid/ui-grid.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/karma-read-json/karma-read-json.js',
       // endbower
@@ -60,10 +57,9 @@ module.exports = function(config) {
         included: false
       },
       {
-        pattern: 'test/mock/data/*.json',
+        pattern: 'test/mock/**/*.json',
         included: false
       }
-
     ],
 
     // list of files / patterns to exclude

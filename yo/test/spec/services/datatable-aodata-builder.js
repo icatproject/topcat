@@ -107,8 +107,6 @@ describe('Service: DataTableAODataBuilder', function() {
             }
         );
 
-        console.log(params);
-
         expect(params).toEqual(jasmine.objectContaining({
             sessionId: '1234567890'
         }));
@@ -157,6 +155,53 @@ describe('Service: DataTableAODataBuilder', function() {
 
         expect(params).toEqual(jasmine.objectContaining({
             query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\') LIMIT 0, 10')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            entity: 'Instrument'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            server: encodeURIComponent('https://example.com')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            filterCountQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\')')
+        }));
+    });
+
+    it('getInstruments with ordering, absUrl, with search', function() {
+        var params = DataTableAODataBuilder.getInstruments(
+            '1234567890',
+            {
+                keyName: 'dls',
+                title: 'DIAMOND',
+                icatUrl: 'https://example.com',
+                connectProxyPath: 'dls/',
+                idsUrl: 'https://example.com',
+                facilityId: 1,
+            },
+            {
+                start: 0,
+                numRows: 10,
+                search: 'clf',
+                sortField: 'name',
+                order: 'desc'
+
+            },
+            true
+        );
+
+        expect(params).toEqual(jasmine.objectContaining({
+            sessionId: '1234567890'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\') ORDER BY ins.name DESC LIMIT 0, 10')
         }));
 
         expect(params).toEqual(jasmine.objectContaining({

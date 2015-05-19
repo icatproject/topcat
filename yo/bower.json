@@ -12,10 +12,6 @@
     "angular-route": "1.3.14",
     "angular-bootstrap": "~0.12.1",
     "angular-ui-router": "~0.2.13",
-    "angular-datatables": "~0.4.1",
-    "datatables-scroller": "~1.2.2",
-    "angular-datatables-scroller": "./vendor/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.min.js",
-    "angular-datatables-scroller-css": "./vendor/datatables-scroller/css/dataTables.scroller.css",
     "angular-deferred-bootstrap": "~0.1.5",
     "angularjs-truncate": "*",
     "ui-router-extras": "~0.0.13",
@@ -26,14 +22,16 @@
     "ngstorage": "~0.3.0",
     "angular-translate": "~2.6.1",
     "angular-translate-loader-static-files": "~2.6.1",
-    "squel": "~3.10.0"
+    "squel": "~3.10.0",
+    "angular-ui-grid": "~3.0.0-rc.21"
   },
   "devDependencies": {
     "angular-mocks": "1.3.14",
-    "karma-read-json": "~1.0.2"
+    "karma-read-json": "~1.1.0"
   },
   "appPath": "app",
   "resolutions": {
-    "angular": "1.3.14"
+    "angular": "1.3.14",
+    "karma-read-json": "~1.1.0"
   }
 }

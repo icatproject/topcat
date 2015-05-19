@@ -2,7 +2,7 @@
 
 describe('MetaDataManagerTest', function () {
 
-	var $rootScope, scope, metaDataManager, mockInstrument, mockInvestigation, mockDataSet, constructExpectedResults, compareResults, tabs, config;
+	var $rootScope, scope, metaDataManager, mockInstrument, mockInvestigation, mockDataSet, constructExpectedResults, compareResults, config;
 
 	beforeEach(function() {
 		module(function($provide) {
@@ -55,27 +55,27 @@ describe('MetaDataManagerTest', function () {
 				var results = mockResult;
 				var tab = tabs[count];
 				var expectedResult = {
-					'title': tab['title'],
+					'title': tab.title,
 					'content': ''
 				};
 
 				if(tab['default'] === false) {
-					results = results[0][tab['icatName']];
+					results = results[0][tab.icatName];
 				}
 
-				for (var i in tab['data']) {
+				for (var i in tab.data) {
 
-					var data = tab['data'][i];
+					var data = tab.data[i];
 
-					while (data['data'] != undefined) 
+					while (data.data !== undefined)
 					{
-						results = results[0][data['icatName']];
-						data = data['data'][0];
+						results = results[0][data.icatName];
+						data = data.data[0];
 					}
 					if(!Array.isArray(results)) {
 						results = [results];
 					}
-					expectedResult['content'] += data['title'] + ': ' + results[0][data['icatName']] + '<br>';
+					expectedResult.content += data.title + ': ' + results[0][data.icatName] + '<br>';
 				}
 				expectedResults.push(expectedResult);
 			}

@@ -1,10 +1,15 @@
-
-<ul class="breadcrumb" style="position: absolute;" ng-show="browse.currentEntityType != 'facility'">
-    <li ng-repeat="item in browse.structure">
-        <span ng-class="{current : browse.currentEntityType == item}">{{ item }}</span>
+<ul class="breadcrumb" style="position: absolute;" ng-show="vm.currentEntityType != 'facility'">
+    <li ng-repeat="item in vm.structure">
+        <span ng-class="{current : vm.currentEntityType == item}">{{ item }}</span>
     </li>
 </ul>
 
+
 <div>
-    <table datatable="" dt-options="browse.dtOptions" dt-columns="browse.dtColumns" dt-disable-deep-watchers="true" class="row-border hover" width="100%"></table>
+    <div ng-if="vm.isScroll" ui-grid="vm.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="browseGrid"></div>
+
+    <div ng-if="!vm.isScroll" ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-selection class="browseGrid"></div>
 </div>
+<!-- <div>{{vm.gridOptions.totalItems}}</div> -->
+
+

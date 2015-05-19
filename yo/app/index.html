@@ -10,10 +10,8 @@
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/normalize-css/normalize.css" />
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/datatables/media/css/jquery.dataTables.css" />
-    <link rel="stylesheet" href="bower_components/datatables-scroller/css/dataTables.scroller.css" />
-    <link rel="stylesheet" href="bower_components/angular-datatables-scroller-css/index.css" />
     <link rel="stylesheet" href="bower_components/angular-inform/dist/angular-inform.css" />
+    <link rel="stylesheet" href="bower_components/angular-ui-grid/ui-grid.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -126,10 +124,6 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
-    <script src="bower_components/angular-datatables/dist/angular-datatables.js"></script>
-    <script src="bower_components/datatables-scroller/js/dataTables.scroller.js"></script>
-    <script src="bower_components/angular-datatables-scroller/index.js"></script>
     <script src="bower_components/angular-deferred-bootstrap/angular-deferred-bootstrap.js"></script>
     <script src="bower_components/angularjs-truncate/src/truncate.js"></script>
     <script src="bower_components/ui-router-extras/release/ct-ui-router-extras.js"></script>
@@ -142,6 +136,7 @@
     <script src="bower_components/angular-translate/angular-translate.js"></script>
     <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
     <script src="bower_components/squel/squel.js"></script>
+    <script src="bower_components/angular-ui-grid/ui-grid.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -162,6 +157,8 @@
         <script src="scripts/controllers/search-form.controller.js"></script>
         <script src="scripts/controllers/parameter-modal.controller.js"></script>
         <script src="scripts/controllers/meta-panel.controller.js"></script>
+        <script src="scripts/models/browse-facilities.model.js"></script>
+        <script src="scripts/models/browse-entities.model.js"></script>
         <script src="scripts/controllers/browse-facilities.controller.js"></script>
         <script src="scripts/controllers/browse-panel.controller.js"></script>
         <script src="scripts/controllers/modal-instance.controller.js"></script>
@@ -170,12 +167,15 @@
         <script src="scripts/controllers/login.controller.js"></script>
         <script src="scripts/controllers/logout.controller.js"></script>
 
+        <script src="scripts/controllers/browse-facilities.controller.js"></script>
+        <script src="scripts/controllers/browse-entities.controller.js"></script>
+
 
 
         <!--<script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script> -->
         <!-- <script src="scripts/services/datatable-query-builder.js"></script> -->
-        <script src="scripts/services/datatable-aodata-builder.js"></script>
+        <script src="scripts/services/icat-query-builder.js"></script>
         <!-- endbuild -->
 </body>
 </html>
