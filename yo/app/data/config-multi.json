@@ -111,7 +111,8 @@
                                 "disableCancelFilterButton": true
                             },
                             "link" : true,
-                            "cellTooltip": true
+                            "cellTooltip": true,
+                            "minWidth": 350
                         },
                         {
                             "field": "visitId",
@@ -179,6 +180,7 @@
                             "displayName": "Create Date",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
@@ -192,6 +194,7 @@
                             "displayName": "Modified Time",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
@@ -223,6 +226,7 @@
                             "displayName": "File Size",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
                             "type": "number",
+                            "cellFilter": "bytes",
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",

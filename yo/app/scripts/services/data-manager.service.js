@@ -27,6 +27,57 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
         return sessions[facility.keyName].sessionId;
     }
 
+    /**
+     * This preprocess function does 2 things. First if converts date strings as defined in browse
+     * columns to javascript dates if the column type is set a set. It so plucks the object from
+     * the wrapping entity key
+     *
+     * [prepProcessData description]
+     * @param  {[type]} data     [description]
+     * @param  {[type]} facility [description]
+     * @param  {[type]} entity   [description]
+     * @param  {[type]} field    [description]
+     * @return {[type]}          [description]
+     */
+    function prepProcessData(data, facility, entity, field) {
+        var browseConfig = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.keyName, field);
+
+        var dateColumns = [];
+        //get column config and get fields where the column type is date
+        _.each(browseConfig.columnDefs, function(value) {
+            if (typeof value.type !== 'undefined' && value.type === 'date') {
+                dateColumns.push(value.field);
+            }
+        });
+
+        //for each row, change the field from a string to a JavaScript date object and unwrap
+        //the object from the entity key
+        _.each(data[0].data, function(value, key) {
+            _.each(dateColumns, function(field) {
+                //deal with ctime format Wed Jan 07 16:12:26 GMT 2015
+                var pattern = /(\w{3})\s(\w{3})\s(\d{2})\s(\d{2})\:(\d{2})\:(\d{2})\s(\w{3})\s(\d{4})/;
+                var matches = pattern.exec(value[entity][field]);
+                var dateInt;
+
+                if (matches) {
+                    //convert to rfc2822 which Date.parse recognises Mon, 25 Dec 1995 13:30:00 GMT
+                    var newDateString = matches[1] + ', ' + matches[3] + ' ' + matches[2] + ' ' + matches[8] + ' ' + matches[4] + ':' + matches[5] + matches[6] + ' ' + matches[7];
+                    dateInt = Date.parse(newDateString);
+                    if (! Number.isNaN(dateInt)) {
+                        value[entity][field] = new Date(dateInt);
+                    }
+                } else {
+                    dateInt = Date.parse(value[entity][field]);
+                    if (! Number.isNaN(dateInt)) {
+                        value[entity][field] = new Date(dateInt);
+                    }
+                }
+            });
+
+            //pluck from wrapping entity key
+            data[0].data[key] = value[entity];
+        });
+    }
 
     /**
      * Perform a login
@@ -160,7 +211,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getInstruments(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Instrument');
+            prepProcessData(data, facility, 'Instrument', 'instrument');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -185,7 +237,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getCycles(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'FacilityCycle');
+            prepProcessData(data, facility, 'FacilityCycle', 'facilityCycle');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -211,7 +264,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getCyclesByInstrumentId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'FacilityCycle');
+            prepProcessData(data, facility, 'FacilityCycle', 'facilityCycle');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -237,7 +291,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getInvestigations(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Investigation');
+            prepProcessData(data, facility, 'Investigation', 'investigation');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -263,7 +318,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getInvestigationsByCycleId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Investigation');
+            prepProcessData(data, facility, 'Investigation', 'investigation');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -290,7 +346,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getInvestigationsByInstrumentId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Investigation');
+            prepProcessData(data, facility, 'Investigation', 'investigation');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -317,7 +374,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getInvestigationsByInstrumentIdByCycleId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Investigation');
+            prepProcessData(data, facility, 'Investigation', 'investigation');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -341,9 +399,13 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
         var sessionId = getSessionValueForFacility(sessions, facility);
         var def = $q.defer();
 
+        /*var metaConfig = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.keyName, 'dataset');
+        console.log('metaConfig', metaConfig);*/
+
         ICATService.getDatasets(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Dataset');
+            prepProcessData(data, facility, 'Dataset', 'dataset');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -369,7 +431,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getDatasetsByInstrumentId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Dataset');
+            prepProcessData(data, facility, 'Dataset', 'dataset');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -394,7 +457,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getDatasetsByInvestigationId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Dataset');
+            prepProcessData(data, facility, 'Dataset', 'dataset');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -420,7 +484,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getDatafiles(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Datafile');
+            prepProcessData(data, facility, 'Datafile', 'datafile');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -446,7 +511,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getDatafilesByDatasetId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Datafile');
+            prepProcessData(data, facility, 'Datafile', 'datafile');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -471,7 +537,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getDatafilesByInstrumentId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Datafile');
+            prepProcessData(data, facility, 'Datafile', 'datafile');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);
@@ -496,7 +563,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
         ICATService.getDatafilesByInvestigationId(sessionId, facility, options).then(function(data) {
             var result = {};
-            result.data = _.pluck(data[0].data, 'Datafile');
+            prepProcessData(data, facility, 'Datafile', 'datafile');
+            result.data  = data[0].data;
             result.totalItems = data[1].data[0];
 
             def.resolve(result);

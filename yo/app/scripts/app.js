@@ -44,7 +44,8 @@
             'ui.grid',
             'ui.grid.pagination',
             'ui.grid.infiniteScroll',
-            'ui.grid.selection'
+            'ui.grid.selection',
+            'bytes'
         ])
         .constant('_', window._)
         .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {

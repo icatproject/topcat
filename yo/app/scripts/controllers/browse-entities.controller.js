@@ -20,6 +20,7 @@
         vm.currentEntityType = currentEntityType;
         vm.isScroll = (pagingType === 'scroll') ? true : false;
 
+        $scope.isEmpty = false;
         $scope.mySelection = {};
 
         if (!angular.isDefined($rootScope.cart)) {

@@ -66,7 +66,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
 
                 //add suppress remove sort
                 if (! angular.isDefined(value.suppressRemoveSort)) {
-                    value.suppressRemoveSort = true;
+                    //value.suppressRemoveSort = true;
                 }
 
                 return value;
@@ -101,6 +101,14 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                 DataManager.getData(currentRouteSegment, facility.keyName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = data.data;
                     gridOptions.totalItems = data.totalItems;
+
+                    if (data.totalItems === 0) {
+                        scope.isEmpty = true;
+                        $log.info('isEmpty = true');
+                    } else {
+                        scope.isEmpty = false;
+                        $log.info('isEmpty = false');
+                    }
 
                     if (pagingType === 'scroll') {
                         scope.lastPage = Math.ceil(data.totalItems/pageSize);
@@ -179,6 +187,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                 enableRowHeaderSelection: true,
                 //modifierKeysToMultiSelect: true,
                 multiSelect: true,
+                flatEntityAccess: true,
                 rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
             };
 

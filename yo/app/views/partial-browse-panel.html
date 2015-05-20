@@ -4,7 +4,19 @@
     </li>
 </ul>
 <div>
-    <div ng-if="vm.isScroll" ui-grid="vm.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="browseGrid"></div>
+    <div ng-if="vm.isScroll" ui-grid="vm.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="browseGrid">
+        <div class="no-rows row" ng-show="isEmpty">
+            <div class="col-md-2 col-md-offset-5 emptyMessage">
+                <span>Nothing to display</span>
+            </div>
+        </div>
+    </div>
 
-    <div ng-if="!vm.isScroll" ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-selection class="browseGrid"></div>
+    <div ng-if="!vm.isScroll" ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-selection class="browseGrid">
+        <div class="row" ng-show="isEmpty">
+            <div class="emptyMessage center-block">
+                <span>Nothing to display</span>
+            </div>
+        </div>
+    </div>
 </div>
