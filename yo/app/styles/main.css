@@ -66,6 +66,10 @@ body {
   font-weight: bold;
 }
 
+.param-title::after { 
+    content: ": ";
+}
+
 .param-value {
 
 }

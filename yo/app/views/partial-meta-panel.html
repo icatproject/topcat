@@ -8,7 +8,9 @@
 
 <tabset>
     <tab ng-repeat="tab in meta.tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
-      <span ng-bind-html='tab.content'></span>
+      	<div class="tab-content" ng-repeat="content in tab.content">
+			<div class="param-item"><span class="param-title">{{content.title}}</span><span class="param-value">{{content.value}}</span></div>
+		</div>
     </tab>
 </tabset>
 

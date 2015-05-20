@@ -1,93 +1,91 @@
 'use strict';
 
 angular
-    .module('angularApp')
-    .factory('MetaDataManager', MetaDataManager);
+	.module('angularApp')
+	.factory('MetaDataManager', MetaDataManager);
 
 MetaDataManager.$inject = [];
 
 function MetaDataManager() {
 
 
-    function MyException(message) {
-        this.name = name;
-        this.message = message;
-    }
-    MyException.prototype = new Error();
-    MyException.prototype.constructor = MyException;
+	function MyException(message) {
+		this.name = name;
+		this.message = message;
+	}
+	MyException.prototype = new Error();
+	MyException.prototype.constructor = MyException;
+	
 
+	var extractMetaData = function (tabDataArray, icatData) {
 
-    var extractMetaData = function (tabDataArray, icatData) {
-
-        var content = '';
+        var content = [];
 
         if(!Array.isArray(icatData)){
-            icatData = [icatData];
+          icatData = [icatData];
         }
 
         for(var l in icatData) {
-            var icatDataCurrent = icatData[l];
+          var icatDataCurrent = icatData[l];
 
-            for(var counter in tabDataArray) {
-                var dataV = tabDataArray[counter];
+          for(var counter in tabDataArray) {
+            var dataV = tabDataArray[counter];
 
-                if(typeof dataV.data !== 'undefined') {
-                    content += extractMetaData(dataV.data, icatDataCurrent[dataV.icatName]);
-                } else {
-                    content += dataV.title + ': ';
-                    content += icatDataCurrent[dataV.icatName] + '<br>';
-                }
+            if(typeof dataV.data !== 'undefined') {
+              var temp = content;
+              content = temp.concat(extractMetaData(dataV.data, icatDataCurrent[dataV.icatName]));
+            } else {
+              content.push( { 'title' : dataV.title, "value" : icatDataCurrent[dataV.icatName] });
             }
+          }
         }
         return content;
-    };
+	    };
 
-    return {
+	return { // public API
 
-        updateTabs : function(dataResults, tabs) {
+		updateTabs : function(dataResults, tabs) {
 
-            var tabsUpdated = [];
+	        var tabsUpdated = [];
 
-            for(var i in tabs)
-            {
+	        for(var i in tabs)
+	        {
+	          var icatData = dataResults;
+	          var currentTab = tabs[i];
+	          var tabTitle = currentTab.title;
+	          var tabData = currentTab.data;
+              var tabContent = [];
 
-                var icatData = dataResults;
-                var currentTab = tabs[i];
-                var tabTitle = currentTab.title;
-                var tabData = currentTab.data;
-                var tabContent = '';
+              if(currentTab.default === true) {
+	            tabContent = extractMetaData(tabData, icatData);
+	          } else {
+	            tabContent = extractMetaData(tabData, icatData[0][currentTab.icatName]);
+	          }
+	          var temp = {title : tabTitle, content : tabContent};
+	          tabsUpdated.push(temp);
+	        }
+	      return tabsUpdated;
+		},
 
-                if(currentTab.default === true) {
-                    tabContent += extractMetaData(tabData, icatData);
-                } else {
-                    tabContent += extractMetaData(tabData, icatData[0][currentTab.icatName]);
-                }
+		getTabQueryOptions : function(tabConfig) {
 
-                var temp = {title : tabTitle, content : tabContent};
-                tabsUpdated.push(temp);
-            }
-            return tabsUpdated;
-        },
+	        var optionsList = {
+	            'include' : []
+	        };
 
-        getTabQueryOptions : function(tabConfig) {
+	        for(var index in tabConfig) {
+	            var tab = tabConfig[index];
 
-            var optionsList = {
-                'include' : []
-            };
+	            if(typeof tab.queryParams !== 'undefined') {
+	                optionsList.include.push(tab.queryParams);
+	            }
+	        }
 
-            for(var index in tabConfig) {
-                var tab = tabConfig[index];
+	        if(optionsList.include.length === 0){
+	            optionsList = {};
+	        }
 
-                if(typeof tab.queryParams !== 'undefined') {
-                    optionsList.include.push(tab.queryParams);
-                }
-            }
-
-            if(optionsList.include.length === 0){
-                optionsList = {};
-            }
-
-            return optionsList;
-        }
-    };
+	        return optionsList;
+	    }
+	};
 }
