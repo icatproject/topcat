@@ -61,6 +61,66 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
         return deferred.promise;
     };
 
+        /**
+     * Parse options object and append it to the JPQL query.
+     *
+     * The option object expected is:
+     *
+     * {
+     *     sort: {
+     *         sortBy: 'ds.name',
+     *         orderBy: 'asc',
+     *     },
+     *     limit: {
+     *         offset: 0,
+     *         maxRows: 100
+     *     },
+     *     include: [
+     *         'ds.datafiles',
+     *         'ds.datafiles AS df',
+     *         'df.parameters'
+     *     ]
+     *
+     * }
+     *
+     * @param  {[type]} option [description]
+     * @return {[type]}        [description]
+     */
+    var appendConciseInclude = function(options, query) {
+        if (!angular.isDefined(options)) {
+            return query;
+        }
+
+        var opt = '';
+
+        if (angular.isDefined(options.include)) {
+            if (! (options.include instanceof Array)) {
+                throw {name : 'BAD_OPTION', message: 'INVALID OPTION: include must be an array'};
+            }
+
+            if (options.include.length === 0) {
+                throw {name : 'BAD_OPTION', message: 'INVALID OPTION: include must contain at least one element'};
+            }
+
+            var include = options.include.join();
+
+            if(opt.length !== 0) {
+                opt = opt + ' ';
+            }
+
+            opt = opt + 'INCLUDE ' + include;
+        }
+
+        //prepend starting space to make it easier to append to query
+        if(opt.length !== 0) {
+            opt = ' ' + opt;
+        }
+
+        query = query + opt;
+        return query;
+    };
+
+
 
     //public methods
     /**
@@ -162,7 +222,7 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
         var url = ICATDATAPROXYURL + '/icat/entityManager';
         var entityIcatName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
         var query = entityIcatName ;
-        //query = appendOptionsToQuery(options, query);
+        query = appendConciseInclude(options, query);
         query += ' [id=' + entityId + ']';
 
         var params = {

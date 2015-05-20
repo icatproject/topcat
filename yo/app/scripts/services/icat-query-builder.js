@@ -595,6 +595,7 @@ angular.module('angularApp')
                 return urlEncodeParameters(params);
             },
 
+
             getEntityById: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
 
@@ -605,6 +606,12 @@ angular.module('angularApp')
                         squel.expr()
                             .and('e.id = ?', queryParams.entityId)
                     );
+
+                /*if (typeof queryParams.include !== 'undefined') {
+                    _.each(queryParams.include, function(value) {
+                        query.include(value);
+                    });
+                }*/
 
                 var params = {
                     sessionId: mySessionId,

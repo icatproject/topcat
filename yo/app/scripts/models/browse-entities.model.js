@@ -61,7 +61,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                     //$log.debug('link value', value);
                     delete value.link;
 
-                    value.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facilities.{{grid.appScope.getNextRouteSegment()}}({facilityName : \'' + facility.keyName + '\', id : {{ 0 + row.entity.id}}})">{{row.entity.' + value.field + '}}</a></div>';
+                    value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facilities.{{grid.appScope.getNextRouteSegment()}}({facilityName : \'' + facility.keyName + '\', id : {{ 0 + row.entity.id}}})">{{row.entity.' + value.field + '}}</a></div>';
                 }
 
                 //add suppress remove sort

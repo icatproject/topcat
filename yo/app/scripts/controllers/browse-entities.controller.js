@@ -11,7 +11,7 @@
     function BrowseEntitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseEntitiesModel) {
         var vm = this;
         var facilityName = $stateParams.facilityName;
-        var pagingType = Config.getSiteConfig(APP_CONFIG).pagingType; //the pagination type. 'scroll' or 'page'
+        var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
         var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
         var currentRouteSegment = RouteUtils.getCurrentRouteSegmentName($state);

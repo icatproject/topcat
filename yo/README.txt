@@ -7,14 +7,17 @@ In addition to AngularJS, the following modules were used:
   - _angular-bootstrap_: Provides native AngularJS directives for Bootstrap components (http://angular-ui.github.io/bootstrap/)
   - _angular-ui-router_: Provides routing with nested views. Necessary for tabs with routing (bookmarkable tabs) (https://github.com/angular-ui/ui-router)
   - _angular-ui-router-tab_: Provides tabs directive with routing support (https://github.com/rpocklin/ui-router-tabs)
-  - _angular-datatables_: Provides functionality to display data in grid table  (http://l-lin.github.io/angular-datatables)
-  - _datatables-scroller_: Plugin for angular-datatables to add scrolling pagainator
+  - _angular-ui-grid_: Provides functionality to display data in a grid (http://ui-grid.info)
   - _angular-deferred-bootstrap_: Used for initialising AngularJS app with constants (https://github.com/philippd/angular-deferred-bootstrap)
   - _angularjs-truncate_: Used to truncate strings
   - _ui-router-extras_: Provides sticky state essential for navigating between tabs with routing and not resetting states
-  - _lodash_: javascript utility library
+  - _lodash_: JavaScript utility library
   - _angular-pretty-bytes_: filter to display human readable bytes, KB, MB, GB etc
   - _ngstorage_: No need to serialize and unserialize data to and from localstorage and sessionstorage
+  - _squel_: Used to build SQL like queries
+  - _angular-translate_: Primarily used to move UI text to a JSON file
+  - _angular-translate-loader-static-files_: angular-translate plugin to load static files
+  - _karma-read-json_: Use to load json files in tests
 
 
 ## Installation (On windows) for AngularJS Development

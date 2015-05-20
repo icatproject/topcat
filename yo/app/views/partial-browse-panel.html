@@ -3,13 +3,8 @@
         <span ng-class="{current : vm.currentEntityType == item}">{{ item }}</span>
     </li>
 </ul>
-
-
 <div>
     <div ng-if="vm.isScroll" ui-grid="vm.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="browseGrid"></div>
 
     <div ng-if="!vm.isScroll" ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-selection class="browseGrid"></div>
 </div>
-<!-- <div>{{vm.gridOptions.totalItems}}</div> -->
-
-
