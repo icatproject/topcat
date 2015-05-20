@@ -7,10 +7,13 @@
  -->
 
 <tabset>
-    <tab ng-repeat="tab in meta.tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
-      	<div class="tab-content" ng-repeat="content in tab.content">
-			<div class="param-item"><span class="param-title">{{content.title}}</span><span class="param-value">{{content.value}}</span></div>
-		</div>
-    </tab>
+    	<tab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
+      		<div class="tab-content" ng-repeat="content in tab.content">
+				<div class="param-item">
+					<span ng-show="content.value" class="param-title">{{content.title}}</span>
+					<span ng-show="content.value" class="param-value">{{content.value}}</span>
+				</div>
+			</div>
+    	</tab>
 </tabset>
 

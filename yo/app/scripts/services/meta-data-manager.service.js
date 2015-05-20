@@ -35,7 +35,7 @@ function MetaDataManager() {
               var temp = content;
               content = temp.concat(extractMetaData(dataV.data, icatDataCurrent[dataV.icatName]));
             } else {
-              content.push( { 'title' : dataV.title, "value" : icatDataCurrent[dataV.icatName] });
+              content.push( { 'title' : dataV.title, 'value' : icatDataCurrent[dataV.icatName] });
             }
           }
         }
