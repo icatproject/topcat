@@ -57,6 +57,7 @@ function BrowseFacilitiesModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGr
                 columnDefs: options.columnDefs,
                 enableFiltering: options.enableFiltering,
                 appScopeProvider: scope,
+                enableRowHeaderSelection: false,
                 rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
             };
 

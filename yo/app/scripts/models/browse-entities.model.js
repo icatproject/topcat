@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteUtils', 'uiGridConstants', 'DataManager', '$timeout', '$log'];
+BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteUtils', 'uiGridConstants', 'DataManager', '$timeout', '$state', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,10 +12,11 @@ BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteUtils', 'uiGridCons
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, DataManager, $timeout, $log){
+function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, DataManager, $timeout, $state, $log){
     return {
         gridOptions : {},
         nextRouteSegment: null,
+        facility: null,
 
         /**
          * This function transpose the site config file to settings used by ui-grid
@@ -60,8 +61,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                 if (angular.isDefined(value.link) && value.link === true) {
                     //$log.debug('link value', value);
                     delete value.link;
-
-                    value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facilities.{{grid.appScope.getNextRouteSegment()}}({facilityName : \'' + facility.keyName + '\', id : \'{{ row.entity.id}}\'})">{{row.entity.' + value.field + '}}</a></div>';
+                    value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row)}}">{{row.entity.' + value.field + '}}</a></div>';
                 }
 
                 //add suppress remove sort
@@ -85,6 +85,16 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
             var scrollRowFromEnd = Config.getSiteConfig(APP_CONFIG).scrollRowFromEnd;
             var paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
             var gridOptions = {};
+
+            var enableSelection = function() {
+                if (angular.isDefined(options.enableSelection) && options.enableSelection === true) {
+                    $log.debug('si true');
+                    return true;
+                } else {
+                    $log.debug('si false');
+                    return false;
+                }
+            };
 
             $log.debug('scope', scope);
 
@@ -181,11 +191,11 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                 //showGridFooter:true,
                 useExternalSorting: true,
                 useExternalFiltering: true,
-                enableRowSelection: true,
-                enableRowHeaderSelection: true,
+                //enableRowSelection: options.enableSelection,
+                enableRowHeaderSelection: enableSelection(),
                 //modifierKeysToMultiSelect: true,
                 multiSelect: true,
-                flatEntityAccess: true,
+                //flatEntityAccess: true,
                 rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
             };
 
@@ -407,13 +417,17 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
 
             this.gridOptions = gridOptions;
             this.nextRouteSegment = nextRouteSegment;
+            this.facility = facility;
         },
 
+        getNextRouteUrl: function (row) {
+            var route = $state.href('home.browse.facilities.' + this.nextRouteSegment, {
+                facilityName : this.facility.keyName,
+                id : row.entity.id
+            });
 
-        getNextRouteSegment: function() {
-            return this.nextRouteSegment;
+            return route;
         }
-
     };
 }
 

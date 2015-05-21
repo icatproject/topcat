@@ -115,16 +115,20 @@
                         }
                     }
                 })
-                .state('home.browse.facilities.facility-cycle', {
-                    url: '/{facilityName}/cycles',
+                .state('home.browse.facilities.facility-facilityCycle', {
+                    url: '/{facilityName}/facilityCycles',
                     views: {
-                        '@home.browse.facilities' : {
+                        '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowseEntitiesController as vm'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
                     },
                     param: {
-                        entityType : 'investigation'
+                        entityType : 'facilityCycle'
                     }
                 })
                 .state('home.browse.facilities.facility-instrument', {
@@ -202,8 +206,25 @@
                         }
                     }
                 })*/
+                .state('home.browse.facilities.instrument-facilityCycle', {
+                    url: '/{facilityName}/instruments/{id}/faciltyCycles',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowseEntitiesController as vm'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'facilityCycle'
+
+                    }
+                })
                 .state('home.browse.facilities.instrument-proposal', {
-                    url: '/{facilityName}/instruments/{id}/proposal',
+                    url: '/{facilityName}/instruments/{id}/proposals',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',

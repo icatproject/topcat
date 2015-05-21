@@ -285,8 +285,8 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
      * @param  {[type]} options     [description]
      * @return {[type]}             [description]
      */
-    data.getCycles = function(mySessionId, facility, options) {
-        var params = ICATQueryBuilder.getCycles(mySessionId, facility, options);
+    data.getFacilityCycles = function(mySessionId, facility, options) {
+        var params = ICATQueryBuilder.getFacilityCycles(mySessionId, facility, options);
 
         return getPromise(mySessionId, facility, params);
     };
@@ -298,8 +298,8 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
      * @param  {[type]} options     [description]
      * @return {[type]}             [description]
      */
-    data.getCyclesByInstrumentId = function(mySessionId, facility, options) {
-        var params = ICATQueryBuilder.getCyclesByInstrumentId(mySessionId, facility, options);
+    data.getFacilityCyclesByInstrumentId = function(mySessionId, facility, options) {
+        var params = ICATQueryBuilder.getFacilityCyclesByInstrumentId(mySessionId, facility, options);
 
         return getPromise(mySessionId, facility, params);
     };
@@ -325,8 +325,22 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
      * @param  {[type]} options     [description]
      * @return {[type]}             [description]
      */
-    data.getInvestigationsByCycleId = function(mySessionId, facility, options) {
-        var params = ICATQueryBuilder.getInvestigationsByCycleId(mySessionId, facility, options);
+    data.getInvestigationsByFacilityCycleId = function(mySessionId, facility, options) {
+        var params = ICATQueryBuilder.getInvestigationsByFacilityCycleId(mySessionId, facility, options);
+
+        return getPromise(mySessionId, facility, params);
+    };
+
+
+    data.getDatasetsByFacilityCycleId = function(mySessionId, facility, options) {
+        var params = ICATQueryBuilder.getDatasetsByFacilityCycleId(mySessionId, facility, options);
+
+        return getPromise(mySessionId, facility, params);
+    };
+
+
+    data.getDatafilesByFacilityCycleId = function(mySessionId, facility, options) {
+        var params = ICATQueryBuilder.getDatafilesByFacilityCycleId(mySessionId, facility, options);
 
         return getPromise(mySessionId, facility, params);
     };
@@ -364,8 +378,8 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
      * @param  {[type]} options     [description]
      * @return {[type]}             [description]
      */
-    data.getInvestigationsByInstrumentIdByCycleId = function(mySessionId, facility, options) {
-        var params = ICATQueryBuilder.getInvestigationsByInstrumentIdByCycleId(mySessionId, facility, options);
+    data.getInvestigationsByInstrumentIdByFacilityCycleId = function(mySessionId, facility, options) {
+        var params = ICATQueryBuilder.getInvestigationsByInstrumentIdByFacilityCycleId(mySessionId, facility, options);
 
         return getPromise(mySessionId, facility, params);
     };

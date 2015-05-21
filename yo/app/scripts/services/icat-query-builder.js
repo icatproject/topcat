@@ -1,14 +1,11 @@
 'use strict';
 
-/**
- * @ngdoc service
- * @name angularApp.DataTableAODataBuilder
- * @description
- * # DataTableAODataBuilder
- * Factory in the angularApp.
- */
-angular.module('angularApp')
-    .factory('ICATQueryBuilder', function() {
+angular.
+    module('angularApp').factory('ICATQueryBuilder', ICATQueryBuilder);
+
+ICATQueryBuilder.$inject = ['$log'];
+
+function ICATQueryBuilder($log) {
         //private methods
         /**
          * taken from angualr source to build query string
@@ -161,11 +158,99 @@ angular.module('angularApp')
                 return url + ((url.indexOf('?') === -1) ? '?' : '&') + parts.join('&');
             },*/
 
-            getCycles: function() {
+            getFacilityCycles: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(fc)')
+                    .from('FacilityCycle', 'fc')
+                    .from('fc.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('fc')
+                    .from('FacilityCycle', 'fc')
+                    .from('fc.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                var searchExpr = getSearchExpr(queryParams.search, 'fc');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    entity: 'FacilityCycle',
+                    server: facility.icatUrl
+                });
+
+                return urlEncodeParameters(params);
+            },
+
+            getFacilityCyclesByInstrumentId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+                //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
+                //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
+                $log.debug('queryParams', queryParams);
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(fc)')
+                    .from('FacilityCycle', 'fc')
+                    .from('fc.facility', 'f')
+                    .from('f.investigations', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                            .and_begin() //jshint ignore:line
+                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                            .end()
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('fc')
+                    .from('FacilityCycle', 'fc')
+                    .from('fc.facility', 'f')
+                    .from('f.investigations', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                            .and_begin() //jshint ignore:line
+                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                            .end()
+                    );
+
+                var searchExpr = getSearchExpr(queryParams.search, 'fc');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    entity: 'FacilityCycle',
+                    server: facility.icatUrl
+                });
+
+                return urlEncodeParameters(params);
+            },
+
+            getDatasetsByFacilityCycleId: function() {
 
             },
 
-            getCyclesByInstrumentId: function() {
+            getDatafilesByFacilityCycleId: function() {
 
             },
 
@@ -711,4 +796,4 @@ angular.module('angularApp')
                 return urlEncodeParameters(params);
             }
         };
-    });
+    }

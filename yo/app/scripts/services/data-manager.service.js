@@ -233,11 +233,11 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
      * @param  {Object} facility the facility object
      * @return {Object}          a promise containing the list of cycles
      */
-    manager.getCycles = function(sessions, facility, options) {
+    manager.getFacilityCycles = function(sessions, facility, options) {
         var sessionId = getSessionValueForFacility(sessions, facility);
         var def = $q.defer();
 
-        ICATService.getCycles(sessionId, facility, options).then(function(data) {
+        ICATService.getFacilityCycles(sessionId, facility, options).then(function(data) {
             var result = {};
             prepProcessData(data, facility, 'FacilityCycle', 'facilityCycle');
             result.data  = data[0].data;
@@ -260,11 +260,11 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
      * @param  {int} instrumentId the id of the instrument
      * @return {Object}          a promise containing the list of cycles
      */
-    manager.getCyclesByInstrumentId = function(sessions, facility, options) {
+    manager.getFacilityCyclesByInstrumentId = function(sessions, facility, options) {
         var sessionId = getSessionValueForFacility(sessions, facility);
         var def = $q.defer();
 
-        ICATService.getCyclesByInstrumentId(sessionId, facility, options).then(function(data) {
+        ICATService.getFacilityCyclesByInstrumentId(sessionId, facility, options).then(function(data) {
             var result = {};
             prepProcessData(data, facility, 'FacilityCycle', 'facilityCycle');
             result.data  = data[0].data;
@@ -308,17 +308,17 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
 
     /**
-     * Get the investigations for a cycle in a facility
+     * Get the investigations for a facility cycle in a facility
      * @param  {[type]} sessions [description]
      * @param  {[type]} facility [description]
      * @param  {[type]} options  [description]
      * @return {[type]}          [description]
      */
-    manager.getInvestigationsByCycleId = function(sessions, facility, options) {
+    manager.getInvestigationsByFacilityCycleId = function(sessions, facility, options) {
         var sessionId = getSessionValueForFacility(sessions, facility);
         var def = $q.defer();
 
-        ICATService.getInvestigationsByCycleId(sessionId, facility, options).then(function(data) {
+        ICATService.getInvestigationsByFacilityCycleId(sessionId, facility, options).then(function(data) {
             var result = {};
             prepProcessData(data, facility, 'Investigation', 'investigation');
             result.data  = data[0].data;
@@ -420,19 +420,19 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
     };
 
     /**
-     * Get the investigations for an instrument and cycle in a facility
+     * Get the investigations for an instrument and facility cycle in a facility
      * @param  {[type]} sessions     [description]
      * @param  {[type]} facility     [description]
      * @param  {[type]} instrumentId [description]
-     * @param  {[type]} cycleId      [description]
+     * @param  {[type]} facilityCycleId      [description]
      * @param  {[type]} options      [description]
      * @return {[type]}              [description]
      */
-    manager.getInvestigationsByInstrumentIdByCycleId = function(sessions, facility, instrumentId, cycleId, options) {
+    manager.getInvestigationsByInstrumentIdByFacilityCycleId = function(sessions, facility, instrumentId, facilityCycleId, options) {
         var sessionId = getSessionValueForFacility(sessions, facility);
         var def = $q.defer();
 
-        ICATService.getInvestigationsByInstrumentIdByCycleId(sessionId, facility, options).then(function(data) {
+        ICATService.getInvestigationsByInstrumentIdByFacilityCycleId(sessionId, facility, options).then(function(data) {
             var result = {};
             prepProcessData(data, facility, 'Investigation', 'investigation');
             result.data  = data[0].data;
@@ -654,10 +654,10 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 $log.debug('function called: getInstruments');
 
                 return this.getInstruments(sessions, facility, options);
-            case 'facility-cycle':
+            case 'facility-facilityCycle':
                 $log.debug('function called: getCycles');
 
-                return this.getCyclesByFacilityId(sessions, facility, options);
+                return this.getFacilityCycles(sessions, facility, options);
             case 'facility-investigation':
                 $log.debug('function called: getInvestigations');
 
@@ -670,11 +670,11 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 $log.debug('function called: getDatafiles');
 
                 return this.getDatafiles(sessions, facility, options);
-            case 'instrument-cycle':
-                $log.debug('function called: getCyclesByInstruments');
+            case 'instrument-facilityCycle':
+                $log.debug('function called: getFacilityCyclesByInstrumentId');
                 options.instrumentId = $stateParams.id;
 
-                return this.getCyclesByInstruments(sessions, facility, options);
+                return this.getFacilityCyclesByInstrumentId(sessions, facility, options);
             case 'instrument-proposal':
                 $log.debug('function called: getProposalsByInstrumentId');
                 options.instrumentId = $stateParams.id;
@@ -700,26 +700,26 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 options.instrumentId = $stateParams.id;
 
                 return this.getDatafilesByInstrumentId(sessions, facility, options);
-            case 'cycle-instrument':
-                $log.debug('function called: getInstrumentsByCycleId');
-                options.cycleId = $stateParams.id;
+            case 'facilityCycle-instrument':
+                $log.debug('function called: getInstrumentsByFacilityCycleId');
+                options.facilityCycleId = $stateParams.id;
 
-                return this.getInstrumentsByCycleId(sessions, facility, options);
-            case 'cycle-investigation':
-                $log.debug('function called: getCyclesByInvestigationId');
-                options.cycleId = $stateParams.id;
+                return this.getInstrumentsByFacilityCycleId(sessions, facility, options);
+            case 'facilityCycle-investigation':
+                $log.debug('function called: getInvestigationsByFacilityCycleId');
+                options.facilityCycleId = $stateParams.id;
 
-                return this.getInvestigationsByCycleId(sessions, facility, options);
-            case 'cycle-dataset':
-                $log.debug('function called: getDatasetsByCycleId');
-                options.cycleId = $stateParams.id;
+                return this.getInvestigationsByFacilityCycleId(sessions, facility, options);
+            case 'facilityCycle-dataset':
+                $log.debug('function called: getDatasetsByFacilityCycleId');
+                options.facilityCycleId = $stateParams.id;
 
-                return this.getDatasetsByCycleId(sessions, facility, options);
-            case 'cycle-datafile':
-                $log.debug('function called: getDatafilesByCycleId');
-                options.cycleId = $stateParams.id;
+                return this.getDatasetsByFacilityCycleId(sessions, facility, options);
+            case 'facilityCycle-datafile':
+                $log.debug('function called: getDatafilesByFacilityCycleId');
+                options.facilityCycleId = $stateParams.id;
 
-                return this.getDatafilesByCycleId(sessions, facility, options);
+                return this.getDatafilesByFacilityCycleId(sessions, facility, options);
             case 'investigation-dataset':
                 $log.debug('function called: getDatasetsByInvestigationId');
                 options.investigationId = $stateParams.id;

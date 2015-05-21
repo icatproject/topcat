@@ -120,6 +120,7 @@
                 },
                 "investigation": {
                     "enableFiltering": true,
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "id",
@@ -213,6 +214,7 @@
                 },
                 "dataset": {
                     "enableFiltering": true,
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name",
@@ -260,6 +262,7 @@
                 },
                 "datafile": {
                     "enableFiltering": true,
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name",
@@ -605,6 +608,7 @@
             "hierarchy": [
                 "facility",
                 "instrument",
+                "facilityCycle",
                 "investigation",
                 "dataset",
                 "datafile"
@@ -664,6 +668,82 @@
                                 "disableCancelFilterButton": true
                             },
                             "link" : true
+                        }
+                    ]
+                },
+                "facilityCycle": {
+                    "enableFiltering": true,
+                    "columnDefs": [
+                        {
+                            "field": "id",
+                            "displayName": "Id",
+                            "enableSorting": false,
+                            "type": "number",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
+                            "field": "name",
+                            "displayName": "Name",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
+                            "type": "number",
+                            "sort": {
+                                "direction": "asc"
+                            },
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": { "caseSensitive": false },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "link" : true
+                        },
+                        {
+                            "field": "description",
+                            "displayName": "Description",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.DESCRIPTION",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": { "caseSensitive": false },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
+                            "field": "startDate",
+                            "displayName": "Start Date",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.START_DATE",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": { "caseSensitive": false },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
+                            "field": "endDate",
+                            "displayName": "End Date",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.END_DATE",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": { "caseSensitive": false },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
                         }
                     ]
                 },
@@ -743,6 +823,7 @@
                 },
                 "dataset": {
                     "enableFiltering": true,
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name",
@@ -788,6 +869,7 @@
                 },
                 "datafile": {
                     "enableFiltering": true,
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name",
