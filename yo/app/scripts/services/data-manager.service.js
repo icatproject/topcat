@@ -50,6 +50,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
             }
         });
 
+        $log.debug(entity, field);
+
         //for each row, change the field from a string to a JavaScript date object and unwrap
         //the object from the entity key
         _.each(data[0].data, function(value, key) {
@@ -317,6 +319,64 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
         var def = $q.defer();
 
         ICATService.getInvestigationsByCycleId(sessionId, facility, options).then(function(data) {
+            var result = {};
+            prepProcessData(data, facility, 'Investigation', 'investigation');
+            result.data  = data[0].data;
+            result.totalItems = data[1].data[0];
+
+            def.resolve(result);
+        }, function(error){
+            def.reject('Failed to retrieve data');
+            throw new MyException('Failed to retrieve data from server');
+        });
+
+        return def.promise;
+    };
+
+    /**
+     * [getProposalsByInstrumentId description]
+     * @param  {[type]} sessions [description]
+     * @param  {[type]} facility [description]
+     * @param  {[type]} options  [description]
+     * @return {[type]}          [description]
+     */
+    manager.getProposalsByInstrumentId = function(sessions, facility, options) {
+        //$log.debug('manager.getProposalsByInstrumentId options', options);
+
+        var sessionId = getSessionValueForFacility(sessions, facility);
+        var def = $q.defer();
+
+        ICATService.getProposalsByInstrumentId(sessionId, facility, options).then(function(data) {
+            var result = {};
+
+            _.each(data[0].data, function(value, index) {
+                data[0].data[index] = {
+                    'id' : value,
+                    'name' : value
+                };
+            });
+
+            //prepProcessData(data, facility, 'Proposal', 'proposal');
+            result.data  = data[0].data;
+            result.totalItems = data[1].data[0];
+
+            def.resolve(result);
+        }, function(error){
+            def.reject('Failed to retrieve data');
+            throw new MyException('Failed to retrieve data from server');
+        });
+
+        return def.promise;
+    };
+
+
+    manager.getInvestigationsByProposalId = function(sessions, facility, options) {
+        //$log.debug('manager.getInvestigationsByProposalId options', options);
+
+        var sessionId = getSessionValueForFacility(sessions, facility);
+        var def = $q.defer();
+
+        ICATService.getInvestigationsByProposalId(sessionId, facility, options).then(function(data) {
             var result = {};
             prepProcessData(data, facility, 'Investigation', 'investigation');
             result.data  = data[0].data;
@@ -615,6 +675,16 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 options.instrumentId = $stateParams.id;
 
                 return this.getCyclesByInstruments(sessions, facility, options);
+            case 'instrument-proposal':
+                $log.debug('function called: getProposalsByInstrumentId');
+                options.instrumentId = $stateParams.id;
+
+                return this.getProposalsByInstrumentId(sessions, facility, options);
+            case 'proposal-investigation':
+                $log.debug('function called: getInvestigationsByProposalId');
+                options.proposalId = $stateParams.id;
+
+                return this.getInvestigationsByProposalId(sessions, facility, options);
             case 'instrument-investigation':
                 $log.debug('function called: getInvestigationsByInstrumentId');
                 options.instrumentId = $stateParams.id;

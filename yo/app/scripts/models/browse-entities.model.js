@@ -24,11 +24,11 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
          */
         configToUIGridOptions : function(facility, currentEntityType) {
             $log.debug('BrowseEntitiesModel configToUIGridOptions called');
-            //$log.debug('BrowseEntitiesModel configToUIGridOptions currentEntityType', currentEntityType);
+            $log.debug('BrowseEntitiesModel configToUIGridOptions currentEntityType', currentEntityType);
 
             var gridOptions = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.keyName, currentEntityType);
 
-            //$log.debug('BrowseEntitiesModel gridOptions', gridOptions);
+            $log.debug('BrowseEntitiesModel gridOptions', gridOptions);
 
             //do the work of transposing
             _.mapValues(gridOptions.columnDefs, function(value) {
@@ -61,7 +61,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                     //$log.debug('link value', value);
                     delete value.link;
 
-                    value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facilities.{{grid.appScope.getNextRouteSegment()}}({facilityName : \'' + facility.keyName + '\', id : {{ 0 + row.entity.id}}})">{{row.entity.' + value.field + '}}</a></div>';
+                    value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facilities.{{grid.appScope.getNextRouteSegment()}}({facilityName : \'' + facility.keyName + '\', id : \'{{ row.entity.id}}\'})">{{row.entity.' + value.field + '}}</a></div>';
                 }
 
                 //add suppress remove sort
@@ -104,10 +104,8 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
 
                     if (data.totalItems === 0) {
                         scope.isEmpty = true;
-                        $log.info('isEmpty = true');
                     } else {
                         scope.isEmpty = false;
-                        $log.info('isEmpty = false');
                     }
 
                     if (pagingType === 'scroll') {

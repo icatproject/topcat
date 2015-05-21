@@ -202,6 +202,40 @@
                         }
                     }
                 })*/
+                .state('home.browse.facilities.instrument-proposal', {
+                    url: '/{facilityName}/instruments/{id}/proposal',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowseEntitiesController as vm'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'proposal'
+
+                    }
+                })
+                .state('home.browse.facilities.proposal-investigation', {
+                    url: '/{facilityName}/proposal/{id}/investigations',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowseEntitiesController as vm'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'investigation'
+
+                    }
+                })
                 .state('home.browse.facilities.instrument-investigation', {
                     url: '/{facilityName}/instruments/{id}/investigations',
                     views: {

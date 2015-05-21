@@ -248,6 +248,94 @@ angular.module('angularApp')
 
             },
 
+            getProposalsByInstrumentId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(DISTINCT inv.name)')
+                    .from('Investigation', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .distinct()
+                    .field('inv.name')
+                    .from('Investigation', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                    );
+
+                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
+                    entity: 'Proposal',
+                    server: facility.icatUrl
+                });
+
+                return urlEncodeParameters(params);
+            },
+
+            getInvestigationsByProposalId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(DISTINCT inv)')
+                    .from('Investigation', 'inv')
+                    //.from('inv.investigationInstruments', 'invins')
+                    //.from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('inv.name = ?', queryParams.proposalId)
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .distinct()
+                    .field('inv')
+                    .from('Investigation', 'inv')
+                    //.from('inv.investigationInstruments', 'invins')
+                    //.from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('inv.name = ?', queryParams.proposalId)
+                    );
+
+                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
+                    entity: 'Investigation',
+                    server: facility.icatUrl
+                });
+
+                return urlEncodeParameters(params);
+            },
+
 
             getInvestigationsByInstrumentId: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
