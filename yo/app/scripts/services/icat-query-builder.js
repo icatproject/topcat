@@ -426,6 +426,63 @@ function ICATQueryBuilder($log) {
                 return urlEncodeParameters(params);
             },
 
+
+            getProposalsByFacilityCycleId: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                console.log(queryParams);
+
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(DISTINCT inv.name)')
+                    .from('Investigation', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .from('f.facilityCycles', 'fc')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                            .and('fc.id = ?', queryParams.facilityCycleId)
+                            .and_begin() //jshint ignore:line
+                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                            .end()
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .distinct()
+                    .field('inv.name')
+                    .from('Investigation', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .from('f.facilityCycles', 'fc')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                            .and('fc.id = ?', queryParams.facilityCycleId)
+                            .and_begin() //jshint ignore:line
+                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                            .end()
+                    );
+
+                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
+                    entity: 'Proposal',
+                    server: facility.icatUrl
+                });
+
+                return urlEncodeParameters(params);
+            },
+
             getInvestigationsByProposalId: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
 

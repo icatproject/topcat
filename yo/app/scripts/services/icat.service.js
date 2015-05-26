@@ -352,6 +352,12 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
         return getPromise(mySessionId, facility, params);
     };
 
+    data.getProposalsByFacilityCycleId = function(mySessionId, facility, options) {
+        var params = ICATQueryBuilder.getProposalsByFacilityCycleId(mySessionId, facility, options);
+
+        return getPromise(mySessionId, facility, params);
+    };
+
     data.getInvestigationsByProposalId = function(mySessionId, facility, options) {
         var params = ICATQueryBuilder.getInvestigationsByProposalId(mySessionId, facility, options);
 

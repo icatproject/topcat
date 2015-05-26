@@ -395,6 +395,35 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
         return def.promise;
     };
 
+    manager.getProposalsByFacilityCycleId = function(sessions, facility, options) {
+        //$log.debug('manager.getProposalsByInstrumentId options', options);
+
+        var sessionId = getSessionValueForFacility(sessions, facility);
+        var def = $q.defer();
+
+        ICATService.getProposalsByFacilityCycleId(sessionId, facility, options).then(function(data) {
+            var result = {};
+
+            _.each(data[0].data, function(value, index) {
+                data[0].data[index] = {
+                    'id' : value,
+                    'name' : value
+                };
+            });
+
+            //prepProcessData(data, facility, 'Proposal', 'proposal');
+            result.data  = data[0].data;
+            result.totalItems = data[1].data[0];
+
+            def.resolve(result);
+        }, function(error){
+            def.reject('Failed to retrieve data');
+            throw new MyException('Failed to retrieve data from server');
+        });
+
+        return def.promise;
+    };
+
 
     manager.getInvestigationsByProposalId = function(sessions, facility, options) {
         //$log.debug('manager.getInvestigationsByProposalId options', options);
@@ -708,9 +737,6 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
             case 'instrument-proposal':
                 $log.debug('function called: getProposalsByInstrumentId');
 
-
-                //options.instrumentId = $stateParams.id;
-
                 return this.getProposalsByInstrumentId(sessions, facility, options);
             case 'proposal-investigation':
                 $log.debug('function called: getInvestigationsByProposalId');
@@ -737,6 +763,10 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 //options.facilityCycleId = $stateParams.id;
 
                 return this.getInstrumentsByFacilityCycleId(sessions, facility, options);
+            case 'facilityCycle-proposal':
+                $log.debug('function called: getProposalsByFacilityCycleId');
+
+                return this.getProposalsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-investigation':
                 $log.debug('function called: getInvestigationsByFacilityCycleId');
                 //options.facilityCycleId = $stateParams.facilityCycleId;

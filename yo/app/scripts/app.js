@@ -131,6 +131,22 @@
                         entityType : 'facilityCycle'
                     }
                 })
+                .state('home.browse.facilities.facilityCycle-proposal', {
+                    url: '/{facilityName}/instruments/{instrumentId}/faciltyCycles/{facilityCycleId}/proposals',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowseEntitiesController as vm'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'proposal'
+                    }
+                })
                 .state('home.browse.facilities.facilityCycle-investigation', {
                     url: '/{facilityName}/instruments/{instrumentId}/faciltyCycles/{facilityCycleId}/investigation',
                     views: {
