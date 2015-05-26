@@ -17,6 +17,8 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
         gridOptions : {},
         nextRouteSegment: null,
         facility: null,
+        stateParams: null,
+        currentEntityType: null,
 
         /**
          * This function transpose the site config file to settings used by ui-grid
@@ -88,10 +90,8 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
 
             var enableSelection = function() {
                 if (angular.isDefined(options.enableSelection) && options.enableSelection === true) {
-                    $log.debug('si true');
                     return true;
                 } else {
-                    $log.debug('si false');
                     return false;
                 }
             };
@@ -191,7 +191,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                 //showGridFooter:true,
                 useExternalSorting: true,
                 useExternalFiltering: true,
-                //enableRowSelection: options.enableSelection,
+                enableRowSelection: enableSelection(),
                 enableRowHeaderSelection: enableSelection(),
                 //modifierKeysToMultiSelect: true,
                 multiSelect: true,
@@ -202,15 +202,12 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
             if (pagingType === 'page') {
                 getPage(paginateParams);
 
-                $log.debug('pageType page');
                 gridOptions.paginationPageSizes = paginationPageSizes;
                 gridOptions.paginationPageSize = pageSize;
                 gridOptions.useExternalPagination = true;
 
                 gridOptions.onRegisterApi = function(gridApi) {
                     scope.gridApi = gridApi;
-
-                    $log.debug('onRegisterApi', scope);
 
                     //sort callback
                     scope.gridApi.core.on.sortChanged(scope, function(grid, sortColumns) {
@@ -237,7 +234,6 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
                     });
 
                     scope.gridApi.core.on.filterChanged(scope, function () {
-                        $log.debug('this.grid', this.grid);
                         $log.debug('filterChanged column', this.grid.columns);
 
                         var grid = this.grid;
@@ -284,8 +280,6 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
 
                 };
             } else {
-                $log.debug('pageType scroll');
-
                 //gridOptions.infiniteScrollRowsFromEnd = pageSize;
                 gridOptions.infiniteScrollRowsFromEnd = scrollRowFromEnd;
                 gridOptions.infiniteScrollUp = true;
@@ -418,13 +412,26 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
             this.gridOptions = gridOptions;
             this.nextRouteSegment = nextRouteSegment;
             this.facility = facility;
+            this.currentEntityType = currentEntityType;
+            this.stateParams = angular.copy($stateParams);
         },
 
         getNextRouteUrl: function (row) {
-            var route = $state.href('home.browse.facilities.' + this.nextRouteSegment, {
+            var params = {
                 facilityName : this.facility.keyName,
-                id : row.entity.id
+                //id : row.entity.id
+            };
+
+            params[this.currentEntityType + 'Id'] = row.entity.id;
+
+            _.each(this.stateParams, function(value, key){
+                /*if (_.isNumber(value)) {
+                    value = parseInt(value);
+                }*/
+                params[key] = value;
             });
+
+            var route = $state.href('home.browse.facilities.' + this.nextRouteSegment, params);
 
             return route;
         }

@@ -329,7 +329,56 @@ function ICATQueryBuilder($log) {
                 return urlEncodeParameters(params);
             },
 
-            getInvestigationsByCycleId: function(){
+            getInvestigationsByFacilityCycleId: function(mySessionId, facility, queryParams){
+                validateRequiredArguments(mySessionId, facility, queryParams);
+                //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
+                //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
+                $log.debug('queryParams', queryParams);
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('inv')
+                    .from('Investigation', 'inv')
+                    .from('inv.facility', 'f')
+                    .from('f.facilityCycles', 'fc')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                            .and_begin() //jshint ignore:line
+                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                            .end()
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('inv')
+                    .from('Investigation', 'inv')
+                    .from('inv.facility', 'f')
+                    .from('f.facilityCycles', 'fc')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                            .and('ins.id = ?', queryParams.instrumentId)
+                            .and_begin() //jshint ignore:line
+                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                            .end()
+                    );
+
+                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    entity: 'FacilityCycle',
+                    server: facility.icatUrl
+                });
+
+                return urlEncodeParameters(params);
 
             },
 
@@ -727,6 +776,8 @@ function ICATQueryBuilder($log) {
 
             getDatafilesByDatasetId: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
+
+                console.log('getDatafilesByDatasetId queryParams', queryParams);
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(df)')

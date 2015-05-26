@@ -16,6 +16,11 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
     MyException.prototype = new Error();
     MyException.prototype.constructor = MyException;
 
+    Date.prototype.addHours= function(h){
+        this.setHours(this.getHours() + h);
+        return this;
+    };
+
 
     /**
      * Get the session value for the facility that was passed
@@ -56,6 +61,8 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
         //the object from the entity key
         _.each(data[0].data, function(value, key) {
             _.each(dateColumns, function(field) {
+                //the following fixes a bug in the REST API where createtimes and modtimes are return in
+                //some weird datetime format which javacript cannot properly parse to a data object.
                 //deal with ctime format Wed Jan 07 16:12:26 GMT 2015
                 var pattern = /(\w{3})\s(\w{3})\s(\d{2})\s(\d{2})\:(\d{2})\:(\d{2})\s(\w{3})\s(\d{4})/;
                 var matches = pattern.exec(value[entity][field]);
@@ -63,12 +70,31 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
 
                 if (matches) {
                     //convert to rfc2822 which Date.parse recognises Mon, 25 Dec 1995 13:30:00 GMT
-                    var newDateString = matches[1] + ', ' + matches[3] + ' ' + matches[2] + ' ' + matches[8] + ' ' + matches[4] + ':' + matches[5] + matches[6] + ' ' + matches[7];
+                    //var newDateString = matches[1] + ', ' + matches[3] + ' ' + matches[2] + ' ' + matches[8] + ' ' + matches[4] + ':' + matches[5] + matches[6] + ' ' + matches[7];
+
+                    //deal with BST which javascript can't seem to deal with
+                    var isBST = false;
+
+                    if (matches[7] === 'BST') {
+                       matches[7] = 'GMT';
+                       isBST = true;
+                    }
+
+                    var newDateString = matches[1] + ', ' + matches[3] + ' ' + matches[2] + ' ' + matches[8] + ' ' + matches[4] + ':' + matches[5] + ':' + matches[6] + ' ' + matches[7];
+
                     dateInt = Date.parse(newDateString);
+
                     if (! Number.isNaN(dateInt)) {
                         value[entity][field] = new Date(dateInt);
+
+                        //minus an hour if BST
+                        if (isBST) {
+                            value[entity][field] = value[entity][field].addHours(-1);
+                        }
                     }
+
                 } else {
+                    console.log('no matches');
                     dateInt = Date.parse(value[entity][field]);
                     if (! Number.isNaN(dateInt)) {
                         value[entity][field] = new Date(dateInt);
@@ -649,10 +675,15 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
     manager.getData = function(currentRouteSegment, facilityName, sessions, $stateParams, options) {
         var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
 
+        //merge $stateparams with options
+        _.extend(options, $stateParams);
+
+        console.log('getData $stateParams', $stateParams);
+
         switch (currentRouteSegment) {
             case 'facility-instrument':
                 $log.debug('function called: getInstruments');
-
+                _.extend(options, $stateParams);
                 return this.getInstruments(sessions, facility, options);
             case 'facility-facilityCycle':
                 $log.debug('function called: getCycles');
@@ -672,67 +703,68 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 return this.getDatafiles(sessions, facility, options);
             case 'instrument-facilityCycle':
                 $log.debug('function called: getFacilityCyclesByInstrumentId');
-                options.instrumentId = $stateParams.id;
 
                 return this.getFacilityCyclesByInstrumentId(sessions, facility, options);
             case 'instrument-proposal':
                 $log.debug('function called: getProposalsByInstrumentId');
-                options.instrumentId = $stateParams.id;
+
+
+                //options.instrumentId = $stateParams.id;
 
                 return this.getProposalsByInstrumentId(sessions, facility, options);
             case 'proposal-investigation':
                 $log.debug('function called: getInvestigationsByProposalId');
-                options.proposalId = $stateParams.id;
+                //options.proposalId = $stateParams.id;
 
                 return this.getInvestigationsByProposalId(sessions, facility, options);
             case 'instrument-investigation':
                 $log.debug('function called: getInvestigationsByInstrumentId');
-                options.instrumentId = $stateParams.id;
+                //options.instrumentId = $stateParams.id;
 
                 return this.getInvestigationsByInstrumentId(sessions, facility, options);
             case 'instrument-dataset':
                 $log.debug('function called: getDatasetsByInstrumentId');
-                options.instrumentId = $stateParams.id;
+                //options.instrumentId = $stateParams.id;
 
                 return this.getDatasetsByInstrumentId(sessions, facility, options);
             case 'instrument-datafile':
                 $log.debug('function called: getDatafilesByInstrumentId');
-                options.instrumentId = $stateParams.id;
+                //options.instrumentId = $stateParams.id;
 
                 return this.getDatafilesByInstrumentId(sessions, facility, options);
             case 'facilityCycle-instrument':
                 $log.debug('function called: getInstrumentsByFacilityCycleId');
-                options.facilityCycleId = $stateParams.id;
+                //options.facilityCycleId = $stateParams.id;
 
                 return this.getInstrumentsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-investigation':
                 $log.debug('function called: getInvestigationsByFacilityCycleId');
-                options.facilityCycleId = $stateParams.id;
+                //options.facilityCycleId = $stateParams.facilityCycleId;
+                //options.instrumentId = $stateParams.instrumentId;
 
                 return this.getInvestigationsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-dataset':
                 $log.debug('function called: getDatasetsByFacilityCycleId');
-                options.facilityCycleId = $stateParams.id;
+                //options.facilityCycleId = $stateParams.id;
 
                 return this.getDatasetsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-datafile':
                 $log.debug('function called: getDatafilesByFacilityCycleId');
-                options.facilityCycleId = $stateParams.id;
+                //options.facilityCycleId = $stateParams.id;
 
                 return this.getDatafilesByFacilityCycleId(sessions, facility, options);
             case 'investigation-dataset':
                 $log.debug('function called: getDatasetsByInvestigationId');
-                options.investigationId = $stateParams.id;
+                //options.investigationId = $stateParams.id;
 
                 return this.getDatasetsByInvestigationId(sessions, facility, options);
             case 'investigation-datafile':
                 $log.debug('function called: getDatafilesByInvestigationId');
-                options.investigationId = $stateParams.id;
+                //options.investigationId = $stateParams.id;
 
                 return this.getDatafilesByInvestigationId(sessions, facility, options);
             case 'dataset-datafile':
                 $log.debug('function called: getDatafilesByDatasetId');
-                options.datasetId = $stateParams.id;
 
                 return this.getDatafilesByDatasetId(sessions, facility, options);
             default:

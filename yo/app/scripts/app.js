@@ -131,6 +131,22 @@
                         entityType : 'facilityCycle'
                     }
                 })
+                .state('home.browse.facilities.facilityCycle-investigation', {
+                    url: '/{facilityName}/instruments/{instrumentId}/faciltyCycles/{facilityCycleId}/investigation',
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowseEntitiesController as vm'
+                        },
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    },
+                    param: {
+                        entityType : 'investigation'
+                    }
+                })
                 .state('home.browse.facilities.facility-instrument', {
                     url: '/{facilityName}/instruments',
                     views: {
@@ -207,7 +223,7 @@
                     }
                 })*/
                 .state('home.browse.facilities.instrument-facilityCycle', {
-                    url: '/{facilityName}/instruments/{id}/faciltyCycles',
+                    url: '/{facilityName}/instruments/{instrumentId}/facilityCycles',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -224,7 +240,7 @@
                     }
                 })
                 .state('home.browse.facilities.instrument-proposal', {
-                    url: '/{facilityName}/instruments/{id}/proposals',
+                    url: '/{facilityName}/instruments/{instrumentId}/proposals',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -241,7 +257,7 @@
                     }
                 })
                 .state('home.browse.facilities.proposal-investigation', {
-                    url: '/{facilityName}/proposal/{id}/investigations',
+                    url: '/{facilityName}/proposal/{proposalId}/investigations',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -258,7 +274,7 @@
                     }
                 })
                 .state('home.browse.facilities.instrument-investigation', {
-                    url: '/{facilityName}/instruments/{id}/investigations',
+                    url: '/{facilityName}/instruments/{instrumentId}/investigations',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -275,7 +291,7 @@
                     }
                 })
                 .state('home.browse.facilities.instrument-dataset', {
-                    url: '/{facilityName}/instruments/{id}/datasets',
+                    url: '/{facilityName}/instruments/{instrumentId}/datasets',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -291,7 +307,7 @@
                     }
                 })
                 .state('home.browse.facilities.instrument-datafile', {
-                    url: '/{facilityName}/instruments/{id}/datafiles',
+                    url: '/{facilityName}/instruments/{instrumentId}/datafiles',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -307,7 +323,7 @@
                     }
                 })
                 .state('home.browse.facilities.investigation-dataset', {
-                    url: '/{facilityName}/investigations/{id}/datasets',
+                    url: '/{facilityName}/investigations/{investigationId}/datasets',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -323,7 +339,7 @@
                     }
                 })
                 .state('home.browse.facilities.investigation-datafile', {
-                    url: '/{facilityName}/investigations/{id}/datafiles',
+                    url: '/{facilityName}/investigations/{investigationId}/datafiles',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',
@@ -339,7 +355,7 @@
                     }
                 })
                 .state('home.browse.facilities.dataset-datafile', {
-                    url: '/{facilityName}/datasets/{id}/datafile',
+                    url: '/{facilityName}/datasets/{datasetId}/datafile',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/partial-browse-panel.html',

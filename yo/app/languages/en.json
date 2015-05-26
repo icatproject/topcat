@@ -35,6 +35,9 @@
     "SESSION" : {
         "EXPIRED_ERROR" : "You session has expired. You must login again to the {{facilityTitle}} facility"
     },
+    "RESTAPI" : {
+        "BAD_REQUEST_ERROR" : "There was a bad request made to the server"
+    },
     "INFO" : {
         "LOGOUT" : {
             "LOGOUT" : "You logged out of {{facilityName}}",
@@ -60,6 +63,17 @@
                 "FULLNAME": "Instrument Full Name",
                 "TYPE": "Type",
                 "URL": "Website"
+            },
+            "FACILITYCYCLE":{
+                "ID": "Id",
+                "NAME": "Name",
+                "DESCRIPTION": "Description",
+                "START_DATE": "Start Date",
+                "END_DATE": "End Date"
+            },
+            "PROPOSAL":{
+                "ID": "Id",
+                "NAME": "Name"
             },
             "INVESTIGATION":{
                 "ID": "Id",

@@ -10,11 +10,14 @@ function HttpErrorInterceptor(inform, $translate, $sessionStorage, $injector, $l
     return {
         responseError: function(rejection) {
                 $log.debug('bad response', rejection);
+
+                var state;
+
                 if(rejection.status === 403){
                     $log.debug('HttpErrorInterceptor', rejection);
                     $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.headers.facilityTitle);
 
-                    var state = $injector.get('$state');
+                    state = $injector.get('$state');
 
                     inform.add($translate.instant('SESSION.EXPIRED_ERROR', {'facilityTitle' : rejection.config.headers.facilityTitle}), {
                         'ttl': 0,
@@ -28,6 +31,18 @@ function HttpErrorInterceptor(inform, $translate, $sessionStorage, $injector, $l
                     if (_.size($sessionStorage.sessions) === 0) {
                         state.go('login');
                     }
+                }
+
+                if(rejection.status === 400){
+                    $log.debug('HttpErrorInterceptor', rejection);
+                    $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.headers.facilityTitle);
+
+                    state = $injector.get('$state');
+
+                    inform.add($translate.instant('RESTAPI.BAD_REQUEST_ERROR', {'facilityTitle' : rejection.config.headers.facilityTitle}), {
+                        'ttl': 0,
+                        'type': 'danger'
+                    });
                 }
 
                 if(rejection.status === 0){

@@ -8,8 +8,8 @@
 
 <tabset>
     	<tab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
-      		<div class="tab-content" ng-repeat="content in tab.content">
-				<div class="param-item">
+      		<div class="tab-content">
+				<div class="param-item" ng-repeat="content in tab.content">
 					<span ng-show="content.value" class="param-title">{{content.title}}</span>
 					<span ng-show="content.value" class="param-value">{{content.value}}</span>
 				</div>
