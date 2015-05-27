@@ -607,6 +607,7 @@
                 "facility",
                 "instrument",
                 "facilityCycle",
+                "proposal",
                 "investigation",
                 "dataset",
                 "datafile"
@@ -690,7 +691,7 @@
                         {
                             "field": "name",
                             "displayName": "Name",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
                             "type": "number",
                             "sort": {
                                 "direction": "asc"
@@ -707,7 +708,7 @@
                         {
                             "field": "description",
                             "displayName": "Description",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.DESCRIPTION",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -720,7 +721,7 @@
                         {
                             "field": "startDate",
                             "displayName": "Start Date",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.START_DATE",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -733,7 +734,7 @@
                         {
                             "field": "endDate",
                             "displayName": "End Date",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITY.END_DATE",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -742,6 +743,43 @@
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
+                        }
+                    ]
+                },
+                "proposal": {
+                    "enableFiltering": true,
+                    "columnDefs": [
+                        {
+                            "field": "id",
+                            "displayName": "Id",
+                            "enableSorting": false,
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "visible": false
+                        },
+                        {
+                            "field": "name",
+                            "displayName": "Run Number",
+                            "enableSorting": false,
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "link": true
                         }
                     ]
                 },
