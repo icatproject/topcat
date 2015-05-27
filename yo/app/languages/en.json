@@ -159,6 +159,67 @@
         "ERROR" : {
             "NO_CONNECTION" : "Unable to contact the facility {{facilityTitle}}"
         }
+    },
+    "METATABS" : {
+        "FACILITY" : {
+            "TABTITLE" : "Facility",
+            "FULLNAME" : "Full Name",
+            "NAME" : "Name",
+            "DESCRIPTION" : "Description",
+            "URL" : "URL"
+        },
+        "INSTRUMENT" : {
+            "TABTITLE" : "Instrument Details",
+            "NAME" : "Name",
+            "DESCRIPTION" : "Description",
+            "TYPE" : "Type",
+            "URL" : "URL"
+        },
+        "INSTRUMENT_SCIENTISTS" : {
+            "TABTITLE" : "Instrument Scientists",
+            "USERS_NAME" : "Name"
+        },
+        "INVESTIGATION" : {
+            "TABTITLE" : "Investigation Details",
+            "NAME" : "Name",
+            "TITLE" : "Title",
+            "SUMMARY" : "Summary",
+            "START_DATE" : "Start Date",
+            "END_DATE" : "End Date"
+        },
+        "INVESTIGATION_USERS" : {
+            "TABTITLE" : "Investigation Users",
+            "USERS_NAME" : "Name"
+        },
+        "INVESTIGATION_SAMPLES" : {
+            "TABTITLE" : "Investigation Samples",
+            "SAMPLE_NAME" : "Name"
+        },
+        "INVESTIGATION_PARAMS" : {
+            "TABTITLE" : "Investigation Parameters",
+            "PARAM_TYPE_NAME" : "Name",
+            "PARAM_TYPE_DESCRIPTION" : "Description",
+            "PARAM_TYPE_UNITS" : "Units",
+            "PARAM_TYPE_VALUE" : "Value"
+        },
+        "DATASET" : {
+            "TABTITLE" : "Dataset Details",
+            "NAME" : "Name",
+            "DESCRIPTION" : "Description",
+            "START_DATE" : "Start Date",
+            "END_DATE" : "End Date"
+        },
+        "DATASET_TYPE" : {
+            "TABTITLE" : "Dataset Type",
+            "NAME" : "Name",
+            "DESCRIPTION" : "Description"
+        },
+        "DATAFILE" : {
+            "TABTITLE" : "Datafile Details",
+            "NAME" : "Name",
+            "DESCRIPTION" : "Description",
+            "SIZE" : "File Size",
+            "LOCATION" : "Location"
+        }
     }
-
 }

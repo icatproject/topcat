@@ -1,12 +1,12 @@
 'use strict';
 
 angular
-	.module('angularApp')
-	.factory('MetaDataManager', MetaDataManager);
+.module('angularApp')
+.factory('MetaDataManager', MetaDataManager);
 
-MetaDataManager.$inject = [];
+MetaDataManager.$inject = ['$translate'];
 
-function MetaDataManager() {
+function MetaDataManager($translate) {
 
 
 	function MyException(message) {
@@ -19,73 +19,83 @@ function MetaDataManager() {
 
 	var extractMetaData = function (tabDataArray, icatData) {
 
-        var content = [];
+		var content = [];
 
-        if(!Array.isArray(icatData)){
-          icatData = [icatData];
-        }
+		if(!Array.isArray(icatData)){
+			icatData = [icatData];
+		}
 
-        for(var l in icatData) {
-          var icatDataCurrent = icatData[l];
+		for(var l in icatData) {
+			var icatDataCurrent = icatData[l];
 
-          for(var counter in tabDataArray) {
-            var dataV = tabDataArray[counter];
+			for(var counter in tabDataArray) {
+				var dataV = tabDataArray[counter];
 
-            if(typeof dataV.data !== 'undefined') {
-              var temp = content;
-              content = temp.concat(extractMetaData(dataV.data, icatDataCurrent[dataV.icatName]));
-            } else {
-              content.push( { 'title' : dataV.title, 'value' : icatDataCurrent[dataV.icatName] });
-            }
-          }
-        }
-        return content;
-	    };
+				if(typeof dataV.data !== 'undefined') {
+					var temp = content;
+					content = temp.concat(extractMetaData(dataV.data, icatDataCurrent[dataV.field]));
+				} else {
+					if(angular.isDefined(dataV.translateDisplayName))
+					{
+						content.push( { 'title' : $translate.instant(dataV.translateDisplayName) , 'value' : icatDataCurrent[dataV.field]} );
+					} else {
+						content.push( { 'title' : dataV.title, 'value' : icatDataCurrent[dataV.field] });
+					}
+				}
+			}
+		}
+		return content;
+	};
 
 	return { // public API
 
 		updateTabs : function(dataResults, tabs) {
 
-	        var tabsUpdated = [];
+			var tabsUpdated = [];
 
-	        for(var i in tabs)
-	        {
-	          var icatData = dataResults;
-	          var currentTab = tabs[i];
-	          var tabTitle = currentTab.title;
-	          var tabData = currentTab.data;
-              var tabContent = [];
+			for(var i in tabs)
+			{
+				var icatData = dataResults;
+				var currentTab = tabs[i];
+				var tabTitle = '';
+				if(angular.isDefined(currentTab.translateDisplayName)) {
+					tabTitle = $translate.instant(currentTab.translateDisplayName);
+				} else {
+					tabTitle = currentTab.title;
+				}
+				var tabData = currentTab.data;
+				var tabContent = [];
 
-              if(currentTab.default === true) {
-	            tabContent = extractMetaData(tabData, icatData);
-	          } else {
-	            tabContent = extractMetaData(tabData, icatData[0][currentTab.icatName]);
-	          }
-	          var temp = {title : tabTitle, content : tabContent};
-	          tabsUpdated.push(temp);
-	        }
-	      return tabsUpdated;
+				if(currentTab.default === true) {
+					tabContent = extractMetaData(tabData, icatData);
+				} else {
+					tabContent = extractMetaData(tabData, icatData[0][currentTab.field]);
+				}
+				var temp = {title : tabTitle, content : tabContent};
+				tabsUpdated.push(temp);
+			}
+			return tabsUpdated;
 		},
 
 		getTabQueryOptions : function(tabConfig) {
 
-	        var optionsList = {
-	            'include' : []
-	        };
+			var optionsList = {
+				'include' : []
+			};
 
-	        for(var index in tabConfig) {
-	            var tab = tabConfig[index];
+			for(var index in tabConfig) {
+				var tab = tabConfig[index];
 
-	            if(typeof tab.queryParams !== 'undefined') {
-	                optionsList.include.push(tab.queryParams);
-	            }
-	        }
+				if(typeof tab.queryParams !== 'undefined') {
+					optionsList.include.push(tab.queryParams);
+				}
+			}
 
-	        if(optionsList.include.length === 0){
-	            optionsList = {};
-	        }
+			if(optionsList.include.length === 0){
+				optionsList = {};
+			}
 
-	        return optionsList;
-	    }
+			return optionsList;
+		}
 	};
 }

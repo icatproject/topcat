@@ -311,38 +311,38 @@
                 [
                     {
                         "title" : "Instrument Details",
-                        "icatName" : "instrument",
+                        "field" : "instrument",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "fullName"
+                                "field" : "fullName"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "field" : "description"
                             },
                             {   "title" : "Type",
-                                "icatName" : "type"
+                                "field" : "type"
                             },
                             {   "title" : "URL",
-                                "icatName" : "url"
+                                "field" : "url"
                             }
                         ]
                     },
                     {
                         "title" : "Instrument Scientists",
-                        "icatName" : "instrumentScientists",
+                        "field" : "instrumentScientists",
                         "queryParams" : ["InstrumentScientist", "User"],
                         "default" : false,
                         "data" : [
                             {
-                                "icatName" : "user",
+                                "field" : "user",
                                 "default" : false,
                                 "data" : [
                                     {
                                         "title" : "Name",
-                                        "icatName" : "fullName"
+                                        "field" : "fullName"
                                     }
                                 ]
                             }
@@ -353,44 +353,44 @@
                 [
                     {
                         "title" : "Investigation Details",
-                        "icatName" : "investigation",
+                        "field" : "investigation",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "field" : "name"
                             },
                             {
                                 "title" : "Title",
-                                "icatName" : "title"
+                                "field" : "title"
                             },
                             {
                                 "title" : "Summary",
-                                "icatName" : "summary"
+                                "field" : "summary"
                             },
                             {
                                 "title" : "Start Date",
-                                "icatName" : "startDate"
+                                "field" : "startDate"
                             },
                             {
                                 "title" : "End Date",
-                                "icatName" : "endDate"
+                                "field" : "endDate"
                             }
                         ]
                     },
                     {
                         "title" : "Investigation Users",
-                        "icatName" : "investigationUsers",
+                        "field" : "investigationUsers",
                         "queryParams" : ["InvestigationUser", "User"],
                         "default" : false,
                         "data" : [
                             {
-                                "icatName" : "user",
+                                "field" : "user",
                                 "default" : false,
                                 "data" : [
                                     {
                                         "title" : "Name",
-                                        "icatName" : "fullName"
+                                        "field" : "fullName"
                                     }
                                 ]
                             }
@@ -398,13 +398,13 @@
                     },
                     {
                         "title" : "Investigation Samples",
-                        "icatName" : "samples",
+                        "field" : "samples",
                         "queryParams" : ["Sample"],
                         "default" : "false",
                         "data" : [
                             {
                                 "title" : "Sample Name",
-                                "icatName" : "name"
+                                "field" : "name"
                             }
                         ]
                     }
@@ -413,40 +413,40 @@
                 [
                     {
                         "title" : "Dataset Details",
-                        "icatName" : "dataset",
+                        "field" : "dataset",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "field" : "description"
                             },
                             {
                                 "title" : "Start Date",
-                                "icatName" : "startDate"
+                                "field" : "startDate"
                             },
                             {
                                 "title" : "End Date",
-                                "icatName" : "endDate"
+                                "field" : "endDate"
                             }
                         ]
                     },
                     {
                         "title" : "Dataset Type",
-                        "icatName" : "type",
+                        "field" : "type",
                         "queryParams" : ["DatasetType"],
                         "default" : false,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "field" : "description"
                             }
                         ]
                     }
@@ -454,24 +454,24 @@
                 "datafile" : [
                     {
                         "title" : "Datafile Details",
-                        "icatName" : "datafile",
+                        "field" : "datafile",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "field" : "description"
                             },
                             {
                                 "title" : "Size",
-                                "icatName" : "fileSize"
+                                "field" : "fileSize"
                             },
                             {
                                 "title" : "Location",
-                                "icatName" : "location"
+                                "field" : "location"
                             }
                         ]
                     }
@@ -954,38 +954,45 @@
                 [
                     {
                         "title" : "Instrument Details",
-                        "icatName" : "instrument",
+                        "translateDisplayName" : "METATABS.INSTRUMENT.TABTITLE",
+                        "field" : "instrument",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "fullName"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.NAME",
+                                "field" : "fullName"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.DESCRIPTION",
+                                "field" : "description"
                             },
                             {   "title" : "Type",
-                                "icatName" : "type"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.TYPE",
+                                "field" : "type"
                             },
                             {   "title" : "URL",
-                                "icatName" : "url"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.URL",
+                                "field" : "url"
                             }
                         ]
                     },
                     {
                         "title" : "Instrument Scientists",
-                        "icatName" : "instrumentScientists",
+                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                        "field" : "instrumentScientists",
                         "queryParams" : ["InstrumentScientist", "User"],
                         "default" : false,
                         "data" : [
                             {
-                                "icatName" : "user",
+                                "field" : "user",
                                 "default" : false,
                                 "data" : [
                                     {
                                         "title" : "Name",
-                                        "icatName" : "fullName"
+                                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                        "field" : "fullName"
                                     }
                                 ]
                             }
@@ -996,44 +1003,52 @@
                 [
                     {
                         "title" : "Investigation Details",
-                        "icatName" : "investigation",
+                        "translateDisplayName" : "METATABS.INVESTIGATION.TABTITLE",
+                        "field" : "investigation",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Title",
-                                "icatName" : "title"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.TITLE",
+                                "field" : "title"
                             },
                             {
                                 "title" : "Summary",
-                                "icatName" : "summary"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.SUMMARY",
+                                "field" : "summary"
                             },
                             {
                                 "title" : "Start Date",
-                                "icatName" : "startDate"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.START_DATE",
+                                "field" : "startDate"
                             },
                             {
                                 "title" : "End Date",
-                                "icatName" : "endDate"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.END_DATE",
+                                "field" : "endDate"
                             }
                         ]
                     },
                     {
                         "title" : "Investigation Users",
-                        "icatName" : "investigationUsers",
+                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.TABTITLE",
+                        "field" : "investigationUsers",
                         "queryParams" : ["InvestigationUser", "User"],
                         "default" : false,
                         "data" : [
                             {
-                                "icatName" : "user",
+                                "field" : "user",
                                 "default" : false,
                                 "data" : [
                                     {
                                         "title" : "Name",
-                                        "icatName" : "fullName"
+                                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.USERS_NAME",
+                                        "field" : "fullName"
                                     }
                                 ]
                             }
@@ -1041,14 +1056,57 @@
                     },
                     {
                         "title" : "Investigation Samples",
-                        "icatName" : "samples",
+                        "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                        "field" : "samples",
                         "queryParams" : ["Sample"],
-                        "default" : "false",
+                        "default" : false,
                         "data" : [
                             {
                                 "title" : "Sample Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                "field" : "name"
                             }
+                        ]
+                    },
+                    {
+                        "title" : "Investigation Parameters",
+                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.TABTITLE",
+                        "field" : "parameters",
+                        "queryParams" : ["InvestigationParameter", "ParameterType"],
+                        "default" : false,
+                        "data" : [
+                            {
+                                "field" : "type",
+                                "default" : false,
+                                "data" : [
+                                    {
+                                        "title" : "name",
+                                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_NAME",
+                                        "field" : "name"
+                                    },
+                                    {
+                                        "title" : "description",
+                                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_DESCRIPTION",
+                                        "field" : "description"
+                                    },
+                                    {
+                                        "title" : "units",
+                                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_UNITS",
+                                        "field" : "units"
+                                    }
+                                ]
+                            },
+                            {
+                                "title" : "value",
+                                "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
+                                "field" : "numericValue"
+                            },
+                            {
+                                "title" : "value",
+                                "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
+                                "field" : "stringValue"
+                            }
+
                         ]
                     }
                 ],
@@ -1056,40 +1114,48 @@
                 [
                     {
                         "title" : "Dataset Details",
-                        "icatName" : "dataset",
+                        "translateDisplayName" : "METATABS.DATASET.TABTITLE",
+                        "field" : "dataset",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.DATASET.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.DATASET.DESCRIPTION",
+                                "field" : "description"
                             },
                             {
                                 "title" : "Start Date",
-                                "icatName" : "startDate"
+                                "translateDisplayName" : "METATABS.DATASET.START_DATE",
+                                "field" : "startDate"
                             },
                             {
                                 "title" : "End Date",
-                                "icatName" : "endDate"
+                                "translateDisplayName" : "METATABS.DATASET.END_DATE",
+                                "field" : "endDate"
                             }
                         ]
                     },
                     {
                         "title" : "Dataset Type",
-                        "icatName" : "type",
+                        "translateDisplayName" : "METATABS.DATASET_TYPE.TABTITLE",
+                        "field" : "type",
                         "queryParams" : ["DatasetType"],
                         "default" : false,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.DATASET_TYPE.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.DATASET_TYPE.DESCRIPTION",
+                                "field" : "description"
                             }
                         ]
                     }
@@ -1097,24 +1163,29 @@
                 "datafile" : [
                     {
                         "title" : "Datafile Details",
-                        "icatName" : "datafile",
+                        "translateDisplayName" : "METATABS.DATAFILE.TABTITLE",
+                        "field" : "datafile",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.DATAFILE.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.DATAFILE.DESCRIPTION",
+                                "field" : "description"
                             },
                             {
                                 "title" : "Size",
-                                "icatName" : "fileSize"
+                                "translateDisplayName" : "METATABS.DATAFILE.SIZE",
+                                "field" : "fileSize"
                             },
                             {
                                 "title" : "Location",
-                                "icatName" : "location"
+                                "translateDisplayName" : "METATABS.DATAFILE.LOCATION",
+                                "field" : "location"
                             }
                         ]
                     }
@@ -1549,64 +1620,47 @@
                 [
                     {
                         "title" : "Instrument Details",
-                        "icatName" : "instrument",
+                        "translateDisplayName" : "METATABS.INSTRUMENT.TABTITLE",
+                        "field" : "instrument",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "fullName"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.NAME",
+                                "field" : "fullName"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.DESCRIPTION",
+                                "field" : "description"
                             },
                             {   "title" : "Type",
-                                "icatName" : "type"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.TYPE",
+                                "field" : "type"
                             },
                             {   "title" : "URL",
-                                "icatName" : "url"
+                                "translateDisplayName" : "METATABS.INSTRUMENT.URL",
+                                "field" : "url"
                             }
                         ]
                     },
                     {
                         "title" : "Instrument Scientists",
-                        "icatName" : "instrumentScientists",
+                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                        "field" : "instrumentScientists",
                         "queryParams" : ["InstrumentScientist", "User"],
                         "default" : false,
                         "data" : [
                             {
-                                "icatName" : "user",
+                                "field" : "user",
                                 "default" : false,
                                 "data" : [
                                     {
                                         "title" : "Name",
-                                        "icatName" : "fullName"
+                                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                        "field" : "fullName"
                                     }
                                 ]
-                            }
-                        ]
-                    }
-                ],
-                "facilityCycle" :
-                [
-                    {
-                        "title" : "Facility Cycle Details",
-                        "icatName" : "facilityCycle",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "icatName" : "name"
-                            },
-                            {
-                                "title" : "Description",
-                                "icatName" : "description"
-                            },
-                            {   "title" : "Start Date",
-                                "icatName" : "startDate"
-                            },
-                            {   "title" : "End Date",
-                                "icatName" : "endDate"
                             }
                         ]
                     }
@@ -1615,44 +1669,52 @@
                 [
                     {
                         "title" : "Investigation Details",
-                        "icatName" : "investigation",
+                        "translateDisplayName" : "METATABS.INVESTIGATION.TABTITLE",
+                        "field" : "investigation",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Title",
-                                "icatName" : "title"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.TITLE",
+                                "field" : "title"
                             },
                             {
                                 "title" : "Summary",
-                                "icatName" : "summary"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.SUMMARY",
+                                "field" : "summary"
                             },
                             {
                                 "title" : "Start Date",
-                                "icatName" : "startDate"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.START_DATE",
+                                "field" : "startDate"
                             },
                             {
                                 "title" : "End Date",
-                                "icatName" : "endDate"
+                                "translateDisplayName" : "METATABS.INVESTIGATION.END_DATE",
+                                "field" : "endDate"
                             }
                         ]
                     },
                     {
                         "title" : "Investigation Users",
-                        "icatName" : "investigationUsers",
+                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.TABTITLE",
+                        "field" : "investigationUsers",
                         "queryParams" : ["InvestigationUser", "User"],
                         "default" : false,
                         "data" : [
                             {
-                                "icatName" : "user",
+                                "field" : "user",
                                 "default" : false,
                                 "data" : [
                                     {
                                         "title" : "Name",
-                                        "icatName" : "fullName"
+                                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.USERS_NAME",
+                                        "field" : "fullName"
                                     }
                                 ]
                             }
@@ -1660,13 +1722,15 @@
                     },
                     {
                         "title" : "Investigation Samples",
-                        "icatName" : "samples",
+                        "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                        "field" : "samples",
                         "queryParams" : ["Sample"],
                         "default" : "false",
                         "data" : [
                             {
                                 "title" : "Sample Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                "field" : "name"
                             }
                         ]
                     },
@@ -1723,24 +1787,29 @@
                 [
                     {
                         "title" : "Dataset Details",
-                        "icatName" : "dataset",
+                        "translateDisplayName" : "METATABS.DATASET.TABTITLE",
+                        "field" : "dataset",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.DATASET.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.DATASET.DESCRIPTION",
+                                "field" : "description"
                             },
                             {
                                 "title" : "Start Date",
-                                "icatName" : "startDate"
+                                "translateDisplayName" : "METATABS.DATASET.START_DATE",
+                                "field" : "startDate"
                             },
                             {
                                 "title" : "End Date",
-                                "icatName" : "endDate"
+                                "translateDisplayName" : "METATABS.DATASET.END_DATE",
+                                "field" : "endDate"
                             }
                         ]
                     },
@@ -1758,17 +1827,20 @@
                     },
                     {
                         "title" : "Dataset Type",
-                        "icatName" : "type",
+                        "translateDisplayName" : "METATABS.DATASET_TYPE.TABTITLE",
+                        "field" : "type",
                         "queryParams" : ["DatasetType"],
                         "default" : false,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.DATASET_TYPE.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.DATASET_TYPE.DESCRIPTION",
+                                "field" : "description"
                             }
                         ]
                     },
@@ -1808,24 +1880,29 @@
                 "datafile" : [
                     {
                         "title" : "Datafile Details",
-                        "icatName" : "datafile",
+                        "translateDisplayName" : "METATABS.DATAFILE.TABTITLE",
+                        "field" : "datafile",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.DATAFILE.NAME",
+                                "field" : "name"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.DATAFILE.DESCRIPTION",
+                                "field" : "description"
                             },
                             {
                                 "title" : "Size",
-                                "icatName" : "fileSize"
+                                "translateDisplayName" : "METATABS.DATAFILE.SIZE",
+                                "field" : "fileSize"
                             },
                             {
                                 "title" : "Location",
-                                "icatName" : "location"
+                                "translateDisplayName" : "METATABS.DATAFILE.LOCATION",
+                                "field" : "location"
                             }
                         ]
                     }
@@ -1882,22 +1959,27 @@
                 [
                     {
                         "title" : "Facility Details",
-                        "icatName" : "facility",
+                        "translateDisplayName" : "METATABS.FACILITY.TABTITLE",
+                        "field" : "facility",
                         "default" : true,
                         "data" : [
                             {
                                 "title" : "Full Name",
-                                "icatName" : "fullName"
+                                "translateDisplayName" : "METATABS.FACILITY.FULLNAME",
+                                "field" : "fullName"
                             },
                             {
                                 "title" : "Description",
-                                "icatName" : "description"
+                                "translateDisplayName" : "METATABS.FACILITY.DESCRIPTION",
+                                "field" : "description"
                             },
                             {   "title" : "Name",
-                                "icatName" : "name"
+                                "translateDisplayName" : "METATABS.FACILITY.NAME",
+                                "field" : "name"
                             },
                             {   "title" : "URL",
-                                "icatName" : "url"
+                                "translateDisplayName" : "METATABS.FACILITY.URL",
+                                "field" : "url"
                             }
                         ]
                     }

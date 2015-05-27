@@ -2,8 +2,8 @@
     'use strict';
 
     angular
-        .module('angularApp')
-        .controller('MetaPanelController', MetaPanelController);
+    .module('angularApp')
+    .controller('MetaPanelController', MetaPanelController);
 
     MetaPanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams','DataManager', 'APP_CONFIG', 'Config', 'RouteUtils', '$sessionStorage', 'MetaDataManager'];
 
@@ -32,16 +32,20 @@
         $scope.$on('rowclick', function(event, message){
 
             $scope.message = message;
-            vm.tabs = [];
 
-            var facility = Config.getFacilityByName(APP_CONFIG, message.facilityName);
+            if(typeof tabs !== 'undefined') {
 
-            DataManager.getEntityById(sessions, facility, message.type, message.id, options)
+                vm.tabs = [];
+
+                var facility = Config.getFacilityByName(APP_CONFIG, message.facilityName);
+
+                DataManager.getEntityById(sessions, facility, message.type, message.id, options)
                 .then(function(data) {
                     vm.tabs = MetaDataManager.updateTabs(data, tabs);
-                }, function(error) { // jshint ignore:line
-                console.log('Error: Failed to get data from icat');
-            });
+                }, function(error) {
+                    console.log('Error: Failed to get data from icat', error);
+                });
+            }
         });
     }
 })();
