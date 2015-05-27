@@ -24,6 +24,7 @@
         vm.facilities = notLoggedInFacilities;
         vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, allFacilityNames[0]).authenticationType;
 
+
         vm.isLoggedInAll  = function() {
             console.log('LoginController.isLoggedInAll called');
             if (notLoggedInFacilities.length === 0) {
@@ -47,6 +48,16 @@
             //console.log('LoginController.isSingleAuthenticationType', Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length);
             if (Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length === 1) {
                 return true;
+            }
+
+            return false;
+        };
+
+        vm.isAnonymous = function() {
+            if (angular.isDefined(vm.user.plugin)) {
+                if (vm.user.plugin === 'anon') {
+                    return true;
+                }
             }
 
             return false;
@@ -81,13 +92,23 @@
             console.log('LoginController.login called');
             var facility = Config.getFacilityByName(APP_CONFIG, form.facilityName.$modelValue);
 
-            var credential = {
-                plugin : form.plugin.$modelValue,
-                credentials : {
-                    username : form.username.$modelValue,
-                    password : form.password.$modelValue
-                }
-            };
+            var credential = {};
+
+            if (vm.isAnonymous()) {
+                credential = {
+                    plugin : form.plugin.$modelValue,
+                    credentials : {
+                    }
+                };
+            } else {
+                credential = {
+                    plugin : form.plugin.$modelValue,
+                    credentials : {
+                        username : form.username.$modelValue,
+                        password : form.password.$modelValue
+                    }
+                };
+            }
 
             var promise = DataManager.login(facility, credential);
 

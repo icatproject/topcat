@@ -4,7 +4,6 @@
             "keyName": "dls",
             "title": "DIAMOND",
             "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
-            "connectProxyPath": "dls/",
             "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181",
             "facilityId": 1,
             "hierarchy": [
@@ -45,7 +44,7 @@
                                     "caseSensitive": false
                                 },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -61,7 +60,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         },
@@ -75,7 +74,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         }
@@ -602,7 +601,6 @@
             "keyName": "isis",
             "title": "ISIS Laser",
             "icatUrl": "https://icatdev.isis.cclrc.ac.uk",
-            "connectProxyPath": "isis/",
             "idsUrl": "https://facilities.esc.rl.ac.uk:8181",
             "facilityId": 1,
             "hierarchy": [
@@ -1190,7 +1188,6 @@
             "keyName": "sig",
             "title": "SIG",
             "icatUrl": "https://sig-24.esc.rl.ac.uk:8181",
-            "connectProxyPath": "isis/",
             "idsUrl": "https://sig-24.esc.rl.ac.uk:8181",
             "facilityId": 10207,
             "hierarchy": [
@@ -1223,7 +1220,7 @@
                                     "caseSensitive": false
                                 },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1239,7 +1236,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         },
@@ -1253,7 +1250,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         }
@@ -1274,7 +1271,7 @@
                                     "caseSensitive": false
                                 },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1290,7 +1287,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         },
@@ -1304,7 +1301,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1318,7 +1315,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1332,7 +1329,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         }
                     ]
@@ -1352,7 +1349,7 @@
                                     "caseSensitive": false
                                 },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1365,7 +1362,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         },
@@ -1379,7 +1376,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         },
@@ -1394,7 +1391,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1408,7 +1405,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         }
                     ]
@@ -1427,7 +1424,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             },
                             "link" : true
                         },
@@ -1442,7 +1439,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1456,7 +1453,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         }
                     ]
@@ -1475,7 +1472,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1489,7 +1486,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         },
                         {
@@ -1503,7 +1500,7 @@
                                 "placeholder": "Containing...",
                                 "flags": { "caseSensitive": false },
                                 "type": "input",
-                                "disableCancelFilterButton": true
+                                "disableCancelFilterButton": false
                             }
                         }
                     ]
@@ -1823,7 +1820,7 @@
                             "caseSensitive": false
                         },
                         "type": "input",
-                        "disableCancelFilterButton": true
+                        "disableCancelFilterButton": false
                     },
                     "link" : true
                 },
@@ -1836,7 +1833,7 @@
                         "placeholder": "Containing...",
                         "flags": { "caseSensitive": false },
                         "type": "input",
-                        "disableCancelFilterButton": true
+                        "disableCancelFilterButton": false
                     }
                 }
             ]
