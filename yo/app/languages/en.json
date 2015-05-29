@@ -179,6 +179,13 @@
             "TABTITLE" : "Instrument Scientists",
             "USERS_NAME" : "Name"
         },
+        "FACILITYCYCLE" : {
+            "TABTITLE" : "Facility Cycle Details",
+            "NAME" : "Name",
+            "DESCRIPTION" : "Description",
+            "START_DATE" : "Start Date",
+            "END_DATE" : "End Date"
+        },
         "INVESTIGATION" : {
             "TABTITLE" : "Investigation Details",
             "NAME" : "Name",

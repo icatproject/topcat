@@ -14,18 +14,18 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType" : [
+            "authenticationType": [
                 {
-                    "title" : "LDAP",
-                    "plugin" : "ldap"
+                    "title": "LDAP",
+                    "plugin": "ldap"
                 },
                 {
-                    "title" : "DB",
-                    "plugin" : "db"
+                    "title": "DB",
+                    "plugin": "db"
                 },
                 {
-                    "title" : "Anonymous",
-                    "plugin" : "anon"
+                    "title": "Anonymous",
+                    "plugin": "anon"
                 }
             ],
             "browseOptions": {
@@ -37,6 +37,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -52,17 +53,20 @@
                             "displayName": "Name",
                             "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.NAME",
                             "type": "string",
+                            "visible": false,
                             "sort": {
                                 "direction": "asc"
                             },
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "fullName",
@@ -72,11 +76,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         }
                     ]
                 },
@@ -126,6 +132,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -159,11 +166,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true,
+                            "link": true,
                             "cellTooltip": true,
                             "minWidth": 350
                         },
@@ -175,11 +184,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "startDate",
@@ -190,7 +201,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -204,7 +217,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -223,11 +238,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "createTime",
@@ -238,7 +255,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -252,7 +271,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -271,7 +292,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -285,7 +308,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -298,7 +323,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -306,293 +333,183 @@
                     ]
                 }
             },
-            "metaTabs" : {
-                "instrument" :
-                [
-                    {
-                        "title" : "Instrument Details",
-                        "field" : "instrument",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "field" : "fullName"
-                            },
-                            {
-                                "title" : "Description",
-                                "field" : "description"
-                            },
-                            {   "title" : "Type",
-                                "field" : "type"
-                            },
-                            {   "title" : "URL",
-                                "field" : "url"
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Instrument Scientists",
-                        "field" : "instrumentScientists",
-                        "queryParams" : ["InstrumentScientist", "User"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "field" : "user",
-                                "default" : false,
-                                "data" : [
-                                    {
-                                        "title" : "Name",
-                                        "field" : "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                "investigation" :
-                [
-                    {
-                        "title" : "Investigation Details",
-                        "field" : "investigation",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Title",
-                                "field" : "title"
-                            },
-                            {
-                                "title" : "Summary",
-                                "field" : "summary"
-                            },
-                            {
-                                "title" : "Start Date",
-                                "field" : "startDate"
-                            },
-                            {
-                                "title" : "End Date",
-                                "field" : "endDate"
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Investigation Users",
-                        "field" : "investigationUsers",
-                        "queryParams" : ["InvestigationUser", "User"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "field" : "user",
-                                "default" : false,
-                                "data" : [
-                                    {
-                                        "title" : "Name",
-                                        "field" : "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Investigation Samples",
-                        "field" : "samples",
-                        "queryParams" : ["Sample"],
-                        "default" : "false",
-                        "data" : [
-                            {
-                                "title" : "Sample Name",
-                                "field" : "name"
-                            }
-                        ]
-                    }
-                ],
-                "dataset" :
-                [
-                    {
-                        "title" : "Dataset Details",
-                        "field" : "dataset",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Description",
-                                "field" : "description"
-                            },
-                            {
-                                "title" : "Start Date",
-                                "field" : "startDate"
-                            },
-                            {
-                                "title" : "End Date",
-                                "field" : "endDate"
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Dataset Type",
-                        "field" : "type",
-                        "queryParams" : ["DatasetType"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Description",
-                                "field" : "description"
-                            }
-                        ]
-                    }
-                ],
-                "datafile" : [
-                    {
-                        "title" : "Datafile Details",
-                        "field" : "datafile",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Description",
-                                "field" : "description"
-                            },
-                            {
-                                "title" : "Size",
-                                "field" : "fileSize"
-                            },
-                            {
-                                "title" : "Location",
-                                "field" : "location"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "browseColumns": {
+            "metaTabs": {
                 "instrument": [
                     {
-                        "name": "id",
-                        "title": "Id",
-                        "visible": false
+                        "title": "Instrument Details",
+                        "field": "instrument",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "fullName"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Type",
+                                "field": "type"
+                            },
+                            {
+                                "title": "URL",
+                                "field": "url"
+                            }
+                        ]
                     },
                     {
-                        "name": "name",
-                        "title": "Name",
-                        "translateTitle" : "BROWSE.COLUMN.INSTRUMENT.NAME",
-                        "link": true,
-                        "sortByDefault" : "asc"
-                    },
-                    {
-                        "name": "fullName",
-                        "title": "Full Name",
-                        "translateTitle" : "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
-                        "sortable": false
+                        "title": "Instrument Scientists",
+                        "field": "instrumentScientists",
+                        "queryParams": [
+                            "InstrumentScientist",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "field": "user",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "title": "Name",
+                                        "field": "fullName"
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ],
                 "investigation": [
                     {
-                        "name": null,
-                        "title": "",
-                        "checkbox": true
+                        "title": "Investigation Details",
+                        "field": "investigation",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Title",
+                                "field": "title"
+                            },
+                            {
+                                "title": "Summary",
+                                "field": "summary"
+                            },
+                            {
+                                "title": "Start Date",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "field": "endDate"
+                            }
+                        ]
                     },
                     {
-                        "name": "id",
-                        "title": "Id",
-                        "style": "firstColumn",
-                        "visible": false
+                        "title": "Investigation Users",
+                        "field": "investigationUsers",
+                        "queryParams": [
+                            "InvestigationUser",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "field": "user",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "title": "Name",
+                                        "field": "fullName"
+                                    }
+                                ]
+                            }
+                        ]
                     },
                     {
-                        "name": "title",
-                        "title": "Title",
-                        "style": "secondColumn",
-                        "sortable": false,
-                        "link": true,
-                        "expressionFilter": {
-                            "type": "string",
-                            "name": "characters",
-                            "characters": 80
-                        },
-                        "sortByDefault" : "asc"
-                    },
-                    {
-                        "name": "visitId",
-                        "title": "Visit Id"
-                    },
-                    {
-                        "name": "startDate",
-                        "title": "Start Date",
-                        "expressionFilter": {
-                            "type": "date",
-                            "format": "dd-MM-yyyy",
-                            "timezone": "UTC"
-                        }
-                    },
-                    {
-                        "name": "endDate",
-                        "title": "End Date",
-                        "expressionFilter": {
-                            "type": "date",
-                            "format": "dd-MM-yyyy",
-                            "timezone": "UTC"
-                        }
+                        "title": "Investigation Samples",
+                        "field": "samples",
+                        "queryParams": [
+                            "Sample"
+                        ],
+                        "default": "false",
+                        "data": [
+                            {
+                                "title": "Sample Name",
+                                "field": "name"
+                            }
+                        ]
                     }
                 ],
                 "dataset": [
                     {
-                        "name": null,
-                        "title": "",
-                        "checkbox": true,
-                        "sortByDefault" : "asc"
+                        "title": "Dataset Details",
+                        "field": "dataset",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Start Date",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "field": "endDate"
+                            }
+                        ]
                     },
                     {
-                        "name": "name",
-                        "title": "Name",
-                        "link": true
-                    },
-                    {
-                        "name": "createTime",
-                        "title": "Create Time"
-                    },
-                    {
-                        "name": "modTime",
-                        "title": "Modified Time"
+                        "title": "Dataset Type",
+                        "field": "type",
+                        "queryParams": [
+                            "DatasetType"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            }
+                        ]
                     }
                 ],
                 "datafile": [
                     {
-                        "name": null,
-                        "title": "",
-                        "checkbox": true
-                    },
-                    {
-                        "name": "name",
-                        "title": "Name",
-                        "expressionFilter": {
-                            "type": "string",
-                            "name": "characters",
-                            "characters": 80
-                        },
-                        "sortByDefault" : "asc"
-                    },
-                    {
-                        "name": "fileSize",
-                        "title": "File Size",
-                        "expressionFilter": {
-                            "type": "bytes"
-                        }
-                    },
-                    {
-                        "name": "modTime",
-                        "title": "Modified Time"
+                        "title": "Datafile Details",
+                        "field": "datafile",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Size",
+                                "field": "fileSize"
+                            },
+                            {
+                                "title": "Location",
+                                "field": "location"
+                            }
+                        ]
                     }
                 ]
             }
@@ -612,10 +529,10 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType" : [
+            "authenticationType": [
                 {
-                    "title" : "USER OFFICE",
-                    "plugin" : "uows"
+                    "title": "USER OFFICE",
+                    "plugin": "uows"
                 }
             ],
             "browseOptions": {
@@ -627,6 +544,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -648,25 +566,30 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "fullName",
                             "displayName": "Full Name",
                             "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                             "type": "string",
+                            "visible": false,
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         }
                     ]
                 },
@@ -678,6 +601,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -699,11 +623,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "description",
@@ -713,7 +639,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -726,7 +654,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -739,7 +669,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -754,6 +686,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "string",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -762,8 +695,7 @@
                                 },
                                 "type": "input",
                                 "disableCancelFilterButton": true
-                            },
-                            "visible": false
+                            }
                         },
                         {
                             "field": "name",
@@ -791,6 +723,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -809,11 +742,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "visitId",
@@ -823,11 +758,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "startDate",
@@ -837,7 +774,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -850,7 +789,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -869,11 +810,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "createTime",
@@ -883,7 +826,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -896,7 +841,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -915,7 +862,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -928,7 +877,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -941,7 +892,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -949,346 +902,286 @@
                     ]
                 }
             },
-            "metaTabs" : {
-                "instrument" :
-                [
-                    {
-                        "title" : "Instrument Details",
-                        "translateDisplayName" : "METATABS.INSTRUMENT.TABTITLE",
-                        "field" : "instrument",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.NAME",
-                                "field" : "fullName"
-                            },
-                            {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.DESCRIPTION",
-                                "field" : "description"
-                            },
-                            {   "title" : "Type",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.TYPE",
-                                "field" : "type"
-                            },
-                            {   "title" : "URL",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.URL",
-                                "field" : "url"
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Instrument Scientists",
-                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                        "field" : "instrumentScientists",
-                        "queryParams" : ["InstrumentScientist", "User"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "field" : "user",
-                                "default" : false,
-                                "data" : [
-                                    {
-                                        "title" : "Name",
-                                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                        "field" : "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                "investigation" :
-                [
-                    {
-                        "title" : "Investigation Details",
-                        "translateDisplayName" : "METATABS.INVESTIGATION.TABTITLE",
-                        "field" : "investigation",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.NAME",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Title",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.TITLE",
-                                "field" : "title"
-                            },
-                            {
-                                "title" : "Summary",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.SUMMARY",
-                                "field" : "summary"
-                            },
-                            {
-                                "title" : "Start Date",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.START_DATE",
-                                "field" : "startDate"
-                            },
-                            {
-                                "title" : "End Date",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.END_DATE",
-                                "field" : "endDate"
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Investigation Users",
-                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.TABTITLE",
-                        "field" : "investigationUsers",
-                        "queryParams" : ["InvestigationUser", "User"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "field" : "user",
-                                "default" : false,
-                                "data" : [
-                                    {
-                                        "title" : "Name",
-                                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.USERS_NAME",
-                                        "field" : "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Investigation Samples",
-                        "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
-                        "field" : "samples",
-                        "queryParams" : ["Sample"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "title" : "Sample Name",
-                                "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
-                                "field" : "name"
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Investigation Parameters",
-                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.TABTITLE",
-                        "field" : "parameters",
-                        "queryParams" : ["InvestigationParameter", "ParameterType"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "field" : "type",
-                                "default" : false,
-                                "data" : [
-                                    {
-                                        "title" : "name",
-                                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_NAME",
-                                        "field" : "name"
-                                    },
-                                    {
-                                        "title" : "description",
-                                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_DESCRIPTION",
-                                        "field" : "description"
-                                    },
-                                    {
-                                        "title" : "units",
-                                        "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_UNITS",
-                                        "field" : "units"
-                                    }
-                                ]
-                            },
-                            {
-                                "title" : "value",
-                                "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
-                                "field" : "numericValue"
-                            },
-                            {
-                                "title" : "value",
-                                "translateDisplayName" : "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
-                                "field" : "stringValue"
-                            }
-
-                        ]
-                    }
-                ],
-                "dataset" :
-                [
-                    {
-                        "title" : "Dataset Details",
-                        "translateDisplayName" : "METATABS.DATASET.TABTITLE",
-                        "field" : "dataset",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.DATASET.NAME",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.DATASET.DESCRIPTION",
-                                "field" : "description"
-                            },
-                            {
-                                "title" : "Start Date",
-                                "translateDisplayName" : "METATABS.DATASET.START_DATE",
-                                "field" : "startDate"
-                            },
-                            {
-                                "title" : "End Date",
-                                "translateDisplayName" : "METATABS.DATASET.END_DATE",
-                                "field" : "endDate"
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Dataset Type",
-                        "translateDisplayName" : "METATABS.DATASET_TYPE.TABTITLE",
-                        "field" : "type",
-                        "queryParams" : ["DatasetType"],
-                        "default" : false,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.DATASET_TYPE.NAME",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.DATASET_TYPE.DESCRIPTION",
-                                "field" : "description"
-                            }
-                        ]
-                    }
-                ],
-                "datafile" : [
-                    {
-                        "title" : "Datafile Details",
-                        "translateDisplayName" : "METATABS.DATAFILE.TABTITLE",
-                        "field" : "datafile",
-                        "default" : true,
-                        "data" : [
-                            {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.DATAFILE.NAME",
-                                "field" : "name"
-                            },
-                            {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.DATAFILE.DESCRIPTION",
-                                "field" : "description"
-                            },
-                            {
-                                "title" : "Size",
-                                "translateDisplayName" : "METATABS.DATAFILE.SIZE",
-                                "field" : "fileSize"
-                            },
-                            {
-                                "title" : "Location",
-                                "translateDisplayName" : "METATABS.DATAFILE.LOCATION",
-                                "field" : "location"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "browseColumns": {
+            "metaTabs": {
                 "instrument": [
                     {
-                        "name": "id",
-                        "title": "Id"
+                        "title": "Instrument Details",
+                        "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
+                        "field": "instrument",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.INSTRUMENT.NAME",
+                                "field": "fullName"
+                            },
+                            {
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Type",
+                                "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
+                                "field": "type"
+                            },
+                            {
+                                "title": "URL",
+                                "translateDisplayName": "METATABS.INSTRUMENT.URL",
+                                "field": "url"
+                            }
+                        ]
                     },
                     {
-                        "name": "name",
-                        "title": "Name",
-                        "link": true
-                    },
+                        "title": "Instrument Scientists",
+                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                        "field": "instrumentScientists",
+                        "queryParams": [
+                            "InstrumentScientist",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "field": "user",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "title": "Name",
+                                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                        "field": "fullName"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "facilityCycle": [
                     {
-                        "name": "fullName",
-                        "title": "Full Name"
+                        "title": "Facility Cycle Details",
+                        "translateDisplayName": "METATABS.FACILITYCYCLE.TABTITLE",
+                        "field": "instrument",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.NAME",
+                                "field": "fullName"
+                            },
+                            {
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.DESCRIPTION",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Start Date",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.START_DATE",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.END_DATE",
+                                "field": "endDate"
+                            }
+                        ]
                     }
                 ],
                 "investigation": [
                     {
-                        "name": "id",
-                        "title": "Id",
-                        "style": "firstColumn",
-                        "visible": false
+                        "title": "Investigation Details",
+                        "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
+                        "field": "investigation",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.INVESTIGATION.NAME",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Title",
+                                "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
+                                "field": "title"
+                            },
+                            {
+                                "title": "Summary",
+                                "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
+                                "field": "summary"
+                            },
+                            {
+                                "title": "Start Date",
+                                "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+                                "field": "endDate"
+                            }
+                        ]
                     },
                     {
-                        "name": "title",
-                        "title": "Title",
-                        "style": "secondColumn",
-                        "sortable": false,
-                        "link": true,
-                        "expressionFilter": {
-                            "type": "string",
-                            "name": "characters",
-                            "characters": 80
-                        }
+                        "title": "Investigation Users",
+                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                        "field": "investigationUsers",
+                        "queryParams": [
+                            "InvestigationUser",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "field": "user",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "title": "Name",
+                                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.USERS_NAME",
+                                        "field": "fullName"
+                                    }
+                                ]
+                            }
+                        ]
                     },
                     {
-                        "name": "visitId",
-                        "title": "Visit Id"
+                        "title": "Investigation Samples",
+                        "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                        "field": "samples",
+                        "queryParams": [
+                            "Sample"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "title": "Sample Name",
+                                "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                "field": "name"
+                            }
+                        ]
                     },
                     {
-                        "name": "startDate",
-                        "title": "Start Date",
-                        "expressionFilter": {
-                            "type": "date",
-                            "format": "dd-MM-yyyy",
-                            "timezone": "UTC"
-                        }
-                    },
-                    {
-                        "name": "endDate",
-                        "title": "End Date",
-                        "expressionFilter": {
-                            "type": "date",
-                            "format": "dd-MM-yyyy",
-                            "timezone": "UTC"
-                        }
+                        "title": "Investigation Parameters",
+                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.TABTITLE",
+                        "field": "parameters",
+                        "queryParams": [
+                            "InvestigationParameter",
+                            "ParameterType"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "field": "type",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "title": "name",
+                                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_NAME",
+                                        "field": "name"
+                                    },
+                                    {
+                                        "title": "description",
+                                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_DESCRIPTION",
+                                        "field": "description"
+                                    },
+                                    {
+                                        "title": "units",
+                                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_UNITS",
+                                        "field": "units"
+                                    }
+                                ]
+                            },
+                            {
+                                "title": "value",
+                                "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
+                                "field": "numericValue"
+                            },
+                            {
+                                "title": "value",
+                                "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
+                                "field": "stringValue"
+                            }
+                        ]
                     }
                 ],
                 "dataset": [
                     {
-                        "name": null,
-                        "title": "",
-                        "checkbox": true
+                        "title": "Dataset Details",
+                        "translateDisplayName": "METATABS.DATASET.TABTITLE",
+                        "field": "dataset",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.DATASET.NAME",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Start Date",
+                                "translateDisplayName": "METATABS.DATASET.START_DATE",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "translateDisplayName": "METATABS.DATASET.END_DATE",
+                                "field": "endDate"
+                            }
+                        ]
                     },
                     {
-                        "name": "name",
-                        "title": "Name",
-                        "link": true
-                    },
-                    {
-                        "name": "createTime",
-                        "title": "Create Time"
-                    },
-                    {
-                        "name": "modTime",
-                        "title": "Modified Time"
+                        "title": "Dataset Type",
+                        "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
+                        "field": "type",
+                        "queryParams": [
+                            "DatasetType"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                "field": "description"
+                            }
+                        ]
                     }
                 ],
                 "datafile": [
                     {
-                        "name": "name",
-                        "title": "Name",
-                        "expressionFilter": {
-                            "type": "string",
-                            "name": "characters",
-                            "characters": 80
-                        }
-                    },
-                    {
-                        "name": "fileSize",
-                        "title": "File Size",
-                        "expressionFilter": {
-                            "type": "bytes"
-                        }
-                    },
-                    {
-                        "name": "modTime",
-                        "title": "Modified Time"
+                        "title": "Datafile Details",
+                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                        "field": "datafile",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.DATAFILE.NAME",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Size",
+                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                "field": "fileSize"
+                            },
+                            {
+                                "title": "Location",
+                                "translateDisplayName": "METATABS.DATAFILE.LOCATION",
+                                "field": "location"
+                            }
+                        ]
                     }
                 ]
             }
@@ -1307,10 +1200,10 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType" : [
+            "authenticationType": [
                 {
-                    "title" : "Simple",
-                    "plugin" : "simple"
+                    "title": "Simple",
+                    "plugin": "simple"
                 }
             ],
             "browseOptions": {
@@ -1322,6 +1215,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -1343,25 +1237,30 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "fullName",
                             "displayName": "Full Name",
                             "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                             "type": "string",
+                            "visible": false,
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         }
                     ]
                 },
@@ -1373,6 +1272,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -1394,11 +1294,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "description",
@@ -1408,7 +1310,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1422,7 +1326,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1436,7 +1342,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1451,6 +1359,7 @@
                             "displayName": "Id",
                             "enableSorting": false,
                             "type": "number",
+                            "visible": false,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -1469,11 +1378,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "visitId",
@@ -1483,11 +1394,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "startDate",
@@ -1498,7 +1411,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1512,7 +1427,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1531,11 +1448,13 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             },
-                            "link" : true
+                            "link": true
                         },
                         {
                             "field": "createTime",
@@ -1546,7 +1465,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1560,7 +1481,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1579,7 +1502,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1593,7 +1518,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1607,7 +1534,9 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": { "caseSensitive": false },
+                                "flags": {
+                                    "caseSensitive": false
+                                },
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
@@ -1615,294 +1544,341 @@
                     ]
                 }
             },
-            "metaTabs" : {
-                "instrument" :
-                [
+            "metaTabs": {
+                "instrument": [
                     {
-                        "title" : "Instrument Details",
-                        "translateDisplayName" : "METATABS.INSTRUMENT.TABTITLE",
-                        "field" : "instrument",
-                        "default" : true,
-                        "data" : [
+                        "title": "Instrument Details",
+                        "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
+                        "field": "instrument",
+                        "default": true,
+                        "data": [
                             {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.NAME",
-                                "field" : "fullName"
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.INSTRUMENT.NAME",
+                                "field": "fullName"
                             },
                             {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.DESCRIPTION",
-                                "field" : "description"
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
+                                "field": "description"
                             },
-                            {   "title" : "Type",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.TYPE",
-                                "field" : "type"
+                            {
+                                "title": "Type",
+                                "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
+                                "field": "type"
                             },
-                            {   "title" : "URL",
-                                "translateDisplayName" : "METATABS.INSTRUMENT.URL",
-                                "field" : "url"
+                            {
+                                "title": "URL",
+                                "translateDisplayName": "METATABS.INSTRUMENT.URL",
+                                "field": "url"
                             }
                         ]
                     },
                     {
-                        "title" : "Instrument Scientists",
-                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                        "field" : "instrumentScientists",
-                        "queryParams" : ["InstrumentScientist", "User"],
-                        "default" : false,
-                        "data" : [
+                        "title": "Instrument Scientists",
+                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                        "field": "instrumentScientists",
+                        "queryParams": [
+                            "InstrumentScientist",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
                             {
-                                "field" : "user",
-                                "default" : false,
-                                "data" : [
+                                "field": "user",
+                                "default": false,
+                                "data": [
                                     {
-                                        "title" : "Name",
-                                        "translateDisplayName" : "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                        "field" : "fullName"
+                                        "title": "Name",
+                                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                        "field": "fullName"
                                     }
                                 ]
                             }
                         ]
                     }
                 ],
-                "investigation" :
-                [
+                "facilityCycle": [
                     {
-                        "title" : "Investigation Details",
-                        "translateDisplayName" : "METATABS.INVESTIGATION.TABTITLE",
-                        "field" : "investigation",
-                        "default" : true,
-                        "data" : [
+                        "title": "Facility Cycle Details",
+                        "translateDisplayName": "METATABS.FACILITYCYCLE.TABTITLE",
+                        "field": "instrument",
+                        "default": true,
+                        "data": [
                             {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.NAME",
-                                "field" : "name"
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.NAME",
+                                "field": "fullName"
                             },
                             {
-                                "title" : "Title",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.TITLE",
-                                "field" : "title"
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.DESCRIPTION",
+                                "field": "description"
                             },
                             {
-                                "title" : "Summary",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.SUMMARY",
-                                "field" : "summary"
+                                "title": "Start Date",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.START_DATE",
+                                "field": "startDate"
                             },
                             {
-                                "title" : "Start Date",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.START_DATE",
-                                "field" : "startDate"
+                                "title": "End Date",
+                                "translateDisplayName": "METATABS.FACILITYCYCLE.END_DATE",
+                                "field": "endDate"
+                            }
+                        ]
+                    }
+                ],
+                "investigation": [
+                    {
+                        "title": "Investigation Details",
+                        "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
+                        "field": "investigation",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.INVESTIGATION.NAME",
+                                "field": "name"
                             },
                             {
-                                "title" : "End Date",
-                                "translateDisplayName" : "METATABS.INVESTIGATION.END_DATE",
-                                "field" : "endDate"
+                                "title": "Title",
+                                "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
+                                "field": "title"
+                            },
+                            {
+                                "title": "Summary",
+                                "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
+                                "field": "summary"
+                            },
+                            {
+                                "title": "Start Date",
+                                "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+                                "field": "endDate"
                             }
                         ]
                     },
                     {
-                        "title" : "Investigation Users",
-                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.TABTITLE",
-                        "field" : "investigationUsers",
-                        "queryParams" : ["InvestigationUser", "User"],
-                        "default" : false,
-                        "data" : [
+                        "title": "Investigation Users",
+                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                        "field": "investigationUsers",
+                        "queryParams": [
+                            "InvestigationUser",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
                             {
-                                "field" : "user",
-                                "default" : false,
-                                "data" : [
+                                "field": "user",
+                                "default": false,
+                                "data": [
                                     {
-                                        "title" : "Name",
-                                        "translateDisplayName" : "METATABS.INVESTIGATION_USERS.USERS_NAME",
-                                        "field" : "fullName"
+                                        "title": "Name",
+                                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.USERS_NAME",
+                                        "field": "fullName"
                                     }
                                 ]
                             }
                         ]
                     },
                     {
-                        "title" : "Investigation Samples",
-                        "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
-                        "field" : "samples",
-                        "queryParams" : ["Sample"],
-                        "default" : "false",
-                        "data" : [
+                        "title": "Investigation Samples",
+                        "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                        "field": "samples",
+                        "queryParams": [
+                            "Sample"
+                        ],
+                        "default": "false",
+                        "data": [
                             {
-                                "title" : "Sample Name",
-                                "translateDisplayName" : "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
-                                "field" : "name"
+                                "title": "Sample Name",
+                                "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                "field": "name"
                             }
                         ]
                     },
                     {
-                        "title" : "Investigation Type",
-                        "icatName" : "type",
-                        "queryParams" : ["InvestigationType"],
-                        "default" : "false",
-                        "data" : [
+                        "title": "Investigation Type",
+                        "field": "type",
+                        "queryParams": [
+                            "InvestigationType"
+                        ],
+                        "default": "false",
+                        "data": [
                             {
-                                "title" : "Name",
-                                "icatName" : "name"
+                                "title": "Name",
+                                "field": "name"
                             },
                             {
-                                "title" : "Description",
-                                "icatName" : "description"
+                                "title": "Description",
+                                "field": "description"
                             }
                         ]
                     },
                     {
-                        "title" : "Investigation Parameters",
-                        "icatName" : "parameters",
-                        "queryParams" : ["InvestigationParameter, ParameterType"],
-                        "default" : "false",
-                        "data" : [
+                        "title": "Investigation Parameters",
+                        "field": "parameters",
+                        "queryParams": [
+                            "InvestigationParameter, ParameterType"
+                        ],
+                        "default": "false",
+                        "data": [
                             {
-                                "title" : "Numeric Value",
-                                "icatName" : "numericValue"
+                                "title": "Numeric Value",
+                                "field": "numericValue"
                             },
                             {
-                                "title" : "String Value",
-                                "icatName" : "stringValue"
+                                "title": "String Value",
+                                "field": "stringValue"
                             },
                             {
-                                "title" : "Date Value",
-                                "icatName" : "dateTimeValue"
+                                "title": "Date Value",
+                                "field": "dateTimeValue"
                             },
                             {
-                                "title" : "Top Range Value",
-                                "icatName" : "rangeTop"
+                                "title": "Top Range Value",
+                                "field": "rangeTop"
                             },
                             {
-                                "title" : "Bottom Range Value",
-                                "icatName" : "rangeBottom"
+                                "title": "Bottom Range Value",
+                                "field": "rangeBottom"
                             },
                             {
-                                "title" : "Error Value",
-                                "icatName" : "error"
+                                "title": "Error Value",
+                                "field": "error"
                             }
                         ]
                     }
                 ],
-                "dataset" :
-                [
+                "dataset": [
                     {
-                        "title" : "Dataset Details",
-                        "translateDisplayName" : "METATABS.DATASET.TABTITLE",
-                        "field" : "dataset",
-                        "default" : true,
-                        "data" : [
+                        "title": "Dataset Details",
+                        "translateDisplayName": "METATABS.DATASET.TABTITLE",
+                        "field": "dataset",
+                        "default": true,
+                        "data": [
                             {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.DATASET.NAME",
-                                "field" : "name"
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.DATASET.NAME",
+                                "field": "name"
                             },
                             {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.DATASET.DESCRIPTION",
-                                "field" : "description"
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
+                                "field": "description"
                             },
                             {
-                                "title" : "Start Date",
-                                "translateDisplayName" : "METATABS.DATASET.START_DATE",
-                                "field" : "startDate"
+                                "title": "Start Date",
+                                "translateDisplayName": "METATABS.DATASET.START_DATE",
+                                "field": "startDate"
                             },
                             {
-                                "title" : "End Date",
-                                "translateDisplayName" : "METATABS.DATASET.END_DATE",
-                                "field" : "endDate"
+                                "title": "End Date",
+                                "translateDisplayName": "METATABS.DATASET.END_DATE",
+                                "field": "endDate"
                             }
                         ]
                     },
                     {
-                        "title" : "Dataset Sample",
-                        "icatName" : "sample",
-                        "queryParams" : ["Sample"],
-                        "default" : "false",
-                        "data" : [
+                        "title": "Dataset Sample",
+                        "field": "sample",
+                        "queryParams": [
+                            "Sample"
+                        ],
+                        "default": "false",
+                        "data": [
                             {
-                                "title" : "Sample Name",
-                                "icatName" : "name"
+                                "title": "Sample Name",
+                                "field": "name"
                             }
                         ]
                     },
                     {
-                        "title" : "Dataset Type",
-                        "translateDisplayName" : "METATABS.DATASET_TYPE.TABTITLE",
-                        "field" : "type",
-                        "queryParams" : ["DatasetType"],
-                        "default" : false,
-                        "data" : [
+                        "title": "Dataset Type",
+                        "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
+                        "field": "type",
+                        "queryParams": [
+                            "DatasetType"
+                        ],
+                        "default": false,
+                        "data": [
                             {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.DATASET_TYPE.NAME",
-                                "field" : "name"
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
+                                "field": "name"
                             },
                             {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.DATASET_TYPE.DESCRIPTION",
-                                "field" : "description"
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                "field": "description"
                             }
                         ]
                     },
                     {
-                        "title" : "Dataset Parameters",
-                        "icatName" : "parameters",
-                        "queryParams" : ["DatasetParameter"],
-                        "default" : "false",
-                        "data" : [
+                        "title": "Dataset Parameters",
+                        "field": "parameters",
+                        "queryParams": [
+                            "DatasetParameter"
+                        ],
+                        "default": "false",
+                        "data": [
                             {
-                                "title" : "Numeric Value",
-                                "icatName" : "numericValue"
+                                "title": "Numeric Value",
+                                "field": "numericValue"
                             },
                             {
-                                "title" : "String Value",
-                                "icatName" : "stringValue"
+                                "title": "String Value",
+                                "field": "stringValue"
                             },
                             {
-                                "title" : "Date Value",
-                                "icatName" : "dateTimeValue"
+                                "title": "Date Value",
+                                "field": "dateTimeValue"
                             },
                             {
-                                "title" : "Top Range Value",
-                                "icatName" : "rangeTop"
+                                "title": "Top Range Value",
+                                "field": "rangeTop"
                             },
                             {
-                                "title" : "Bottom Range Value",
-                                "icatName" : "rangeBottom"
+                                "title": "Bottom Range Value",
+                                "field": "rangeBottom"
                             },
                             {
-                                "title" : "Error Value",
-                                "icatName" : "error"
+                                "title": "Error Value",
+                                "field": "error"
                             }
                         ]
                     }
                 ],
-                "datafile" : [
+                "datafile": [
                     {
-                        "title" : "Datafile Details",
-                        "translateDisplayName" : "METATABS.DATAFILE.TABTITLE",
-                        "field" : "datafile",
-                        "default" : true,
-                        "data" : [
+                        "title": "Datafile Details",
+                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                        "field": "datafile",
+                        "default": true,
+                        "data": [
                             {
-                                "title" : "Name",
-                                "translateDisplayName" : "METATABS.DATAFILE.NAME",
-                                "field" : "name"
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.DATAFILE.NAME",
+                                "field": "name"
                             },
                             {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.DATAFILE.DESCRIPTION",
-                                "field" : "description"
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
+                                "field": "description"
                             },
                             {
-                                "title" : "Size",
-                                "translateDisplayName" : "METATABS.DATAFILE.SIZE",
-                                "field" : "fileSize"
+                                "title": "Size",
+                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                "field": "fileSize"
                             },
                             {
-                                "title" : "Location",
-                                "translateDisplayName" : "METATABS.DATAFILE.LOCATION",
-                                "field" : "location"
+                                "title": "Location",
+                                "translateDisplayName": "METATABS.DATAFILE.LOCATION",
+                                "field": "location"
                             }
                         ]
                     }
@@ -1911,12 +1887,18 @@
         }
     },
     "site": {
-        "icatDataProxyHost" : "https://localhost:3001",
+        "icatDataProxyHost": "https://localhost:3001",
         "pagingType": "scroll",
         "useFileForData": false,
         "useFileForSession": false,
         "paginationNumberOfRows": 10,
-        "paginationPageSizes": [10, 25, 50, 100, 1000],
+        "paginationPageSizes": [
+            10,
+            25,
+            50,
+            100,
+            1000
+        ],
         "scrollPageSize": 50,
         "scrollRowFromEnd": 10,
         "facilitiesGridOptions": {
@@ -1937,7 +1919,7 @@
                         "type": "input",
                         "disableCancelFilterButton": false
                     },
-                    "link" : true
+                    "link": true
                 },
                 {
                     "field": "name",
@@ -1946,40 +1928,43 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": { "caseSensitive": false },
+                        "flags": {
+                            "caseSensitive": false
+                        },
                         "type": "input",
                         "disableCancelFilterButton": false
                     }
                 }
             ]
         },
-        "facility" : {
-            "metaTabs" : {
-                "facility" :
-                [
+        "facility": {
+            "metaTabs": {
+                "facility": [
                     {
-                        "title" : "Facility Details",
-                        "translateDisplayName" : "METATABS.FACILITY.TABTITLE",
-                        "field" : "facility",
-                        "default" : true,
-                        "data" : [
+                        "title": "Facility Details",
+                        "translateDisplayName": "METATABS.FACILITY.TABTITLE",
+                        "field": "facility",
+                        "default": true,
+                        "data": [
                             {
-                                "title" : "Full Name",
-                                "translateDisplayName" : "METATABS.FACILITY.FULLNAME",
-                                "field" : "fullName"
+                                "title": "Full Name",
+                                "translateDisplayName": "METATABS.FACILITY.FULLNAME",
+                                "field": "fullName"
                             },
                             {
-                                "title" : "Description",
-                                "translateDisplayName" : "METATABS.FACILITY.DESCRIPTION",
-                                "field" : "description"
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.FACILITY.DESCRIPTION",
+                                "field": "description"
                             },
-                            {   "title" : "Name",
-                                "translateDisplayName" : "METATABS.FACILITY.NAME",
-                                "field" : "name"
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.FACILITY.NAME",
+                                "field": "name"
                             },
-                            {   "title" : "URL",
-                                "translateDisplayName" : "METATABS.FACILITY.URL",
-                                "field" : "url"
+                            {
+                                "title": "URL",
+                                "translateDisplayName": "METATABS.FACILITY.URL",
+                                "field": "url"
                             }
                         ]
                     }
