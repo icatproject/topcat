@@ -15,6 +15,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-string-replace');
+
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
@@ -384,6 +386,26 @@ module.exports = function (grunt) {
       }
     },
 
+    'string-replace': {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= yeoman.app %>/data',
+          src: 'config-multi.json',
+          dest: '<%= yeoman.dist %>/data'
+        }],
+        options: {
+          replacements: [
+            // place files inline example
+            {
+              pattern: '"icatDataProxyHost": "https://localhost:3001"',
+              replacement: '"icatDataProxyHost": "https://topcat-dev.esc.rl.ac.uk:3001"'
+            }
+          ]
+        }
+      }
+    },
+
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
@@ -452,7 +474,8 @@ module.exports = function (grunt) {
     'uglify',
     'filerev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'string-replace'
   ]);
 
   grunt.registerTask('default', [
