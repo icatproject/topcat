@@ -75,9 +75,9 @@ module.exports = function (grunt) {
         hostname: (env === 'production') ? '0.0.0.0' : 'localhost',
         protocol: 'https',
         port: 9000,
-        key: grunt.file.read('certs/key.pem').toString(),
-        cert: grunt.file.read('certs/cert.pem').toString(),
-        //ca: grunt.file.read('certs/ca.crt').toString(),
+        key: (env === 'production') ? grunt.file.read('certs/key.crt').toString() :  grunt.file.read('certs/key.pem').toString(),
+        cert: (env === 'production') ? grunt.file.read('certs/cert.crt').toString() : grunt.file.read('certs/cert.pem').toString(),
+        ca: (env === 'production') ? [grunt.file.read('certs/root.crt').toString(), grunt.file.read('certs/intermediate.crt').toString()] : false,
         livereload: (env === 'production') ? false : 35729
       },
       livereload: {

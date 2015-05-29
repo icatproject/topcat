@@ -54,6 +54,19 @@ Proxy setting note: npm does not use environment variables for proxy. Instead us
     npm config set https-proxy http://proxy.company.com:8080
 
 
+## SSL Certificates
+
+For development, self-signed certificates are used. If valid ssl certicates are required then name them as follow and copy them to the certs directory and then set the environment variable NODE_ENV as 'production':
+
+    ssl private key: key.crt
+    ssl root certificate: root.crt
+    ssl intermediate cetificate: intermediate.crt
+
+The real certs will be loaded automatically.
+
+If you do want to have more control of the file path and name, you have to edit Gruntfile.js directly.
+
+
 
 ## Using Live Data
 

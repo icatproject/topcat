@@ -36,8 +36,10 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
             //do the work of transposing
             _.mapValues(gridOptions.columnDefs, function(value) {
                 //replace filter condition to one expected by ui-grid
-                if (angular.isDefined(value.filter.condition) && angular.isString(value.filter.condition)) {
-                    value.filter.condition = uiGridConstants.filter[value.filter.condition.toUpperCase()];
+                if (angular.isDefined(value.filter)) {
+                    if (angular.isDefined(value.filter.condition) && angular.isString(value.filter.condition)) {
+                        value.filter.condition = uiGridConstants.filter[value.filter.condition.toUpperCase()];
+                    }
                 }
 
                 //replace translate text

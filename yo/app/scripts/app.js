@@ -483,7 +483,6 @@
         .run(['$rootScope', '$state', function ($rootScope, $state) {
             //watch for state change resolve authentication errors
             $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-                console.log('$stateChangeError called', error);
                 if (error && error.isAuthenticated === false) {
                     $state.go('login');
                 }
@@ -491,7 +490,7 @@
 
             //save last page to rootscope
             /*$rootScope.$on('$stateChangeStart', function() {
-                console.log('previous state', $previousState.get() !== null ? $previousState.get().state.name : $previousState.get());
+                $log.debug.log('previous state', $previousState.get() !== null ? $previousState.get().state.name : $previousState.get());
                 $rootScope.previousState = $previousState.get();
             });*/
 

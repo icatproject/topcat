@@ -12,15 +12,20 @@ var routes = require('./routes/index');
 var api = require('./routes/api');
 
 var app = express();
-var key = fs.readFileSync('certs/key.pem');
-var cert = fs.readFileSync('certs/cert.pem');
+
+var env = process.env.NODE_ENV || 'development';
+
+var key = (env === 'production') ? fs.readFileSync('certs/key.crt') : fs.readFileSync('certs/key.pem');
+var cert = (env === 'production') ? fs.readFileSync('certs/cert.crt') : fs.readFileSync('certs/cert.pem');
+var ca = (env === 'production') ? [fs.readFileSync('certs/root.crt'), fs.readFileSync('certs/intermediate.crt')] : false;
 
 //ignore invalid ssl certificate
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 https.createServer({
       key: key,
-      cert: cert
+      cert: cert,
+      ca: ca
 }, app).listen(3001);
 
 app.use(cors());
