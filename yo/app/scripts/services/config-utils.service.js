@@ -49,8 +49,6 @@ function ConfigUtils($q){
                 data.push(obj);
             });
 
-            console.log('getFacilitiesFromConfig', data);
-
             //we need to return a promise
             var deferred = $q.defer();
             deferred.resolve(data);
@@ -69,8 +67,6 @@ function ConfigUtils($q){
             var data = [];
             var loggedIn = _.keys(sessions);
 
-            console.log(loggedIn);
-
             if (_.size(loggedIn) !== 0) {
                 _.each(facilities, function(value){
                     if(_.indexOf(loggedIn, value.keyName) !== -1) {
@@ -82,8 +78,6 @@ function ConfigUtils($q){
                         data.push(obj);
                     }
                 });
-
-                console.log('getLoggedInFacilitiesFromConfig', data);
             }
 
             //we need to return a promise
@@ -114,8 +108,6 @@ function ConfigUtils($q){
             if (angular.isDefined(sortColumnIndex) && sortColumnIndex !== -1) {
                 defaultSort = [sortColumnIndex, column[sortColumnIndex].sortByDefault];
             }
-            console.log('column', column);
-            console.log('defaultSort', defaultSort);
 
             return defaultSort;
         },

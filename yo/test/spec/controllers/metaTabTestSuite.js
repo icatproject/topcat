@@ -43,8 +43,9 @@ describe('MetatabTest', function() {
 		}];
 
 		testRowClickMessage = {
-			'Type': 'Test',
-			'Id': 101
+			'type': 'Test',
+			'id': 101,
+			'facilityName' : 'dls'
 		};
 
 		dataManager = {};
@@ -86,7 +87,7 @@ describe('MetatabTest', function() {
 		$rootScope.$broadcast('rowclick', testRowClickMessage);
 		scope.$digest();
 
-		expect(scope.message.Type).toEqual('Test');
-		expect(scope.message.Id).toEqual(101);
+		expect(scope.message.type).toEqual('Test');
+		expect(scope.message.id).toEqual(101);
 	});
 });

@@ -1196,6 +1196,7 @@
                 "facility",
                 "instrument",
                 "facilityCycle",
+                "proposal",
                 "investigation",
                 "dataset",
                 "datafile"
@@ -1348,6 +1349,43 @@
                                 "type": "input",
                                 "disableCancelFilterButton": false
                             }
+                        }
+                    ]
+                },
+                "proposal": {
+                    "enableFiltering": true,
+                    "columnDefs": [
+                        {
+                            "field": "id",
+                            "displayName": "Id",
+                            "enableSorting": false,
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "visible": false
+                        },
+                        {
+                            "field": "name",
+                            "displayName": "name",
+                            "enableSorting": false,
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "link": true
                         }
                     ]
                 },

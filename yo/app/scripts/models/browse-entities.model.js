@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteUtils', 'uiGridConstants', 'DataManager', '$timeout', '$state', '$log'];
+BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteUtils', 'uiGridCons
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, DataManager, $timeout, $state, $log){
+function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, $log){
     return {
         gridOptions : {},
         nextRouteSegment: null,
@@ -83,7 +83,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteUtils, uiGridConstants, Da
         init : function(facility, scope, currentEntityType, currentRouteSegment, sessions, $stateParams) {
             var options = this.configToUIGridOptions(facility, currentEntityType);
             var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.keyName);
-            var nextRouteSegment = RouteUtils.getNextRouteSegmentName(structure, currentEntityType);
+            var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, currentEntityType);
             var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
             var pageSize = Config.getSitePageSize(APP_CONFIG, pagingType); //the number of rows for grid
             var scrollRowFromEnd = Config.getSiteConfig(APP_CONFIG).scrollRowFromEnd;

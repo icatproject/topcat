@@ -124,11 +124,19 @@ function ICATQueryBuilder($log) {
             return params;
         }
 
-        function getSearchExpr(search, entityAlias) {
+        function getSearchExpr(queryParams, entityAlias) {
             var searchExpr = squel.expr();
 
-            if (! _.isEmpty(search) && _.isArray(search)) {
-                _.each(search, function(value) {
+            if (! angular.isDefined(queryParams)) {
+                return searchExpr;
+            }
+
+            if (! angular.isDefined(queryParams.search)) {
+                return searchExpr;
+            }
+
+            if (! _.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
+                _.each(queryParams.search, function(value) {
                     if (typeof value.search !== 'undefined') {
                         searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search.toUpperCase() + '%');
                     }
@@ -179,7 +187,7 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'fc');
+                var searchExpr = getSearchExpr(queryParams, 'fc');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
 
@@ -231,7 +239,7 @@ function ICATQueryBuilder($log) {
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'fc');
+                var searchExpr = getSearchExpr(queryParams, 'fc');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
 
@@ -276,7 +284,7 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'inv');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
 
@@ -313,7 +321,7 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ins');
+                var searchExpr = getSearchExpr(queryParams, 'ins');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'ins');
 
@@ -366,7 +374,7 @@ function ICATQueryBuilder($log) {
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'inv');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
 
@@ -410,7 +418,7 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'inv');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
 
@@ -429,8 +437,6 @@ function ICATQueryBuilder($log) {
 
             getProposalsByFacilityCycleId: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
-
-                console.log(queryParams);
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(DISTINCT inv.name)')
@@ -467,7 +473,7 @@ function ICATQueryBuilder($log) {
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'inv');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
 
@@ -511,7 +517,7 @@ function ICATQueryBuilder($log) {
                             .and('inv.name = ?', queryParams.proposalId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'inv');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
 
@@ -555,7 +561,7 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'inv');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
 
@@ -598,7 +604,7 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'ds');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
 
@@ -643,7 +649,7 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'ds');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
 
@@ -684,7 +690,7 @@ function ICATQueryBuilder($log) {
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'ds');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
 
@@ -725,7 +731,7 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'df');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
 
@@ -772,7 +778,7 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'df');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
 
@@ -815,7 +821,7 @@ function ICATQueryBuilder($log) {
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'df');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
 
@@ -833,8 +839,6 @@ function ICATQueryBuilder($log) {
 
             getDatafilesByDatasetId: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
-
-                console.log('getDatafilesByDatasetId queryParams', queryParams);
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(df)')
@@ -860,7 +864,7 @@ function ICATQueryBuilder($log) {
                             .and('ds.id = ?', queryParams.datasetId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'df');
 
                 var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
 

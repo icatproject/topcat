@@ -48,7 +48,7 @@ function ICATService($http, $q, APP_CONFIG, Config, $rootScope, ICATQueryBuilder
 
         $q.all(asyncCalls).then(
             function(data) {
-                console.log('promise data', data);
+                $log.debug('promise data', data);
 
                 deferred.resolve(data);
             }, function(errors) {

@@ -5,9 +5,9 @@
     .module('angularApp')
     .controller('MetaPanelController', MetaPanelController);
 
-    MetaPanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams','DataManager', 'APP_CONFIG', 'Config', 'RouteUtils', '$sessionStorage', 'MetaDataManager'];
+    MetaPanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams','DataManager', 'APP_CONFIG', 'Config', 'RouteUtils', '$sessionStorage', 'MetaDataManager', '$log'];
 
-    function MetaPanelController($rootScope, $scope, $state, $stateParams, DataManager, APP_CONFIG, Config, RouteUtils, $sessionStorage, MetaDataManager){
+    function MetaPanelController($rootScope, $scope, $state, $stateParams, DataManager, APP_CONFIG, Config, RouteUtils, $sessionStorage, MetaDataManager, $log){
         var vm = this;
 
         var facilityName = $stateParams.facilityName;
@@ -43,7 +43,7 @@
                 .then(function(data) {
                     vm.tabs = MetaDataManager.updateTabs(data, tabs);
                 }, function(error) {
-                    console.log('Error: Failed to get data from icat', error);
+                    $log.debug('Error: Failed to get data from icat', error);
                 });
             }
         });

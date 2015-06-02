@@ -26,7 +26,7 @@
 
 
         vm.isLoggedInAll  = function() {
-            console.log('LoginController.isLoggedInAll called');
+            //$log.debug('LoginController.isLoggedInAll called');
             if (notLoggedInFacilities.length === 0) {
                 return true;
             }
@@ -35,7 +35,7 @@
         };
 
         vm.isSingleFacility = function() {
-            console.log('LoginController.isSingleFacility', ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length);
+            //$log.debug('LoginController.isSingleFacility', ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length);
             if (ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length === 1) {
                 return true;
             }
@@ -45,7 +45,7 @@
 
 
         vm.isSingleAuthenticationType = function() {
-            //console.log('LoginController.isSingleAuthenticationType', Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length);
+            //$log.debug('LoginController.isSingleAuthenticationType', Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length);
             if (Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length === 1) {
                 return true;
             }
@@ -65,7 +65,7 @@
 
 
         vm.updateAuthenticationTypes = function(facilityName) {
-            console.log('LoginController.updateAuthenticationTypes called');
+            //$log.debug('LoginController.updateAuthenticationTypes called');
             vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, facilityName).authenticationType;
             vm.user.plugin = vm.authenticationTypes[0].plugin;
         };
@@ -76,7 +76,7 @@
          * @return {[type]}              [description]
          */
         vm.getAuthenticationTypes = function(facilityName) {
-            console.log('LoginController.getAuthenticationTypes called');
+            //$log.debug('LoginController.getAuthenticationTypes called');
             var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
             return facility.authenticationType;
         };
@@ -89,7 +89,7 @@
          * @return {[type]}      [description]
          */
         vm.login = function(form) {
-            console.log('LoginController.login called');
+            //$log.debug('LoginController.login called');
             var facility = Config.getFacilityByName(APP_CONFIG, form.facilityName.$modelValue);
 
             var credential = {};
@@ -158,7 +158,8 @@
                             try {
                                 json = JSON.parse(data);
                             } catch(error) {
-                                console.log('could not parse error string: ' + error);
+                                //$log.debug('could not parse error string: ' + error);
+                                //throw new Error('could not parse error string: ' + error);
                             }
 
                             if (angular.isDefined(json)) {
@@ -181,10 +182,10 @@
 
             var notLoggedInFacilitiesNames = _.difference(allFacilityNames, loggedInFacilities);
 
-            console.log('notLoggedInFacilitiesNames', notLoggedInFacilitiesNames);
+            //$log.debug('notLoggedInFacilitiesNames', notLoggedInFacilitiesNames);
 
             _.each(notLoggedInFacilitiesNames, function(facilityName) {
-                console.log('facilityName', facilityName);
+                //$log.debug('facilityName', facilityName);
                 notLoggedInFacilitiesObject.push(Config.getFacilityByName(APP_CONFIG, facilityName));
             });
 

@@ -65,7 +65,7 @@ function RouteUtils(){
 
         /**
          * Returns the last segment of the ui-route name.
-         * This is use to determin which function to us to
+         * This is used to determine which function to use to
          * get data
          *
          * @param  {[type]} $state [description]

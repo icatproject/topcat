@@ -3,10 +3,10 @@
 angular.
     module('angularApp').factory('DataManager', DataManager);
 
-DataManager.$inject = ['$http', '$q', 'ICATService', 'APP_CONFIG', 'Config', '$log'];
+DataManager.$inject = ['$http', '$q', 'ICATService', 'RouteService', 'APP_CONFIG', 'Config', '$log'];
 
 /*jshint -W098 */
-function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
+function DataManager($http, $q, ICATService, RouteService, APP_CONFIG, Config, $log) {
     var manager = {};
 
     function MyException(message) {
@@ -94,7 +94,6 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                     }
 
                 } else {
-                    console.log('no matches');
                     dateInt = Date.parse(value[entity][field]);
                     if (! Number.isNaN(dateInt)) {
                         value[entity][field] = new Date(dateInt);
@@ -514,9 +513,6 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
         var sessionId = getSessionValueForFacility(sessions, facility);
         var def = $q.defer();
 
-        /*var metaConfig = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.keyName, 'dataset');
-        console.log('metaConfig', metaConfig);*/
-
         ICATService.getDatasets(sessionId, facility, options).then(function(data) {
             var result = {};
             prepProcessData(data, facility, 'Dataset', 'dataset');
@@ -707,9 +703,9 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
         //merge $stateparams with options
         _.extend(options, $stateParams);
 
-        console.log('getData $stateParams', $stateParams);
+        var routeSegment = RouteService.getLastTwoSegment(currentRouteSegment);
 
-        switch (currentRouteSegment) {
+        switch (routeSegment) {
             case 'facility-instrument':
                 $log.debug('function called: getInstruments');
                 _.extend(options, $stateParams);
@@ -740,27 +736,22 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 return this.getProposalsByInstrumentId(sessions, facility, options);
             case 'proposal-investigation':
                 $log.debug('function called: getInvestigationsByProposalId');
-                //options.proposalId = $stateParams.id;
 
                 return this.getInvestigationsByProposalId(sessions, facility, options);
             case 'instrument-investigation':
                 $log.debug('function called: getInvestigationsByInstrumentId');
-                //options.instrumentId = $stateParams.id;
 
                 return this.getInvestigationsByInstrumentId(sessions, facility, options);
             case 'instrument-dataset':
                 $log.debug('function called: getDatasetsByInstrumentId');
-                //options.instrumentId = $stateParams.id;
 
                 return this.getDatasetsByInstrumentId(sessions, facility, options);
             case 'instrument-datafile':
                 $log.debug('function called: getDatafilesByInstrumentId');
-                //options.instrumentId = $stateParams.id;
 
                 return this.getDatafilesByInstrumentId(sessions, facility, options);
             case 'facilityCycle-instrument':
                 $log.debug('function called: getInstrumentsByFacilityCycleId');
-                //options.facilityCycleId = $stateParams.id;
 
                 return this.getInstrumentsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-proposal':
@@ -769,28 +760,22 @@ function DataManager($http, $q, ICATService, APP_CONFIG, Config, $log) {
                 return this.getProposalsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-investigation':
                 $log.debug('function called: getInvestigationsByFacilityCycleId');
-                //options.facilityCycleId = $stateParams.facilityCycleId;
-                //options.instrumentId = $stateParams.instrumentId;
 
                 return this.getInvestigationsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-dataset':
                 $log.debug('function called: getDatasetsByFacilityCycleId');
-                //options.facilityCycleId = $stateParams.id;
 
                 return this.getDatasetsByFacilityCycleId(sessions, facility, options);
             case 'facilityCycle-datafile':
                 $log.debug('function called: getDatafilesByFacilityCycleId');
-                //options.facilityCycleId = $stateParams.id;
 
                 return this.getDatafilesByFacilityCycleId(sessions, facility, options);
             case 'investigation-dataset':
                 $log.debug('function called: getDatasetsByInvestigationId');
-                //options.investigationId = $stateParams.id;
 
                 return this.getDatasetsByInvestigationId(sessions, facility, options);
             case 'investigation-datafile':
                 $log.debug('function called: getDatafilesByInvestigationId');
-                //options.investigationId = $stateParams.id;
 
                 return this.getDatafilesByInvestigationId(sessions, facility, options);
             case 'dataset-datafile':

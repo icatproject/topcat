@@ -30,7 +30,7 @@
                 //should push the modal form data to the form data here
                 form.parameters.push(modalForm);
             }, function() {
-                //console.log('Modal dismissed at: ' + new Date());
+
             });
         };
     }

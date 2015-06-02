@@ -399,7 +399,14 @@ module.exports = function (grunt) {
             // place files inline example
             {
               pattern: '"icatDataProxyHost": "https://localhost:3001"',
-              replacement: '"icatDataProxyHost": "https://topcat-dev.esc.rl.ac.uk:3001"'
+              replacement: function() {
+                if (env === 'production') {
+                  return '"icatDataProxyHost": "https://topcat-dev.esc.rl.ac.uk:3001"';
+                } else {
+                  return '"icatDataProxyHost": "https://localhost:3001"';
+                }
+
+              }
             }
           ]
         }

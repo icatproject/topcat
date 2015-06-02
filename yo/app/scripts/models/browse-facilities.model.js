@@ -4,9 +4,9 @@ angular
     .module('angularApp')
     .factory('BrowseFacilitiesModel', BrowseFacilitiesModel);
 
-BrowseFacilitiesModel.$inject = ['APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'uiGridConstants', '$sessionStorage'];
+BrowseFacilitiesModel.$inject = ['APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'uiGridConstants', '$sessionStorage', '$log'];
 
-function BrowseFacilitiesModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGridConstants, $sessionStorage){
+function BrowseFacilitiesModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGridConstants, $sessionStorage, $log){
     return {
         gridOptions : {},
 
@@ -16,7 +16,7 @@ function BrowseFacilitiesModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGr
          * @return {[type]} [description]
          */
         configToUIGridOptions : function() {
-            //console.log('configToUIGridOptions called');
+            //$log.debug('configToUIGridOptions called');
             var gridOptions = Config.getSiteFacilitiesGridOptions(APP_CONFIG);
 
             //do the work of transposing
@@ -69,7 +69,7 @@ function BrowseFacilitiesModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGr
             };
 
             ConfigUtils.getLoggedInFacilitiesFromConfig(facilityObjs, $sessionStorage.sessions).then(function (data){
-                    console.log('promise data', data);
+                    $log.debug('promise data', data);
                     gridOptions.data = data;
                 }, function(){
                     throw new Error('Unable to retrieve logged in facilitites');
@@ -81,10 +81,10 @@ function BrowseFacilitiesModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGr
 
 
         getNextRouteSegment: function(row, currentEntityType) {
-            //console.log('getNextRouteSegment called');
-            //console.log('row', row);
+            //$log.debug('getNextRouteSegment called');
+            //$log.debug('row', row);
             //count++;
-            //console.log('count', count);
+            //$log.debug('count', count);
 
             var structure = Config.getHierarchyByFacilityName(APP_CONFIG, row.entity.name);
             var nextRouteSegment = RouteUtils.getNextRouteSegmentName(structure, currentEntityType);

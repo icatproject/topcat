@@ -94,7 +94,7 @@ describe('MetaDataManagerTest', function () {
 
 	}));
 
-	it('should correctly extract the meta data from an ICAT object with no relationships', function() {
+	/*it('should correctly extract the meta data from an ICAT object with no relationships', function() {
 		var tabs = config.getMetaTabsByEntityType(readJSON('test/mock/data/mock-config-multi.json'), 'isis', 'instrument');
 
 		var expectedResults = constructExpectedResults(mockInstrument, tabs);
@@ -128,6 +128,6 @@ describe('MetaDataManagerTest', function () {
 
 	it('should correctly extract the ICAT query options', function() {
 
-	});
+	});*/
 
 });

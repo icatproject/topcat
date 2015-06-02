@@ -115,7 +115,7 @@
                         }
                     }
                 })
-                .state('home.browse.facilities.facility-facilityCycle', {
+                /*.state('home.browse.facilities.facility-facilityCycle', {
                     url: '/{facilityName}/facilityCycles',
                     views: {
                         '@home.browse' : {
@@ -229,15 +229,6 @@
                         entityType : 'datafile'
                     }
                 })
-                /*.state('home.browse.facilities.entitylistbyid', {
-                    url: '/{facilityName}/{entityType}/{id}',
-                    views: {
-                        '' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelContoller as vm'
-                        }
-                    }
-                })*/
                 .state('home.browse.facilities.instrument-facilityCycle', {
                     url: '/{facilityName}/instruments/{instrumentId}/facilityCycles',
                     views: {
@@ -385,7 +376,7 @@
                     param: {
                         entityType : 'datafile'
                     }
-                })
+                })*/
 
                 /*.state('home.browse.facilities.meta1', {
                     url: '/?meta1',
@@ -494,5 +485,8 @@
                 $rootScope.previousState = $previousState.get();
             });*/
 
+        }]).
+        run(['RouteCreatorService', function(RouteCreatorService) {
+            RouteCreatorService.createStates();
         }]);
 })();
