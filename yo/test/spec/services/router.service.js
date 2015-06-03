@@ -76,13 +76,13 @@ describe('Service: RouteService', function() {
         expect(!!RouteService).toBe(true);
     });
 
-    it('Test get RouteService getRoutes 3 hierarchy', function() {
+    it('Test RouteService getAllRoutes 3 hierarchy', function() {
         var hierarchy = [
             'facility',
             'dataset',
             'datafile'
         ];
-        var params = RouteService.getRoutes(hierarchy);
+        var params = RouteService.getAllRoutes(hierarchy);
 
         expect(params.length).toEqual(3);
 
@@ -105,14 +105,14 @@ describe('Service: RouteService', function() {
         ]);
     });
 
-    it('Test get RouteService getRoutes', function() {
+    it('Test RouteService getAllRoutes', function() {
         var hierarchy = [
             'facility',
             'investigation',
             'dataset',
             'datafile'
         ];
-        var params = RouteService.getRoutes(hierarchy);
+        var params = RouteService.getAllRoutes(hierarchy);
 
         expect(params.length).toEqual(7);
 
@@ -155,7 +155,7 @@ describe('Service: RouteService', function() {
         ]);
     });
 
-    it('Test get RouteService getRoutes', function() {
+    it('Test RouteService getAllRoutes', function() {
         var hierarchy = [
             'facility',
             'facilityCycle',
@@ -163,7 +163,7 @@ describe('Service: RouteService', function() {
             'dataset',
             'datafile'
         ];
-        var params = RouteService.getRoutes(hierarchy);
+        var params = RouteService.getAllRoutes(hierarchy);
 
         expect(params.length).toEqual(15);
 
@@ -246,7 +246,7 @@ describe('Service: RouteService', function() {
         ]);
     });
 
-    it('Test get RouteService getRoutes 7 hierarachy full', function() {
+    it('Test RouteService getAllRoutes 7 hierarachy full', function() {
         var hierarchy = [
             'facility',
             'instrument',
@@ -257,7 +257,7 @@ describe('Service: RouteService', function() {
             'datafile'
         ];
 
-        var params = RouteService.getRoutes(hierarchy);
+        var params = RouteService.getAllRoutes(hierarchy);
 
         expect(params.length).toEqual(63);
 
@@ -582,7 +582,7 @@ describe('Service: RouteService', function() {
 
     });
 
-    it('Test get RouteService getNextRouteSegmentName 3 entities', function() {
+    it('Test RouteService getNextRouteSegmentName 3 entities', function() {
         var hierarchy = [
             'facility',
             'dataset',
@@ -598,7 +598,7 @@ describe('Service: RouteService', function() {
     });
 
 
-    it('Test get RouteService getNextRouteSegmentName 7 entities 1', function() {
+    it('Test RouteService getNextRouteSegmentName 7 entities 1', function() {
         var hierarchy = [
             'facility',
             'instrument',
@@ -617,7 +617,7 @@ describe('Service: RouteService', function() {
         expect(params).toEqual('facility-instrument-facilityCycle');
     });
 
-    it('Test get RouteService getNextRouteSegmentName 7 entities 2', function() {
+    it('Test RouteService getNextRouteSegmentName 7 entities 2', function() {
         var hierarchy = [
             'facility',
             'instrument',
@@ -636,7 +636,7 @@ describe('Service: RouteService', function() {
         expect(params).toEqual('facility-instrument-facilityCycle-proposal-investigation-dataset-datafile');
     });
 
-    it('Test get RouteService getNextRouteSegmentName last entity', function() {
+    it('Test RouteService getNextRouteSegmentName last entity', function() {
         var hierarchy = [
             'facility',
             'instrument',
@@ -656,7 +656,7 @@ describe('Service: RouteService', function() {
     });
 
 
-    it('Test get RouteService getPossibleRoutes', function() {
+    it('Test RouteService getPossibleRoutes', function() {
         var APP_CONFIG = {
             facilities : {
                 dls: {
@@ -694,7 +694,7 @@ describe('Service: RouteService', function() {
         ]);
     });
 
-    it('Test get RouteService getPossibleRoutes', function() {
+    it('Test RouteService getPossibleRoutes', function() {
         var APP_CONFIG = {
             facilities : {
                 dls: {
@@ -723,6 +723,34 @@ describe('Service: RouteService', function() {
             'dataset',
             'datafile'
         ]);
+    });
+
+    it('Test getRoutes', function() {
+        var hierarchy = [
+            'facility',
+            'instrument',
+            'facilityCycle'
+        ];
+
+        var params = RouteService.getRoutes(hierarchy);
+
+        expect(params).toEqual([
+            {
+                'route': 'facility',
+                'url': '/{facilityName}',
+                'entity': 'facility'
+            },
+            {
+                'route': 'facility-instrument',
+                'url': '/{facilityName}/instrument',
+                'entity': 'instrument'
+            },
+            {
+                'route': 'facility-instrument-facilityCycle',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle',
+                'entity': 'facilityCycle'
+            },
+            ]);
     });
 
 });

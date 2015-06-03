@@ -431,7 +431,7 @@
                             //add facility id to $stateParams
                             $stateParams.id = full.id;
 
-                            return "<a ui-sref='home.browse.facilities." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
+                            return "<a ui-sref='home.browse.facility." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
 
                         } else {
                             return data;
@@ -452,7 +452,7 @@
                                 //add facility id to $stateParams
                                 $stateParams.id = full.id;
 
-                                return "<a ui-sref='home.browse.facilities." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
+                                return "<a ui-sref='home.browse.facility." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
                             } else {
                                 //no link
                                 return $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters);

@@ -433,7 +433,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 params[key] = value;
             });
 
-            var route = $state.href('home.browse.facilities.' + this.nextRouteSegment, params);
+            var route = $state.href('home.browse.facility.' + this.nextRouteSegment, params);
 
             return route;
         }

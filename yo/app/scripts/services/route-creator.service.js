@@ -20,10 +20,10 @@ function RouteCreatorService(APP_CONFIG, Config, RouteService, RuntimeStatesProv
             'datafile'
         ];
 
-        var routes = RouteService.getRoutes(hierarchy);
+        var routes = RouteService.getAllRoutes(hierarchy);
 
         _.each(routes, function(route) {
-            var stateName = 'home.browse.facilities.' + route.route;
+            var stateName = 'home.browse.facility.' + route.route;
             var state = {
                 url: route.url,
                     views: {

@@ -38,7 +38,7 @@ function BrowseFacilitiesModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGr
                 if (angular.isDefined(value.link) && value.link === true) {
                     delete value.link;
 
-                    value.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facilities.{{grid.appScope.getNextRouteSegment(row)}}({facilityName : \'{{row.entity.name}}\'})">{{row.entity.' + value.field + '}}</a></div>';
+                    value.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facility.{{grid.appScope.getNextRouteSegment(row)}}({facilityName : \'{{row.entity.name}}\'})">{{row.entity.' + value.field + '}}</a></div>';
                 }
 
                 return value;

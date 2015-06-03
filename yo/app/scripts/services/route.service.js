@@ -113,7 +113,7 @@ function RouteService($state, $stateParams, $log) {
 
 
 
-    route.getRoutes = function(hierarchy) {
+    route.getAllRoutes = function(hierarchy) {
         var set = powerset(hierarchy);
         set = setFilter(set, 'facility');
 
@@ -149,6 +149,34 @@ function RouteService($state, $stateParams, $log) {
         return routes;
     };
 
+
+    route.getRoutes = function(hierarchy) {
+        //var set = powerset(hierarchy);
+        //set = setFilter(set, 'facility');
+        //
+        var clone = hierarchy.slice(0);
+        var routes = [];
+        var items = [];
+
+        $log.warn(clone);
+
+        _.each(clone, function(val) {
+            items.push(val);
+
+            $log.warn(val);
+
+            routes.push({
+                route: getRouteSegments(items),
+                entity: val
+            });
+
+        });
+
+        $log.info('routes', JSON.stringify(routes, null, 2));
+
+        return routes;
+    };
+
     route.getNextRouteSegmentName = function(hierarchy, currentEntityType) {
         var index = _.indexOf(hierarchy, currentEntityType);
 
@@ -180,6 +208,16 @@ function RouteService($state, $stateParams, $log) {
         segments = segments.slice(-2);
 
         return getRouteSegments(segments);
+    };
+
+    route.getPreviousRoutes = function($state) {
+        var currentRouteSegment = this.getCurrentRouteSegmentName($state);
+        var segments = currentRouteSegment.split('-');
+
+        var routes = this.getRoutes(segments);
+        $log.debug('routes', routes);
+
+        return routes;
     };
 
 

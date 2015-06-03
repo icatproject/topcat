@@ -44,7 +44,7 @@
         if (_.isEmpty($sessionStorage.sessions)) {
             $state.go('login');
         } else {
-            $state.go('home.browse.facilities');
+            $state.go('home.browse.facility');
         }
     }
 })();

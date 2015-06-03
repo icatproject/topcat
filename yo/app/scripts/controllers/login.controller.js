@@ -131,7 +131,7 @@
                     } else {
                         $state.go('home');
                     }*/
-                    $state.go('home.browse.facilities');
+                    $state.go('home.browse.facility');
 
                 } else {
 
@@ -146,7 +146,7 @@
 
                         //sets the form to pristine state
                         form.$setPristine();
-                        $state.go('home.browse.facilities');
+                        $state.go('home.browse.facility');
                     } else {
                         //set the default error message
                         var message = null;
