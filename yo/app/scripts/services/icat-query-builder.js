@@ -1,11 +1,12 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular.
-    module('angularApp').factory('ICATQueryBuilder', ICATQueryBuilder);
+    angular.
+        module('angularApp').factory('ICATQueryBuilder', ICATQueryBuilder);
 
-ICATQueryBuilder.$inject = ['$log'];
+    ICATQueryBuilder.$inject = ['$log'];
 
-function ICATQueryBuilder($log) {
+    function ICATQueryBuilder($log) {
         //private methods
         /**
          * taken from angualr source to build query string
@@ -909,3 +910,4 @@ function ICATQueryBuilder($log) {
             }
         };
     }
+})();
