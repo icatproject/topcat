@@ -741,6 +741,138 @@ describe('Service: ICATQueryBuilder', function() {
     });
 
 
+    //getInvestigations tests
+    it('getInvestigations without ordering with 1 level include', function() {
+        var params =ICATQueryBuilder.getInvestigations(
+            '1234567890',
+            {
+                keyName: 'dls',
+                title: 'DIAMOND',
+                icatUrl: 'https://example.com',
+                connectProxyPath: 'dls/',
+                idsUrl: 'https://example.com',
+                facilityId: 1,
+            },
+            {
+                start: 0,
+                numRows: 10,
+                includes: [
+                    'investigationInstruments'
+                ]
+            }
+        );
+
+        expect(params).toEqual(jasmine.objectContaining({
+            sessionId: '1234567890'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments LIMIT 0, 10')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            entity: 'Investigation'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            server: encodeURIComponent('https://example.com')
+        }));
+
+        //expect(params.filterCountQuery).toBeUndefined();
+    });
+
+    it('getInvestigations without ordering with 2 level include', function() {
+        var params =ICATQueryBuilder.getInvestigations(
+            '1234567890',
+            {
+                keyName: 'dls',
+                title: 'DIAMOND',
+                icatUrl: 'https://example.com',
+                connectProxyPath: 'dls/',
+                idsUrl: 'https://example.com',
+                facilityId: 1,
+            },
+            {
+                start: 0,
+                numRows: 10,
+                includes: [
+                    ['investigationInstruments', 'instruments']
+                ]
+            }
+        );
+
+        expect(params).toEqual(jasmine.objectContaining({
+            sessionId: '1234567890'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f, inv.investigationInstruments invins WHERE (f.id = 1) INCLUDE inv.investigationInstruments, invins.instruments LIMIT 0, 10')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            entity: 'Investigation'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            server: encodeURIComponent('https://example.com')
+        }));
+
+        //expect(params.filterCountQuery).toBeUndefined();
+    });
+
+
+    it('getInvestigations without ordering with 4 level include', function() {
+        var params =ICATQueryBuilder.getInvestigations(
+            '1234567890',
+            {
+                keyName: 'dls',
+                title: 'DIAMOND',
+                icatUrl: 'https://example.com',
+                connectProxyPath: 'dls/',
+                idsUrl: 'https://example.com',
+                facilityId: 1,
+            },
+            {
+                start: 0,
+                numRows: 10,
+                includes: [
+                    ['investigationInstruments', 'instrument', 'instrumentScientists', 'user']
+                ]
+            }
+        );
+
+        expect(params).toEqual(jasmine.objectContaining({
+            sessionId: '1234567890'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f, inv.investigationInstruments invins, invins.instrument ins, instrumentScientists invs WHERE (f.id = 1) INCLUDE inv.investigationInstruments, invins.instrument, ins.instrumentScientists, invs.user LIMIT 0, 10')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            entity: 'Investigation'
+        }));
+
+        expect(params).toEqual(jasmine.objectContaining({
+            server: encodeURIComponent('https://example.com')
+        }));
+
+        //expect(params.filterCountQuery).toBeUndefined();
+    });
+
+
     //getDatasets tests
     it('getDatasets without ordering, non absUrl', function() {
         var params =ICATQueryBuilder.getDatasets(

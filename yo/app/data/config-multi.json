@@ -1392,6 +1392,9 @@
                 "investigation": {
                     "enableFiltering": true,
                     "enableSelection": true,
+                    "includes" : [
+                        ["investigationInstruments", "instruments"]
+                    ],
                     "columnDefs": [
                         {
                             "field": "id",
@@ -1407,6 +1410,22 @@
                                 },
                                 "type": "input",
                                 "disableCancelFilterButton": false
+                            }
+                        },
+                        {
+                            "field": "investigationInstruments.instruments.fullName",
+                            "displayName": "Instrument",
+                            "enableSorting": false,
+                            "type": "number",
+                            "visible": true,
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
                             }
                         },
                         {

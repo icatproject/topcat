@@ -94,6 +94,34 @@
             return p;
         }
 
+        function buildInclude(query, includes, entityAlias, aliasMap) { //jshint ignore: line
+            var FROM = [];
+            var INCLUDE = [];
+            var len = includes.length;
+            var previousAlias = null;
+
+            _.each(includes, function(include, index) {
+                if (len !== (index + 1)) {
+                    if (index === 0) {
+                        FROM.push(entityAlias + '.' + include + ' ' + aliasMap[include].alias);
+                        INCLUDE.push(entityAlias + '.' + include);
+                    } else {
+                        FROM.push(previousAlias + '.' + include + ' ' + aliasMap[include].alias);
+                        INCLUDE.push(previousAlias + '.' + include);
+                    }
+
+                    previousAlias = aliasMap[include].alias;
+                } else {
+                    INCLUDE.push(previousAlias + '.' + include);
+                }
+            });
+
+            return {
+                from: FROM,
+                include: INCLUDE
+            };
+        }
+
         function buildParams(query, countQuery, searchExpr, queryParams, entityAlias) {
             var params = {};
             //var filterCountQuery = countQuery.clone();
@@ -109,6 +137,10 @@
                     );
 
                     params.filterCountQuery = filterCountQuery;*/
+                }
+
+                if (angular.isDefined(queryParams.includes)) {
+
                 }
 
                 //set limit

@@ -725,7 +725,7 @@
             switch (routeSegment) {
                 case 'facility-instrument':
                     $log.debug('function called: getInstruments');
-                    _.extend(options, $stateParams);
+                    //_.extend(options, $stateParams);
                     return this.getInstruments(sessions, facility, options);
                 case 'facility-facilityCycle':
                     $log.debug('function called: getCycles');

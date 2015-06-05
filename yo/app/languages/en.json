@@ -47,6 +47,29 @@
     "ERROR": {
         "LOGOUT" : "Error"
     },
+    "ENTITIES" :{
+        "FACILITY" : {
+            "NAME" : "Facility"
+        },
+        "INSTRUMENT" : {
+            "NAME" : "Instrument"
+        },
+        "FACILITYCYCLE" : {
+            "NAME" : "Facility Cycle"
+        },
+        "PROPOSAL" : {
+            "NAME" : "Proposal"
+        },
+        "INVESTIGATION" : {
+            "NAME" : "Investigation"
+        },
+        "DATASET" : {
+            "NAME" : "Dataset"
+        },
+        "DATAFILE" : {
+            "NAME" : "Datafile"
+        }
+    },
     "BROWSE": {
         "COLUMN": {
             "FACILITY":{

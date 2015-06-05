@@ -102,7 +102,8 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 start: 0,
                 numRows: pageSize,
                 sortField: 'name',
-                order: 'asc'
+                order: 'asc',
+                include: options.includes
             };
 
             /**
@@ -219,7 +220,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 useExternalFiltering: true,
                 enableRowSelection: enableSelection(),
                 enableRowHeaderSelection: enableSelection(),
-                //enableSelectAll: false,
+                enableSelectAll: false,
                 //modifierKeysToMultiSelect: true,
                 multiSelect: true,
                 //flatEntityAccess: true,
