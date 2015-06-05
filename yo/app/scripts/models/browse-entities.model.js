@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', '$log'];
+BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'uiGridCo
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, $log){
+function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, $log){  //jshint ignore: line
     return {
         gridOptions : {},
         nextRouteSegment: null,
@@ -26,12 +26,12 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
          * @return {[type]} [description]
          */
         configToUIGridOptions : function(facility, currentEntityType) {
-            $log.debug('BrowseEntitiesModel configToUIGridOptions called');
-            $log.debug('BrowseEntitiesModel configToUIGridOptions currentEntityType', currentEntityType);
+            //$log.debug('BrowseEntitiesModel configToUIGridOptions called');
+            //$log.debug('BrowseEntitiesModel configToUIGridOptions currentEntityType', currentEntityType);
 
             var gridOptions = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.keyName, currentEntityType);
 
-            $log.debug('BrowseEntitiesModel gridOptions', gridOptions);
+            //$log.debug('BrowseEntitiesModel gridOptions', gridOptions);
 
             //do the work of transposing
             _.mapValues(gridOptions.columnDefs, function(value) {
@@ -98,8 +98,6 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 }
             };
 
-            $log.debug('scope', scope);
-
             var paginateParams = {
                 start: 0,
                 numRows: pageSize,
@@ -107,8 +105,13 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 order: 'asc'
             };
 
+            /**
+             * Loads data for both pagination and infinte scroll. This method is called by ui-grid to load the first page of data
+             * for infinite scroll and to load next page data for paginated pages
+             * @return {[type]} [description]
+             */
             var getPage = function() {
-                $log.debug('getpage called', paginateParams);
+                //$log.debug('getpage called', paginateParams);
 
                 DataManager.getData(currentRouteSegment, facility.keyName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = data.data;
@@ -128,9 +131,14 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     $timeout(function() {
                         var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
 
-                        angular.forEach(rows, function(row) {
-                            if (_.has(scope.mySelection, row.entity.id)) {
+                        //pre-select items in cart here
+                        _.each(rows, function(row) {
+                            /*if (_.has(scope.mySelection, row.entity.id)) {
                                 scope.gridApi.selection.selectRow(row.entity);
+                            }*/
+
+                            if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                               scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
 
@@ -140,8 +148,12 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 });
             };
 
+            /**
+             * Loads data for infinite scroll. This method is call by ui-grid when user scrolls up
+             * @return {[type]} [description]
+             */
             var appendPage = function() {
-                $log.debug('append called', paginateParams);
+                //$log.debug('append called', paginateParams);
 
                 DataManager.getData(currentRouteSegment, facility.keyName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = gridOptions.data.concat(data.data);
@@ -150,9 +162,13 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     $timeout(function() {
                         var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
 
-                        angular.forEach(rows, function(row) {
-                            if (_.has(scope.mySelection, row.entity.id)) {
+                        //pre-select items in cart here
+                        _.each(rows, function(row) {
+                            /*if (_.has(scope.mySelection, row.entity.id)) {
                                 scope.gridApi.selection.selectRow(row.entity);
+                            }*/
+                            if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                               scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
 
@@ -164,6 +180,10 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 });
             };
 
+            /**
+             * Loads data for infinite scroll. This method is call by ui-grid when user scrolls down
+             * @return {[type]} [description]
+             */
             var prependPage = function() {
                 DataManager.getData(currentRouteSegment, facility.keyName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = data.data.concat(gridOptions.data);
@@ -172,9 +192,13 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     $timeout(function() {
                         var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
 
-                        angular.forEach(rows, function(row) {
-                            if (_.has(scope.mySelection, row.entity.id)) {
+                        //pre-select items in cart here
+                        _.each(rows, function(row) {
+                            /*if (_.has(scope.mySelection, row.entity.id)) {
                                 scope.gridApi.selection.selectRow(row.entity);
+                            }*/
+                            if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                               scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
 
@@ -195,6 +219,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 useExternalFiltering: true,
                 enableRowSelection: enableSelection(),
                 enableRowHeaderSelection: enableSelection(),
+                //enableSelectAll: false,
                 //modifierKeysToMultiSelect: true,
                 multiSelect: true,
                 //flatEntityAccess: true,
@@ -221,7 +246,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                             paginateParams.order = sortColumns[0].sort.direction;
                         }
 
-                        $log.debug('sortChanged paginateParams', paginateParams);
+                        //$log.debug('sortChanged paginateParams', paginateParams);
                         getPage();
                     });
 
@@ -236,7 +261,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     });
 
                     scope.gridApi.core.on.filterChanged(scope, function () {
-                        $log.debug('filterChanged column', this.grid.columns);
+                        //$log.debug('filterChanged column', this.grid.columns);
 
                         var grid = this.grid;
                         var sortOptions = [];
@@ -254,30 +279,39 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
-                        $log.debug('rowSelectionChanged row', row);
-
                         if (row.isSelected === true) {
-                            scope.mySelection[row.entity.id] = row.entity.id;
+                            Cart.addItem(facility.keyName, currentEntityType, row.entity.id, row.entity.name);
                         } else {
-                            delete scope.mySelection[row.entity.id];
+                            Cart.removeItem(facility.keyName, currentEntityType, row.entity.id);
                         }
-
-                        $log.debug('$scope.mySelection', scope.mySelection);
                     });
 
                     scope.gridApi.selection.on.rowSelectionChangedBatch (scope, function(rows){
-                        $log.debug('rowSelectionChangedBatch  row', rows);
+                        var addedItems = [];
+                        var removedItems = [];
 
                         _.each(rows, function(row) {
+                            var item = {
+                                facilityName: facility.keyName,
+                                entityType: currentEntityType,
+                                id: row.entity.id,
+                                name: row.entity.name
+                            };
+
                             if (row.isSelected === true) {
-                                scope.mySelection[row.entity.id] = row.entity.id;
+                                addedItems.push(item);
                             } else {
-                                //$log.debug('deleting key', row.entity.id);
-                                delete scope.mySelection[row.entity.id];
+                                removedItems.push(item);
                             }
                         });
 
-                        $log.debug('$scope.mySelection', scope.mySelection);
+                        if (addedItems.length !== 0) {
+                            Cart.addItems(addedItems);
+                        }
+
+                        if (removedItems.length !== 0) {
+                            Cart.removeItems(removedItems);
+                        }
                     });
 
                 };
@@ -296,19 +330,19 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
 
                     //sort callback
                     scope.gridApi.core.on.sortChanged(scope, function(grid, sortColumns) {
-                        $log.debug('sortChanged callback grid', grid);
-                        $log.debug('sortChanged callback sortColumns', sortColumns);
+                        //$log.debug('sortChanged callback grid', grid);
+                        //$log.debug('sortChanged callback sortColumns', sortColumns);
 
                         if (sortColumns.length === 0) {
                             //paginationOptions.sort = null;
                         } else {
                             sortColumns = [sortColumns[0]];
-                            $log.debug('sort Column  by', sortColumns[0].field);
+                            //$log.debug('sort Column  by', sortColumns[0].field);
                             paginateParams.sortField = sortColumns[0].field;
                             paginateParams.order = sortColumns[0].sort.direction;
                         }
 
-                        $log.debug('sortChanged callback sortColumns after', sortColumns);
+                        //$log.debug('sortChanged callback sortColumns after', sortColumns);
 
                         scope.firstPage = 1;
                         scope.currentPage = 1;
@@ -320,18 +354,18 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
 
                         getPage(paginateParams);
 
-                        $log.debug('sortChanged paginateParams', paginateParams);
+                        //$log.debug('sortChanged paginateParams', paginateParams);
                     });
 
                     scope.gridApi.infiniteScroll.on.needLoadMoreData(scope, function() {
-                        $log.debug('needLoadMoreData called');
-                        $log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
+                        //$log.debug('needLoadMoreData called');
+                        //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
                         paginateParams.start = paginateParams.start + pageSize;
                         scope.gridApi.infiniteScroll.saveScrollPercentage();
                         appendPage(paginateParams);
 
-                        $log.debug ('scrollUp: ', scope.firstPage - 1 > 0);
-                        $log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
+                        //$log.debug ('scrollUp: ', scope.firstPage - 1 > 0);
+                        //$log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
 
                         scope.gridApi.infiniteScroll.dataLoaded(scope.firstPage - 1 > 0, scope.currentPage + 1 < scope.lastPage);
                         scope.currentPage++;
@@ -339,28 +373,28 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
 
 
                     scope.gridApi.infiniteScroll.on.needLoadMoreDataTop(scope, function() {
-                        $log.debug('needLoadMoreDataTop called');
-                        $log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
+                        //$log.debug('needLoadMoreDataTop called');
+                        //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
                         paginateParams.start = paginateParams.start - pageSize;
                         scope.gridApi.infiniteScroll.saveScrollPercentage();
                         prependPage(paginateParams);
 
-                        $log.debug ('scrollUp: ', scope.firstPage -1 > 0);
-                        $log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
+                        //$log.debug ('scrollUp: ', scope.firstPage -1 > 0);
+                        //$log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
 
                         scope.gridApi.infiniteScroll.dataLoaded(scope.firstPage - 1 > 0, scope.currentPage + 1 < scope.lastPage);
                         scope.currentPage--;
                     });
 
                     scope.gridApi.core.on.filterChanged(scope, function () {
-                        $log.debug('this.grid', this.grid);
-                        $log.debug('filterChanged column', this.grid.columns);
+                        //$log.debug('this.grid', this.grid);
+                        //$log.debug('filterChanged column', this.grid.columns);
 
                         var grid = this.grid;
                         var sortOptions = [];
 
                         _.each(grid.columns, function(value, index) {
-                            $log.debug('column index', index);
+                            //$log.debug('column index', index);
                             sortOptions.push({
                                 field: grid.columns[index].field,
                                 search: grid.columns[index].filters[0].term,
@@ -381,29 +415,43 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
-                        $log.debug('rowSelectionChanged row', row);
+                        $log.warn('selected row', row);
 
                         if (row.isSelected === true) {
-                            scope.mySelection[row.entity.id] = row.entity.id;
+                            Cart.addItem(facility.keyName, currentEntityType, row.entity.id, row.entity.name);
                         } else {
-                            $log.debug('deleting key', row.entity.id);
-                            delete scope.mySelection[row.entity.id];
+                            Cart.removeItem(facility.keyName, currentEntityType, row.entity.id);
                         }
-
-                        $log.debug('$scope.mySelection', scope.mySelection);
                     });
 
                     scope.gridApi.selection.on.rowSelectionChangedBatch (scope, function(rows){
-                        $log.debug('rowSelectionChangedBatch  row', rows);
+                        var addedItems = [];
+                        var removedItems = [];
+
+                        $log.warn('selected rows', rows);
 
                         _.each(rows, function(row) {
+                            var item = {
+                                facilityName: facility.keyName,
+                                entityType: currentEntityType,
+                                id: row.entity.id,
+                                name: row.entity.name
+                            };
+
                             if (row.isSelected === true) {
-                                scope.mySelection[row.entity.id] = row.entity.id;
+                                addedItems.push(item);
                             } else {
-                                $log.debug('deleting key', row.entity.id);
-                                delete scope.mySelection[row.entity.id];
+                                removedItems.push(item);
                             }
                         });
+
+                        if (addedItems.length !== 0) {
+                            Cart.addItems(addedItems);
+                        }
+
+                        if (removedItems.length !== 0) {
+                            Cart.removeItems(removedItems);
+                        }
                     });
 
                 };

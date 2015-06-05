@@ -737,17 +737,14 @@ describe('Service: RouteService', function() {
         expect(params).toEqual([
             {
                 'route': 'facility',
-                'url': '/{facilityName}',
                 'entity': 'facility'
             },
             {
                 'route': 'facility-instrument',
-                'url': '/{facilityName}/instrument',
                 'entity': 'instrument'
             },
             {
                 'route': 'facility-instrument-facilityCycle',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle',
                 'entity': 'facilityCycle'
             },
             ]);

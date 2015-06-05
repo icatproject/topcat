@@ -207,6 +207,22 @@
         };
 
         /**
+         * refresh the current session ICAT version
+         * @param  {[type]} facility [description]
+         * @return {[type]}          [description]
+         */
+        data.refreshSession = function(mySessionId, facility) {
+            var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId + '?server=' + encodeURIComponent(facility.icatUrl);
+            /*var params = {
+                    params : {
+                        server : encodeURIComponent(facility.icatUrl)
+                    }
+                };*/
+            $log.debug('icatservice refresh session');
+            return $http.put(url);
+        };
+
+        /**
          * Get a specific entity
          * @param  {[type]} mySessionId [description]
          * @param  {[type]} facility    [description]

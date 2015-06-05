@@ -59,6 +59,7 @@
          }])
         .config(['$httpProvider', function($httpProvider) {
             $httpProvider.interceptors.push('HttpErrorInterceptor');
+            $httpProvider.interceptors.push('ICATRequestInterceptor');
         }])
         .config(function($stateProvider, $urlRouterProvider) {
             //workaround https://github.com/angular-ui/ui-router/issues/1022
@@ -133,7 +134,7 @@
                     views: {
                       'cart': {
                         templateUrl: 'views/main-cart.html',
-                        controller: 'CartController as cart'
+                        controller: 'CartController as ct'
                       }
                     },
                     sticky: true,
@@ -203,8 +204,21 @@
                 $rootScope.previousState = $previousState.get();
             });*/
 
-        }]).
-        run(['RouteCreatorService', function(RouteCreatorService) {
+        }])
+        .run(['RouteCreatorService', function(RouteCreatorService) {
             RouteCreatorService.createStates();
+        }])
+        .run(['$rootScope', 'Cart', function($rootScope, Cart) {
+            //listen to cart change events and save the cart
+            $rootScope.$on('Cart:change', function(){
+                console.log('Cart:change fired');
+                Cart.save();
+            });
+
+            Cart.init();
+
+            if (Cart.isRestorable()) {
+                Cart.restore();
+            }
         }]);
 })();

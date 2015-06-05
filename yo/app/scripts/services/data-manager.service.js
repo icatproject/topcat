@@ -85,7 +85,7 @@
 
                         dateInt = Date.parse(newDateString);
 
-                        if (! Number.isNaN(dateInt)) {
+                        if (! isNaN(dateInt)) {
                             value[entity][field] = new Date(dateInt);
 
                             //minus an hour if BST
@@ -96,7 +96,7 @@
 
                     } else {
                         dateInt = Date.parse(value[entity][field]);
-                        if (! Number.isNaN(dateInt)) {
+                        if (! isNaN(dateInt)) {
                             value[entity][field] = new Date(dateInt);
                         }
                     }
@@ -173,6 +173,22 @@
                 .error(function(error) {
                     def.reject('Failed to get server version');
                     throw new MyException('Failed to get server version. ' + error);
+                });
+
+            return def.promise;
+        };
+
+
+        manager.refreshSession = function(mySessionId, facility) {
+            var def = $q.defer();
+
+            ICATService.refreshSession(mySessionId, facility)
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(error) {
+                    def.reject('Failed to get server version');
+                    throw new MyException('Failed to refresh session. ' + error);
                 });
 
             return def.promise;

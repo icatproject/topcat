@@ -5,18 +5,14 @@
         .module('angularApp')
         .controller('CartController', CartController);
 
-    CartController.$inject = ['$scope'];
+    CartController.$inject = ['$scope', 'Cart', '$sessionStorage', '$log'];
 
-    function CartController($scope) {
+    function CartController($scope, Cart, $sessionStorage, $log) {
         var vm = this;
+        var loggedInCartItems = Cart.getLoggedInItems($sessionStorage);
 
-        var random;
+        $log.debug('cart', loggedInCartItems);
 
-        if (!$scope.random) {
-            $scope.random = Math.round(Math.random()*10000);
-        }
-
-        vm.random = random;
-        //vm.cart = CartData;
+        vm.cart = loggedInCartItems;
     }
 })();

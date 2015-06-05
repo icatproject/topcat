@@ -4,10 +4,10 @@
     angular.
         module('angularApp').factory('RouteService', RouteService);
 
-    RouteService.$inject = ['$state', '$stateParams', '$log'];
+    RouteService.$inject = [];
 
     /*jshint -W098 */
-    function RouteService($state, $stateParams, $log) {
+    function RouteService() {
         var route = {};
 
         /**
@@ -159,12 +159,8 @@
             var routes = [];
             var items = [];
 
-            $log.warn(clone);
-
             _.each(clone, function(val) {
                 items.push(val);
-
-                $log.warn(val);
 
                 routes.push({
                     route: getRouteSegments(items),
@@ -172,8 +168,6 @@
                 });
 
             });
-
-            $log.info('routes', JSON.stringify(routes, null, 2));
 
             return routes;
         };
@@ -214,13 +208,10 @@
         route.getPreviousRoutes = function($state) {
             var currentRouteSegment = this.getCurrentRouteSegmentName($state);
             var segments = currentRouteSegment.split('-');
-
             var routes = this.getRoutes(segments);
-            $log.debug('routes', routes);
 
             return routes;
         };
-
 
         return route;
     }

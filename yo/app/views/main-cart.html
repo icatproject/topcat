@@ -1,7 +1,7 @@
 <h1 translate="CART.TITLE"></h1>
 
 <ul>
-    <li ng-repeat="item in $parent.cart">
-        Server: {{ item.server }}, Facility: {{ item.facility }}, Type: {{ item.entity }}, Id: {{item.id}}
+    <li ng-repeat="item in ct.cart">
+        Id: {{ item.getId() }}, Name: {{ item.getName() }}, Entity: {{ item.getEntityType() }}, Facility: {{ item.getFacilityName() }}, Size: {{ item.getSize()}}, Availability: {{ item.getAvalability() }}
     </li>
 </ul>
