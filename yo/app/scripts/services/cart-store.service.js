@@ -10,7 +10,7 @@
     function CartStore($localStorage, $log) { //jshint ignore: line
         return {
             get: function () {
-                console.log('get $localStorage.cart', $localStorage.cart);
+                //console.log('get $localStorage.cart', $localStorage.cart);
                 return $localStorage.cart;
             },
 
@@ -20,7 +20,7 @@
                         cart : {}
                     });
                 }*/
-                console.log('set $localStorage.cart', cart);
+                //console.log('set $localStorage.cart', cart);
                 $localStorage.cart = cart;
             }
         };

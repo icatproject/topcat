@@ -211,7 +211,6 @@
         .run(['$rootScope', 'Cart', function($rootScope, Cart) {
             //listen to cart change events and save the cart
             $rootScope.$on('Cart:change', function(){
-                console.log('Cart:change fired');
                 Cart.save();
             });
 

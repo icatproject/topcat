@@ -1,7 +1,25 @@
 <h1 translate="CART.TITLE"></h1>
 
-<ul>
+<!-- <ul>
     <li ng-repeat="item in ct.cart">
         Id: {{ item.getId() }}, Name: {{ item.getName() }}, Entity: {{ item.getEntityType() }}, Facility: {{ item.getFacilityName() }}, Size: {{ item.getSize()}}, Availability: {{ item.getAvalability() }}
     </li>
-</ul>
+</ul> -->
+
+<div class="cart-container">
+    <div ng-if="ct.isScroll" ui-grid="ct.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
+        <div class="no-rows row" ng-show="isEmpty">
+            <div class="col-md-2 col-md-offset-5 empty-message">
+                <span>Cart is empty</span>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="!ct.isScroll" ui-grid="ct.gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
+        <div class="row" ng-show="isEmpty">
+            <div class="empty-message center-block">
+                <span>cart is empty</span>
+            </div>
+        </div>
+    </div>
+</div>

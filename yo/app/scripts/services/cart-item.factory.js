@@ -9,11 +9,11 @@
 
     function CartItem($log) { //jshint ignore: line
 
-        var item = function (facilityName, entityType, id, name, size, availability) {
+        var item = function (facilityKey, entityType, id, name, size, availability) {
             size = size || null;
             availability = availability || null;
 
-            this.setFacilityName(facilityName);
+            this.setFacilityName(facilityKey);
             this.setEntityType(entityType);
             this.setId(id);
             this.setName(name);
@@ -21,74 +21,74 @@
             this.setAvailablility(availability);
         };
 
-        item.prototype.setFacilityName = function(facilityName){
-            if (facilityName) {
-                this._facilityName = facilityName;
+        item.prototype.setFacilityName = function(facilityKey){
+            if (facilityKey) {
+                this.facilityKey = facilityKey;
             } else {
                 throw new Error('A facility name must be provided');
             }
         };
 
         item.prototype.getEntityType = function(){
-            return this._entityType;
+            return this.entityType;
         };
 
         item.prototype.setEntityType = function(entityType){
             if (entityType) {
-                this._entityType = entityType;
+                this.entityType = entityType;
             } else {
                 throw new Error('An entity type must be provided');
             }
         };
 
         item.prototype.getFacilityName = function(){
-            return this._facilityName;
+            return this.facilityKey;
         };
 
         item.prototype.setId = function(id){
             if (id) {
-                this._id = id;
+                this.id = id;
             } else {
                 throw new Error('A id must be provided');
             }
         };
 
         item.prototype.getId = function(){
-            return this._id;
+            return this.id;
         };
 
 
         item.prototype.setName = function(name){
             if (name) {
-                this._name = name;
+                this.name = name;
             } else {
                 throw new Error('A name must be provided');
             }
         };
         item.prototype.getName = function(){
-            return this._name;
+            return this.name;
         };
 
         item.prototype.setSize = function(size){
-            this._size = size;
+            this.size = size;
         };
 
         item.prototype.getSize = function(){
-            return this._size;
+            return this.size;
         };
 
 
         item.prototype.setAvailablility = function(availability){
-            this._availability = availability;
+            this.availability = availability;
         };
 
         item.prototype.getAvailablility = function(){
-            return this._availability;
+            return this.availability;
         };
 
         item.prototype.toObject = function() {
             return {
-                facilityName: this.getFaciliyName(),
+                facilityKey: this.getFaciliyName(),
                 entityType: this.getentityType(),
                 id: this.getId(),
                 name: this.getName(),

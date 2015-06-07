@@ -155,7 +155,8 @@
                 "SORT_ASCENDING": ": activate to sort column ascending",
                 "SORT_DESCENDING": ": activate to sort column descending"
             }
-        }
+        },
+        "EMPTY" : "Nothing to display"
     },
     "SEARCH" : {
         "FORM" : {
@@ -170,7 +171,16 @@
         }
     },
     "CART" : {
-        "TITLE" : "Cart"
+        "TITLE" : "Cart",
+        "COLUMN" : {
+            "ID" : "Id",
+            "NAME" : "Name",
+            "ENTITY_TYPE" : "Type",
+            "FACILITY" : "Facility",
+            "SIZE" : "Size",
+            "AVAILABILITY" : "Availability"
+        },
+        "EMPTY" : "Cart is empty"
     },
     "ABOUT" : {
         "TITLE" : "About"

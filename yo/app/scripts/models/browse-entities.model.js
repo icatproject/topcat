@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', '$log'];
+BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ BrowseEntitiesModel.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'uiGridCo
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, $log){  //jshint ignore: line
+function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, $log){  //jshint ignore: line
     return {
         gridOptions : {},
         nextRouteSegment: null,
@@ -103,7 +103,7 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                 numRows: pageSize,
                 sortField: 'name',
                 order: 'asc',
-                include: options.includes
+                includes: options.includes
             };
 
             /**
@@ -202,12 +202,36 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                                scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
-
                     }, 0);
                 }, function(){
 
                 });
             };
+
+            var refreshSelection = function() {
+                $timeout(function() {
+                    var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
+
+                    //pre-select items in cart here
+                    _.each(rows, function(row) {
+                        /*if (_.has(scope.mySelection, row.entity.id)) {
+                            scope.gridApi.selection.selectRow(row.entity);
+                        }*/
+
+                        if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                           scope.gridApi.selection.selectRow(row.entity);
+                        } else {
+                            scope.gridApi.selection.unSelectRow(row.entity);
+                        }
+                    });
+
+                }, 0);
+            };
+
+            $rootScope.$on('Cart:itemRemoved', function(){
+                $log.debug('refreshSelection called', scope);
+                refreshSelection(scope);
+            });
 
             gridOptions = {
                 enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
@@ -416,8 +440,6 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
-                        $log.warn('selected row', row);
-
                         if (row.isSelected === true) {
                             Cart.addItem(facility.keyName, currentEntityType, row.entity.id, row.entity.name);
                         } else {
@@ -428,8 +450,6 @@ function BrowseEntitiesModel(APP_CONFIG, Config, RouteService, uiGridConstants, 
                     scope.gridApi.selection.on.rowSelectionChangedBatch (scope, function(rows){
                         var addedItems = [];
                         var removedItems = [];
-
-                        $log.warn('selected rows', rows);
 
                         _.each(rows, function(row) {
                             var item = {

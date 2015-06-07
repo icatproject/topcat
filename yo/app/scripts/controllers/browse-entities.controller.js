@@ -21,13 +21,6 @@
         vm.isScroll = (pagingType === 'scroll') ? true : false;
 
         $scope.isEmpty = false;
-        $scope.mySelection = {};
-
-        if (!angular.isDefined($rootScope.cart)) {
-            $rootScope.cart = [];
-            $rootScope.ref = [];
-        }
-
         BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
 
         vm.gridOptions = BrowseEntitiesModel.gridOptions;

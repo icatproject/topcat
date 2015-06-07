@@ -4,9 +4,9 @@
     angular.
         module('angularApp').controller('BreadCrumbController', BreadCrumbController);
 
-    BreadCrumbController.$inject = ['$scope',  '$state', '$stateParams', 'RouteService', '$log'];
+    BreadCrumbController.$inject = ['$scope', '$state', '$stateParams', 'RouteService', '$translate', '$log'];
 
-    function BreadCrumbController ($scope, $state, $stateParams, RouteService, $log) {
+    function BreadCrumbController ($scope, $state, $stateParams, RouteService, $translate, $log) {
         var bc = this;
 
         $log.debug($state);
@@ -17,7 +17,7 @@
 
         _.each(previousRoutes, function(route){
             var item = {
-                title : route.entity
+                translate: 'ENTITIES.' + route.entity.toUpperCase() + '.NAME'
             };
 
             //special case for facility
@@ -29,8 +29,6 @@
 
             items.push(item);
         });
-
-        $log.debug('items', items);
 
         bc.items = items;
     }
@@ -48,7 +46,7 @@
                 //@ reads the attribute value, = provides two-way binding, & works with functions
                 items: '@'
             },
-            template: '<ul class="breadcrumb"><li ng-repeat="item in bc.items"><span ng-show="! $last"><a ui-sref="{{ item.route }}">{{ item.title }}</a></span><span ng-show="$last">{{ item.title }}</span></li></ul>',
+            template: '<ul class="breadcrumb"><li ng-repeat="item in bc.items"><span ng-show="! $last"><a ui-sref="{{ item.route }}" translate="{{ item.translate }}"></a></span><span ng-show="$last" translate="{{ item.translate }}"></span></li></ul>',
             //templateUrl: 'views/breadcrumb.directive.html',
             controller: 'BreadCrumbController',
             controllerAs: 'bc'

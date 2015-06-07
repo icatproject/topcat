@@ -15,18 +15,18 @@
             };
         };
 
-        this.addItem = function (facilityName, entityType, id, name) {
+        this.addItem = function (facilityKey, entityType, id, name) {
             var addedItemsCount = 0;
             var itemExistsCount = 0;
             //get item from cart
-            var item = this.getItem(facilityName, entityType, id);
+            var item = this.getItem(facilityKey, entityType, id);
 
 
             if (typeof item === 'object'){
                 $rootScope.$broadcast('Cart:itemExists', item);
                 itemExistsCount++;
             } else {
-                var newItem = new CartItem(facilityName, entityType, id, name);
+                var newItem = new CartItem(facilityKey, entityType, id, name);
                 this._cart.items.push(newItem);
                 addedItemsCount++;
                 $rootScope.$broadcast('Cart:itemAdded', {added: addedItemsCount});
@@ -40,12 +40,12 @@
             var itemExistsCount = 0;
 
             _.each(items, function(item) {
-                var myItem = this.getItem(item.facilityName, item.entityType, item.id);
+                var myItem = this.getItem(item.facilityKey, item.entityType, item.id);
 
                 if (typeof myItem === 'object'){
                     itemExistsCount++;
                 } else {
-                    var newItem = new CartItem(item.facilityName, item.entityType, item.id, item.name);
+                    var newItem = new CartItem(item.facilityKey, item.entityType, item.id, item.name);
                     this._cart.items.push(newItem);
                     addedItemsCount++;
                 }
@@ -91,11 +91,11 @@
         };*/
 
 
-        this.removeItem = function (facilityName, entityType, id) {
+        this.removeItem = function (facilityKey, entityType, id) {
             var removedItemsCount = 0;
 
             var matchIndex = _.findIndex(this.getCart().items, function(item) {
-                return (item.getFacilityName() === facilityName && item.getId() === id && item.getEntityType() === entityType);
+                return (item.getFacilityName() === facilityKey && item.getId() === id && item.getEntityType() === entityType);
             });
 
             if (matchIndex !== -1) {
@@ -112,7 +112,7 @@
 
             _.each(items, function(item) {
                 var matchIndex = _.findIndex(this.getCart().items, function(cartItem) {
-                    return (cartItem.getFacilityName() === item.facilityName && cartItem.getId() === item.id && cartItem.getEntityType() === item.entityType);
+                    return (cartItem.getFacilityName() === item.facilityKey && cartItem.getId() === item.id && cartItem.getEntityType() === item.entityType);
                 });
 
                 if (matchIndex !== -1) {
@@ -139,12 +139,12 @@
         };
 
 
-        this.getItem = function (facilityName, entityType, id) {
+        this.getItem = function (facilityKey, entityType, id) {
             var items = this.getCart().items;
             var result = false;
 
             _.each(items, function (item) {
-                if  (item.getFacilityName() === facilityName && item.getId() === id && item.getEntityType() === entityType) {
+                if  (item.getFacilityName() === facilityKey && item.getId() === id && item.getEntityType() === entityType) {
                     result = item;
                     return;
                 }
@@ -154,9 +154,9 @@
         };
 
 
-        this.hasItem = function (facilityName, entityType, id) {
+        this.hasItem = function (facilityKey, entityType, id) {
             var matchIndex = _.findIndex(this.getCart().items, function(item) {
-                return (facilityName === item.getFacilityName() && id === item.getId() && entityType === item.getEntityType());
+                return (facilityKey === item.getFacilityName() && id === item.getId() && entityType === item.getEntityType());
             });
 
             if (matchIndex === -1) {
@@ -181,13 +181,8 @@
 
         this.getLoggedInItems = function($sessionStorage){
             var filteredItems = _.filter(this.getCart().items, function(item) {
-                $log.debug('filteredItems item', item);
-                $log.debug('filteredItems $sessionStorage.session', $sessionStorage.session);
-
                 return _.has($sessionStorage.sessions, item.getFacilityName());
             });
-
-            $log.debug('filteredItems', filteredItems);
 
             return filteredItems;
         };
@@ -205,16 +200,16 @@
 
             _self.init();
 
-            var items  = [];
+            var items = CartStore.get().items;
 
-            _.each(CartStore.get().items, function(item) {
+            /*_.each(CartStore.get().items, function(item) {
                 items.push({
-                    facilityName: item._facilityName,
-                    entityType: item._entityType,
-                    id: item._id,
-                    name: item._name
+                    facilityKey: item.facilityKey,
+                    entityType: item.entityType,
+                    id: item.id,
+                    name: item.name
                 });
-            });
+            });*/
 
             //add items to the cart
             _self.addItems(items);

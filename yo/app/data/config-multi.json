@@ -126,6 +126,9 @@
                 "investigation": {
                     "enableFiltering": true,
                     "enableSelection": true,
+                    "includes" : [
+                        "investigation.investigationInstruments.instrument"
+                    ],
                     "columnDefs": [
                         {
                             "field": "id",
@@ -145,7 +148,7 @@
                         },
                         {
                             "field": "name",
-                            "displayName": "name",
+                            "displayName": "Name",
                             "enableSorting": false,
                             "type": "number",
                             "filter": {
@@ -191,6 +194,22 @@
                                 "disableCancelFilterButton": true
                             },
                             "link": true
+                        },
+                        {
+                            "field": "investigationInstruments[0].instrument.fullName",
+                            "displayName": "Instrument",
+                            "enableSorting": false,
+                            "type": "number",
+                            "visible": true,
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
                         },
                         {
                             "field": "startDate",
@@ -1393,7 +1412,7 @@
                     "enableFiltering": true,
                     "enableSelection": true,
                     "includes" : [
-                        ["investigationInstruments", "instruments"]
+                        "investigation.investigationInstruments.instrument"
                     ],
                     "columnDefs": [
                         {
@@ -1413,7 +1432,7 @@
                             }
                         },
                         {
-                            "field": "investigationInstruments.instruments.fullName",
+                            "field": "investigationInstruments[0].instrument.fullName",
                             "displayName": "Instrument",
                             "enableSorting": false,
                             "type": "number",
@@ -1983,6 +2002,106 @@
                     "field": "name",
                     "displayName": "Facility Name",
                     "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                }
+            ]
+        },
+        "cartGridOptions": {
+            "enableFiltering": true,
+            "columnDefs": [
+                {
+                    "field": "id",
+                    "displayName": "Id",
+                    "translateDisplayName": "CART.COLUMN.ID",
+                    "sortDirection": "asc",
+                    "type" : "number",
+                    "filter": {
+                        "condition": "starts_with",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                },
+                {
+                    "field": "name",
+                    "displayName": "Facility",
+                    "translateDisplayName": "CART.COLUMN.NAME",
+                    "sortDirection": "asc",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "starts_with",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                },
+                {
+                    "field": "entityType",
+                    "displayName": "Type",
+                    "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
+                    "sortDirection": "asc",
+                    "cellFilter": "entityTypeTitle",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "starts_with",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                },
+                {
+                    "field": "facilityKey",
+                    "displayName": "Facility",
+                    "translateDisplayName": "CART.COLUMN.FACILITY",
+                    "cellFilter": "facilityTitle",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                },
+                {
+                    "field": "size",
+                    "displayName": "Size",
+                    "translateDisplayName": "CART.COLUMN.SIZE",
+                    "type" : "number",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                },
+                {
+                    "field": "availability",
+                    "displayName": "Availability",
+                    "translateDisplayName": "CART.COLUMN.AVAILABILITY",
+                    "type" : "string",
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",

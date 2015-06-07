@@ -51,6 +51,14 @@
                 }
             },
 
+            getFacilityTitleByFacilityKey : function(config, facilityKey) {
+                if (typeof config.facilities[facilityKey].title !== 'undefined') {
+                    return config.facilities[facilityKey].title;
+                } else {
+                    throw new Error('\'title\' for facility ' + facilityKey  + ' not configured');
+                }
+            },
+
 
             /**
              * Returns the hierarchy for a given facility name
@@ -164,6 +172,14 @@
             getSiteFacilitiesGridOptions : function(config) {
                 if (typeof config.site.facilitiesGridOptions !== 'undefined') {
                     return config.site.facilitiesGridOptions;
+                } else {
+                    throw new Error('\'facilitiesGridOptions\' not configured');
+                }
+            },
+
+            getSiteCartGridOptions : function(config) {
+                if (typeof config.site.cartGridOptions !== 'undefined') {
+                    return config.site.cartGridOptions;
                 } else {
                     throw new Error('\'facilitiesGridOptions\' not configured');
                 }

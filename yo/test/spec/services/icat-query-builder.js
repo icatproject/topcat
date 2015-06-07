@@ -757,32 +757,14 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 includes: [
-                    'investigationInstruments'
+                    'investigation.investigationInstruments'
                 ]
             }
         );
 
         expect(params).toEqual(jasmine.objectContaining({
-            sessionId: '1234567890'
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
             query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments LIMIT 0, 10')
         }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            entity: 'Investigation'
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
-        }));
-
-        //expect(params.filterCountQuery).toBeUndefined();
     });
 
     it('getInvestigations without ordering with 2 level include', function() {
@@ -800,32 +782,14 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 includes: [
-                    ['investigationInstruments', 'instruments']
+                    'investigation.investigationInstruments.instrument'
                 ]
             }
         );
 
         expect(params).toEqual(jasmine.objectContaining({
-            sessionId: '1234567890'
+            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments.instrument LIMIT 0, 10')
         }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f, inv.investigationInstruments invins WHERE (f.id = 1) INCLUDE inv.investigationInstruments, invins.instruments LIMIT 0, 10')
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            entity: 'Investigation'
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
-        }));
-
-        //expect(params.filterCountQuery).toBeUndefined();
     });
 
 
@@ -844,32 +808,14 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 includes: [
-                    ['investigationInstruments', 'instrument', 'instrumentScientists', 'user']
+                    'investigation.investigationInstruments.instrument.instrumentScientists.user'
                 ]
             }
         );
 
         expect(params).toEqual(jasmine.objectContaining({
-            sessionId: '1234567890'
+            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments.instrument.instrumentScientists.user LIMIT 0, 10')
         }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f, inv.investigationInstruments invins, invins.instrument ins, instrumentScientists invs WHERE (f.id = 1) INCLUDE inv.investigationInstruments, invins.instrument, ins.instrumentScientists, invs.user LIMIT 0, 10')
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            entity: 'Investigation'
-        }));
-
-        expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
-        }));
-
-        //expect(params.filterCountQuery).toBeUndefined();
     });
 
 

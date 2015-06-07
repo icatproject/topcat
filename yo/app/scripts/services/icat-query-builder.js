@@ -4,9 +4,9 @@
     angular.
         module('angularApp').factory('ICATQueryBuilder', ICATQueryBuilder);
 
-    ICATQueryBuilder.$inject = ['$log'];
+    ICATQueryBuilder.$inject = ['ICATAlias', '$log'];
 
-    function ICATQueryBuilder($log) {
+    function ICATQueryBuilder(ICATAlias, $log) {
         //private methods
         /**
          * taken from angualr source to build query string
@@ -94,35 +94,24 @@
             return p;
         }
 
-        function buildInclude(query, includes, entityAlias, aliasMap) { //jshint ignore: line
-            var FROM = [];
-            var INCLUDE = [];
-            var len = includes.length;
-            var previousAlias = null;
+        function aliasIncludeString(include) {
+            var index = include.indexOf('.');
+            var entity = include.substr(0, index);
+            var remain = include.substr(index);
 
-            _.each(includes, function(include, index) {
-                if (len !== (index + 1)) {
-                    if (index === 0) {
-                        FROM.push(entityAlias + '.' + include + ' ' + aliasMap[include].alias);
-                        INCLUDE.push(entityAlias + '.' + include);
-                    } else {
-                        FROM.push(previousAlias + '.' + include + ' ' + aliasMap[include].alias);
-                        INCLUDE.push(previousAlias + '.' + include);
-                    }
-
-                    previousAlias = aliasMap[include].alias;
-                } else {
-                    INCLUDE.push(previousAlias + '.' + include);
-                }
-            });
-
-            return {
-                from: FROM,
-                include: INCLUDE
-            };
+            return ICATAlias.getAlias(entity) + remain;
         }
 
-        function buildParams(query, countQuery, searchExpr, queryParams, entityAlias) {
+        function buildInclude(query, includes) {
+            _.each(includes, function(include) {
+                include = aliasIncludeString(include);
+
+                query.include(include);
+            });
+
+        }
+
+        function buildParams(query, countQuery, searchExpr, queryParams, entityName) {
             var params = {};
             //var filterCountQuery = countQuery.clone();
 
@@ -139,8 +128,8 @@
                     params.filterCountQuery = filterCountQuery;*/
                 }
 
-                if (angular.isDefined(queryParams.includes)) {
-
+                if (angular.isDefined(queryParams.includes) && queryParams.includes.length > 0) {
+                    buildInclude(query, queryParams.includes);
                 }
 
                 //set limit
@@ -150,15 +139,16 @@
 
                 //set sort
                 if (angular.isDefined(queryParams.sortField) && angular.isDefined(queryParams.order)) {
-                    query.order(entityAlias + '.' + queryParams.sortField, sortOrder(queryParams.order));
+                    query.order(ICATAlias.getAlias(entityName) + '.' + queryParams.sortField, sortOrder(queryParams.order));
                 }
             }
 
             return params;
         }
 
-        function getSearchExpr(queryParams, entityAlias) {
+        function getSearchExpr(queryParams, entityName) {
             var searchExpr = squel.expr();
+            var entityAlias = ICATAlias.getAlias(entityName);
 
             if (! angular.isDefined(queryParams)) {
                 return searchExpr;
@@ -220,9 +210,9 @@
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'fc');
+                var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -272,9 +262,9 @@
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'fc');
+                var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -317,9 +307,9 @@
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -354,9 +344,9 @@
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'ins');
+                var searchExpr = getSearchExpr(queryParams, 'instrument');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ins');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'instrument');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -407,9 +397,9 @@
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -451,9 +441,9 @@
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -506,9 +496,9 @@
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -550,9 +540,9 @@
                             .and('inv.name = ?', queryParams.proposalId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -562,6 +552,8 @@
                     entity: 'Investigation',
                     server: facility.icatUrl
                 });
+
+                $log.warn('xxx queryParams', queryParams);
 
                 return urlEncodeParameters(params);
             },
@@ -594,9 +586,9 @@
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -637,9 +629,9 @@
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'dataset');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -682,9 +674,9 @@
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'dataset');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -723,9 +715,9 @@
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'dataset');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -764,9 +756,9 @@
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -811,9 +803,9 @@
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -854,9 +846,9 @@
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
@@ -897,9 +889,9 @@
                             .and('ds.id = ?', queryParams.datasetId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
