@@ -8,7 +8,7 @@
         .module('angularApp')
         .filter('facilityTitle', ['APP_CONFIG', 'Config', function(APP_CONFIG, Config) {
             return function(value) {
-                return Config.getFacilityTitleByFacilityKey(APP_CONFIG, value);
+                return Config.getFacilityTitleByFacilityName(APP_CONFIG, value);
             };
         }])
         .filter('entityTypeTitle', ['$translate', function($translate) {

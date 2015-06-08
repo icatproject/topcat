@@ -51,11 +51,11 @@
                 }
             },
 
-            getFacilityTitleByFacilityKey : function(config, facilityKey) {
-                if (typeof config.facilities[facilityKey].title !== 'undefined') {
-                    return config.facilities[facilityKey].title;
+            getFacilityTitleByFacilityName : function(config, facilityName) {
+                if (typeof config.facilities[facilityName].title !== 'undefined') {
+                    return config.facilities[facilityName].title;
                 } else {
-                    throw new Error('\'title\' for facility ' + facilityKey  + ' not configured');
+                    throw new Error('\'title\' for facility ' + facilityName  + ' not configured');
                 }
             },
 

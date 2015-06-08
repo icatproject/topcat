@@ -1,7 +1,7 @@
 {
     "facilities": {
         "dls": {
-            "keyName": "dls",
+            "facilityName": "dls",
             "title": "DIAMOND",
             "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
             "connectProxyPath": "dls/",
@@ -152,7 +152,7 @@
             }
         },
         "isis": {
-            "keyName": "isis",
+            "facilityName": "isis",
             "title": "ISIS Laser",
             "icatUrl": "https://icatdev.isis.cclrc.ac.uk",
             "connectProxyPath": "isis/",

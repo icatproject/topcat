@@ -24,8 +24,8 @@
             });
         } else {
             //loop sessions in sessionStorage and logout of of each facility
-            _.each(_.keys($sessionStorage.sessions), function(keyName) {
-                var facility = Config.getFacilityByName(APP_CONFIG, keyName);
+            _.each(_.keys($sessionStorage.sessions), function(facilityName) {
+                var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
                 DataManager.logout($sessionStorage.sessions, facility);
             });
 

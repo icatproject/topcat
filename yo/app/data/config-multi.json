@@ -1,7 +1,7 @@
 {
     "facilities": {
         "dls": {
-            "keyName": "dls",
+            "facilityName": "dls",
             "title": "DIAMOND",
             "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
             "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181",
@@ -534,7 +534,7 @@
             }
         },
         "isis": {
-            "keyName": "isis",
+            "facilityName": "isis",
             "title": "ISIS",
             "icatUrl": "https://icatdev.isis.cclrc.ac.uk",
             "idsUrl": "https://facilities.esc.rl.ac.uk:8181",
@@ -1206,7 +1206,7 @@
             }
         },
         "sig": {
-            "keyName": "sig",
+            "facilityName": "sig",
             "title": "SIG",
             "icatUrl": "https://sig-24.esc.rl.ac.uk:8181",
             "idsUrl": "https://sig-24.esc.rl.ac.uk:8181",
@@ -2067,7 +2067,7 @@
                     }
                 },
                 {
-                    "field": "facilityKey",
+                    "field": "facilityName",
                     "displayName": "Facility",
                     "translateDisplayName": "CART.COLUMN.FACILITY",
                     "cellFilter": "facilityTitle",

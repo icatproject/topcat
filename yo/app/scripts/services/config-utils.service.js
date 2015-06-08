@@ -44,7 +44,7 @@
                 _.each(facilities, function(value){
                     var obj = {};
                     obj.id = value.facilityId;
-                    obj.name = value.keyName;
+                    obj.name = value.facilityName;
                     obj.title = value.title;
 
                     data.push(obj);
@@ -70,10 +70,10 @@
 
                 if (_.size(loggedIn) !== 0) {
                     _.each(facilities, function(value){
-                        if(_.indexOf(loggedIn, value.keyName) !== -1) {
+                        if(_.indexOf(loggedIn, value.facilityName) !== -1) {
                             var obj = {};
                             obj.id = value.facilityId;
-                            obj.name = value.keyName;
+                            obj.name = value.facilityName;
                             obj.fullName = value.title;
 
                             data.push(obj);
@@ -114,7 +114,7 @@
             },
 
             getSessionValueForFacility : function(sessions, facility) {
-                return sessions[facility.keyName].sessionId;
+                return sessions[facility.facilityName].sessionId;
             }
 
         };

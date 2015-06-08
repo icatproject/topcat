@@ -41,7 +41,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params = ICATQueryBuilder.getInstruments(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -81,7 +81,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params = ICATQueryBuilder.getInstruments(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -124,7 +124,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params = ICATQueryBuilder.getInstruments(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -173,7 +173,7 @@ describe('Service: ICATQueryBuilder', function() {
             ICATQueryBuilder.getInstruments(
                 undefined,
                 {
-                    keyName: 'dls',
+                    facilityName: 'dls',
                     title: 'DIAMOND',
                     icatUrl: 'https://example.com',
                     connectProxyPath: 'dls/',
@@ -196,7 +196,7 @@ describe('Service: ICATQueryBuilder', function() {
             ICATQueryBuilder.getInstruments(
                 null,
                 {
-                    keyName: 'dls',
+                    facilityName: 'dls',
                     title: 'DIAMOND',
                     icatUrl: 'https://example.com',
                     connectProxyPath: 'dls/',
@@ -233,7 +233,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params = ICATQueryBuilder.getInstruments(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -273,7 +273,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params = ICATQueryBuilder.getInstruments(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -320,7 +320,7 @@ describe('Service: ICATQueryBuilder', function() {
             ICATQueryBuilder.getInstruments(
                 '1234567890',
                 {
-                    /*keyName: 'dls',
+                    /*facilityName: 'dls',
                     title: 'DIAMOND',
                     icatUrl: 'https://example.com',
                     connectProxyPath: 'dls/',
@@ -338,7 +338,7 @@ describe('Service: ICATQueryBuilder', function() {
             ICATQueryBuilder.getInstruments(
                 '1234567890',
                 {
-                    keyName: 'dls',
+                    facilityName: 'dls',
                     title: 'DIAMOND',
                     //icatUrl: 'https://example.com',
                     connectProxyPath: 'dls/',
@@ -392,7 +392,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getInvestigationsByInstrumentId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -435,7 +435,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params = ICATQueryBuilder.getInvestigationsByInstrumentId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -481,7 +481,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatasetsByInvestigationId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -524,7 +524,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatasetsByInvestigationId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -570,7 +570,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatafilesByDatasetId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -613,7 +613,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatafilesByDatasetId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -659,7 +659,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getInvestigations(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -701,7 +701,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getInvestigations(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -746,7 +746,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getInvestigations(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -771,7 +771,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getInvestigations(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -797,7 +797,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getInvestigations(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -824,7 +824,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatasets(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -866,7 +866,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatasets(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -911,7 +911,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatafiles(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -953,7 +953,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatafiles(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -997,7 +997,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatasetsByInstrumentId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -1040,7 +1040,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatasetsByInstrumentId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -1086,7 +1086,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatafilesByInvestigationId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',
@@ -1129,7 +1129,7 @@ describe('Service: ICATQueryBuilder', function() {
         var params =ICATQueryBuilder.getDatafilesByInvestigationId(
             '1234567890',
             {
-                keyName: 'dls',
+                facilityName: 'dls',
                 title: 'DIAMOND',
                 icatUrl: 'https://example.com',
                 connectProxyPath: 'dls/',

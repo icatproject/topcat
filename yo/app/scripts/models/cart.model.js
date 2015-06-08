@@ -114,7 +114,7 @@
             deleteRow : function(row) {
                 $log.debug('model deleteRow fired', row);
 
-                Cart.removeItem(row.entity.facilityKey, row.entity.entityType, row.entity.id);
+                Cart.removeItem(row.entity.facilityName, row.entity.entityType, row.entity.id);
 
                 var index = this.gridOptions.data.indexOf(row.entity);
                 this.gridOptions.data.splice(index, 1);

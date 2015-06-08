@@ -22,7 +22,7 @@
                     server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
-                    'facilityKeyName' : facility.keyName,
+                    'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
             };
@@ -34,7 +34,7 @@
                     server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
-                    'facilityKeyName' : facility.keyName,
+                    'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
             };
@@ -144,7 +144,7 @@
             var options = {
                 'headers': {
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                    'facilityKeyName' : facility.keyName,
+                    'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 },
                 'transformRequest': function(obj) {
@@ -178,7 +178,7 @@
                     server : encodeURIComponent(facility.icatUrl)
                 },
                 headers : {
-                    'facilityKeyName' : facility.keyName,
+                    'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
             };
@@ -198,7 +198,7 @@
                         server : encodeURIComponent(facility.icatUrl)
                     },
                     headers : {
-                        'facilityKeyName' : facility.keyName,
+                        'facilityKeyName' : facility.facilityName,
                         'facilityTitle' : facility.title
                     }
                 };
@@ -246,7 +246,7 @@
                     server : facility.icatUrl
                 },
                 headers : {
-                    'facilityKeyName' : facility.keyName,
+                    'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
             };
@@ -268,7 +268,7 @@
                     entity : 'Facility'
                 },
                 headers : {
-                    'facilityKeyName' : facility.keyName,
+                    'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
             };

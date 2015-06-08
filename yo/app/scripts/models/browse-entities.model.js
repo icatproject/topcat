@@ -29,7 +29,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             //$log.debug('BrowseEntitiesModel configToUIGridOptions called');
             //$log.debug('BrowseEntitiesModel configToUIGridOptions currentEntityType', currentEntityType);
 
-            var gridOptions = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.keyName, currentEntityType);
+            var gridOptions = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.facilityName, currentEntityType);
 
             //$log.debug('BrowseEntitiesModel gridOptions', gridOptions);
 
@@ -82,7 +82,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
         init : function(facility, scope, currentEntityType, currentRouteSegment, sessions, $stateParams) {
             var options = this.configToUIGridOptions(facility, currentEntityType);
-            var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.keyName);
+            var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
             var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, currentEntityType);
             var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
             var pageSize = Config.getSitePageSize(APP_CONFIG, pagingType); //the number of rows for grid
@@ -114,7 +114,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             var getPage = function() {
                 //$log.debug('getpage called', paginateParams);
 
-                DataManager.getData(currentRouteSegment, facility.keyName, sessions, $stateParams, paginateParams).then(function(data){
+                DataManager.getData(currentRouteSegment, facility.facilityName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = data.data;
                     gridOptions.totalItems = data.totalItems;
 
@@ -138,7 +138,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                                 scope.gridApi.selection.selectRow(row.entity);
                             }*/
 
-                            if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                            if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                                scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
@@ -156,7 +156,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             var appendPage = function() {
                 //$log.debug('append called', paginateParams);
 
-                DataManager.getData(currentRouteSegment, facility.keyName, sessions, $stateParams, paginateParams).then(function(data){
+                DataManager.getData(currentRouteSegment, facility.facilityName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = gridOptions.data.concat(data.data);
                     gridOptions.totalItems = data.totalItems;
 
@@ -168,7 +168,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                             /*if (_.has(scope.mySelection, row.entity.id)) {
                                 scope.gridApi.selection.selectRow(row.entity);
                             }*/
-                            if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                            if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                                scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
@@ -186,7 +186,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
              * @return {[type]} [description]
              */
             var prependPage = function() {
-                DataManager.getData(currentRouteSegment, facility.keyName, sessions, $stateParams, paginateParams).then(function(data){
+                DataManager.getData(currentRouteSegment, facility.facilityName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = data.data.concat(gridOptions.data);
                     gridOptions.totalItems = data.totalItems;
 
@@ -198,7 +198,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                             /*if (_.has(scope.mySelection, row.entity.id)) {
                                 scope.gridApi.selection.selectRow(row.entity);
                             }*/
-                            if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                            if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                                scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
@@ -218,7 +218,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                             scope.gridApi.selection.selectRow(row.entity);
                         }*/
 
-                        if (Cart.hasItem(facility.keyName, currentEntityType, row.entity.id)) {
+                        if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                            scope.gridApi.selection.selectRow(row.entity);
                         } else {
                             scope.gridApi.selection.unSelectRow(row.entity);
@@ -305,9 +305,9 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
                         if (row.isSelected === true) {
-                            Cart.addItem(facility.keyName, currentEntityType, row.entity.id, row.entity.name);
+                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name);
                         } else {
-                            Cart.removeItem(facility.keyName, currentEntityType, row.entity.id);
+                            Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
                         }
                     });
 
@@ -317,7 +317,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                         _.each(rows, function(row) {
                             var item = {
-                                facilityName: facility.keyName,
+                                facilityName: facility.facilityName,
                                 entityType: currentEntityType,
                                 id: row.entity.id,
                                 name: row.entity.name
@@ -441,9 +441,9 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
                         if (row.isSelected === true) {
-                            Cart.addItem(facility.keyName, currentEntityType, row.entity.id, row.entity.name);
+                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name);
                         } else {
-                            Cart.removeItem(facility.keyName, currentEntityType, row.entity.id);
+                            Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
                         }
                     });
 
@@ -453,7 +453,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                         _.each(rows, function(row) {
                             var item = {
-                                facilityName: facility.keyName,
+                                facilityName: facility.facilityName,
                                 entityType: currentEntityType,
                                 id: row.entity.id,
                                 name: row.entity.name
@@ -489,7 +489,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
         getNextRouteUrl: function (row) {
             var params = {
-                facilityName : this.facility.keyName,
+                facilityName : this.facility.facilityName,
                 //id : row.entity.id
             };
 

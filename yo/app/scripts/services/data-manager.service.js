@@ -30,7 +30,7 @@
          * @return {[type]}          [description]
          */
         function getSessionValueForFacility(sessions, facility) {
-            return sessions[facility.keyName].sessionId;
+            return sessions[facility.facilityName].sessionId;
         }
 
         /**
@@ -46,7 +46,7 @@
          * @return {[type]}          [description]
          */
         function prepProcessData(data, facility, entity, field) {
-            var browseConfig = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.keyName, field);
+            var browseConfig = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.facilityName, field);
 
             var dateColumns = [];
             //get column config and get fields where the column type is date
