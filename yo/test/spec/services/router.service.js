@@ -77,305 +77,57 @@ describe('Service: RouteService', function() {
     });
 
     it('Test RouteService getAllRoutes 3 hierarchy', function() {
-        var hierarchy = [
-            'facility',
-            'dataset',
-            'datafile'
-        ];
-        var params = RouteService.getAllRoutes(hierarchy);
+        var config = {
+            facilities: {
+                sig: {
+                    hierarchy : [
+                        'facility',
+                        'dataset',
+                        'datafile'
+                    ]
+                }
+            }
+        };
 
-        expect(params.length).toEqual(3);
+        var params = RouteService.getAllRoutes(config);
+        expect(params.length).toEqual(2);
 
-        expect(params).toEqual( [
-            {
-                'route': 'facility-dataset',
-                'url': '/{facilityName}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-datafile',
-                'url': '/{facilityName}/datafile',
-                'entity': 'datafile'
-            },
+        expect(params).toEqual([
             {
                 'route': 'facility-dataset-datafile',
                 'url': '/{facilityName}/dataset/{datasetId}/datafile',
                 'entity': 'datafile'
+            },
+            {
+                'route': 'facility-dataset',
+                'url': '/{facilityName}/dataset',
+                'entity': 'dataset'
             }
         ]);
     });
 
     it('Test RouteService getAllRoutes', function() {
-        var hierarchy = [
-            'facility',
-            'investigation',
-            'dataset',
-            'datafile'
-        ];
-        var params = RouteService.getAllRoutes(hierarchy);
+        var config = {
+            facilities: {
+                sig: {
+                    hierarchy : [
+                        'facility',
+                        'investigation',
+                        'dataset',
+                        'datafile'
+                    ]
+                }
+            }
+        };
+        var params = RouteService.getAllRoutes(config);
 
-        expect(params.length).toEqual(7);
-
-        expect(params).toEqual([
-          {
-            'route': 'facility-investigation',
-            'url': '/{facilityName}/investigation',
-            'entity': 'investigation'
-          },
-          {
-            'route': 'facility-dataset',
-            'url': '/{facilityName}/dataset',
-            'entity': 'dataset'
-          },
-          {
-            'route': 'facility-investigation-dataset',
-            'url': '/{facilityName}/investigation/{investigationId}/dataset',
-            'entity': 'dataset'
-          },
-          {
-            'route': 'facility-datafile',
-            'url': '/{facilityName}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-investigation-datafile',
-            'url': '/{facilityName}/investigation/{investigationId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-dataset-datafile',
-            'url': '/{facilityName}/dataset/{datasetId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-investigation-dataset-datafile',
-            'url': '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-            'entity': 'datafile'
-          }
-        ]);
-    });
-
-    it('Test RouteService getAllRoutes', function() {
-        var hierarchy = [
-            'facility',
-            'facilityCycle',
-            'investigation',
-            'dataset',
-            'datafile'
-        ];
-        var params = RouteService.getAllRoutes(hierarchy);
-
-        expect(params.length).toEqual(15);
-
-        expect(params).toEqual([
-          {
-            'route': 'facility-facilityCycle',
-            'url': '/{facilityName}/facilityCycle',
-            'entity': 'facilityCycle'
-          },
-          {
-            'route': 'facility-investigation',
-            'url': '/{facilityName}/investigation',
-            'entity': 'investigation'
-          },
-          {
-            'route': 'facility-facilityCycle-investigation',
-            'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation',
-            'entity': 'investigation'
-          },
-          {
-            'route': 'facility-dataset',
-            'url': '/{facilityName}/dataset',
-            'entity': 'dataset'
-          },
-          {
-            'route': 'facility-facilityCycle-dataset',
-            'url': '/{facilityName}/facilityCycle/{facilityCycleId}/dataset',
-            'entity': 'dataset'
-          },
-          {
-            'route': 'facility-investigation-dataset',
-            'url': '/{facilityName}/investigation/{investigationId}/dataset',
-            'entity': 'dataset'
-          },
-          {
-            'route': 'facility-facilityCycle-investigation-dataset',
-            'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset',
-            'entity': 'dataset'
-          },
-          {
-            'route': 'facility-datafile',
-            'url': '/{facilityName}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-facilityCycle-datafile',
-            'url': '/{facilityName}/facilityCycle/{facilityCycleId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-investigation-datafile',
-            'url': '/{facilityName}/investigation/{investigationId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-facilityCycle-investigation-datafile',
-            'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-dataset-datafile',
-            'url': '/{facilityName}/dataset/{datasetId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-facilityCycle-dataset-datafile',
-            'url': '/{facilityName}/facilityCycle/{facilityCycleId}/dataset/{datasetId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-investigation-dataset-datafile',
-            'url': '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-            'entity': 'datafile'
-          },
-          {
-            'route': 'facility-facilityCycle-investigation-dataset-datafile',
-            'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-            'entity': 'datafile'
-          }
-        ]);
-    });
-
-    it('Test RouteService getAllRoutes 7 hierarachy full', function() {
-        var hierarchy = [
-            'facility',
-            'instrument',
-            'facilityCycle',
-            'proposal',
-            'investigation',
-            'dataset',
-            'datafile'
-        ];
-
-        var params = RouteService.getAllRoutes(hierarchy);
-
-        expect(params.length).toEqual(63);
+        expect(params.length).toEqual(3);
 
         expect(params).toEqual([
             {
-                'route': 'facility-instrument',
-                'url': '/{facilityName}/instrument',
-                'entity': 'instrument'
-            },
-            {
-                'route': 'facility-facilityCycle',
-                'url': '/{facilityName}/facilityCycle',
-                'entity': 'facilityCycle'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle',
-                'entity': 'facilityCycle'
-            },
-            {
-                'route': 'facility-proposal',
-                'url': '/{facilityName}/proposal',
-                'entity': 'proposal'
-            },
-            {
-                'route': 'facility-instrument-proposal',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal',
-                'entity': 'proposal'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal',
-                'entity': 'proposal'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-proposal',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal',
-                'entity': 'proposal'
-            },
-            {
-                'route': 'facility-investigation',
-                'url': '/{facilityName}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-instrument-investigation',
-                'url': '/{facilityName}/instrument/{instrumentId}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-facilityCycle-investigation',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-investigation',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-proposal-investigation',
-                'url': '/{facilityName}/proposal/{proposalId}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-instrument-proposal-investigation',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal-investigation',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-proposal-investigation',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation',
-                'entity': 'investigation'
-            },
-            {
-                'route': 'facility-dataset',
-                'url': '/{facilityName}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-instrument-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-facilityCycle-dataset',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-proposal-dataset',
-                'url': '/{facilityName}/proposal/{proposalId}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-instrument-proposal-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal-dataset',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-proposal-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/dataset',
-                'entity': 'dataset'
+                'route': 'facility-investigation-dataset-datafile',
+                'url': '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'entity': 'datafile'
             },
             {
                 'route': 'facility-investigation-dataset',
@@ -383,9 +135,36 @@ describe('Service: RouteService', function() {
                 'entity': 'dataset'
             },
             {
-                'route': 'facility-instrument-investigation-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/dataset',
-                'entity': 'dataset'
+                'route': 'facility-investigation',
+                'url': '/{facilityName}/investigation',
+                'entity': 'investigation'
+            }
+        ]);
+    });
+
+    it('Test RouteService getAllRoutes', function() {
+        var config = {
+            facilities: {
+                sig: {
+                    hierarchy : [
+                        'facility',
+                        'facilityCycle',
+                        'investigation',
+                        'dataset',
+                        'datafile'
+                    ]
+                }
+            }
+        };
+        var params = RouteService.getAllRoutes(config);
+
+        expect(params.length).toEqual(4);
+
+        expect(params).toEqual([
+            {
+                'route': 'facility-facilityCycle-investigation-dataset-datafile',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'entity': 'datafile'
             },
             {
                 'route': 'facility-facilityCycle-investigation-dataset',
@@ -393,24 +172,43 @@ describe('Service: RouteService', function() {
                 'entity': 'dataset'
             },
             {
-                'route': 'facility-instrument-facilityCycle-investigation-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset',
-                'entity': 'dataset'
+                'route': 'facility-facilityCycle-investigation',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation',
+                'entity': 'investigation'
             },
             {
-                'route': 'facility-proposal-investigation-dataset',
-                'url': '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/dataset',
-                'entity': 'dataset'
-            },
+                'route': 'facility-facilityCycle',
+                'url': '/{facilityName}/facilityCycle',
+                'entity': 'facilityCycle'
+            }
+        ]);
+    });
+
+    it('Test RouteService getAllRoutes 7 hierarachy full', function() {
+        var config = {
+            facilities: {
+                sig: {
+                    hierarchy : [
+                        'facility',
+                        'instrument',
+                        'facilityCycle',
+                        'proposal',
+                        'investigation',
+                        'dataset',
+                        'datafile'
+                    ]
+                }
+            }
+        };
+        var params = RouteService.getAllRoutes(config);
+
+        expect(params.length).toEqual(6);
+
+        expect(params).toEqual([
             {
-                'route': 'facility-instrument-proposal-investigation-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/dataset',
-                'entity': 'dataset'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal-investigation-dataset',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset',
-                'entity': 'dataset'
+                'route': 'facility-instrument-facilityCycle-proposal-investigation-dataset-datafile',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'entity': 'datafile'
             },
             {
                 'route': 'facility-instrument-facilityCycle-proposal-investigation-dataset',
@@ -418,124 +216,74 @@ describe('Service: RouteService', function() {
                 'entity': 'dataset'
             },
             {
-                'route': 'facility-datafile',
-                'url': '/{facilityName}/datafile',
+                'route': 'facility-instrument-facilityCycle-proposal-investigation',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation',
+                'entity': 'investigation'
+            },
+            {
+                'route': 'facility-instrument-facilityCycle-proposal',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal',
+                'entity': 'proposal'
+            },
+            {
+                'route': 'facility-instrument-facilityCycle',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle',
+                'entity': 'facilityCycle'
+            },
+            {
+                'route': 'facility-instrument',
+                'url': '/{facilityName}/instrument',
+                'entity': 'instrument'
+            }
+        ]);
+    });
+
+    it('Test RouteService getAllRoutes', function() {
+        var config = {
+            facilities: {
+                sig: {
+                    hierarchy : [
+                        'facility',
+                        'facilityCycle',
+                        'investigation',
+                        'dataset',
+                        'datafile'
+                    ]
+                },
+                isis: {
+                    hierarchy : [
+                        'facility',
+                        'investigation',
+                        'dataset',
+                        'datafile'
+                    ]
+                }
+            }
+        };
+        var params = RouteService.getAllRoutes(config);
+
+        expect(params.length).toEqual(7);
+
+        expect(params).toEqual([
+            {
+                'route': 'facility-facilityCycle-investigation-dataset-datafile',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
                 'entity': 'datafile'
             },
             {
-                'route': 'facility-instrument-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/datafile',
-                'entity': 'datafile'
+                'route': 'facility-facilityCycle-investigation-dataset',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset',
+                'entity': 'dataset'
             },
             {
-                'route': 'facility-facilityCycle-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/datafile',
-                'entity': 'datafile'
+                'route': 'facility-facilityCycle-investigation',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation',
+                'entity': 'investigation'
             },
             {
-                'route': 'facility-instrument-facilityCycle-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-proposal-datafile',
-                'url': '/{facilityName}/proposal/{proposalId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-proposal-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-proposal-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-investigation-datafile',
-                'url': '/{facilityName}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-investigation-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-facilityCycle-investigation-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-investigation-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-proposal-investigation-datafile',
-                'url': '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-proposal-investigation-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal-investigation-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-proposal-investigation-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-dataset-datafile',
-                'url': '/{facilityName}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-facilityCycle-dataset-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-proposal-dataset-datafile',
-                'url': '/{facilityName}/proposal/{proposalId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-proposal-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal-dataset-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-proposal-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
+                'route': 'facility-facilityCycle',
+                'url': '/{facilityName}/facilityCycle',
+                'entity': 'facilityCycle'
             },
             {
                 'route': 'facility-investigation-dataset-datafile',
@@ -543,43 +291,16 @@ describe('Service: RouteService', function() {
                 'entity': 'datafile'
             },
             {
-                'route': 'facility-instrument-investigation-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
+                'route': 'facility-investigation-dataset',
+                'url': '/{facilityName}/investigation/{investigationId}/dataset',
+                'entity': 'dataset'
             },
             {
-                'route': 'facility-facilityCycle-investigation-dataset-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-investigation-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-proposal-investigation-dataset-datafile',
-                'url': '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-proposal-investigation-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-facilityCycle-proposal-investigation-dataset-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
-            },
-            {
-                'route': 'facility-instrument-facilityCycle-proposal-investigation-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-                'entity': 'datafile'
+                'route': 'facility-investigation',
+                'url': '/{facilityName}/investigation',
+                'entity': 'investigation'
             }
         ]);
-
-
     });
 
     it('Test RouteService getNextRouteSegmentName 3 entities', function() {
@@ -656,7 +377,7 @@ describe('Service: RouteService', function() {
     });
 
 
-    it('Test RouteService getPossibleRoutes', function() {
+    /*it('Test RouteService getPossibleRouteNames', function() {
         var APP_CONFIG = {
             facilities : {
                 dls: {
@@ -683,18 +404,19 @@ describe('Service: RouteService', function() {
             }
         };
 
-        var params = RouteService.getPossibleRoutes(APP_CONFIG);
+        var params = RouteService.getPossibleRouteNames(APP_CONFIG);
 
         expect(params).toEqual([
-            'facility',
-            'instrument',
-            'proposal',
-            'dataset',
-            'datafile'
+            'facility-dataset',
+            'facility-instrument-datafile',
+            'facility-datafile',
+            'facility-instrument-proposal-datafile',
+            'facility-instrument-proposal',
+            'facility-instrument'
         ]);
     });
 
-    it('Test RouteService getPossibleRoutes', function() {
+    it('Test RouteService getPossibleRouteNames', function() {
         var APP_CONFIG = {
             facilities : {
                 dls: {
@@ -714,7 +436,7 @@ describe('Service: RouteService', function() {
             }
         };
 
-        var params = RouteService.getPossibleRoutes(APP_CONFIG);
+        var params = RouteService.getPossibleRouteNames(APP_CONFIG);
 
         expect(params).toEqual([
             'facility',
@@ -748,7 +470,7 @@ describe('Service: RouteService', function() {
                 'entity': 'facilityCycle'
             },
             ]);
-    });
+    });*/
 
 });
 

@@ -88,6 +88,25 @@
                 return deferred.promise;
             },
 
+            getLoggedInFacilities : function(facilities, sessions){
+                var data = [];
+                var loggedIn = _.keys(sessions);
+
+                if (_.size(loggedIn) !== 0) {
+                    _.each(facilities, function(value){
+                        if(_.indexOf(loggedIn, value.facilityName) !== -1) {
+                            data.push(value);
+                        }
+                    });
+                }
+
+                //we need to return a promise
+                var deferred = $q.defer();
+                deferred.resolve(data);
+
+                return deferred.promise;
+            },
+
 
             /**
              * Returns the default sort column and order array expected by datatables options.

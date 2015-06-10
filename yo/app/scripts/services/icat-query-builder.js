@@ -218,7 +218,7 @@
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'FacilityCycle',
+                    //entity: 'FacilityCycle',
                     server: facility.icatUrl
                 });
 
@@ -270,7 +270,7 @@
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'FacilityCycle',
+                    //entity: 'FacilityCycle',
                     server: facility.icatUrl
                 });
 
@@ -315,7 +315,7 @@
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'Investigation',
+                    //entity: 'Investigation',
                     server: facility.icatUrl
                 });
 
@@ -353,7 +353,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Instrument',
+                    //entity: 'Instrument',
                     server: facility.icatUrl
                 });
 
@@ -405,7 +405,7 @@
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'FacilityCycle',
+                    //entity: 'FacilityCycle',
                     server: facility.icatUrl
                 });
 
@@ -450,7 +450,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Proposal',
+                    //entity: 'Proposal',
                     server: facility.icatUrl
                 });
 
@@ -505,7 +505,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Proposal',
+                    //entity: 'Proposal',
                     server: facility.icatUrl
                 });
 
@@ -549,7 +549,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Investigation',
+                    //entity: 'Investigation',
                     server: facility.icatUrl
                 });
 
@@ -595,7 +595,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Investigation',
+                    //entity: 'Investigation',
                     server: facility.icatUrl
                 });
 
@@ -638,7 +638,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Dataset',
+                    //entity: 'Dataset',
                     server: facility.icatUrl
                 });
 
@@ -683,7 +683,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Dataset',
+                    //entity: 'Dataset',
                     server: facility.icatUrl
                 });
 
@@ -724,7 +724,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Dataset',
+                    //entity: 'Dataset',
                     server: facility.icatUrl
                 });
 
@@ -765,7 +765,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -812,7 +812,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -855,7 +855,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -898,7 +898,7 @@
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -926,7 +926,7 @@
                 var params = {
                     sessionId: mySessionId,
                     query: query.toString(),
-                    entity: queryParams.entityType,
+                    //entity: queryParams.entityType,
                     server: facility.icatUrl
                 };
 

@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LogoutController', LogoutController);
 
-    LogoutController.$inject = ['$state', '$stateParams', 'APP_CONFIG', 'Config', '$translate', 'DataManager', '$sessionStorage', 'inform'];
+    LogoutController.$inject = ['$state', '$stateParams', 'APP_CONFIG', 'Config', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform'];
 
-    function LogoutController($state, $stateParams, APP_CONFIG, Config, $translate, DataManager, $sessionStorage, inform) {
+    function LogoutController($state, $stateParams, APP_CONFIG, Config, RouteUtils, $translate, DataManager, $sessionStorage, inform) {
         if(angular.isDefined($state.params.facilityName)) {
             //logout of single facility
             var facility = Config.getFacilityByName(APP_CONFIG, $state.params.facilityName);
@@ -44,7 +44,7 @@
         if (_.isEmpty($sessionStorage.sessions)) {
             $state.go('login');
         } else {
-            $state.go('home.browse.facility');
+            $state.go(RouteUtils.getHomeRouteName());
         }
     }
 })();

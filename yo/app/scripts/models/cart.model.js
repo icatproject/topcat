@@ -23,8 +23,11 @@
                 //do the work of transposing
                 _.mapValues(gridOptions.columnDefs, function(value) {
                     //replace filter condition to one expected by ui-grid
-                    if (angular.isDefined(value.filter.condition) && angular.isString(value.filter.condition)) {
-                        value.filter.condition = uiGridConstants.filter[value.filter.condition.toUpperCase()];
+
+                    if (angular.isDefined(value.filter)) {
+                        if (angular.isDefined(value.filter.condition) && angular.isString(value.filter.condition)) {
+                            value.filter.condition = uiGridConstants.filter[value.filter.condition.toUpperCase()];
+                        }
                     }
 
                     //replace translate text
@@ -42,6 +45,11 @@
                         value.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="$event.stopPropagation();" ui-sref="home.browse.facility.{{grid.appScope.getNextRouteSegment(row)}}({facilityName : \'{{row.entity.name}}\'})">{{row.entity.' + value.field + '}}</a></div>';
                     }
 
+                    if(angular.isDefined(value.field) && value.field === 'size') {
+                        //value.cellTemplate = '<div class="ui-grid-cell-contents"><span>{{ ::grid.appScope.getSize(row) }}</span></div>';
+                        //value.cellTemplate = '<div class="ui-grid-cell-contents"><span>{{::grid.appScope.getSize(row)}}</span></div>';
+                    }
+
                     return value;
                 });
 
@@ -50,7 +58,12 @@
                     name : 'action',
                     displayName : 'Action',
                     translateDisplayName: 'CART.COLUMN.ACTION',
-                    cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.deleteRow(row)">Delete</a></div>'
+                    enableFiltering: false,
+                    enable: false,
+                    enableColumnMenu: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)">Remove</a></div>'
                 });
 
                 return gridOptions;
@@ -111,13 +124,20 @@
                 }*/
             },
 
-            deleteRow : function(row) {
-                $log.debug('model deleteRow fired', row);
+            removeItem : function(row) {
+                $log.debug('model removeItem fired', row);
 
                 Cart.removeItem(row.entity.facilityName, row.entity.entityType, row.entity.id);
 
                 var index = this.gridOptions.data.indexOf(row.entity);
                 this.gridOptions.data.splice(index, 1);
+            },
+
+            removeAllItems : function() {
+                $log.debug('model removeAllItems fired');
+
+                Cart.removeAllItems();
+                this.gridOptions.data = [];
             }
 
             /*getNextRouteSegment: function(row, currentEntityType) {

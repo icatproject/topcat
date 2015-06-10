@@ -213,8 +213,6 @@
 
             //add items to the cart
             _self.addItems(items);
-
-            $log.debug('restored cart', this.getCart);
         };
 
         this.isRestorable = function() {

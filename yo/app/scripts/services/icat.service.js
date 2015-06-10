@@ -242,7 +242,6 @@
                 params : {
                     sessionId : mySessionId,
                     query : query,
-                    entity : entityIcatName,
                     server : facility.icatUrl
                 },
                 headers : {

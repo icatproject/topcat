@@ -5,9 +5,9 @@
         .module('angularApp')
         .factory('RouteUtils', RouteUtils);
 
-    RouteUtils.$inject = [];
+    RouteUtils.$inject = ['APP_CONFIG', 'Config'];
 
-    function RouteUtils(){
+    function RouteUtils(APP_CONFIG, Config){
         return {
             /**
              * Returns the current entity type base on the current route param entityType.
@@ -80,6 +80,32 @@
                 //this is a hack until we figure out how to do the meta tabs routing!!!
                 if (routeName.indexOf('meta') >= 0) {
                     routeName = 'facility';
+                }
+
+                return routeName;
+            },
+
+            /**
+             * return the route name for home
+             * @param  {[type]} Config [description]
+             * @return {[type]}        [description]
+             */
+            getHomeRouteName: function() {
+                var routeName = '';
+
+                switch (Config.getSiteHome(APP_CONFIG)) {
+                    case 'my-data':
+                        routeName = 'home.my-data';
+                        break;
+                    case 'browse':
+                        routeName = 'home.browse.facility';
+                        break;
+                    case 'cart':
+                        routeName = 'home.cart';
+                        break;
+                    default:
+                        routeName = 'home.my-data';
+                        break;
                 }
 
                 return routeName;

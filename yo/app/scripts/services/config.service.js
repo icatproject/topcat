@@ -3,7 +3,7 @@
 
     angular
         .module('angularApp')
-        .factory('Config', Config);
+        .service('Config', Config);
 
     Config.$inject = [];
 
@@ -181,8 +181,20 @@
                 if (typeof config.site.cartGridOptions !== 'undefined') {
                     return config.site.cartGridOptions;
                 } else {
-                    throw new Error('\'facilitiesGridOptions\' not configured');
+                    throw new Error('\'cartGridOptions\' not configured');
                 }
+            },
+
+            getSiteMyDataGridOptions : function(config) {
+                if (typeof config.site.myDataGridOptions !== 'undefined') {
+                    return config.site.myDataGridOptions;
+                } else {
+                    throw new Error('\'myDataGridOptions\' not configured');
+                }
+            },
+
+            getSiteHome : function(config) {
+                return config.site.home;
             },
 
 

@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$state', 'APP_CONFIG', 'Config', 'ConfigUtils', '$translate', 'DataManager', '$sessionStorage', 'inform'];
+    LoginController.$inject = ['$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform'];
 
-    function LoginController($state, APP_CONFIG, Config, ConfigUtils, $translate, DataManager, $sessionStorage, inform) {
+    function LoginController($state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, inform) {
         var vm = this;
 
         $sessionStorage.$default({
@@ -131,7 +131,8 @@
                     } else {
                         $state.go('home');
                     }*/
-                    $state.go('home.browse.facility');
+                    $state.go(RouteUtils.getHomeRouteName());
+                    //$state.go('home.browse.facility');
 
                 } else {
 
@@ -146,7 +147,8 @@
 
                         //sets the form to pristine state
                         form.$setPristine();
-                        $state.go('home.browse.facility');
+                        //$state.go('home.browse.facility');
+                        $state.go(RouteUtils.getHomeRouteName());
                     } else {
                         //set the default error message
                         var message = null;

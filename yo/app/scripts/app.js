@@ -64,8 +64,10 @@
         .config(function($stateProvider, $urlRouterProvider) {
             //workaround https://github.com/angular-ui/ui-router/issues/1022
             $urlRouterProvider.otherwise(function($injector) {
-              var $state = $injector.get('$state');
-              $state.go('home.browse.facility');
+                var $state = $injector.get('$state');
+                var RouteUtils = $injector.get('RouteUtils');
+                var routeName = RouteUtils.getHomeRouteName();
+                $state.go(routeName);
             });
 
             $stateProvider
@@ -129,8 +131,29 @@
                         }
                     }
                 })
+                .state('home.my-data', {
+                    url: '/my-data', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    },
+                    views: {
+                      'my-data': {
+                        templateUrl: 'views/main-my-data.html',
+                        controller: 'MyDataController as md'
+                      }
+                    },
+                    sticky: true,
+                    deepStateRedirect: true
+                })
                 .state('home.cart', {
                     url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    },
                     views: {
                       'cart': {
                         templateUrl: 'views/main-cart.html',

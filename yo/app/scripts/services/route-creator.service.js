@@ -4,24 +4,16 @@
     angular.
         module('angularApp').factory('RouteCreatorService', RouteCreatorService);
 
-    RouteCreatorService.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'RuntimeStatesProvider'];
+    RouteCreatorService.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'RuntimeStatesProvider', '$log'];
 
     /*jshint -W098 */
-    function RouteCreatorService(APP_CONFIG, Config, RouteService, RuntimeStatesProvider) {
+    function RouteCreatorService(APP_CONFIG, Config, RouteService, RuntimeStatesProvider, $log) {
         var route = {};
 
         route.createStates = function() {
-            var hierarchy = [
-                'facility',
-                'instrument',
-                'facilityCycle',
-                'proposal',
-                'investigation',
-                'dataset',
-                'datafile'
-            ];
+            var routes = RouteService.getAllRoutes(APP_CONFIG);
 
-            var routes = RouteService.getAllRoutes(hierarchy);
+            $log.debug('browse routes',  routes);
 
             _.each(routes, function(route) {
                 var stateName = 'home.browse.facility.' + route.route;

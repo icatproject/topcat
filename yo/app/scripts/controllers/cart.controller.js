@@ -36,24 +36,45 @@
             }
         });
 
-        /*$rootScope.$on('Cart:change', function(){
+        $rootScope.$on('Cart:change', function(){
             if (ct.gridOptions.data.length === 0) {
                 $scope.isEmpty = true;
             } else {
                 $scope.isEmpty = false;
             }
-        });*/
+        });
 
-        $scope.deleteRow = function(row) {
-            CartModel.deleteRow(row);
+        ct.removeAllItems = function(row) {
+            CartModel.removeAllItems(row);
+
+            /*if (ct.gridOptions.data.length === 0) {
+                $scope.isEmpty = true;
+            } else {
+                $scope.isEmpty = false;
+            }*/
+        };
+
+        $scope.removeItem = function(row) {
+            CartModel.removeItem(row);
 
             //display empty cart if no item in cart
-            if (ct.gridOptions.data.length === 0) {
+            /*if (ct.gridOptions.data.length === 0) {
                 $scope.isEmpty = true;
             } else {
                 $scope.isEmpty = false;
-            }
+            }*/
+        };
 
+        $scope.getSize = function(row) { //jshint ignore: line
+            /*if (row.entity.size === null) {
+                $log.debug('size is null');
+                row.entity.size = _.random(0, 1000000);
+
+                return row.entity.size;
+            } else {
+                $log.debug('size not null!!');
+                return row.entity.size;
+            }*/
         };
     }
 })();

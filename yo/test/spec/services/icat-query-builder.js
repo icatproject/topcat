@@ -66,9 +66,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Instrument'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -107,9 +107,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Instrument'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -154,9 +154,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Instrument'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -256,9 +256,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Instrument'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -296,9 +296,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Instrument'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -375,9 +375,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Instrument'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -418,9 +418,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Investigation'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -462,9 +462,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Investigation'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -507,9 +507,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Dataset'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -551,9 +551,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Dataset'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -596,9 +596,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Datafile'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -640,9 +640,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Datafile'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -684,9 +684,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Investigation'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -727,9 +727,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Investigation'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -849,9 +849,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Dataset'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -892,9 +892,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Dataset'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -936,9 +936,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Datafile'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -979,9 +979,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Datafile'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -1023,9 +1023,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Dataset'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -1067,9 +1067,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Dataset'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -1112,9 +1112,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Datafile'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')
@@ -1156,9 +1156,9 @@ describe('Service: ICATQueryBuilder', function() {
             countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
         }));
 
-        expect(params).toEqual(jasmine.objectContaining({
+        /*expect(params).toEqual(jasmine.objectContaining({
             entity: 'Datafile'
-        }));
+        }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
             server: encodeURIComponent('https://example.com')

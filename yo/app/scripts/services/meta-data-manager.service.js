@@ -82,6 +82,7 @@
                     };
                     tabsUpdated.push(temp);
                 }
+
                 return tabsUpdated;
             },
 

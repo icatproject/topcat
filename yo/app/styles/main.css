@@ -94,6 +94,17 @@ body {
 
 .cart-grid {
   width: 100%;
-  height: 600px;
+  height: 500px;
+  margin-bottom: 10px;
 }
+
+.my-data-container {
+  padding: 0 10px;
+}
+
+.my-data-grid {
+  width: 100%;
+  height: 500px;
+}
+
 

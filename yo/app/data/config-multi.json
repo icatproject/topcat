@@ -1965,6 +1965,7 @@
     },
     "site": {
         "icatDataProxyHost": "https://localhost:3001",
+        "home" : "my-data",
         "pagingType": "scroll",
         "useFileForData": false,
         "useFileForSession": false,
@@ -2113,6 +2114,111 @@
                     }
                 }
             ]
+        },
+        "myDataGridOptions": {
+            "investigation": {
+                "enableFiltering": true,
+                "enableSelection": true,
+                "includes" : [
+                    "investigation.investigationInstruments.instrument"
+                ],
+                "columnDefs": [
+                    {
+                        "field": "id",
+                        "displayName": "Id",
+                        "enableSorting": false,
+                        "type": "number",
+                        "visible": false,
+                        "filter": {
+                            "condition": "starts_with",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        }
+                    },
+                    {
+                        "field": "investigationInstruments[0].instrument.fullName",
+                        "displayName": "Instrument",
+                        "enableSorting": false,
+                        "type": "number",
+                        "visible": true,
+                        "filter": {
+                            "condition": "starts_with",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": true
+                        }
+                    },
+                    {
+                        "field": "title",
+                        "displayName": "Title",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        }
+                    },
+                    {
+                        "field": "visitId",
+                        "displayName": "Visit Id",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        }
+                    },
+                    {
+                        "field": "startDate",
+                        "displayName": "Start Date",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd'",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        }
+                    },
+                    {
+                        "field": "endDate",
+                        "displayName": "End Date",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd'",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        }
+                    }
+                ]
+            }
         },
         "facility": {
             "metaTabs": {

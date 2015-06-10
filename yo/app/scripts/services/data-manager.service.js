@@ -209,6 +209,8 @@
 
             ICATService.getEntityById(sessionId, facility, entityType, entityId, options)
                 .success(function(data) {
+                    var entityIcatName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
+                    data = _.pluck(data, entityIcatName);
                     def.resolve(data);
                 })
                 .error(function() {
