@@ -13,12 +13,87 @@ BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteServi
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
 function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, $log){  //jshint ignore: line
+
+    function getSelectableParentEntities(facility, currentEntityType, hierarchy) {
+        var h = hierarchy.slice(0);
+        var index = h.indexOf(currentEntityType);
+
+        //current entity not in hierarchy!! should never happen but just in case
+        if (index === -1) {
+            return false;
+        }
+
+        var previousEntities = h.splice(0, index);
+
+        //only interested in investigation or dataset
+        var selectableEntities = [];
+
+        _.each(previousEntities, function(entityType) {
+            if (entityType === 'investigation' || entityType === 'dataset') {
+                selectableEntities.push(entityType);
+            }
+        });
+
+        //return false as there are no selectable entities as no point carry on
+        if (selectableEntities.length === 0) {
+            return [];
+        }
+
+        var gridOptions = Config.getBrowseOptionsByFacilityName(APP_CONFIG, facility.facilityName);
+        var parentEntities = [];
+
+        //check column def to see if investigation or dataset is selectable
+        _.each(selectableEntities, function(entityType) {
+            $log.debug('entityType', entityType);
+            if (gridOptions[entityType].enableSelection === true) {
+                parentEntities.push(entityType);
+            }
+        });
+
+        return parentEntities;
+    }
+
+    function makeRowUnselectable(facility, currentEntityType, structure, $stateParams, gridOptions) {
+        var selectableEntities = getSelectableParentEntities(facility, currentEntityType, structure);
+
+        if (selectableEntities.length !== 0) {
+            $log.debug('selectableEntities', selectableEntities);
+            $log.debug('$stateParams', $stateParams);
+
+            var isInCart = false;
+
+            //deal with investigation parent
+            _.each(selectableEntities, function(entityType) {
+                var id = $stateParams[entityType + 'Id'];
+
+                if(typeof id === 'string') {
+                    id = parseInt(id);
+                }
+
+                var item = Cart.getItem(facility.facilityName, entityType, id);
+
+                if (item !== false) {
+                    isInCart = true;
+                }
+            });
+
+            if (isInCart === true) {
+                gridOptions.isRowSelectable = function() {
+                    return false;
+                };
+            }
+        }
+    }
+
+
     return {
         gridOptions : {},
         nextRouteSegment: null,
         facility: null,
         stateParams: null,
         currentEntityType: null,
+        gridOptionsConfig: null,
+
 
         /**
          * This function transpose the site config file to settings used by ui-grid
@@ -78,7 +153,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
             return gridOptions;
         },
-
 
         init : function(facility, scope, currentEntityType, currentRouteSegment, sessions, $stateParams) {
             var options = this.configToUIGridOptions(facility, currentEntityType);
@@ -251,6 +325,18 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
             };
 
+            //determine if parent is already checked and disable the selection tickbox
+            //1. check hiearchy to see if current entity has a parent investigation or dataset
+            //2. check if parent are selectable
+            //3. Get the ids of parents (need facility key, entityType, id = can get from URL)
+            //4. Check if parent is in the cart.
+            //5. mark the row as isRowSelectable: function() {
+            //        return false;
+            //   },
+            //
+            makeRowUnselectable(facility, currentEntityType, structure, $stateParams, gridOptions);
+
+
             if (pagingType === 'page') {
                 getPage(paginateParams);
 
@@ -260,6 +346,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                 gridOptions.onRegisterApi = function(gridApi) {
                     scope.gridApi = gridApi;
+
+
 
                     //sort callback
                     scope.gridApi.core.on.sortChanged(scope, function(grid, sortColumns) {
