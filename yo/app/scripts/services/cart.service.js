@@ -7,7 +7,7 @@
 
     Cart.$inject =['$rootScope', 'CartItem', 'CartStore', '$log'];
 
-    function Cart($rootScope, CartItem, CartStore, $log) {
+    function Cart($rootScope, CartItem, CartStore, $log) { //jshint ignore: line
 
         this.init = function(){
             this._cart = {
@@ -15,7 +15,7 @@
             };
         };
 
-        this.addItem = function (facilityName, entityType, id, name) {
+        this.addItem = function (facilityName, entityType, id, name, parents) {
             var addedItemsCount = 0;
             var itemExistsCount = 0;
             //get item from cart
@@ -27,10 +27,33 @@
                 itemExistsCount++;
             } else {
                 var newItem = new CartItem(facilityName, entityType, id, name);
+                newItem.setParents(parents);
                 this._cart.items.push(newItem);
                 addedItemsCount++;
                 $rootScope.$broadcast('Cart:itemAdded', {added: addedItemsCount});
             }
+
+            //remove child items
+            var itemsToRemove = [];
+
+            _.each(this._cart.items, function(cartItem){
+                //deal with items from the same facility
+                if (!(cartItem.getFacilityName() === facilityName && cartItem.getEntityType() === entityType && cartItem.getId() === id)) {
+                    if (cartItem.getFacilityName() === facilityName) {
+                        _.each(cartItem.getParents(), function(parent) {
+                            if (parent.entityType === entityType && parent.id === id) {
+                                itemsToRemove.push(cartItem);
+                            }
+                        });
+
+                    }
+                }
+            });
+
+            _.each(itemsToRemove, function(item) {
+                this.removeItem(item.getFacilityName(), item.getEntityType(), item.getId());
+            }, this);
+
 
             $rootScope.$broadcast('Cart:change', {added: addedItemsCount, exists: itemExistsCount});
         };
@@ -46,6 +69,7 @@
                     itemExistsCount++;
                 } else {
                     var newItem = new CartItem(item.facilityName, item.entityType, item.id, item.name);
+                    newItem.setParents(item.parents);
                     this._cart.items.push(newItem);
                     addedItemsCount++;
                 }
@@ -127,7 +151,6 @@
         };
 
         this.removeAllItems = function () {
-            $log.debug('remove all items');
             var cart = this.getCart();
             var removedItemsCount = cart.items.length;
 
@@ -218,16 +241,12 @@
         this.isRestorable = function() {
             var cartSession = CartStore.get();
 
-            $log.debug('isRestorable cartSession', cartSession);
-
             if (typeof cartSession !== 'undefined') {
                 if (cartSession.items.length > 0) {
-                    $log.debug('isRestorable true');
                     return true;
                 }
             }
 
-            $log.debug('isRestorable false');
             return false;
         };
     }

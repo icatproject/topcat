@@ -125,8 +125,6 @@
             },
 
             removeItem : function(row) {
-                $log.debug('model removeItem fired', row);
-
                 Cart.removeItem(row.entity.facilityName, row.entity.entityType, row.entity.id);
 
                 var index = this.gridOptions.data.indexOf(row.entity);
@@ -134,8 +132,6 @@
             },
 
             removeAllItems : function() {
-                $log.debug('model removeAllItems fired');
-
                 Cart.removeAllItems();
                 this.gridOptions.data = [];
             }

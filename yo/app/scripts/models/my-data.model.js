@@ -244,7 +244,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             };
 
             $rootScope.$on('Cart:itemRemoved', function(){
-                $log.debug('refreshSelection called', scope);
                 refreshSelection(scope);
             });
 

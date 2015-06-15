@@ -303,7 +303,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             };
 
             $rootScope.$on('Cart:itemRemoved', function(){
-                $log.debug('refreshSelection called', scope);
                 refreshSelection(scope);
             });
 
@@ -393,6 +392,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
                         if (row.isSelected === true) {
+
+
                             Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name);
                         } else {
                             Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
@@ -528,8 +529,27 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
+                        var parents = [];
+
+                        //add item parents
+                        if (currentEntityType === 'dataset' || currentEntityType === 'datafile') {
+                            if (_.has($stateParams, 'investigationId')) {
+                                parents.push({
+                                    id: parseInt($stateParams.investigationId),
+                                    entityType: 'investigation'
+                                });
+                            }
+
+                            if (_.has($stateParams, 'datasetId')) {
+                                parents.push({
+                                    id: parseInt($stateParams.datasetId),
+                                    entityType: 'dataset'
+                                });
+                            }
+                        }
+
                         if (row.isSelected === true) {
-                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name);
+                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name, parents);
                         } else {
                             Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
                         }

@@ -9,7 +9,7 @@
 
     function CartItem($log) { //jshint ignore: line
 
-        var item = function (facilityName, entityType, id, name, size, availability) {
+        var item = function (facilityName, entityType, id, name, size, availability, parents) {
             size = size || null;
             availability = availability || null;
 
@@ -19,6 +19,7 @@
             this.setName(name);
             this.setSize(size);
             this.setAvailablility(availability);
+            this.setParents(parents);
         };
 
         item.prototype.getFacilityName = function(){
@@ -86,6 +87,14 @@
             return this.availability;
         };
 
+        item.prototype.setParents = function(parents){
+            this.parents = parents;
+        };
+
+        item.prototype.getParents = function(){
+            return this.parents;
+        };
+
         item.prototype.toObject = function() {
             return {
                 facilityName: this.getFaciliyName(),
@@ -93,7 +102,8 @@
                 id: this.getId(),
                 name: this.getName(),
                 size: this.getSize(),
-                availability: this.getAvailability()
+                availability: this.getAvailability(),
+                parents: this.getParents()
             };
         };
 
