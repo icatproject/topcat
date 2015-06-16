@@ -46,7 +46,7 @@
                     }
 
                     if(angular.isDefined(value.field) && value.field === 'size') {
-                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span load-size ng-model="row">{{ row.entity.size }}</span></div>';
+                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span load-size ng-model="row">{{ COL_FIELD | bytes }}</span></div>';
                         //value.cellTemplate = '<div class="ui-grid-cell-contents"><span>{{::grid.appScope.getSize(row)}}</span></div>';
                     }
 
