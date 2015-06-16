@@ -10,6 +10,7 @@ var cors = require('cors');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
+var ids = require('./routes/ids');
 
 var app = express();
 
@@ -44,6 +45,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/icat', api);
+app.use('/ids', ids);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
