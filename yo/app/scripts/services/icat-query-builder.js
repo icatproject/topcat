@@ -553,7 +553,7 @@
                     server: facility.icatUrl
                 });
 
-                $log.warn('xxx queryParams', queryParams);
+                $log.debug('queryParams', queryParams);
 
                 return urlEncodeParameters(params);
             },

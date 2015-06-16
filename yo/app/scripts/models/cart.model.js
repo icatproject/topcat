@@ -46,7 +46,12 @@
                     }
 
                     if(angular.isDefined(value.field) && value.field === 'size') {
-                        //value.cellTemplate = '<div class="ui-grid-cell-contents"><span>{{ ::grid.appScope.getSize(row) }}</span></div>';
+                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span load-size ng-model="row">{{ row.entity.size }}</span></div>';
+                        //value.cellTemplate = '<div class="ui-grid-cell-contents"><span>{{::grid.appScope.getSize(row)}}</span></div>';
+                    }
+
+                    if(angular.isDefined(value.field) && value.field === 'availability') {
+                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span load-availability ng-model="row">{{ row.entity.availability }}</span></div>';
                         //value.cellTemplate = '<div class="ui-grid-cell-contents"><span>{{::grid.appScope.getSize(row)}}</span></div>';
                     }
 

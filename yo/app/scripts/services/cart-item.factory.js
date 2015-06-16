@@ -18,7 +18,7 @@
             this.setId(id);
             this.setName(name);
             this.setSize(size);
-            this.setAvailablility(availability);
+            this.setAvailability(availability);
             this.setParents(parents);
         };
 
@@ -79,11 +79,11 @@
         };
 
 
-        item.prototype.setAvailablility = function(availability){
+        item.prototype.setAvailability = function(availability){
             this.availability = availability;
         };
 
-        item.prototype.getAvailablility = function(){
+        item.prototype.getAvailability = function(){
             return this.availability;
         };
 
