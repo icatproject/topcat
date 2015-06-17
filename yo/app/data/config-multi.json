@@ -196,6 +196,12 @@
                             "link": true
                         },
                         {
+                            "field": "size",
+                            "displayName": "Size",
+                            "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                            "type": "number"
+                        },
+                        {
                             "field": "investigationInstruments[0].instrument.fullName",
                             "displayName": "Instrument",
                             "enableSorting": false,
@@ -264,6 +270,12 @@
                                 "disableCancelFilterButton": true
                             },
                             "link": true
+                        },
+                        {
+                            "field": "size",
+                            "displayName": "Size",
+                            "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                            "type": "number"
                         },
                         {
                             "field": "createTime",

@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', '$log'];
+BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', 'IdsManager', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteServi
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, $log){  //jshint ignore: line
+function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, $log){  //jshint ignore: line
 
     function getSelectableParentEntities(facility, currentEntityType, hierarchy) {
         var h = hierarchy.slice(0);
@@ -85,6 +85,19 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         }
     }
 
+    function hasField(options, field) {
+        var result = false;
+        //determine if field size has been defined
+        _.each(options.columnDefs, function(col) {
+            if (typeof col.field !== 'undefined' && col.field === field) {
+                result = true;
+                return false;
+            }
+        });
+
+        return result;
+    }
+
 
     return {
         gridOptions : {},
@@ -148,11 +161,22 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     //value.suppressRemoveSort = true;
                 }
 
+                //size column
+                //make sure for only investigation and dataset
+                if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
+                    if(angular.isDefined(value.field) && value.field === 'size') {
+                        value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.size | bytes }}</span></div>';
+                        value.enableSorting = false;
+                    }
+                }
+
                 return value;
             });
 
             return gridOptions;
         },
+
+
 
         init : function(facility, scope, currentEntityType, currentRouteSegment, sessions, $stateParams) {
             var options = this.configToUIGridOptions(facility, currentEntityType);
@@ -163,6 +187,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             var scrollRowFromEnd = Config.getSiteConfig(APP_CONFIG).scrollRowFromEnd;
             var paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
             var gridOptions = {};
+            var hasSizeField = hasField(options, 'size');
 
             var enableSelection = function() {
                 if (angular.isDefined(options.enableSelection) && options.enableSelection === true) {
@@ -179,6 +204,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 order: 'asc',
                 includes: options.includes
             };
+
+
 
             /**
              * Loads data for both pagination and infinte scroll. This method is called by ui-grid to load the first page of data
@@ -208,9 +235,21 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                         //pre-select items in cart here
                         _.each(rows, function(row) {
-                            /*if (_.has(scope.mySelection, row.entity.id)) {
-                                scope.gridApi.selection.selectRow(row.entity);
-                            }*/
+                            //fill size data
+                            if (hasSizeField) {
+                                //$log.debug('has size field');
+                                if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
+                                    if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                        var params = {};
+                                        params[currentEntityType  + 'Ids'] = row.entity.id;
+
+                                        IdsManager.getSize(sessions, facility, params).then(function(data){
+                                            $log.debug('IdsManager.getSize called');
+                                            row.entity.size = parseInt(data);
+                                        });
+                                    }
+                                }
+                            }
 
                             if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                                scope.gridApi.selection.selectRow(row.entity);
@@ -239,9 +278,19 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                         //pre-select items in cart here
                         _.each(rows, function(row) {
-                            /*if (_.has(scope.mySelection, row.entity.id)) {
-                                scope.gridApi.selection.selectRow(row.entity);
-                            }*/
+                            //file size data
+                            if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
+                                if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                    var params = {};
+                                    params[currentEntityType  + 'Ids'] = row.entity.id;
+
+                                    IdsManager.getSize(sessions, facility, params).then(function(data){
+                                        $log.debug('IdsManager.getSize called');
+                                        row.entity.size = parseInt(data);
+                                    });
+                                }
+                            }
+
                             if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                                scope.gridApi.selection.selectRow(row.entity);
                             }
@@ -269,9 +318,19 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                         //pre-select items in cart here
                         _.each(rows, function(row) {
-                            /*if (_.has(scope.mySelection, row.entity.id)) {
-                                scope.gridApi.selection.selectRow(row.entity);
-                            }*/
+                            //file size data
+                            if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
+                                if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                    var params = {};
+                                    params[currentEntityType  + 'Ids'] = row.entity.id;
+
+                                    IdsManager.getSize(sessions, facility, params).then(function(data){
+                                        $log.debug('IdsManager.getSize called');
+                                        row.entity.size = parseInt(data);
+                                    });
+                                }
+                            }
+
                             if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                                scope.gridApi.selection.selectRow(row.entity);
                             }

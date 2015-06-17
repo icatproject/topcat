@@ -28,7 +28,8 @@
                     headers : {
                         'facilityKeyName' : facility.facilityName,
                         'facilityTitle' : facility.title
-                    }
+                    },
+                    cache: true
                 };
 
             params = _.merge(params, {

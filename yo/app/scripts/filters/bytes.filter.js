@@ -9,7 +9,7 @@
         filter('bytes', ['$filter', function( $filter) {
             var prettyBytesFilter = $filter('prettyBytes');
             return function(value) {
-                if (value === null) {
+                if (value === null || typeof value === 'undefined') {
                     return null;
                 }
 

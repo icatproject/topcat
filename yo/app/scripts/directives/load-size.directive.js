@@ -26,7 +26,6 @@
     function loadSize() {
         return {
             restrict: 'A', //E = element, A = attribute, C = class, M = comment
-            require: '^ngModel',
             scope: {
                 //@ reads the attribute value, = provides two-way binding, & works with functions
                 ngModel: '='
