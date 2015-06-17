@@ -179,7 +179,7 @@
         };
 
 
-        manager.refreshSession = function(mySessionId, facility) {
+        manager.refreshSession = _.debounce(function(mySessionId, facility) {
             var def = $q.defer();
 
             ICATService.refreshSession(mySessionId, facility)
@@ -192,7 +192,7 @@
                 });
 
             return def.promise;
-        };
+        }, 1000);
 
         /**
          * Get a specific entity
