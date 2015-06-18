@@ -1,101 +1,111 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular
-.module('angularApp')
-.factory('MetaDataManager', MetaDataManager);
+    angular
+        .module('angularApp')
+        .factory('MetaDataManager', MetaDataManager);
 
-MetaDataManager.$inject = ['$translate'];
+    MetaDataManager.$inject = ['$translate'];
 
-function MetaDataManager($translate) {
+    function MetaDataManager($translate) {
 
 
-	function MyException(message) {
-		this.name = name;
-		this.message = message;
-	}
-	MyException.prototype = new Error();
-	MyException.prototype.constructor = MyException;
-	
+        function MyException(message) {
+            this.name = name;
+            this.message = message;
+        }
+        MyException.prototype = new Error();
+        MyException.prototype.constructor = MyException;
 
-	var extractMetaData = function (tabDataArray, icatData) {
 
-		var content = [];
+        var extractMetaData = function(tabDataArray, icatData) {
 
-		if(!Array.isArray(icatData)){
-			icatData = [icatData];
-		}
+            var content = [];
 
-		for(var l in icatData) {
-			var icatDataCurrent = icatData[l];
+            if (!Array.isArray(icatData)) {
+                icatData = [icatData];
+            }
 
-			for(var counter in tabDataArray) {
-				var dataV = tabDataArray[counter];
+            for (var l in icatData) {
+                var icatDataCurrent = icatData[l];
 
-				if(typeof dataV.data !== 'undefined') {
-					var temp = content;
-					content = temp.concat(extractMetaData(dataV.data, icatDataCurrent[dataV.field]));
-				} else {
-					if(angular.isDefined(dataV.translateDisplayName))
-					{
-						content.push( { 'title' : $translate.instant(dataV.translateDisplayName) , 'value' : icatDataCurrent[dataV.field]} );
-					} else {
-						content.push( { 'title' : dataV.title, 'value' : icatDataCurrent[dataV.field] });
-					}
-				}
-			}
-		}
-		return content;
-	};
+                for (var counter in tabDataArray) {
+                    var dataV = tabDataArray[counter];
 
-	return { // public API
+                    if (typeof dataV.data !== 'undefined') {
+                        var temp = content;
+                        content = temp.concat(extractMetaData(dataV.data, icatDataCurrent[dataV.field]));
+                    } else {
+                        if (angular.isDefined(dataV.translateDisplayName)) {
+                            content.push({
+                                'title': $translate.instant(dataV.translateDisplayName),
+                                'value': icatDataCurrent[dataV.field]
+                            });
+                        } else {
+                            content.push({
+                                'title': dataV.title,
+                                'value': icatDataCurrent[dataV.field]
+                            });
+                        }
+                    }
+                }
+            }
+            return content;
+        };
 
-		updateTabs : function(dataResults, tabs) {
+        return { // public API
 
-			var tabsUpdated = [];
+            updateTabs: function(dataResults, tabs) {
 
-			for(var i in tabs)
-			{
-				var icatData = dataResults;
-				var currentTab = tabs[i];
-				var tabTitle = '';
-				if(angular.isDefined(currentTab.translateDisplayName)) {
-					tabTitle = $translate.instant(currentTab.translateDisplayName);
-				} else {
-					tabTitle = currentTab.title;
-				}
-				var tabData = currentTab.data;
-				var tabContent = [];
+                var tabsUpdated = [];
 
-				if(currentTab.default === true) {
-					tabContent = extractMetaData(tabData, icatData);
-				} else {
-					tabContent = extractMetaData(tabData, icatData[0][currentTab.field]);
-				}
-				var temp = {title : tabTitle, content : tabContent};
-				tabsUpdated.push(temp);
-			}
-			return tabsUpdated;
-		},
+                for (var i in tabs) {
+                    var icatData = dataResults;
+                    var currentTab = tabs[i];
+                    var tabTitle = '';
+                    if (angular.isDefined(currentTab.translateDisplayName)) {
+                        tabTitle = $translate.instant(currentTab.translateDisplayName);
+                    } else {
+                        tabTitle = currentTab.title;
+                    }
+                    var tabData = currentTab.data;
+                    var tabContent = [];
 
-		getTabQueryOptions : function(tabConfig) {
+                    if (currentTab.default === true) {
+                        tabContent = extractMetaData(tabData, icatData);
+                    } else {
+                        tabContent = extractMetaData(tabData, icatData[0][currentTab.field]);
+                    }
+                    var temp = {
+                        title: tabTitle,
+                        content: tabContent
+                    };
+                    tabsUpdated.push(temp);
+                }
 
-			var optionsList = {
-				'include' : []
-			};
+                return tabsUpdated;
+            },
 
-			for(var index in tabConfig) {
-				var tab = tabConfig[index];
+            getTabQueryOptions: function(tabConfig) {
 
-				if(typeof tab.queryParams !== 'undefined') {
-					optionsList.include.push(tab.queryParams);
-				}
-			}
+                var optionsList = {
+                    'include': []
+                };
 
-			if(optionsList.include.length === 0){
-				optionsList = {};
-			}
+                for (var index in tabConfig) {
+                    var tab = tabConfig[index];
 
-			return optionsList;
-		}
-	};
-}
+                    if (typeof tab.queryParams !== 'undefined') {
+                        optionsList.include.push(tab.queryParams);
+                    }
+                }
+
+                if (optionsList.include.length === 0) {
+                    optionsList = {};
+                }
+
+                return optionsList;
+            }
+        };
+    }
+})();

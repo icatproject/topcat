@@ -1,36 +1,30 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular
-    .module('angularApp')
-    .factory('Authenticate', Authenticate );
+    angular
+        .module('angularApp')
+        .factory('Authenticate', Authenticate );
 
-Authenticate.$inject = ['$q', '$sessionStorage'];
+    Authenticate.$inject = ['$q', '$sessionStorage'];
 
-function Authenticate($q, $sessionStorage){
-    return {
-        authenticate : function(){
-            //console.log('authenticate called');
+    function Authenticate($q, $sessionStorage){
+        return {
+            authenticate : function(){
+                var isAuthenticated = false;
 
-            var isAuthenticated = false;
+                if (_.size($sessionStorage.sessions) > 0) {
+                    isAuthenticated = true;
+                }
 
-            //console.log('$sessionStorage.sessions', $sessionStorage.sessions);
-
-            if (_.size($sessionStorage.sessions) > 0) {
-                isAuthenticated = true;
+                //Authentication logic here
+                if(isAuthenticated){
+                    //If authenticated, return anything you want, probably a user object
+                    return true;
+                } else {
+                    //Else send a rejection
+                    return $q.reject({isAuthenticated : false});
+                }
             }
-
-            //Authentication logic here
-            if(isAuthenticated){
-                //If authenticated, return anything you want, probably a user object
-                //console.log('returning true');
-                return true;
-            } else {
-                //Else send a rejection
-                //console.log('returning reject promise');
-
-                return $q.reject({isAuthenticated : false});
-            }
-        }
-    };
-
-}
+        };
+    }
+})();

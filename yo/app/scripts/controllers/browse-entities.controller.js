@@ -6,28 +6,21 @@
         .module('angularApp')
         .controller('BrowseEntitiesController', BrowseEntitiesController);
 
-    BrowseEntitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseEntitiesModel'];
+    BrowseEntitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseEntitiesModel'];
 
-    function BrowseEntitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseEntitiesModel) {
+    function BrowseEntitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, BrowseEntitiesModel) {
         var vm = this;
         var facilityName = $stateParams.facilityName;
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
-        var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+        var currentEntityType = RouteService.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
         var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
-        var currentRouteSegment = RouteUtils.getCurrentRouteSegmentName($state);
+        var currentRouteSegment = RouteService.getCurrentRouteSegmentName($state);
         var sessions = $sessionStorage.sessions;
 
         vm.currentEntityType = currentEntityType;
         vm.isScroll = (pagingType === 'scroll') ? true : false;
 
         $scope.isEmpty = false;
-        $scope.mySelection = {};
-
-        if (!angular.isDefined($rootScope.cart)) {
-            $rootScope.cart = [];
-            $rootScope.ref = [];
-        }
-
         BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
 
         vm.gridOptions = BrowseEntitiesModel.gridOptions;

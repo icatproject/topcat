@@ -1,11 +1,12 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular.
-    module('angularApp').factory('ICATQueryBuilder', ICATQueryBuilder);
+    angular.
+        module('angularApp').factory('ICATQueryBuilder', ICATQueryBuilder);
 
-ICATQueryBuilder.$inject = ['$log'];
+    ICATQueryBuilder.$inject = ['ICATAlias', '$log'];
 
-function ICATQueryBuilder($log) {
+    function ICATQueryBuilder(ICATAlias, $log) {
         //private methods
         /**
          * taken from angualr source to build query string
@@ -93,7 +94,24 @@ function ICATQueryBuilder($log) {
             return p;
         }
 
-        function buildParams(query, countQuery, searchExpr, queryParams, entityAlias) {
+        function aliasIncludeString(include) {
+            var index = include.indexOf('.');
+            var entity = include.substr(0, index);
+            var remain = include.substr(index);
+
+            return ICATAlias.getAlias(entity) + remain;
+        }
+
+        function buildInclude(query, includes) {
+            _.each(includes, function(include) {
+                include = aliasIncludeString(include);
+
+                query.include(include);
+            });
+
+        }
+
+        function buildParams(query, countQuery, searchExpr, queryParams, entityName) {
             var params = {};
             //var filterCountQuery = countQuery.clone();
 
@@ -110,6 +128,10 @@ function ICATQueryBuilder($log) {
                     params.filterCountQuery = filterCountQuery;*/
                 }
 
+                if (angular.isDefined(queryParams.includes) && queryParams.includes.length > 0) {
+                    buildInclude(query, queryParams.includes);
+                }
+
                 //set limit
                 if (angular.isDefined(queryParams.start) && angular.isDefined(queryParams.numRows)) {
                     query.limit(queryParams.start, queryParams.numRows);
@@ -117,18 +139,27 @@ function ICATQueryBuilder($log) {
 
                 //set sort
                 if (angular.isDefined(queryParams.sortField) && angular.isDefined(queryParams.order)) {
-                    query.order(entityAlias + '.' + queryParams.sortField, sortOrder(queryParams.order));
+                    query.order(ICATAlias.getAlias(entityName) + '.' + queryParams.sortField, sortOrder(queryParams.order));
                 }
             }
 
             return params;
         }
 
-        function getSearchExpr(search, entityAlias) {
+        function getSearchExpr(queryParams, entityName) {
             var searchExpr = squel.expr();
+            var entityAlias = ICATAlias.getAlias(entityName);
 
-            if (! _.isEmpty(search) && _.isArray(search)) {
-                _.each(search, function(value) {
+            if (! angular.isDefined(queryParams)) {
+                return searchExpr;
+            }
+
+            if (! angular.isDefined(queryParams.search)) {
+                return searchExpr;
+            }
+
+            if (! _.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
+                _.each(queryParams.search, function(value) {
                     if (typeof value.search !== 'undefined') {
                         searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search.toUpperCase() + '%');
                     }
@@ -179,15 +210,15 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'fc');
+                var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'FacilityCycle',
+                    //entity: 'FacilityCycle',
                     server: facility.icatUrl
                 });
 
@@ -231,15 +262,15 @@ function ICATQueryBuilder($log) {
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'fc');
+                var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'fc');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'FacilityCycle',
+                    //entity: 'FacilityCycle',
                     server: facility.icatUrl
                 });
 
@@ -276,15 +307,15 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'Investigation',
+                    //entity: 'Investigation',
                     server: facility.icatUrl
                 });
 
@@ -313,16 +344,16 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ins');
+                var searchExpr = getSearchExpr(queryParams, 'instrument');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ins');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'instrument');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Instrument',
+                    //entity: 'Instrument',
                     server: facility.icatUrl
                 });
 
@@ -366,15 +397,15 @@ function ICATQueryBuilder($log) {
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
-                    entity: 'FacilityCycle',
+                    //entity: 'FacilityCycle',
                     server: facility.icatUrl
                 });
 
@@ -410,16 +441,16 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Proposal',
+                    //entity: 'Proposal',
                     server: facility.icatUrl
                 });
 
@@ -429,8 +460,6 @@ function ICATQueryBuilder($log) {
 
             getProposalsByFacilityCycleId: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
-
-                console.log(queryParams);
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(DISTINCT inv.name)')
@@ -467,16 +496,16 @@ function ICATQueryBuilder($log) {
                             .end()
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Proposal',
+                    //entity: 'Proposal',
                     server: facility.icatUrl
                 });
 
@@ -511,18 +540,20 @@ function ICATQueryBuilder($log) {
                             .and('inv.name = ?', queryParams.proposalId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Investigation',
+                    //entity: 'Investigation',
                     server: facility.icatUrl
                 });
+
+                $log.debug('queryParams', queryParams);
 
                 return urlEncodeParameters(params);
             },
@@ -555,16 +586,16 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'inv');
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'inv');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Investigation',
+                    //entity: 'Investigation',
                     server: facility.icatUrl
                 });
 
@@ -598,16 +629,16 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'dataset');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Dataset',
+                    //entity: 'Dataset',
                     server: facility.icatUrl
                 });
 
@@ -643,16 +674,16 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'dataset');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Dataset',
+                    //entity: 'Dataset',
                     server: facility.icatUrl
                 });
 
@@ -684,16 +715,16 @@ function ICATQueryBuilder($log) {
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'ds');
+                var searchExpr = getSearchExpr(queryParams, 'dataset');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'ds');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Dataset',
+                    //entity: 'Dataset',
                     server: facility.icatUrl
                 });
 
@@ -725,16 +756,16 @@ function ICATQueryBuilder($log) {
                             .and('f.id = ?', facility.facilityId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -772,16 +803,16 @@ function ICATQueryBuilder($log) {
                             .and('ins.id = ?', queryParams.instrumentId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -815,16 +846,16 @@ function ICATQueryBuilder($log) {
                             .and('inv.id = ?', queryParams.investigationId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -833,8 +864,6 @@ function ICATQueryBuilder($log) {
 
             getDatafilesByDatasetId: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
-
-                console.log('getDatafilesByDatasetId queryParams', queryParams);
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(df)')
@@ -860,16 +889,16 @@ function ICATQueryBuilder($log) {
                             .and('ds.id = ?', queryParams.datasetId)
                     );
 
-                var searchExpr = getSearchExpr(queryParams.search, 'df');
+                var searchExpr = getSearchExpr(queryParams, 'datafile');
 
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'df');
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
 
                 _.extend(params, {
                     sessionId: mySessionId,
                     query: query.toString(),
                     countQuery: countQuery.toString(),
                     //filterCountQuery: filterCountQuery.toString(),
-                    entity: 'Datafile',
+                    //entity: 'Datafile',
                     server: facility.icatUrl
                 });
 
@@ -897,7 +926,7 @@ function ICATQueryBuilder($log) {
                 var params = {
                     sessionId: mySessionId,
                     query: query.toString(),
-                    entity: queryParams.entityType,
+                    //entity: queryParams.entityType,
                     server: facility.icatUrl
                 };
 
@@ -905,3 +934,4 @@ function ICATQueryBuilder($log) {
             }
         };
     }
+})();

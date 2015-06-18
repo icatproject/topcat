@@ -15,7 +15,8 @@
 
         vm.currentEntityType = currentEntityType;
         vm.isScroll = (pagingType === 'scroll') ? true : false;
-        $log.info(vm.isScroll);
+
+        $log.debug('currentEntityType', currentEntityType);
 
         if (!angular.isDefined($rootScope.cart)) {
             $rootScope.cart = [];

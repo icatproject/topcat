@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LogoutController', LogoutController);
 
-    LogoutController.$inject = ['$state', '$stateParams', 'APP_CONFIG', 'Config', '$translate', 'DataManager', '$sessionStorage', 'inform'];
+    LogoutController.$inject = ['$state', '$stateParams', 'APP_CONFIG', 'Config', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform'];
 
-    function LogoutController($state, $stateParams, APP_CONFIG, Config, $translate, DataManager, $sessionStorage, inform) {
+    function LogoutController($state, $stateParams, APP_CONFIG, Config, RouteUtils, $translate, DataManager, $sessionStorage, inform) {
         if(angular.isDefined($state.params.facilityName)) {
             //logout of single facility
             var facility = Config.getFacilityByName(APP_CONFIG, $state.params.facilityName);
@@ -24,8 +24,8 @@
             });
         } else {
             //loop sessions in sessionStorage and logout of of each facility
-            _.each(_.keys($sessionStorage.sessions), function(keyName) {
-                var facility = Config.getFacilityByName(APP_CONFIG, keyName);
+            _.each(_.keys($sessionStorage.sessions), function(facilityName) {
+                var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
                 DataManager.logout($sessionStorage.sessions, facility);
             });
 
@@ -44,7 +44,7 @@
         if (_.isEmpty($sessionStorage.sessions)) {
             $state.go('login');
         } else {
-            $state.go('home.browse.facilities');
+            $state.go(RouteUtils.getHomeRouteName());
         }
     }
 })();

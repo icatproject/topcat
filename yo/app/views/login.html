@@ -7,7 +7,7 @@
                 <fieldset>
                     <div class="form-group" ng-hide="vm.isSingleFacility()">
                         <label class="control-label" for="server">{{'LOGIN.FACILITY' | translate}}</label>
-                        <select id="facilityName" name="facilityName" class="form-control" ng-model="vm.user.facilityName" ng-options="facility.keyName as facility.title for facility in vm.facilities" ng-init="vm.user.facilityName = vm.facilities[0].keyName" ng-change="vm.updateAuthenticationTypes(vm.user.facilityName)" required>
+                        <select id="facilityName" name="facilityName" class="form-control" ng-model="vm.user.facilityName" ng-options="facility.facilityName as facility.title for facility in vm.facilities" ng-init="vm.user.facilityName = vm.facilities[0].facilityName" ng-change="vm.updateAuthenticationTypes(vm.user.facilityName)" required>
                         </select>
                     </div>
                     <div class="form-group" ng-hide="vm.isSingleAuthenticationType()">

@@ -59,12 +59,15 @@
          }])
         .config(['$httpProvider', function($httpProvider) {
             $httpProvider.interceptors.push('HttpErrorInterceptor');
+            $httpProvider.interceptors.push('ICATRequestInterceptor');
         }])
         .config(function($stateProvider, $urlRouterProvider) {
             //workaround https://github.com/angular-ui/ui-router/issues/1022
             $urlRouterProvider.otherwise(function($injector) {
-              var $state = $injector.get('$state');
-              $state.go('home.browse.facilities');
+                var $state = $injector.get('$state');
+                var RouteUtils = $injector.get('RouteUtils');
+                var routeName = RouteUtils.getHomeRouteName();
+                $state.go(routeName);
             });
 
             $stateProvider
@@ -90,7 +93,7 @@
                     abstract: true,
                     templateUrl: 'views/main-browse.html'
                 })*/
-                .state('home.browse.facilities', {
+                .state('home.browse.facility', {
                     url: '/facilities',
                     resolve: {
                         /*sessions: ['DataManager', function(DataManager){
@@ -115,299 +118,8 @@
                         }
                     }
                 })
-                .state('home.browse.facilities.facility-facilityCycle', {
-                    url: '/{facilityName}/facilityCycles',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'facilityCycle'
-                    }
-                })
-                .state('home.browse.facilities.facilityCycle-proposal', {
-                    url: '/{facilityName}/instruments/{instrumentId}/faciltyCycles/{facilityCycleId}/proposals',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'proposal'
-                    }
-                })
-                .state('home.browse.facilities.facilityCycle-investigation', {
-                    url: '/{facilityName}/instruments/{instrumentId}/faciltyCycles/{facilityCycleId}/investigation',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'investigation'
-                    }
-                })
-                .state('home.browse.facilities.facility-instrument', {
-                    url: '/{facilityName}/instruments',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'instrument'
-                    }
-                })
-                .state('home.browse.facilities.facility-investigation', {
-                    url: '/{facilityName}/investigations',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'investigation'
-                    }
 
-                })
-                .state('home.browse.facilities.facility-dataset', {
-                    url: '/{facilityName}/datasets',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'dataset'
-                    }
-
-                })
-                .state('home.browse.facilities.facility-datafile', {
-                    url: '/{facilityName}/datafiles',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'datafile'
-                    }
-                })
-                /*.state('home.browse.facilities.entitylistbyid', {
-                    url: '/{facilityName}/{entityType}/{id}',
-                    views: {
-                        '' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowsePanelContoller as vm'
-                        }
-                    }
-                })*/
-                .state('home.browse.facilities.instrument-facilityCycle', {
-                    url: '/{facilityName}/instruments/{instrumentId}/facilityCycles',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'facilityCycle'
-
-                    }
-                })
-                .state('home.browse.facilities.instrument-proposal', {
-                    url: '/{facilityName}/instruments/{instrumentId}/proposals',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'proposal'
-
-                    }
-                })
-                .state('home.browse.facilities.proposal-investigation', {
-                    url: '/{facilityName}/proposal/{proposalId}/investigations',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'investigation'
-
-                    }
-                })
-                .state('home.browse.facilities.instrument-investigation', {
-                    url: '/{facilityName}/instruments/{instrumentId}/investigations',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'investigation'
-
-                    }
-                })
-                .state('home.browse.facilities.instrument-dataset', {
-                    url: '/{facilityName}/instruments/{instrumentId}/datasets',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'dataset'
-                    }
-                })
-                .state('home.browse.facilities.instrument-datafile', {
-                    url: '/{facilityName}/instruments/{instrumentId}/datafiles',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'datafile'
-                    }
-                })
-                .state('home.browse.facilities.investigation-dataset', {
-                    url: '/{facilityName}/investigations/{investigationId}/datasets',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'dataset'
-                    }
-                })
-                .state('home.browse.facilities.investigation-datafile', {
-                    url: '/{facilityName}/investigations/{investigationId}/datafiles',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'datafile'
-                    }
-                })
-                .state('home.browse.facilities.dataset-datafile', {
-                    url: '/{facilityName}/datasets/{datasetId}/datafile',
-                    views: {
-                        '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController as vm'
-                        },
-                        'meta-view@home.browse' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
-                    },
-                    param: {
-                        entityType : 'datafile'
-                    }
-                })
-
-                /*.state('home.browse.facilities.meta1', {
-                    url: '/?meta1',
-                    views: {
-                        'meta1': {
-                            templateUrl: 'views/meta-panel/1.html'
-                        }
-                    },
-                    sticky: true,
-                    deepStateRedirect: true
-                })
-                .state('home.browse.facilities.meta2', {
-                    url: '/?meta2',
-                    views: {
-                        'meta2': {
-                            templateUrl: 'views/meta-panel/2.html'
-                        }
-                    },
-                    sticky: true,
-                    deepStateRedirect: true
-                })*/
-                .state('home.browse.facilities.search', {
+                .state('home.browse.facility.search', {
                     url: '^/search?data&meta&pagingType&query&type&facility&startDate&endDate',
                     views: {
                         '@home.browse' : {
@@ -419,12 +131,33 @@
                         }
                     }
                 })
+                .state('home.my-data', {
+                    url: '/my-data', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    },
+                    views: {
+                      'my-data': {
+                        templateUrl: 'views/main-my-data.html',
+                        controller: 'MyDataController as md'
+                      }
+                    },
+                    sticky: true,
+                    deepStateRedirect: true
+                })
                 .state('home.cart', {
                     url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    },
                     views: {
                       'cart': {
                         templateUrl: 'views/main-cart.html',
-                        controller: 'CartController as cart'
+                        controller: 'CartController as ct'
                       }
                     },
                     sticky: true,
@@ -483,7 +216,6 @@
         .run(['$rootScope', '$state', function ($rootScope, $state) {
             //watch for state change resolve authentication errors
             $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-                console.log('$stateChangeError called', error);
                 if (error && error.isAuthenticated === false) {
                     $state.go('login');
                 }
@@ -491,9 +223,24 @@
 
             //save last page to rootscope
             /*$rootScope.$on('$stateChangeStart', function() {
-                console.log('previous state', $previousState.get() !== null ? $previousState.get().state.name : $previousState.get());
+                $log.debug.log('previous state', $previousState.get() !== null ? $previousState.get().state.name : $previousState.get());
                 $rootScope.previousState = $previousState.get();
             });*/
 
+        }])
+        .run(['RouteCreatorService', function(RouteCreatorService) {
+            RouteCreatorService.createStates();
+        }])
+        .run(['$rootScope', 'Cart', function($rootScope, Cart) {
+            //listen to cart change events and save the cart
+            $rootScope.$on('Cart:change', function(){
+                Cart.save();
+            });
+
+            Cart.init();
+
+            if (Cart.isRestorable()) {
+                Cart.restore();
+            }
         }]);
 })();

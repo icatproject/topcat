@@ -42,8 +42,6 @@ describe('Service: BrowseEntitiesModel', function() {
     it('configToUIGridOptions for instrument', function() {
         var gridOptions = BrowseEntitiesModel.configToUIGridOptions(JSONFile.facilities.dls, 'instrument');
 
-        console.log('configToUIGridOptions gridOptions', JSON.stringify(gridOptions, undefined, 2));
-
         expect(gridOptions).toEqual(jasmine.objectContaining(
             {
                 'enableFiltering': true

@@ -15,6 +15,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-string-replace');
+
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
@@ -75,9 +77,9 @@ module.exports = function (grunt) {
         hostname: (env === 'production') ? '0.0.0.0' : 'localhost',
         protocol: 'https',
         port: 9000,
-        key: grunt.file.read('certs/key.pem').toString(),
-        cert: grunt.file.read('certs/cert.pem').toString(),
-        //ca: grunt.file.read('certs/ca.crt').toString(),
+        key: (env === 'production') ? grunt.file.read('certs/key.crt').toString() :  grunt.file.read('certs/key.pem').toString(),
+        cert: (env === 'production') ? grunt.file.read('certs/cert.crt').toString() : grunt.file.read('certs/cert.pem').toString(),
+        ca: (env === 'production') ? [grunt.file.read('certs/root.crt').toString(), grunt.file.read('certs/intermediate.crt').toString()] : false,
         livereload: (env === 'production') ? false : 35729
       },
       livereload: {
@@ -384,6 +386,33 @@ module.exports = function (grunt) {
       }
     },
 
+    'string-replace': {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= yeoman.app %>/data',
+          src: 'config-multi.json',
+          dest: '<%= yeoman.dist %>/data'
+        }],
+        options: {
+          replacements: [
+            // place files inline example
+            {
+              pattern: '"icatDataProxyHost": "https://localhost:3001"',
+              replacement: function() {
+                if (env === 'production') {
+                  return '"icatDataProxyHost": "https://topcat-dev.esc.rl.ac.uk:3001"';
+                } else {
+                  return '"icatDataProxyHost": "https://localhost:3001"';
+                }
+
+              }
+            }
+          ]
+        }
+      }
+    },
+
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
@@ -452,7 +481,8 @@ module.exports = function (grunt) {
     'uglify',
     'filerev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'string-replace'
   ]);
 
   grunt.registerTask('default', [

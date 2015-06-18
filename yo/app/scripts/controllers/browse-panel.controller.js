@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowsePanelController', BrowsePanelController);
 
-    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'DataTableAODataBuilder'];
+    BrowsePanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'DTOptionsBuilder', 'DTColumnBuilder', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'DataTableAODataBuilder', '$log'];
 
-    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, DataTableAODataBuilder) {
+    function BrowsePanelController($rootScope, $scope, $state, $stateParams, $filter, $compile, DTOptionsBuilder, DTColumnBuilder, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, DataTableAODataBuilder, $log) {
         $scope.message = null;
         var vm = this;
         //var facility = 0;
@@ -36,14 +36,14 @@
             $rootScope.ref = [];
         }
 
-        console.log('$state:', $state);
-        console.log('$stateParams:', $stateParams);
-        console.log('Current facility name :', facilityName);
-        console.log('structure:', structure);
-        console.log('currentEntityType: ' + currentEntityType);
-        console.log('nextEntityType: ' + nextEntityType);
-        console.log('currentRouteSegment: ' + currentRouteSegment);
-        console.log('sessions: ', sessions);
+        $log.debug('$state:', $state);
+        $log.debug('$stateParams:', $stateParams);
+        $log.debug('Current facility name :', facilityName);
+        $log.debug('structure:', structure);
+        $log.debug('currentEntityType: ' + currentEntityType);
+        $log.debug('nextEntityType: ' + nextEntityType);
+        $log.debug('currentRouteSegment: ' + currentRouteSegment);
+        $log.debug('sessions: ', sessions);
 
         vm.rowClickHandler = rowClickHandler;
 
@@ -65,7 +65,7 @@
                         };
 
                         var params = getAoDataParams(currentRouteSegment, APP_CONFIG, queryParams, stateParamClone);
-                        console.log('params', params);
+                        $log.debug('params', params);
 
                         _.each(params, function(value, key){
                             aoData.push({
@@ -84,9 +84,9 @@
                     })
                     .withOption('serverSide', true)
                     .withOption('fnServerParams', function(aoData) {
-                        console.log('before', aoData);
+                        $log.debug('before', aoData);
                         aoData = [];
-                        console.log('after', aoData);
+                        $log.debug('after', aoData);
                     })
                     .withPaginationType('full_numbers')
                     .withDOM('frtip')
@@ -113,7 +113,7 @@
                         };
 
                         var params = getAoDataParams(currentRouteSegment, APP_CONFIG, queryParams, stateParamClone);
-                        console.log('params', params);
+                        $log.debug('params', params);
 
                         _.each(params, function(value, key){
                             aoData.push({
@@ -212,91 +212,91 @@
 
             switch (currentRouteSegment) {
                 case 'facility-instrument':
-                    console.log('DataTableAODataBuilder.getInstruments() called');
+                    $log.debug('DataTableAODataBuilder.getInstruments() called');
 
                     return DataTableAODataBuilder.getInstruments(mySessionId, facility, queryParams, absUrl);
                 case 'facility-cycle':
-                    console.log('DataTableAODataBuilder.getCycles() called');
+                    $log.debug('DataTableAODataBuilder.getCycles() called');
 
                     return DataTableAODataBuilder.getCyclesByFacilityId(mySessionId, facility, queryParams, absUrl);
                 case 'facility-investigation':
-                    console.log('DataTableAODataBuilder.getInvestigations() called');
+                    $log.debug('DataTableAODataBuilder.getInvestigations() called');
 
                     return DataTableAODataBuilder.getInvestigations(mySessionId, facility, queryParams, absUrl);
                 case 'facility-dataset':
-                    console.log('DataTableAODataBuilder.getDatasets() called');
+                    $log.debug('DataTableAODataBuilder.getDatasets() called');
 
                     return DataTableAODataBuilder.getDatasets(mySessionId, facility, queryParams, absUrl);
                 case 'facility-datafile':
-                    console.log('DataTableAODataBuilder.getDatafiles() called');
+                    $log.debug('DataTableAODataBuilder.getDatafiles() called');
 
                     return DataTableAODataBuilder.getDatafiles(mySessionId, facility, queryParams, absUrl);
                 case 'instrument-cycle':
-                    console.log('DataTableAODataBuilder.getCyclesByInstruments() called');
+                    $log.debug('DataTableAODataBuilder.getCyclesByInstruments() called');
                     queryParams.instrumentId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getCyclesByInstruments(mySessionId, facility, queryParams, absUrl);
                 case 'instrument-investigation':
-                    console.log('DataTableAODataBuilder.getInvestigationsByInstrumentId() called');
+                    $log.debug('DataTableAODataBuilder.getInvestigationsByInstrumentId() called');
                     queryParams.instrumentId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getInvestigationsByInstrumentId(mySessionId, facility, queryParams, absUrl);
                 case 'instrument-dataset':
-                    console.log('DataTableAODataBuilder.getDatasetsByInstrumentId() called');
+                    $log.debug('DataTableAODataBuilder.getDatasetsByInstrumentId() called');
 
                     queryParams.instrumentId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getDatasetsByInstrumentId(mySessionId, facility, queryParams, absUrl);
                 case 'instrument-datafile':
-                    console.log('DataTableAODataBuilder.getDatafilesByInstrumentId() called');
+                    $log.debug('DataTableAODataBuilder.getDatafilesByInstrumentId() called');
 
                     queryParams.instrumentId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getDatafilesByInstrumentId(mySessionId, facility, queryParams, absUrl);
                 case 'cycle-instrument':
-                    console.log('DataTableAODataBuilder.getInstrumentsByCycleId() called');
+                    $log.debug('DataTableAODataBuilder.getInstrumentsByCycleId() called');
 
                     queryParams.cycleId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getInstrumentsByCycleId(mySessionId, facility, queryParams, absUrl);
                 case 'cycle-investigation':
-                    console.log('DataTableAODataBuilder.getCyclesByInvestigationId() called');
+                    $log.debug('DataTableAODataBuilder.getCyclesByInvestigationId() called');
 
                     queryParams.cycleId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getInvestigationsByCycleId(mySessionId, facility, queryParams, absUrl);
                 case 'cycle-dataset':
-                    console.log('DataTableAODataBuilder.getDatasetsByCycleId() called');
+                    $log.debug('DataTableAODataBuilder.getDatasetsByCycleId() called');
 
                     queryParams.cycleId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getDatasetsByCycleId(mySessionId, facility, queryParams, absUrl);
                 case 'cycle-datafile':
-                    console.log('DataTableAODataBuilder.getDatafilesByCycleId() called');
+                    $log.debug('DataTableAODataBuilder.getDatafilesByCycleId() called');
 
                     queryParams.cycleId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getDatafilesByCycleId(mySessionId, facility, queryParams, absUrl);
                 case 'investigation-dataset':
-                    console.log('DataTableAODataBuilder.getDatasetsByInvestigationId() called');
+                    $log.debug('DataTableAODataBuilder.getDatasetsByInvestigationId() called');
 
                     queryParams.investigationId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getDatasetsByInvestigationId(mySessionId, facility, queryParams, absUrl);
                 case 'investigation-datafile':
-                    console.log('DataTableAODataBuilder.getDatafilesByInvestigationId() called');
+                    $log.debug('DataTableAODataBuilder.getDatafilesByInvestigationId() called');
 
                     queryParams.investigationId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getDatafilesByInvestigationId(mySessionId, facility, queryParams, absUrl);
                 case 'dataset-datafile':
-                    console.log('DataTableAODataBuilder.getDatafilesByDatasetId() called');
+                    $log.debug('DataTableAODataBuilder.getDatafilesByDatasetId() called');
 
                     queryParams.datasetId = stateParamClone.id;
 
                     return DataTableAODataBuilder.getDatafilesByDatasetId(mySessionId, facility, queryParams, absUrl);
                 default:
-                    console.log('default called');
+                    $log.debug('default called');
                     return;
             }
         }
@@ -314,55 +314,55 @@
 
             switch (currentRouteSegment) {
                 case 'facility-instrument':
-                    console.log('function called: getInstruments');
+                    $log.debug('function called: getInstruments');
                     return DataManager.getInstruments(sessions, facility);
                 case 'facility-cycle':
-                    console.log('function called: getCycles');
+                    $log.debug('function called: getCycles');
                     return DataManager.getCyclesByFacilityId(sessions, facility);
                 case 'facility-investigation':
-                    console.log('function called: getInvestigations');
+                    $log.debug('function called: getInvestigations');
                     return DataManager.getInvestigations(sessions, facility);
                 case 'facility-dataset':
-                    console.log('function called: getDatasets');
+                    $log.debug('function called: getDatasets');
                     return DataManager.getDatasets(sessions, facility);
                 case 'facility-datafile':
-                    console.log('function called: getDatafiles');
+                    $log.debug('function called: getDatafiles');
                     return DataManager.getDatafiles(sessions, facility);
                 case 'instrument-cycle':
-                    console.log('function called: getCyclesByInstruments');
+                    $log.debug('function called: getCyclesByInstruments');
                     return DataManager.getCyclesByInstruments(sessions, facility, $stateParams.id);
                 case 'instrument-investigation':
-                    console.log('function called: getInvestigationsByInstrumentId');
+                    $log.debug('function called: getInvestigationsByInstrumentId');
                     return DataManager.getInvestigationsByInstrumentId(sessions, facility, $stateParams.id);
                 case 'instrument-dataset':
-                    console.log('function called: getDatasetsByInstrumentId');
+                    $log.debug('function called: getDatasetsByInstrumentId');
                     return DataManager.getDatasetsByInstrumentId(sessions, facility, $stateParams.id);
                 case 'instrument-datafile':
-                    console.log('function called: getDatafilesByInstrumentId');
+                    $log.debug('function called: getDatafilesByInstrumentId');
                     return DataManager.getDatafilesByInstrumentId(sessions, facility, $stateParams.id);
                 case 'cycle-instrument':
-                    console.log('function called: getInstrumentsByCycleId');
+                    $log.debug('function called: getInstrumentsByCycleId');
                     return DataManager.getInstrumentsByCycleId(sessions, facility, $stateParams.id);
                 case 'cycle-investigation':
-                    console.log('function called: getCyclesByInvestigationId');
+                    $log.debug('function called: getCyclesByInvestigationId');
                     return DataManager.getInvestigationsByCycleId(sessions, facility, $stateParams.id);
                 case 'cycle-dataset':
-                    console.log('function called: getDatasetsByCycleId');
+                    $log.debug('function called: getDatasetsByCycleId');
                     return DataManager.getDatasetsByCycleId(sessions, facility, $stateParams.id);
                 case 'cycle-datafile':
-                    console.log('function called: getDatafilesByCycleId');
+                    $log.debug('function called: getDatafilesByCycleId');
                     return DataManager.getDatafilesByCycleId(sessions, facility, $stateParams.id);
                 case 'investigation-dataset':
-                    console.log('function called: getDatasetsByInvestigationId');
+                    $log.debug('function called: getDatasetsByInvestigationId');
                     return DataManager.getDatasetsByInvestigationId(sessions, facility, $stateParams.id);
                 case 'investigation-datafile':
-                    console.log('function called: getDatafilesByInvestigationId');
+                    $log.debug('function called: getDatafilesByInvestigationId');
                     return DataManager.getDatafilesByInvestigationId(sessions, facility, $stateParams.id);
                 case 'dataset-datafile':
-                    console.log('function called: getDatafilesByDatasetId');
+                    $log.debug('function called: getDatafilesByDatasetId');
                     return DataManager.getDatafilesByDatasetId(sessions, facility, $stateParams.id);
                 default:
-                    console.log('function called: default');
+                    $log.debug('function called: default');
                     return;
             }
         }*/
@@ -431,7 +431,7 @@
                             //add facility id to $stateParams
                             $stateParams.id = full.id;
 
-                            return "<a ui-sref='home.browse.facilities." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
+                            return "<a ui-sref='home.browse.facility." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + data + '</a>'; // jshint ignore:line
 
                         } else {
                             return data;
@@ -452,7 +452,7 @@
                                 //add facility id to $stateParams
                                 $stateParams.id = full.id;
 
-                                return "<a ui-sref='home.browse.facilities." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
+                                return "<a ui-sref='home.browse.facility." + RouteUtils.getNextRouteSegmentName(structure, currentEntityType) + '(' + JSON.stringify($stateParams) + ")'>" + $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters) + '</a>'; // jshint ignore:line
                             } else {
                                 //no link
                                 return $filter(column[meta.col].expressionFilter.name)(data, column[meta.col].expressionFilter.characters);

@@ -7,9 +7,6 @@ describe('service:test', function () {
             //var validRespond = readJSON('/data/config.json');
             //var data = $httpBackend.whenGET(/.*/).respond(validRespond);
 
-            console.log('hellofdsafdsfsdfsdfsdafdsafdsfsda');
-
-
             $provide.constant('APP_CONFIG', { someUrl: '/data/config.json' });
         });
     });

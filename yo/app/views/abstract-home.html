@@ -1,8 +1,10 @@
 <div class="row">
     <ul class="nav nav-tabs nav-tabs-head" role="tablist">
-        <li ng-class="{active : $state.includes('home.browse.facilities')}"><a ui-sref="home.browse.facilities" role="tab" translate="MAIN_NAVIGATION.MAIN_TAB.BROWSE"></a></li>
+        <li ui-sref-active="active"><a ui-sref="home.my-data" role="tab" translate="MAIN_NAVIGATION.MAIN_TAB.MY_DATA"></a></li>
+        <li ng-class="{active : $state.includes('home.browse.facility')}"><a ui-sref="home.browse.facility" role="tab" translate="MAIN_NAVIGATION.MAIN_TAB.BROWSE"></a></li>
         <li ui-sref-active="active"><a ui-sref="home.cart" role="tab" translate="MAIN_NAVIGATION.MAIN_TAB.CART"></a></li>
     </ul>
-    <div ui-view ng-show="$state.includes('home.browse.facilities')"></div>
+    <div ui-view="my-data" ng-show="$state.includes('home.my-data')"></div>
+    <div ui-view ng-show="$state.includes('home.browse.facility')"></div>
     <div ui-view="cart" ng-show="$state.includes('home.cart')"></div>
 </div>

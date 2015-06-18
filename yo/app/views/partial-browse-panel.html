@@ -1,21 +1,22 @@
-<ul class="breadcrumb" style="position: absolute;" ng-show="vm.currentEntityType != 'facility'">
+<!-- <ul class="breadcrumb" style="position: absolute;" ng-show="vm.currentEntityType != 'facility'">
     <li ng-repeat="item in vm.structure">
         <span ng-class="{current : vm.currentEntityType == item}">{{ item }}</span>
     </li>
-</ul>
+</ul> -->
+<div bread-crumb></div>
 <div>
-    <div ng-if="vm.isScroll" ui-grid="vm.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="browseGrid">
+    <div ng-if="vm.isScroll" ui-grid="vm.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="browse-grid">
         <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 emptyMessage">
-                <span>Nothing to display</span>
+            <div class="col-md-2 col-md-offset-5 empty-message">
+                <span translate="BROWSE.EMPTY"></span>
             </div>
         </div>
     </div>
 
-    <div ng-if="!vm.isScroll" ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-selection class="browseGrid">
+    <div ng-if="!vm.isScroll" ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-selection class="browse-grid">
         <div class="row" ng-show="isEmpty">
-            <div class="emptyMessage center-block">
-                <span>Nothing to display</span>
+            <div class="empty-message center-block">
+                <span translate="BROWSE.EMPTY"></span>
             </div>
         </div>
     </div>

@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('ModalInstanceController', ModalInstanceController);
 
-    ModalInstanceController.$inject = ['$modalInstance', 'searchFormData'];
+    ModalInstanceController.$inject = ['$modalInstance', 'searchFormData', '$log'];
 
-    function ModalInstanceController($modalInstance, searchFormData) {
+    function ModalInstanceController($modalInstance, searchFormData, $log) {
         //modal
         var vm = this;
 
@@ -20,7 +20,7 @@
         vm.ok = function(modalForm) {
             //TODO need to prevent duplicate parameters being added here
             if (angular.isDefined(searchFormData.parameters)) {
-                console.log(searchFormData.parameters);
+                $log.debug(searchFormData.parameters);
             }
 
             $modalInstance.close(modalForm);
