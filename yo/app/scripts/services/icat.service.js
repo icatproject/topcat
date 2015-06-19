@@ -186,6 +186,31 @@
             return $http.delete(url, params);
         };
 
+
+        /**
+         * Get session
+         * @param  {[type]} mySessionId [description]
+         * @param  {[type]} facility    [description]
+         * @param  {[type]} options     [description]
+         * @return {[type]}             [description]
+         */
+        data.getSession = function(mySessionId, facility, options) { //jshint ignore:line
+            $log.debug('icatservice.getSession called for facility', mySessionId, facility, options);
+
+            var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId;
+            var params = {
+                params : {
+                    server : encodeURIComponent(facility.icatUrl)
+                },
+                headers : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title
+                }
+            };
+
+            return $http.get(url, params);
+        };
+
         /**
          * Get ICAT version
          * @param  {[type]} facility [description]

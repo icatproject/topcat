@@ -118,14 +118,25 @@
 
             ICATService.login(facility, credential)
                 .success(function(data) {
-                    def.resolve(data);
+                    return data;
                 })
-                .error(function(error, status) {
-                    $log.debug('login status', status);
-
+                .error(function(error, status) { //jshint ignore: line
                     def.reject('Failed to login');
                     throw new MyException('Failed to login:' + error);
-                });
+                })
+            .then(function(loginData){
+                ICATService.getSession(loginData.data.sessionId, facility, {})
+                    .success(function(data) {
+                        def.resolve({
+                            sessionId: loginData.data.sessionId,
+                            userName: data.userName
+                        });
+                    })
+                    .error(function(error, status) { //jshint ignore: line
+                        def.reject('Failed to login');
+                        throw new MyException('Failed to login:' + error);
+                    });
+            });
 
             return def.promise;
         };
@@ -152,6 +163,29 @@
                     $log.debug('logout status', status);
 
                     def.reject('Failed to login');
+                    throw new MyException('Failed to login:' + error);
+                });
+
+            return def.promise;
+        };
+
+        /**
+         * Perform a logout
+         * @param  {[type]} sessions [description]
+         * @param  {[type]} facility [description]
+         * @param  {[type]} options  [description]
+         * @return {[type]}          [description]
+         */
+        manager.getUserName = function(sessions, facility, options) {
+            var sessionId = getSessionValueForFacility(sessions, facility);
+            var def = $q.defer();
+
+            ICATService.getSession(sessionId, facility, options)
+                .success(function(data) {
+                    def.resolve(data.sessionId);
+                })
+                .error(function(error, status) { //jshint ignore: line
+                    def.reject('Failed to get session information');
                     throw new MyException('Failed to login:' + error);
                 });
 
