@@ -8,36 +8,7 @@
 
     function ICATQueryBuilder(ICATAlias, $log) {
         //private methods
-        /**
-         * taken from angualr source to build query string
-         * @param  {[type]} obj      [description]
-         * @param  {[type]} iterator [description]
-         * @param  {[type]} context  [description]
-         * @return {[type]}          [description]
-         */
-        /*function forEachSorted(obj, iterator, context) {
-            var keys = sortedKeys(obj);
-            for (var i = 0; i < keys.length; i++) {
-                iterator.call(context, obj[keys[i]], keys[i]);
-            }
-            return keys;
-        }*/
-
-        /**
-         * sort keys
-         * @param  {[type]} obj [description]
-         * @return {[type]}     [description]
-         */
-        /*function sortedKeys(obj) {
-            var keys = [];
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    keys.push(key);
-                }
-            }
-            return keys.sort();
-        }*/
-
+        //
         /**
          * squel expects false for DESC order
          * @param  {[type]} order [description]
@@ -287,6 +258,8 @@
 
 
             getInvestigations: function(mySessionId, facility, queryParams) {
+                $log.debug('getInvestigations fired');
+
                 validateRequiredArguments(mySessionId, facility, queryParams);
 
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
@@ -306,6 +279,20 @@
                         squel.expr()
                             .and('f.id = ?', facility.facilityId)
                     );
+
+                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                    query.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+
+                    countQuery.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+                }
 
                 var searchExpr = getSearchExpr(queryParams, 'investigation');
 
@@ -609,6 +596,8 @@
             getDatasets: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
 
+                $log.debug(queryParams);
+
                 var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                     .field('COUNT(ds)')
                     .from('Dataset', 'ds')
@@ -628,6 +617,20 @@
                         squel.expr()
                             .and('f.id = ?', facility.facilityId)
                     );
+
+                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                    query.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+
+                    countQuery.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+                }
 
                 var searchExpr = getSearchExpr(queryParams, 'dataset');
 

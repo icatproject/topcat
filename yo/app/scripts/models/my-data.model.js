@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('MyDataModel', MyDataModel);
 
-MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', '$sessionStorage', '$log'];
+MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', 'IdsManager', '$timeout', '$state', 'Cart', '$sessionStorage', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,13 +12,41 @@ MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'Rou
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, $sessionStorage, $log){  //jshint ignore: line
+function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, $log){  //jshint ignore: line
+    function hasField(options, field) {
+        var result = false;
+        //determine if field size has been defined
+        _.each(options.columnDefs, function(col) {
+            if (typeof col.field !== 'undefined' && col.field === field) {
+                result = true;
+                return false;
+            }
+        });
+
+        return result;
+    }
+
+    function getDataPromise(entityType, sessions, facility, options) {
+        var promise;
+
+        switch(entityType) {
+            case 'investigation':
+                promise = DataManager.getInvestigations(sessions, facility, options);
+                break;
+            case 'dataset':
+                promise = DataManager.getDatasets(sessions, facility, options);
+            break;
+        }
+
+        return promise;
+    }
+
     return {
         gridOptions : {},
         nextRouteSegment: null,
         facility: null,
         stateParams: null,
-        currentEntityType: null,
+        entityType: null,
         loggedInFacilitites: null,
 
         /**
@@ -26,11 +54,11 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
          *
          * @return {[type]} [description]
          */
-        configToUIGridOptions : function() {
+        configToUIGridOptions : function(entityType) {
             //$log.debug('MyDataModel configToUIGridOptions called');
-            //$log.debug('MyDataModel configToUIGridOptions currentEntityType', currentEntityType);
+            //$log.debug('MyDataModel configToUIGridOptions entityType', entityType);
 
-            var gridOptions = Config.getSiteMyDataGridOptions(APP_CONFIG).investigation;
+            var gridOptions = Config.getSiteMyDataGridOptions(APP_CONFIG)[entityType];
 
             //$log.debug('MyDataModel gridOptions', gridOptions);
 
@@ -74,6 +102,23 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                     //value.suppressRemoveSort = true;
                 }
 
+                //size column
+                //make sure for only investigation and dataset
+                if (entityType === 'investigation' || entityType === 'dataset') {
+                    if(angular.isDefined(value.field) && value.field === 'size') {
+                        value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.size | bytes }}</span></div>';
+                        value.enableSorting = false;
+                    }
+                }
+
+
+                if(angular.isDefined(value.field) && value.field === 'facility') {
+                    value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.facilityTitle | bytes }}</span></div>';
+                    value.enableSorting = false;
+                }
+
+
+
                 return value;
             });
 
@@ -81,17 +126,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         },
 
 
-        init : function(facilityObjs, scope, currentEntityType, currentRouteSegment, sessions, $stateParams) {
-            var options = this.configToUIGridOptions();
-
-            //var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
-            //var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, currentEntityType);
-
+        init : function(facilityObjs, scope, entityType, currentRouteSegment, sessions, $stateParams) {
+            var options = this.configToUIGridOptions(entityType);
             var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
             var pageSize = Config.getSitePageSize(APP_CONFIG, pagingType); //the number of rows for grid
             var scrollRowFromEnd = Config.getSiteConfig(APP_CONFIG).scrollRowFromEnd;
             var paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
             var gridOptions = {};
+            var hasSizeField = hasField(options, 'size');
 
             var enableSelection = function() {
                 if (angular.isDefined(options.enableSelection) && options.enableSelection === true) {
@@ -119,21 +161,23 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             var getPage = function() {
                 //$log.debug('getpage called', paginateParams);
                 ConfigUtils.getLoggedInFacilities(facilityObjs, sessions).then(function (data){
-                        $log.debug('promise data', data);
-
                         _.each(data, function(facility) {
-                            var options = _.extend($stateParams, paginateParams);
+                            var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
+                            var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, entityType);
 
-                            DataManager.getInvestigations(sessions, facility, options).then(function(data){
+                            var options = _.extend($stateParams, paginateParams);
+                            options.user = true;
+
+                            getDataPromise(entityType, sessions, facility, options).then(function(data){
                                 gridOptions.totalItems = gridOptions.totalItems || 0;
-                                $log.log('gridOptions.totalItems', gridOptions.totalItems);
+                                //$log.log('gridOptions.totalItems', gridOptions.totalItems);
                                 gridOptions.data = gridOptions.data.concat(data.data);
                                 gridOptions.totalItems = gridOptions.totalItems + data.totalItems;
 
-                                $log.log('gridOptions.totalItems', gridOptions.totalItems);
+                                /*$log.log('gridOptions.totalItems', gridOptions.totalItems);
                                 $log.log('data.totalItems', data.totalItems);
                                 $log.log('gridOptions', gridOptions.data);
-                                $log.log('totalItems', gridOptions.totalItems);
+                                $log.log('totalItems', gridOptions.totalItems);*/
 
                                 /*if (data.totalItems === 0) {
                                     scope.isEmpty = true;
@@ -154,11 +198,34 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                         /*if (_.has(scope.mySelection, row.entity.id)) {
                                             scope.gridApi.selection.selectRow(row.entity);
                                         }*/
+                                        //fill size data
+                                        if (hasSizeField) {
+                                            if (entityType === 'investigation' || entityType === 'dataset') {
+                                                if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                                    var params = {};
+                                                    params[entityType  + 'Ids'] = row.entity.id;
 
-                                        if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
+                                                    //disable until icat GC problem is fixed
+                                                    /*IdsManager.getSize(sessions, facility, params).then(function(data){
+                                                        $log.debug('IdsManager.getSize called');
+                                                        row.entity.size = parseInt(data);
+                                                    });*/
+                                                }
+
+                                                //inject information into row data
+                                                if (typeof row.entity.facilityName === 'undefined') {
+                                                    row.entity.nextRouteSegment = nextRouteSegment;
+                                                    row.entity.facilityTitle = facility.title;
+                                                    row.entity.facilityName = facility.facilityName;
+                                                }
+                                            }
+                                        }
+
+                                        if (Cart.hasItem(facility.facilityName, entityType, row.entity.id)) {
                                            scope.gridApi.selection.selectRow(row.entity);
                                         }
                                     });
+
 
                                 }, 0);
                             }, function(){
@@ -179,28 +246,56 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
              * @return {[type]} [description]
              */
             var appendPage = function() {
-                //$log.debug('append called', paginateParams);
+                ConfigUtils.getLoggedInFacilities(facilityObjs, sessions).then(function (data){
+                    _.each(data, function(facility) {
+                        var options = _.extend($stateParams, paginateParams);
+                        options.user = true;
 
-                /*DataManager.getData(currentRouteSegment, facility.facilityName, sessions, $stateParams, paginateParams).then(function(data){
-                    gridOptions.data = gridOptions.data.concat(data.data);
-                    gridOptions.totalItems = data.totalItems;
+                        getDataPromise(entityType, sessions, facility, options).then(function(data){
+                            gridOptions.data = gridOptions.data.concat(data.data);
+                            gridOptions.totalItems = data.totalItems;
 
-                    $timeout(function() {
-                        var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
+                            $timeout(function() {
+                                var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
 
-                        //pre-select items in cart here
-                        _.each(rows, function(row) {
-                            if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
-                               scope.gridApi.selection.selectRow(row.entity);
-                            }
+                                //pre-select items in cart here
+                                _.each(rows, function(row) {
+                                    //fill size data
+                                    if (hasSizeField) {
+                                        if (entityType === 'investigation' || entityType === 'dataset') {
+                                            if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                                var params = {};
+                                                params[entityType  + 'Ids'] = row.entity.id;
+
+                                                //disable until icat GC problem is fixed
+                                                /*IdsManager.getSize(sessions, facility, params).then(function(data){
+                                                    $log.debug('IdsManager.getSize called');
+                                                    row.entity.size = parseInt(data);
+                                                });*/
+                                            }
+
+                                            //inject facilityTitle and facilityName to row data
+                                            if (typeof row.entity.facilityName === 'undefined') {
+                                                row.entity.facilityTitle = facility.title;
+                                                row.entity.facilityName = facility.facilityName;
+                                            }
+                                        }
+                                    }
+
+                                    if (Cart.hasItem(facility.facilityName, entityType, row.entity.id)) {
+                                       scope.gridApi.selection.selectRow(row.entity);
+                                    }
+                                });
+
+                            }, 0);
+
+
+                        }, function(){
+
                         });
 
-                    }, 0);
-
-
-                }, function(){
-
-                });*/
+                    });
+                });
             };
 
             /**
@@ -208,39 +303,72 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
              * @return {[type]} [description]
              */
             var prependPage = function() {
-                /*DataManager.getData(currentRouteSegment, facility.facilityName, sessions, $stateParams, paginateParams).then(function(data){
-                    gridOptions.data = data.data.concat(gridOptions.data);
-                    gridOptions.totalItems = data.totalItems;
+                ConfigUtils.getLoggedInFacilities(facilityObjs, sessions).then(function (data){
+                    _.each(data, function(facility) {
+                        var options = _.extend($stateParams, paginateParams);
+                        options.user = true;
 
-                    $timeout(function() {
-                        var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
+                        getDataPromise(entityType, sessions, facility, options).then(function(data){
+                            gridOptions.data = gridOptions.data.concat(data.data);
+                            gridOptions.totalItems = data.totalItems;
 
-                        //pre-select items in cart here
-                        _.each(rows, function(row) {
-                            if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
-                               scope.gridApi.selection.selectRow(row.entity);
-                            }
+                            $timeout(function() {
+                                var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
+
+                                //pre-select items in cart here
+                                _.each(rows, function(row) {
+                                    //fill size data
+                                    if (hasSizeField) {
+                                        if (entityType === 'investigation' || entityType === 'dataset') {
+                                            if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                                var params = {};
+                                                params[entityType  + 'Ids'] = row.entity.id;
+
+                                                //disable until icat GC problem is fixed
+                                                /*IdsManager.getSize(sessions, facility, params).then(function(data){
+                                                    $log.debug('IdsManager.getSize called');
+                                                    row.entity.size = parseInt(data);
+                                                });*/
+                                            }
+
+                                            //inject facilityTitle and facilityName to row data
+                                            if (typeof row.entity.facilityName === 'undefined') {
+                                                row.entity.facilityTitle = facility.title;
+                                                row.entity.facilityName = facility.facilityName;
+                                            }
+                                        }
+                                    }
+
+                                    if (Cart.hasItem(facility.facilityName, entityType, row.entity.id)) {
+                                       scope.gridApi.selection.selectRow(row.entity);
+                                    }
+                                });
+
+                            }, 0);
+
+
+                        }, function(){
+
                         });
-                    }, 0);
-                }, function(){
 
-                });*/
+                    });
+                });
             };
 
             var refreshSelection = function() {
-                /*$timeout(function() {
+                $timeout(function() {
                     var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
 
                     //pre-select items in cart here
                     _.each(rows, function(row) {
-                        if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
+                        if (Cart.hasItem(row.entity.facilityName, entityType, row.entity.id)) {
                            scope.gridApi.selection.selectRow(row.entity);
                         } else {
                             scope.gridApi.selection.unSelectRow(row.entity);
                         }
                     });
 
-                }, 0);*/
+                }, 0);
             };
 
             $rootScope.$on('Cart:itemRemoved', function(){
@@ -318,21 +446,21 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){ //jshint ignore: line
-                        /*if (row.isSelected === true) {
-                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name);
+                        if (row.isSelected === true) {
+                            Cart.addItem(row.entity.facilityName, entityType, row.entity.id, row.entity.name);
                         } else {
-                            Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
-                        }*/
+                            Cart.removeItem(row.entity.facilityName, entityType, row.entity.id);
+                        }
                     });
 
                     scope.gridApi.selection.on.rowSelectionChangedBatch (scope, function(rows){ //jshint ignore: line
                         var addedItems = [];
                         var removedItems = [];
 
-                        /*_.each(rows, function(row) {
+                        _.each(rows, function(row) {
                             var item = {
-                                facilityName: facility.facilityName,
-                                entityType: currentEntityType,
+                                facilityName: row.entity.facilityName,
+                                entityType: entityType,
                                 id: row.entity.id,
                                 name: row.entity.name
                             };
@@ -342,7 +470,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                             } else {
                                 removedItems.push(item);
                             }
-                        });*/
+                        });
 
                         if (addedItems.length !== 0) {
                             Cart.addItems(addedItems);
@@ -454,21 +582,21 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){ //jshint ignore: line
-                        /*if (row.isSelected === true) {
-                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name);
+                        if (row.isSelected === true) {
+                            Cart.addItem(row.entity.facilityName, entityType, row.entity.id, row.entity.name);
                         } else {
-                            Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
-                        }*/
+                            Cart.removeItem(row.entity.facilityName, entityType, row.entity.id);
+                        }
                     });
 
                     scope.gridApi.selection.on.rowSelectionChangedBatch (scope, function(rows){ //jshint ignore: line
                         var addedItems = [];
                         var removedItems = [];
 
-                        /*_.each(rows, function(row) {
+                        _.each(rows, function(row) {
                             var item = {
-                                facilityName: facility.facilityName,
-                                entityType: currentEntityType,
+                                facilityName: row.entity.facilityName,
+                                entityType: entityType,
                                 id: row.entity.id,
                                 name: row.entity.name
                             };
@@ -478,7 +606,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                             } else {
                                 removedItems.push(item);
                             }
-                        });*/
+                        });
 
                         if (addedItems.length !== 0) {
                             Cart.addItems(addedItems);
@@ -497,26 +625,28 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             this.gridOptions = gridOptions;
             //this.nextRouteSegment = nextRouteSegment;
             //this.facility = facility;
-            this.currentEntityType = currentEntityType;
+            this.entityType = entityType;
             this.stateParams = angular.copy($stateParams);
         },
 
         getNextRouteUrl: function (row) {
+            //$log.log('row', row);
             var params = {
-                facilityName : this.facility.facilityName,
-                //id : row.entity.id
+                facilityName : row.entity.facilityName,
             };
 
-            params[this.currentEntityType + 'Id'] = row.entity.id;
+            //TODO need additional parameter values in order to build url.
+            //The parameters required will be base on the hierarchy of the entityType
+
+            params[this.entityType + 'Id'] = row.entity.id;
 
             _.each(this.stateParams, function(value, key){
-                /*if (_.isNumber(value)) {
-                    value = parseInt(value);
-                }*/
                 params[key] = value;
             });
 
-            var route = $state.href('home.browse.facility.' + this.nextRouteSegment, params);
+            var route = $state.href('home.browse.facility.' + row.entity.nextRouteSegment, params);
+
+            //$log.debug(row.entity.nextRouteSegment, params);
 
             return route;
         }

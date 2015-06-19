@@ -111,7 +111,9 @@
                 "START_DATE": "Start Date",
                 "END_DATE": "End Date",
                 "DOI": "Doi",
-                "RELEASE_DATE": "Release Date"
+                "RELEASE_DATE": "Release Date",
+                "SIZE" : "Size",
+                "FACILITY" : "Facility"
             },
             "DATASET":{
                 "ID": "Id",
@@ -124,7 +126,8 @@
                 "COMPLETE": "complete",
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
-                "SIZE" : "Size"
+                "SIZE" : "Size",
+                "FACILITY" : "Facility"
             },
             "DATAFILE":{
                 "ID": "Id",

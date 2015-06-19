@@ -12,18 +12,19 @@
         var vm = this;
 
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
-        var currentEntityType = RouteService.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+        //var currentEntityType = RouteService.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+        var entityType = Config.getSiteMyDataGridEntityType(APP_CONFIG);
 
         var facilities = Config.getFacilities(APP_CONFIG);
 
         var currentRouteSegment = RouteService.getCurrentRouteSegmentName($state);
         var sessions = $sessionStorage.sessions;
 
-        vm.currentEntityType = currentEntityType;
+        //vm.currentEntityType = currentEntityType;
         vm.isScroll = (pagingType === 'scroll') ? true : false;
 
         $scope.isEmpty = false;
-        MyDataModel.init(facilities, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
+        MyDataModel.init(facilities, $scope, entityType, currentRouteSegment, sessions, $stateParams);
 
         vm.gridOptions = MyDataModel.gridOptions;
 

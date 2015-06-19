@@ -279,15 +279,18 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                         //pre-select items in cart here
                         _.each(rows, function(row) {
                             //file size data
-                            if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
-                                if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
-                                    var params = {};
-                                    params[currentEntityType  + 'Ids'] = row.entity.id;
+                            if (hasSizeField) {
+                                //$log.debug('has size field');
+                                if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
+                                    if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                        var params = {};
+                                        params[currentEntityType  + 'Ids'] = row.entity.id;
 
-                                    IdsManager.getSize(sessions, facility, params).then(function(data){
-                                        $log.debug('IdsManager.getSize called');
-                                        row.entity.size = parseInt(data);
-                                    });
+                                        IdsManager.getSize(sessions, facility, params).then(function(data){
+                                            $log.debug('IdsManager.getSize called');
+                                            row.entity.size = parseInt(data);
+                                        });
+                                    }
                                 }
                             }
 
@@ -347,10 +350,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                     //pre-select items in cart here
                     _.each(rows, function(row) {
-                        /*if (_.has(scope.mySelection, row.entity.id)) {
-                            scope.gridApi.selection.selectRow(row.entity);
-                        }*/
-
                         if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                            scope.gridApi.selection.selectRow(row.entity);
                         } else {
@@ -451,8 +450,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
                         if (row.isSelected === true) {
-
-
                             Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name);
                         } else {
                             Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
@@ -663,9 +660,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             params[this.currentEntityType + 'Id'] = row.entity.id;
 
             _.each(this.stateParams, function(value, key){
-                /*if (_.isNumber(value)) {
-                    value = parseInt(value);
-                }*/
                 params[key] = value;
             });
 

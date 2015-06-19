@@ -62,7 +62,7 @@
             return deferred.promise;
         };
 
-            /**
+        /**
          * Parse options object and append it to the JPQL query.
          *
          * The option object expected is:
@@ -325,6 +325,7 @@
          * @return {[type]}             [description]
          */
         data.getInvestigations = function(mySessionId, facility, options) {
+            $log.debug('getInvestigations options', options);
             var params = ICATQueryBuilder.getInvestigations(mySessionId, facility, options);
 
             return getPromise(mySessionId, facility, params);

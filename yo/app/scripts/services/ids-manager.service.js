@@ -6,7 +6,7 @@
 
     IdsManager.$inject = ['$http', '$q', 'IdsService', '$log'];
 
-    function IdsManager($http, $q, IdsService, $log) {
+    function IdsManager($http, $q, IdsService, $log) { //jshint ignore: line
         var manager = {};
 
         function MyException(message) {

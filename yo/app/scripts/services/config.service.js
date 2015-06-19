@@ -193,6 +193,22 @@
                 }
             },
 
+            getSiteMyDataGridEntityType : function(config) {
+                if (typeof config.site.myDataGridOptions !== 'undefined') {
+                    if (typeof config.site.myDataGridOptions.entityType !== 'undefined') {
+                        if (config.site.myDataGridOptions.entityType === 'investigation' || config.site.myDataGridOptions.entityType === 'dataset') {
+                            return config.site.myDataGridOptions.entityType;
+                        } else {
+                            throw new Error('Only \'investigation\' and \'dataset\' entityType is supported for \'myDataGridOptions\' configuration');
+                        }
+                    } else {
+                        throw new Error('\'myDataGridOptions\' entityType not configured');
+                    }
+                } else {
+                    throw new Error('\'myDataGridOptions\' not configured');
+                }
+            },
+
             getSiteHome : function(config) {
                 return config.site.home;
             },

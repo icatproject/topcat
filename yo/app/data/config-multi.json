@@ -2128,6 +2128,7 @@
             ]
         },
         "myDataGridOptions": {
+            "entityType" : "investigation",
             "investigation": {
                 "enableFiltering": true,
                 "enableSelection": true,
@@ -2136,20 +2137,10 @@
                 ],
                 "columnDefs": [
                     {
-                        "field": "id",
-                        "displayName": "Id",
-                        "enableSorting": false,
-                        "type": "number",
-                        "visible": false,
-                        "filter": {
-                            "condition": "starts_with",
-                            "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
-                            "type": "input",
-                            "disableCancelFilterButton": false
-                        }
+                        "field": "facilityTitle",
+                        "displayName": "Facility",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.FACILITY",
+                        "type": "string"
                     },
                     {
                         "field": "investigationInstruments[0].instrument.fullName",
@@ -2180,7 +2171,8 @@
                             },
                             "type": "input",
                             "disableCancelFilterButton": false
-                        }
+                        },
+                        "link": true
                     },
                     {
                         "field": "visitId",
@@ -2196,6 +2188,12 @@
                             "type": "input",
                             "disableCancelFilterButton": false
                         }
+                    },
+                    {
+                        "field": "size",
+                        "displayName": "Size",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                        "type": "number"
                     },
                     {
                         "field": "startDate",
@@ -2227,6 +2225,72 @@
                             },
                             "type": "input",
                             "disableCancelFilterButton": false
+                        }
+                    }
+                ]
+            },
+            "dataset": {
+                "enableFiltering": true,
+                "enableSelection": true,
+                "columnDefs": [
+                    {
+                        "field": "facilityTitle",
+                        "displayName": "Facility",
+                        "translateDisplayName": "BROWSE.COLUMN.DATASET.FACILITY",
+                        "type": "string"
+                    },
+                    {
+                        "field": "name",
+                        "displayName": "Dataset Name",
+                        "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": true
+                        },
+                        "link": true
+                    },
+                    {
+                        "field": "size",
+                        "displayName": "Size",
+                        "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                        "type": "number"
+                    },
+                    {
+                        "field": "createTime",
+                        "displayName": "Create Date",
+                        "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": true
+                        }
+                    },
+                    {
+                        "field": "modTime",
+                        "displayName": "Modified Time",
+                        "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": true
                         }
                     }
                 ]
