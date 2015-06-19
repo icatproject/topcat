@@ -13,6 +13,11 @@
                     return null;
                 }
 
+                //-1 is a failure
+                if (value === -1) {
+                    return value;
+                }
+
                 var bytes = parseInt(value);
 
                 return prettyBytesFilter(bytes);

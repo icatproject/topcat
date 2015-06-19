@@ -5,9 +5,9 @@
         .module('angularApp')
         .factory('HttpErrorInterceptor', HttpErrorInterceptor);
 
-    HttpErrorInterceptor.$inject = ['inform', '$translate', '$sessionStorage', '$injector', '$log'];
+    HttpErrorInterceptor.$inject = ['inform', '$translate', '$sessionStorage', '$injector', '$q', '$log'];
 
-    function HttpErrorInterceptor(inform, $translate, $sessionStorage, $injector, $log){
+    function HttpErrorInterceptor(inform, $translate, $sessionStorage, $injector, $q, $log){
         return {
             responseError: function(rejection) {
                     $log.debug('bad response', rejection);
@@ -53,7 +53,7 @@
                         });
                     }
 
-                    return rejection;
+                    return $q.reject(rejection);
                 }
         };
     }

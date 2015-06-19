@@ -206,10 +206,11 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                                     params[entityType  + 'Ids'] = row.entity.id;
 
                                                     //disable until icat GC problem is fixed
-                                                    /*IdsManager.getSize(sessions, facility, params).then(function(data){
-                                                        $log.debug('IdsManager.getSize called');
+                                                    IdsManager.getSize(sessions, facility, params).then(function(data){
                                                         row.entity.size = parseInt(data);
-                                                    });*/
+                                                    }, function() {
+                                                        row.entity.size = -1;
+                                                    });
                                                 }
 
                                                 //inject information into row data
@@ -237,8 +238,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                         throw new Error('Unable to retrieve logged in facilitites');
                     }
                 );
-
-
             };
 
             /**
@@ -268,10 +267,11 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                                 params[entityType  + 'Ids'] = row.entity.id;
 
                                                 //disable until icat GC problem is fixed
-                                                /*IdsManager.getSize(sessions, facility, params).then(function(data){
-                                                    $log.debug('IdsManager.getSize called');
+                                                IdsManager.getSize(sessions, facility, params).then(function(data){
                                                     row.entity.size = parseInt(data);
-                                                });*/
+                                                }, function() {
+                                                    row.entity.size = -1;
+                                                });
                                             }
 
                                             //inject facilityTitle and facilityName to row data
@@ -325,10 +325,11 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                                 params[entityType  + 'Ids'] = row.entity.id;
 
                                                 //disable until icat GC problem is fixed
-                                                /*IdsManager.getSize(sessions, facility, params).then(function(data){
-                                                    $log.debug('IdsManager.getSize called');
+                                                IdsManager.getSize(sessions, facility, params).then(function(data){
                                                     row.entity.size = parseInt(data);
-                                                });*/
+                                                }, function() {
+                                                    row.entity.size = -1;
+                                                });
                                             }
 
                                             //inject facilityTitle and facilityName to row data

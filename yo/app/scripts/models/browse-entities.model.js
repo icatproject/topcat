@@ -244,8 +244,9 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                                         params[currentEntityType  + 'Ids'] = row.entity.id;
 
                                         IdsManager.getSize(sessions, facility, params).then(function(data){
-                                            $log.debug('IdsManager.getSize called');
                                             row.entity.size = parseInt(data);
+                                        }, function() {
+                                            row.entity.size = -1;
                                         });
                                     }
                                 }
@@ -287,8 +288,9 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                                         params[currentEntityType  + 'Ids'] = row.entity.id;
 
                                         IdsManager.getSize(sessions, facility, params).then(function(data){
-                                            $log.debug('IdsManager.getSize called');
                                             row.entity.size = parseInt(data);
+                                        }, function() {
+                                            row.entity.size = -1;
                                         });
                                     }
                                 }
@@ -328,8 +330,9 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                                     params[currentEntityType  + 'Ids'] = row.entity.id;
 
                                     IdsManager.getSize(sessions, facility, params).then(function(data){
-                                        $log.debug('IdsManager.getSize called');
                                         row.entity.size = parseInt(data);
+                                    }, function() {
+                                        row.entity.size = -1;
                                     });
                                 }
                             }
