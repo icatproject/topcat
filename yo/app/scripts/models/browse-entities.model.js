@@ -166,6 +166,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     if(angular.isDefined(value.field) && value.field === 'size') {
                         value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.size | bytes }}</span></div>';
                         value.enableSorting = false;
+                        value.enableFiltering = false;
                     }
                 }
 

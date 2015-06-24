@@ -108,16 +108,15 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                     if(angular.isDefined(value.field) && value.field === 'size') {
                         value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.size | bytes }}</span></div>';
                         value.enableSorting = false;
+                        value.enableFiltering = false;
                     }
                 }
 
-
-                if(angular.isDefined(value.field) && value.field === 'facility') {
-                    value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.facilityTitle | bytes }}</span></div>';
+                if(angular.isDefined(value.field) && value.field === 'facilityTitle') {
+                    value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.facilityTitle }}</span></div>';
                     value.enableSorting = false;
+                    value.enableFiltering = false;
                 }
-
-
 
                 return value;
             });

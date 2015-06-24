@@ -1552,6 +1552,12 @@
                             "link": true
                         },
                         {
+                            "field": "size",
+                            "displayName": "Size",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                            "type": "number"
+                        },
+                        {
                             "field": "createTime",
                             "displayName": "Create Date",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
