@@ -244,13 +244,8 @@
         this.restore = function() {
             var _self = this;
 
-            $log.debug('Cart.restore called');
-
             _.each($sessionStorage.sessions, function(session, key) {
                 var facility = Config.getFacilityByName(APP_CONFIG, key);
-                $log.debug(session.userName, key);
-
-
                 var items = CartStore.getUserStore(facility, session.userName);
                 //add items to the cart
                 _self.restoreItems(items);

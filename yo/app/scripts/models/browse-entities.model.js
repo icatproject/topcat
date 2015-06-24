@@ -57,9 +57,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         var selectableEntities = getSelectableParentEntities(facility, currentEntityType, structure);
 
         if (selectableEntities.length !== 0) {
-            $log.debug('selectableEntities', selectableEntities);
-            $log.debug('$stateParams', $stateParams);
-
             var isInCart = false;
 
             //deal with investigation parent
@@ -78,7 +75,9 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             });
 
             if (isInCart === true) {
-                gridOptions.isRowSelectable = function() {
+                gridOptions.isRowSelectable = function(row) {
+                    //preselect the row
+                    row.isSelected = true;
                     return false;
                 };
             }
@@ -252,6 +251,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                                 }
                             }
 
+                            //select the row if item is in the cart
                             if (Cart.hasItem(facility.facilityName, currentEntityType, row.entity.id)) {
                                scope.gridApi.selection.selectRow(row.entity);
                             }
