@@ -126,9 +126,6 @@
 
             removeItem : function(row) {
                 Cart.removeItem(row.entity.facilityName, row.entity.entityType, row.entity.id);
-
-                var index = this.gridOptions.data.indexOf(row.entity);
-                this.gridOptions.data.splice(index, 1);
             },
 
             removeAllItems : function() {
