@@ -85,7 +85,7 @@ describe('MetatabTest', function() {
 		controller = createController();
 
 		$rootScope.$broadcast('rowclick', testRowClickMessage);
-		scope.$digest();
+		//scope.$digest();
 
 		expect(scope.message.type).toEqual('Test');
 		expect(scope.message.id).toEqual(101);

@@ -42,70 +42,44 @@ describe('Service: BrowseFacilitiesModel', function() {
     it('configToUIGridOptions', function() {
         var gridOptions = BrowseFacilitiesModel.configToUIGridOptions(JSONFile);
 
-        expect(gridOptions).toEqual(jasmine.objectContaining(
+        //console.log(JSON.stringify(gridOptions, null, 2));
+
+        expect(gridOptions).toEqual({
+          'enableFiltering': true,
+          'columnDefs': [
             {
-                'enableFiltering': true
-            }
-        ));
-
-        expect(gridOptions.columnDefs[0]).toEqual(jasmine.objectContaining(
+              'field': 'fullName',
+              'displayName': 'BROWSE.COLUMN.FACILITY.FULLNAME',
+              'enableSorting': false,
+              'sortDirection': 'asc',
+              'filter': {
+                'condition': 2,
+                'placeholder': 'Containing...',
+                'flags': {
+                  'caseSensitive': false
+                },
+                'type': 'input',
+                'disableCancelFilterButton': false
+              },
+              'headerCellFilter': 'translate',
+              'cellTemplate': "<div class=\"ui-grid-cell-contents\"><a ng-click=\"$event.stopPropagation();\" ui-sref=\"home.browse.facility.{{grid.appScope.getNextRouteSegment(row)}}({facilityName : '{{row.entity.name}}'})\">{{row.entity.fullName}}</a></div>" //jshint ignore: line
+            },
             {
-                'field': 'name'
+              'field': 'name',
+              'displayName': 'BROWSE.COLUMN.FACILITY.NAME',
+              'filter': {
+                'condition': 16,
+                'placeholder': 'Containing...',
+                'flags': {
+                  'caseSensitive': false
+                },
+                'type': 'input',
+                'disableCancelFilterButton': false
+              },
+              'headerCellFilter': 'translate'
             }
-        ));
-
-        expect(gridOptions.columnDefs[0]).toEqual(jasmine.objectContaining(
-            {
-                'displayName': 'BROWSE.COLUMN.FACILITY.NAME'
-            }
-        ));
-
-        expect(gridOptions.columnDefs[0].translateDisplayName).toBeUndefined();
-
-        /*expect(gridOptions.columnDefs[0]).toEqual(jasmine.objectContaining(
-            {
-                'translateDisplayName': 'BROWSE.COLUMN.FACILITY.NAME'
-            }
-        ));*/
-
-        expect(gridOptions.columnDefs[0].filter).toEqual(jasmine.objectContaining(
-            {
-                'condition': uiGridConstants.filter.CONTAINS
-            }
-        ));
-
-        expect(gridOptions.columnDefs[0].filter).toEqual(jasmine.objectContaining(
-            {
-                'placeholder': 'Containing...'
-            }
-        ));
-
-        expect(gridOptions.columnDefs[0].filter.flags).toEqual(jasmine.objectContaining(
-            {
-                 'caseSensitive': false
-            }
-        ));
-
-        expect(gridOptions.columnDefs[0].filter).toEqual(jasmine.objectContaining(
-            {
-                'type': 'input'
-            }
-        ));
-
-        expect(gridOptions.columnDefs[0].filter).toEqual(jasmine.objectContaining(
-            {
-                'disableCancelFilterButton': true
-            }
-        ));
-
-        expect(gridOptions.columnDefs[0].link).toBeUndefined();
-
-        expect(gridOptions.columnDefs[0].cellTemplate).toBeDefined();
-
-        expect(gridOptions.columnDefs[1].link).toBeUndefined();
-
-        expect(gridOptions.columnDefs[1].cellTemplate).toBeUndefined();
-
+          ]
+        });
 
     });
 

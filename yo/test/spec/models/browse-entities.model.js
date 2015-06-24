@@ -120,7 +120,7 @@ describe('Service: BrowseEntitiesModel', function() {
 
         expect(gridOptions.columnDefs[1].filter).toEqual(jasmine.objectContaining(
             {
-                'disableCancelFilterButton': true
+                'disableCancelFilterButton': false
             }
         ));
 

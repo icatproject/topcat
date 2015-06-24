@@ -48,6 +48,9 @@
             'bytes'
         ])
         .constant('_', window._)
+        .constant('APP_CONSTANT', {
+            storageName: 'TopCAT_0.1'
+        })
         .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
             $translateProvider.translations('en', LANG);
 
@@ -234,6 +237,7 @@
         .run(['$rootScope', 'Cart', function($rootScope, Cart) {
             //listen to cart change events and save the cart
             $rootScope.$on('Cart:change', function(){
+                //console.log('cart changed save called');
                 Cart.save();
             });
 

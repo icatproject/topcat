@@ -9,11 +9,12 @@
 
     function CartItem($log) { //jshint ignore: line
 
-        var item = function (facilityName, entityType, id, name, size, availability, parents) {
+        var item = function (facilityName, userName, entityType, id, name, size, availability, parents) {
             size = size || null;
             availability = availability || null;
 
             this.setFacilityName(facilityName);
+            this.setUserName(userName);
             this.setEntityType(entityType);
             this.setId(id);
             this.setName(name);
@@ -32,6 +33,14 @@
             } else {
                 throw new Error('A facility key must be provided');
             }
+        };
+
+        item.prototype.setUserName = function(userName){
+            this.userName = userName;
+        };
+
+        item.prototype.getUserName = function(){
+            return this.userName;
         };
 
         item.prototype.getEntityType = function(){
@@ -95,10 +104,13 @@
             return this.parents;
         };
 
+
+
         item.prototype.toObject = function() {
             return {
-                facilityName: this.getFaciliyName(),
-                entityType: this.getentityType(),
+                facilityName: this.getFacilityName(),
+                userName: this.getUserName(),
+                entityType: this.getEntityType(),
                 id: this.getId(),
                 name: this.getName(),
                 size: this.getSize(),

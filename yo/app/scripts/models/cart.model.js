@@ -101,7 +101,7 @@
                     }
                 );*/
 
-                gridOptions.data = Cart.getLoggedInItems($sessionStorage);
+                gridOptions.data = Cart.getItems();
 
                 /*if (gridOptions.data.length === 0) {
                     scope.isEmpty = true;
@@ -112,13 +112,10 @@
                 //$log.debug('gridOptions.data', gridOptions.data);
 
                 this.gridOptions = gridOptions;
-
-
-
             },
 
             refreshData : function() {
-                this.gridOptions.data = Cart.getLoggedInItems($sessionStorage);
+                this.gridOptions.data = Cart.getItems();
 
                 /*if (this.gridOptions.data.length === 0) {
                     scope.isEmpty = true;

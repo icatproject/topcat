@@ -10,17 +10,28 @@
     function CartStore($localStorage, $log) { //jshint ignore: line
         return {
             get: function () {
-                //console.log('get $localStorage.cart', $localStorage.cart);
                 return $localStorage.cart;
             },
 
             set: function (cart) {
-                /*if (typeof $localStorage.cart === 'undefined') {
-                    $localStorage.$default({
-                        cart : {}
+                $localStorage.cart = cart;
+            },
+
+            getUserStore: function (facility, userName) {
+                var store = [];
+
+                if (typeof $localStorage.cart.items !== 'undefined') {
+                    _.each($localStorage.cart.items, function(item) {
+                        if (item.facilityName === facility.facilityName && item.userName === userName) {
+                            store.push(item);
+                        }
                     });
-                }*/
-                //console.log('set $localStorage.cart', cart);
+                }
+
+                return store;
+            },
+
+            setUserStore: function (facility, userName, cart) {
                 $localStorage.cart = cart;
             }
         };

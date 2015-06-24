@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform', '$log'];
+    LoginController.$inject = ['$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform', 'Cart', 'CartStore', '$log'];
 
-    function LoginController($state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, inform, $log) {
+    function LoginController($state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, inform, Cart, CartStore, $log) { //jshint ignore: line
         var vm = this;
 
         $sessionStorage.$default({
@@ -122,6 +122,9 @@
                         sessionId : data.sessionId,
                         userName: data.userName
                     };
+
+                    //Do login stuff here
+
 
                     //clear the password field
                     delete vm.user.password;
