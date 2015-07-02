@@ -4,7 +4,7 @@ describe('Service: Cart', function() {
     beforeEach(function() {
         module(function($provide) {
             $provide.constant('LANG', {});
-            $provide.constant('APP_CONFIG', {});
+            $provide.constant('APP_CONFIG', readJSON('test/mock/data/mock-config-multi.json'));
         });
     });
 
@@ -14,21 +14,25 @@ describe('Service: Cart', function() {
     // inject dependancies
     var $rootScope;
     var CartItem;
-    var CartStore;
     var log;
     var Cart;
     var Config;
     var $sessionStorage;
+    var LocalStorageManager;
+    var $localStorage;
+    var APP_CONSTANT;
 
-    beforeEach(inject(function(_$rootScope_, _CartItem_, _CartStore_, _$log_, _Cart_, _Config_, _$sessionStorage_) {
+    beforeEach(inject(function(_$rootScope_, _CartItem_, _$log_, _Cart_, _Config_, _$sessionStorage_, _LocalStorageManager_, _$localStorage_, _APP_CONSTANT_) {
         $rootScope = _$rootScope_;
         spyOn($rootScope, '$broadcast').and.callThrough();
         CartItem = _CartItem_;
-        CartStore = _CartStore_;
         log = _$log_;
         Cart = _Cart_;
         Config = _Config_;
         $sessionStorage = _$sessionStorage_;
+        LocalStorageManager = _LocalStorageManager_;
+        $localStorage = _$localStorage_;
+        APP_CONSTANT = _APP_CONSTANT_;
     }));
 
     it('add item to cart', function() {
@@ -613,88 +617,6 @@ describe('Service: Cart', function() {
     });
 
 
-    it('getLoggedInItems from a cart', function() {
-        var items = [
-            {
-                'facilityName': 'dls',
-                'entityType': 'dataset',
-                'id': 123456,
-                'name': 'my test dataset 1',
-                'size': null,
-                'availability': null,
-                'parents': [
-                    {
-                      'entityType': 'investigation',
-                      'id': 7654321
-                    }
-                ]
-            },
-            {
-                'facilityName': 'isis',
-                'entityType': 'dataset',
-                'id': 123457,
-                'name': 'my test dataset 2',
-                'size': null,
-                'availability': null,
-                'parents': [
-                    {
-                      'entityType': 'investigation',
-                      'id': 7654321
-                    }
-                ]
-            }
-        ];
-
-        $sessionStorage.sessions = {
-            dls: {
-                sessionId: 'cedf298d-640e-44cf-900d-5f5bf22dddad',
-                userName: 'vcf21513'
-            },
-            isis: {
-                sessionId: 'cedf298d-640e-44cf-900d-5f5bf22dddad',
-                userName: 'uows/jane'
-            }
-        };
-
-        Cart.addItems(items);
-
-        var cart = Cart.getCart();
-        expect(cart.items.length).toEqual(2);
-
-        $sessionStorage.sessions = {
-            dls: {
-                sessionId: 'cedf298d-640e-44cf-900d-5f5bf22dddad',
-                userName: 'vcf21513'
-            }
-        };
-
-
-        var loggedInItems = Cart.getItems();
-
-        console.log(JSON.stringify(loggedInItems, null, 2));
-
-        expect(loggedInItems.length).toEqual(1);
-        expect(loggedInItems[0].toObject()).toEqual(
-            {
-                'facilityName': 'dls',
-                'entityType': 'dataset',
-                'id': 123456,
-                'name': 'my test dataset 1',
-                'size': null,
-                'availability': null,
-                'parents': [
-                    {
-                      'entityType': 'investigation',
-                      'id': 7654321
-                    }
-                ]
-            }
-        );
-
-        $sessionStorage.$reset();
-    });
-
-
     xit('getTotalItems from cart', function() {
         var items = [
             {
@@ -736,7 +658,7 @@ describe('Service: Cart', function() {
         expect(Cart.getTotalItems()).toEqual(0);
     });
 
-    xit('save cart', function() {
+    it('save cart', function() {
         var items = [
             {
                 'facilityName': 'dls',
@@ -767,6 +689,18 @@ describe('Service: Cart', function() {
                 ]
             }
         ];
+
+        $sessionStorage.sessions = {
+            dls: {
+                sessionId: 'cedf298d-640e-44cf-900d-5f5bf22dddad',
+                userName: 'vcf21513'
+            }
+        };
+
+        //init localstorage
+        LocalStorageManager.init({facilityName: 'dls'}, 'vcf21513');
+
+        //console.log('$localStorage', JSON.stringify($localStorage, null, 2));
 
         spyOn(Cart, 'save').and.callThrough();
 
@@ -778,12 +712,14 @@ describe('Service: Cart', function() {
 
         expect(Cart.save).toHaveBeenCalled();
 
-        var localStorage = CartStore.get();
+        var localStorage = LocalStorageManager.getUserStore({facilityName: 'dls'}, 'vcf21513');
+
+        //console.log('localStorage', JSON.stringify(localStorage, null, 2));
 
         expect(localStorage.items.length).toEqual(2);
     });
 
-    xit('restore cart after removing all items', function() {
+    it('restore cart after removing all items', function() {
         var items = [
             {
                 'facilityName': 'dls',
@@ -814,6 +750,16 @@ describe('Service: Cart', function() {
                 ]
             }
         ];
+
+        $sessionStorage.sessions = {
+            dls: {
+                sessionId: 'cedf298d-640e-44cf-900d-5f5bf22dddad',
+                userName: 'vcf21513'
+            }
+        };
+
+        //init localstorage
+        LocalStorageManager.init({facilityName: 'dls'}, 'vcf21513');
 
         spyOn(Cart, 'restore').and.callThrough();
         spyOn(Cart, 'save').and.callThrough();
@@ -826,9 +772,13 @@ describe('Service: Cart', function() {
         Cart.addItems(items);
         Cart.save();
 
+        console.log('$localStorage', $localStorage);
+
         Cart.save.calls.reset();
 
-        var localStorage = CartStore.get();
+        var localStorage = LocalStorageManager.getUserStore({facilityName: 'dls'}, 'vcf21513');
+
+        console.log('localStorage', localStorage);
 
         expect(localStorage.items.length).toEqual(2);
 

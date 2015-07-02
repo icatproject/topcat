@@ -238,13 +238,14 @@
          */
         data.refreshSession = function(mySessionId, facility) {
             var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId + '?server=' + encodeURIComponent(facility.icatUrl);
-            /*var params = {
-                    params : {
-                        server : encodeURIComponent(facility.icatUrl)
+            var params = {
+                    headers : {
+                        'facilityKeyName' : facility.facilityName,
+                        'facilityTitle' : facility.title
                     }
-                };*/
+                };
             $log.debug('icatservice refresh session');
-            return $http.put(url);
+            return $http.put(url, params);
         };
 
         /**

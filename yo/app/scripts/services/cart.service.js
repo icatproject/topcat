@@ -5,17 +5,29 @@
         .module('angularApp')
         .service('Cart', Cart);
 
-    Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'CartStore', '$sessionStorage', '$log'];
+    Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'LocalStorageManager', '$sessionStorage', '$log'];
 
-    function Cart($rootScope, APP_CONFIG, Config, CartItem, CartStore, $sessionStorage, $log) { //jshint ignore: line
+    function Cart($rootScope, APP_CONFIG, Config, CartItem, LocalStorageManager, $sessionStorage, $log) { //jshint ignore: line
 
+        /**
+         * Initialise a cart
+         * @return {[type]} [description]
+         */
         this.init = function() {
             this._cart = {
                 items : []
             };
         };
 
-
+        /**
+         * Add an item to the cart
+         *
+         * @param {[type]} facilityName [description]
+         * @param {[type]} entityType   [description]
+         * @param {[type]} id           [description]
+         * @param {[type]} name         [description]
+         * @param {[type]} parents      [description]
+         */
         this.addItem = function(facilityName, entityType, id, name, parents) {
             var addedItemsCount = 0;
             var itemExistsCount = 0;
@@ -58,6 +70,11 @@
             $rootScope.$broadcast('Cart:change', {added: addedItemsCount, exists: itemExistsCount});
         };
 
+        /**
+         * Add items to the cart
+         *
+         * @param {[type]} items [description]
+         */
         this.addItems = function(items) {
             var addedItemsCount = 0;
             var itemExistsCount = 0;
@@ -114,7 +131,14 @@
             }
         };*/
 
-
+        /**
+         * Remove an item from the cart
+         *
+         * @param  {[type]} facilityName [description]
+         * @param  {[type]} entityType   [description]
+         * @param  {[type]} id           [description]
+         * @return {[type]}              [description]
+         */
         this.removeItem = function(facilityName, entityType, id) {
             var removedItemsCount = 0;
 
@@ -133,6 +157,12 @@
             }
         };
 
+        /**
+         * Remove items from the cart
+         *
+         * @param  {[type]} items [description]
+         * @return {[type]}       [description]
+         */
         this.removeItems = function (items) {
             var removedItemsCount = 0;
 
@@ -154,6 +184,11 @@
             }
         };
 
+        /**
+         * Remove all item in the cart
+         *
+         * @return {[type]} [description]
+         */
         this.removeAllItems = function() {
             var cart = this.getCart();
             var removedItemsCount = cart.items.length;
@@ -168,7 +203,42 @@
             }
         };
 
+        /**
+         * Reset the cart to empty
+         *
+         * @return {[type]} [description]
+         */
+        this.reset = function() {
+            this.setCart({
+                items : []
+            });
+        };
 
+        /**
+         * Remove the items for a facility user
+         *
+         * @param  {[type]} facilityName [description]
+         * @param  {[type]} userName     [description]
+         * @return {[type]}              [description]
+         */
+        this.removeUserItems = function(facilityName, userName) {
+            var items = this.getCart().items;
+
+            _.each(items, function (item, index) {
+                if  (item.getFacilityName() === facilityName && item.getUserName() === userName) {
+                    delete items[index];
+                }
+            });
+        };
+
+        /**
+         *  Get an item from the cart
+         *
+         * @param  {[type]} facilityName [description]
+         * @param  {[type]} entityType   [description]
+         * @param  {[type]} id           [description]
+         * @return {[type]}              [description]
+         */
         this.getItem = function(facilityName, entityType, id) {
             var items = this.getCart().items;
             var result = false;
@@ -183,7 +253,14 @@
             return result;
         };
 
-
+        /**
+         * Check if the cart has an item
+         *
+         * @param  {[type]}  facilityName [description]
+         * @param  {[type]}  entityType   [description]
+         * @param  {[type]}  id           [description]
+         * @return {Boolean}              [description]
+         */
         this.hasItem = function(facilityName, entityType, id) {
             var matchIndex = _.findIndex(this.getCart().items, function(item) {
                 return (facilityName === item.getFacilityName() && id === item.getId() && entityType === item.getEntityType());
@@ -196,30 +273,59 @@
             return true;
         };
 
+        /**
+         * Set the cart
+         *
+         * @param {[type]} cart [description]
+         */
         this.setCart = function(cart) {
             this._cart = cart;
             return this.getCart();
         };
 
+        /**
+         * Get the entire cart
+         *
+         * @return {[type]} [description]
+         */
         this.getCart = function(){
             return this._cart;
         };
 
+        /**
+         * Get the items in the cart
+         *
+         * @return {[type]} [description]
+         */
         this.getItems = function(){
             return this.getCart().items;
         };
 
-
+        /**
+         * Get the total items in the cart
+         *
+         * @return {[type]} [description]
+         */
         this.getTotalItems = function(){
             return this.getCart().items.length;
         };
 
+        /**
+         * Save the cart to the browser localstorage
+         *
+         * @return {[type]} [description]
+         */
         this.save = function() {
-            CartStore.set(this.getCart());
+            LocalStorageManager.setStore(this.getCart());
         };
 
-
-        this.restoreItems = function(items) {
+        /**
+         * Restore a list of items to the cart
+         *
+         * @param  {[type]} items [description]
+         * @return {[type]}       [description]
+         */
+        this._restoreItems = function(items) {
             var restoreItemsCount = 0;
             var itemExistsCount = 0;
 
@@ -241,31 +347,45 @@
             }
         };
 
+        /**
+         * Restore all the current logged in users cart from localstorage
+         *
+         * @return {[type]} [description]
+         */
         this.restore = function() {
             var _self = this;
 
+            //clear all
+            _self.reset();
+
+            //restore cart for each logged in session
             _.each($sessionStorage.sessions, function(session, key) {
                 var facility = Config.getFacilityByName(APP_CONFIG, key);
-                var items = CartStore.getUserStore(facility, session.userName);
-                //add items to the cart
-                _self.restoreItems(items);
+                var items = LocalStorageManager.getUserStore(facility, session.userName);
 
+                _self._restoreItems(items.items);
             });
 
         };
 
+        /**
+         * Check whether a cart can be restored. (If there are logged in users)
+         *
+         * @return {Boolean} [description]
+         */
         this.isRestorable = function() {
-            var cartSession = CartStore.get();
+            //var cartSession = LocalStorageManager.getLocalStorage();
 
             //must has at least one session
             if (_.size($sessionStorage.sessions) > 0) {
+                return true;
                 //must have a cart
-                if (typeof cartSession !== 'undefined') {
+                /*if (typeof cartSession !== 'undefined') {
                     //must have items in the cart
                     if (cartSession.items.length > 0) {
                         return true;
                     }
-                }
+                }*/
             }
 
             return false;

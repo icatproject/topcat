@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LogoutController', LogoutController);
 
-    LogoutController.$inject = ['$state', '$stateParams', 'APP_CONFIG', 'Config', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform'];
+    LogoutController.$inject = ['$rootScope', '$state', '$stateParams', 'APP_CONFIG', 'Config', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform'];
 
-    function LogoutController($state, $stateParams, APP_CONFIG, Config, RouteUtils, $translate, DataManager, $sessionStorage, inform) {
+    function LogoutController($rootScope, $state, $stateParams, APP_CONFIG, Config, RouteUtils, $translate, DataManager, $sessionStorage, inform) {
         if(angular.isDefined($state.params.facilityName)) {
             //logout of single facility
             var facility = Config.getFacilityByName(APP_CONFIG, $state.params.facilityName);
@@ -15,6 +15,8 @@
 
             //delete session from sessionStorage
             delete $sessionStorage.sessions[$state.params.facilityName];
+
+            $rootScope.$broadcast('Logout:success', {facility: $state.params.facilityName});
 
             $translate('INFO.LOGOUT.LOGOUT', {facilityName: $state.params.facilityName}).then(function (translation) {
                 inform.add(translation, {
@@ -31,6 +33,8 @@
 
             //logout of all facility
             $sessionStorage.sessions = {};
+
+            $rootScope.$broadcast('Logout:success', {facility: 'all'});
 
             $translate('INFO.LOGOUT.LOGOUT_ALL').then(function (translation) {
                 inform.add(translation, {

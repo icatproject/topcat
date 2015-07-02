@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform', 'Cart', 'CartStore', '$log'];
+    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform', 'Cart', 'LocalStorageManager', '$log'];
 
-    function LoginController($state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, inform, Cart, CartStore, $log) { //jshint ignore: line
+    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, inform, Cart, LocalStorageManager, $log) { //jshint ignore: line
         var vm = this;
 
         $sessionStorage.$default({
@@ -124,6 +124,11 @@
                     };
 
                     //Do login stuff here
+                    //initialise an empty cart for the user
+                    LocalStorageManager.init(facility, data.userName);
+                    Cart.restore();
+
+                    $rootScope.$broadcast('Login:success', {facility: facility, userName: data.userName});
 
 
                     //clear the password field

@@ -42,7 +42,25 @@
             } else {
                 $scope.isEmpty = false;
             }
+
+            //save the cart to localstorage
+            Cart.save();
         });
+
+
+        $rootScope.$on('Logout:success', function(){
+
+            if (Cart.isRestorable()) {
+                Cart.restore();
+            }
+        });
+
+        $rootScope.$on('SESSION:EXPIRED', function(event, data){
+            if (typeof data.facilityName !== 'undefined' && typeof data.userName !== 'undefined') {
+                Cart.removeUserItems(data.facilityName, data.userName);
+            }
+        });
+
 
         ct.removeAllItems = function(row) {
             CartModel.removeAllItems(row);

@@ -234,13 +234,8 @@
         .run(['RouteCreatorService', function(RouteCreatorService) {
             RouteCreatorService.createStates();
         }])
-        .run(['$rootScope', 'Cart', function($rootScope, Cart) {
-            //listen to cart change events and save the cart
-            $rootScope.$on('Cart:change', function(){
-                //console.log('cart changed save called');
-                Cart.save();
-            });
-
+        .run(['$rootScope', 'LocalStorageManager', 'Cart', function($rootScope, LocalStorageManager, Cart) {
+            //init and restore cart when user refresh page
             Cart.init();
 
             if (Cart.isRestorable()) {
