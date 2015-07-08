@@ -4,17 +4,24 @@
     angular.
         module('angularApp').controller('LoadSizeController', LoadSizeController);
 
-    LoadSizeController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$log'];
+    LoadSizeController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService', '$log'];
 
-    function LoadSizeController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $log) { //jshint ignore: line
-        if ($scope.ngModel.entity.getSize() === null) {
-            var params = {};
-            params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getId();
-            var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
+    function LoadSizeController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService, $log) { //jshint ignore: line
+        $timeout(loadSize, 0);
 
-            IdsManager.getSize($sessionStorage.sessions, facility, params).then(function(data){
-                $scope.ngModel.entity.setSize(parseInt(data));
-            });
+        function loadSize() {
+            if ($scope.ngModel.entity.getSize() === null) {
+                var params = {};
+                params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getId();
+                var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
+
+                usSpinnerService.spin('spinner-size-' + $scope.ngModel.uid);
+
+                IdsManager.getSize($sessionStorage.sessions, facility, params).then(function(data){
+                    $scope.ngModel.entity.setSize(parseInt(data));
+                    usSpinnerService.stop('spinner-size-' + $scope.ngModel.uid);
+                });
+            }
         }
     }
 

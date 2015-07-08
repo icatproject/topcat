@@ -46,11 +46,11 @@
                     }
 
                     if(angular.isDefined(value.field) && value.field === 'size') {
-                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span load-size ng-model="row">{{ row.entity.size | bytes }}</span></div>';
+                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}" spinner-key="spinner-size-{{row.uid}}" class="grid-cell-spinner"></span><span load-size ng-model="row">{{ row.entity.size | bytes }}</span></div>';
                     }
 
                     if(angular.isDefined(value.field) && value.field === 'availability') {
-                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span load-availability ng-model="row">{{ row.entity.availability }}</span></div>';
+                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}" spinner-key="spinner-status-{{row.uid}}" class="grid-cell-spinner"></span><span load-availability ng-model="row">{{ row.entity.availability }}</span></div>';
                     }
 
                     return value;

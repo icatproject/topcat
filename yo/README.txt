@@ -18,6 +18,8 @@ In addition to AngularJS, the following modules were used:
   - _angular-translate_: Primarily used to move UI text to a JSON file
   - _angular-translate-loader-static-files_: angular-translate plugin to load static files
   - _karma-read-json_: Use to load json files in tests
+  - _angular-spinner_: Display spinners on $http calls
+
 
 
 ## Installation (On windows) for AngularJS Development
@@ -56,8 +58,16 @@ Open another command prompt:
 
 Note: Visual Studio Express (VCBUild.exe) is used by the module node-gyp to compile native addons. On windows, if you run "npm install", you will probably  get an error complaining about MSBuild. I think the node-gyp module is used to build the Socket.io-client module used by karma. If you don't use websocket for testing, you may not need it and just ignore the error. Installing Visual Studio Express 2013 with Update 4 for Windows Desktop (Must be the desktop version) did fix the issue for me.
 
+To build topcat and minify the project:
 
-Proxy setting note: npm does not use environment variables for proxy. Instead use the following commands
+  grunt build
+
+To server the build with grunt:
+
+  grunt serve:dist
+
+
+Proxy setting note: npm does not use environment variables for proxy. Instead use the following commands:
 
     npm config set proxy http://proxy.company.com:8080
     npm config set https-proxy http://proxy.company.com:8080
@@ -119,7 +129,7 @@ Included in the project is a RESTFul API developed using jersey.
 The pom.xml includes the yeoman-maven-plugin. This builds the angularJS project to the yo/dist directory and is then copied the target directory to be include into the war.
 
 
-## UI-GRID
+## UI-GRID Notes
 
 sort direction:
 

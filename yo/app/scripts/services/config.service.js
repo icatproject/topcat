@@ -74,6 +74,14 @@
                 }
             },
 
+            getDownloadTransportTypeByFacilityName : function(config, facilityName) {
+                if (typeof config.facilities[facilityName].downloadTransportType !== 'undefined') {
+                    return config.facilities[facilityName].downloadTransportType;
+                } else {
+                    throw new Error('\'downloadTransportType\' for facility ' + facilityName  + ' not configured');
+                }
+            },
+
 
             /**
              * Returns the browse column configuration for a given facility name

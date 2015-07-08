@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('MyDataModel', MyDataModel);
 
-MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', 'IdsManager', '$timeout', '$state', 'Cart', '$sessionStorage', '$log'];
+MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', 'IdsManager', '$timeout', '$state', 'Cart', '$sessionStorage', 'usSpinnerService', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'Rou
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, $log){  //jshint ignore: line
+function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, usSpinnerService, $log){  //jshint ignore: line
     function hasField(options, field) {
         var result = false;
         //determine if field size has been defined
@@ -106,14 +106,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                 //make sure for only investigation and dataset
                 if (entityType === 'investigation' || entityType === 'dataset') {
                     if(angular.isDefined(value.field) && value.field === 'size') {
-                        value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.size | bytes }}</span></div>';
+                        value.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}" spinner-key="spinner-size-{{row.uid}}" class="grid-cell-spinner"></span><span>{{ row.entity.size | bytes }}</span></div>';
                         value.enableSorting = false;
                         value.enableFiltering = false;
                     }
                 }
 
                 if(angular.isDefined(value.field) && value.field === 'facilityTitle') {
-                    value.cellTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.facilityTitle }}</span></div>';
+                    value.cellTemplate = '<div class="ui-grid-cell-contents"><span>{{ row.entity.facilityTitle }}</span></div>';
                     value.enableSorting = false;
                     value.enableFiltering = false;
                 }
@@ -189,7 +189,9 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                     scope.gridApi.infiniteScroll.dataLoaded(scope.firstPage - 1 > 0, scope.currentPage + 1 < scope.lastPage);
                                 }
 
-                                $timeout(function() {
+                                $timeout(preSelectAndGetSize, 0);
+
+                                function preSelectAndGetSize() {
                                     var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
 
                                     //pre-select items in cart here
@@ -200,24 +202,28 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                         //fill size data
                                         if (hasSizeField) {
                                             if (entityType === 'investigation' || entityType === 'dataset') {
-                                                if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
-                                                    var params = {};
-                                                    params[entityType  + 'Ids'] = row.entity.id;
-
-                                                    //disable until icat GC problem is fixed
-                                                    IdsManager.getSize(sessions, facility, params).then(function(data){
-                                                        row.entity.size = parseInt(data);
-                                                    }, function() {
-                                                        row.entity.size = -1;
-                                                    });
-                                                }
-
                                                 //inject information into row data
                                                 if (typeof row.entity.facilityName === 'undefined') {
                                                     row.entity.nextRouteSegment = nextRouteSegment;
                                                     row.entity.facilityTitle = facility.title;
                                                     row.entity.facilityName = facility.facilityName;
                                                 }
+
+                                                if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
+                                                    var params = {};
+                                                    params[entityType  + 'Ids'] = row.entity.id;
+
+                                                    usSpinnerService.spin('spinner-size-' + row.uid);
+
+                                                    IdsManager.getSize(sessions, facility, params).then(function(data){
+                                                        row.entity.size = parseInt(data);
+                                                        usSpinnerService.stop('spinner-size-' + row.uid);
+                                                    }, function() {
+                                                        row.entity.size = -1;
+                                                    });
+                                                }
+
+
                                             }
                                         }
 
@@ -225,9 +231,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                            scope.gridApi.selection.selectRow(row.entity);
                                         }
                                     });
-
-
-                                }, 0);
+                                }
                             }, function(){
 
                             });

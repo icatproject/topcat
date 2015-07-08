@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('Cart', Cart);
 
-    Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'LocalStorageManager', '$sessionStorage', '$log'];
+    Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'LocalStorageManager', '$sessionStorage', 'FacilityCart', '$log'];
 
-    function Cart($rootScope, APP_CONFIG, Config, CartItem, LocalStorageManager, $sessionStorage, $log) { //jshint ignore: line
+    function Cart($rootScope, APP_CONFIG, Config, CartItem, LocalStorageManager, $sessionStorage, FacilityCart, $log) { //jshint ignore: line
 
         /**
          * Initialise a cart
@@ -389,6 +389,39 @@
             }
 
             return false;
+        };
+
+
+        /*this.getFacilitiesCart = function(){
+            var facilityCarts = {};
+
+            _.each(this.getItems(), function(item) {
+                //initialise array
+                if (typeof facilityCarts[item.getFacilityName()] === 'undefined') {
+                    facilityCarts[item.facilityName] = [];
+                }
+
+                facilityCarts[item.facilityName].push(item);
+            });
+
+            $log.debug('facilityCarts', facilityCarts);
+
+            return facilityCarts;
+        };*/
+
+        this.getFacilitiesCart = function(){
+            var facilityCarts = {};
+
+            _.each(this.getItems(), function(item) {
+                //initialise array
+                if (typeof facilityCarts[item.getFacilityName()] === 'undefined') {
+                    facilityCarts[item.facilityName] = new FacilityCart(item.facilityName);
+                }
+
+                facilityCarts[item.facilityName].addItem(item);
+            });
+
+            return facilityCarts;
         };
     }
 })();

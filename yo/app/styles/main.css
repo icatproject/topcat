@@ -107,4 +107,23 @@ body {
   height: 500px;
 }
 
+.element-spinner {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+}
 
+.grid-cell-spinner {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  float: none;
+}
+
+.has-archived {
+  margin-top: 20px;
+}
+
+.grid-cell-spinner .spinner {
+  top: 10px !important;
+}

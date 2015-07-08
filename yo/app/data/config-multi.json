@@ -28,6 +28,19 @@
                     "plugin": "anon"
                 }
             ],
+            "downloadTransportType": [
+                {
+                    "displayName" : "Https",
+                    "type" : "https",
+                    "default" : true,
+                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
+                },
+                {
+                    "displayName" : "Globus",
+                    "type" : "globus",
+                    "url": "https://globus.org"
+                }
+            ],
             "browseOptions": {
                 "instrument": {
                     "enableFiltering": true,
@@ -564,6 +577,14 @@
                 {
                     "title": "USER OFFICE",
                     "plugin": "uows"
+                }
+            ],
+            "downloadTransportType": [
+                {
+                    "displayName" : "Https",
+                    "type" : "https",
+                    "default" : true,
+                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
                 }
             ],
             "browseOptions": {
@@ -1236,6 +1257,14 @@
                 {
                     "title": "Simple",
                     "plugin": "simple"
+                }
+            ],
+            "downloadTransportType": [
+                {
+                    "displayName" : "Https",
+                    "type" : "https",
+                    "default" : true,
+                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
                 }
             ],
             "browseOptions": {

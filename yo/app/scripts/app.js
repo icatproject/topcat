@@ -38,14 +38,14 @@
             'inform',
             'inform-exception',
             'prettyBytes',
-            'checklist-model',
             'ngStorage',
             'pascalprecht.translate',
             'ui.grid',
             'ui.grid.pagination',
             'ui.grid.infiniteScroll',
             'ui.grid.selection',
-            'bytes'
+            'bytes',
+            'angularSpinner'
         ])
         .constant('_', window._)
         .constant('APP_CONSTANT', {

@@ -4,17 +4,24 @@
     angular.
         module('angularApp').controller('LoadAvailabilityController', LoadAvailabilityController);
 
-    LoadAvailabilityController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$log'];
+    LoadAvailabilityController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService', '$log'];
 
-    function LoadAvailabilityController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $log) { //jshint ignore: line
-        if ($scope.ngModel.entity.getAvailability() === null) {
-            var params = {};
-            params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getId();
-            var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
+    function LoadAvailabilityController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService, $log) { //jshint ignore: line
+        $timeout(loadStatus, 0);
 
-            IdsManager.getStatus($sessionStorage.sessions, facility, params).then(function(data){
-                $scope.ngModel.entity.setAvailability(data);
-            });
+        function loadStatus() {
+            if ($scope.ngModel.entity.getAvailability() === null) {
+                var params = {};
+                params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getId();
+                var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
+
+                usSpinnerService.spin('spinner-status-' + $scope.ngModel.uid);
+
+                IdsManager.getStatus($sessionStorage.sessions, facility, params).then(function(data){
+                    $scope.ngModel.entity.setAvailability(data);
+                    usSpinnerService.stop('spinner-status-' + $scope.ngModel.uid);
+                });
+            }
         }
     }
 
