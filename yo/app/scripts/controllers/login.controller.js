@@ -5,10 +5,11 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', 'inform', 'Cart', 'LocalStorageManager', '$log'];
+    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'LocalStorageManager', '$log'];
 
-    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, inform, Cart, LocalStorageManager, $log) { //jshint ignore: line
+    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, LocalStorageManager, $log) { //jshint ignore: line
         var vm = this;
+        vm.user = {};
 
         $sessionStorage.$default({
             sessions : {}
@@ -23,6 +24,37 @@
 
         vm.facilities = notLoggedInFacilities;
         vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, allFacilityNames[0]).authenticationType;
+        vm.user.facilityName = vm.facilities[0].facilityName;
+        vm.user.plugin = getAuthenticationTypes(vm.user.facilityName)[0].plugin;
+
+        vm.updateAuthenticationTypes = updateAuthenticationTypes;
+        vm.getAuthenticationTypes = getAuthenticationTypes;
+
+        //load previous remembered login
+        loadRememberMe();
+
+
+        function loadRememberMe() {
+            if (typeof $localStorage.login !== 'undefined') {
+                var rememberedFacility = _.find(vm.facilities, function(facility) {
+                    return (facility.facilityName === $localStorage.login.facilityName);
+                });
+
+                if (typeof rememberedFacility !== 'undefined') {
+                    vm.user.facilityName = rememberedFacility.facilityName;
+                }
+
+                vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, $localStorage.login.facilityName).authenticationType;
+
+                var rememberedPlugin = _.find(vm.authenticationTypes, function(plugin) {
+                    return (plugin.plugin === $localStorage.login.plugin);
+                });
+
+                if (typeof rememberedFacility !== 'undefined') {
+                    vm.user.plugin = rememberedPlugin.plugin;
+                }
+            }
+        }
 
 
         vm.isLoggedInAll  = function() {
@@ -35,7 +67,7 @@
         };
 
         vm.isSingleFacility = function() {
-            //$log.debug('LoginController.isSingleFacility', ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length);
+            $log.debug('LoginController.isSingleFacility', ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length);
             if (ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length === 1) {
                 return true;
             }
@@ -64,22 +96,23 @@
         };
 
 
-        vm.updateAuthenticationTypes = function(facilityName) {
+        function updateAuthenticationTypes(facilityName) {
             //$log.debug('LoginController.updateAuthenticationTypes called');
             vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, facilityName).authenticationType;
             vm.user.plugin = vm.authenticationTypes[0].plugin;
-        };
+        }
+
 
         /**
          * Get the authentication type for login form dropdown
          * @param  {[type]} facilityName [description]
          * @return {[type]}              [description]
          */
-        vm.getAuthenticationTypes = function(facilityName) {
+        function getAuthenticationTypes(facilityName) {
             //$log.debug('LoginController.getAuthenticationTypes called');
             var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
             return facility.authenticationType;
-        };
+        }
 
 
         /**
@@ -89,9 +122,13 @@
          * @return {[type]}      [description]
          */
         vm.login = function(form) {
-            //$log.debug('LoginController.login called');
-            var facility = Config.getFacilityByName(APP_CONFIG, form.facilityName.$modelValue);
+            //remember selected facility and authentication type for multiple facilities
+            $localStorage.login = {
+                facilityName: form.facilityName.$modelValue,
+                plugin: form.plugin.$modelValue
+            };
 
+            var facility = Config.getFacilityByName(APP_CONFIG, form.facilityName.$modelValue);
             var credential = {};
 
             if (vm.isAnonymous()) {
