@@ -309,6 +309,49 @@
                 return urlEncodeParameters(params);
             },
 
+
+            getProposals: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(DISTINCT inv.name)')
+                    .from('Investigation', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .distinct()
+                    .field('inv.name')
+                    .from('Investigation', 'inv')
+                    .from('inv.investigationInstruments', 'invins')
+                    .from('invins.instrument', 'ins')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
+                    //entity: 'Proposal',
+                    server: facility.icatUrl
+                });
+
+                return urlEncodeParameters(params);
+            },
+
             /** get instruments **/
             getInstruments: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);

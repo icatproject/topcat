@@ -29,11 +29,19 @@
 
         vm.updateAuthenticationTypes = updateAuthenticationTypes;
         vm.getAuthenticationTypes = getAuthenticationTypes;
+        vm.isLoggedInAll = isLoggedInAll;
+        vm.isSingleFacility = isSingleFacility;
+        vm.isSingleAuthenticationType = isSingleAuthenticationType;
+        vm.isAnonymous = isAnonymous;
+        vm.login = login;
 
         //load previous remembered login
         loadRememberMe();
 
-
+        /**
+         * Save the user's last selected facility and authentication type to localstorage
+         * @return {[type]} [description]
+         */
         function loadRememberMe() {
             if (typeof $localStorage.login !== 'undefined') {
                 var rememberedFacility = _.find(vm.facilities, function(facility) {
@@ -44,7 +52,12 @@
                     vm.user.facilityName = rememberedFacility.facilityName;
                 }
 
-                vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, $localStorage.login.facilityName).authenticationType;
+                //TODO need to add a check here that the facility exists rather than a try block
+                try {
+                    vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, $localStorage.login.facilityName).authenticationType;
+                } catch(error) {
+                    $log.debug('facility ' + $localStorage.login.facilityName + ' is not configured');
+                }
 
                 var rememberedPlugin = _.find(vm.authenticationTypes, function(plugin) {
                     return (plugin.plugin === $localStorage.login.plugin);
@@ -56,36 +69,47 @@
             }
         }
 
-
-        vm.isLoggedInAll  = function() {
-            //$log.debug('LoginController.isLoggedInAll called');
+        /**
+         * Determine if a user has logged into all the congifured facilities
+         * @return {Boolean} [description]
+         */
+        function isLoggedInAll() {
             if (notLoggedInFacilities.length === 0) {
                 return true;
             }
 
             return false;
-        };
+        }
 
-        vm.isSingleFacility = function() {
-            $log.debug('LoginController.isSingleFacility', ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length);
+        /**
+         * Determine if only one facility is configured
+         * @return {Boolean} [description]
+         */
+        function isSingleFacility() {
             if (ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length === 1) {
                 return true;
             }
 
             return false;
-        };
+        }
 
-
-        vm.isSingleAuthenticationType = function() {
-            //$log.debug('LoginController.isSingleAuthenticationType', Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length);
+        /**
+         * Determine if only one authentication type is configured for the current selected facility
+         * @return {Boolean} [description]
+         */
+        function isSingleAuthenticationType() {
             if (Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length === 1) {
                 return true;
             }
 
             return false;
-        };
+        }
 
-        vm.isAnonymous = function() {
+        /**
+         * Check if the authentication type in anonymous
+         * @return {Boolean} [description]
+         */
+        function isAnonymous() {
             if (angular.isDefined(vm.user.plugin)) {
                 if (vm.user.plugin === 'anon') {
                     return true;
@@ -93,11 +117,15 @@
             }
 
             return false;
-        };
+        }
 
-
+        /**
+         * Updates the authenticationTypes when a facility is selected and set the type
+         * to the first one on the list
+         * @param  {[type]} facilityName [description]
+         * @return {[type]}              [description]
+         */
         function updateAuthenticationTypes(facilityName) {
-            //$log.debug('LoginController.updateAuthenticationTypes called');
             vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, facilityName).authenticationType;
             vm.user.plugin = vm.authenticationTypes[0].plugin;
         }
@@ -109,7 +137,6 @@
          * @return {[type]}              [description]
          */
         function getAuthenticationTypes(facilityName) {
-            //$log.debug('LoginController.getAuthenticationTypes called');
             var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
             return facility.authenticationType;
         }
@@ -121,7 +148,7 @@
          * @param  {[type]} form [description]
          * @return {[type]}      [description]
          */
-        vm.login = function(form) {
+        function login(form) {
             //remember selected facility and authentication type for multiple facilities
             $localStorage.login = {
                 facilityName: form.facilityName.$modelValue,
@@ -202,7 +229,7 @@
                 }
 
             });
-        };
+        }
 
         //get not logged in facilities
         function getNotLoggedInFacilitiesObjects(allFacilityNames, loggedInFacilities, APP_CONFIG, Config) {

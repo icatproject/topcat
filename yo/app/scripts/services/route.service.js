@@ -110,6 +110,7 @@
          * @return {[type]}                   [description]
          */
         route.getNextRouteSegmentName = function(hierarchy, currentEntityType) {
+            console.log(hierarchy, currentEntityType);
             var index = _.indexOf(hierarchy, currentEntityType);
 
             if (index !== -1) {

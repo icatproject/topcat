@@ -365,6 +365,40 @@
          * @param  {[type]} options  [description]
          * @return {[type]}          [description]
          */
+        manager.getProposals = function(sessions, facility, options) {
+            var sessionId = getSessionValueForFacility(sessions, facility);
+            var def = $q.defer();
+
+            ICATService.getProposals(sessionId, facility, options).then(function(data) {
+                var result = {};
+
+                _.each(data[0].data, function(value, index) {
+                    data[0].data[index] = {
+                        'id' : value,
+                        'name' : value
+                    };
+                });
+
+                result.data  = data[0].data;
+                result.totalItems = data[1].data[0];
+
+                def.resolve(result);
+            }, function(){
+                def.reject('Failed to retrieve data');
+                throw new MyException('Failed to retrieve data from server');
+            });
+
+            return def.promise;
+        };
+
+
+        /**
+         * Get the investigation in a facility
+         * @param  {[type]} sessions [description]
+         * @param  {[type]} facility [description]
+         * @param  {[type]} options  [description]
+         * @return {[type]}          [description]
+         */
         manager.getInvestigations = function(sessions, facility, options) {
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
@@ -767,6 +801,10 @@
                     $log.debug('function called: getCycles');
 
                     return this.getFacilityCycles(sessions, facility, options);
+                case 'facility-proposal':
+                    $log.debug('function called: getInvestigations');
+
+                    return this.getProposals(sessions, facility, options);
                 case 'facility-investigation':
                     $log.debug('function called: getInvestigations');
 

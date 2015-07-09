@@ -342,6 +342,12 @@
             return getPromise(mySessionId, facility, params);
         };
 
+        data.getProposals = function(mySessionId, facility, options) {
+            var params = ICATQueryBuilder.getProposals(mySessionId, facility, options);
+
+            return getPromise(mySessionId, facility, params);
+        };
+
 
         /**
          * Returns a promise with a list of investigations

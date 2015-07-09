@@ -10,8 +10,25 @@
 
     function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseFacilitiesModel, $log) {
         var vm = this;
-        var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+
+        //redirect
+        if (ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length === 1) {
+            var facilityName = ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG))[0];
+            $log.debug('is single', facilityName);
+
+            //get next entity in hierarchy
+            var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
+            console.log('structure', structure);
+            //var nextRouteSegment = RouteUtils.getNextRouteSegmentName(structure, structure[1]);
+            var nextRouteSegment = structure[0] + '-' + structure[1];
+
+            $log.debug('nextRouteSegment', nextRouteSegment);
+            $state.go('home.browse.facility.' + nextRouteSegment, {facilityName : facilityName});
+        }
+
+
+        var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
 
         vm.currentEntityType = currentEntityType;
         vm.isScroll = (pagingType === 'scroll') ? true : false;

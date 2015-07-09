@@ -14,9 +14,7 @@
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         //var currentEntityType = RouteService.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
         var entityType = Config.getSiteMyDataGridEntityType(APP_CONFIG);
-
         var facilities = Config.getFacilities(APP_CONFIG);
-
         var currentRouteSegment = RouteService.getCurrentRouteSegmentName($state);
         var sessions = $sessionStorage.sessions;
 

@@ -213,6 +213,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
              */
             var getPage = function() {
                 //$log.debug('getpage called', paginateParams);
+                $log.debug(currentRouteSegment, facility.facilityName, sessions, $stateParams, paginateParams);
 
                 DataManager.getData(currentRouteSegment, facility.facilityName, sessions, $stateParams, paginateParams).then(function(data){
                     gridOptions.data = data.data;

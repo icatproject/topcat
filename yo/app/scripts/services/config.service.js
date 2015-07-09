@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('Config', Config);
 
-    Config.$inject = [];
+    Config.$inject = ['APP_CONFIG'];
 
-    function Config(){
+    function Config(APP_CONFIG){
         return {
 
             /**
@@ -205,6 +205,15 @@
                 if (typeof config.site.myDataGridOptions !== 'undefined') {
                     if (typeof config.site.myDataGridOptions.entityType !== 'undefined') {
                         if (config.site.myDataGridOptions.entityType === 'investigation' || config.site.myDataGridOptions.entityType === 'dataset') {
+                            //check all configured hierarchy has the entity type
+                            var facilities = this.getFacilities(APP_CONFIG);
+                            _.each(facilities, function(facility) {
+
+                                if (facility.hierarchy.indexOf(config.site.myDataGridOptions.entityType) === -1) {
+                                    throw new Error('A configured hierarchy does not have the entity \'' + config.site.myDataGridOptions.entityType + '\'. All configured facility hierarchy must have the \'' + config.site.myDataGridOptions.entityType + '\' entity which you have configured for myDataGridOptions');
+                                }
+                            });
+
                             return config.site.myDataGridOptions.entityType;
                         } else {
                             throw new Error('Only \'investigation\' and \'dataset\' entityType is supported for \'myDataGridOptions\' configuration');
