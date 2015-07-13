@@ -423,7 +423,7 @@ module.exports = function (grunt) {
       ],
       dist: [
         'copy:styles',
-        'imagemin',
+        //'imagemin', //disabled until https://github.com/kevva/bin-build/issues/6 is fixed
         'svgmin'
       ]
     },
