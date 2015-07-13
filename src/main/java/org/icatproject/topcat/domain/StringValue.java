@@ -3,13 +3,13 @@ package org.icatproject.topcat.domain;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class TopcatStringValue {
+public class StringValue {
     private String value;
 
-    public TopcatStringValue() {
+    public StringValue() {
     }
 
-    public TopcatStringValue(String value) {
+    public StringValue(String value) {
         this.setValue(value);
     }
 

@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+from setup_utils import *
+import os
+
+# TopCATv2
+
+actions, options, arg = getActions()
+props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot"])
+
+if arg == "INSTALL":
+    try:
+        app = actions.getAppName("topcatv2")
+        if app: actions.asadmin("undeploy " + app)
+
+        actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
+        actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
+
+        actions.asadmin('create-jdbc-connection-pool --datasourceclassname ' + props["driver"] +
+                ' --restype javax.sql.DataSource --failconnection=true --steadypoolsize 2' +
+                ' --ping --property ' + props["dbProperties"] + ' topcatv2', printOutput=True)
+
+        actions.asadmin("create-jdbc-resource --connectionpoolid topcatv2 jdbc/topcatv2")
+
+        actions.deploy("topcatv2-*.war", contextroot=props["topcatUrlRoot"], deploymentorder=140)
+
+    except Exception, e:
+        abort(str(e))
+
+else:  # UNINSTALL
+    try:
+
+        app = actions.getAppName("topcatv2")
+        if app: actions.asadmin("undeploy " + app)
+
+        actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
+        actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
+
+    except Exception, e:
+        abort(str(e))
+
+

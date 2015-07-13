@@ -1,0 +1,24 @@
+# Derby Database Properties
+driver=org.apache.derby.jdbc.ClientDataSource
+dbProperties=Password=APP:User=APP:serverName=localhost:DatabaseName=topcat:connectionAttributes=";"create"'"="'"true
+
+# MySQL Database Properties
+#driver=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+#dbProperties=user=topcat:password=secret:databaseName=topcat
+
+# Oracle Database Properties
+#driver=oracle.jdbc.pool.OracleDataSource
+#dbProperties=url="jdbc:oracle:thin:@//localhost:1521/XE":ImplicitCachingEnabled=true:MaxStatements=200:user=topcat:password=secret
+
+# Glasfish home, must contain "glassfish/domains"
+glassfish=/opt/glassfish4
+
+# Glassfish admin port (default 4848)
+port=4848
+
+#url root where topcat will be deployed. Leave blank for the default of / or enter your required root url (do not end url with /)
+topcatUrlRoot=
+
+# A Glassfish file user to access the topcat admin service
+adminUsername topcatadmin
+adminPassword change-me

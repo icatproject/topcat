@@ -11,7 +11,6 @@ import java.util.Properties;
 import javax.ejb.EJB;
 
 import org.icatproject.topcat.exceptions.AuthenticationException;
-import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
@@ -23,7 +22,7 @@ import org.junit.runners.MethodSorters;
 import org.junit.Test;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ICATClient43Test {
+public class ICATClient45Test {
     private static Properties prop;
     private static String icatSessionId;
     private static ICATClientInterface service;
@@ -34,7 +33,7 @@ public class ICATClient43Test {
     @BeforeClass
     public static void setup() throws MalformedURLException {
         prop = new Properties();
-        InputStream is = ICATClient43Test.class.getClassLoader().getResourceAsStream("icatserver.properties");
+        InputStream is = ICATClient45Test.class.getClassLoader().getResourceAsStream("icatserver.properties");
         try {
             prop.load(is);
         } catch (Exception e) {
@@ -42,10 +41,9 @@ public class ICATClient43Test {
         }
 
         String icatUrl = prop.getProperty("icat.server.url");
-        String serverName = prop.getProperty("icat.server.name");
         String version = prop.getProperty("icat.server.version");
 
-        service = ICATClientFactory.getInstance().createICATClient(serverName, version, icatUrl);
+        service = ICATClientFactory.getInstance().createICATClient(version, icatUrl);
 
         //get an icatsession for tests.
         icatSessionId = getIcatSession();
@@ -80,7 +78,6 @@ public class ICATClient43Test {
     @Test
     public void login() throws MalformedURLException {
         String icatUrl = prop.getProperty("icat.server.url");
-        String serverName = prop.getProperty("icat.server.name");
         String version = prop.getProperty("icat.server.version");
         String authenticationType = prop.getProperty("icat.login.authentication.type");
         String username = prop.getProperty("icat.login.username");
@@ -93,7 +90,7 @@ public class ICATClient43Test {
 
         String sessionId = null;
 
-        ICATClientInterface service = ICATClientFactory.getInstance().createICATClient(serverName, version, icatUrl);
+        ICATClientInterface service = ICATClientFactory.getInstance().createICATClient(version, icatUrl);
 
         try {
             sessionId = service.login(authenticationType, parameters);

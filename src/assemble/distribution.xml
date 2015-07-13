@@ -1,0 +1,59 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>distro</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+
+        <fileSet>
+            <outputDirectory>topcatv2</outputDirectory>
+            <directory>${basedir}</directory>
+            <filtered>true</filtered>
+            <includes>
+                <include>*.txt</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>topcatv2</outputDirectory>
+            <directory>${project.basedir}/src/main/config</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>topcatv2</outputDirectory>
+            <directory>${project.basedir}/src/main/scripts</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>topcatv2</outputDirectory>
+            <directory>${project.basedir}/target</directory>
+            <includes>
+                <include>*.war</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+
+    <dependencySets>
+
+        <dependencySet>
+            <outputDirectory>topcatv2</outputDirectory>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <unpack>true</unpack>
+            <unpackOptions>
+                <includes>
+                    <include>*.py</include>
+                </includes>
+            </unpackOptions>
+            <includes>
+                <include>org.icatproject:icat.utils</include>
+            </includes>
+        </dependencySet>
+
+    </dependencySets>
+
+</assembly>

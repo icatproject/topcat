@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  */
 public class TopcatException extends Exception {
     private static final long serialVersionUID = 1L;
-    private final static Logger logger = LoggerFactory.getLogger(TopcatException.class);
 
     private int httpStatusCode;
     private String message;

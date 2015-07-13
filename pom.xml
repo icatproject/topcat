@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.icatproject</groupId>
-    <artifactId>topcat</artifactId>
+    <artifactId>topcatv2</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>topcat</name>
+    <version>0.1-SNAPSHOT</version>
+    <name>topcatv2</name>
 
     <build>
-        <finalName>topcat</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -22,7 +21,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <groupId>com.github.trecloux</groupId>
                 <artifactId>yeoman-maven-plugin</artifactId>
                 <version>0.1</version>
@@ -33,7 +32,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
@@ -45,12 +44,33 @@
                     </webResources>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${basedir}/src/assemble/distribution.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
                     <filesets>
-                        <fileset>
+                        <!-- <fileset>
                             <directory>yo/dist</directory>
                         </fileset>
                         <fileset>
@@ -61,7 +81,7 @@
                         </fileset>
                         <fileset>
                             <directory>yo/node_modules</directory>
-                        </fileset>
+                        </fileset> -->
                     </filesets>
                 </configuration>
             </plugin>
@@ -79,18 +99,18 @@
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
-        </dependency>        
-        <dependency>
+        </dependency>
+        <!-- <dependency>
             <groupId>com.github.trecloux</groupId>
             <artifactId>yeoman-maven-plugin</artifactId>
             <version>0.1</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.30</version>
         </dependency>
-        
+
         <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -109,7 +129,12 @@
         <dependency>
             <groupId>org.icatproject</groupId>
             <artifactId>icat.client</artifactId>
-            <version>4.3.0</version>
+            <version>4.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.icatproject</groupId>
+            <artifactId>icat.utils</artifactId>
+            <version>4.7.0</version>
         </dependency>
         <!-- <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -122,12 +147,23 @@
             <version>18.0</version>
         </dependency>
         <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.5</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-        <!-- 
+        <!-- <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+            <version>2.17</version>
+            <scope>test</scope>
+        </dependency> -->
+        <!--
         <dependency>
             <groupId>com.jayway.restassured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -139,12 +175,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <repositories>
         <repository>
             <id>ICAT Repo</id>
             <url>http://www.icatproject.org/mvn/repo</url>
         </repository>
     </repositories>
-    
+
 </project>

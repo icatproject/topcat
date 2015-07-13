@@ -12,9 +12,9 @@ public class ICATClientFactory {
         return instance;
     }
 
-    public ICATClientInterface createICATClient(String serverName, String version, String URL) throws MalformedURLException {
-        if (version.equals("v43")) {
-            return new ICATClient43(URL, serverName);
+    public ICATClientInterface createICATClient(String version, String URL) throws MalformedURLException {
+        if (version.equals("4.5")) {
+            return new ICATClient45(URL);
         }
 
         return null;

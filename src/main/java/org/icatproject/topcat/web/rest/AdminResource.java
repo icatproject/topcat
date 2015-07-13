@@ -6,51 +6,39 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
-import org.icatproject.topcat.Constants;
 import org.icatproject.topcat.domain.BooleanValue;
+import org.icatproject.topcat.domain.Download;
+import org.icatproject.topcat.domain.DownloadItem;
+import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.LongValue;
-import org.icatproject.topcat.domain.Pager;
-import org.icatproject.topcat.domain.TDatafileFormat;
-import org.icatproject.topcat.domain.TDataset;
-import org.icatproject.topcat.domain.TDatasetType;
-import org.icatproject.topcat.domain.TFacility;
-import org.icatproject.topcat.domain.TFacilityCycle;
-import org.icatproject.topcat.domain.TInstrument;
-import org.icatproject.topcat.domain.TInvestigation;
-import org.icatproject.topcat.domain.TInvestigationType;
-import org.icatproject.topcat.domain.TParameterType;
-import org.icatproject.topcat.domain.TopcatIcatServer;
-import org.icatproject.topcat.domain.TopcatStringValue;
+import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.exceptions.AuthenticationException;
-import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
-import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
-import org.icatproject.topcat.repository.ServerRepository;
-import org.icatproject.topcat.utils.PagerHelper;
+import org.icatproject.topcat.repository.DownloadRepository;
+
+import com.github.javafaker.Faker;
 
 
 @Stateless
@@ -60,337 +48,97 @@ public class AdminResource {
     static final Logger logger = Logger.getLogger(AdminResource.class);
 
     @EJB
-    private ServerRepository serverRepository;
+    private DownloadRepository downloadRepository;
 
     @EJB
     private ICATClientBean icatClientService;
 
 
     @GET
-    @Path("/servers")
-    //@JSONP(queryParam="callback")
-    //@Produces({MediaType.APPLICATION_JSON, "application/x-javascript", "text/javascript"})
+    @Path("/downloads/facility/{facilityName}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getServers() {
-        logger.info("getServers() called");
-        List<TopcatIcatServer> servers = new ArrayList<TopcatIcatServer>();
-        servers = serverRepository.getAllServers();
+    public Response getDownloadsByFacilityName(
+            @PathParam("facilityName") String facilityName,
+            @QueryParam("status") String status,
+            @QueryParam("transport") String transport,
+            @QueryParam("preparedId") String preparedId) {
+        logger.info("getDownloadsByFacilityName() called");
 
-        return Response.ok().entity(new GenericEntity<List<TopcatIcatServer>>(servers){}).build();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("facilityName", facilityName);
+        params.put("status", status);
+        params.put("transport", transport);
+        params.put("preparedId", preparedId);
 
+        List<Download> downloads = new ArrayList<Download>();
+        downloads = downloadRepository.getDownloadsByFacilityName(params);
+
+        return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
     }
 
 
     @GET
-    @Path("/servers/{serverName}/facilities")
+    @Path("/generate-fixture")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilities(@PathParam("serverName") String serverName, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TFacility> facilities = icatClientService.getFacilities(serverName, icatSessionId);
+    public Response loadFixtures() {
+        logger.info("loadFixture() called");
+        Faker faker = new Faker();
+        Long count = 0L;
 
-        return Response.ok().entity(new GenericEntity<List<TFacility>>(facilities){}).build();
-    }
+        String[] facilitites = {"dls", "sig"};
+        String[] users = {"wayne", "rachel", "jane", "dave"};
+        String[] transports = {"https", "globus"};
+        String[] statuses = {"ONLINE", "ARCHIVE", "COMPLETE"};
 
-    @GET
-    @Path("/servers/{serverName}/facilities/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilityById(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        TFacility facility = icatClientService.getFacilityById(serverName, icatSessionId, id);
+        for(int x = 0; x < 20; x++) {
+            logger.info("loadFixture() called");
+            int facilityIdx = new Random().nextInt(facilitites.length);
+            String facility = (facilitites[facilityIdx]);
 
-        if (facility == null) {
-            throw new NotFoundException("Investigation not found");
+            int userIdx = new Random().nextInt(users.length);
+            String user = (users[userIdx]);
+
+            int transportIdx = new Random().nextInt(transports.length);
+            String transport = (transports[transportIdx]);
+
+            int statusIdx = new Random().nextInt(statuses.length);
+            String status = (statuses[statusIdx]);
+
+            List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
+
+            Download download = new Download();
+            download.setFacilityName(facility);
+            download.setFileName(faker.lorem().fixedString(12).toLowerCase().replace(" ", ""));
+            download.setPreparedId(UUID.randomUUID().toString());
+            download.setUserName(user);
+            download.setTransport(transport);
+            download.setStatus(status);
+            download.setEmail(user + "@stfc.ac.uk");
+
+
+            int numItems = new Random().nextInt(10 - 2) + 2;
+
+            for(int i = 0; i < numItems; i++) {
+
+                DownloadItem item = new DownloadItem();
+                item.setEntityType(EntityType.investigation);
+
+                int entityId = new Random().nextInt(200000 - 1) + 1;
+
+                item.setEntityId(new Long(entityId));
+                item.setDownload(download);
+
+                downloadItems.add(item);
+                download.setDownloadItems(downloadItems);
+            }
+
+            downloadRepository.save(download);
+            count++;
         }
 
-        return Response.ok().entity(facility).build();
-    }
+        LongValue id = new LongValue(count);
 
-    @GET
-    @Path("/servers/{serverName}/facilities/{id}/facility-cycles")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilityCyclesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TFacilityCycle> facilityCycles = icatClientService.getFacilityCyclesByFacilityId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TFacilityCycle>>(facilityCycles){}).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/facilities/{id}/dataset-types")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getDatasetTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TDatasetType> datasetTypes = icatClientService.getDatasetTypesByFacilityId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TDatasetType>>(datasetTypes){}).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/facilities/{id}/datafile-formats")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getDatafielFormatsByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TDatafileFormat> tDatafileFormats = icatClientService.getDatafileFormatsByFacilityId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TDatafileFormat>>(tDatafileFormats){}).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/facilities/{id}/parameter-types")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getParameterTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TParameterType> tParameterTypes = icatClientService.getParameterTypesByFacilityId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TParameterType>>(tParameterTypes){}).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/facilities/{id}/investigation-types")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationTypesByFacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TInvestigationType> tInvestigationTypes = icatClientService.getInvestigationTypesByFacilityId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TInvestigationType>>(tInvestigationTypes){}).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/facilities/{id}/instruments")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getInstrumentsByfacilityId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TInstrument> tInstruments = icatClientService.getInstrumentsByfacilityId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TInstrument>>(tInstruments){}).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/instruments/{id}/investigations")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationsByInstrumentId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TInvestigation> tInvestigations = icatClientService.getInvestigationsByInstrumentId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TInvestigation>>(tInvestigations){}).build();
-    }
-
-    @GET
-    @Path("/servers/{serverName}/instruments/{id}/investigations/{page}")
-    @Produces({ MediaType.APPLICATION_JSON })
-    public Response getInvestigationsByInstrumentIdPaginated(
-            @Context UriInfo uriInfo,
-            @PathParam("serverName") String serverName,
-            @PathParam("id") Long id, @PathParam("page") Integer page,
-            @HeaderParam("icatSessionId") String icatSessionId,
-            @QueryParam("sort") String sort,
-            @QueryParam("order") String order)
-            throws TopcatException, MalformedURLException {
-        //deal with negative or 0 page numbers
-        if (page < 1) {
-            throw new NotFoundException("Page not found");
-        }
-
-        PagerHelper pagerHelper;
-
-        try {
-            pagerHelper = new PagerHelper(page, Constants.MAX_INVESTIGATIONS_PER_PAGE, TInvestigation.class, sort, order);
-        } catch(IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-
-        List<TInvestigation> tInvestigations = icatClientService.getInvestigationsByInstrumentIdPaginated(
-                serverName, icatSessionId, id, pagerHelper.getOffset(),
-                pagerHelper.getMaxPerPage(),
-                pagerHelper.getSortOption(),
-                pagerHelper.getOrderOption());
-
-        Long count = icatClientService.getInvestigationsByInstrumentIdCount(serverName, icatSessionId, id);
-        Pager<TInvestigation> pager = new Pager<TInvestigation>(tInvestigations, count, page, Constants.MAX_INVESTIGATIONS_PER_PAGE);
-
-        return Response.ok().entity(pager).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/investigations/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationById(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        TInvestigation investigation = icatClientService.getInvestigationById(serverName, icatSessionId, id);
-
-        if (investigation == null) {
-            throw new NotFoundException("Investigation id " + id + " not found");
-        }
-
-        return Response.ok().entity(investigation).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/investigations/{id}/datasets")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getDatasetByInvestigationId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws TopcatException, MalformedURLException {
-        List<TDataset> tDatasets = icatClientService.getDatasetsByInvestigationId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TDataset>>(tDatasets){}).build();
-    }
-
-    @GET
-    @Path("/servers/{serverName}/investigations/{id}/datasets/{page}")
-    @Produces({ MediaType.APPLICATION_JSON })
-    public Response getDatasetByInvestigationIdPaginated(
-            @Context UriInfo uriInfo,
-            @PathParam("serverName") String serverName,
-            @PathParam("id") Long id, @PathParam("page") Integer page,
-            @HeaderParam("icatSessionId") String icatSessionId,
-            @QueryParam("sort") String sort,
-            @QueryParam("order") String order)
-            throws TopcatException, MalformedURLException {
-        //deal with negative or 0 page numbers
-        if (page < 1) {
-            throw new NotFoundException("Page not found");
-        }
-
-        PagerHelper pagerHelper;
-
-        try {
-            pagerHelper = new PagerHelper(page, Constants.MAX_DATASETS_PER_PAGE, TDataset.class, sort, order);
-        } catch(IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-
-        List<TDataset> tDatasets = icatClientService.getDatasetsByInvestigationIdPaginated(
-                serverName, icatSessionId, id, pagerHelper.getOffset(),
-                pagerHelper.getMaxPerPage(),
-                pagerHelper.getSortOption(),
-                pagerHelper.getOrderOption());
-
-        Long count = icatClientService.getDatasetsByInvestigationIdCount(serverName, icatSessionId, id);
-
-        Pager<TDataset> pager = new Pager<TDataset>(tDatasets, count, page, Constants.MAX_DATASETS_PER_PAGE);
-
-        return Response.ok().entity(pager).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/facility-cycles/{id}/investigations")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getInvestigationByFacilityCycleId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws MalformedURLException, TopcatException {
-        List<TInvestigation> tInvestigations = icatClientService.getInvestigationsByFacilityCycleId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TInvestigation>>(tInvestigations){}).build();
-    }
-
-    @GET
-    @Path("/servers/{serverName}/facility-cycles/{id}/investigations/{page}")
-    @Produces({ MediaType.APPLICATION_JSON })
-    public Response getInvestigationByFacilityCycleIdPaginated(
-            @Context UriInfo uriInfo,
-            @PathParam("serverName") String serverName,
-            @PathParam("id") Long id, @PathParam("page") Integer page,
-            @HeaderParam("icatSessionId") String icatSessionId,
-            @QueryParam("sort") String sort,
-            @QueryParam("order") String order)
-            throws MalformedURLException, TopcatException {
-        //deal with negative or 0 page numbers
-        if (page < 1) {
-            throw new NotFoundException("Page not found");
-        }
-
-        PagerHelper pagerHelper;
-
-        try {
-            pagerHelper = new PagerHelper(page, Constants.MAX_INVESTIGATIONS_PER_PAGE, TInvestigation.class, sort, order);
-        } catch(IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-
-        List<TInvestigation> tInvestigations = icatClientService.getInvestigationsByFacilityCycleIdPaginated(
-                serverName, icatSessionId, id, pagerHelper.getOffset(),
-                pagerHelper.getMaxPerPage(),
-                pagerHelper.getSortOption(),
-                pagerHelper.getOrderOption());
-
-        Long count = icatClientService.getInvestigationsByFacilityCycleIdCount(serverName, icatSessionId, id);
-        Pager<TInvestigation> pager = new Pager<TInvestigation>(tInvestigations, count, page, Constants.MAX_INVESTIGATIONS_PER_PAGE);
-
-        return Response.ok().entity(pager).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/instruments/{id}/facility-cycles")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getFacilityCycleByInstrumentId(@PathParam("serverName") String serverName, @PathParam("id") Long id, @HeaderParam("icatSessionId") String icatSessionId) throws MalformedURLException, TopcatException {
-        List<TFacilityCycle> tFacilityCycle = icatClientService.getFacilityCycleByInstrumentId(serverName, icatSessionId, id);
-
-        return Response.ok().entity(new GenericEntity<List<TFacilityCycle>>(tFacilityCycle){}).build();
-    }
-
-
-    @GET
-    @Path("/servers/{serverName}/instruments/{id}/facility-cycles/{page}")
-    @Produces({ MediaType.APPLICATION_JSON })
-    public Response getFacilityCycleByInstrumentIdPaginated(
-            @Context UriInfo uriInfo,
-            @PathParam("serverName") String serverName,
-            @PathParam("id") Long id, @PathParam("page") Integer page,
-            @HeaderParam("icatSessionId") String icatSessionId,
-            @QueryParam("sort") String sort,
-            @QueryParam("order") String order)
-            throws TopcatException, MalformedURLException {
-
-        //deal with negative or 0 page numbers
-        if (page < 1) {
-            throw new NotFoundException("Page not found");
-        }
-
-        //set default sort
-        if (sort == null) {
-            sort = "name";
-        }
-
-        //set default order
-        if (order == null) {
-            order = "desc";
-        }
-
-        PagerHelper pagerHelper;
-
-        try {
-            pagerHelper = new PagerHelper(page, Constants.MAX_FACILITYCYCLE_PER_PAGE, TFacilityCycle.class, sort, order);
-        } catch(IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-
-        List<TFacilityCycle> tFacilityCycles = icatClientService.getFacilityCycleByInstrumentIdPaginated(
-                serverName, icatSessionId, id, pagerHelper.getOffset(),
-                pagerHelper.getMaxPerPage(),
-                pagerHelper.getSortOption(),
-                pagerHelper.getOrderOption());
-
-        Long count = icatClientService.getFacilityCycleByInstrumentIdCount(serverName, icatSessionId, id);
-
-        int totalPages = (int) Math.ceil(count / (double) pagerHelper.getMaxPerPage());
-
-        if (pagerHelper.getPage() > totalPages) {
-            throw new NotFoundException("Page not found");
-        }
-
-        Pager<TFacilityCycle> pager = new Pager<TFacilityCycle>(tFacilityCycles, count, pagerHelper.getPage(), pagerHelper.getMaxPerPage());
-
-        return Response.ok().entity(pager).build();
-    }
-
-
-
-
-    @POST
-    @Path("/servers")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response createServer(@Valid TopcatIcatServer server) {
-        server = serverRepository.save(server);
-
-        return Response.ok().entity(server).build();
+        return Response.ok().entity(id).build();
     }
 
 
@@ -419,7 +167,7 @@ public class AdminResource {
         parameters.put("password", password);
 
         String icatSessionId = icatClientService.login(serverName, authenticationType, parameters);
-        TopcatStringValue topcatIcatSession = new TopcatStringValue(icatSessionId);
+        StringValue topcatIcatSession = new StringValue(icatSessionId);
 
         return Response.ok().entity(topcatIcatSession).build();
     }
