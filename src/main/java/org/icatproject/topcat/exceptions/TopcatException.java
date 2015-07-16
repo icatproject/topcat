@@ -1,8 +1,6 @@
 package org.icatproject.topcat.exceptions;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * Parent class for all response code exceptions
  *

@@ -25,17 +25,22 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.icatproject.topcat.domain.Availability;
 import org.icatproject.topcat.domain.BooleanValue;
+import org.icatproject.topcat.domain.Cart;
+import org.icatproject.topcat.domain.CartItem;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadItem;
 import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.LongValue;
 import org.icatproject.topcat.domain.StringValue;
+import org.icatproject.topcat.domain.Status;
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
+import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
 
 import com.github.javafaker.Faker;
@@ -49,6 +54,9 @@ public class AdminResource {
 
     @EJB
     private DownloadRepository downloadRepository;
+
+    @EJB
+    private CartRepository cartRepository;
 
     @EJB
     private ICATClientBean icatClientService;
@@ -78,9 +86,9 @@ public class AdminResource {
 
 
     @GET
-    @Path("/generate-fixture")
+    @Path("/generate-fixture/download")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response loadFixtures() {
+    public Response generateDownloadFixtures() {
         logger.info("loadFixture() called");
         Faker faker = new Faker();
         Long count = 0L;
@@ -88,7 +96,6 @@ public class AdminResource {
         String[] facilitites = {"dls", "sig"};
         String[] users = {"wayne", "rachel", "jane", "dave"};
         String[] transports = {"https", "globus"};
-        String[] statuses = {"ONLINE", "ARCHIVE", "COMPLETE"};
 
         for(int x = 0; x < 20; x++) {
             logger.info("loadFixture() called");
@@ -101,9 +108,6 @@ public class AdminResource {
             int transportIdx = new Random().nextInt(transports.length);
             String transport = (transports[transportIdx]);
 
-            int statusIdx = new Random().nextInt(statuses.length);
-            String status = (statuses[statusIdx]);
-
             List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
 
             Download download = new Download();
@@ -112,7 +116,7 @@ public class AdminResource {
             download.setPreparedId(UUID.randomUUID().toString());
             download.setUserName(user);
             download.setTransport(transport);
-            download.setStatus(status);
+            download.setStatus(Status.values()[new Random().nextInt(Status.values().length)]);
             download.setEmail(user + "@stfc.ac.uk");
 
 
@@ -121,7 +125,7 @@ public class AdminResource {
             for(int i = 0; i < numItems; i++) {
 
                 DownloadItem item = new DownloadItem();
-                item.setEntityType(EntityType.investigation);
+                item.setEntityType(EntityType.values()[new Random().nextInt(EntityType.values().length)]);
 
                 int entityId = new Random().nextInt(200000 - 1) + 1;
 
@@ -137,6 +141,139 @@ public class AdminResource {
         }
 
         LongValue id = new LongValue(count);
+
+        return Response.ok().entity(id).build();
+    }
+
+    @GET
+    @Path("/generate-fixture/cart")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response generateCartFixtures() {
+        logger.info("generateCartFixtures() called");
+
+        List<CartItem> cartItems = new ArrayList<CartItem>();
+
+        Cart cart = new Cart();
+        cart.setFacilityName("dls");
+        cart.setUserName("vcf21513");
+        cart.setSize(null);
+        cart.setAvailability(Availability.ARCHIVE);
+
+        CartItem cartItem1 = new CartItem();
+        cartItem1.setEntityId(new Long(910034180));
+        cartItem1.setName("CM12170");
+        cartItem1.setEntityType(EntityType.investigation);
+
+        CartItem cartItem2 = new CartItem();
+        cartItem2.setEntityId(new Long(910034179));
+        cartItem2.setName("CM12170");
+        cartItem2.setEntityType(EntityType.investigation);
+
+        CartItem cartItem3 = new CartItem();
+        cartItem3.setEntityId(new Long(910034178));
+        cartItem3.setName("CM12170");
+        cartItem3.setEntityType(EntityType.investigation);
+
+        cartItem1.setCart(cart);
+        cartItem2.setCart(cart);
+        cartItem3.setCart(cart);
+
+        cartItems.add(cartItem1);
+        cartItems.add(cartItem2);
+        cartItems.add(cartItem3);
+
+        cart.setCartItems(cartItems);
+
+        cartRepository.save(cart);
+
+        LongValue id = new LongValue(cart.getId());
+
+        return Response.ok().entity(id).build();
+    }
+
+
+    @GET
+    @Path("/generate-fixture/cart1")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response generateCartFixtures1() {
+        logger.info("generateCartFixtures1() called");
+
+        List<CartItem> cartItems = new ArrayList<CartItem>();
+
+        Cart cart = new Cart();
+        cart.setFacilityName("dls");
+        cart.setUserName("vcf21513");
+        cart.setSize(null);
+        cart.setAvailability(Availability.ONLINE);
+
+        CartItem cartItem1 = new CartItem();
+        cartItem1.setEntityId(new Long(922222222));
+        cartItem1.setName("CM12170");
+        cartItem1.setEntityType(EntityType.investigation);
+
+        CartItem cartItem2 = new CartItem();
+        cartItem2.setEntityId(new Long(922222223));
+        cartItem2.setName("CM12170");
+        cartItem2.setEntityType(EntityType.investigation);
+
+        CartItem cartItem3 = new CartItem();
+        cartItem3.setEntityId(new Long(922222224));
+        cartItem3.setName("CM12170");
+        cartItem3.setEntityType(EntityType.investigation);
+
+        CartItem cartItem4 = new CartItem();
+        cartItem4.setEntityId(new Long(922222225));
+        cartItem4.setName("CM12170");
+        cartItem4.setEntityType(EntityType.investigation);
+
+        cartItem1.setCart(cart);
+        cartItem2.setCart(cart);
+        cartItem3.setCart(cart);
+        cartItem4.setCart(cart);
+
+        cartItems.add(cartItem1);
+        cartItems.add(cartItem2);
+        cartItems.add(cartItem3);
+        cartItems.add(cartItem4);
+
+        cart.setCartItems(cartItems);
+
+        cartRepository.save(cart);
+
+        LongValue id = new LongValue(cart.getId());
+
+        return Response.ok().entity(id).build();
+    }
+
+
+    @GET
+    @Path("/generate-fixture/cart2")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response generateCartFixtures2() {
+        logger.info("generateCartFixtures2() called");
+
+        List<CartItem> cartItems = new ArrayList<CartItem>();
+
+        Cart cart = new Cart();
+        cart.setFacilityName("dls");
+        cart.setUserName("vcf21513");
+        cart.setSize(null);
+        cart.setAvailability(Availability.ARCHIVE);
+
+        CartItem cartItem1 = new CartItem();
+        cartItem1.setEntityId(new Long(88888888));
+        cartItem1.setName("CM12170");
+        cartItem1.setEntityType(EntityType.investigation);
+
+        cartItem1.setCart(cart);
+
+        cartItems.add(cartItem1);
+
+        cart.setCartItems(cartItems);
+
+        cartRepository.save(cart);
+
+        LongValue id = new LongValue(cart.getId());
 
         return Response.ok().entity(id).build();
     }

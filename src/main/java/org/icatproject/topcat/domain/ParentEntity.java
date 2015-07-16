@@ -12,22 +12,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@Table(name = "DOWNLOADITEM")
-@NamedQueries({
-        @NamedQuery(name = "DownloadItem.findById", query = "SELECT i FROM DownloadItem i WHERE i.id = :id"),
-        @NamedQuery(name = "DownloadItem.findByDownloadId", query = "SELECT i FROM DownloadItem i WHERE i.download.id = :id"),
-        @NamedQuery(name = "DownloadItem.deleteById", query = "DELETE FROM DownloadItem i WHERE i.id = :id"),
-        @NamedQuery(name = "DownloadItem.deleteByDownloadId", query = "DELETE FROM DownloadItem i WHERE i.download.id = :id")
-})
+@Table(name = "PARENTENTITY")
 @XmlRootElement
-public class DownloadItem implements Serializable {
+public class ParentEntity implements Serializable{
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,16 +32,11 @@ public class DownloadItem implements Serializable {
     @Column(name = "ENTITY_ID", nullable = false)
     private Long entityId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "DOWNLOAD_ID")
-    private Download download;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name= "CARTITEM_ID")
+    private CartItem cartItem;
 
-    public DownloadItem() {
-    }
-
-    public DownloadItem(EntityType entityType, Long entityId) {
-        this.entityType = entityType;
-        this.entityId = entityId;
+    public ParentEntity() {
     }
 
     public Long getId() {
@@ -77,13 +63,12 @@ public class DownloadItem implements Serializable {
         this.entityId = entityId;
     }
 
-    @XmlTransient
-    public Download getDownload() {
-        return download;
+    public CartItem getCartItem() {
+        return cartItem;
     }
 
-    public void setDownload(Download download) {
-        this.download = download;
+    public void setCartItem(CartItem cartItem) {
+        this.cartItem = cartItem;
     }
 
 }

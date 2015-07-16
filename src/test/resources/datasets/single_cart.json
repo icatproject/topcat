@@ -1,0 +1,34 @@
+{
+    "facilityName": "dls",
+    "userName": "vcf21513",
+    "sessionId": "123456789",
+    "icatUrl": "https://facilities02.esc.rl.ac.uk",
+    "size": 123456,
+    "availability" : "ONLINE",
+    "cartItems": [
+        {
+            "entityType": "investigation",
+            "entityId": 910034180,
+            "name": "CM12170",
+            "size": 4729449937,
+            "availability": "ARCHIVED",
+            "parents": []
+        },
+        {
+            "entityType": "investigation",
+            "entityId": 910034179,
+            "name": "CM12170",
+            "size": 459300388,
+            "availability": "ARCHIVED",
+            "parents": []
+        },
+        {
+            "entityType": "investigation",
+            "entityId": 910034178,
+            "name": "CM12170",
+            "size": 905,
+            "availability": "ONLINE",
+            "parents": []
+        }
+    ]
+}

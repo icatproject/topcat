@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,16 +17,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.persistence.annotations.CascadeOnDelete;
+
 @Entity
-@Table(name = "Download")
+@Table(name = "DOWNLOAD")
+@CascadeOnDelete
 @NamedQueries({
         @NamedQuery(name = "Download.findAll", query = "SELECT d FROM Download d"),
         @NamedQuery(name = "Download.findById", query = "SELECT d FROM Download d WHERE d.id = :id"),
         @NamedQuery(name = "Download.findByPreparedId", query = "SELECT d FROM Download d WHERE d.preparedId = :preparedId"),
-        @NamedQuery(name = "Download.findByFacilityName", query = "SELECT d FROM Download d WHERE d.facilityName = :facilityName"),
-        @NamedQuery(name = "Download.findByFacilityNameAndStatus", query = "SELECT d FROM Download d WHERE d.facilityName = :facilityName AND d.status = :status"),
         @NamedQuery(name = "Download.deleteById", query = "DELETE FROM Download d WHERE d.id = :id")
-
 })
 @XmlRootElement
 public class Download implements Serializable {
@@ -53,9 +55,10 @@ public class Download implements Serializable {
     private String email;
 
     @Column(name = "STATUS")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "download")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "download", orphanRemoval = true)
     private List<DownloadItem> downloadItems;
 
 
@@ -118,11 +121,11 @@ public class Download implements Serializable {
         this.email = email;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -132,6 +135,29 @@ public class Download implements Serializable {
 
     public void setDownloadItems(List<DownloadItem> downloadItems) {
         this.downloadItems = downloadItems;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: " + id);
+        sb.append(" ");
+        sb.append("facilityName:" + facilityName);
+        sb.append(" ");
+        sb.append("userName:" + userName);
+        sb.append(" ");
+        sb.append("transport:" + transport);
+        sb.append(" ");
+        sb.append("fileName:" + fileName);
+        sb.append(" ");
+        sb.append("preparedId:" + preparedId);
+        sb.append(" ");
+        sb.append("email:" + email);
+        sb.append(" ");
+        sb.append("status:" + status);
+        sb.append(" ");
+        sb.append("DownloadItems:" + this.getDownloadItems().size());
+
+        return sb.toString();
     }
 
     /*@Override

@@ -1,7 +1,10 @@
 package org.icatproject.topcat.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,22 +15,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@Table(name = "DOWNLOADITEM")
-@NamedQueries({
-        @NamedQuery(name = "DownloadItem.findById", query = "SELECT i FROM DownloadItem i WHERE i.id = :id"),
-        @NamedQuery(name = "DownloadItem.findByDownloadId", query = "SELECT i FROM DownloadItem i WHERE i.download.id = :id"),
-        @NamedQuery(name = "DownloadItem.deleteById", query = "DELETE FROM DownloadItem i WHERE i.id = :id"),
-        @NamedQuery(name = "DownloadItem.deleteByDownloadId", query = "DELETE FROM DownloadItem i WHERE i.download.id = :id")
-})
+@Table(name = "CARTITEM")
 @XmlRootElement
-public class DownloadItem implements Serializable {
+public class CartItem implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,14 +37,20 @@ public class DownloadItem implements Serializable {
     @Column(name = "ENTITY_ID", nullable = false)
     private Long entityId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "DOWNLOAD_ID")
-    private Download download;
+    @Column(name = "NAME", nullable = true)
+    private String name;
 
-    public DownloadItem() {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cartItem")
+    private List<ParentEntity> parentEntities = new ArrayList<ParentEntity>();
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name= "CART_ID")
+    private Cart cart;
+
+    public CartItem() {
     }
 
-    public DownloadItem(EntityType entityType, Long entityId) {
+    public CartItem(EntityType entityType, Long entityId) {
         this.entityType = entityType;
         this.entityId = entityId;
     }
@@ -73,17 +75,33 @@ public class DownloadItem implements Serializable {
         return entityId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setEntityId(Long entityId) {
         this.entityId = entityId;
     }
 
-    @XmlTransient
-    public Download getDownload() {
-        return download;
+    public List<ParentEntity> getParentEntities() {
+        return parentEntities;
     }
 
-    public void setDownload(Download download) {
-        this.download = download;
+    public void setParentEntities(List<ParentEntity> parentEntities) {
+        this.parentEntities = parentEntities;
+    }
+
+    @XmlTransient
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
 }

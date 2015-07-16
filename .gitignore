@@ -5,3 +5,4 @@
 .project
 .settings
 .externalToolBuilders/
+derby.log
