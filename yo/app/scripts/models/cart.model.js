@@ -125,10 +125,11 @@
             },
 
             removeItem : function(row) {
-                Cart.removeItem(row.entity.facilityName, row.entity.entityType, row.entity.id);
+                Cart.removeItem(row.entity.facilityName, row.entity.entityType, row.entity.entityId);
             },
 
             removeAllItems : function() {
+                $log.debug('remove all called');
                 Cart.removeAllItems();
                 this.gridOptions.data = [];
             }

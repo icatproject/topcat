@@ -2,21 +2,27 @@
     "Cart": [
         {
             "id": 1000,
-            "availability": "ARCHIVE",
+            "availability": "ARCHIVED",
             "facility_name": "dls",
             "user_name": "vcf21513"
+            "created_At": "2015-07-23",
+            "updated_At": "2015-07-23"
         },
         {
             "id": 1001,
-            "availability": "ARCHIVE",
+            "availability": "ARCHIVED",
             "facility_name": "dls",
             "user_name": "wayne"
+            "created_At": "2015-07-23",
+            "updated_At": "2015-07-23"
         },
         {
             "id": 1002,
             "availability": "ONLINE",
             "facility_name": "isis",
             "user_name": "CLRC\\vcf21513"
+            "created_At": "2015-07-23",
+            "updated_At": "2015-07-23"
         }
     ],
     "CartItem" : [

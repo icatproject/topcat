@@ -1,6 +1,7 @@
 package org.icatproject.topcat.repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,36 @@ public class CartRepository {
         return carts.get(0);
     }
 
+    public int removeCartByFacilityNameAndUser(Map<String, String> params) {
+        List<Cart> carts = new ArrayList<Cart>();
+
+        String facilityName = params.get("facilityName");
+        String userName = params.get("userName");
+
+        int deletedCount = 0;
+
+        if (em != null) {
+            TypedQuery<Cart> query = em.createNamedQuery("Cart.findByFacilityNameAndUserName", Cart.class)
+                    .setParameter("facilityName", facilityName)
+                    .setParameter("userName", userName);
+
+            carts = query.getResultList();
+        }
+
+        //only one should exist
+        for (Cart cart : carts) {
+            em.remove(cart);
+            logger.info("Cart id " + cart.getId() + " belonging to " + userName + " for facility " + facilityName + " was cleared");
+            deletedCount++;
+        }
+
+        em.flush();
+
+        return deletedCount;
+
+    }
+
+
 
     public Cart save(Cart cart) {
         Map<String, String> params = new HashMap<String, String>();
@@ -71,6 +102,7 @@ public class CartRepository {
         if (existCart != null) {
             existCart.setAvailability(cart.getAvailability());
             existCart.setSize(cart.getSize());
+            existCart.setUpdatedAt(new Date());
 
             //persist the items in cart
             for (CartItem cartItem : cart.getCartItems()) {

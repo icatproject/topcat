@@ -20,12 +20,16 @@
                         var params = $scope.ngModel.getDataSelection();
                         var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.getFacilityName());
 
+                        $log.debug('calcDownnloadSize called', params);
+
                         usSpinnerService.spin('spinner-size-' + $scope.ngModel.getFacilityName());
 
                         IdsManager.getSize($sessionStorage.sessions, facility, params).then(function(data){
                             $scope.ngModel.setSize(parseInt(data));
                             usSpinnerService.stop('spinner-size-' + $scope.ngModel.getFacilityName());
                         });
+                    } else {
+                        $log.debug('calcDownnloadSize not null');
                     }
                 }
             }

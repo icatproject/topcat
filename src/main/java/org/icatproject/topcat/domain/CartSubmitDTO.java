@@ -11,6 +11,7 @@ public class CartSubmitDTO {
     private String fileName;
     private Status status;
     private String transport;
+    private String transportUrl;
     private String email;
 
 
@@ -68,6 +69,14 @@ public class CartSubmitDTO {
 
     public void setTransport(String transport) {
         this.transport = transport;
+    }
+
+    public String getTransportUrl() {
+        return transportUrl;
+    }
+
+    public void setTransportUrl(String transportUrl) {
+        this.transportUrl = transportUrl;
     }
 
     public String getEmail() {

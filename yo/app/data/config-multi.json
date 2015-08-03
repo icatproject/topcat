@@ -38,7 +38,7 @@
                 {
                     "displayName" : "Globus",
                     "type" : "globus",
-                    "url": "https://globus.org"
+                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
                 }
             ],
             "browseOptions": {
@@ -2018,6 +2018,7 @@
     },
     "site": {
         "icatDataProxyHost": "https://localhost:3001",
+        "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/webapi/v1",
         "home" : "my-data",
         "pagingType": "scroll",
         "useFileForData": false,
@@ -2072,7 +2073,7 @@
             "enableFiltering": true,
             "columnDefs": [
                 {
-                    "field": "id",
+                    "field": "entityId",
                     "displayName": "Id",
                     "translateDisplayName": "CART.COLUMN.ID",
                     "sortDirection": "asc",

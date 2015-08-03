@@ -12,7 +12,7 @@
         function loadSize() {
             if ($scope.ngModel.entity.getSize() === null) {
                 var params = {};
-                params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getId();
+                params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getEntityId();
                 var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
 
                 usSpinnerService.spin('spinner-size-' + $scope.ngModel.uid);

@@ -13,6 +13,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.icatproject.topcat.domain.Download;
+import org.icatproject.topcat.domain.DownloadStatus;
 
 
 @Stateless
@@ -122,6 +123,31 @@ public class DownloadRepository {
         }
 
         return downloads;
+    }
+
+
+    public String setCompleteByPreparedId(Map<String, String> params) {
+        List<Download> downloads = new ArrayList<Download>();
+
+        String preparedId = params.get("preparedId");
+
+        if (em != null) {
+            String jpql = "SELECT d FROM Download d WHERE d.preparedId = :preparedId";
+
+            TypedQuery<Download> query = em.createQuery(jpql, Download.class);
+            query.setParameter("preparedId", preparedId);
+
+            downloads = query.getResultList();
+
+            if (downloads.size() > 0) {
+                downloads.get(0).setStatus(DownloadStatus.COMPLETE);
+                em.flush();
+
+                return downloads.get(0).getPreparedId();
+            }
+        }
+
+        return null;
     }
 
 

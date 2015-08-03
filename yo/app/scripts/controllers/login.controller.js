@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'LocalStorageManager', '$log'];
+    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', '$log'];
 
-    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, LocalStorageManager, $log) { //jshint ignore: line
+    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, $log) { //jshint ignore: line
         var vm = this;
         vm.user = {};
 
@@ -189,7 +189,7 @@
 
                     //Do login stuff here
                     //initialise an empty cart for the user
-                    LocalStorageManager.init(facility, data.userName);
+                    //LocalStorageManager.init(facility, data.userName);
                     Cart.restore();
 
                     $rootScope.$broadcast('Login:success', {facility: facility, userName: data.userName});

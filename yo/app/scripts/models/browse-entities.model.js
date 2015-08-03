@@ -392,7 +392,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             //determine if parent is already checked and disable the selection tickbox
             //1. check hiearchy to see if current entity has a parent investigation or dataset
             //2. check if parent are selectable
-            //3. Get the ids of parents (need facility key, entityType, id = can get from URL)
+            //3. Get the ids of parentEntities (need facility key, entityType, id = can get from URL)
             //4. Check if parent is in the cart.
             //5. mark the row as isRowSelectable: function() {
             //        return false;
@@ -592,27 +592,27 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){
-                        var parents = [];
+                        var parentEntities = [];
 
-                        //add item parents
+                        //add item parentEntities
                         if (currentEntityType === 'dataset' || currentEntityType === 'datafile') {
                             if (_.has($stateParams, 'investigationId')) {
-                                parents.push({
-                                    id: parseInt($stateParams.investigationId),
+                                parentEntities.push({
+                                    entityId: parseInt($stateParams.investigationId),
                                     entityType: 'investigation'
                                 });
                             }
 
                             if (_.has($stateParams, 'datasetId')) {
-                                parents.push({
-                                    id: parseInt($stateParams.datasetId),
+                                parentEntities.push({
+                                    entityId: parseInt($stateParams.datasetId),
                                     entityType: 'dataset'
                                 });
                             }
                         }
 
                         if (row.isSelected === true) {
-                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name, parents);
+                            Cart.addItem(facility.facilityName, currentEntityType, row.entity.id, row.entity.name, parentEntities);
                         } else {
                             Cart.removeItem(facility.facilityName, currentEntityType, row.entity.id);
                         }

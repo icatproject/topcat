@@ -21,7 +21,7 @@
                     query : params.query,
                     server : encodeURIComponent(facility.icatUrl)
                 },
-                headers : {
+                info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
@@ -33,7 +33,7 @@
                     query : params.countQuery,
                     server : encodeURIComponent(facility.icatUrl)
                 },
-                headers : {
+                info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
@@ -144,6 +144,8 @@
             var options = {
                 'headers': {
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                },
+                'info' : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 },
@@ -177,7 +179,7 @@
                 params : {
                     server : encodeURIComponent(facility.icatUrl)
                 },
-                headers : {
+                info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
@@ -202,7 +204,7 @@
                 params : {
                     server : encodeURIComponent(facility.icatUrl)
                 },
-                headers : {
+                info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
@@ -222,7 +224,7 @@
                     params : {
                         server : encodeURIComponent(facility.icatUrl)
                     },
-                    headers : {
+                    info : {
                         'facilityKeyName' : facility.facilityName,
                         'facilityTitle' : facility.title
                     }
@@ -239,7 +241,7 @@
         data.refreshSession = function(mySessionId, facility) {
             var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId + '?server=' + encodeURIComponent(facility.icatUrl);
             var params = {
-                    headers : {
+                    info : {
                         'facilityKeyName' : facility.facilityName,
                         'facilityTitle' : facility.title
                     }
@@ -270,7 +272,7 @@
                     query : query,
                     server : facility.icatUrl
                 },
-                headers : {
+                info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
@@ -292,7 +294,7 @@
                     query : query,
                     entity : 'Facility'
                 },
-                headers : {
+                info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }

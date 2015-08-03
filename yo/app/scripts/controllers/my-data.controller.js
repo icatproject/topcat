@@ -20,11 +20,31 @@
 
         //vm.currentEntityType = currentEntityType;
         vm.isScroll = (pagingType === 'scroll') ? true : false;
-
-        $scope.isEmpty = false;
         MyDataModel.init(facilities, $scope, entityType, currentRouteSegment, sessions, $stateParams);
 
         vm.gridOptions = MyDataModel.gridOptions;
+
+        vm.items = MyDataModel.gridOptions.data;
+        vm.isEmpty = false;
+
+        $scope.$watchCollection(function() {
+            return vm.items;
+        }, function(newCol) {
+            console.log('newCol', newCol);
+            if (typeof newCol === 'undefined') {
+                console.log('isEmpty', true);
+                vm.isEmpty = true;
+            } else {
+                if(newCol.length === 0) {
+                    vm.isEmpty = true;
+                    console.log('isEmpty', true);
+                } else {
+                    vm.isEmpty = false;
+                    console.log('isEmpty', false);
+                }
+            }
+        });
+
 
 
         /**

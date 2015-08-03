@@ -2,6 +2,7 @@ package org.icatproject.topcat.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,11 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,9 +40,7 @@ import org.eclipse.persistence.annotations.CascadeOnDelete;
 @NamedQueries({
         @NamedQuery(name = "Cart.findAll", query = "SELECT c FROM Cart c"),
         @NamedQuery(name = "Cart.findById", query = "SELECT c FROM Cart c WHERE c.id = :id"),
-        @NamedQuery(name = "Cart.findByFacilityNameAndUserName", query = "SELECT c FROM Cart c WHERE c.facilityName = :facilityName AND c.userName = :userName"),
-        @NamedQuery(name = "Cart.deleteByFacilitNameAndUserName", query = "DELETE FROM Cart c WHERE c.facilityName = :facilityName AND c.userName = :userName")
-
+        @NamedQuery(name = "Cart.findByFacilityNameAndUserName", query = "SELECT c FROM Cart c WHERE c.facilityName = :facilityName AND c.userName = :userName")
 })
 @XmlRootElement
 public class Cart implements Serializable {
@@ -62,6 +65,14 @@ public class Cart implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart", orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<CartItem>();
+
+    @Column(name = "CREATED_AT", nullable=false, updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "UPDATED_AT", nullable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
 
     public Cart() {
@@ -108,12 +119,54 @@ public class Cart implements Serializable {
         this.availability = availability;
     }
 
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @PreUpdate
+    private void updateAt() {
+        this.updatedAt = new Date();
+    }
+
+    @PrePersist
+    private void createAt() {
+        this.createdAt = this.updatedAt = new Date();
+    }
+
     public List<CartItem> getCartItems() {
         return cartItems;
     }
 
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: " + id);
+        sb.append(" ");
+        sb.append("facilityName:" + facilityName);
+        sb.append(" ");
+        sb.append("userName:" + userName);
+        sb.append(" ");
+        sb.append("size:" + size);
+        sb.append(" ");
+        sb.append("CartItems:" + this.getCartItems().size());
+
+        return sb.toString();
     }
 
 }

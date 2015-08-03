@@ -57,7 +57,10 @@
 
         vm.ok = function() {
             $modalInstance.close();
-            window.alert(JSON.stringify(vm.downloads, null, 2));
+
+            Cart.submit(vm.downloads);
+
+            //window.alert(JSON.stringify(vm.downloads, null, 2));
         };
 
         vm.cancel = function() {

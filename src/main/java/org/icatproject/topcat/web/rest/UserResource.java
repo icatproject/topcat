@@ -9,8 +9,8 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.validation.Valid;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,20 +22,26 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.icatproject.ids.client.DataSelection;
+import org.icatproject.ids.client.IdsClient;
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartDTO;
 import org.icatproject.topcat.domain.CartItem;
 import org.icatproject.topcat.domain.CartSubmitDTO;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadItem;
+import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.domain.LongValue;
-import org.icatproject.topcat.domain.Status;
+import org.icatproject.topcat.domain.ParentEntity;
+import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
+import org.icatproject.topcat.idsclient.IdsClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.utils.CartUtils;
 
 @Stateless
 @LocalBean
@@ -51,6 +57,9 @@ public class UserResource {
 
     @EJB
     private ICATClientBean icatClientService;
+
+    @EJB
+    private IdsClientBean idsClientService;
 
 
     @GET
@@ -130,7 +139,54 @@ public class UserResource {
 
         Cart cart = cartRepository.getCartByFacilityNameAndUser(params);
 
+        if (cart == null) {
+            logger.debug("cart is null");
+            return Response.ok().entity("{}").build();
+        }
+
+        logger.debug("cart:" + cart.toString());
+
         return Response.ok().entity(cart).build();
+    }
+
+    @DELETE
+    @Path("/cart/facility/{facilityName}/user/{userName}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response removeCartByFacilityNameAndUser(
+            @PathParam("facilityName") String facilityName,
+            @PathParam("userName") String userName,
+            @QueryParam("sessionId") String sessionId,
+            @QueryParam("icatUrl") String icatUrl) throws MalformedURLException, TopcatException {
+        logger.info("removeCartByFacilityNameAndUser() called");
+
+        if (sessionId == null) {
+            throw new BadRequestException("sessionId query parameter is required");
+        }
+
+        if (icatUrl == null) {
+            throw new BadRequestException("icatUrl query parameter is required");
+        }
+
+        //check user is authorised
+        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
+
+        if (! auth) {
+            throw new AuthenticationException("sessionId not valid");
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("facilityName", facilityName);
+        params.put("userName", userName);
+        params.put("sessionId", sessionId);
+        params.put("icatUrl", icatUrl);
+
+        int deletedCount = cartRepository.removeCartByFacilityNameAndUser(params);
+
+        LongValue result = new LongValue(new Long(deletedCount));
+
+        logger.debug(deletedCount + " cart belonging to " + userName + " on facility " + facilityName + " was removed");
+
+        return Response.ok().entity(result).build();
     }
 
 
@@ -157,9 +213,9 @@ public class UserResource {
             throw new BadRequestException("fileName is required");
         }
 
-        if (cartSubmitDTO.getStatus() == null) {
-            throw new BadRequestException("status is required and must be ONLINE or ARCHIVE");
-        }
+        /*if (cartSubmitDTO.getStatus() == null) {
+            throw new BadRequestException("status is required and must be ONLINE, ARCHIVED");
+        }*/
 
         if (cartSubmitDTO.getTransport() == null || cartSubmitDTO.getTransport().trim().isEmpty()) {
             throw new BadRequestException("transport is required");
@@ -190,10 +246,8 @@ public class UserResource {
         download.setFileName(cartSubmitDTO.getFileName());
         download.setUserName(cartSubmitDTO.getUserName());
         download.setTransport(cartSubmitDTO.getTransport());
-        download.setStatus(cartSubmitDTO.getStatus());
+        download.setTransportUrl(cartSubmitDTO.getTransportUrl());
         download.setEmail(cartSubmitDTO.getEmail());
-
-        download.setPreparedId("11111111-1111-1111-1111-111111111111");
 
         List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
 
@@ -208,15 +262,26 @@ public class UserResource {
 
         download.setDownloadItems(downloadItems);
 
-        try {
-            downloadRepository.save(download);
-        } catch (Exception e) {
-            logger.debug(e.getMessage());
+        DataSelection dataSelection =  CartUtils.cartToDataSelection(cart);
 
+        String preparedId = idsClientService.prepareData(cartSubmitDTO.getTransportUrl(), cartSubmitDTO.getSessionId(), dataSelection, IdsClient.Flag.ZIP_AND_COMPRESS);
+
+        if (preparedId != null) {
+            download.setPreparedId(preparedId);
+            download.setStatus(DownloadStatus.RESTORING);
+
+            try {
+                downloadRepository.save(download);
+            } catch (Exception e) {
+                logger.debug(e.getMessage());
+
+                throw new BadRequestException("Unable to submit for cart for download");
+            }
+        } else {
             throw new BadRequestException("Unable to submit for cart for download");
         }
 
-        LongValue value = new LongValue(download.getId());
+        StringValue value = new StringValue(preparedId);
 
         return Response.ok().entity(value).build();
     }
@@ -260,6 +325,19 @@ public class UserResource {
             newCartItem.setName(cartItem.getName());
             newCartItem.setEntityType(cartItem.getEntityType());
             newCartItem.setCart(cart);
+
+            List<ParentEntity> newParentEntities = new ArrayList<ParentEntity>();
+            //parent entities
+            for(ParentEntity parentEntity : cartItem.getParentEntities()) {
+                ParentEntity newParentEnity = new ParentEntity();
+                newParentEnity.setEntityId(parentEntity.getEntityId());
+                newParentEnity.setEntityType(parentEntity.getEntityType());
+                newParentEnity.setCartItem(newCartItem);
+
+                newParentEntities.add(newParentEnity);
+            }
+
+            newCartItem.setParentEntities(newParentEntities);
 
             cartItems.add(newCartItem);
         }

@@ -1,34 +1,36 @@
 {
     "facilityName": "dls",
     "userName": "vcf21513",
-    "sessionId": "123456789",
+    "sessionId": "c2ebc7eb-42f8-4c83-a507-0fe8d32cd82d",
     "icatUrl": "https://facilities02.esc.rl.ac.uk",
     "size": 123456,
     "availability" : "ONLINE",
     "cartItems": [
         {
-            "entityType": "investigation",
-            "entityId": 910034180,
-            "name": "CM12170",
-            "size": 4729449937,
+            "entityType": "dataset",
+            "entityId": 870341119,
+            "name": "ipp1.TIF",
+            "size": 18697478,
             "availability": "ARCHIVED",
-            "parents": []
+            "parentEntities": [
+                {
+                    "entityId": 910034180,
+                    "entityType": "investigation"
+                }
+            ]
         },
         {
-            "entityType": "investigation",
-            "entityId": 910034179,
-            "name": "CM12170",
-            "size": 459300388,
+            "entityType": "dataset",
+            "entityId": 885042997,
+            "name": "ipp2.TIF",
+            "size": 4347844,
             "availability": "ARCHIVED",
-            "parents": []
-        },
-        {
-            "entityType": "investigation",
-            "entityId": 910034178,
-            "name": "CM12170",
-            "size": 905,
-            "availability": "ONLINE",
-            "parents": []
+            "parentEntities": [
+                {
+                    "entityId": 910034180,
+                    "entityType": "investigation"
+                }
+            ]
         }
     ]
 }

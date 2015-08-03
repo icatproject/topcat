@@ -40,7 +40,7 @@ describe('Service: Cart', function() {
         var entityType = 'dataset';
         var id = 123456;
         var name = 'my test dataset';
-        var parents = [{
+        var parentEntities = [{
             entityType: 'investigation',
             id: 7654321
         }];
@@ -52,7 +52,7 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItem(facilityName, entityType, id, name, parents);
+        Cart.addItem(facilityName, entityType, id, name, parentEntities);
 
         var cart = Cart.getCart();
 
@@ -68,7 +68,7 @@ describe('Service: Cart', function() {
         var entityType1 = 'dataset';
         var id1 = 123456;
         var name1 = 'my test dataset';
-        var parents1 = [{
+        var parentEntities1 = [{
             entityType: 'investigation',
             id: 7654321
         }];
@@ -77,7 +77,7 @@ describe('Service: Cart', function() {
         var entityType2 = 'datafile';
         var id2 = 654321;
         var name2 = 'my test datafile';
-        var parents2 = [{
+        var parentEntities2 = [{
             entityType: 'dataset',
             id: 456789
         }];
@@ -89,8 +89,8 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItem(facilityName1, entityType1, id1, name1, parents1);
-        Cart.addItem(facilityName2, entityType2, id2, name2, parents2);
+        Cart.addItem(facilityName1, entityType1, id1, name1, parentEntities1);
+        Cart.addItem(facilityName2, entityType2, id2, name2, parentEntities2);
 
         var cart = Cart.getCart();
 
@@ -106,7 +106,7 @@ describe('Service: Cart', function() {
         var entityType = 'dataset';
         var id = 123456;
         var name = 'my test dataset';
-        var parents = [{
+        var parentEntities = [{
             entityType: 'investigation',
             id: 7654321
         }];
@@ -118,10 +118,10 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItem(facilityName, entityType, id, name, parents);
-        Cart.addItem(facilityName, entityType, id, name, parents);
-        Cart.addItem(facilityName, entityType, id, name, parents);
-        Cart.addItem(facilityName, entityType, id, name, parents);
+        Cart.addItem(facilityName, entityType, id, name, parentEntities);
+        Cart.addItem(facilityName, entityType, id, name, parentEntities);
+        Cart.addItem(facilityName, entityType, id, name, parentEntities);
+        Cart.addItem(facilityName, entityType, id, name, parentEntities);
 
         var cart = Cart.getCart();
 
@@ -144,7 +144,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -158,7 +158,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -195,7 +195,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -209,7 +209,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -223,7 +223,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -259,7 +259,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -273,7 +273,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -330,7 +330,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -344,7 +344,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -414,7 +414,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -428,7 +428,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -481,7 +481,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': null,
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -495,7 +495,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': null,
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -527,7 +527,7 @@ describe('Service: Cart', function() {
             'name': 'my test dataset 2',
             'size': null,
             'availability': null,
-            'parents': [
+            'parentEntities': [
                 {
                   'entityType': 'investigation',
                   'id': 7654321
@@ -546,7 +546,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': null,
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -560,7 +560,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': null,
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -600,7 +600,7 @@ describe('Service: Cart', function() {
                     'name': 'my test name',
                     'size': null,
                     'availability': 'ONLINE',
-                    'parents': [
+                    'parentEntities': [
                         {
                           'entityType': 'investigation',
                           'id': 7654321
@@ -626,7 +626,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -640,7 +640,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -667,7 +667,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -681,7 +681,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -728,7 +728,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -742,7 +742,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -810,7 +810,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321
@@ -824,7 +824,7 @@ describe('Service: Cart', function() {
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
-                'parents': [
+                'parentEntities': [
                     {
                       'entityType': 'investigation',
                       'id': 7654321

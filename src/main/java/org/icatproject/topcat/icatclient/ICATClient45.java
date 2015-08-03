@@ -23,7 +23,7 @@ import org.icatproject_4_5_0.Login.Credentials.Entry;
 import javax.xml.namespace.QName;
 
 /**
- * ICAT client for ICAT 4.3
+ * ICAT client for ICAT 4.5
  */
 public class ICATClient45 implements ICATClientInterface {
     private ICAT service;
@@ -31,7 +31,7 @@ public class ICATClient45 implements ICATClientInterface {
     private final static Logger logger = Logger.getLogger(ICATClient45.class);
 
     public ICATClient45(String serverURL) throws MalformedURLException {
-        logger.info("ICATInterfacev43: serverURL (" + serverURL + ")");
+        logger.info("ICATInterfacev45: serverURL (" + serverURL + ")");
 
         if (!serverURL.matches(".*/ICATService/ICAT\\?wsdl$")) {
             if (serverURL.matches(".*/$")) {

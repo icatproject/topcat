@@ -17,33 +17,28 @@
         CartModel.init($scope);
         ct.gridOptions = CartModel.gridOptions;
 
-        if (ct.gridOptions.data.length === 0) {
-            $scope.isEmpty = true;
-        } else {
-            $scope.isEmpty = false;
-        }
+        ct.items = Cart.getItems();
+        ct.isEmpty = false;
+
+        $scope.$watchCollection(function() {
+            return ct.items;
+        }, function(newCol) {
+            if(newCol.length === 0) {
+                ct.isEmpty = true;
+            } else {
+                ct.isEmpty = false;
+            }
+
+        });
 
         //listen to when cart is displayed and refresh the cart data
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) { //jshint ignore: line
             if (toState.name === 'home.cart') {
                 CartModel.refreshData();
             }
-
-            if (ct.gridOptions.data.length === 0) {
-                $scope.isEmpty = true;
-            } else {
-                $scope.isEmpty = false;
-            }
         });
 
         $rootScope.$on('Cart:change', function(){
-            if (ct.gridOptions.data.length === 0) {
-                $scope.isEmpty = true;
-            } else {
-                $scope.isEmpty = false;
-            }
-
-            //save the cart to localstorage
             Cart.save();
         });
 
@@ -64,23 +59,10 @@
 
         ct.removeAllItems = function(row) {
             CartModel.removeAllItems(row);
-
-            /*if (ct.gridOptions.data.length === 0) {
-                $scope.isEmpty = true;
-            } else {
-                $scope.isEmpty = false;
-            }*/
         };
 
         $scope.removeItem = function(row) {
             CartModel.removeItem(row);
-
-            //display empty cart if no item in cart
-            /*if (ct.gridOptions.data.length === 0) {
-                $scope.isEmpty = true;
-            } else {
-                $scope.isEmpty = false;
-            }*/
         };
 
         $scope.getSize = function(row) { //jshint ignore: line

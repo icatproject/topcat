@@ -25,7 +25,7 @@
                         sessionId : encodeURIComponent(mySessionId),
                         server : encodeURIComponent(facility.idsUrl)
                     },
-                    headers : {
+                    info : {
                         'facilityKeyName' : facility.facilityName,
                         'facilityTitle' : facility.title
                     },
@@ -47,7 +47,7 @@
                         sessionId : encodeURIComponent(mySessionId),
                         server : encodeURIComponent(facility.idsUrl)
                     },
-                    headers : {
+                    info : {
                         'facilityKeyName' : facility.facilityName,
                         'facilityTitle' : facility.title
                     },

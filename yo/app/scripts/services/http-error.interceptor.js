@@ -35,26 +35,26 @@
 
                     if(rejection.status === 403){
                         $log.debug('HttpErrorInterceptor', rejection);
-                        $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.headers.facilityTitle);
+                        $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
 
                         state = $injector.get('$state');
 
-                        inform.add($translate.instant('SESSION.EXPIRED_ERROR', {'facilityTitle' : rejection.config.headers.facilityTitle}), {
+                        inform.add($translate.instant('SESSION.EXPIRED_ERROR', {'facilityTitle' : rejection.config.info.facilityTitle}), {
                             'ttl': 0,
                             'type': 'danger'
                         });
 
                         //delete the session
-                        if (typeof $sessionStorage.sessions[rejection.config.headers.facilityKeyName] !== 'undefined') {
-                            userName = $sessionStorage.sessions[rejection.config.headers.facilityKeyName].userName;
+                        if (typeof $sessionStorage.sessions[rejection.config.info.facilityKeyName] !== 'undefined') {
+                            userName = $sessionStorage.sessions[rejection.config.info.facilityKeyName].userName;
 
-                            delete $sessionStorage.sessions[rejection.config.headers.facilityKeyName];
+                            delete $sessionStorage.sessions[rejection.config.info.facilityKeyName];
                         }
 
 
-                        //if (typeof userName !== 'undefined' && typeof rejection.config.headers.facilityKeyName !== 'undefined') {
+                        //if (typeof userName !== 'undefined' && typeof rejection.config.info.facilityKeyName !== 'undefined') {
                         //broadcast session expiry
-                        $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.headers.facilityKeyName, userName: userName});
+                        $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.info.facilityKeyName, userName: userName});
                         //}
 
                         if (_.size($sessionStorage.sessions) === 0) {
@@ -64,7 +64,7 @@
 
                     if(rejection.status === 400){
                         $log.debug('HttpErrorInterceptor', rejection);
-                        $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.headers.facilityTitle);
+                        $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
 
                         state = $injector.get('$state');
 
@@ -80,22 +80,22 @@
                             //check it is an InsufficientPrivilegesException error meaning session expired
                             if (idsInvalidUUID(data) || icatInsufficientPrivileges(data)) {
                                 $log.debug('session expired deleting session');
-                                userName = $sessionStorage.sessions[rejection.config.headers.facilityKeyName].userName;
-                                delete $sessionStorage.sessions[rejection.config.headers.facilityKeyName];
+                                userName = $sessionStorage.sessions[rejection.config.info.facilityKeyName].userName;
+                                delete $sessionStorage.sessions[rejection.config.info.facilityKeyName];
 
                                 //broadcast session expiry
-                                $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.headers.facilityKeyName, userName: userName});
+                                $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.info.facilityKeyName, userName: userName});
                             }
                         }
 
-                        inform.add($translate.instant('RESTAPI.BAD_REQUEST_ERROR', {'facilityTitle' : rejection.config.headers.facilityTitle}), {
+                        inform.add($translate.instant('RESTAPI.BAD_REQUEST_ERROR', {'facilityTitle' : rejection.config.info.facilityTitle}), {
                             'ttl': 0,
                             'type': 'danger'
                         });
                     }
 
                     if(rejection.status === 0){
-                        inform.add($translate.instant('RESPONSE.ERROR.NO_CONNECTION', {'facilityTitle' : rejection.config.headers.facilityTitle}), {
+                        inform.add($translate.instant('RESPONSE.ERROR.NO_CONNECTION', {'facilityTitle' : rejection.config.info.facilityTitle}), {
                             'ttl': 0,
                             'type': 'danger'
                         });

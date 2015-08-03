@@ -148,7 +148,9 @@
                     params[item.entityType + 'Ids'] = [];
                 }
 
-                params[item.entityType + 'Ids'].push(item.id);
+                $log.debug(item);
+
+                params[item.entityType + 'Ids'].push(item.entityId);
             });
 
             _.each(params, function(param, key) {

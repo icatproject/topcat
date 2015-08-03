@@ -1,6 +1,7 @@
 package org.icatproject.topcat.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.persistence.annotations.CascadeOnDelete;
@@ -45,6 +49,9 @@ public class Download implements Serializable {
     @Column(name = "TRANSPORT", nullable = false)
     private String transport;
 
+    @Column(name = "TRANSPORT_URL", nullable = false)
+    private String transportUrl = "";
+
     @Column(name = "FILE_NAME", nullable = false)
     private String fileName;
 
@@ -56,10 +63,14 @@ public class Download implements Serializable {
 
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private DownloadStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "download", orphanRemoval = true)
     private List<DownloadItem> downloadItems;
+
+    @Column(name = "CREATED_AT", updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
 
     public Download() {
@@ -97,6 +108,14 @@ public class Download implements Serializable {
         this.transport = transport;
     }
 
+    public String getTransportUrl() {
+        return transportUrl;
+    }
+
+    public void setTransportUrl(String transportUrl) {
+        this.transportUrl = transportUrl;
+    }
+
     public String getFileName() {
         return fileName;
     }
@@ -121,11 +140,11 @@ public class Download implements Serializable {
         this.email = email;
     }
 
-    public Status getStatus() {
+    public DownloadStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(DownloadStatus status) {
         this.status = status;
     }
 
@@ -137,6 +156,19 @@ public class Download implements Serializable {
         this.downloadItems = downloadItems;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    private void createAt() {
+        this.createdAt = new Date();
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("id: " + id);
@@ -146,6 +178,8 @@ public class Download implements Serializable {
         sb.append("userName:" + userName);
         sb.append(" ");
         sb.append("transport:" + transport);
+        sb.append(" ");
+        sb.append("transportUrl:" + transportUrl);
         sb.append(" ");
         sb.append("fileName:" + fileName);
         sb.append(" ");

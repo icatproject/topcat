@@ -234,7 +234,7 @@
         .run(['RouteCreatorService', function(RouteCreatorService) {
             RouteCreatorService.createStates();
         }])
-        .run(['$rootScope', 'LocalStorageManager', 'Cart', function($rootScope, LocalStorageManager, Cart) {
+        .run(['$rootScope', 'Cart', function($rootScope, Cart) {
             //init and restore cart when user refresh page
             Cart.init();
 

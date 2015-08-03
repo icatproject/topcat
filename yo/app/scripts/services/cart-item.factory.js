@@ -9,18 +9,18 @@
 
     function CartItem($log) { //jshint ignore: line
 
-        var item = function (facilityName, userName, entityType, id, name, size, availability, parents) {
+        var item = function (facilityName, userName, entityType, entityId, name, size, availability, parentEntities) {
             size = size || null;
             availability = availability || null;
 
             this.setFacilityName(facilityName);
             this.setUserName(userName);
             this.setEntityType(entityType);
-            this.setId(id);
+            this.setEntityId(entityId);
             this.setName(name);
             this.setSize(size);
             this.setAvailability(availability);
-            this.setParents(parents);
+            this.setParentEntities(parentEntities);
         };
 
         item.prototype.getFacilityName = function(){
@@ -55,16 +55,16 @@
             }
         };
 
-        item.prototype.setId = function(id){
-            if (id) {
-                this.id = id;
+        item.prototype.setEntityId = function(entityId){
+            if (entityId) {
+                this.entityId = entityId;
             } else {
-                throw new Error('A id must be provided');
+                throw new Error('An entityId must be provided');
             }
         };
 
-        item.prototype.getId = function(){
-            return this.id;
+        item.prototype.getEntityId = function(){
+            return this.entityId;
         };
 
 
@@ -96,12 +96,12 @@
             return this.availability;
         };
 
-        item.prototype.setParents = function(parents){
-            this.parents = parents;
+        item.prototype.setParentEntities = function(parentEntities){
+            this.parentEntities = parentEntities;
         };
 
-        item.prototype.getParents = function(){
-            return this.parents;
+        item.prototype.getParentEntities = function(){
+            return this.parentEntities;
         };
 
 
@@ -111,11 +111,11 @@
                 facilityName: this.getFacilityName(),
                 userName: this.getUserName(),
                 entityType: this.getEntityType(),
-                id: this.getId(),
+                entityId: this.getEntityId(),
                 name: this.getName(),
                 size: this.getSize(),
                 availability: this.getAvailability(),
-                parents: this.getParents()
+                parentEntities: this.getParentEntities()
             };
         };
 

@@ -16,6 +16,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -34,8 +35,9 @@ import org.icatproject.topcat.domain.DownloadItem;
 import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.LongValue;
 import org.icatproject.topcat.domain.StringValue;
-import org.icatproject.topcat.domain.Status;
+import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.exceptions.AuthenticationException;
+import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.TopcatException;
@@ -85,6 +87,30 @@ public class AdminResource {
     }
 
 
+    @PUT
+    @Path("/downloads/facility/{facilityName}/complete")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response setCompleteByPreparedId(
+            @PathParam("facilityName") String facilityName,
+            @QueryParam("preparedId") String preparedId) throws BadRequestException {
+        logger.info("setCompleteByPreparedId() called");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("facilityName", facilityName);
+        params.put("preparedId", preparedId);
+
+
+        String result = downloadRepository.setCompleteByPreparedId(params);
+
+        if (result == null) {
+            throw new BadRequestException("PreparedId " + preparedId + " not found");
+        }
+
+        StringValue id = new StringValue(preparedId);
+        return Response.ok().entity(id).build();
+    }
+
+
     @GET
     @Path("/generate-fixture/download")
     @Produces({MediaType.APPLICATION_JSON})
@@ -116,7 +142,7 @@ public class AdminResource {
             download.setPreparedId(UUID.randomUUID().toString());
             download.setUserName(user);
             download.setTransport(transport);
-            download.setStatus(Status.values()[new Random().nextInt(Status.values().length)]);
+            download.setStatus(DownloadStatus.values()[new Random().nextInt(DownloadStatus.values().length)]);
             download.setEmail(user + "@stfc.ac.uk");
 
 
@@ -157,7 +183,7 @@ public class AdminResource {
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
         cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVE);
+        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(910034180));
@@ -258,7 +284,7 @@ public class AdminResource {
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
         cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVE);
+        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(88888888));

@@ -1,0 +1,72 @@
+{
+    "vcf21513@dls": {
+        "items": [
+            {
+                "facilityName": "dls",
+                "userName": "vcf21513",
+                "entityType": "investigation",
+                "id": 910034180,
+                "name": "CM12170",
+                "size": 4729449937,
+                "availability": "ARCHIVED",
+                "parents": []
+            },
+            {
+                "facilityName": "dls",
+                "userName": "vcf21513",
+                "entityType": "investigation",
+                "id": 910034179,
+                "name": "CM12170",
+                "size": 459300388,
+                "availability": "ARCHIVED",
+                "parents": []
+            },
+            {
+                "facilityName": "dls",
+                "userName": "vcf21513",
+                "entityType": "investigation",
+                "id": 910034178,
+                "name": "CM12170",
+                "size": 905,
+                "availability": "ONLINE",
+                "parents": []
+            }
+        ]
+    }
+}
+
+{
+    "availability": "ONLINE",
+    "cartItems": [
+        {
+            "entityId": 885042997,
+            "entityType": "dataset",
+            "id": 5,
+            "name": "ipp2.TIF",
+            "parentEntities": [
+                {
+                    "entityId": 910034180,
+                    "entityType": "investigation",
+                    "id": 6
+                }
+            ]
+        },
+        {
+            "entityId": 870341119,
+            "entityType": "dataset",
+            "id": 6,
+            "name": "ipp1.TIF",
+            "parentEntities": [
+                {
+                    "entityId": 910034180,
+                    "entityType": "investigation",
+                    "id": 5
+                }
+            ]
+        }
+    ],
+    "facilityName": "dls",
+    "id": 3,
+    "size": 123456,
+    "userName": "vcf21513"
+}

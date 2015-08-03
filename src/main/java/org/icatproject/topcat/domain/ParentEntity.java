@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "PARENTENTITY")
@@ -63,6 +64,7 @@ public class ParentEntity implements Serializable{
         this.entityId = entityId;
     }
 
+    @XmlTransient
     public CartItem getCartItem() {
         return cartItem;
     }

@@ -87,7 +87,7 @@ public class PersistenceTest {
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
         cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVE);
+        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(910034180));
@@ -136,7 +136,7 @@ public class PersistenceTest {
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
         cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVE);
+        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(910034180));
@@ -192,7 +192,7 @@ public class PersistenceTest {
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
         cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVE);
+        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(910034180));

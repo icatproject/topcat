@@ -8,7 +8,7 @@
 
 <div class="cart-container">
     <div ng-if="ct.isScroll" ui-grid="ct.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
-        <div class="no-rows row" ng-show="isEmpty">
+        <div class="no-rows row" ng-show="ct.isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
                 <span>Cart is empty</span>
             </div>
@@ -16,7 +16,7 @@
     </div>
 
     <div ng-if="!ct.isScroll" ui-grid="ct.gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
-        <div class="row" ng-show="isEmpty">
+        <div class="row" ng-show="ct.isEmpty">
             <div class="empty-message center-block">
                 <span>cart is empty</span>
             </div>
