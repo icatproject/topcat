@@ -22,12 +22,10 @@ public class IdsClientBean {
      * @throws MalformedURLException
      */
     private IdsClientInterface getIdsService(String idsUrl) throws MalformedURLException, InternalException {
-        String url = "facilities02.esc.rl.ac.uk";
-
         IdsClientInterface service = IdsClientFactory.getInstance().createIdsClient(idsUrl);
 
         if (service == null) {
-            throw new InternalException("unable to retrieve service with url " + url);
+            throw new InternalException("unable to retrieve service with url " + idsUrl);
         }
 
         return service;

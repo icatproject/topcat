@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
 
-
 @Stateless
 @LocalBean
 @Singleton
@@ -32,6 +31,12 @@ public class DownloadRepository {
         String status = params.get("status");
         String transport = params.get("transport");
         String preparedId = params.get("preparedId");
+
+        DownloadStatus downloadStatus = null;
+
+        if (status != null) {
+            downloadStatus = DownloadStatus.valueOf(status);
+        }
 
         if (em != null) {
             StringBuilder sb = new StringBuilder();
@@ -54,8 +59,8 @@ public class DownloadRepository {
             TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
             query.setParameter("facilityName", facilityName);
 
-            if (status != null) {
-                query.setParameter("status", status);
+            if (downloadStatus != null) {
+                query.setParameter("status", downloadStatus);
             }
 
             if (transport != null) {

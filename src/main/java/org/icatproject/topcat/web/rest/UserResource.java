@@ -193,8 +193,8 @@ public class UserResource {
     @POST
     @Path("/cart/submit")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getCartToDownload(CartSubmitDTO cartSubmitDTO) throws MalformedURLException, TopcatException {
-        logger.info("getDownloadsByFacilityNameAndUser() called");
+    public Response submitCart(CartSubmitDTO cartSubmitDTO) throws MalformedURLException, TopcatException {
+        logger.info("submitCart() called");
 
         //validate. Sould use bean validation but don't know how to return json error messages
         if (cartSubmitDTO.getSessionId() == null) {
@@ -221,8 +221,8 @@ public class UserResource {
             throw new BadRequestException("transport is required");
         }
 
-
         //check user is authorised
+        logger.info("check user is authorised");
         boolean auth = icatClientService.isSessionValid(cartSubmitDTO.getIcatUrl(), cartSubmitDTO.getSessionId());
 
         if (! auth) {
@@ -264,7 +264,9 @@ public class UserResource {
 
         DataSelection dataSelection =  CartUtils.cartToDataSelection(cart);
 
+        logger.info("Send prepareData request to " + cartSubmitDTO.getTransportUrl());
         String preparedId = idsClientService.prepareData(cartSubmitDTO.getTransportUrl(), cartSubmitDTO.getSessionId(), dataSelection, IdsClient.Flag.ZIP_AND_COMPRESS);
+        logger.info("Returned prepareId " + preparedId);
 
         if (preparedId != null) {
             download.setPreparedId(preparedId);

@@ -71,7 +71,7 @@ public class AdminResource {
             @PathParam("facilityName") String facilityName,
             @QueryParam("status") String status,
             @QueryParam("transport") String transport,
-            @QueryParam("preparedId") String preparedId) {
+            @QueryParam("preparedId") String preparedId) throws BadRequestException {
         logger.info("getDownloadsByFacilityName() called");
 
         Map<String, String> params = new HashMap<String, String>();
@@ -79,6 +79,15 @@ public class AdminResource {
         params.put("status", status);
         params.put("transport", transport);
         params.put("preparedId", preparedId);
+
+        //validate status
+        if (status != null) {
+            DownloadStatus downloadStatus = DownloadStatus.valueOf(status);
+
+            if (downloadStatus == null) {
+                throw new BadRequestException("Status must be RESTORING or COMPLETE");
+            }
+        }
 
         List<Download> downloads = new ArrayList<Download>();
         downloads = downloadRepository.getDownloadsByFacilityName(params);
