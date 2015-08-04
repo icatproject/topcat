@@ -126,7 +126,7 @@ public class RestAPITest {
 
     @Test
     public void getUserDownloadWithInvalidSessionIdAndIcatUrl() throws UnsupportedEncodingException {
-        get(restAPIUrl + "/downloads/facility/sig/user/vcf21513?sessionId=123456&icatUrl=" + icatUrl).then().statusCode(401).body("message", equalTo("sessionId not valid"));
+        get(restAPIUrl + "/downloads/facility/sig/user/vcf21513?sessionId=123456&icatUrl=" + icatUrl).then().statusCode(403).body("message", equalTo("sessionId not valid"));
     }
 
     @Test

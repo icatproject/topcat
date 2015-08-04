@@ -34,8 +34,8 @@ import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.domain.LongValue;
 import org.icatproject.topcat.domain.ParentEntity;
 import org.icatproject.topcat.domain.StringValue;
-import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.BadRequestException;
+import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.idsclient.IdsClientBean;
@@ -87,7 +87,7 @@ public class UserResource {
         boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
 
         if (! auth) {
-            throw new AuthenticationException("sessionId not valid");
+            throw new ForbiddenException("sessionId not valid");
         }
 
         Map<String, String> params = new HashMap<String, String>();
@@ -128,7 +128,7 @@ public class UserResource {
         boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
 
         if (! auth) {
-            throw new AuthenticationException("sessionId not valid");
+            throw new ForbiddenException("sessionId not valid");
         }
 
         Map<String, String> params = new HashMap<String, String>();
@@ -171,7 +171,7 @@ public class UserResource {
         boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
 
         if (! auth) {
-            throw new AuthenticationException("sessionId not valid");
+            throw new ForbiddenException("sessionId not valid");
         }
 
         Map<String, String> params = new HashMap<String, String>();
@@ -226,7 +226,7 @@ public class UserResource {
         boolean auth = icatClientService.isSessionValid(cartSubmitDTO.getIcatUrl(), cartSubmitDTO.getSessionId());
 
         if (! auth) {
-            throw new AuthenticationException("sessionId not valid");
+            throw new ForbiddenException("sessionId not valid");
         }
 
         Map<String, String> params = new HashMap<String, String>();
@@ -310,7 +310,7 @@ public class UserResource {
         boolean auth = icatClientService.isSessionValid(cartDTO.getIcatUrl(), cartDTO.getSessionId());
 
         if (! auth) {
-            throw new AuthenticationException("sessionId not valid");
+            throw new ForbiddenException("sessionId not valid");
         }
 
         Cart cart = new Cart();

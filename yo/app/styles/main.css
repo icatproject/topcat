@@ -127,3 +127,8 @@ body {
 .grid-cell-spinner .spinner {
   top: 10px !important;
 }
+
+/* Fix ui-grid-cell border color issue when css is concat/minified */
+.ui-grid-cell {
+  border-color: #d4d4d4;
+}
