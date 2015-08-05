@@ -9,7 +9,7 @@
             "hierarchy": [
                 "facility",
                 "instrument",
-                "proposal",
+
                 "investigation",
                 "dataset",
                 "datafile"
@@ -2017,10 +2017,9 @@
         }
     },
     "site": {
-        "icatDataProxyHost": "https://localhost:3001",
         "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/webapi/v1",
         "home" : "my-data",
-        "pagingType": "scroll",
+        "pagingType": "page",
         "useFileForData": false,
         "useFileForSession": false,
         "paginationNumberOfRows": 10,
@@ -2337,6 +2336,46 @@
                     }
                 ]
             }
+        },
+        "myDownloadGridOptions": {
+            "enableFiltering": true,
+            "columnDefs": [
+                {
+                    "field": "fileName",
+                    "displayName": "Download Name",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.DOWNLOAD_NAME",
+                    "sortDirection": "asc",
+                    "type" : "string"
+                },
+                {
+                    "field": "facilityName",
+                    "displayName": "Facility",
+                    "translateDisplayName": "CART.COLUMN.FACILITY_NAME",
+                    "sortDirection": "asc",
+                    "type" : "string"
+                },
+                {
+                    "field": "transport",
+                    "displayName": "Transport",
+                    "translateDisplayName": "CART.COLUMN.TRANSPORT",
+                    "sortDirection": "asc",
+                    "type" : "string"
+                },
+                {
+                    "field": "status",
+                    "displayName": "Status",
+                    "translateDisplayName": "CART.COLUMN.STATUS",
+                    "sortDirection": "asc",
+                    "type" : "string"
+                },
+                {
+                    "field": "createdAt",
+                    "displayName": "Created Date",
+                    "translateDisplayName": "CART.COLUMN.CREATED_DATE",
+                    "type" : "date",
+                    "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'"
+                }
+            ]
         },
         "facility": {
             "metaTabs": {

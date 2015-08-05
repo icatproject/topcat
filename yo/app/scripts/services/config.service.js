@@ -201,6 +201,14 @@
                 }
             },
 
+            getSiteMyDownloadGridOptions : function(config) {
+                if (typeof config.site.myDownloadGridOptions !== 'undefined') {
+                    return config.site.myDownloadGridOptions;
+                } else {
+                    throw new Error('\'myDataGridOptions\' not configured');
+                }
+            },
+
             getSiteMyDataGridEntityType : function(config) {
                 if (typeof config.site.myDataGridOptions !== 'undefined') {
                     if (typeof config.site.myDataGridOptions.entityType !== 'undefined') {

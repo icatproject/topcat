@@ -1,0 +1,19 @@
+<h1 translate="DOWNLOAD.TITLE"></h1>
+
+<div class="cart-container">
+    <div ng-if="dl.isScroll" ui-grid="dl.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
+        <div class="no-rows row" ng-show="dl.isEmpty">
+            <div class="col-md-2 col-md-offset-5 empty-message">
+                <span>Cart is empty</span>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="!dl.isScroll" ui-grid="dl.gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
+        <div class="row" ng-show="dl.isEmpty">
+            <div class="empty-message center-block">
+                <span>cart is empty</span>
+            </div>
+        </div>
+    </div>
+</div>

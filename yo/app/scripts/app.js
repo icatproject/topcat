@@ -166,6 +166,22 @@
                     sticky: true,
                     deepStateRedirect: true
                 })
+                .state('home.download', {
+                    url: '/download',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    },
+                    views: {
+                      'download': {
+                        templateUrl: 'views/main-download.html',
+                        controller: 'DownloadController as dl'
+                      }
+                    },
+                    sticky: true,
+                    deepStateRedirect: true
+                })
                 // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
                 .state('about', {
                     /*resolve : {
@@ -180,6 +196,10 @@
 
                     url: '/contact',
                     templateUrl: 'views/main-contact.html'
+                })
+                .state('globus-faq', {
+                    url: '/globus-faq',
+                    templateUrl: 'views/main-globus-faq.html'
                 })
                 .state('test', {
                     url: '/test',

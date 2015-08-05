@@ -78,6 +78,24 @@
             return $http.delete(url, params);
         };
 
+
+        data.getMyDownloads = function(facility, userName) {
+            var url = TOPCAT_API_PATH + '/downloads/facility/' + facility.facilityName + '/user/' + encodeURIComponent(userName);
+
+            var params = {
+                params : {
+                    sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
+                    icatUrl: facility.icatUrl
+                },
+                info : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title
+                }
+            };
+
+            return $http.get(url, params);
+        };
+
         return data;
     }
 })();

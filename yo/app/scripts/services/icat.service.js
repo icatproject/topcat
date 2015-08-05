@@ -146,7 +146,7 @@
 
             var options = {
                 'headers' :{
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 'info': {
                     'facilityKeyName' : facility.facilityName,

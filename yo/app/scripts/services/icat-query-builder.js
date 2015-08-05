@@ -57,13 +57,13 @@
         }
 
 
-        function urlEncodeParameters(params) {
-            /*var p = _.object(_.map(params, function(v, k) {
+        /*function urlEncodeParameters(params) {
+            var p = _.object(_.map(params, function(v, k) {
                 return [k, encodeURIComponent(v)];
-            }));*/
+            }));
 
             return params;
-        }
+        }*/
 
         function aliasIncludeString(include) {
             var index = include.indexOf('.');

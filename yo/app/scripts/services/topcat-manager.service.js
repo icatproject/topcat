@@ -73,8 +73,18 @@
             return def.promise;
         };
 
+        manager.getMyDownloads = function(facility, userName) {
+            var def = $q.defer();
 
+            TopcatService.getMyDownloads(facility, userName).then(function(data) {
+                def.resolve(data.data);
+            }, function(){
+                def.reject('Failed to get user downloads');
+                throw new MyException('Failed to get user cart');
+            });
 
+            return def.promise;
+        };
 
         return manager;
     }

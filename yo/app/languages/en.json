@@ -12,7 +12,8 @@
         "MAIN_TAB" : {
             "MY_DATA" : "My Data",
             "BROWSE" : "Browse",
-            "CART" : "Cart"
+            "CART" : "Cart",
+            "DOWNLOAD" : "Download"
         }
     },
     "LANGUAGE" : {
@@ -193,11 +194,26 @@
             "REMOVE_ALL" : "Remove All"
         }
     },
+    "DOWNLOAD" : {
+        "TITLE" : "Download Orders",
+        "COLUMN" : {
+            "ID" : "Id",
+            "NAME" : "Name",
+            "ENTITY_TYPE" : "Type",
+            "FACILITY" : "Facility",
+            "SIZE" : "Size",
+            "AVAILABILITY" : "Availability"
+        },
+        "EMPTY" : "No Download"
+    },
     "ABOUT" : {
         "TITLE" : "About"
     },
     "CONTACT" : {
         "TITLE" : "Contact"
+    },
+    "GLOBUS_FAQ" : {
+        "TITLE" : "Globus FAQ"
     },
     "RESPONSE": {
         "ERROR" : {
