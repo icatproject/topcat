@@ -11,7 +11,7 @@
         //private var and methods
         var data = {};
 
-        var ICATDATAPROXYURL = Config.getSiteConfig(APP_CONFIG).icatDataProxyHost;
+        //var ICATDATAPROXYURL = Config.getSiteConfig(APP_CONFIG).icatDataProxyHost;
 
         /**
          * Get ICAT version
@@ -19,11 +19,11 @@
          * @return {[type]}          [description]
          */
         data.getSize = function(mySessionId, facility, options) {
-            var url = ICATDATAPROXYURL + '/ids/getSize';
+            var url = facility.idsUrl + '/ids/getSize';
             var params = {
                     params : {
-                        sessionId : encodeURIComponent(mySessionId),
-                        server : encodeURIComponent(facility.idsUrl)
+                        sessionId : mySessionId,
+                        server : facility.idsUrl
                     },
                     info : {
                         'facilityKeyName' : facility.facilityName,
@@ -41,11 +41,11 @@
 
 
         data.getStatus = function(mySessionId, facility, options) {
-            var url = ICATDATAPROXYURL + '/ids/getStatus';
+            var url = facility.idsUrl + '/ids/getStatus';
             var params = {
                     params : {
-                        sessionId : encodeURIComponent(mySessionId),
-                        server : encodeURIComponent(facility.idsUrl)
+                        sessionId : mySessionId,
+                        server : facility.idsUrl
                     },
                     info : {
                         'facilityKeyName' : facility.facilityName,

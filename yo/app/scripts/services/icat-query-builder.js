@@ -58,11 +58,11 @@
 
 
         function urlEncodeParameters(params) {
-            var p = _.object(_.map(params, function(v, k) {
+            /*var p = _.object(_.map(params, function(v, k) {
                 return [k, encodeURIComponent(v)];
-            }));
+            }));*/
 
-            return p;
+            return params;
         }
 
         function aliasIncludeString(include) {
@@ -193,7 +193,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getFacilityCyclesByInstrumentId: function(mySessionId, facility, queryParams) {
@@ -245,7 +245,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getDatasetsByFacilityCycleId: function() {
@@ -306,7 +306,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
 
@@ -349,7 +349,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             /** get instruments **/
@@ -387,7 +387,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getInvestigationsByFacilityCycleId: function(mySessionId, facility, queryParams){
@@ -439,7 +439,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
 
             },
 
@@ -484,7 +484,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
 
@@ -539,7 +539,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getInvestigationsByProposalId: function(mySessionId, facility, queryParams) {
@@ -585,7 +585,7 @@
 
                 $log.debug('queryParams', queryParams);
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
 
@@ -629,7 +629,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getInvestigationsByInstrumentIdByCycleId: function() {
@@ -688,7 +688,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getDatasetsByInstrumentId: function(mySessionId, facility, queryParams) {
@@ -733,7 +733,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getDatasetsByInvestigationId: function(mySessionId, facility, queryParams) {
@@ -774,7 +774,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getDatafiles: function(mySessionId, facility, queryParams) {
@@ -815,7 +815,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getDatafilesByInstrumentId: function(mySessionId, facility, queryParams) {
@@ -862,7 +862,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getDatafilesByInvestigationId: function(mySessionId, facility, queryParams) {
@@ -905,7 +905,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
             getDatafilesByDatasetId: function(mySessionId, facility, queryParams) {
@@ -948,7 +948,7 @@
                     server: facility.icatUrl
                 });
 
-                return urlEncodeParameters(params);
+                return params;
             },
 
 
@@ -976,7 +976,7 @@
                     server: facility.icatUrl
                 };
 
-                return urlEncodeParameters(params);
+                return params;
             }
         };
     }

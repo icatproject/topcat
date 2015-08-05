@@ -11,15 +11,14 @@
         //private var and methods
         var data = {};
 
-        var ICATDATAPROXYURL = Config.getSiteConfig(APP_CONFIG).icatDataProxyHost;
-        var RESTAPI = ICATDATAPROXYURL + '/icat/entityManager';
-
         var getPromise = function(mySessionId, facility, params) {
+            var RESTAPI = facility.icatUrl + '/icat/entityManager';
+
             var itemsQueryParams = {
                 params : {
-                    sessionId : encodeURIComponent(mySessionId),
+                    sessionId : mySessionId,
                     query : params.query,
-                    server : encodeURIComponent(facility.icatUrl)
+                    server : facility.icatUrl
                 },
                 info : {
                     'facilityKeyName' : facility.facilityName,
@@ -29,9 +28,9 @@
 
             var countQueryParams = {
                 params : {
-                    sessionId : encodeURIComponent(mySessionId),
+                    sessionId : mySessionId,
                     query : params.countQuery,
-                    server : encodeURIComponent(facility.icatUrl)
+                    server : facility.icatUrl
                 },
                 info : {
                     'facilityKeyName' : facility.facilityName,
@@ -133,19 +132,23 @@
         data.login = function(facility, credential) {
             //$log.debug('login called for facility' , facility);
 
-            var url = ICATDATAPROXYURL + '/icat/session';
-            var data = {
-                server : facility.icatUrl,
-                plugin : credential.plugin,
-                username : credential.credentials.username,
-                password : credential.credentials.password
+            var url = facility.icatUrl + '/icat/session';
+
+            var credentialObj = {
+                plugin: credential.plugin,
+                credentials: [
+                    {username: credential.credentials.username},
+                    {password: credential.credentials.password}
+                ]
             };
 
+            var data = { json : JSON.stringify(credentialObj) };
+
             var options = {
-                'headers': {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'headers' :{
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                'info' : {
+                'info': {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 },
@@ -174,10 +177,10 @@
         data.logout = function(mySessionId, facility, options) { //jshint ignore:line
             //$log.debug('icatservice.logout called for facility' , facility);
 
-            var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId;
+            var url = facility.icatUrl + '/icat/session/' + mySessionId;
             var params = {
                 params : {
-                    server : encodeURIComponent(facility.icatUrl)
+                    server : facility.icatUrl
                 },
                 info : {
                     'facilityKeyName' : facility.facilityName,
@@ -199,10 +202,10 @@
         data.getSession = function(mySessionId, facility, options) { //jshint ignore:line
             $log.debug('icatservice.getSession called for facility', mySessionId, facility, options);
 
-            var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId;
+            var url = facility.icatUrl + '/icat/session/' + mySessionId;
             var params = {
                 params : {
-                    server : encodeURIComponent(facility.icatUrl)
+                    server : facility.icatUrl
                 },
                 info : {
                     'facilityKeyName' : facility.facilityName,
@@ -219,10 +222,10 @@
          * @return {[type]}          [description]
          */
         data.getVersion = function(facility) {
-            var url = ICATDATAPROXYURL + '/icat/version';
+            var url = facility.icatUrl + '/icat/version';
             var params = {
                     params : {
-                        server : encodeURIComponent(facility.icatUrl)
+                        server : facility.icatUrl
                     },
                     info : {
                         'facilityKeyName' : facility.facilityName,
@@ -239,7 +242,7 @@
          * @return {[type]}          [description]
          */
         data.refreshSession = function(mySessionId, facility) {
-            var url = ICATDATAPROXYURL + '/icat/session/' + mySessionId + '?server=' + encodeURIComponent(facility.icatUrl);
+            var url = facility.icatUrl + '/icat/session/' + mySessionId + '?server=' + facility.icatUrl;
             var params = {
                     info : {
                         'facilityKeyName' : facility.facilityName,
@@ -260,7 +263,7 @@
          * @return {[type]}             [description]
          */
         data.getEntityById = function(mySessionId, facility, entityType, entityId, options) {
-            var url = ICATDATAPROXYURL + '/icat/entityManager';
+            var url = facility.icatUrl + '/icat/entityManager';
             var entityIcatName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
             var query = entityIcatName ;
             query = appendConciseInclude(options, query);
@@ -285,7 +288,7 @@
         /** get facilities */
         /*data.getFacilities = function(mySessionId, facility, options) {
 
-            var url = ICATDATAPROXYURL + '/icat/entityManager';
+            var url = facility.icatUrl + '/icat/entityManager';
             var query = 'SELECT f FROM Facility f';
 
             var params = {

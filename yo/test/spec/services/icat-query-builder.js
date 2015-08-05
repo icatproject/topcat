@@ -59,11 +59,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) LIMIT 0, 10')
+            query: 'SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -71,7 +71,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -100,11 +100,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -112,11 +112,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -147,11 +147,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\') ORDER BY ins.name DESC LIMIT 0, 10')
+            query: 'SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\') ORDER BY ins.name DESC LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -159,11 +159,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -249,11 +249,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            query: 'SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -261,7 +261,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -289,11 +289,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            query: 'SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -301,16 +301,16 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params.filterCountQuery).toBeUndefined();*/
 
 
-        /*.toBe('?countQuery=' + encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)') +
+        /*.toBe('?countQuery=' + 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)' +
             '&entity=Instrument' +
-            '&query=' + encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)') +
-            '&server=' + encodeURIComponent('https://example.com') +
+            '&query=' + 'SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)' +
+            '&server=' + 'https://example.com' +
             '&sessionId=1234567890');*/
     });
 
@@ -368,11 +368,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            query: 'SELECT ins FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -380,7 +380,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -411,11 +411,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8) LIMIT 0, 10')
+            query: 'SELECT inv FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8)')
+            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -423,7 +423,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -455,11 +455,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8) AND (UPPER(inv.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT inv FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8) AND (UPPER(inv.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8)')
+            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -467,11 +467,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8) AND (UPPER(inv.name) LIKE \'%CLF%\' OR UPPER(inv.title) LIKE \'%CLF%\' OR UPPER(inv.visitId) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8) AND (UPPER(inv.name) LIKE \'%CLF%\' OR UPPER(inv.title) LIKE \'%CLF%\' OR UPPER(inv.visitId) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -500,11 +500,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) LIMIT 0, 10')
+            query: 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -512,7 +512,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -544,11 +544,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -556,11 +556,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -589,11 +589,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765) LIMIT 0, 10')
+            query: 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765)')
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -601,7 +601,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -633,11 +633,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765) AND (UPPER(df.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765) AND (UPPER(df.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765)')
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -645,11 +645,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765) AND (UPPER(df.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765) AND (UPPER(df.name) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -677,11 +677,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) LIMIT 0, 10')
+            query: 'SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -689,7 +689,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -720,11 +720,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(inv.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(inv.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -732,11 +732,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(inv.name) LIKE \'%CLF%\' OR UPPER(inv.title) LIKE \'%CLF%\' OR UPPER(inv.visitId) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(inv.name) LIKE \'%CLF%\' OR UPPER(inv.title) LIKE \'%CLF%\' OR UPPER(inv.visitId) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -763,7 +763,7 @@ describe('Service: ICATQueryBuilder', function() {
         );
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments LIMIT 0, 10')
+            query: 'SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments LIMIT 0, 10'
         }));
     });
 
@@ -788,7 +788,7 @@ describe('Service: ICATQueryBuilder', function() {
         );
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments.instrument LIMIT 0, 10')
+            query: 'SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments.instrument LIMIT 0, 10'
         }));
     });
 
@@ -814,7 +814,7 @@ describe('Service: ICATQueryBuilder', function() {
         );
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments.instrument.instrumentScientists.user LIMIT 0, 10')
+            query: 'SELECT inv FROM Investigation inv, inv.facility f WHERE (f.id = 1) INCLUDE inv.investigationInstruments.instrument.instrumentScientists.user LIMIT 0, 10'
         }));
     });
 
@@ -842,11 +842,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) LIMIT 0, 10')
+            query: 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -854,7 +854,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -885,11 +885,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(ds.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(ds.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -897,11 +897,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(ds.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(ds.name) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -929,11 +929,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) LIMIT 0, 10')
+            query: 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -941,7 +941,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -972,11 +972,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(df.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(df.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)')
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -984,11 +984,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(df.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(df.name) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -1016,11 +1016,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ds FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345) LIMIT 0, 10')
+            query: 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345)')
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -1028,7 +1028,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -1060,11 +1060,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT ds FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT ds FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345)')
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -1072,11 +1072,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\')'
         }));*/
     });
 
@@ -1105,11 +1105,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) LIMIT 0, 10')
+            query: 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -1117,7 +1117,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         //expect(params.filterCountQuery).toBeUndefined();
@@ -1149,11 +1149,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            query: encodeURIComponent('SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(df.name) LIKE \'%CLF%\') LIMIT 0, 10')
+            query: 'SELECT df FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(df.name) LIKE \'%CLF%\') LIMIT 0, 10'
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)')
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -1161,11 +1161,11 @@ describe('Service: ICATQueryBuilder', function() {
         }));*/
 
         expect(params).toEqual(jasmine.objectContaining({
-            server: encodeURIComponent('https://example.com')
+            server: 'https://example.com'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
-            filterCountQuery: encodeURIComponent('SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(df.name) LIKE \'%CLF%\')')
+            filterCountQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(df.name) LIKE \'%CLF%\')'
         }));*/
     });
 
