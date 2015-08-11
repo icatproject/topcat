@@ -15,5 +15,6 @@ public interface IdsClientInterface {
     public Status getStatus(String sessionId, DataSelection dataSelection) throws TopcatException;
     public long getSize(String sessionId, DataSelection dataSelection) throws TopcatException;
     public void ping() throws TopcatException;
+    public boolean isTwoLevel() throws TopcatException;
     public String getApiVersion() throws TopcatException;
 }

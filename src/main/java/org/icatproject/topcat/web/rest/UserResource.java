@@ -21,7 +21,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
 import org.icatproject.topcat.domain.Cart;
@@ -41,13 +40,16 @@ import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.idsclient.IdsClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.statuscheck.ExecutorBean;
 import org.icatproject.topcat.utils.CartUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean
 @Path("v1")
 public class UserResource {
-    static final Logger logger = Logger.getLogger(UserResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     @EJB
     private DownloadRepository downloadRepository;
@@ -61,13 +63,17 @@ public class UserResource {
     @EJB
     private IdsClientBean idsClientService;
 
+    @EJB
+    private ExecutorBean executorBean;
+
 
     @GET
-    @Path("/downloads/facility/{facilityName}/user/{userName}")
+    @Path("/downloads/facility/{facilityName}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDownloadsByFacilityNameAndUser(
             @PathParam("facilityName") String facilityName,
-            @PathParam("userName") String userName,
+            @QueryParam("userName") String userName,
             @QueryParam("sessionId") String sessionId,
             @QueryParam("icatUrl") String icatUrl,
             @QueryParam("status") String status,
@@ -80,6 +86,10 @@ public class UserResource {
         }
 
         if (icatUrl == null) {
+            throw new BadRequestException("icatUrl query parameter is required");
+        }
+
+        if (userName == null) {
             throw new BadRequestException("icatUrl query parameter is required");
         }
 
@@ -107,11 +117,12 @@ public class UserResource {
 
 
     @GET
-    @Path("/cart/facility/{facilityName}/user/{userName}")
+    @Path("/cart/facility/{facilityName}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCartByFacilityNameAndUser(
             @PathParam("facilityName") String facilityName,
-            @PathParam("userName") String userName,
+            @QueryParam("userName") String userName,
             @QueryParam("sessionId") String sessionId,
             @QueryParam("icatUrl") String icatUrl) throws MalformedURLException, TopcatException {
         logger.info("getDownloadsByFacilityNameAndUser() called");
@@ -121,6 +132,10 @@ public class UserResource {
         }
 
         if (icatUrl == null) {
+            throw new BadRequestException("icatUrl query parameter is required");
+        }
+
+        if (userName == null) {
             throw new BadRequestException("icatUrl query parameter is required");
         }
 
@@ -150,11 +165,11 @@ public class UserResource {
     }
 
     @DELETE
-    @Path("/cart/facility/{facilityName}/user/{userName}")
+    @Path("/cart/facility/{facilityName}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response removeCartByFacilityNameAndUser(
             @PathParam("facilityName") String facilityName,
-            @PathParam("userName") String userName,
+            @QueryParam("userName") String userName,
             @QueryParam("sessionId") String sessionId,
             @QueryParam("icatUrl") String icatUrl) throws MalformedURLException, TopcatException {
         logger.info("removeCartByFacilityNameAndUser() called");
@@ -164,6 +179,10 @@ public class UserResource {
         }
 
         if (icatUrl == null) {
+            throw new BadRequestException("icatUrl query parameter is required");
+        }
+
+        if (userName == null) {
             throw new BadRequestException("icatUrl query parameter is required");
         }
 
@@ -192,6 +211,7 @@ public class UserResource {
 
     @POST
     @Path("/cart/submit")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public Response submitCart(CartSubmitDTO cartSubmitDTO) throws MalformedURLException, TopcatException {
         logger.info("submitCart() called");
@@ -247,6 +267,7 @@ public class UserResource {
         download.setUserName(cartSubmitDTO.getUserName());
         download.setTransport(cartSubmitDTO.getTransport());
         download.setTransportUrl(cartSubmitDTO.getTransportUrl());
+        download.setIcatUrl(cartSubmitDTO.getIcatUrl());
         download.setEmail(cartSubmitDTO.getEmail());
 
         List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
@@ -268,9 +289,19 @@ public class UserResource {
         String preparedId = idsClientService.prepareData(cartSubmitDTO.getTransportUrl(), cartSubmitDTO.getSessionId(), dataSelection, IdsClient.Flag.ZIP_AND_COMPRESS);
         logger.info("Returned prepareId " + preparedId);
 
+        boolean isTwoLevel = idsClientService.isTwoLevel(cartSubmitDTO.getTransportUrl());
+        download.setIsTwoLevel(isTwoLevel);
+
         if (preparedId != null) {
             download.setPreparedId(preparedId);
             download.setStatus(DownloadStatus.RESTORING);
+
+            // if isTwoLevel storage start a check status thread
+            if (isTwoLevel == true) {
+                download.setStatus(DownloadStatus.RESTORING);
+            } else {
+                download.setStatus(DownloadStatus.COMPLETE);
+            }
 
             try {
                 downloadRepository.save(download);
@@ -279,6 +310,12 @@ public class UserResource {
 
                 throw new BadRequestException("Unable to submit for cart for download");
             }
+
+            // if isTwoLevel storage start a check status thread
+            if (isTwoLevel == true) {
+                executorBean.executeAsync(preparedId);
+            }
+
         } else {
             throw new BadRequestException("Unable to submit for cart for download");
         }
@@ -287,6 +324,7 @@ public class UserResource {
 
         return Response.ok().entity(value).build();
     }
+
 
 
 
@@ -351,6 +389,15 @@ public class UserResource {
         LongValue preparedId = new LongValue(cart.getId());
 
         return Response.ok().entity(preparedId).build();
+    }
+
+    @GET
+    @Path("/ping")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response ping() {
+        logger.info("ping() called");
+        return Response.ok().entity("ok").build();
+
     }
 
 

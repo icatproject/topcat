@@ -3,7 +3,6 @@ package org.icatproject.topcat.idsclient;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
 import org.icatproject.ids.client.IdsException;
@@ -17,6 +16,8 @@ import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.TopcatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ids client
@@ -24,7 +25,7 @@ import org.icatproject.topcat.exceptions.TopcatException;
 public class IdsClient13 implements IdsClientInterface {
     private IdsClient service;
 
-    private final static Logger logger = Logger.getLogger(IdsClient13.class);
+    private static final Logger logger = LoggerFactory.getLogger(IdsClient.class);
 
     public IdsClient13(String serverURL) throws MalformedURLException {
         logger.info("IdsInterfacev: serverURL (" + serverURL + ")");
@@ -136,6 +137,19 @@ public class IdsClient13 implements IdsClientInterface {
         }
     }
 
+
+    @Override
+    public boolean isTwoLevel() throws TopcatException {
+        try {
+            return service.isTwoLevel();
+        } catch (org.icatproject.ids.client.InternalException e) {
+            throw new org.icatproject.topcat.exceptions.InternalException(e.getMessage());
+        } catch (NotImplementedException e) {
+            throw new org.icatproject.topcat.exceptions.NotImplementedException(e.getMessage());
+        }
+    }
+
+
     @Override
     public String getApiVersion() throws TopcatException {
         String apiVersion = null;
@@ -171,6 +185,5 @@ public class IdsClient13 implements IdsClientInterface {
 
 
     }
-
 
 }

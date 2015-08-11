@@ -136,3 +136,11 @@ body {
 .cart-buttom-section {
   margin-top: 50px;
 }
+
+/* disable a link */
+.not-active {
+  color: #AAAAAA;
+  cursor: default;
+  pointer-events: none;
+  text-decoration: none;
+}

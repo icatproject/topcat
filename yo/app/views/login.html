@@ -1,5 +1,14 @@
 <h1>{{'LOGIN.PAGE_TITLE' | translate}}</h1>
-
+<div class="row" ng-show="vm.isFirefox">
+    <div class="text-center">
+        <h3 style="color: red;">Firefox detected. You will not be able to login. Please use Chrome until <a href="https://github.com/icatproject/icat.server/issues/149">issue #149</a> is fixed.</h3>
+    </div>
+</div>
+<div class="row" ng-show="vm.isIE9">
+    <div class="text-center">
+        <h3 style="color: red;">IE 9 or below Detected. Your browser is currently not supported</h3>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-4 col-md-offset-4">
         <div ng-if="! vm.isLoggedInAll()">

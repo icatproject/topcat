@@ -31,7 +31,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
         switch(entityType) {
             case 'investigation':
-                promise = DataManager.getInvestigations(sessions, facility, options);
+                promise = DataManager.getMyInvestigations(sessions, facility, options);
                 break;
             case 'dataset':
                 promise = DataManager.getDatasets(sessions, facility, options);
@@ -634,7 +634,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         },
 
         getNextRouteUrl: function (row) {
-            //$log.log('row', row);
+            $log.log('row', row);
             var params = {
                 facilityName : row.entity.facilityName,
             };
@@ -647,6 +647,26 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             _.each(this.stateParams, function(value, key){
                 params[key] = value;
             });
+
+
+            $log.log('nextRouteSegment', row.entity.nextRouteSegment);
+
+            if (typeof row.entity.nextRouteSegment !== 'undefined') {
+
+                if (row.entity.nextRouteSegment.indexOf('instrument') > -1) {
+                    params.facilityCycleId = row.entity.facility.facilityCycles[0].id;
+                }
+
+                if (row.entity.nextRouteSegment.indexOf('facilityCycle') > -1) {
+                    params.instrumentId = row.entity.investigationInstruments[0].instrument.id;
+                }
+
+                if (row.entity.nextRouteSegment.indexOf('proposal') > -1) {
+                    params.proposalId = row.entity.name;
+                }
+            }
+
+            $log.log('params', params);
 
             var route = $state.href('home.browse.facility.' + row.entity.nextRouteSegment, params);
 

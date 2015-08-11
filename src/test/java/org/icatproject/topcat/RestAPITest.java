@@ -89,7 +89,9 @@ public class RestAPITest {
         RestAssured.config = RestAssured.config().sslConfig(sslConfig().allowAllHostnames());
         //RestAssured.config = RestAssuredConfig.config().redirect(new RedirectConfig().followRedirects(true).allowCircularRedirects(true));
 
-        restAPIUrl = appUrl.toString() + "webapi/v1";
+        restAPIUrl = appUrl.toString() + "api/v1";
+
+        System.out.println("restAPIUrl: " + restAPIUrl);
     }
 
 
@@ -110,23 +112,23 @@ public class RestAPITest {
 
     @Test
     public void getEmptyCart() {
-        get(restAPIUrl + "/downloads/facility/sig").then().log().all().statusCode(200).body("$", hasSize(0));
+        get(restAPIUrl + "/admin/downloads/facility/sig?userName=vcf21513").then().log().all().statusCode(200).body("$", hasSize(0));
     }
 
 
     @Test
     public void getUserDownloadWithNoSessionIdOrIcatUrl() {
-        get(restAPIUrl + "/downloads/facility/sig/user/vcf21513").then().statusCode(400).body("message", equalTo("sessionId query parameter is required"));
+        get(restAPIUrl + "/downloads/facility/sig?userName=vcf21513").then().statusCode(400).body("message", equalTo("sessionId query parameter is required"));
     }
 
     @Test
     public void getUserDownloadWithInvalidSessionId() {
-        get(restAPIUrl + "/downloads/facility/sig/user/vcf21513?sessionId=123456").then().statusCode(400).body("message", equalTo("icatUrl query parameter is required"));
+        get(restAPIUrl + "/downloads/facility/sig?sessionId=123456&userName=vcf21513").then().statusCode(400).body("message", equalTo("icatUrl query parameter is required"));
     }
 
     @Test
     public void getUserDownloadWithInvalidSessionIdAndIcatUrl() throws UnsupportedEncodingException {
-        get(restAPIUrl + "/downloads/facility/sig/user/vcf21513?sessionId=123456&icatUrl=" + icatUrl).then().statusCode(403).body("message", equalTo("sessionId not valid"));
+        get(restAPIUrl + "/downloads/facility/sig?sessionId=123456&icatUrl=" + icatUrl + "&userName=vcf21513").then().statusCode(403).body("message", equalTo("sessionId not valid"));
     }
 
     @Test
@@ -136,7 +138,7 @@ public class RestAPITest {
         System.out.println("sessionId:" + sessionId + " icatUrl: " + icatUrl);
 
 
-        get(restAPIUrl + "/downloads/facility/sig/user/vcf21513?sessionId="+ sessionId + "&icatUrl=" + icatUrl).then().statusCode(200).body("$", hasSize(0));
+        get(restAPIUrl + "/downloads/facility/sig?sessionId="+ sessionId + "&icatUrl=" + icatUrl + "&userName=vcf21513").then().statusCode(200).body("$", hasSize(0));
     }
 
 

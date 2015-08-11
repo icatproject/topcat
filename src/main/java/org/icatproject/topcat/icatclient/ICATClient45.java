@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
@@ -19,6 +18,8 @@ import org.icatproject_4_5_0.ICATService;
 import org.icatproject_4_5_0.IcatException_Exception;
 import org.icatproject_4_5_0.Login.Credentials;
 import org.icatproject_4_5_0.Login.Credentials.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 
@@ -28,7 +29,7 @@ import javax.xml.namespace.QName;
 public class ICATClient45 implements ICATClientInterface {
     private ICAT service;
 
-    private final static Logger logger = Logger.getLogger(ICATClient45.class);
+    private static final Logger logger = LoggerFactory.getLogger(ICATClient45.class);
 
     public ICATClient45(String serverURL) throws MalformedURLException {
         logger.info("ICATInterfacev45: serverURL (" + serverURL + ")");

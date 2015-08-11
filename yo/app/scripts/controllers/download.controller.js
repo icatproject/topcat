@@ -22,10 +22,10 @@
         $scope.getDownloadUrl = function(row) {
             $log.debug('getDownloadUrl called');
             if (row.entity.transport === 'https') {
-                if (row.entity.status === 'ONLINE') {
-                    return '<a href="' + row.entity.transportUrl + '/ids/getData?preparedId=' + row.entity.preparedId + '">Download</a>';
+                if (row.entity.status === 'COMPLETE') {
+                    return '<a href="' + row.entity.transportUrl + '/ids/getData?preparedId=' + row.entity.preparedId + '&outname=' + row.entity.fileName + '">Download</a>';
                 } else {
-                    return '<a disabled="disabled" href="' + row.entity.transportUrl + '/ids/getData?preparedId=' + row.entity.preparedId + '">Download</a>';
+                    return '<span class="not-active">Download</span>';
                 }
             } else if (row.entity.transport === 'globus') {
                 var route = $state.href('globus-faq');

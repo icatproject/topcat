@@ -43,6 +43,8 @@ module.exports = function(config) {
       'bower_components/angular-ui-grid/ui-grid.js',
       'bower_components/spin.js/spin.js',
       'bower_components/angular-spinner/angular-spinner.js',
+      'bower_components/re-tree/re-tree.js',
+      'bower_components/ng-device-detector/ng-device-detector.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/karma-read-json/karma-read-json.js',
       // endbower

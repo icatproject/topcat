@@ -52,6 +52,9 @@ public class Download implements Serializable {
     @Column(name = "TRANSPORT_URL", nullable = false)
     private String transportUrl = "";
 
+    @Column(name = "ICAT_URL", nullable = false)
+    private String icatUrl = "";
+
     @Column(name = "FILE_NAME", nullable = false)
     private String fileName;
 
@@ -64,6 +67,9 @@ public class Download implements Serializable {
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
     private DownloadStatus status;
+
+    @Column(name = "IS_TWO_LEVEL")
+    private Boolean isTwoLevel;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "download", orphanRemoval = true)
     private List<DownloadItem> downloadItems;
@@ -116,6 +122,14 @@ public class Download implements Serializable {
         this.transportUrl = transportUrl;
     }
 
+    public String getIcatUrl() {
+        return icatUrl;
+    }
+
+    public void setIcatUrl(String icatUrl) {
+        this.icatUrl = icatUrl;
+    }
+
     public String getFileName() {
         return fileName;
     }
@@ -146,6 +160,14 @@ public class Download implements Serializable {
 
     public void setStatus(DownloadStatus status) {
         this.status = status;
+    }
+
+    public Boolean getIsTwoLevel() {
+        return isTwoLevel;
+    }
+
+    public void setIsTwoLevel(Boolean isTwoLevel) {
+        this.isTwoLevel = isTwoLevel;
     }
 
     public List<DownloadItem> getDownloadItems() {
@@ -181,6 +203,8 @@ public class Download implements Serializable {
         sb.append(" ");
         sb.append("transportUrl:" + transportUrl);
         sb.append(" ");
+        sb.append("icatUrl:" + icatUrl);
+        sb.append(" ");
         sb.append("fileName:" + fileName);
         sb.append(" ");
         sb.append("preparedId:" + preparedId);
@@ -188,6 +212,8 @@ public class Download implements Serializable {
         sb.append("email:" + email);
         sb.append(" ");
         sb.append("status:" + status);
+        sb.append(" ");
+        sb.append("isTwoLevel:" + isTwoLevel);
         sb.append(" ");
         sb.append("DownloadItems:" + this.getDownloadItems().size());
 

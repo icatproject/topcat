@@ -32,12 +32,13 @@
 
 
         data.getCart = function(facility, userName) {
-            var url = TOPCAT_API_PATH + '/cart/facility/' + facility.facilityName + '/user/' + encodeURIComponent(userName);
+            var url = TOPCAT_API_PATH + '/cart/facility/' + facility.facilityName;
 
             var params = {
                 params : {
                     sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
-                    icatUrl: facility.icatUrl
+                    icatUrl: facility.icatUrl,
+                    userName: userName
                 },
                 info : {
                     'facilityKeyName' : facility.facilityName,
@@ -62,12 +63,13 @@
         };
 
         data.removeCart = function(facility, userName) {
-            var url = TOPCAT_API_PATH + '/cart/facility/' + facility.facilityName + '/user/' + encodeURIComponent(userName);
+            var url = TOPCAT_API_PATH + '/cart/facility/' + facility.facilityName;
 
             var params = {
                 params : {
                     sessionId: $sessionStorage.sessions['facility.facilityName'].sessionId,
-                    icatUrl: facility.icatUrl
+                    icatUrl: facility.icatUrl,
+                    userName: userName
                 },
                 info : {
                     'facilityKeyName' : facility.facilityName,
@@ -80,12 +82,13 @@
 
 
         data.getMyDownloads = function(facility, userName) {
-            var url = TOPCAT_API_PATH + '/downloads/facility/' + facility.facilityName + '/user/' + encodeURIComponent(userName);
+            var url = TOPCAT_API_PATH + '/downloads/facility/' + facility.facilityName;
 
             var params = {
                 params : {
                     sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
-                    icatUrl: facility.icatUrl
+                    icatUrl: facility.icatUrl,
+                    userName: userName
                 },
                 info : {
                     'facilityKeyName' : facility.facilityName,

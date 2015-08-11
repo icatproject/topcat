@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', '$log'];
+    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', '$log', 'deviceDetector'];
 
-    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, $log) { //jshint ignore: line
+    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, $log, deviceDetector) { //jshint ignore: line
         var vm = this;
         vm.user = {};
 
@@ -34,6 +34,9 @@
         vm.isSingleAuthenticationType = isSingleAuthenticationType;
         vm.isAnonymous = isAnonymous;
         vm.login = login;
+
+        vm.isFirefox = (deviceDetector.browser === 'firefox') ? true : false;
+        vm.isIE9 = (deviceDetector.browser === 'ie' && deviceDetector.browser_version <= 9) ? true : false; //jshint ignore: line
 
         //load previous remembered login
         loadRememberMe();

@@ -68,6 +68,12 @@ public class IdsClientBean {
         service.ping();
     }
 
+    public boolean isTwoLevel(String idsUrl) throws TopcatException, MalformedURLException {
+        IdsClientInterface service = getIdsService(idsUrl);
+
+        return service.isTwoLevel();
+    }
+
     public String getApiVersion(String idsUrl) throws TopcatException, MalformedURLException {
         IdsClientInterface service = getIdsService(idsUrl);
 

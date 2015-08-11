@@ -368,6 +368,22 @@
             return getPromise(mySessionId, facility, params);
         };
 
+
+        /**
+         * Returns a promise with a list of my investigations
+         * @param  {[type]} mySessionId [description]
+         * @param  {[type]} facility    [description]
+         * @param  {[type]} options     [description]
+         * @return {[type]}             [description]
+         */
+        data.getMyInvestigations = function(mySessionId, facility, options) {
+            $log.debug('getInvestigations options', options);
+            var params = ICATQueryBuilder.getMyInvestigations(mySessionId, facility, options);
+
+            return getPromise(mySessionId, facility, params);
+        };
+
+
         /**
          * Returns a promise with a list of instruments from a facility cycle id
          * @param  {[type]} mySessionId [description]

@@ -45,7 +45,8 @@
             'ui.grid.infiniteScroll',
             'ui.grid.selection',
             'bytes',
-            'angularSpinner'
+            'angularSpinner',
+            'ng.deviceDetector'
         ])
         .constant('_', window._)
         .constant('APP_CONSTANT', {
@@ -218,6 +219,10 @@
                 .state('logout.facility', {
                     url: '/:facilityName',
                     controller: 'LogoutController'
+                })
+                .state('homeRoute', {
+                    url: '/',
+                    controller: 'HomeRouteController'
                 })
                 ;
 

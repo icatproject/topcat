@@ -11,9 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean
@@ -22,7 +23,7 @@ public class DownloadRepository {
     @PersistenceContext(unitName="topcatv2")
     EntityManager em;
 
-    static final Logger logger = Logger.getLogger(DownloadRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
 
     public List<Download> getDownloadsByFacilityName(Map<String, String> params) {
         List<Download> downloads = new ArrayList<Download>();
@@ -75,10 +76,54 @@ public class DownloadRepository {
 
             downloads = query.getResultList();
 
+            if (downloads != null) {
+                return downloads;
+            }
+
         }
 
         return downloads;
     }
+
+
+    public List<Download> getCheckDownloads(Map<String, String> params) {
+        List<Download> downloads = new ArrayList<Download>();
+
+        String status = params.get("status");
+        String transport = params.get("transport");
+        String isTwoLevel = params.get("isTwoLevel");
+
+        DownloadStatus downloadStatus = null;
+
+        if (status != null) {
+            downloadStatus = DownloadStatus.valueOf(status);
+        }
+
+        boolean isTwoLevelBool = (isTwoLevel.equals("true")) ? true : false;
+
+        if (em != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT d FROM Download d WHERE d.status = :status AND d.transport = :transport AND d.isTwoLevel = :isTwoLevel");
+
+            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
+
+            query.setParameter("status", downloadStatus)
+                .setParameter("transport", transport)
+                .setParameter("isTwoLevel", isTwoLevelBool);
+
+            logger.debug(query.toString());
+
+            downloads = query.getResultList();
+
+            if (downloads != null) {
+                return downloads;
+            }
+        }
+
+        return downloads;
+    }
+
+
 
     public List<Download> getDownloadsByFacilityNameAndUser(Map<String, String> params) {
         List<Download> downloads = new ArrayList<Download>();
@@ -161,6 +206,30 @@ public class DownloadRepository {
         em.flush();
 
         return store;
+    }
+
+    public Download getDownloadsByPreparedId(String preparedId) {
+        List<Download> downloads = new ArrayList<Download>();
+
+        if (em != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT d FROM Download d WHERE d.preparedId = :preparedId");
+
+
+            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
+            query.setParameter("preparedId", preparedId);
+
+            logger.debug(query.toString());
+
+            downloads = query.getResultList();
+
+            if (downloads.size() > 0) {
+                return downloads.get(0);
+            }
+
+        }
+
+        return null;
     }
 
 

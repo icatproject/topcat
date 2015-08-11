@@ -13,20 +13,21 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartItem;
 import org.icatproject.topcat.domain.ParentEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Stateless
 @LocalBean
 @Singleton
 public class CartRepository {
+    private static final Logger logger = LoggerFactory.getLogger(CartRepository.class);
+
     @PersistenceContext(unitName="topcatv2")
     EntityManager em;
-
-    static final Logger logger = Logger.getLogger(CartRepository.class);
 
     public Cart getCartByFacilityNameAndUser(Map<String, String> params) {
         List<Cart> carts = new ArrayList<Cart>();

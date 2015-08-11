@@ -27,7 +27,8 @@
 
             TopcatService.submitCart(facility, cart).then(function(data) {
                 def.resolve(data.data);
-            }, function(){
+            }, function(error){
+                $log.debug(error);
                 def.reject('Failed to submit cart');
                 throw new MyException('Failed to submit cart');
             });
@@ -52,7 +53,8 @@
                 }
 
                 def.resolve(result);
-            }, function(){
+            }, function(error){
+                $log.debug(error);
                 def.reject('Failed to get user cart');
                 throw new MyException('Failed to get user cart');
             });
@@ -65,7 +67,8 @@
 
             TopcatService.saveCart(facility, userName, cart).then(function(data) {
                 def.resolve(data.data);
-            }, function(){
+            }, function(error){
+                $log.debug(error);
                 def.reject('Failed to get user cart');
                 throw new MyException('Failed to get user cart');
             });
@@ -78,7 +81,8 @@
 
             TopcatService.getMyDownloads(facility, userName).then(function(data) {
                 def.resolve(data.data);
-            }, function(){
+            }, function(error){
+                $log.debug(error);
                 def.reject('Failed to get user downloads');
                 throw new MyException('Failed to get user cart');
             });

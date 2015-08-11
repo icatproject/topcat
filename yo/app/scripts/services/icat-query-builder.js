@@ -309,6 +309,67 @@
                 return params;
             },
 
+            getMyInvestigations: function(mySessionId, facility, queryParams) {
+                $log.debug('getMyInvestigations fired');
+
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(inv)')
+                    .from('Investigation', 'inv')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('inv')
+                    .from('Investigation', 'inv')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                    query.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+
+                    countQuery.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+                }
+
+                query.from('f.facilityCycles', 'fc')
+                    .where(
+                        squel.expr()
+                            .and_begin() //jshint ignore:line
+                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                            .end()
+                    );
+
+
+                var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    //entity: 'Investigation',
+                    server: facility.icatUrl
+                });
+
+                return params;
+            },
+
 
             getProposals: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);

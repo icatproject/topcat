@@ -5,11 +5,12 @@
             "title": "DIAMOND",
             "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
             "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181",
+            "idsIsToLevel": true,
             "facilityId": 1,
             "hierarchy": [
                 "facility",
                 "instrument",
-
+                "proposal",
                 "investigation",
                 "dataset",
                 "datafile"
@@ -584,7 +585,7 @@
                     "displayName" : "Https",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
+                    "url": "https://idsdev.isis.cclrc.ac.uk"
                 }
             ],
             "browseOptions": {
@@ -2017,9 +2018,9 @@
         }
     },
     "site": {
-        "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/webapi/v1",
+        "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/api/v1",
         "home" : "my-data",
-        "pagingType": "page",
+        "pagingType": "scroll",
         "useFileForData": false,
         "useFileForSession": false,
         "paginationNumberOfRows": 10,
@@ -2174,7 +2175,8 @@
                 "enableFiltering": true,
                 "enableSelection": true,
                 "includes" : [
-                    "investigation.investigationInstruments.instrument"
+                    "investigation.investigationInstruments.instrument",
+                    "investigation.facility.facilityCycles"
                 ],
                 "columnDefs": [
                     {
