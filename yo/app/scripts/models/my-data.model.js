@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('MyDataModel', MyDataModel);
 
-MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', 'IdsManager', '$timeout', '$state', 'Cart', '$sessionStorage', 'usSpinnerService', '$log'];
+MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', 'IdsManager', '$timeout', '$state', 'Cart', '$sessionStorage', 'usSpinnerService', 'moment', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'Rou
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, usSpinnerService, $log){  //jshint ignore: line
+function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, usSpinnerService, moment, $log){  //jshint ignore: line
     function hasField(options, field) {
         var result = false;
         //determine if field size has been defined
@@ -34,11 +34,125 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                 promise = DataManager.getMyInvestigations(sessions, facility, options);
                 break;
             case 'dataset':
-                promise = DataManager.getDatasets(sessions, facility, options);
+                promise = DataManager.getMyDatasets(sessions, facility, options);
             break;
         }
 
         return promise;
+    }
+
+    function getIncludesForRoutes(params, entityType, nextRouteSegment) {
+        if (typeof params.includes === 'undefined') {
+            params.includes = [];
+        }
+
+        if (entityType === 'investigation') {
+            if (nextRouteSegment.indexOf('instrument') > -1) {
+                if (params.includes.indexOf('investigation.investigationInstruments.instrument') === -1) {
+                    params.includes.push('investigation.investigationInstruments.instrument');
+                }
+            }
+
+            if (nextRouteSegment.indexOf('facilityCycle') > -1) {
+                if (params.includes.indexOf('investigation.facility.facilityCycles') === -1) {
+                    params.includes.push('investigation.facility.facilityCycles');
+                }
+            }
+        }
+
+        if (entityType === 'dataset') {
+            //INCLUDE ds.investigation inv, inv.investigationInstruments.instrument, inv.facility.facilityCycles
+            if (nextRouteSegment.indexOf('instrument') > -1) {
+                if (params.includes.indexOf('dataset.investigation.investigationInstruments.instrument') === -1) {
+                    params.includes.push('dataset.investigation inv');
+                    params.includes.push('investigation.investigationInstruments.instrument');
+                }
+            }
+
+            if (nextRouteSegment.indexOf('facilityCycle') > -1) {
+                if (params.includes.indexOf('dataset.investigation inv') === -1) {
+                    params.includes.push('dataset.investigation inv');
+                }
+
+                if (params.includes.indexOf('dataset.investigation.facility.facilityCycles') === -1) {
+                    params.includes.push('investigation.facility.facilityCycles');
+                }
+            }
+        }
+
+        return params;
+    }
+
+
+    function getNextRouteStateParam(row, entityType, stateParams) {
+        var params = {
+            facilityName : row.entity.facilityName,
+        };
+
+        params[entityType + 'Id'] = row.entity.id;
+
+        _.each(stateParams, function(value, key){
+            params[key] = value;
+        });
+
+        if (typeof row.entity.nextRouteSegment !== 'undefined') {
+            if (entityType === 'investigation') {
+                if (row.entity.nextRouteSegment.indexOf('instrument') > -1) {
+                    params.instrumentId = row.entity.investigationInstruments[0].instrument.id;
+                }
+
+                if (row.entity.nextRouteSegment.indexOf('facilityCycle') > -1) {
+                    var investigationFacilityCycle = null;
+
+                    _.each(row.entity.facility.facilityCycles, function(fc) {
+                        if (moment(row.entity.startDate).isBetween(fc.startDate, fc.endDate) === true) {
+                            investigationFacilityCycle = fc;
+                            return false;
+                        }
+                    });
+
+                    if (typeof investigationFacilityCycle !== 'undefined' && investigationFacilityCycle !== null) {
+                        params.facilityCycleId = investigationFacilityCycle.id;
+                    }
+
+                }
+
+                if (row.entity.nextRouteSegment.indexOf('proposal') > -1) {
+                    params.proposalId = row.entity.name;
+                }
+            }
+
+            if (entityType === 'dataset') {
+                if (row.entity.nextRouteSegment.indexOf('instrument') > -1) {
+                    params.instrumentId = row.entity.investigation.investigationInstruments[0].instrument.id;
+                }
+
+                if (row.entity.nextRouteSegment.indexOf('facilityCycle') > -1) {
+                    var datasetFacilityCycle = null;
+
+                    _.each(row.entity.investigation.facility.facilityCycles, function(fc) {
+                        if (moment(row.entity.investigation.startDate).isBetween(fc.startDate, fc.endDate) === true) {
+                            datasetFacilityCycle = fc;
+                            return false;
+                        }
+                    });
+
+                    if (typeof datasetFacilityCycle !== 'undefined' && datasetFacilityCycle !== null) {
+                        params.facilityCycleId = datasetFacilityCycle.id;
+                    }
+                }
+
+                if (row.entity.nextRouteSegment.indexOf('proposal') > -1) {
+                    params.proposalId = row.entity.investigation.name;
+                }
+
+                if (row.entity.nextRouteSegment.indexOf('investigation') > -1) {
+                    params.investigationId = row.entity.investigation.id;
+                }
+            }
+        }
+
+        return params;
     }
 
     return {
@@ -55,12 +169,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
          * @return {[type]} [description]
          */
         configToUIGridOptions : function(entityType) {
-            //$log.debug('MyDataModel configToUIGridOptions called');
-            //$log.debug('MyDataModel configToUIGridOptions entityType', entityType);
-
             var gridOptions = Config.getSiteMyDataGridOptions(APP_CONFIG)[entityType];
-
-            //$log.debug('MyDataModel gridOptions', gridOptions);
 
             //do the work of transposing
             _.mapValues(gridOptions.columnDefs, function(value) {
@@ -92,7 +201,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                 //replace links
                 if (angular.isDefined(value.link) && value.link === true) {
-                    //$log.debug('link value', value);
                     delete value.link;
                     value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row)}}">{{row.entity.' + value.field + '}}</a></div>';
                 }
@@ -158,11 +266,11 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
              * @return {[type]} [description]
              */
             var getPage = function() {
-                //$log.debug('getpage called', paginateParams);
                 ConfigUtils.getLoggedInFacilities(facilityObjs, sessions).then(function (data){
                         _.each(data, function(facility) {
                             var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
                             var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, entityType);
+                            paginateParams = getIncludesForRoutes(paginateParams, entityType, nextRouteSegment);
 
                             var options = _.extend($stateParams, paginateParams);
                             options.user = true;
@@ -173,17 +281,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                 gridOptions.data = gridOptions.data.concat(data.data);
                                 gridOptions.totalItems = gridOptions.totalItems + data.totalItems;
 
-                                /*$log.log('gridOptions.totalItems', gridOptions.totalItems);
-                                $log.log('data.totalItems', data.totalItems);
-                                $log.log('gridOptions', gridOptions.data);
-                                $log.log('totalItems', gridOptions.totalItems);*/
-
-                                /*if (data.totalItems === 0) {
-                                    scope.isEmpty = true;
-                                } else {
-                                    scope.isEmpty = false;
-                                }*/
-
                                 if (pagingType === 'scroll') {
                                     scope.lastPage = Math.ceil(gridOptions.totalItems/pageSize);
                                     scope.gridApi.infiniteScroll.dataLoaded(scope.firstPage - 1 > 0, scope.currentPage + 1 < scope.lastPage);
@@ -191,14 +288,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                                 $timeout(preSelectAndGetSize, 0);
 
+
+
+
                                 function preSelectAndGetSize() {
                                     var rows = scope.gridApi.core.getVisibleRows(scope.gridApi.grid);
 
                                     //pre-select items in cart here
                                     _.each(rows, function(row) {
-                                        /*if (_.has(scope.mySelection, row.entity.id)) {
-                                            scope.gridApi.selection.selectRow(row.entity);
-                                        }*/
                                         //fill size data
                                         if (hasSizeField) {
                                             if (entityType === 'investigation' || entityType === 'dataset') {
@@ -207,6 +304,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                                                     row.entity.nextRouteSegment = nextRouteSegment;
                                                     row.entity.facilityTitle = facility.title;
                                                     row.entity.facilityName = facility.facilityName;
+                                                    row.entity.nextRouteStateParam = getNextRouteStateParam(row, entityType, $stateParams);
                                                 }
 
                                                 if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
@@ -412,12 +510,10 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                         if (sortColumns.length === 0) {
                             //paginationOptions.sort = null;
                         } else {
-                            //$log.debug('sortColumns[0].field', sortColumns[0].field);
                             paginateParams.sortField = sortColumns[0].field;
                             paginateParams.order = sortColumns[0].sort.direction;
                         }
 
-                        //$log.debug('sortChanged paginateParams', paginateParams);
                         getPage();
                     });
 
@@ -432,8 +528,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                     });
 
                     scope.gridApi.core.on.filterChanged(scope, function () {
-                        //$log.debug('filterChanged column', this.grid.columns);
-
                         var grid = this.grid;
                         var sortOptions = [];
 
@@ -501,19 +595,13 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                     //sort callback
                     scope.gridApi.core.on.sortChanged(scope, function(grid, sortColumns) {
-                        //$log.debug('sortChanged callback grid', grid);
-                        //$log.debug('sortChanged callback sortColumns', sortColumns);
-
                         if (sortColumns.length === 0) {
                             //paginationOptions.sort = null;
                         } else {
                             sortColumns = [sortColumns[0]];
-                            //$log.debug('sort Column  by', sortColumns[0].field);
                             paginateParams.sortField = sortColumns[0].field;
                             paginateParams.order = sortColumns[0].sort.direction;
                         }
-
-                        //$log.debug('sortChanged callback sortColumns after', sortColumns);
 
                         scope.firstPage = 1;
                         scope.currentPage = 1;
@@ -634,45 +722,8 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         },
 
         getNextRouteUrl: function (row) {
-            $log.log('row', row);
-            var params = {
-                facilityName : row.entity.facilityName,
-            };
-
-            //TODO need additional parameter values in order to build url.
-            //The parameters required will be base on the hierarchy of the entityType
-
-            params[this.entityType + 'Id'] = row.entity.id;
-
-            _.each(this.stateParams, function(value, key){
-                params[key] = value;
-            });
-
-
-            $log.log('nextRouteSegment', row.entity.nextRouteSegment);
-
-            if (typeof row.entity.nextRouteSegment !== 'undefined') {
-
-                if (row.entity.nextRouteSegment.indexOf('instrument') > -1) {
-                    params.facilityCycleId = row.entity.facility.facilityCycles[0].id;
-                }
-
-                if (row.entity.nextRouteSegment.indexOf('facilityCycle') > -1) {
-                    params.instrumentId = row.entity.investigationInstruments[0].instrument.id;
-                }
-
-                if (row.entity.nextRouteSegment.indexOf('proposal') > -1) {
-                    params.proposalId = row.entity.name;
-                }
-            }
-
-            $log.log('params', params);
-
-            var route = $state.href('home.browse.facility.' + row.entity.nextRouteSegment, params);
-
-            //$log.debug(row.entity.nextRouteSegment, params);
-
-            return route;
+            //$log.log('row', row);
+            return $state.href('home.browse.facility.' + row.entity.nextRouteSegment, row.entity.nextRouteStateParam);
         }
     };
 }

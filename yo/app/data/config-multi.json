@@ -2175,8 +2175,7 @@
                 "enableFiltering": true,
                 "enableSelection": true,
                 "includes" : [
-                    "investigation.investigationInstruments.instrument",
-                    "investigation.facility.facilityCycles"
+                    "investigation.investigationInstruments.instrument"
                 ],
                 "columnDefs": [
                     {

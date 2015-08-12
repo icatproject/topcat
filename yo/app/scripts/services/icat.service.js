@@ -470,6 +470,20 @@
             return getPromise(mySessionId, facility, params);
         };
 
+
+        /**
+         * Returns a promise with a list of my datasets
+         * @param  {[type]} mySessionId [description]
+         * @param  {[type]} facility    [description]
+         * @param  {[type]} options     [description]
+         * @return {[type]}             [description]
+         */
+        data.getMyDatasets = function(mySessionId, facility, options){
+            var params = ICATQueryBuilder.getMyDatasets(mySessionId, facility, options);
+
+            return getPromise(mySessionId, facility, params);
+        };
+
         /**
          * Returns a promise with a list of datasets from an instrument id
          * @param  {[type]} mySessionId [description]

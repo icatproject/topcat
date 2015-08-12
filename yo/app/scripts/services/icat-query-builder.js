@@ -346,14 +346,6 @@
                     );
                 }
 
-                query.from('f.facilityCycles', 'fc')
-                    .where(
-                        squel.expr()
-                            .and_begin() //jshint ignore:line
-                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
-                            .end()
-                    );
-
 
                 var searchExpr = getSearchExpr(queryParams, 'investigation');
 
@@ -698,6 +690,62 @@
             },
 
             getDatasets: function(mySessionId, facility, queryParams) {
+                validateRequiredArguments(mySessionId, facility, queryParams);
+
+                $log.debug(queryParams);
+
+                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('COUNT(ds)')
+                    .from('Dataset', 'ds')
+                    .from('ds.investigation', 'inv')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                    .field('ds')
+                    .from('Dataset', 'ds')
+                    .from('ds.investigation', 'inv')
+                    .from('inv.facility', 'f')
+                    .where(
+                        squel.expr()
+                            .and('f.id = ?', facility.facilityId)
+                    );
+
+                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                    query.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+
+                    countQuery.from('inv.investigationUsers', 'invu')
+                    .where(
+                        squel.expr()
+                            .and('invu.user.name = :user')
+                    );
+                }
+
+                var searchExpr = getSearchExpr(queryParams, 'dataset');
+
+                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
+
+                _.extend(params, {
+                    sessionId: mySessionId,
+                    query: query.toString(),
+                    countQuery: countQuery.toString(),
+                    //filterCountQuery: filterCountQuery.toString(),
+                    //entity: 'Dataset',
+                    server: facility.icatUrl
+                });
+
+                return params;
+            },
+
+
+            getMyDatasets: function(mySessionId, facility, queryParams) {
                 validateRequiredArguments(mySessionId, facility, queryParams);
 
                 $log.debug(queryParams);

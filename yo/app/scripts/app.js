@@ -46,7 +46,9 @@
             'ui.grid.selection',
             'bytes',
             'angularSpinner',
-            'ng.deviceDetector'
+            'ng.deviceDetector',
+            'angularMoment'
+
         ])
         .constant('_', window._)
         .constant('APP_CONSTANT', {

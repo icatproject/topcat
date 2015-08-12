@@ -225,8 +225,8 @@
                         }
 
                         inform.add(message !== null ? message : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {
-                        'ttl': 0,
-                        'type': 'danger'
+                            'ttl': 1500,
+                            'type': 'danger'
                         });
                     }
                 }

@@ -29,13 +29,13 @@
 
         $scope.$watchCollection(function() {
             return vm.items;
-        }, function(newCol) {
-            console.log('newCol', newCol);
-            if (typeof newCol === 'undefined') {
+        }, function(newCollection) {
+            console.log('newCollection', newCollection);
+            if (typeof newCollection === 'undefined') {
                 console.log('isEmpty', true);
                 vm.isEmpty = true;
             } else {
-                if(newCol.length === 0) {
+                if(newCollection.length === 0) {
                     vm.isEmpty = true;
                     console.log('isEmpty', true);
                 } else {

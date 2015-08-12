@@ -76,7 +76,7 @@
 
         cart.prototype.getDefaultName = function() {
             var date = new Date();
-            var dataFormat = 'yyyy-mm-dd_hh-mm-ss';
+            var dataFormat = 'yyyy-MM-dd_HH-mm-ss';
 
             var dateString = $filter('date')(date, dataFormat);
 
