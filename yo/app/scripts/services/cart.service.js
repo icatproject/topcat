@@ -8,7 +8,6 @@
     Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', '$log'];
 
     function Cart($rootScope, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, $log) { //jshint ignore: line
-
         /**
          * Initialise a cart
          * @return {[type]} [description]
@@ -315,6 +314,15 @@
         this.save = function() {
             $log.debug('save called');
             RemoteStorageManager.setStore(this.getCart());
+
+            /*.then(function(data) {
+                $log.debug('Cart saved', data.data);
+            }, function(error) {
+                inform.add(error, {
+                    'ttl': 4000,
+                    'type': 'danger'
+                });
+            });*/
         };
 
         /**
@@ -361,8 +369,12 @@
                 var facility = Config.getFacilityByName(APP_CONFIG, key);
                 RemoteStorageManager.getUserStore(facility, session.userName).then(function(items) {
                     $log.debug('retored items', items);
-
                     _self._restoreItems(items);
+                }, function(error) {
+                    inform.add(error, {
+                        'ttl': 4000,
+                        'type': 'danger'
+                    });
                 });
 
 
@@ -454,14 +466,13 @@
                     $log.debug('cart submit', data);
 
                     inform.add('Cart successfulled submitted', {
-                        'ttl': 1500,
+                        'ttl': 4000,
                         'type': 'success'
                     });
-
                 }, function(error) {
                     inform.add('Failed to submit cart', {
-                        'ttl': 1500,
-                        'type': 'Error'
+                        'ttl': 4000,
+                        'type': 'danger'
                     });
 
                     $log.debug(error);

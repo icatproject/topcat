@@ -5,9 +5,9 @@
         .module('angularApp')
         .factory('RemoteStorageManager', RemoteStorageManager);
 
-    RemoteStorageManager.$inject = ['TopcatManager', '$sessionStorage', 'APP_CONFIG', 'Config', 'APP_CONSTANT', '$log'];
+    RemoteStorageManager.$inject = ['TopcatManager', '$sessionStorage', 'APP_CONFIG', 'Config', 'APP_CONSTANT', 'inform', '$log'];
 
-    function RemoteStorageManager(TopcatManager, $sessionStorage, APP_CONFIG, Config, APP_CONSTANT, $log) { //jshint ignore: line
+    function RemoteStorageManager(TopcatManager, $sessionStorage, APP_CONFIG, Config, APP_CONSTANT, inform, $log) { //jshint ignore: line
         var manager = {};
 
         /**

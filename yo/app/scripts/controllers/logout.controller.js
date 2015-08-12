@@ -11,19 +11,26 @@
         if(angular.isDefined($state.params.facilityName)) {
             //logout of single facility
             var facility = Config.getFacilityByName(APP_CONFIG, $state.params.facilityName);
-            DataManager.logout($sessionStorage.sessions, facility);
+            DataManager.logout($sessionStorage.sessions, facility).then(function() {
+                //delete session from sessionStorage
+                delete $sessionStorage.sessions[$state.params.facilityName];
 
-            //delete session from sessionStorage
-            delete $sessionStorage.sessions[$state.params.facilityName];
+                $rootScope.$broadcast('Logout:success', {facility: $state.params.facilityName});
 
-            $rootScope.$broadcast('Logout:success', {facility: $state.params.facilityName});
-
-            $translate('INFO.LOGOUT.LOGOUT', {facilityName: $state.params.facilityName}).then(function (translation) {
-                inform.add(translation, {
-                    'ttl': 1500,
-                    'type': 'info'
+                $translate('INFO.LOGOUT.LOGOUT', {facilityName: $state.params.facilityName}).then(function (translation) {
+                    inform.add(translation, {
+                        'ttl': 4000,
+                        'type': 'info'
+                    });
+                });
+            }, function(error) {
+                inform.add(error, {
+                    'ttl': 4000,
+                    'type': 'danger'
                 });
             });
+
+
         } else {
             //loop sessions in sessionStorage and logout of of each facility
             _.each(_.keys($sessionStorage.sessions), function(facilityName) {
@@ -38,7 +45,7 @@
 
             $translate('INFO.LOGOUT.LOGOUT_ALL').then(function (translation) {
                 inform.add(translation, {
-                    'ttl': 1500,
+                    'ttl': 4000,
                     'type': 'info'
                 });
             });

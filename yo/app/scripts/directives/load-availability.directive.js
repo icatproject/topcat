@@ -4,9 +4,9 @@
     angular.
         module('angularApp').controller('LoadAvailabilityController', LoadAvailabilityController);
 
-    LoadAvailabilityController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService', '$log'];
+    LoadAvailabilityController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService', 'inform', '$log'];
 
-    function LoadAvailabilityController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService, $log) { //jshint ignore: line
+    function LoadAvailabilityController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService, inform, $log) { //jshint ignore: line
         $timeout(loadStatus, 0);
 
         function loadStatus() {
@@ -20,6 +20,12 @@
                 IdsManager.getStatus($sessionStorage.sessions, facility, params).then(function(data){
                     $scope.ngModel.entity.setAvailability(data);
                     usSpinnerService.stop('spinner-status-' + $scope.ngModel.uid);
+                }, function(error) {
+                    $log.error(error);
+                    inform.add(error, {
+                        'ttl': 4000,
+                        'type': 'danger'
+                    });
                 });
             }
         }

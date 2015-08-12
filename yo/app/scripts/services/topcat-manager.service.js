@@ -9,12 +9,25 @@
     function TopcatManager($http, $q, TopcatService, $log) { //jshint ignore: line
         var manager = {};
 
-        function MyException(message) {
-          this.name = name;
-          this.message = message;
+        function getErrorMessage(error) {
+            var errorMessage = '';
+
+            if (error.status === 0) {
+                errorMessage = 'Unable to contact server';
+            } else {
+                if (error.data !== null) {
+                    if (typeof error.data.message !== 'undefined') {
+                        errorMessage = error.data.message;
+                    } else {
+                        errorMessage = 'Unable to retrieve data';
+                    }
+                } else {
+                    errorMessage = 'Unknown error';
+                }
+            }
+
+            return errorMessage;
         }
-        MyException.prototype = new Error();
-        MyException.prototype.constructor = MyException;
 
         /**
          * Get the size from the ids
@@ -28,9 +41,7 @@
             TopcatService.submitCart(facility, cart).then(function(data) {
                 def.resolve(data.data);
             }, function(error){
-                $log.debug(error);
-                def.reject('Failed to submit cart');
-                throw new MyException('Failed to submit cart');
+                def.reject('Failed to submit cart: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -54,9 +65,7 @@
 
                 def.resolve(result);
             }, function(error){
-                $log.debug(error);
-                def.reject('Failed to get user cart');
-                throw new MyException('Failed to get user cart');
+                def.reject('Failed to get user cart: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -68,9 +77,7 @@
             TopcatService.saveCart(facility, userName, cart).then(function(data) {
                 def.resolve(data.data);
             }, function(error){
-                $log.debug(error);
-                def.reject('Failed to get user cart');
-                throw new MyException('Failed to get user cart');
+                def.reject('Failed to get user cart: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -82,9 +89,7 @@
             TopcatService.getMyDownloads(facility, userName).then(function(data) {
                 def.resolve(data.data);
             }, function(error){
-                $log.debug(error);
-                def.reject('Failed to get user downloads');
-                throw new MyException('Failed to get user cart');
+                def.reject('Failed to get user downloads: ' + getErrorMessage(error));
             });
 
             return def.promise;

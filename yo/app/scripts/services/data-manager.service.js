@@ -23,6 +23,26 @@
         };
 
 
+        function getErrorMessage(error) {
+            var errorMessage = '';
+
+            if (error.status === 0) {
+                errorMessage = 'Unable to contact icat server';
+            } else {
+                if (error.data !== null) {
+                    if (typeof error.data.message !== 'undefined') {
+                        errorMessage = error.data.message;
+                    } else {
+                        errorMessage = 'Unable to retrieve data';
+                    }
+                } else {
+                    errorMessage = 'Unknown error';
+                }
+            }
+
+            return errorMessage;
+        }
+
         /**
          * Get the session value for the facility that was passed
          * @param  {[type]} session  [description]
@@ -116,26 +136,17 @@
         manager.login = function(facility, credential) {
             var def = $q.defer();
 
-            ICATService.login(facility, credential)
-                .success(function(data) {
-                    return data;
-                })
-                .error(function(error, status) { //jshint ignore: line
-                    def.reject('Failed to login');
-                    throw new MyException('Failed to login:' + error);
-                })
-            .then(function(loginData){
-                ICATService.getSession(loginData.data.sessionId, facility, {})
-                    .success(function(data) {
-                        def.resolve({
-                            sessionId: loginData.data.sessionId,
-                            userName: data.userName
-                        });
-                    })
-                    .error(function(error, status) { //jshint ignore: line
-                        def.reject('Failed to login');
-                        throw new MyException('Failed to login:' + error);
+            ICATService.login(facility, credential).then(function(loginData) {
+                ICATService.getSession(loginData.data.sessionId, facility, {}).then(function(data) {
+                    def.resolve({
+                        sessionId: loginData.data.sessionId,
+                        userName: data.data.userName
                     });
+                }, function(error) {
+                    def.reject('Login failed to retrieve user details: ' + getErrorMessage(error));
+                });
+            }, function(loginError) {
+                def.reject('Failed to login: ' + getErrorMessage(loginError));
             });
 
             return def.promise;
@@ -155,16 +166,11 @@
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
-            ICATService.logout(sessionId, facility, options)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function(error, status) {
-                    $log.debug('logout status', status);
-
-                    def.reject('Failed to login');
-                    throw new MyException('Failed to login:' + error);
-                });
+            ICATService.logout(sessionId, facility, options).then(function(data) {
+                def.resolve(data.data);
+            }, function(error) {
+                def.reject('Failed to Logout of facility ' + error.config.info.facilityTitle + ': ' + getErrorMessage(error, status));
+            });
 
             return def.promise;
         };
@@ -180,14 +186,11 @@
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
-            ICATService.getSession(sessionId, facility, options)
-                .success(function(data) {
-                    def.resolve(data.sessionId);
-                })
-                .error(function(error, status) { //jshint ignore: line
-                    def.reject('Failed to get session information');
-                    throw new MyException('Failed to login:' + error);
-                });
+            ICATService.getSession(sessionId, facility, options).then(function(data) {
+                def.resolve(data.data.sessionId);
+            }, function(error) { //jshint ignore: line
+                def.reject('Failed to get session information: '+ getErrorMessage(error));
+            });
 
             return def.promise;
         };
@@ -200,30 +203,31 @@
         manager.getVersion = function(facility) {
             var def = $q.defer();
 
-            ICATService.getVersion(facility)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function(error) {
-                    def.reject('Failed to get server version');
-                    throw new MyException('Failed to get server version. ' + error);
-                });
+            ICATService.getVersion(facility).then(function(data) {
+                def.resolve(data.data);
+            }, function(error) {
+                def.reject('Failed to get server version: ' + getErrorMessage(error));
+            });
 
             return def.promise;
         };
 
-
+        /**
+         * Refresh a session
+         *
+         * @param  {[type]} mySessionId [description]
+         * @param  {[type]} facility)   {                       var def [description]
+         * @param  {[type]} 1000        [description]
+         * @return {[type]}             [description]
+         */
         manager.refreshSession = _.debounce(function(mySessionId, facility) {
             var def = $q.defer();
 
-            ICATService.refreshSession(mySessionId, facility)
-                .success(function(data) {
-                    def.resolve(data);
-                })
-                .error(function(error) {
-                    def.reject('Failed to get server version');
-                    throw new MyException('Failed to refresh session. ' + error);
-                });
+            ICATService.refreshSession(mySessionId, facility).then(function(data) {
+                def.resolve(data.data);
+            } , function(error) {
+                def.reject('Failed to refresh session: ' + getErrorMessage(error));
+            });
 
             return def.promise;
         }, 1000);
@@ -241,16 +245,13 @@
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
-            ICATService.getEntityById(sessionId, facility, entityType, entityId, options)
-                .success(function(data) {
-                    var entityIcatName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
-                    data = _.pluck(data, entityIcatName);
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject('Failed to retrieve data from server');
-                    throw new MyException('Failed to retrieve data from server');
-                });
+            ICATService.getEntityById(sessionId, facility, entityType, entityId, options).then(function(data) {
+                var entityIcatName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
+                    data.data = _.pluck(data.data, entityIcatName);
+                    def.resolve(data.data);
+            }, function(error) {
+                def.reject('Failed to retrieve data from server: ' + getErrorMessage(error));
+            });
 
             return def.promise;
         };
@@ -271,7 +272,7 @@
                 .success(function(data) {
                     def.resolve(data);
                 })
-                .error(function(error) {
+                .error(function(error, status) {
                     def.reject('Failed to retrieve data');
                     throw new MyException('Failed to retrieve data from server');
                 });
@@ -296,9 +297,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -322,9 +322,9 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
+                //throw new MyException('Failed to retrieve data from server');
             });
 
             return def.promise;
@@ -349,9 +349,9 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
+                //throw new MyException('Failed to retrieve data from server');
             });
 
             return def.promise;
@@ -383,9 +383,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -410,9 +409,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -437,9 +435,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -464,9 +461,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -500,9 +496,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -529,9 +524,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -551,9 +545,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data:' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -579,9 +572,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -607,9 +599,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -634,9 +625,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -661,9 +651,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data:' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -688,9 +677,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data:' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -714,9 +702,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data:' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -741,9 +728,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -768,9 +754,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -794,9 +779,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data:' + getErrorMessage(error));
             });
 
             return def.promise;
@@ -820,9 +804,8 @@
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
-            }, function(){
-                def.reject('Failed to retrieve data');
-                throw new MyException('Failed to retrieve data from server');
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
             });
 
             return def.promise;

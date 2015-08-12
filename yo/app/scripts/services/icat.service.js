@@ -152,6 +152,7 @@
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 },
+                'byPassIntercepter' : true,
                 'transformRequest': function(obj) {
                     var str = [];
                     for(var p in obj) {

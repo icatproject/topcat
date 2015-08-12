@@ -33,11 +33,18 @@
                         return false;
                     }
 
+                    //by pass interceptor if byPassIntercepter is set to true
+                    if (typeof rejection.config.byPassIntercepter !== 'undefined' && rejection.config.byPassIntercepter === true) {
+                        return $q.reject(rejection);
+                    }
+
                     if(rejection.status === 403){
                         $log.debug('HttpErrorInterceptor', rejection);
                         $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
 
                         state = $injector.get('$state');
+
+                        inform.clear();
 
                         inform.add($translate.instant('SESSION.EXPIRED_ERROR', {'facilityTitle' : rejection.config.info.facilityTitle}), {
                             'ttl': 0,
@@ -94,12 +101,12 @@
                         });
                     }
 
-                    if(rejection.status === 0){
+                    /*if(rejection.status === 0){
                         inform.add($translate.instant('RESPONSE.ERROR.NO_CONNECTION', {'facilityTitle' : rejection.config.info.facilityTitle}), {
                             'ttl': 0,
                             'type': 'danger'
                         });
-                    }
+                    }*/
 
                     return $q.reject(rejection);
                 }

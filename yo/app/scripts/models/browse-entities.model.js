@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .factory('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', 'IdsManager', 'usSpinnerService', '$log'];
+BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', 'IdsManager', 'usSpinnerService', 'inform', '$log'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteServi
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, usSpinnerService,  $log){  //jshint ignore: line
+function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, usSpinnerService, inform, $log){  //jshint ignore: line
 
     function getSelectableParentEntities(facility, currentEntityType, hierarchy) {
         var h = hierarchy.slice(0);
@@ -248,8 +248,15 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                                         IdsManager.getSize(sessions, facility, params).then(function(data){
                                             row.entity.size = parseInt(data);
                                             usSpinnerService.stop('spinner-size-' + row.uid);
-                                        }, function() {
+                                        }, function(error) {
                                             row.entity.size = -1;
+                                            usSpinnerService.stop('spinner-size-' + row.uid);
+
+                                            $log.debug(error);
+                                            inform.add(error, {
+                                                'ttl': 4000,
+                                                'type': 'danger'
+                                            });
                                         });
                                     }
                                 }

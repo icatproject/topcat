@@ -206,6 +206,8 @@
                     //$state.go('home.browse.facility');
                     $state.go(RouteUtils.getHomeRouteName());
                 } else {
+                    //@TODO is this code still necessary??
+
                     //set the default error message
                     var message = null;
 
@@ -225,12 +227,18 @@
                         }
 
                         inform.add(message !== null ? message : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {
-                            'ttl': 1500,
+                            'ttl': 4000,
                             'type': 'danger'
                         });
                     }
                 }
-
+            }, function(error) {
+                var errorMessage = (error !== null) ? error : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE');
+                $log.debug(errorMessage);
+                inform.add(errorMessage, {
+                    'ttl': 4000,
+                    'type': 'danger'
+                });
             });
         }
 

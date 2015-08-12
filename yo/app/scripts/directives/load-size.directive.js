@@ -9,7 +9,10 @@
     function LoadSizeController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService, $log) { //jshint ignore: line
         $timeout(loadSize, 0);
 
+        $log.debug('LoadSizeController called');
+
         function loadSize() {
+
             if ($scope.ngModel.entity.getSize() === null) {
                 var params = {};
                 params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getEntityId();
