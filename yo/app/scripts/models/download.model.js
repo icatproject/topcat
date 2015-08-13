@@ -4,10 +4,28 @@ angular
     .module('angularApp')
     .factory('DownloadModel', DownloadModel);
 
-DownloadModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'uiGridConstants', 'TopcatService', '$sessionStorage', '$log'];
+DownloadModel.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'uiGridConstants', 'TopcatService', '$sessionStorage', '$log'];
 
-function DownloadModel($rootScope, APP_CONFIG, Config, uiGridConstants, TopcatService, $sessionStorage, $log){  //jshint ignore: line
+function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, TopcatService, $sessionStorage, $log){  //jshint ignore: line
+    /**
+     * build download url html
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+    function getDownloadUrl(data) {
+        if (data.transport === 'https') {
+            if (data.status === 'COMPLETE') {
+                return '<a href="' + data.transportUrl + '/ids/getData?preparedId=' + data.preparedId + '&outname=' + data.fileName + '">Download</a>';
+            } else {
+                return '<span class="not-active">Download</span>';
+            }
+        } else if (data.transport === 'globus') {
+            var route = $state.href('globus-faq');
+            return '<a href="' + route + '">Download Via Globus</a>';
+        }
 
+        return '';
+    }
 
     return {
         gridOptions : {},
@@ -33,7 +51,7 @@ function DownloadModel($rootScope, APP_CONFIG, Config, uiGridConstants, TopcatSe
                 enableColumnMenu: false,
                 enableSorting: false,
                 enableHiding: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><span ng-bind-html="grid.appScope.getDownloadUrl(row)"></span></div>'
+                cellTemplate : '<div class="ui-grid-cell-contents"><span ng-bind-html="row.entity.downloadLink"></span></div>'
             });
 
             return gridOptions;
@@ -65,6 +83,12 @@ function DownloadModel($rootScope, APP_CONFIG, Config, uiGridConstants, TopcatSe
 
                 TopcatService.getMyDownloads(facility, session.userName).then(function(data) {
                     $log.debug('results', data.data);
+
+                    //
+                    _.each(data.data, function(entity) {
+                        entity.downloadLink = getDownloadUrl(entity);
+                    });
+
                     gridOptions.data = gridOptions.data.concat(data.data);
                 }) ;
             });

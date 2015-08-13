@@ -607,7 +607,7 @@
                     .where(
                         squel.expr()
                             .and('f.id = ?', facility.facilityId)
-                            .and('inv.name = ?', queryParams.proposalId)
+                            .and('inv.name = ?', decodeURIComponent(queryParams.proposalId))   //TODO added decodeURIComponent until ui-router bug https://github.com/angular-ui/ui-router/pull/2071
                     );
 
                 var query = squel.ICATSelect({ autoQuoteAliasNames: false })
@@ -620,7 +620,7 @@
                     .where(
                         squel.expr()
                             .and('f.id = ?', facility.facilityId)
-                            .and('inv.name = ?', queryParams.proposalId)
+                            .and('inv.name = ?', decodeURIComponent(queryParams.proposalId))
                     );
 
                 var searchExpr = getSearchExpr(queryParams, 'investigation');

@@ -17,23 +17,5 @@
         DownloadModel.init($scope);
 
         dl.gridOptions = DownloadModel.gridOptions;
-
-
-        $scope.getDownloadUrl = function(row) {
-            $log.debug('getDownloadUrl called');
-            if (row.entity.transport === 'https') {
-                if (row.entity.status === 'COMPLETE') {
-                    return '<a href="' + row.entity.transportUrl + '/ids/getData?preparedId=' + row.entity.preparedId + '&outname=' + row.entity.fileName + '">Download</a>';
-                } else {
-                    return '<span class="not-active">Download</span>';
-                }
-            } else if (row.entity.transport === 'globus') {
-                var route = $state.href('globus-faq');
-                return '<a href="' + route + '">Download Via Globus</a>';
-            }
-
-            return '';
-        };
-
     }
 })();
