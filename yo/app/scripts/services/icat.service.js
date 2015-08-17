@@ -245,13 +245,16 @@
         data.refreshSession = function(mySessionId, facility) {
             var url = facility.icatUrl + '/icat/session/' + mySessionId + '?server=' + facility.icatUrl;
             var params = {
+                    headers: {
+                        'Content-Type': undefined
+                    },
                     info : {
                         'facilityKeyName' : facility.facilityName,
                         'facilityTitle' : facility.title
                     }
                 };
             $log.debug('icatservice refresh session');
-            return $http.put(url, params);
+            return $http.put(url, {}, params);
         };
 
         /**

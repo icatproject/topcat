@@ -88,7 +88,61 @@
 
             if (angular.isDefined(queryParams)) {
                 if (!_.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
+                    //TODO needs refactoring
+
+                    //temp array to avaoid duplicates
+                    var temp = [];
+
+                    _.each(searchExpr.current.nodes, function(node) {
+                        //check if filter has more than 2 levels as icat can only deal with 2 in JPQL
+                        if ((node.expr.match(/\./g) || []).length > 2) {
+                            //get string within brackets  UPPER(....) LIKE
+                            var matches = node.expr.match(/\(([^)]+)\)/);
+                            var q = null;
+                            if (matches !== null) {
+                                q = matches[1];
+                            }
+
+                            //keep a copy of the original string
+                            var o = angular.copy(q);
+
+                            //replace any array square brackets [] from the string
+                            q = q.replace(/\[\d+\]/g, '');
+
+                            //we need to split the strig to 1 level chunks (i.e. contain one .)
+                            var parts = q.split('.');
+                            var pairs = _.chunk(parts, 2);
+
+                            //variable to hold alias
+                            var alias = '';
+                            //variable to hold the number of chunks
+                            var length = pairs.length;
+
+                            _.each(pairs, function(pair, index) {
+                                if (length > index + 1) {
+                                    //if not last chunk
+                                    alias = pair.join('');
+                                    var p = pair.join('.') + ' ' + alias;
+
+                                    //check unique
+                                    if (temp.indexOf(p) === -1) {
+                                        temp.push(p);
+                                        query.from(pair.join('.') + ' ' + alias);
+                                        countQuery.from(pair.join('.') + ' ' + alias);
+                                    }
+                                } else {
+                                    //replace the existing WHERE search
+                                    node.expr = node.expr.replace(o, alias + '.' + pair.join('.'));
+                                }
+                            });
+                        }
+                    });
+
                     query.where(
+                        searchExpr
+                    );
+
+                    countQuery.where(
                         searchExpr
                     );
 
@@ -121,6 +175,8 @@
             var searchExpr = squel.expr();
             var entityAlias = ICATAlias.getAlias(entityName);
 
+            $log.debug('queryParams', queryParams);
+
             if (! angular.isDefined(queryParams)) {
                 return searchExpr;
             }
@@ -131,8 +187,34 @@
 
             if (! _.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
                 _.each(queryParams.search, function(value) {
-                    if (typeof value.search !== 'undefined') {
-                        searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search.toUpperCase() + '%');
+                    $log.debug('value', value);
+
+                    var filterCount = value.search.length;
+                    if (filterCount === 1) {
+                        if (typeof value.search[0] !== 'undefined' && value.search[0].trim() !== '') {
+                            $log.debug('search filter', value);
+                            if (value.type === 'string') {
+                                $log.debug('string search filter', value);
+
+                                searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search[0].toUpperCase() + '%');
+                            }
+
+                            if (value.type === 'date') {
+                                $log.debug('date search filter', value);
+                                searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[0] + ' 23:59:59}');
+                            }
+                        }
+                    }
+
+                    if(filterCount > 1) {
+                        if (typeof value.search[0] !== 'undefined' && value.search[0].trim() !== '') {
+                            if (typeof value.search[1] !== 'undefined' && value.search[1].trim() !== '') {
+                                if (value.type === 'date') {
+                                    $log.debug('date search filter', value);
+                                    searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[1] + ' 23:59:59}');
+                                }
+                            }
+                        }
                     }
                 });
             }

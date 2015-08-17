@@ -141,6 +141,12 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     value.type = 'string';
                 }
 
+                $log.debug('value', value);
+
+                if (angular.isDefined(value.type) && value.type === 'date') {
+                    //value.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input class="form-control input-sm" datepicker-popup type="date" ng-model="colFilter.term" /></filter-datepicker></div>';
+                }
+
                 if (angular.isDefined(value.sort) && angular.isObject(value.sort)) {
                     if (angular.isDefined(value.sort.direction) && angular.isString(value.sort.direction)) {
                         value.sort.direction = uiGridConstants[value.sort.direction.toUpperCase()];
@@ -418,8 +424,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 gridOptions.onRegisterApi = function(gridApi) {
                     scope.gridApi = gridApi;
 
-
-
                     //sort callback
                     scope.gridApi.core.on.sortChanged(scope, function(grid, sortColumns) {
                         if (sortColumns.length === 0) {
@@ -451,6 +455,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                         var sortOptions = [];
 
                         _.each(grid.columns, function(value, index) {
+                            $log.debug('grid.columns[' + index + ']', grid.columns[index]);
+
                             sortOptions.push({
                                 field: grid.columns[index].field,
                                 search: grid.columns[index].filters[0].term,
@@ -578,12 +584,72 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                         var sortOptions = [];
 
                         _.each(grid.columns, function(value, index) {
-                            //$log.debug('column index', index);
+                            $log.debug('myvalue', value);
+                            var searchTerms = [];
+                            var isValid = true;
+
+                            var columnType = 'string';
+                            if (typeof grid.columns[index].colDef.type !== 'undefined') {
+                                columnType = grid.columns[index].colDef.type;
+                            }
+
+                            if (columnType === 'string') {
+                                searchTerms.push(grid.columns[index].filters[0].term);
+                            }
+
+                            if (columnType === 'date') {
+                                //determine if 2 filters was configured
+                                var filterCount = grid.columns[index].filters.length;
+
+                                if (filterCount === 1) {
+                                    searchTerms.push(grid.columns[index].filters[0].term);
+
+                                    //validate term entered is a valid date before requesting page
+                                    _.each(grid.columns[index].filters, function(filter) {
+                                        //$log.debug('filter', filter);
+                                        if (typeof filter.term !== 'undefined' && filter.term.trim() !== '') {
+                                            if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                                isValid = false;
+                                            }
+                                        }
+                                    });
+                                } else if (filterCount > 1) {
+                                    //$log.debug('grid.columns[index].filters', grid.columns[index].filters);
+                                    //only allow 2 filters and ignore the rest if defined
+                                    searchTerms.push(grid.columns[index].filters[0].term);
+                                    searchTerms.push(grid.columns[index].filters[1].term);
+
+                                    //validate term entered is a valid date before requesting page
+                                    if ((typeof grid.columns[index].filters[0].term !== 'undefined') && (typeof grid.columns[index].filters[1].term !== 'undefined')) {
+                                        if (typeof grid.columns[index].filters[0].term !== 'undefined' && grid.columns[index].filters[0].term.trim() !== '') {
+                                            $log.debug('term 1 is defined and not empty');
+                                            if (grid.columns[index].filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                                isValid = false;
+                                            }
+                                        }
+
+                                        if (typeof grid.columns[index].filters[1].term !== 'undefined' && grid.columns[index].filters[1].term.trim() !== '') {
+                                            if (grid.columns[index].filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                                isValid = false;
+                                            }
+                                        }
+                                    } else
+
+                                    if (! ((typeof grid.columns[index].filters[0].term === 'undefined') && (typeof grid.columns[index].filters[1].term === 'undefined'))) {
+                                        isValid = false;
+                                    }
+                                }
+                            }
+
                             sortOptions.push({
                                 field: grid.columns[index].field,
-                                search: grid.columns[index].filters[0].term,
+                                search: searchTerms,
+                                type: columnType,
+                                isValid: isValid
                             });
                         });
+
+                        //$log.debug('sortOptions', sortOptions);
 
                         paginateParams.search = sortOptions;
 
@@ -595,7 +661,19 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                             scope.gridApi.infiniteScroll.resetScroll(scope.firstPage - 1 > 0, scope.currentPage + 1 < scope.lastPage);
                         });
 
-                        getPage(paginateParams);
+                        //only make get page call if all filters are valid
+                        var isAllValid = true;
+                        _.each(sortOptions, function(sortOption) {
+                            $log.debug('sortOption', sortOption);
+                            if (sortOption.isValid === false) {
+                                isAllValid = false;
+                                return false;
+                            }
+                        });
+
+                        if (isAllValid === true) {
+                            getPage(paginateParams);
+                        }
                     });
 
                     scope.gridApi.selection.on.rowSelectionChanged(scope, function(row){

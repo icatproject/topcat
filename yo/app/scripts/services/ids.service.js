@@ -19,7 +19,7 @@
          * @return {[type]}          [description]
          */
         data.getSize = function(mySessionId, facility, options) {
-            $log.debug('IdsService getSize called');
+            //$log.debug('IdsService getSize called');
             var url = facility.idsUrl + '/ids/getSize';
             var params = {
                     params : {

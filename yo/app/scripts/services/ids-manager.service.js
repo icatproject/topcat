@@ -54,7 +54,7 @@
          * @return {Object}          a promise containing the list of instruments
          */
         manager.getSize = function(sessions, facility, options) {
-            $log.debug('IdsManager getSize called');
+            //$log.debug('IdsManager getSize called');
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 

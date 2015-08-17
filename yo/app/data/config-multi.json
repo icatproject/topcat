@@ -232,13 +232,13 @@
                             }
                         },
                         {
-                            "field": "startDate",
-                            "displayName": "Start Date",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
-                            "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "field": "investigationInstruments[0].instrument.name",
+                            "displayName": "Instrument Name",
+                            "enableSorting": false,
+                            "type": "number",
+                            "visible": true,
                             "filter": {
-                                "condition": "contains",
+                                "condition": "starts_with",
                                 "placeholder": "Containing...",
                                 "flags": {
                                     "caseSensitive": false
@@ -246,6 +246,31 @@
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
+                        },
+                        {
+                            "field": "startDate",
+                            "displayName": "Start Date",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "flags": {
+                                        "caseSensitive": false
+                                    },
+                                    "type": "input",
+                                    "disableCancelFilterButton": true
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "flags": {
+                                        "caseSensitive": false
+                                    },
+                                    "type": "input",
+                                    "disableCancelFilterButton": true
+                                }
+                            ]
                         },
                         {
                             "field": "endDate",
