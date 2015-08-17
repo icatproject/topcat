@@ -29,7 +29,10 @@ public class PropertyHandler {
 
     private String path;
     private Map<String, IdsReader> idsReaders;
-
+    private boolean mailEnable;
+    private String mailSubject;
+    private String mailBodyHttps;
+    private String mailBodyGlobus;
 
     private PropertyHandler() {
 
@@ -44,6 +47,10 @@ public class PropertyHandler {
             props.loadFromFile("topcat.properties");
 
             path = props.getProperty("file.directory");
+            mailEnable = props.getBoolean("mail.enable");
+            mailSubject = props.getProperty("mail.subject");
+            mailBodyHttps = props.getProperty("mail.body.https");
+            mailBodyGlobus = props.getProperty("mail.body.globus");
 
             logger.debug("Property path: " + path);
 
@@ -105,5 +112,23 @@ public class PropertyHandler {
     public Map<String, IdsReader> getIdsReaders() {
         return idsReaders;
     }
+
+    public boolean isMailEnable() {
+        return mailEnable;
+    }
+
+    public String getMailSubject() {
+        return mailSubject;
+    }
+
+    public String getMailBodyHttps() {
+        return mailBodyHttps;
+    }
+
+
+    public String getMailBodyGlobus() {
+        return mailBodyGlobus;
+    }
+
 
 }

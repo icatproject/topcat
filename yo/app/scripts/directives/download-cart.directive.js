@@ -58,9 +58,16 @@
         vm.ok = function() {
             $modalInstance.close();
 
+            if (typeof vm.email !== 'undefined' && vm.email.trim() !== '') {
+                _.each(vm.downloads, function(download) {
+                    download.email = vm.email;
+                });
+            }
+
+            $log.debug(JSON.stringify(vm.downloads, null, 2));
             Cart.submit(vm.downloads);
 
-            //window.alert(JSON.stringify(vm.downloads, null, 2));
+
         };
 
         vm.cancel = function() {

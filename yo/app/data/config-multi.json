@@ -240,9 +240,6 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -281,9 +278,6 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
