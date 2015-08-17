@@ -1,9 +1,11 @@
 package org.icatproject.topcat.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 import javax.ejb.Stateless;
@@ -11,8 +13,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
+import org.icatproject.topcat.utils.MailBean;
+import org.icatproject.topcat.utils.PropertyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +28,9 @@ import org.slf4j.LoggerFactory;
 public class DownloadRepository {
     @PersistenceContext(unitName="topcatv2")
     EntityManager em;
+
+    @EJB
+    MailBean mailBean;
 
     private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
 
@@ -139,16 +148,18 @@ public class DownloadRepository {
             sb.append("SELECT d FROM Download d WHERE d.facilityName = :facilityName AND d.userName = :userName" );
 
             if (status != null) {
-                sb.append( " AND d.status = :status");
+                sb.append(" AND d.status = :status");
             }
 
             if (transport != null) {
-                sb.append( " AND d.transport = :transport");
+                sb.append(" AND d.transport = :transport");
             }
 
             if (preparedId != null) {
-                sb.append( " AND d.preparedId = :preparedId");
+                sb.append(" AND d.preparedId = :preparedId");
             }
+
+            sb.append(" ORDER BY d.createdAt DESC");
 
             logger.debug(sb.toString());
 
@@ -192,6 +203,38 @@ public class DownloadRepository {
             if (downloads.size() > 0) {
                 downloads.get(0).setStatus(DownloadStatus.COMPLETE);
                 em.flush();
+
+                EmailValidator emailValidator = EmailValidator.getInstance();
+                PropertyHandler properties = PropertyHandler.getInstance();
+
+                if (properties.isMailEnable() == true) {
+                    if (downloads.get(0).getEmail() != null) {
+                        if (emailValidator.isValid(downloads.get(0).getEmail())) {
+
+                            Map<String, String> valuesMap = new HashMap<String, String>();
+                            valuesMap.put("email", downloads.get(0).getEmail());
+                            valuesMap.put("userName", downloads.get(0).getUserName());
+                            valuesMap.put("facilityName", downloads.get(0).getFacilityName());
+                            valuesMap.put("preparedId", downloads.get(0).getPreparedId());
+                            valuesMap.put("downloadUrl", downloads.get(0).getTransportUrl() + "/ids/getData?preparedId=" + downloads.get(0).getPreparedId() + "&outName=" + downloads.get(0).getFacilityName());
+                            valuesMap.put("fileName", downloads.get(0).getFileName());
+
+                            StrSubstitutor sub = new StrSubstitutor(valuesMap);
+
+                            if (downloads.get(0).getTransport().equals("https")) {
+                                mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()), sub.replace(properties.getMailBodyHttps()));
+                            }
+
+                            if (downloads.get(0).getTransport().equals("globus")) {
+                                mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()), sub.replace(properties.getMailBodyGlobus()));
+                            }
+                        } else {
+                            logger.debug("Email not sent. Invalid email " + downloads.get(0).getEmail());
+                        }
+                    }
+                } else {
+                    logger.debug("Email not sent. Email not enabled");
+                }
 
                 return downloads.get(0).getPreparedId();
             }

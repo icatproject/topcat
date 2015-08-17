@@ -19,6 +19,21 @@ port=4848
 #url root where topcat will be deployed. Leave blank for the default of / or enter your required root url (do not end url with /)
 topcatUrlRoot=
 
+# Email setup see http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-javamail-resource.htm#GSRFM00035
+#the smtp host address
+mail.host=smtp.example.com
+
+#name of mail acount user when connecting to the mail server
+mail.user=user@example.com
+
+#mail from address
+mail.from=from@example.com
+
+#see https://javamail.java.net/nonav/docs/api/ for list of properties
+mail.property=mail.smtp.port="25":mail.smtp.from="wayne.chung@stfc.ac.uk"
+
+
+
 # A Glassfish file user to access the topcat admin service
 adminUsername topcatadmin
 adminPassword change-me
