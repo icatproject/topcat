@@ -253,17 +253,11 @@
                             "filters": [
                                 {
                                     "placeholder": "From...",
-                                    "flags": {
-                                        "caseSensitive": false
-                                    },
                                     "type": "input",
                                     "disableCancelFilterButton": true
                                 },
                                 {
                                     "placeholder": "To...",
-                                    "flags": {
-                                        "caseSensitive": false
-                                    },
                                     "type": "input",
                                     "disableCancelFilterButton": true
                                 }
@@ -276,8 +270,7 @@
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -317,11 +310,7 @@
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -333,11 +322,7 @@
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -384,12 +369,9 @@
                             "displayName": "Modified Time",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -722,13 +704,10 @@
                             "field": "startDate",
                             "displayName": "Start Date",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
-                            "type": "string",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder" : "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -737,13 +716,10 @@
                             "field": "endDate",
                             "displayName": "End Date",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
-                            "type": "string",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -843,12 +819,9 @@
                             "displayName": "Start Date",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -858,12 +831,9 @@
                             "displayName": "End Date",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -895,12 +865,9 @@
                             "displayName": "Create Date",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -910,12 +877,9 @@
                             "displayName": "Modified Time",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
@@ -961,12 +925,9 @@
                             "displayName": "Modified Time",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
+                                "placeholder": "Date...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }
