@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('Cart', Cart);
 
-    Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', '$log'];
+    Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', '$log'];
 
-    function Cart($rootScope, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, $log) { //jshint ignore: line
+    function Cart($rootScope, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, $log) { //jshint ignore: line
         /**
          * Initialise a cart
          * @return {[type]} [description]
@@ -464,6 +464,17 @@
 
                 TopcatManager.submitCart(facility, cartRequest).then(function(data){
                     $log.debug('cart submit', data);
+
+                    if (downloadRequest.transportType.type === 'smartclient') {
+                        SmartClientManager.getData($sessionStorage.sessions[downloadRequest.facilityName].sessionId, facility, data.value).then(function(){
+                            $log.debug('Job submitted to Smartclient', data);
+                        }, function(error) {
+                            inform.add('Failed to add job to Smartclient: ' + error, {
+                                'ttl': 4000,
+                                'type': 'danger'
+                            });
+                        });
+                    }
 
                     inform.add('Cart successfulled submitted', {
                         'ttl': 4000,

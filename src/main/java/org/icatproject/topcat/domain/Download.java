@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.persistence.annotations.CascadeOnDelete;
 
@@ -27,10 +28,10 @@ import org.eclipse.persistence.annotations.CascadeOnDelete;
 @Table(name = "DOWNLOAD")
 @CascadeOnDelete
 @NamedQueries({
-        @NamedQuery(name = "Download.findAll", query = "SELECT d FROM Download d"),
-        @NamedQuery(name = "Download.findById", query = "SELECT d FROM Download d WHERE d.id = :id"),
-        @NamedQuery(name = "Download.findByPreparedId", query = "SELECT d FROM Download d WHERE d.preparedId = :preparedId"),
-        @NamedQuery(name = "Download.deleteById", query = "DELETE FROM Download d WHERE d.id = :id")
+        @NamedQuery(name = "Download.findAll", query = "SELECT d FROM Download d where d.isDeleted = false"),
+        @NamedQuery(name = "Download.findById", query = "SELECT d FROM Download d WHERE d.id = :id AND d.isDeleted = false "),
+        @NamedQuery(name = "Download.findByPreparedId", query = "SELECT d FROM Download d WHERE d.preparedId = :preparedId AND d.isDeleted = false"),
+        @NamedQuery(name = "Download.deleteById", query = "DELETE FROM Download d WHERE d.id = :id AND d.isDeleted = false")
 })
 @XmlRootElement
 public class Download implements Serializable {
@@ -78,6 +79,12 @@ public class Download implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
+    @Column(name = "IS_DELETED")
+    private Boolean isDeleted = false;
+
+    @Column(name = "DELETED_AT")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deletedAt;
 
     public Download() {
     }
@@ -189,6 +196,24 @@ public class Download implements Serializable {
     @PrePersist
     private void createAt() {
         this.createdAt = new Date();
+    }
+
+    @XmlTransient
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    @XmlTransient
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public String toString() {

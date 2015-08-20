@@ -90,7 +90,7 @@ public class UserResource {
         }
 
         if (userName == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
+            throw new BadRequestException("userName query parameter is required");
         }
 
         //check user is authorised
@@ -116,6 +116,47 @@ public class UserResource {
     }
 
 
+    @DELETE
+    @Path("/downloads/{preparedId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response deleteDownloadsByPreparedId(
+            @PathParam("preparedId") String preparedId,
+            @QueryParam("sessionId") String sessionId,
+            @QueryParam("icatUrl") String icatUrl) throws MalformedURLException, TopcatException {
+        logger.info("deleteDownloadsByPreparedId() called");
+
+        if (sessionId == null) {
+            throw new BadRequestException("sessionId query parameter is required");
+        }
+
+        if (icatUrl == null) {
+            throw new BadRequestException("icatUrl query parameter is required");
+        }
+
+        //check user is authorised
+        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
+
+        if (! auth) {
+            throw new ForbiddenException("sessionId not valid");
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("preparedId", preparedId);
+
+        String deletedPreparedId = downloadRepository.deleteDownloadByPreparedId(params);
+
+        if (deletedPreparedId != null) {
+            StringValue value = new StringValue(deletedPreparedId);
+            //return preparedId value if success
+            return Response.ok().entity(value).build();
+        }
+
+        //return empty object if delete fails
+        return Response.ok().entity("{}").build();
+    }
+
+
     @GET
     @Path("/cart/facility/{facilityName}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -136,7 +177,7 @@ public class UserResource {
         }
 
         if (userName == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
+            throw new BadRequestException("userName query parameter is required");
         }
 
         //check user is authorised
@@ -183,7 +224,7 @@ public class UserResource {
         }
 
         if (userName == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
+            throw new BadRequestException("userName query parameter is required");
         }
 
         //check user is authorised
@@ -311,8 +352,8 @@ public class UserResource {
                 throw new BadRequestException("Unable to submit for cart for download");
             }
 
-            // if isTwoLevel storage start a check status thread
-            if (isTwoLevel == true) {
+            // if isTwoLevel storage and is https request start a check status thread
+            if (isTwoLevel == true && cartSubmitDTO.getTransport().equals("https")) {
                 executorBean.executeAsync(preparedId);
             }
 

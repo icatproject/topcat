@@ -52,7 +52,8 @@
         ])
         .constant('_', window._)
         .constant('APP_CONSTANT', {
-            storageName: 'TopCAT_0.1'
+            storageName: 'TopCAT_0.1',
+            smartClientUrl: 'https://localhost:8888'
         })
         .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
             $translateProvider.translations('en', LANG);
@@ -79,6 +80,11 @@
             $stateProvider
                 .state('home', {
                     abstract: true,
+                    resolve: {
+                        smartClientRunning : ['SmartClientManager', function(SmartClientManager) {
+                            return SmartClientManager.ping();
+                        }]
+                    },
                     //url: '',
                     templateUrl: 'views/abstract-home.html',
                     controller: 'HomeController'

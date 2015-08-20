@@ -1,6 +1,7 @@
 package org.icatproject.topcat.repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class DownloadRepository {
 
         if (em != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.facilityName = :facilityName");
+            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.facilityName = :facilityName");
 
             if (status != null) {
                 sb.append( " AND d.status = :status");
@@ -112,7 +113,7 @@ public class DownloadRepository {
 
         if (em != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.status = :status AND d.transport = :transport AND d.isTwoLevel = :isTwoLevel");
+            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.status = :status AND d.transport = :transport AND d.isTwoLevel = :isTwoLevel");
 
             TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
 
@@ -145,7 +146,7 @@ public class DownloadRepository {
 
         if (em != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.facilityName = :facilityName AND d.userName = :userName" );
+            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.facilityName = :facilityName AND d.userName = :userName" );
 
             if (status != null) {
                 sb.append(" AND d.status = :status");
@@ -193,7 +194,7 @@ public class DownloadRepository {
         String preparedId = params.get("preparedId");
 
         if (em != null) {
-            String jpql = "SELECT d FROM Download d WHERE d.preparedId = :preparedId";
+            String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId";
 
             TypedQuery<Download> query = em.createQuery(jpql, Download.class);
             query.setParameter("preparedId", preparedId);
@@ -251,12 +252,39 @@ public class DownloadRepository {
         return store;
     }
 
+
+    public String deleteDownloadByPreparedId(Map<String, String> params) {
+        List<Download> downloads = new ArrayList<Download>();
+
+        String preparedId = params.get("preparedId");
+
+        if (em != null) {
+            String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId";
+
+            TypedQuery<Download> query = em.createQuery(jpql, Download.class);
+            query.setParameter("preparedId", preparedId);
+
+            downloads = query.getResultList();
+
+            if (downloads.size() > 0) {
+                downloads.get(0).setIsDeleted(true);
+                downloads.get(0).setDeletedAt(new Date());
+                em.flush();
+
+                return downloads.get(0).getPreparedId();
+            }
+        }
+
+        return null;
+    }
+
+
     public Download getDownloadsByPreparedId(String preparedId) {
         List<Download> downloads = new ArrayList<Download>();
 
         if (em != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.preparedId = :preparedId");
+            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId");
 
 
             TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
