@@ -34,6 +34,13 @@ public class ICATClientBean {
         return service.login(authenticationType, parameters);
     }
 
+
+    public String getUserName(String icatUrl, String icatSessionId) throws MalformedURLException, TopcatException {
+        ICATClientInterface service = getIcatService(icatUrl);
+
+        return service.getUserName(icatSessionId);
+    }
+
     /**
      * Check if icatSessionId is valid on a server
      *

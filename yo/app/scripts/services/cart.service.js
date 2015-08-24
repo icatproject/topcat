@@ -476,7 +476,7 @@
                         });
                     }
 
-                    inform.add('Cart successfulled submitted', {
+                    inform.add('Cart successfully submitted', {
                         'ttl': 4000,
                         'type': 'success'
                     });

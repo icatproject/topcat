@@ -123,7 +123,8 @@ public class UserResource {
     public Response deleteDownloadsByPreparedId(
             @PathParam("preparedId") String preparedId,
             @QueryParam("sessionId") String sessionId,
-            @QueryParam("icatUrl") String icatUrl) throws MalformedURLException, TopcatException {
+            @QueryParam("icatUrl") String icatUrl,
+            @QueryParam("userName") String userName) throws MalformedURLException, TopcatException {
         logger.info("deleteDownloadsByPreparedId() called");
 
         if (sessionId == null) {
@@ -134,6 +135,10 @@ public class UserResource {
             throw new BadRequestException("icatUrl query parameter is required");
         }
 
+        if (userName == null) {
+            throw new BadRequestException("userName query parameter is required");
+        }
+
         //check user is authorised
         boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
 
@@ -141,10 +146,16 @@ public class UserResource {
             throw new ForbiddenException("sessionId not valid");
         }
 
+        if (! isUserValid(icatUrl, sessionId, userName)) {
+            throw new ForbiddenException("You do not have permission to remove this download");
+        }
+
         Map<String, String> params = new HashMap<String, String>();
         params.put("preparedId", preparedId);
+        params.put("userName", userName);
 
-        String deletedPreparedId = downloadRepository.deleteDownloadByPreparedId(params);
+
+        String deletedPreparedId = downloadRepository.deleteDownloadByPreparedIdAndUserName(params);
 
         if (deletedPreparedId != null) {
             StringValue value = new StringValue(deletedPreparedId);
@@ -439,6 +450,22 @@ public class UserResource {
         logger.info("ping() called");
         return Response.ok().entity("ok").build();
 
+    }
+
+    /**
+     * Check userName matches session
+     * @param icatUrl
+     * @param sessionId
+     * @param userName
+     * @return
+     * @throws MalformedURLException
+     * @throws TopcatException
+     */
+    private boolean isUserValid(String icatUrl, String sessionId, String userName) throws MalformedURLException, TopcatException {
+        logger.info("isUserValid() called");
+        String icatUserName = icatClientService.getUserName(icatUrl, sessionId);
+
+        return userName.equals(icatUserName);
     }
 
 

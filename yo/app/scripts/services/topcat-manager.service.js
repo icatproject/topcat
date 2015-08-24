@@ -95,6 +95,18 @@
             return def.promise;
         };
 
+        manager.removeDownloadByPreparedId = function(facility, userName, preparedId) {
+            var def = $q.defer();
+
+            TopcatService.removeDownloadByPreparedId(facility, userName, preparedId).then(function(data) {
+                def.resolve(data.data);
+            }, function(error){
+                def.reject('Failed to remove download: ' + getErrorMessage(error));
+            });
+
+            return def.promise;
+        };
+
         return manager;
     }
 })();

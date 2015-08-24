@@ -67,7 +67,7 @@
 
             var params = {
                 params : {
-                    sessionId: $sessionStorage.sessions['facility.facilityName'].sessionId,
+                    sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
                     icatUrl: facility.icatUrl,
                     userName: userName
                 },
@@ -97,6 +97,24 @@
             };
 
             return $http.get(url, params);
+        };
+
+        data.removeDownloadByPreparedId = function(facility, userName, preparedId) {
+            var url = TOPCAT_API_PATH + '/downloads/' + preparedId;
+
+            var params = {
+                params : {
+                    sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
+                    icatUrl: facility.icatUrl,
+                    userName: userName
+                },
+                info : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title
+                }
+            };
+
+            return $http.delete(url, params);
         };
 
         return data;

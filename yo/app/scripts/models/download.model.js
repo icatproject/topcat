@@ -4,27 +4,29 @@ angular
     .module('angularApp')
     .factory('DownloadModel', DownloadModel);
 
-DownloadModel.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'uiGridConstants', 'TopcatService', '$sessionStorage', '$log'];
+DownloadModel.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'uiGridConstants', 'TopcatService', '$sessionStorage', '$compile', '$log'];
 
-function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, TopcatService, $sessionStorage, $log){  //jshint ignore: line
+function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, TopcatService, $sessionStorage, $compile, $log){  //jshint ignore: line
     /**
      * build download url html
      * @param  {[type]} data [description]
      * @return {[type]}      [description]
      */
     function getDownloadUrl(data) {
+        var html = '';
+
         if (data.transport === 'https') {
             if (data.status === 'COMPLETE') {
-                return '<a href="' + data.transportUrl + '/ids/getData?preparedId=' + data.preparedId + '&outname=' + data.fileName + '">Download</a>';
+                html = '<a href="' + data.transportUrl + '/ids/getData?preparedId=' + data.preparedId + '&outname=' + data.fileName + '">Download</a>';
             } else {
-                return '<span class="not-active">Download</span>';
+                html = '<span class="not-active">Download</span>';
             }
         } else if (data.transport === 'globus') {
             var route = $state.href('globus-faq');
-            return '<a href="' + route + '">Download Via Globus</a>';
+            html ='<a href="' + route + '">Download Via Globus</a>';
         }
 
-        return '';
+        return html;
     }
 
     return {
@@ -44,14 +46,14 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
             //add a Download column
             gridOptions.columnDefs.push({
                 name : 'download',
-                displayName : 'Download',
+                displayName : 'Actions',
                 translateDisplayName: 'CART.COLUMN.DOWNLOAD',
                 enableFiltering: false,
                 enable: false,
                 enableColumnMenu: false,
                 enableSorting: false,
                 enableHiding: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><span ng-bind-html="row.entity.downloadLink"></span></div>'
+                cellTemplate : '<div class="ui-grid-cell-contents"><span ng-bind-html="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity, grid.renderContainers.body.visibleRowCache.indexOf(row))">Remove</a></span></div>'
             });
 
             return gridOptions;

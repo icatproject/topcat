@@ -191,13 +191,11 @@ public class DownloadRepository {
     public String setCompleteByPreparedId(Map<String, String> params) {
         List<Download> downloads = new ArrayList<Download>();
 
-        String preparedId = params.get("preparedId");
-
         if (em != null) {
             String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId";
 
             TypedQuery<Download> query = em.createQuery(jpql, Download.class);
-            query.setParameter("preparedId", preparedId);
+            query.setParameter("preparedId", params.get("preparedId"));
 
             downloads = query.getResultList();
 
@@ -253,16 +251,15 @@ public class DownloadRepository {
     }
 
 
-    public String deleteDownloadByPreparedId(Map<String, String> params) {
+    public String deleteDownloadByPreparedIdAndUserName(Map<String, String> params) {
         List<Download> downloads = new ArrayList<Download>();
 
-        String preparedId = params.get("preparedId");
-
         if (em != null) {
-            String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId";
+            String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId AND d.userName = :userName";
 
             TypedQuery<Download> query = em.createQuery(jpql, Download.class);
-            query.setParameter("preparedId", preparedId);
+            query.setParameter("preparedId", params.get("preparedId"))
+                .setParameter("userName", params.get("userName"));
 
             downloads = query.getResultList();
 

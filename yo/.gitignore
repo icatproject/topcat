@@ -3,3 +3,5 @@ dist
 .tmp
 .sass-cache
 bower_components
+yo/app/data/config.dls.json
+yo/app/data/en.dls.json

@@ -144,3 +144,7 @@ body {
   pointer-events: none;
   text-decoration: none;
 }
+
+a[ng-click]{
+    cursor: pointer;
+}

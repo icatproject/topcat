@@ -28,11 +28,9 @@
     angular
         .module('angularApp', [
             'ngResource',
-            //'ngRoute',
             'ngSanitize',
             'ui.router',
             'ct.ui.router.extras.sticky',
-            //'ct.ui.router.extras.previous',
             'ui.bootstrap',
             'truncate',
             'inform',
