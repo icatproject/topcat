@@ -11,20 +11,24 @@
 
 
     function DownloadController($rootScope, $scope, $state, APP_CONFIG, Config, Cart, DownloadModel, $sessionStorage, $modal, uiGridConstants, $log) { //jshint ignore: line
-        var dl = this;
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
 
         $scope.isEmpty = false;
-        dl.isScroll = (pagingType === 'scroll') ? true : false;
+        $scope.isScroll = (pagingType === 'scroll') ? true : false;
+
+        $scope.gridOptions = {
+            appScopeProvider: $scope
+        };
 
         DownloadModel.init($scope);
+        DownloadModel.getPage();
 
-        dl.gridOptions = DownloadModel.gridOptions;
+        $scope.gridOptions.onRegisterApi = function(gridApi) {
+            $scope.gridApi = gridApi;
+        };
+
 
         $scope.remove = function(row, rowIndex) {
-            $log.debug('download remove called');
-            $log.debug(row, rowIndex);
-
             var modalInstance = $modal.open({
                 templateUrl: 'views/remove-download-modal.html',
                 controller: 'RemoveDownloadModalController as vm',
@@ -36,11 +40,16 @@
             });
 
             modalInstance.result.then(function () {
-                dl.gridOptions.data.splice(rowIndex, 1);
+                $scope.gridOptions.data.splice(rowIndex, 1);
                 $scope.gridApi.grid.refresh(true);
             }, function () {
                 $log.debug('Remove cancelled');
             });
+        };
+
+
+        $scope.refresh = function() {
+            DownloadModel.refresh();
         };
     }
 
@@ -53,8 +62,6 @@
             var facility = Config.getFacilityByName(APP_CONFIG, row.facilityName);
 
             TopcatManager.removeDownloadByPreparedId(facility, row.userName, row.preparedId).then(function(data) {
-                $log.debug('removeDownloadByPreparedId', data);
-
                 if (typeof data.value !== 'undefined') {
                     inform.add('Download successfully removed', {
                         'ttl': 4000,

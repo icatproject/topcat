@@ -2354,7 +2354,12 @@
                     "displayName": "Created Date",
                     "translateDisplayName": "CART.COLUMN.CREATED_DATE",
                     "type" : "date",
-                    "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'"
+                    "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                    "filter": {
+                        "placeholder": "Date...",
+                        "type": "input",
+                        "disableCancelFilterButton": true
+                    }
                 }
             ]
         },

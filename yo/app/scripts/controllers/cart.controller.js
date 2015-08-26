@@ -8,28 +8,33 @@
     CartController.$inject = ['$rootScope', '$scope', 'APP_CONFIG', 'Config', 'Cart', 'CartModel', '$sessionStorage', '$log'];
 
     function CartController($rootScope, $scope, APP_CONFIG, Config, Cart, CartModel, $sessionStorage, $log) { //jshint ignore: line
-        var ct = this;
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
 
         $scope.isEmpty = false;
-        ct.isScroll = (pagingType === 'scroll') ? true : false;
+        $scope.isScroll = (pagingType === 'scroll') ? true : false;
+
+        $scope.gridOptions = {
+            appScopeProvider: $scope
+        };
 
         CartModel.init($scope);
-        ct.gridOptions = CartModel.gridOptions;
+        CartModel.setCart();
 
-        ct.items = Cart.getItems();
-        ct.isEmpty = false;
+        $scope.items = Cart.getItems();
 
         $scope.$watchCollection(function() {
-            return ct.items;
+            return $scope.items;
         }, function(newCol) {
             if(newCol.length === 0) {
-                ct.isEmpty = true;
+                $scope.isEmpty = true;
             } else {
-                ct.isEmpty = false;
+                $scope.isEmpty = false;
             }
-
         });
+
+        $scope.gridOptions.onRegisterApi = function(gridApi) {
+            $scope.gridApi = gridApi;
+        };
 
         //listen to when cart is displayed and refresh the cart data
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) { //jshint ignore: line
@@ -44,7 +49,6 @@
 
 
         $rootScope.$on('Logout:success', function(){
-
             if (Cart.isRestorable()) {
                 Cart.restore();
             }
@@ -57,24 +61,12 @@
         });
 
 
-        ct.removeAllItems = function(row) {
+        $scope.removeAllItems = function(row) {
             CartModel.removeAllItems(row);
         };
 
         $scope.removeItem = function(row) {
             CartModel.removeItem(row);
-        };
-
-        $scope.getSize = function(row) { //jshint ignore: line
-            /*if (row.entity.size === null) {
-                $log.debug('size is null');
-                row.entity.size = _.random(0, 1000000);
-
-                return row.entity.size;
-            } else {
-                $log.debug('size not null!!');
-                return row.entity.size;
-            }*/
         };
     }
 })();

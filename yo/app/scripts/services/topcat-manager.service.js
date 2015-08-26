@@ -63,6 +63,8 @@
                     result = data.data.cartItems;
                 }
 
+                $log.debug('TopcatManager getCartItems', result);
+
                 def.resolve(result);
             }, function(error){
                 def.reject('Failed to get user cart: ' + getErrorMessage(error));

@@ -22,7 +22,7 @@
                         views: {
                             '@home.browse' : {
                                 templateUrl: 'views/partial-browse-panel.html',
-                                controller: 'BrowseEntitiesController as vm'
+                                controller: 'BrowseEntitiesController'
                             },
                             'meta-view@home.browse' : {
                                 templateUrl: 'views/partial-meta-panel.html',

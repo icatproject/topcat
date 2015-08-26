@@ -2,11 +2,13 @@
 
 angular
     .module('angularApp')
-    .factory('DownloadModel', DownloadModel);
+    .service('DownloadModel', DownloadModel);
 
 DownloadModel.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'uiGridConstants', 'TopcatService', '$sessionStorage', '$compile', '$log'];
 
 function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, TopcatService, $sessionStorage, $compile, $log){  //jshint ignore: line
+    var self = this;
+
     /**
      * build download url html
      * @param  {[type]} data [description]
@@ -29,75 +31,75 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
         return html;
     }
 
-    return {
-        gridOptions : {},
 
-        configToUIGridOptions : function() {
-            //$log.debug('configToUIGridOptions called');
-            var gridOptions = Config.getSiteMyDownloadGridOptions(APP_CONFIG);
+    function configToUIGridOptions() {
+        //$log.debug('configToUIGridOptions called');
+        var gridOptions = Config.getSiteMyDownloadGridOptions(APP_CONFIG);
 
-            //do the work of transposing
-            _.mapValues(gridOptions.columnDefs, function(value) {
-                //replace filter condition to one expected by ui-grid
+        //do the work of transposing
+        _.mapValues(gridOptions.columnDefs, function(value) {
+            //replace filter condition to one expected by ui-grid
 
-                return value;
-            });
+            return value;
+        });
 
-            //add a Download column
-            gridOptions.columnDefs.push({
-                name : 'download',
-                displayName : 'Actions',
-                translateDisplayName: 'CART.COLUMN.DOWNLOAD',
-                enableFiltering: false,
-                enable: false,
-                enableColumnMenu: false,
-                enableSorting: false,
-                enableHiding: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><span ng-bind-html="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity, grid.renderContainers.body.visibleRowCache.indexOf(row))">Remove</a></span></div>'
-            });
+        //add a Download column
+        gridOptions.columnDefs.push({
+            name : 'download',
+            displayName : 'Actions',
+            translateDisplayName: 'CART.COLUMN.DOWNLOAD',
+            enableFiltering: false,
+            enable: false,
+            enableColumnMenu: false,
+            enableSorting: false,
+            enableHiding: false,
+            cellTemplate : '<div class="ui-grid-cell-contents"><span ng-bind-html="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity, grid.renderContainers.body.visibleRowCache.indexOf(row))">Remove</a></span></div>'
+        });
 
-            return gridOptions;
-        },
+        return gridOptions;
+    }
 
-        init : function(scope) {
-            var options = this.configToUIGridOptions();
-            var paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
+    function setGridOptions(gridOptions) {
+        self.gridOptions = _.extend(gridOptions, {
+            data: [],
+            enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
+            columnDefs: self.options.columnDefs,
+            enableFiltering: self.options.enableFiltering,
+            enableRowSelection: false,
+            enableRowHeaderSelection: false,
+            paginationPageSizes: self.paginationPageSizes
+        });
+    }
 
-            var gridOptions = {
-                data: [],
-                enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
-                columnDefs: options.columnDefs,
-                enableFiltering: options.enableFiltering,
-                appScopeProvider: scope,
-                enableRowSelection: false,
-                enableRowHeaderSelection: false,
-                paginationPageSizes: paginationPageSizes,
-                //rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
-            };
+    this.init = function(scope) {
+        this.scope = scope;
 
-            gridOptions.onRegisterApi = function(gridApi) {
-                scope.gridApi = gridApi;
-            };
+        self.options = configToUIGridOptions();
+        self.paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
 
+        setGridOptions(scope.gridOptions);
+    };
 
-            _.each($sessionStorage.sessions, function(session, key) {
-                var facility = Config.getFacilityByName(APP_CONFIG, key);
+    this.getPage = function() {
+        _.each($sessionStorage.sessions, function(session, key) {
+            var facility = Config.getFacilityByName(APP_CONFIG, key);
 
-                TopcatService.getMyDownloads(facility, session.userName).then(function(data) {
-                    $log.debug('results', data.data);
+            TopcatService.getMyDownloads(facility, session.userName).then(function(data) {
+                $log.debug('results', data.data);
 
-                    //
-                    _.each(data.data, function(entity) {
-                        entity.downloadLink = getDownloadUrl(entity);
-                    });
+                //
+                _.each(data.data, function(entity) {
+                    entity.downloadLink = getDownloadUrl(entity);
+                });
 
-                    gridOptions.data = gridOptions.data.concat(data.data);
-                }) ;
-            });
+                self.gridOptions.data = self.gridOptions.data.concat(data.data);
+            }) ;
+        });
+    };
 
-            this.gridOptions = gridOptions;
-        }
-
+    this.refresh = function() {
+        self.gridOptions.data = [];
+        self.getPage();
     };
 }
 

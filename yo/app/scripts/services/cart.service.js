@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('Cart', Cart);
 
-    Cart.$inject =['$rootScope', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', '$log'];
+    Cart.$inject =['$rootScope', '$q', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', '$log'];
 
-    function Cart($rootScope, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, $log) { //jshint ignore: line
+    function Cart($rootScope, $q, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, $log) { //jshint ignore: line
         /**
          * Initialise a cart
          * @return {[type]} [description]
@@ -39,6 +39,11 @@
             } else {
                 var newItem = new CartItem(facilityName, $sessionStorage.sessions[facilityName].userName, entityType, entityId, name);
                 newItem.setParentEntities(parentEntities);
+
+                $log.debug('newItem', newItem);
+
+                $log.debug('newItem', this._cart);
+
                 this._cart.items.push(newItem);
                 addedItemsCount++;
                 $rootScope.$broadcast('Cart:itemAdded', {added: addedItemsCount});
@@ -56,7 +61,6 @@
                                 itemsToRemove.push(cartItem);
                             }
                         });
-
                     }
                 }
             });
@@ -68,67 +72,6 @@
 
             $rootScope.$broadcast('Cart:change', {added: addedItemsCount, exists: itemExistsCount});
         };
-
-        /**
-         * Add items to the cart
-         *
-         * @param {[type]} items [description]
-         */
-        this.addItems = function(items) {
-            var addedItemsCount = 0;
-            var itemExistsCount = 0;
-
-            _.each(items, function(item) {
-                var myItem = this.getItem(item.facilityName, item.entityType, item.entityId);
-
-                if (typeof myItem === 'object') {
-                    itemExistsCount++;
-                } else {
-                    var newItem = new CartItem(item.facilityName, $sessionStorage.sessions[item.facilityName].userName, item.entityType, item.entityId, item.name);
-                    newItem.setParentEntities(item.parentEntities);
-                    this._cart.items.push(newItem);
-                    addedItemsCount++;
-                }
-            }, this);
-
-            if (addedItemsCount !== 0) {
-                $rootScope.$broadcast('Cart:itemsAdded', {added: addedItemsCount});
-            }
-
-            if (addedItemsCount !== 0 || itemExistsCount !== 0) {
-                $rootScope.$broadcast('Cart:change', {added: addedItemsCount, exists: itemExistsCount});
-            }
-        };
-
-
-        /*this.addItemObjects = function (items) {
-            var addedItems = [];
-            var itemExists = [];
-
-            _.each(items, function(item) {
-                var myItem = this.getItem(item.getFacilityName(), item.getEntityType(), item.getEntityId());
-
-                if (typeof myItem === 'object'){
-                    itemExists.push(myItem);
-                } else {
-                    var newItem = new CartItem(item.getFacilityName(), item.getEntityType(), item.getEntityId(), item.getName());
-                    this._cart.items.push(newItem);
-                    addedItems.push(newItem);
-                }
-            });
-
-            if (itemExists.length !== 0) {
-                $rootScope.$broadcast('Cart:itemsExists', itemExists);
-            }
-
-            if (addedItems.length !== 0) {
-                $rootScope.$broadcast('Cart:itemsAdded', addedItems);
-            }
-
-            if (addedItems.length !== 0 || itemExists.length !== 0) {
-                $rootScope.$broadcast('Cart:change', {});
-            }
-        };*/
 
         /**
          * Remove an item from the cart
@@ -359,7 +302,9 @@
          * @return {[type]} [description]
          */
         this.restore = function() {
+            $log.debug('restore called');
             var _self = this;
+            var def = $q.defer();
 
             //clear all
             _self.reset();
@@ -367,19 +312,27 @@
             //restore cart for each logged in session
             _.each($sessionStorage.sessions, function(session, key) {
                 var facility = Config.getFacilityByName(APP_CONFIG, key);
+
+                $log.debug('restore facility', facility);
+                $log.debug('restore session.userName', session.userName);
+
+
                 RemoteStorageManager.getUserStore(facility, session.userName).then(function(items) {
-                    $log.debug('retored items', items);
+                    $log.debug('restored items !!!!', items);
                     _self._restoreItems(items);
+                    def.resolve({restored: true});
                 }, function(error) {
+                    def.reject({restored: false});
                     inform.add(error, {
                         'ttl': 4000,
                         'type': 'danger'
                     });
                 });
-
-
             });
 
+            $rootScope.$broadcast('Cart:Restored', {});
+
+            return def.promise;
         };
 
         /**
@@ -488,13 +441,7 @@
 
                     $log.debug(error);
                 });
-
-
-
             });
-
-
-
         };
     }
 })();

@@ -81,7 +81,10 @@
                     resolve: {
                         smartClientRunning : ['SmartClientManager', function(SmartClientManager) {
                             return SmartClientManager.ping();
-                        }]
+                        }],
+                        cartInit : ['Cart', function(Cart) {
+                            return Cart.restore();
+                        }],
                     },
                     //url: '',
                     templateUrl: 'views/abstract-home.html',
@@ -116,7 +119,7 @@
                     views: {
                         '' : {
                             templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseFacilitiesController as vm'
+                            controller: 'BrowseFacilitiesController'
                         },
                         'search-form-view': {
                             templateUrl: 'views/partial-search-form.html',
@@ -167,7 +170,7 @@
                     views: {
                       'cart': {
                         templateUrl: 'views/main-cart.html',
-                        controller: 'CartController as ct'
+                        controller: 'CartController'
                       }
                     },
                     sticky: true,
@@ -183,7 +186,7 @@
                     views: {
                       'download': {
                         templateUrl: 'views/main-download.html',
-                        controller: 'DownloadController as dl'
+                        controller: 'DownloadController'
                       }
                     },
                     sticky: true,
@@ -265,12 +268,13 @@
         .run(['RouteCreatorService', function(RouteCreatorService) {
             RouteCreatorService.createStates();
         }])
+        //TODO controller is run before restore completes as it is an ajax call
         .run(['$rootScope', 'Cart', function($rootScope, Cart) {
             //init and restore cart when user refresh page
             Cart.init();
 
-            if (Cart.isRestorable()) {
+            /*if (Cart.isRestorable()) {
                 Cart.restore();
-            }
+            }*/
         }]);
 })();
