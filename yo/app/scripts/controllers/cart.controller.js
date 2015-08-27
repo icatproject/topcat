@@ -52,6 +52,7 @@
             if (Cart.isRestorable()) {
                 Cart.restore();
             }
+
         });
 
         $rootScope.$on('SESSION:EXPIRED', function(event, data){

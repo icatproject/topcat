@@ -2,13 +2,11 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('TopcatManager', TopcatManager);
+        module('angularApp').service('TopcatManager', TopcatManager);
 
     TopcatManager.$inject = ['$http', '$q', 'TopcatService', '$log'];
 
     function TopcatManager($http, $q, TopcatService, $log) { //jshint ignore: line
-        var manager = {};
-
         function getErrorMessage(error) {
             var errorMessage = '';
 
@@ -35,7 +33,7 @@
          * @param  {Object} facility the facility object
          * @return {Object}          a promise containing the list of instruments
          */
-        manager.submitCart = function(facility, cart) {
+        this.submitCart = function(facility, cart) {
             var def = $q.defer();
 
             TopcatService.submitCart(facility, cart).then(function(data) {
@@ -48,7 +46,7 @@
         };
 
 
-        manager.getCartItems = function(facility, userName) {
+        this.getCartItems = function(facility, userName) {
             var def = $q.defer();
 
             TopcatService.getCart(facility, userName).then(function(data) {
@@ -73,7 +71,7 @@
             return def.promise;
         };
 
-        manager.saveCart = function(facility, userName, cart) {
+        this.saveCart = function(facility, userName, cart) {
             var def = $q.defer();
 
             TopcatService.saveCart(facility, userName, cart).then(function(data) {
@@ -85,7 +83,7 @@
             return def.promise;
         };
 
-        manager.getMyDownloads = function(facility, userName) {
+        this.getMyDownloads = function(facility, userName) {
             var def = $q.defer();
 
             TopcatService.getMyDownloads(facility, userName).then(function(data) {
@@ -97,7 +95,19 @@
             return def.promise;
         };
 
-        manager.removeDownloadByPreparedId = function(facility, userName, preparedId) {
+        this.getMyRestoringSmartClientDownloads = function(facility, userName) {
+            var def = $q.defer();
+
+            TopcatService.getMyRestoringSmartClientDownloads(facility, userName).then(function(data) {
+                def.resolve(data.data);
+            }, function(error){
+                def.reject('Failed to get downloads using smartclient: ' + getErrorMessage(error));
+            });
+
+            return def.promise;
+        };
+
+        this.removeDownloadByPreparedId = function(facility, userName, preparedId) {
             var def = $q.defer();
 
             TopcatService.removeDownloadByPreparedId(facility, userName, preparedId).then(function(data) {
@@ -109,6 +119,16 @@
             return def.promise;
         };
 
-        return manager;
+        this.completeDownloadByPreparedId = function(facility, userName, preparedId) {
+            var def = $q.defer();
+
+            TopcatService.completeDownloadByPreparedId(facility, userName, preparedId).then(function(data) {
+                def.resolve(data.data);
+            }, function(error){
+                def.reject('Failed to marked download as complete: ' + getErrorMessage(error));
+            });
+
+            return def.promise;
+        };
     }
 })();

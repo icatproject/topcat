@@ -24,8 +24,11 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
                 html = '<span class="not-active">Download</span>';
             }
         } else if (data.transport === 'globus') {
-            var route = $state.href('globus-faq');
-            html ='<a href="' + route + '">Download Via Globus</a>';
+            html ='<a href="' + $state.href('globus-faq') + '">Download Via Globus</a>';
+        } else if (data.transport === 'smartclient') {
+            if (data.status === 'COMPLETE') {
+                html ='<a ng-click="grid.appScope.smartClientModal()">Download</a>';
+            }
         }
 
         return html;
@@ -53,7 +56,7 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
             enableColumnMenu: false,
             enableSorting: false,
             enableHiding: false,
-            cellTemplate : '<div class="ui-grid-cell-contents"><span ng-bind-html="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity, grid.renderContainers.body.visibleRowCache.indexOf(row))">Remove</a></span></div>'
+            cellTemplate : '<div class="ui-grid-cell-contents"><span bind-html-compile="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity, grid.renderContainers.body.visibleRowCache.indexOf(row))">Remove</a></span></div>'
         });
 
         return gridOptions;

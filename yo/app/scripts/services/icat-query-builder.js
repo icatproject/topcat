@@ -2,7 +2,7 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('ICATQueryBuilder', ICATQueryBuilder);
+        module('angularApp').service('ICATQueryBuilder', ICATQueryBuilder);
 
     ICATQueryBuilder.$inject = ['ICATAlias', '$log'];
 
@@ -223,952 +223,930 @@
         }
 
 
-        // Public API here
-        return {
-            /*buildUrl: function(url, params) {
-                if (!params) {
-                    return url;
-                }
-                var parts = [];
-                forEachSorted(params, function(value, key) {
-                    if (value === null || value === undefined) {
-                        return;
-                    }
-                    if (angular.isObject(value)) {
-                        value = angular.toJson(value);
-                    }
-                    parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
-                });
-                return url + ((url.indexOf('?') === -1) ? '?' : '&') + parts.join('&');
-            },*/
-
-            getFacilityCycles: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(fc)')
-                    .from('FacilityCycle', 'fc')
-                    .from('fc.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('fc')
-                    .from('FacilityCycle', 'fc')
-                    .from('fc.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //entity: 'FacilityCycle',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getFacilityCyclesByInstrumentId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-                //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
-                //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
-                $log.debug('queryParams', queryParams);
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(fc)')
-                    .from('FacilityCycle', 'fc')
-                    .from('fc.facility', 'f')
-                    .from('f.investigations', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                            .and_begin() //jshint ignore:line
-                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
-                            .end()
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('fc')
-                    .from('FacilityCycle', 'fc')
-                    .from('fc.facility', 'f')
-                    .from('f.investigations', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                            .and_begin() //jshint ignore:line
-                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
-                            .end()
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //entity: 'FacilityCycle',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getDatasetsByFacilityCycleId: function() {
-
-            },
-
-            getDatafilesByFacilityCycleId: function() {
-
-            },
-
-
-            getInvestigations: function(mySessionId, facility, queryParams) {
-                $log.debug('getInvestigations fired');
-
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(inv)')
-                    .from('Investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('inv')
-                    .from('Investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
-                    query.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-
-                    countQuery.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-                }
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //entity: 'Investigation',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getMyInvestigations: function(mySessionId, facility, queryParams) {
-                $log.debug('getMyInvestigations fired');
-
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(inv)')
-                    .from('Investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('inv')
-                    .from('Investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
-                    query.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-
-                    countQuery.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-                }
-
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //entity: 'Investigation',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-
-            getProposals: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(DISTINCT inv.name)')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .distinct()
-                    .field('inv.name')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Proposal',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            /** get instruments **/
-            getInstruments: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(ins)')
-                    .from('Instrument', 'ins')
-                    .from('ins.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('ins')
-                    .from('Instrument', 'ins')
-                    .from('ins.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'instrument');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'instrument');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Instrument',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getInvestigationsByFacilityCycleId: function(mySessionId, facility, queryParams){
-                validateRequiredArguments(mySessionId, facility, queryParams);
-                //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
-                //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
-                $log.debug('queryParams', queryParams);
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('inv')
-                    .from('Investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .from('f.facilityCycles', 'fc')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                            .and_begin() //jshint ignore:line
-                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
-                            .end()
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('inv')
-                    .from('Investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .from('f.facilityCycles', 'fc')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                            .and_begin() //jshint ignore:line
-                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
-                            .end()
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //entity: 'FacilityCycle',
-                    server: facility.icatUrl
-                });
-
-                return params;
-
-            },
-
-            getProposalsByInstrumentId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(DISTINCT inv.name)')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .distinct()
-                    .field('inv.name')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Proposal',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-
-            getProposalsByFacilityCycleId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(DISTINCT inv.name)')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .from('f.facilityCycles', 'fc')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                            .and('fc.id = ?', queryParams.facilityCycleId)
-                            .and_begin() //jshint ignore:line
-                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
-                            .end()
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .distinct()
-                    .field('inv.name')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .from('f.facilityCycles', 'fc')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                            .and('fc.id = ?', queryParams.facilityCycleId)
-                            .and_begin() //jshint ignore:line
-                                .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
-                            .end()
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Proposal',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getInvestigationsByProposalId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(DISTINCT inv)')
-                    .from('Investigation', 'inv')
-                    //.from('inv.investigationInstruments', 'invins')
-                    //.from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('inv.name = ?', decodeURIComponent(queryParams.proposalId))   //TODO added decodeURIComponent until ui-router bug https://github.com/angular-ui/ui-router/pull/2071
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .distinct()
-                    .field('inv')
-                    .from('Investigation', 'inv')
-                    //.from('inv.investigationInstruments', 'invins')
-                    //.from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('inv.name = ?', decodeURIComponent(queryParams.proposalId))
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Investigation',
-                    server: facility.icatUrl
-                });
-
-                $log.debug('queryParams', queryParams);
-
-                return params;
-            },
-
-
-            getInvestigationsByInstrumentId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(inv)')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('inv')
-                    .from('Investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'investigation');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Investigation',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getInvestigationsByInstrumentIdByCycleId: function() {
-
-            },
-
-            getDatasets: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                $log.debug(queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(ds)')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('ds')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
-                    query.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-
-                    countQuery.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-                }
-
-                var searchExpr = getSearchExpr(queryParams, 'dataset');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Dataset',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-
-            getMyDatasets: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                $log.debug(queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(ds)')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('ds')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                if (angular.isDefined(queryParams.user) && queryParams.user === true) {
-                    query.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-
-                    countQuery.from('inv.investigationUsers', 'invu')
-                    .where(
-                        squel.expr()
-                            .and('invu.user.name = :user')
-                    );
-                }
-
-                var searchExpr = getSearchExpr(queryParams, 'dataset');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Dataset',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getDatasetsByInstrumentId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(ds)')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('ds')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'dataset');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Dataset',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getDatasetsByInvestigationId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(ds)')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('inv.id = ?', queryParams.investigationId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('ds')
-                    .from('Dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('inv.id = ?', queryParams.investigationId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'dataset');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Dataset',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getDatafiles: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(df)')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('df')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'datafile');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Datafile',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getDatafilesByInstrumentId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(df)')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('df')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.investigationInstruments', 'invins')
-                    .from('invins.instrument', 'ins')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ins.id = ?', queryParams.instrumentId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'datafile');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Datafile',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getDatafilesByInvestigationId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(df)')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('inv.id = ?', queryParams.investigationId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('df')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('inv.id = ?', queryParams.investigationId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'datafile');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Datafile',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-            getDatafilesByDatasetId: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('COUNT(df)')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ds.id = ?', queryParams.datasetId)
-                    );
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('df')
-                    .from('Datafile', 'df')
-                    .from('df.dataset', 'ds')
-                    .from('ds.investigation', 'inv')
-                    .from('inv.facility', 'f')
-                    .where(
-                        squel.expr()
-                            .and('f.id = ?', facility.facilityId)
-                            .and('ds.id = ?', queryParams.datasetId)
-                    );
-
-                var searchExpr = getSearchExpr(queryParams, 'datafile');
-
-                var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
-
-                _.extend(params, {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    countQuery: countQuery.toString(),
-                    //filterCountQuery: filterCountQuery.toString(),
-                    //entity: 'Datafile',
-                    server: facility.icatUrl
-                });
-
-                return params;
-            },
-
-
-            getEntityById: function(mySessionId, facility, queryParams) {
-                validateRequiredArguments(mySessionId, facility, queryParams);
-
-                var query = squel.ICATSelect({ autoQuoteAliasNames: false })
-                    .field('e')
-                    .from(queryParams.entityType, 'e')
-                    .where(
-                        squel.expr()
-                            .and('e.id = ?', queryParams.entityId)
-                    );
-
-                /*if (typeof queryParams.include !== 'undefined') {
-                    _.each(queryParams.include, function(value) {
-                        query.include(value);
-                    });
-                }*/
-
-                var params = {
-                    sessionId: mySessionId,
-                    query: query.toString(),
-                    //entity: queryParams.entityType,
-                    server: facility.icatUrl
-                };
-
-                return params;
+        this.getFacilityCycles = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(fc)')
+                .from('FacilityCycle', 'fc')
+                .from('fc.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('fc')
+                .from('FacilityCycle', 'fc')
+                .from('fc.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //entity: 'FacilityCycle',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getFacilityCyclesByInstrumentId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+            //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
+            //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
+            $log.debug('queryParams', queryParams);
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(fc)')
+                .from('FacilityCycle', 'fc')
+                .from('fc.facility', 'f')
+                .from('f.investigations', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                        .and_begin() //jshint ignore:line
+                            .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                        .end()
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('fc')
+                .from('FacilityCycle', 'fc')
+                .from('fc.facility', 'f')
+                .from('f.investigations', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                        .and_begin() //jshint ignore:line
+                            .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                        .end()
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'facilityCycle');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'facilityCycle');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //entity: 'FacilityCycle',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getDatasetsByFacilityCycleId = function() {
+
+        };
+
+        this.getDatafilesByFacilityCycleId = function() {
+
+        };
+
+        this.getInvestigations = function(mySessionId, facility, queryParams) {
+            $log.debug('getInvestigations fired');
+
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(inv)')
+                .from('Investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('inv')
+                .from('Investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                query.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
+
+                countQuery.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
             }
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //entity: 'Investigation',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getMyInvestigations = function(mySessionId, facility, queryParams) {
+            $log.debug('getMyInvestigations fired');
+
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(inv)')
+                .from('Investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('inv')
+                .from('Investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                query.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
+
+                countQuery.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
+            }
+
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //entity: 'Investigation',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+
+        this.getProposals = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(DISTINCT inv.name)')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .distinct()
+                .field('inv.name')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Proposal',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        /** get instruments **/
+        this.getInstruments = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(ins)')
+                .from('Instrument', 'ins')
+                .from('ins.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('ins')
+                .from('Instrument', 'ins')
+                .from('ins.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'instrument');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'instrument');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Instrument',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getInvestigationsByFacilityCycleId = function(mySessionId, facility, queryParams){
+            validateRequiredArguments(mySessionId, facility, queryParams);
+            //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
+            //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
+            $log.debug('queryParams', queryParams);
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('inv')
+                .from('Investigation', 'inv')
+                .from('inv.facility', 'f')
+                .from('f.facilityCycles', 'fc')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                        .and_begin() //jshint ignore:line
+                            .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                        .end()
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('inv')
+                .from('Investigation', 'inv')
+                .from('inv.facility', 'f')
+                .from('f.facilityCycles', 'fc')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                        .and_begin() //jshint ignore:line
+                            .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                        .end()
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //entity: 'FacilityCycle',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getProposalsByInstrumentId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(DISTINCT inv.name)')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .distinct()
+                .field('inv.name')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Proposal',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+
+        this.getProposalsByFacilityCycleId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(DISTINCT inv.name)')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .from('f.facilityCycles', 'fc')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                        .and('fc.id = ?', queryParams.facilityCycleId)
+                        .and_begin() //jshint ignore:line
+                            .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                        .end()
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .distinct()
+                .field('inv.name')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .from('f.facilityCycles', 'fc')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                        .and('fc.id = ?', queryParams.facilityCycleId)
+                        .and_begin() //jshint ignore:line
+                            .and('inv.startDate BETWEEN fc.startDate AND fc.endDate')
+                        .end()
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Proposal',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getInvestigationsByProposalId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(DISTINCT inv)')
+                .from('Investigation', 'inv')
+                //.from('inv.investigationInstruments', 'invins')
+                //.from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('inv.name = ?', decodeURIComponent(queryParams.proposalId))   //TODO added decodeURIComponent until ui-router bug https://github.com/angular-ui/ui-router/pull/2071
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .distinct()
+                .field('inv')
+                .from('Investigation', 'inv')
+                //.from('inv.investigationInstruments', 'invins')
+                //.from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('inv.name = ?', decodeURIComponent(queryParams.proposalId))
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Investigation',
+                server: facility.icatUrl
+            });
+
+            $log.debug('queryParams', queryParams);
+
+            return params;
+        };
+
+
+        this.getInvestigationsByInstrumentId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(inv)')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('inv')
+                .from('Investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'investigation');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Investigation',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getInvestigationsByInstrumentIdByCycleId = function() {
+
+        };
+
+        this.getDatasets = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            $log.debug(queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(ds)')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('ds')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                query.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
+
+                countQuery.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
+            }
+
+            var searchExpr = getSearchExpr(queryParams, 'dataset');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Dataset',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+
+        this.getMyDatasets = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            $log.debug(queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(ds)')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('ds')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            if (angular.isDefined(queryParams.user) && queryParams.user === true) {
+                query.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
+
+                countQuery.from('inv.investigationUsers', 'invu')
+                .where(
+                    squel.expr()
+                        .and('invu.user.name = :user')
+                );
+            }
+
+            var searchExpr = getSearchExpr(queryParams, 'dataset');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Dataset',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getDatasetsByInstrumentId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(ds)')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('ds')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'dataset');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Dataset',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getDatasetsByInvestigationId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(ds)')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('inv.id = ?', queryParams.investigationId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('ds')
+                .from('Dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('inv.id = ?', queryParams.investigationId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'dataset');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'dataset');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Dataset',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getDatafiles = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(df)')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('df')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'datafile');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Datafile',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getDatafilesByInstrumentId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(df)')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('df')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.investigationInstruments', 'invins')
+                .from('invins.instrument', 'ins')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ins.id = ?', queryParams.instrumentId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'datafile');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Datafile',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getDatafilesByInvestigationId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(df)')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('inv.id = ?', queryParams.investigationId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('df')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('inv.id = ?', queryParams.investigationId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'datafile');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Datafile',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getDatafilesByDatasetId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(df)')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ds.id = ?', queryParams.datasetId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('df')
+                .from('Datafile', 'df')
+                .from('df.dataset', 'ds')
+                .from('ds.investigation', 'inv')
+                .from('inv.facility', 'f')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('ds.id = ?', queryParams.datasetId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'datafile');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'datafile');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
+                //filterCountQuery: filterCountQuery.toString(),
+                //entity: 'Datafile',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+
+        this.getEntityById = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('e')
+                .from(queryParams.entityType, 'e')
+                .where(
+                    squel.expr()
+                        .and('e.id = ?', queryParams.entityId)
+                );
+
+            /*if (typeof queryParams.include !== 'undefined') {
+                _.each(queryParams.include, function(value) {
+                    query.include(value);
+                });
+            }*/
+
+            var params = {
+                sessionId: mySessionId,
+                query: query.toString(),
+                //entity: queryParams.entityType,
+                server: facility.icatUrl
+            };
+
+            return params;
         };
     }
 })();

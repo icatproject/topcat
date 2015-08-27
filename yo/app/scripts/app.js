@@ -8,12 +8,23 @@
         element : document.body,
         module : 'angularApp',
         resolve : {
-            APP_CONFIG : [ '$http', function($http) {
+            APP_CONFIG : ['$http', function($http) {
                 return $http.get('data/config-multi.json');
             } ],
-            LANG : [ '$http', function($http) {
+            LANG : ['$http', function($http) {
                 return $http.get('languages/en.json');
-            } ]
+            } ],
+            SMARTCLIENTPING : ['$http', '$q', function($http, $q) {
+                var def = $q.defer();
+
+                $http.get('https://localhost:8888/ping').then(function() {
+                    def.resolve({ping: 'online'});
+                }, function(error) { //jshint ignore: line
+                    def.resolve({ping: 'offline'});
+                });
+
+                return def.promise;
+            }]
         }
     });
 
@@ -45,7 +56,9 @@
             'bytes',
             'angularSpinner',
             'ng.deviceDetector',
-            'angularMoment'
+            'angularMoment',
+            'emguo.poller',
+            'angular-bind-html-compile'
 
         ])
         .constant('_', window._)
@@ -79,9 +92,9 @@
                 .state('home', {
                     abstract: true,
                     resolve: {
-                        smartClientRunning : ['SmartClientManager', function(SmartClientManager) {
+                        /*smartClientRunning : ['SmartClientManager', function(SmartClientManager) {
                             return SmartClientManager.ping();
-                        }],
+                        }],*/
                         cartInit : ['Cart', function(Cart) {
                             return Cart.restore();
                         }],
@@ -239,6 +252,9 @@
         .config(['$logProvider', function($logProvider) {
             $logProvider.debugEnabled(true);
         }])
+        .config(function (pollerConfig) {
+            pollerConfig.neverOverwrite = true;
+        })
     /*.config(function($stickyStateProvider) {
       $stickyStateProvider.enableDebug(true);
     })*/
@@ -264,6 +280,10 @@
                 $rootScope.previousState = $previousState.get();
             });*/
 
+        }])
+        .run(['SmartClientPollManager', function(SmartClientPollManager) {
+            //run checking of smartclient
+            SmartClientPollManager.runOnStartUp();
         }])
         .run(['RouteCreatorService', function(RouteCreatorService) {
             RouteCreatorService.createStates();

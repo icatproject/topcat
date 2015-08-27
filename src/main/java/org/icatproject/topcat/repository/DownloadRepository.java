@@ -144,6 +144,12 @@ public class DownloadRepository {
         String transport = params.get("transport");
         String preparedId = params.get("preparedId");
 
+        DownloadStatus downloadStatus = null;
+
+        if (status != null) {
+            downloadStatus = DownloadStatus.valueOf(status);
+        }
+
         if (em != null) {
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.facilityName = :facilityName AND d.userName = :userName" );
@@ -169,7 +175,7 @@ public class DownloadRepository {
             setParameter("userName", userName);
 
             if (status != null) {
-                query.setParameter("status", status);
+                query.setParameter("status", downloadStatus);
             }
 
             if (transport != null) {
@@ -226,6 +232,10 @@ public class DownloadRepository {
 
                             if (downloads.get(0).getTransport().equals("globus")) {
                                 mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()), sub.replace(properties.getMailBodyGlobus()));
+                            }
+
+                            if (downloads.get(0).getTransport().equals("smartclient")) {
+                                mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()), sub.replace(properties.getMailBodySmartClient()));
                             }
                         } else {
                             logger.debug("Email not sent. Invalid email " + downloads.get(0).getEmail());

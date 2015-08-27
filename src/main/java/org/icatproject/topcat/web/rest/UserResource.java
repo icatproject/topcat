@@ -13,6 +13,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -93,6 +94,15 @@ public class UserResource {
             throw new BadRequestException("userName query parameter is required");
         }
 
+        //validate status
+        if (status != null) {
+            DownloadStatus downloadStatus = DownloadStatus.valueOf(status);
+
+            if (downloadStatus == null) {
+                throw new BadRequestException("Status must be RESTORING or COMPLETE");
+            }
+        }
+
         //check user is authorised
         boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
 
@@ -108,6 +118,7 @@ public class UserResource {
         params.put("status", status);
         params.put("transport", transport);
         params.put("preparedId", preparedId);
+
 
         List<Download> downloads = new ArrayList<Download>();
         downloads = downloadRepository.getDownloadsByFacilityNameAndUser(params);
@@ -442,6 +453,56 @@ public class UserResource {
 
         return Response.ok().entity(preparedId).build();
     }
+
+
+    @PUT
+    @Path("/downloads/{preparedId}/complete")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response setCompleteByPreparedId(
+            @PathParam("preparedId") String preparedId,
+            @QueryParam("icatUrl") String icatUrl,
+            @QueryParam("userName") String userName,
+            @QueryParam("sessionId") String sessionId) throws MalformedURLException, TopcatException {
+        logger.info("setCompleteByPreparedId() called");
+
+        if (sessionId == null) {
+            throw new BadRequestException("sessionId query parameter is required");
+        }
+
+        if (icatUrl == null) {
+            throw new BadRequestException("icatUrl query parameter is required");
+        }
+
+        if (userName == null) {
+            throw new BadRequestException("userName query parameter is required");
+        }
+
+        //check user is authorised
+        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
+
+        if (! auth) {
+            throw new ForbiddenException("sessionId not valid");
+        }
+
+        if (! isUserValid(icatUrl, sessionId, userName)) {
+            throw new ForbiddenException("You do not have permission to mark this download as complete");
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("preparedId", preparedId);
+
+        String result = downloadRepository.setCompleteByPreparedId(params);
+
+        if (result == null) {
+            throw new BadRequestException("PreparedId " + preparedId + " not found");
+        }
+
+        StringValue id = new StringValue(preparedId);
+        return Response.ok().entity(id).build();
+    }
+
+
+
 
     @GET
     @Path("/ping")

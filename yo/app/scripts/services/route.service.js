@@ -2,14 +2,12 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('RouteService', RouteService);
+        module('angularApp').service('RouteService', RouteService);
 
     RouteService.$inject = [];
 
     /*jshint -W098 */
     function RouteService() {
-        var route = {};
-
         /**
          * Join the array elements to route name string
          * @param  {[type]} items [description]
@@ -44,7 +42,7 @@
          * @param  {[type]} APP_CONFIG [description]
          * @return {[type]}            [description]
          */
-        route.getAllRoutes = function(APP_CONFIG) {
+        this.getAllRoutes = function(APP_CONFIG) {
             var routeNames = getPossibleRouteNames(APP_CONFIG);
             //set = setFilter(set, 'facility');
 
@@ -85,7 +83,7 @@
          * @param  {[type]} hierarchy [description]
          * @return {[type]}           [description]
          */
-        route.getRoutes = function(hierarchy) {
+        this.getRoutes = function(hierarchy) {
             var clone = hierarchy.slice(0);
             var routes = [];
             var items = [];
@@ -109,7 +107,7 @@
          * @param  {[type]} currentEntityType [description]
          * @return {[type]}                   [description]
          */
-        route.getNextRouteSegmentName = function(hierarchy, currentEntityType) {
+        this.getNextRouteSegmentName = function(hierarchy, currentEntityType) {
             console.log(hierarchy, currentEntityType);
             var index = _.indexOf(hierarchy, currentEntityType);
 
@@ -127,7 +125,7 @@
          * @param  {[type]} $state [description]
          * @return {[type]}        [description]
          */
-        route.getCurrentEntityType = function($state) {
+        this.getCurrentEntityType = function($state) {
             if (angular.isDefined($state.current.param)) {
                 return $state.current.param.entityType || 'facility';
             }
@@ -140,7 +138,7 @@
          * @param  {[type]} $state [description]
          * @return {[type]}        [description]
          */
-        route.getCurrentRouteSegmentName = function($state){
+        this.getCurrentRouteSegmentName = function($state){
             var routeName = $state.current.name;
 
             return routeName.substr(routeName.lastIndexOf('.') + 1);
@@ -151,7 +149,7 @@
          * @param  {[type]} currentRouteSegment [description]
          * @return {[type]}                     [description]
          */
-        route.getLastTwoSegment = function (currentRouteSegment) {
+        this.getLastTwoSegment = function (currentRouteSegment) {
             var segments = currentRouteSegment.split('-');
 
             segments = segments.slice(-2);
@@ -164,15 +162,13 @@
          * @param  {[type]} $state [description]
          * @return {[type]}        [description]
          */
-        route.getPreviousRoutes = function($state) {
+        this.getPreviousRoutes = function($state) {
             var currentRouteSegment = this.getCurrentRouteSegmentName($state);
             var segments = currentRouteSegment.split('-');
             var routes = this.getRoutes(segments);
 
             return routes;
         };
-
-        return route;
     }
 })();
 

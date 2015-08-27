@@ -47,9 +47,12 @@
             });
         };
 
-
         $scope.refresh = function() {
             DownloadModel.refresh();
+        };
+
+        $scope.smartClientModal = function() {
+            window.alert('Your files were downloaded by the Smart Client. Please check your home smartclient directory for the downloaded files');
         };
     }
 

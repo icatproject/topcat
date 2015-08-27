@@ -2,15 +2,12 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('TopcatService', TopcatService);
+        module('angularApp').service('TopcatService', TopcatService);
 
     TopcatService.$inject = ['$http', '$q', 'APP_CONFIG', 'Config', '$sessionStorage', '$log'];
 
     /*jshint -W098 */
-    function TopcatService($http, $q, APP_CONFIG, Config, $sessionStorage, $log) { //jshint ignore:  line
-        //private var and methods
-        var data = {};
-
+    function TopcatService($http, $q, APP_CONFIG, Config, $sessionStorage, $log) { //jshint ignore: line
         var TOPCAT_API_PATH = Config.getSiteConfig(APP_CONFIG).topcatApiPath;
 
         /**
@@ -18,7 +15,7 @@
          * @param  {[type]} facility [description]
          * @return {[type]}          [description]
          */
-        data.submitCart = function(facility, cart) {
+        this.submitCart = function(facility, cart) {
             var url = TOPCAT_API_PATH + '/cart/submit';
             var params = {
                     info : {
@@ -31,7 +28,7 @@
         };
 
 
-        data.getCart = function(facility, userName) {
+        this.getCart = function(facility, userName) {
             var url = TOPCAT_API_PATH + '/cart/facility/' + facility.facilityName;
 
             var params = {
@@ -49,7 +46,7 @@
             return $http.get(url, params);
         };
 
-        data.saveCart = function(facility, userName, cart) {
+        this.saveCart = function(facility, userName, cart) {
             var url = TOPCAT_API_PATH + '/cart';
 
             var params = {
@@ -62,7 +59,7 @@
             return $http.post(url, cart, params);
         };
 
-        data.removeCart = function(facility, userName) {
+        this.removeCart = function(facility, userName) {
             var url = TOPCAT_API_PATH + '/cart/facility/' + facility.facilityName;
 
             var params = {
@@ -81,7 +78,7 @@
         };
 
 
-        data.getMyDownloads = function(facility, userName) {
+        this.getMyDownloads = function(facility, userName) {
             var url = TOPCAT_API_PATH + '/downloads/facility/' + facility.facilityName;
 
             var params = {
@@ -99,7 +96,28 @@
             return $http.get(url, params);
         };
 
-        data.removeDownloadByPreparedId = function(facility, userName, preparedId) {
+
+        this.getMyRestoringSmartClientDownloads = function(facility, userName) {
+            var url = TOPCAT_API_PATH + '/downloads/facility/' + facility.facilityName;
+
+            var params = {
+                params : {
+                    sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
+                    icatUrl: facility.icatUrl,
+                    transport: 'smartclient',
+                    status: 'RESTORING',
+                    userName: userName
+                },
+                info : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title
+                }
+            };
+
+            return $http.get(url, params);
+        };
+
+        this.removeDownloadByPreparedId = function(facility, userName, preparedId) {
             var url = TOPCAT_API_PATH + '/downloads/' + preparedId;
 
             var params = {
@@ -117,6 +135,22 @@
             return $http.delete(url, params);
         };
 
-        return data;
+        this.completeDownloadByPreparedId = function(facility, userName, preparedId) {
+            var url = TOPCAT_API_PATH + '/downloads/' + preparedId + '/complete';
+
+            var params = {
+                params : {
+                    sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
+                    icatUrl: facility.icatUrl,
+                    userName: userName
+                },
+                info : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title
+                }
+            };
+
+            return $http.put(url, {}, params);
+        };
     }
 })();

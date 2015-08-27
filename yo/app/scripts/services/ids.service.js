@@ -2,23 +2,18 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('IdsService', IdsService);
+        module('angularApp').service('IdsService', IdsService);
 
     IdsService.$inject = ['$http', '$q', 'APP_CONFIG', 'Config', '$log'];
 
     /*jshint -W098 */
     function IdsService($http, $q, APP_CONFIG, Config, $log) { //jshint ignore:  line
-        //private var and methods
-        var data = {};
-
-        //var ICATDATAPROXYURL = Config.getSiteConfig(APP_CONFIG).icatDataProxyHost;
-
         /**
          * Get ICAT version
          * @param  {[type]} facility [description]
          * @return {[type]}          [description]
          */
-        data.getSize = function(mySessionId, facility, options) {
+        this.getSize = function(mySessionId, facility, options) {
             //$log.debug('IdsService getSize called');
             var url = facility.idsUrl + '/ids/getSize';
             var params = {
@@ -41,7 +36,7 @@
         };
 
 
-        data.getStatus = function(mySessionId, facility, options) {
+        this.getStatus = function(mySessionId, facility, options) {
             var url = facility.idsUrl + '/ids/getStatus';
             var params = {
                     params : {
@@ -61,7 +56,5 @@
 
             return $http.get(url, params);
         };
-
-        return data;
     }
 })();

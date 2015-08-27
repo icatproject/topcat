@@ -26,22 +26,17 @@ public class PropertyHandler {
         return logger;
     }
 
-
     private String path;
     private Map<String, IdsReader> idsReaders;
     private boolean mailEnable;
     private String mailSubject;
     private String mailBodyHttps;
     private String mailBodyGlobus;
+    private String mailBodySmartClient;
 
     private PropertyHandler() {
-
-        logger.debug("PropertyHandler constructor called");
-
         CheckedProperties props = new CheckedProperties();
-
         idsReaders = new HashMap<String, IdsReader>();
-
 
         try {
             props.loadFromFile("topcat.properties");
@@ -51,6 +46,7 @@ public class PropertyHandler {
             mailSubject = props.getProperty("mail.subject");
             mailBodyHttps = props.getProperty("mail.body.https");
             mailBodyGlobus = props.getProperty("mail.body.globus");
+            mailBodySmartClient = props.getProperty("mail.body.smartclient");
 
             logger.debug("Property path: " + path);
 
@@ -130,5 +126,7 @@ public class PropertyHandler {
         return mailBodyGlobus;
     }
 
-
+    public String getMailBodySmartClient() {
+        return mailBodySmartClient;
+    }
 }

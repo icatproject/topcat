@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('Cart', Cart);
 
-    Cart.$inject =['$rootScope', '$q', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', '$log'];
+    Cart.$inject =['$rootScope', '$q', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', 'SmartClientPollManager', '$log'];
 
-    function Cart($rootScope, $q, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, $log) { //jshint ignore: line
+    function Cart($rootScope, $q, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, SmartClientPollManager, $log) { //jshint ignore: line
         /**
          * Initialise a cart
          * @return {[type]} [description]
@@ -306,6 +306,8 @@
             var _self = this;
             var def = $q.defer();
 
+            $log.debug('restore $sessionStorage.sessions', $sessionStorage.sessions);
+
             //clear all
             _self.reset();
 
@@ -413,14 +415,17 @@
                     downloadRequest.email
                 );
 
-                $log.debug(JSON.stringify(cartRequest, null, 2));
+                //$log.debug(JSON.stringify(cartRequest, null, 2));
 
                 TopcatManager.submitCart(facility, cartRequest).then(function(data){
-                    $log.debug('cart submit', data);
+                    //$log.debug('cart submit', data);
 
                     if (downloadRequest.transportType.type === 'smartclient') {
                         SmartClientManager.getData($sessionStorage.sessions[downloadRequest.facilityName].sessionId, facility, data.value).then(function(){
                             $log.debug('Job submitted to Smartclient', data);
+
+                            //start a poll
+                            SmartClientPollManager.createPoller(facility, $sessionStorage.sessions[downloadRequest.facilityName].userName, data.value);
                         }, function(error) {
                             inform.add('Failed to add job to Smartclient: ' + error, {
                                 'ttl': 4000,

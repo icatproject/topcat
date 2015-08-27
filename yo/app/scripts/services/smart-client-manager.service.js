@@ -2,13 +2,11 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('SmartClientManager', SmartClientManager);
+        module('angularApp').service('SmartClientManager', SmartClientManager);
 
     SmartClientManager.$inject = ['$http', '$q', 'SmartClientService', '$log'];
 
     function SmartClientManager($http, $q, SmartClientService, $log) { //jshint ignore: line
-        var manager = {};
-
         function getErrorMessage(error) {
             var errorMessage = '';
 
@@ -36,8 +34,7 @@
          * @param  {Object} facility the facility object
          * @return {Object}          a promise containing the list of instruments
          */
-        manager.ping = function() {
-            $log.debug('SmartClientManager ping called');
+        this.ping = function() {
             var def = $q.defer();
 
             SmartClientService.ping().then(function() {
@@ -52,8 +49,7 @@
             return def.promise;
         };
 
-        manager.getData = function(mySessionId, facility, preparedId) {
-            $log.debug('SmartClientManager getData called');
+        this.getData = function(mySessionId, facility, preparedId) {
             var def = $q.defer();
 
             SmartClientService.login(mySessionId, facility).then(function() {
@@ -69,13 +65,25 @@
             return def.promise;
         };
 
+        this.connect = function(mySessionId, facility) {
+            var def = $q.defer();
+
+            SmartClientService.login(mySessionId, facility).then(function() {
+                def.resolve({connected: 'ok'});
+            }, function(error) {
+                def.reject('Failed to login to the Smartclient: ' + getErrorMessage(error, status));
+            });
+
+            return def.promise;
+        };
+
         /**
          * Get the status from the smartclient
          * @param  {Object} sessions session object containing logged in sessions
          * @param  {Object} facility the facility object
          * @return {Object}          a promise containing the list of instruments
          */
-        manager.getStatus = function() {
+        this.getStatus = function() {
             var def = $q.defer();
 
             SmartClientService.getStatus().then(function(data) {
@@ -86,7 +94,5 @@
 
             return def.promise;
         };
-
-        return manager;
     }
 })();

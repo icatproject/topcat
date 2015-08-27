@@ -349,6 +349,22 @@
                             }
                         },
                         {
+                            "field": "location",
+                            "displayName": "Location",
+                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.LOCATION",
+                            "type": "string",
+                            "cellTooltip" :true,
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
                             "field": "fileSize",
                             "displayName": "File Size",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",

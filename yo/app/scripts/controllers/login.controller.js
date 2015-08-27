@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', '$log', 'deviceDetector'];
+    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', 'deviceDetector', 'SMARTCLIENTPING', 'SmartClientManager', '$log'];
 
-    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, $log, deviceDetector) { //jshint ignore: line
+    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, deviceDetector, SMARTCLIENTPING, SmartClientManager, $log) { //jshint ignore: line
         var vm = this;
         vm.user = {};
 
@@ -195,8 +195,16 @@
                     //LocalStorageManager.init(facility, data.userName);
                     Cart.restore();
 
-                    $rootScope.$broadcast('Login:success', {facility: facility, userName: data.userName});
+                    //login to smartclient is installed/online
+                    if (SMARTCLIENTPING.ping === 'online') {
+                        SmartClientManager.connect(data.sessionId, facility).then(function(connectData) {
+                            $log.debug('SmartClientPollManager login', connectData);
+                        }, function() {
+                            $log.debug('Unable to login to smartcient');
+                        });
+                    }
 
+                    $rootScope.$broadcast('Login:success', {facility: facility, userName: data.userName});
 
                     //clear the password field
                     delete vm.user.password;

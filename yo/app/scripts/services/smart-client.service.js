@@ -2,21 +2,19 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('SmartClientService', SmartClientService);
+        module('angularApp').service('SmartClientService', SmartClientService);
 
     SmartClientService.$inject = ['$http', '$q', 'APP_CONFIG', 'APP_CONSTANT', 'Config', '$log'];
 
     /*jshint -W098 */
     function SmartClientService($http, $q, APP_CONFIG, APP_CONSTANT, Config, $log) { //jshint ignore:  line
-        //private var and methods
-        var data = {};
 
         /**
          * Get ICAT version
          * @param  {[type]} facility [description]
          * @return {[type]}          [description]
          */
-        data.ping = function() {
+        this.ping = function() {
             $log.debug('SmartClientService ping called');
             var url = APP_CONSTANT.smartClientUrl + '/ping';
 
@@ -30,7 +28,7 @@
         };
 
 
-        data.getStatus = function() {
+        this.getStatus = function() {
             var url = APP_CONSTANT.smartClientUrl + '/status';
             var params = {
                 info : {
@@ -41,7 +39,7 @@
             return $http.get(url, params);
         };
 
-        data.login = function(mySessionId, facility) {
+        this.login = function(mySessionId, facility) {
             var url = APP_CONSTANT.smartClientUrl + '/login';
             var params = {
                 'headers' :{
@@ -73,7 +71,7 @@
         };
 
 
-        data.getData = function(facility, preparedId) {
+        this.getData = function(facility, preparedId) {
             var url = APP_CONSTANT.smartClientUrl + '/getData';
             var params = {
                 info : {
@@ -104,7 +102,7 @@
         };
 
 
-        data.isReady = function(facility, preparedId) {
+        this.isReady = function(facility, preparedId) {
             var url = APP_CONSTANT.smartClientUrl + '/isReady';
             var params = {
                 params : {
@@ -120,7 +118,5 @@
 
             return $http.post(url, params);
         };
-
-        return data;
     }
 })();

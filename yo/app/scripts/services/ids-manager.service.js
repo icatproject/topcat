@@ -2,19 +2,11 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('IdsManager', IdsManager);
+        module('angularApp').service('IdsManager', IdsManager);
 
     IdsManager.$inject = ['$http', '$q', 'IdsService', '$log'];
 
     function IdsManager($http, $q, IdsService, $log) { //jshint ignore: line
-        var manager = {};
-
-        /*function MyException(message) {
-          this.name = name;
-          this.message = message;
-        }
-        MyException.prototype = new Error();
-        MyException.prototype.constructor = MyException;*/
 
         function getErrorMessage(error) {
             var errorMessage = '';
@@ -53,7 +45,7 @@
          * @param  {Object} facility the facility object
          * @return {Object}          a promise containing the list of instruments
          */
-        manager.getSize = function(sessions, facility, options) {
+        this.getSize = function(sessions, facility, options) {
             //$log.debug('IdsManager getSize called');
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
@@ -73,7 +65,7 @@
          * @param  {Object} facility the facility object
          * @return {Object}          a promise containing the list of instruments
          */
-        manager.getStatus = function(sessions, facility, options) {
+        this.getStatus = function(sessions, facility, options) {
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
@@ -85,7 +77,5 @@
 
             return def.promise;
         };
-
-        return manager;
     }
 })();
