@@ -14,7 +14,8 @@ describe('Service: ICATQueryBuilder', function() {
     beforeEach(function() {
         module(function($provide) {
             $provide.constant('LANG', {});
-            $provide.constant('APP_CONFIG', {});
+            $provide.constant('APP_CONFIG', readJSON('test/mock/data/mock-config-multi.json'));
+            $provide.constant('SMARTCLIENTPING', {ping: 'offline'});
         });
     });
 
@@ -91,7 +92,11 @@ describe('Service: ICATQueryBuilder', function() {
             {
                 start: 0,
                 numRows: 10,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -104,7 +109,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -134,7 +139,11 @@ describe('Service: ICATQueryBuilder', function() {
             {
                 start: 0,
                 numRows: 10,
-                search: [{search:'clf', field: 'name'}],
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }],
                 sortField: 'name',
                 order: 'desc'
 
@@ -151,7 +160,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1)'
+            countQuery: 'SELECT COUNT(ins) FROM Instrument ins, ins.facility f WHERE (f.id = 1) AND (UPPER(ins.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -446,7 +455,11 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 instrumentId: 8,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -459,7 +472,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8)'
+            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 8) AND (UPPER(inv.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -535,7 +548,11 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 investigationId: 12345,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -548,7 +565,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)'
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -624,7 +641,11 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 datasetId: 98765,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -637,7 +658,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765)'
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND ds.id = 98765) AND (UPPER(df.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -711,7 +732,11 @@ describe('Service: ICATQueryBuilder', function() {
             {
                 start: 0,
                 numRows: 10,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -724,7 +749,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1)'
+            countQuery: 'SELECT COUNT(inv) FROM Investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(inv.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -876,7 +901,11 @@ describe('Service: ICATQueryBuilder', function() {
             {
                 start: 0,
                 numRows: 10,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -889,7 +918,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)'
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(ds.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -963,7 +992,11 @@ describe('Service: ICATQueryBuilder', function() {
             {
                 start: 0,
                 numRows: 10,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -976,7 +1009,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1)'
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1) AND (UPPER(df.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -1051,7 +1084,11 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 instrumentId: 12345,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -1064,7 +1101,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345)'
+            countQuery: 'SELECT COUNT(ds) FROM Dataset ds, ds.investigation inv, inv.investigationInstruments invins, invins.instrument ins, inv.facility f WHERE (f.id = 1 AND ins.id = 12345) AND (UPPER(ds.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({
@@ -1140,7 +1177,11 @@ describe('Service: ICATQueryBuilder', function() {
                 start: 0,
                 numRows: 10,
                 investigationId: 12345,
-                search: [{search:'clf', field: 'name'}]
+                search: [{
+                    search: ['clf'],
+                    field: 'name',
+                    type: 'string'
+                }]
             }
         );
 
@@ -1153,7 +1194,7 @@ describe('Service: ICATQueryBuilder', function() {
         }));
 
         expect(params).toEqual(jasmine.objectContaining({
-            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345)'
+            countQuery: 'SELECT COUNT(df) FROM Datafile df, df.dataset ds, ds.investigation inv, inv.facility f WHERE (f.id = 1 AND inv.id = 12345) AND (UPPER(df.name) LIKE \'%CLF%\')'
         }));
 
         /*expect(params).toEqual(jasmine.objectContaining({

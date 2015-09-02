@@ -530,7 +530,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         });
 
         self.paginateParams.search = sortOptions;
-
         self.getPage();
     };
 

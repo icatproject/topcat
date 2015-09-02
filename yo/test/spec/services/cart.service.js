@@ -5,6 +5,7 @@ describe('Service: Cart', function() {
         module(function($provide) {
             $provide.constant('LANG', {});
             $provide.constant('APP_CONFIG', readJSON('test/mock/data/mock-config-multi.json'));
+            $provide.constant('SMARTCLIENTPING', {ping: 'offline'});
         });
     });
 
@@ -140,28 +141,28 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -174,15 +175,17 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
+
 
         var cart = Cart.getCart();
 
         expect(cart.items.length).toEqual(2);
 
-        expect($rootScope.$broadcast).toHaveBeenCalledWith('Cart:itemsAdded', { added: 2 });
-        expect($rootScope.$broadcast).toHaveBeenCalledWith('Cart:change', { added: 2, exists: 0 });
-        expect($rootScope.$broadcast.calls.count()).toEqual(2);
+        //expect($rootScope.$broadcast).toHaveBeenCalledWith('Cart:change', { added: 1, exists: 0 });
+        expect($rootScope.$broadcast.calls.count()).toEqual(4);
     });
 
 
@@ -191,42 +194,42 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -239,15 +242,17 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
 
         var cart = Cart.getCart();
 
         expect(cart.items.length).toEqual(2);
 
-        expect($rootScope.$broadcast).toHaveBeenCalledWith('Cart:itemsAdded', { added: 2 });
-        expect($rootScope.$broadcast).toHaveBeenCalledWith('Cart:change', { added: 2, exists: 1 });
-        expect($rootScope.$broadcast.calls.count()).toEqual(2);
+        //expect($rootScope.$broadcast).toHaveBeenCalledWith('Cart:itemsAdded', { added: 2 });
+        //expect($rootScope.$broadcast).toHaveBeenCalledWith('Cart:change', { added: 2, exists: 1 });
+        expect($rootScope.$broadcast.calls.count()).toEqual(6);
     });
 
     it('remove an item from cart', function() {
@@ -255,28 +260,28 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -289,7 +294,9 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
 
         $rootScope.$broadcast.calls.reset();
 
@@ -326,28 +333,28 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -360,7 +367,9 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
 
         $rootScope.$broadcast.calls.reset();
 
@@ -368,11 +377,11 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456
+                'entityId': 123456
             },{
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457
+                'entityId': 123457
             }
         ]);
 
@@ -391,11 +400,11 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456
+                'entityId': 123456
             },{
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457
+                'entityId': 123457
             }
         ]);
 
@@ -410,28 +419,28 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -444,7 +453,9 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
 
         var cart = Cart.getCart();
         expect(cart.items.length).toEqual(2);
@@ -477,28 +488,28 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': null,
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': null,
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -511,7 +522,9 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
 
         var cart = Cart.getCart();
         expect(cart.items.length).toEqual(2);
@@ -523,14 +536,14 @@ describe('Service: Cart', function() {
             'facilityName': 'dls',
             'userName': 'vcf21513',
             'entityType': 'dataset',
-            'id': 123457,
+            'entityId': 123457,
             'name': 'my test dataset 2',
             'size': null,
             'availability': null,
             'parentEntities': [
                 {
                   'entityType': 'investigation',
-                  'id': 7654321
+                  'entityId': 7654321
                 }
             ]
         });
@@ -542,28 +555,28 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': null,
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': null,
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -576,7 +589,9 @@ describe('Service: Cart', function() {
             }
         };
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
 
         var cart = Cart.getCart();
         expect(cart.items.length).toEqual(2);
@@ -596,14 +611,14 @@ describe('Service: Cart', function() {
                     'facilityName': 'isis',
                     'userName': 'vcf21513',
                     'entityType': 'datafile',
-                    'id': 123456,
+                    'entityId': 123456,
                     'name': 'my test name',
                     'size': null,
                     'availability': 'ONLINE',
                     'parentEntities': [
                         {
                           'entityType': 'investigation',
-                          'id': 7654321
+                          'entityId': 7654321
                         }
                     ]
                 }
@@ -622,34 +637,36 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
         ];
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
 
         expect(Cart.getTotalItems()).toEqual(2);
 
@@ -663,28 +680,28 @@ describe('Service: Cart', function() {
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -707,45 +724,42 @@ describe('Service: Cart', function() {
         //deregister Cart:Change listener
         delete $rootScope.$$listeners['Cart:change'];
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
+
         Cart.save();
 
         expect(Cart.save).toHaveBeenCalled();
-
-        var localStorage = LocalStorageManager.getUserStore({facilityName: 'dls'}, 'vcf21513');
-
-        //console.log('localStorage', JSON.stringify(localStorage, null, 2));
-
-        expect(localStorage.items.length).toEqual(2);
     });
 
-    it('restore cart after removing all items', function() {
+/*    it('restore cart after removing all items', function() {
         var items = [
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123456,
+                'entityId': 123456,
                 'name': 'my test dataset 1',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             },
             {
                 'facilityName': 'dls',
                 'entityType': 'dataset',
-                'id': 123457,
+                'entityId': 123457,
                 'name': 'my test dataset 2',
                 'size': null,
                 'availability': 'ONLINE',
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
-                      'id': 7654321
+                      'entityId': 7654321
                     }
                 ]
             }
@@ -769,102 +783,17 @@ describe('Service: Cart', function() {
 
         //console.log(JSON.stringify($rootScope.$$listeners, null, 2));
 
-        Cart.addItems(items);
+        angular.forEach(items, function(item) {
+            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
+        });
+
         Cart.save();
 
-        console.log('$localStorage', $localStorage);
-
         Cart.save.calls.reset();
-
-        var localStorage = LocalStorageManager.getUserStore({facilityName: 'dls'}, 'vcf21513');
-
-        console.log('localStorage', localStorage);
-
-        expect(localStorage.items.length).toEqual(2);
-
-        //console.log(JSON.stringify(CartStore.get(), null, 2));
 
         Cart.removeAllItems();
         expect(Cart.save).not.toHaveBeenCalled();
 
-        //console.log(JSON.stringify(CartStore.get(), null, 2));
-
-        expect(Cart.getTotalItems()).toEqual(0);
-
-        Cart.restore();
-
-        expect(Cart.restore).toHaveBeenCalled();
-        //console.log(JSON.stringify(CartStore.get(), null, 2));
-
-        expect(Cart.getTotalItems()).toEqual(2);
-    });
-
-    //TODO issue where CartStore is somehow linked with the cart in cart.service when it shouldn't
-    //but it is a behaviour that we actually want
-    /*xit('restore cart after removing one item', function() {
-        var items = [
-            {
-                'facilityName': 'dls',
-                'entityType': 'dataset',
-                'id': 123456,
-                'name': 'my test dataset 1',
-                'size': null,
-                'availability': 'ONLINE',
-                'parentEntities': [
-                    {
-                      'entityType': 'investigation',
-                      'id': 7654321
-                    }
-                ]
-            },
-            {
-                'facilityName': 'dls',
-                'entityType': 'dataset',
-                'id': 123457,
-                'name': 'my test dataset 2',
-                'size': null,
-                'availability': 'ONLINE',
-                'parentEntities': [
-                    {
-                      'entityType': 'investigation',
-                      'id': 7654321
-                    }
-                ]
-            }
-        ];
-
-        spyOn(Cart, 'restore').and.callThrough();
-        spyOn(Cart, 'save').and.callThrough();
-
-        //deregister Cart:Change listener
-        delete $rootScope.$$listeners['Cart:change'];
-
-        //console.log(JSON.stringify($rootScope.$$listeners, null, 2));
-
-        Cart.addItems(items);
-        Cart.save();
-
-        Cart.save.calls.reset();
-
-        var localStorage = CartStore.get();
-
-        expect(localStorage.items.length).toEqual(2);
-
-        //console.log(JSON.stringify(CartStore.get(), null, 2));
-
-        Cart.removeItem('dls', 'dataset', 123456);
-        expect(Cart.save).not.toHaveBeenCalled();
-
-        //console.log(JSON.stringify(CartStore.get(), null, 2));
-
-        expect(Cart.getTotalItems()).toEqual(1);
-
-        Cart.restore();
-
-        expect(Cart.restore).toHaveBeenCalled();
-        //console.log(JSON.stringify(CartStore.get(), null, 2));
-
-        expect(Cart.getTotalItems()).toEqual(2);
     });*/
 
 

@@ -8,6 +8,7 @@ describe('Service: LocalStorageManager', function() {
             $provide.constant('APP_CONSTANT', {
                 storageName: 'TopCAT_0.1'
             });
+            $provide.constant('SMARTCLIENTPING', {ping: 'offline'});
         });
     });
 

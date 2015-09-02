@@ -6,6 +6,7 @@ describe('Service: RouteService', function() {
         module(function($provide) {
             $provide.constant('LANG', {});
             $provide.constant('APP_CONFIG', readJSON('test/mock/data/mock-config-multi.json'));
+            $provide.constant('SMARTCLIENTPING', {ping: 'offline'});
         });
     });
 

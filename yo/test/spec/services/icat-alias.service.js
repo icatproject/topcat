@@ -4,7 +4,8 @@ describe('Service: ICATAlias', function() {
     beforeEach(function() {
         module(function($provide) {
             $provide.constant('LANG', {});
-            $provide.constant('APP_CONFIG', {});
+            $provide.constant('APP_CONFIG', readJSON('test/mock/data/mock-config-multi.json'));
+            $provide.constant('SMARTCLIENTPING', {ping: 'offline'});
         });
     });
 

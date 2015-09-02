@@ -14,6 +14,7 @@ describe('Service: BrowseFacilitiesModel', function() {
         module(function($provide) {
             $provide.constant('LANG', {});
             $provide.constant('APP_CONFIG', JSONFile);
+            $provide.constant('SMARTCLIENTPING', {ping: 'offline'});
         });
     });
 
