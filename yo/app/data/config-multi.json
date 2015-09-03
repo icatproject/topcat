@@ -9,8 +9,8 @@
             "facilityId": 1,
             "hierarchy": [
                 "facility",
-                "instrument",
                 "proposal",
+                "instrument",
                 "investigation",
                 "dataset",
                 "datafile"
@@ -124,6 +124,9 @@
                             "displayName": "name",
                             "enableSorting": false,
                             "type": "string",
+                            "sort": {
+                                "direction": "asc"
+                            },
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -164,7 +167,7 @@
                             "field": "name",
                             "displayName": "Name",
                             "enableSorting": false,
-                            "type": "number",
+                            "type": "string",
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -219,7 +222,7 @@
                             "field": "investigationInstruments[0].instrument.fullName",
                             "displayName": "Instrument",
                             "enableSorting": false,
-                            "type": "number",
+                            "type": "string",
                             "visible": true,
                             "filter": {
                                 "condition": "starts_with",
@@ -227,19 +230,6 @@
                                 "flags": {
                                     "caseSensitive": false
                                 },
-                                "type": "input",
-                                "disableCancelFilterButton": true
-                            }
-                        },
-                        {
-                            "field": "investigationInstruments[0].instrument.name",
-                            "displayName": "Instrument Name",
-                            "enableSorting": false,
-                            "type": "number",
-                            "visible": true,
-                            "filter": {
-                                "condition": "starts_with",
-                                "placeholder": "Containing...",
                                 "type": "input",
                                 "disableCancelFilterButton": true
                             }

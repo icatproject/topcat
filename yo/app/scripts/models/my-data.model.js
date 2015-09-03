@@ -15,6 +15,12 @@ MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'Rou
 function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, usSpinnerService, moment, $log){  //jshint ignore: line
     var self = this;
 
+    /**
+     * Check if column has a particular field
+     * @param  {[type]}  options [description]
+     * @param  {[type]}  field   [description]
+     * @return {Boolean}         [description]
+     */
     function hasField(options, field) {
         var result = false;
         //determine if field size has been defined
@@ -28,6 +34,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         return result;
     }
 
+    /**
+     * Return a promise with the results
+     * @param  {[type]} entityType [description]
+     * @param  {[type]} sessions   [description]
+     * @param  {[type]} facility   [description]
+     * @param  {[type]} options    [description]
+     * @return {[type]}            [description]
+     */
     function getDataPromise(entityType, sessions, facility, options) {
         var promise;
 
@@ -43,6 +57,13 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         return promise;
     }
 
+    /**
+     * Add the nessessary includes in order to build next routes
+     * @param  {[type]} params           [description]
+     * @param  {[type]} entityType       [description]
+     * @param  {[type]} nextRouteSegment [description]
+     * @return {[type]}                  [description]
+     */
     function getIncludesForRoutes(params, entityType, nextRouteSegment) {
         //if (typeof params.includes === 'undefined') {
             params.includes = [];
@@ -86,7 +107,13 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         return params;
     }
 
-
+    /**
+     * Get the next router parameters required to build a url link
+     * @param  {[type]} row         [description]
+     * @param  {[type]} entityType  [description]
+     * @param  {[type]} stateParams [description]
+     * @return {[type]}             [description]
+     */
     function getNextRouteStateParam(row, entityType, stateParams) {
         var params = {
             facilityName : row.entity.facilityName,
@@ -158,10 +185,29 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         return params;
     }
 
+    /**
+     * Return the first column with a sort.direction key
+     * @param  {[type]} columnDefs [description]
+     * @return {[type]}            [description]
+     */
+    function getDefaultSort(columnDefs) {
+        var hasDefaultSortColumn = _.filter(columnDefs, function(columnDef) {
+            if (typeof columnDef.sort !== 'undefined' && angular.isObject(columnDef.sort)) {
+                if (typeof columnDef.sort.direction !== 'undefined' && angular.isString(columnDef.sort.direction)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        return hasDefaultSortColumn;
+    }
+
 
 
     /**
-     * This function transpose the site config file to settings used by ui-grid
+     * Converts the site config file to settings used by ui-grid
      *
      * @return {[type]} [description]
      */
@@ -229,7 +275,10 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         return gridOptions;
     }
 
-
+    /**
+     * Determine if items in a grid are selectable
+     * @return {[type]} [description]
+     */
     function enableSelection() {
         if (angular.isDefined(self.options.enableSelection) && self.options.enableSelection === true) {
             return true;
@@ -238,7 +287,10 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         }
     }
 
-
+    /**
+     * Set the grid options
+     * @param {[type]} gridOptions [description]
+     */
     function setGridOptions(gridOptions) {
         self.gridOptions = _.extend(gridOptions, {
             enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
@@ -281,15 +333,32 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
         setGridOptions(self.scope.gridOptions);
 
+        //get the default sort columnDef
+        var defaultSortColumn = getDefaultSort(self.gridOptions.columnDefs);
+        $log.debug('init defaultSortColumn', defaultSortColumn);
+
+        //set default column if no default column set
+        if (defaultSortColumn.length === 0) {
+            defaultSortColumn.push({
+                field : 'startDate',
+                sort : {
+                    direction : 'desc'
+                }
+            });
+        }
+
         self.paginateParams = {
             start: 0,
             numRows: self.pageSize,
-            sortField: 'name',
-            order: 'asc',
+            sortField: defaultSortColumn[0].field,
+            order: defaultSortColumn[0].sort.direction,
             includes: self.options.includes
         };
 
         self.gridOptions.totalItems = 0; //initiate totalItems
+
+
+        $log.debug('self.gridOptions', self.gridOptions);
 
         /**
          * Loads data for both pagination and infinte scroll. This method is called by ui-grid to load the first page of data
@@ -585,6 +654,9 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
 
     this.sortChangedForScroll = function(grid, sortColumns) {
+        $log.debug('sortChangedForScroll grid', grid);
+        $log.debug('sortChangedForScroll sortColumns', sortColumns);
+
         if (sortColumns.length === 0) {
             //paginationOptions.sort = null;
         } else {

@@ -15,6 +15,13 @@ BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteServi
 function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, usSpinnerService, inform, $log){  //jshint ignore: line
     var self = this;
 
+    /**
+     * Get the parent entities of the current entity type
+     * @param  {[type]} facility          [description]
+     * @param  {[type]} currentEntityType [description]
+     * @param  {[type]} hierarchy         [description]
+     * @return {[type]}                   [description]
+     */
     function getSelectableParentEntities(facility, currentEntityType, hierarchy) {
         var h = hierarchy.slice(0);
         var index = h.indexOf(currentEntityType);
@@ -53,6 +60,12 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         return parentEntities;
     }
 
+    /**
+     * Check if column has a particular field
+     * @param  {[type]}  options [description]
+     * @param  {[type]}  field   [description]
+     * @return {Boolean}         [description]
+     */
     function hasField(options, field) {
         var result = false;
         //determine if field size has been defined
@@ -66,6 +79,12 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         return result;
     }
 
+    /**
+     * Converts the site config file to settings used by ui-grid
+     * @param  {[type]} facility          [description]
+     * @param  {[type]} currentEntityType [description]
+     * @return {[type]}                   [description]
+     */
     function configToUIGridOptions(facility, currentEntityType) {
         //$log.debug('BrowseEntitiesModel configToUIGridOptions called');
         //$log.debug('BrowseEntitiesModel configToUIGridOptions currentEntityType', currentEntityType);
@@ -136,6 +155,15 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         return gridOpts;
     }
 
+    /**
+     * Disable the selection and unselection of grid items
+     * @param  {[type]} facility          [description]
+     * @param  {[type]} currentEntityType [description]
+     * @param  {[type]} structure         [description]
+     * @param  {[type]} $stateParams      [description]
+     * @param  {[type]} gridOptions       [description]
+     * @return {[type]}                   [description]
+     */
     function makeGridNoUnselect(facility, currentEntityType, structure, $stateParams, gridOptions) {
         $log.debug('makeRowUnselectable called');
         var selectableEntities = getSelectableParentEntities(facility, currentEntityType, structure);
@@ -184,6 +212,26 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
     }
 
 
+    /**
+     * Return the first column with a sort.direction key
+     * @param  {[type]} columnDefs [description]
+     * @return {[type]}            [description]
+     */
+    function getDefaultSort(columnDefs) {
+        var hasDefaultSortColumn = _.filter(columnDefs, function(columnDef) {
+            if (typeof columnDef.sort !== 'undefined' && angular.isObject(columnDef.sort)) {
+                if (typeof columnDef.sort.direction !== 'undefined' && angular.isString(columnDef.sort.direction)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        return hasDefaultSortColumn;
+    }
+
+
     this.init = function(facility, scope, currentEntityType, currentRouteSegment, sessions, $stateParams) {
             self.facility = facility;
             self.scope = scope;
@@ -204,11 +252,27 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
             self.setGridOptions(self.scope.gridOptions);
 
+            //get the default sort columnDef
+            var defaultSortColumn = getDefaultSort(self.gridOptions.columnDefs);
+            $log.debug('init defaultSortColumn', defaultSortColumn);
+
+            //set default column if no default column set
+            if (defaultSortColumn.length === 0) {
+                defaultSortColumn.push({
+                    field : 'name',
+                    sort : {
+                        direction : 'asc'
+                    }
+                });
+            }
+
+            $log.debug('init defaultSortColumn after', defaultSortColumn);
+
             self.paginateParams = {
                 start: 0,
                 numRows: self.pageSize,
-                sortField: 'name',
-                order: 'asc',
+                sortField: defaultSortColumn[0].field,
+                order: defaultSortColumn[0].sort.direction,
                 includes: self.options.includes
             };
 
@@ -530,6 +594,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         });
 
         self.paginateParams.search = sortOptions;
+
         self.getPage();
     };
 

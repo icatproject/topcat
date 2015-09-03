@@ -305,6 +305,35 @@
         };
 
 
+        manager.getInstrumentsByProposalId = function(sessions, facility, options) {
+            //$log.debug('manager.getProposalsByInstrumentId options', options);
+
+            var sessionId = getSessionValueForFacility(sessions, facility);
+            var def = $q.defer();
+
+            ICATService.getInstrumentsByProposalId(sessionId, facility, options).then(function(data) {
+                var result = {};
+
+                /*_.each(data[0].data, function(value, index) {
+                    data[0].data[index] = {
+                        'id' : value,
+                        'name' : value
+                    };
+                });*/
+
+                prepProcessData(data, facility, 'Instrument', 'instrument');
+                result.data  = data[0].data;
+                result.totalItems = data[1].data[0];
+
+                def.resolve(result);
+            }, function(error){
+                def.reject('Failed to retrieve data: ' + getErrorMessage(error));
+            });
+
+            return def.promise;
+        };
+
+
         /**
          * Get the facility cycles in a facility
          * @param  {Object} sessions session object containing logged in sessions
@@ -467,6 +496,7 @@
 
             return def.promise;
         };
+
 
         /**
          * [getProposalsByInstrumentId description]
@@ -862,6 +892,10 @@
                     $log.debug('function called: getProposalsByInstrumentId');
 
                     return this.getProposalsByInstrumentId(sessions, facility, options);
+                 case 'proposal-instrument':
+                    $log.debug('function called: getInstrumentsByProposalId', sessions, facility, options);
+
+                    return this.getInstrumentsByProposalId(sessions, facility, options);
                 case 'proposal-investigation':
                     $log.debug('function called: getInvestigationsByProposalId');
 

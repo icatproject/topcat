@@ -84,7 +84,6 @@
 
         function buildParams(query, countQuery, searchExpr, queryParams, entityName) {
             var params = {};
-            //var filterCountQuery = countQuery.clone();
 
             if (angular.isDefined(queryParams)) {
                 if (!_.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
@@ -145,12 +144,6 @@
                     countQuery.where(
                         searchExpr
                     );
-
-                    /*filterCountQuery.where(
-                        searchExpr
-                    );
-
-                    params.filterCountQuery = filterCountQuery;*/
                 }
 
                 if (angular.isDefined(queryParams.includes) && queryParams.includes.length > 0) {
@@ -372,7 +365,7 @@
         };
 
         this.getMyInvestigations = function(mySessionId, facility, queryParams) {
-            $log.debug('getMyInvestigations fired');
+            $log.debug('getMyInvestigations fired', queryParams);
 
             validateRequiredArguments(mySessionId, facility, queryParams);
 
@@ -459,8 +452,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Proposal',
                 server: facility.icatUrl
             });
 
@@ -497,8 +488,45 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Instrument',
+                server: facility.icatUrl
+            });
+
+            return params;
+        };
+
+        this.getInstrumentsByProposalId = function(mySessionId, facility, queryParams) {
+            validateRequiredArguments(mySessionId, facility, queryParams);
+
+            var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('COUNT(ins)')
+                .from('Instrument', 'ins')
+                .from('ins.facility', 'f')
+                .from('ins.investigationInstruments', 'invins')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('invins.investigation.name = ?', queryParams.proposalId)
+                );
+
+            var query = squel.ICATSelect({ autoQuoteAliasNames: false })
+                .field('ins')
+                .from('Instrument', 'ins')
+                .from('ins.facility', 'f')
+                .from('ins.investigationInstruments', 'invins')
+                .where(
+                    squel.expr()
+                        .and('f.id = ?', facility.facilityId)
+                        .and('invins.investigation.name = ?', queryParams.proposalId)
+                );
+
+            var searchExpr = getSearchExpr(queryParams, 'instrument');
+
+            var params = buildParams(query, countQuery, searchExpr, queryParams, 'instrument');
+
+            _.extend(params, {
+                sessionId: mySessionId,
+                query: query.toString(),
+                countQuery: countQuery.toString(),
                 server: facility.icatUrl
             });
 
@@ -593,8 +621,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Proposal',
                 server: facility.icatUrl
             });
 
@@ -648,8 +674,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Proposal',
                 server: facility.icatUrl
             });
 
@@ -684,6 +708,7 @@
                         .and('inv.name = ?', decodeURIComponent(queryParams.proposalId))
                 );
 
+
             var searchExpr = getSearchExpr(queryParams, 'investigation');
 
             var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
@@ -692,8 +717,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Investigation',
                 server: facility.icatUrl
             });
 
@@ -730,6 +753,20 @@
                         .and('ins.id = ?', queryParams.instrumentId)
                 );
 
+
+            //inclusive filter TODO
+            if (typeof queryParams.proposalId !== 'undefined') {
+                countQuery.where(
+                    squel.expr()
+                        .and('inv.name = ?', queryParams.proposalId)
+                );
+
+                query.where(
+                    squel.expr()
+                        .and('inv.name = ?', queryParams.proposalId)
+                );
+            }
+
             var searchExpr = getSearchExpr(queryParams, 'investigation');
 
             var params = buildParams(query, countQuery, searchExpr, queryParams, 'investigation');
@@ -738,8 +775,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Investigation',
                 server: facility.icatUrl
             });
 
@@ -797,8 +832,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Dataset',
                 server: facility.icatUrl
             });
 
@@ -853,8 +886,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Dataset',
                 server: facility.icatUrl
             });
 
@@ -898,8 +929,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Dataset',
                 server: facility.icatUrl
             });
 
@@ -939,8 +968,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Dataset',
                 server: facility.icatUrl
             });
 
@@ -980,8 +1007,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Datafile',
                 server: facility.icatUrl
             });
 
@@ -1027,8 +1052,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Datafile',
                 server: facility.icatUrl
             });
 
@@ -1070,8 +1093,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Datafile',
                 server: facility.icatUrl
             });
 
@@ -1113,8 +1134,6 @@
                 sessionId: mySessionId,
                 query: query.toString(),
                 countQuery: countQuery.toString(),
-                //filterCountQuery: filterCountQuery.toString(),
-                //entity: 'Datafile',
                 server: facility.icatUrl
             });
 

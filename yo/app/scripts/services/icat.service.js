@@ -324,6 +324,22 @@
 
 
         /**
+         * Return a promise with a list of instrument by proposalId
+         * @param  {[type]} mySessionId [description]
+         * @param  {[type]} facility    [description]
+         * @param  {[type]} options     [description]
+         * @return {[type]}             [description]
+         */
+        this.getInstrumentsByProposalId = function(mySessionId, facility, options) {
+            var params = ICATQueryBuilder.getInstrumentsByProposalId(mySessionId, facility, options);
+
+            return getPromise(mySessionId, facility, params);
+        };
+
+
+
+
+        /**
          * Returns a promise with a list of facility cycles
          * @param  {[type]} mySessionId [description]
          * @param  {[type]} facility    [description]
@@ -379,7 +395,7 @@
          * @return {[type]}             [description]
          */
         this.getMyInvestigations = function(mySessionId, facility, options) {
-            $log.debug('getInvestigations options', options);
+            $log.debug('getMyInvestigations options', options);
             var params = ICATQueryBuilder.getMyInvestigations(mySessionId, facility, options);
 
             return getPromise(mySessionId, facility, params);
