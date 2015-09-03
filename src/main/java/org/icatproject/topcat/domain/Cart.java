@@ -8,8 +8,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -56,13 +54,6 @@ public class Cart implements Serializable {
     @Column(name = "USER_NAME", nullable = false)
     private String userName;
 
-    @Column(name = "SIZE")
-    private Long size ;
-
-    @Column(name = "AVAILABILITY")
-    @Enumerated(EnumType.STRING)
-    private Availability availability;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart", orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<CartItem>();
 
@@ -102,23 +93,6 @@ public class Cart implements Serializable {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    public Long getSize() {
-        return size;
-    }
-
-    public void setSize(Long size) {
-        this.size = size;
-    }
-
-    public Availability getAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(Availability availability) {
-        this.availability = availability;
-    }
-
 
     public Date getCreatedAt() {
         return createdAt;
@@ -161,8 +135,6 @@ public class Cart implements Serializable {
         sb.append("facilityName:" + facilityName);
         sb.append(" ");
         sb.append("userName:" + userName);
-        sb.append(" ");
-        sb.append("size:" + size);
         sb.append(" ");
         sb.append("CartItems:" + this.getCartItems().size());
 

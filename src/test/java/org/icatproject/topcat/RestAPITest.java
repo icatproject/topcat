@@ -36,11 +36,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import com.jayway.restassured.RestAssured;
 
 import static com.jayway.restassured.RestAssured.*;
-import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
-
-import com.jayway.restassured.config.RedirectConfig;
-import com.jayway.restassured.config.RestAssuredConfig;
 
 import static com.jayway.restassured.config.SSLConfig.*;
 

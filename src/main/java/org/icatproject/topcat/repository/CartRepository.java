@@ -101,8 +101,6 @@ public class CartRepository {
         Cart existCart = this.getCartByFacilityNameAndUser(params);
 
         if (existCart != null) {
-            existCart.setAvailability(cart.getAvailability());
-            existCart.setSize(cart.getSize());
             existCart.setUpdatedAt(new Date());
 
             //persist the items in cart

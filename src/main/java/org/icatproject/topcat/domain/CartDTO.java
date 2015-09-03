@@ -10,8 +10,6 @@ public class CartDTO {
     private String userName;
     private String sessionId;
     private String icatUrl;
-    private Long size;
-    private Availability availability;
     private List<CartItem> cartItems;
 
     public String getFacilityName() {
@@ -52,22 +50,6 @@ public class CartDTO {
 
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
-    }
-
-    public Long getSize() {
-        return size;
-    }
-
-    public void setSize(Long size) {
-        this.size = size;
-    }
-
-    public Availability getAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(Availability availability) {
-        this.availability = availability;
     }
 
 }

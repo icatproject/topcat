@@ -14,7 +14,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.UserTransaction;
 
-import org.icatproject.topcat.domain.Availability;
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartItem;
 import org.icatproject.topcat.domain.EntityType;
@@ -86,8 +85,6 @@ public class PersistenceTest {
         Cart cart = new Cart();
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
-        cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(910034180));
@@ -135,8 +132,6 @@ public class PersistenceTest {
         Cart cart = new Cart();
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
-        cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(910034180));
@@ -191,8 +186,6 @@ public class PersistenceTest {
         Cart cart = new Cart();
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
-        cart.setSize(null);
-        cart.setAvailability(Availability.ARCHIVED);
 
         CartItem cartItem1 = new CartItem();
         cartItem1.setEntityId(new Long(910034180));
@@ -233,8 +226,6 @@ public class PersistenceTest {
         Cart cart1 = new Cart();
         cart1.setFacilityName("dls");
         cart1.setUserName("vcf21513");
-        cart1.setSize(null);
-        cart1.setAvailability(Availability.ONLINE);
 
         CartItem cart1Item1 = new CartItem();
         cart1Item1.setEntityId(new Long(922222222));
@@ -279,8 +270,6 @@ public class PersistenceTest {
         System.out.println("existCartId:" + existCart.getId());
         System.out.println("existCartId item count:" + existCart.getCartItems().size());
 
-        assertEquals(Availability.ONLINE, existCart.getAvailability());
-
         assertEquals(existCart.getCartItems().size(), 4);
 
         Cart myCart = cartRepository.getCartByFacilityNameAndUser(params);
@@ -296,8 +285,6 @@ public class PersistenceTest {
         Cart cart = new Cart();
         cart.setFacilityName("dls");
         cart.setUserName("vcf21513");
-        cart.setSize(null);
-        cart.setAvailability(Availability.ONLINE);
 
         CartItem cartItem = new CartItem();
         cartItem.setEntityId(new Long(910034180));
@@ -343,8 +330,6 @@ public class PersistenceTest {
         Cart cart1 = new Cart();
         cart1.setFacilityName("dls");
         cart1.setUserName("vcf21513");
-        cart1.setSize(null);
-        cart1.setAvailability(Availability.ONLINE);
 
         CartItem cart1Item1 = new CartItem();
         cart1Item1.setEntityId(new Long(922222222));
@@ -402,7 +387,6 @@ public class PersistenceTest {
         System.out.println("existCartId:" + myCart.getId());
         System.out.println("existCartId item count:" + myCart.getCartItems().size());
 
-        assertEquals(Availability.ONLINE, myCart.getAvailability());
         assertEquals(2, myCart.getCartItems().size());
 
         for(CartItem c : myCart.getCartItems()) {

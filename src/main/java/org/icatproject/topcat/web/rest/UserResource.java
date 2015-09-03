@@ -417,8 +417,6 @@ public class UserResource {
         Cart cart = new Cart();
         cart.setFacilityName(cartDTO.getFacilityName());
         cart.setUserName(cartDTO.getUserName());
-        cart.setSize(cartDTO.getSize());
-        cart.setAvailability(cartDTO.getAvailability());
 
         List<CartItem> cartItems = new ArrayList<CartItem>();
 
