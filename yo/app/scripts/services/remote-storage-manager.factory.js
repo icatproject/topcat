@@ -145,8 +145,6 @@
                     userName: userName,
                     sessionId: $sessionStorage.sessions[facility.facilityName].sessionId,
                     icatUrl: facility.icatUrl,
-                    size: null,
-                    availability : null,
                     cartItems: myCart.items
                 };
 

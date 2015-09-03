@@ -9,17 +9,12 @@
 
     function CartItem($log) { //jshint ignore: line
 
-        var item = function (facilityName, userName, entityType, entityId, name, size, availability, parentEntities) {
-            size = size || null;
-            availability = availability || null;
-
+        var item = function (facilityName, userName, entityType, entityId, name, parentEntities) {
             this.setFacilityName(facilityName);
             this.setUserName(userName);
             this.setEntityType(entityType);
             this.setEntityId(entityId);
             this.setName(name);
-            this.setSize(size);
-            this.setAvailability(availability);
             this.setParentEntities(parentEntities);
         };
 
@@ -79,23 +74,6 @@
             return this.name;
         };
 
-        item.prototype.setSize = function(size){
-            this.size = size;
-        };
-
-        item.prototype.getSize = function(){
-            return this.size;
-        };
-
-
-        item.prototype.setAvailability = function(availability){
-            this.availability = availability;
-        };
-
-        item.prototype.getAvailability = function(){
-            return this.availability;
-        };
-
         item.prototype.setParentEntities = function(parentEntities){
             this.parentEntities = parentEntities;
         };
@@ -113,8 +91,6 @@
                 entityType: this.getEntityType(),
                 entityId: this.getEntityId(),
                 name: this.getName(),
-                size: this.getSize(),
-                availability: this.getAvailability(),
                 parentEntities: this.getParentEntities()
             };
         };

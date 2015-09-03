@@ -16,9 +16,9 @@
              * @param  {Object} the $state object
              * @return {String} the current entity type
              */
-            getCurrentEntityType : function($state) {
-                if (angular.isDefined($state.current.param)) {
-                    return $state.current.param.entityType || 'facility';
+            getCurrentEntityType : function(state) {
+                if (angular.isDefined(state.current.param)) {
+                    return state.current.param.entityType || 'facility';
                 }
 
                 return 'facility';
@@ -72,8 +72,8 @@
              * @param  {[type]} $state [description]
              * @return {[type]}        [description]
              */
-            getCurrentRouteSegmentName: function($state){
-                var routeName = $state.current.name;
+            getCurrentRouteSegmentName: function(state) {
+                var routeName = state.current.name;
 
                 routeName = routeName.substr(routeName.lastIndexOf('.') + 1);
 
@@ -83,6 +83,15 @@
                 }
 
                 return routeName;
+            },
+
+            /**
+             * Return the current route name
+             * @param  {[type]} $state [description]
+             * @return {[type]}        [description]
+             */
+            getCurrentRouteName: function(state) {
+                return state.current.name;
             },
 
             /**

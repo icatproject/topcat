@@ -10,24 +10,23 @@
         $timeout(loadStatus, 0);
 
         function loadStatus() {
-            if ($scope.ngModel.entity.getAvailability() === null) {
-                var params = {};
-                params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getEntityId();
-                var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
+            var params = {};
+            params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getEntityId();
+            var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
 
-                usSpinnerService.spin('spinner-status-' + $scope.ngModel.uid);
+            usSpinnerService.spin('spinner-status-' + $scope.ngModel.uid);
 
-                IdsManager.getStatus($sessionStorage.sessions, facility, params).then(function(data){
-                    $scope.ngModel.entity.setAvailability(data);
-                    usSpinnerService.stop('spinner-status-' + $scope.ngModel.uid);
-                }, function(error) {
-                    $log.error(error);
-                    inform.add(error, {
-                        'ttl': 4000,
-                        'type': 'danger'
-                    });
+            IdsManager.getStatus($sessionStorage.sessions, facility, params).then(function(data){
+                $scope.ngModel.entity.availability = data;
+                usSpinnerService.stop('spinner-status-' + $scope.ngModel.uid);
+            }, function(error) {
+                $log.error(error);
+                inform.add(error, {
+                    'ttl': 4000,
+                    'type': 'danger'
                 });
-            }
+            });
+
         }
     }
 

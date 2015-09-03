@@ -16,8 +16,6 @@
                 $timeout(calcDownnloadSize, 0);
 
                 function calcDownnloadSize() {
-                    $log.debug('calcDownnloadSize called');
-
                     if ($scope.ngModel.getSize() === null) {
                         var params = $scope.ngModel.getDataSelection();
                         var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.getFacilityName());

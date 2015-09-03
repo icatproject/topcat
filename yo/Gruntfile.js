@@ -390,9 +390,9 @@ module.exports = function (grunt) {
       dist: {
         files: [{
           expand: true,
-          cwd: '<%= yeoman.app %>/data',
-          src: 'config-multi.json',
-          dest: '<%= yeoman.dist %>/data'
+          cwd: '<%= yeoman.app %>/config',
+          src: 'topcat.json',
+          dest: '<%= yeoman.dist %>/config'
         }],
         options: {
           replacements: [

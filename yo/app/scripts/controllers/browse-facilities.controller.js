@@ -11,16 +11,24 @@
     function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseFacilitiesModel, $log) { //jshint ignore: line
         var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
 
-        //redirect if only one facility
-        if (ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length === 1) {
-            var facilityName = ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG))[0];
+        var currentRouteName = RouteUtils.getCurrentRouteName($state);
 
-            //get next entity in hierarchy
-            var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
-            //var nextRouteSegment = RouteUtils.getNextRouteSegmentName(structure, structure[1]);
-            var nextRouteSegment = structure[0] + '-' + structure[1];
+        $log.warn('BrowseFacilitiesController currentRouteName', currentRouteName, $state);
 
-            $state.go('home.browse.facility.' + nextRouteSegment, {facilityName : facilityName});
+        //apply only to browse pages
+        if ( $state.current.name === 'home.browse.facility') {
+            //redirect if only one facility
+            if (ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length === 1) {
+                var facilityName = ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG))[0];
+
+                //get next entity in hierarchy
+                var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
+                //var nextRouteSegment = RouteUtils.getNextRouteSegmentName(structure, structure[1]);
+                var nextRouteSegment = structure[0] + '-' + structure[1];
+
+                $state.go('home.browse.facility.' + nextRouteSegment, {facilityName : facilityName});
+                return;
+            }
         }
 
         $scope.gridOptions = {

@@ -1,0 +1,842 @@
+{
+    "facilities": {
+        "dls": {
+            "facilityName": "dls",
+            "title": "DIAMOND",
+            "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
+            "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181",
+            "idsIsToLevel": true,
+            "facilityId": 1,
+            "hierarchy": [
+                "facility",
+                "proposal",
+                "investigation",
+                "dataset",
+                "datafile"
+            ],
+            "authenticationType": [
+                {
+                    "title": "Username/Password",
+                    "plugin": "ldap"
+                },
+                {
+                    "title": "DB",
+                    "plugin": "db"
+                },
+                {
+                    "title": "Anonymous",
+                    "plugin": "anon"
+                }
+            ],
+            "downloadTransportType": [
+                {
+                    "displayName" : "Https",
+                    "type" : "https",
+                    "default" : true,
+                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
+                },
+                {
+                    "displayName" : "Globus",
+                    "type" : "globus",
+                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
+                }
+            ],
+            "browseOptions": {
+                "instrument": {
+                    "enableFiltering": true,
+                    "columnDefs": [
+                        {
+                            "field": "id",
+                            "displayName": "Id",
+                            "enableSorting": false,
+                            "type": "number",
+                            "visible": false,
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": false
+                            }
+                        },
+                        {
+                            "field": "name",
+                            "displayName": "Name",
+                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.NAME",
+                            "type": "string",
+                            "visible": false,
+                            "sort": {
+                                "direction": "asc"
+                            },
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": false
+                            },
+                            "link": true
+                        },
+                        {
+                            "field": "fullName",
+                            "displayName": "Full Name",
+                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": false
+                            },
+                            "link": true
+                        }
+                    ]
+                },
+                "proposal": {
+                    "enableFiltering": true,
+                    "columnDefs": [
+                        {
+                            "field": "name",
+                            "displayName": "name",
+                            "enableSorting": false,
+                            "type": "string",
+                            "sort": {
+                                "direction": "asc"
+                            },
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "cellTooltip": true,
+                            "link": true
+                        }
+                    ]
+                },
+                "investigation": {
+                    "enableFiltering": true,
+                    "enableSelection": true,
+                    "includes" : [
+                        "investigation.investigationInstruments.instrument"
+                    ],
+                    "columnDefs": [
+                        {
+                            "field": "title",
+                            "displayName": "Title",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "sort": {
+                                "direction": "asc"
+                            },
+                            "cellTooltip": true,
+                            "link": true,
+                            "minWidth": 350
+                        },
+                        {
+                            "field": "visitId",
+                            "displayName": "Visit Id",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "cellTooltip": true,
+                            "link": true
+                        },
+                        {
+                            "field": "name",
+                            "displayName": "Name",
+                            "enableSorting": false,
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "cellTooltip": true,
+                            "link": true
+                        },
+                        {
+                            "field": "size",
+                            "displayName": "Size",
+                            "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                            "type": "number"
+                        },
+                        {
+                            "field": "investigationInstruments[0].instrument.fullName",
+                            "displayName": "Instrument",
+                            "enableSorting": false,
+                            "type": "string",
+                            "visible": true,
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
+                            "field": "startDate",
+                            "displayName": "Start Date",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input",
+                                    "disableCancelFilterButton": true
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input",
+                                    "disableCancelFilterButton": true
+                                }
+                            ]
+                        },
+                        {
+                            "field": "endDate",
+                            "displayName": "End Date",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filter": {
+                                "placeholder": "Date...",
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        }
+                    ]
+                },
+                "dataset": {
+                    "enableFiltering": true,
+                    "enableSelection": true,
+                    "columnDefs": [
+                        {
+                            "field": "name",
+                            "displayName": "Dataset Name",
+                            "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "sort": {
+                                "direction": "asc"
+                            },
+                            "cellTooltip": true,
+                            "link": true
+                        },
+                        {
+                            "field": "size",
+                            "displayName": "Size",
+                            "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                            "type": "number"
+                        },
+                        {
+                            "field": "createTime",
+                            "displayName": "Create Date",
+                            "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "filter": {
+                                "placeholder": "Date...",
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
+                            "field": "modTime",
+                            "displayName": "Modified Time",
+                            "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "filter": {
+                                "placeholder": "Date...",
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        }
+                    ]
+                },
+                "datafile": {
+                    "enableFiltering": true,
+                    "enableSelection": true,
+                    "columnDefs": [
+                        {
+                            "field": "name",
+                            "displayName": "Datafile Name",
+                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.NAME",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            },
+                            "cellTooltip": true
+                        },
+                        {
+                            "field": "location",
+                            "displayName": "Location",
+                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.LOCATION",
+                            "type": "string",
+                            "cellTooltip" :true,
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
+                            "field": "fileSize",
+                            "displayName": "File Size",
+                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
+                            "type": "number",
+                            "cellFilter": "bytes",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "flags": {
+                                    "caseSensitive": false
+                                },
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        },
+                        {
+                            "field": "modTime",
+                            "displayName": "Modified Time",
+                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "filter": {
+                                "placeholder": "Date...",
+                                "type": "input",
+                                "disableCancelFilterButton": true
+                            }
+                        }
+                    ]
+                }
+            },
+            "metaTabs": {
+                "instrument": [
+                    {
+                        "title": "Instrument Details",
+                        "field": "instrument",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "fullName"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Type",
+                                "field": "type"
+                            },
+                            {
+                                "title": "URL",
+                                "field": "url"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Instrument Scientists",
+                        "field": "instrumentScientists",
+                        "queryParams": [
+                            "InstrumentScientist",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "field": "user",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "title": "Name",
+                                        "field": "fullName"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "investigation": [
+                    {
+                        "title": "Investigation Details",
+                        "field": "investigation",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Title",
+                                "field": "title"
+                            },
+                            {
+                                "title": "Summary",
+                                "field": "summary"
+                            },
+                            {
+                                "title": "Start Date",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "field": "endDate"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Investigation Users",
+                        "field": "investigationUsers",
+                        "queryParams": [
+                            "InvestigationUser",
+                            "User"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "field": "user",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "title": "Name",
+                                        "field": "fullName"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Investigation Samples",
+                        "field": "samples",
+                        "queryParams": [
+                            "Sample"
+                        ],
+                        "default": "false",
+                        "data": [
+                            {
+                                "title": "Sample Name",
+                                "field": "name"
+                            }
+                        ]
+                    }
+                ],
+                "dataset": [
+                    {
+                        "title": "Dataset Details",
+                        "field": "dataset",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Start Date",
+                                "field": "startDate"
+                            },
+                            {
+                                "title": "End Date",
+                                "field": "endDate"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Dataset Type",
+                        "field": "type",
+                        "queryParams": [
+                            "DatasetType"
+                        ],
+                        "default": false,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            }
+                        ]
+                    }
+                ],
+                "datafile": [
+                    {
+                        "title": "Datafile Details",
+                        "field": "datafile",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Name",
+                                "field": "name"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Size",
+                                "field": "fileSize"
+                            },
+                            {
+                                "title": "Location",
+                                "field": "location"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "site": {
+        "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/api/v1",
+        "home" : "my-data",
+        "pagingType": "scroll",
+        "useFileForData": false,
+        "useFileForSession": false,
+        "paginationNumberOfRows": 10,
+        "paginationPageSizes": [
+            10,
+            25,
+            50,
+            100,
+            1000
+        ],
+        "scrollPageSize": 50,
+        "scrollRowFromEnd": 10,
+        "facilitiesGridOptions": {
+            "enableFiltering": true,
+            "columnDefs": [
+                {
+                    "field": "fullName",
+                    "displayName": "Facility Full Name",
+                    "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
+                    "enableSorting": false,
+                    "sortDirection": "asc",
+                    "filter": {
+                        "condition": "starts_with",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    },
+                    "link": true
+                },
+                {
+                    "field": "name",
+                    "displayName": "Facility Name",
+                    "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                }
+            ]
+        },
+        "cartGridOptions": {
+            "enableFiltering": true,
+            "columnDefs": [
+                {
+                    "field": "name",
+                    "displayName": "Facility",
+                    "translateDisplayName": "CART.COLUMN.NAME",
+                    "sortDirection": "asc",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "starts_with",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    },
+                    "cellTooltip": true
+                },
+                {
+                    "field": "entityType",
+                    "displayName": "Type",
+                    "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
+                    "sortDirection": "asc",
+                    "cellFilter": "entityTypeTitle",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "starts_with",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                },
+                {
+                    "field": "size",
+                    "displayName": "Size",
+                    "translateDisplayName": "CART.COLUMN.SIZE",
+                    "type" : "number",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                },
+                {
+                    "field": "availability",
+                    "displayName": "Availability",
+                    "translateDisplayName": "CART.COLUMN.AVAILABILITY",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "flags": {
+                            "caseSensitive": false
+                        },
+                        "type": "input",
+                        "disableCancelFilterButton": false
+                    }
+                }
+            ]
+        },
+        "myDataGridOptions": {
+            "entityType" : "investigation",
+            "investigation": {
+                "enableFiltering": true,
+                "enableSelection": true,
+                "includes" : [
+                    "investigation.investigationInstruments.instrument"
+                ],
+                "columnDefs": [
+                    {
+                        "field": "title",
+                        "displayName": "Title",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        },
+                        "cellTooltip": true,
+                        "link": true
+                    },
+                    {
+                        "field": "visitId",
+                        "displayName": "Visit Id",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        },
+                        "link": true
+                    },
+                    {
+                        "field": "investigationInstruments[0].instrument.fullName",
+                        "displayName": "Instrument",
+                        "enableSorting": false,
+                        "type": "number",
+                        "visible": true,
+                        "filter": {
+                            "condition": "starts_with",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": true
+                        }
+                    },
+                    {
+                        "field": "size",
+                        "displayName": "Size",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                        "type": "number"
+                    },
+                    {
+                        "field": "startDate",
+                        "displayName": "Start Date",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd'",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        }
+                    },
+                    {
+                        "field": "endDate",
+                        "displayName": "End Date",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd'",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "flags": {
+                                "caseSensitive": false
+                            },
+                            "type": "input",
+                            "disableCancelFilterButton": false
+                        }
+                    }
+                ]
+            }
+        },
+        "myDownloadGridOptions": {
+            "enableFiltering": true,
+            "columnDefs": [
+                {
+                    "field": "fileName",
+                    "displayName": "Download Name",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.DOWNLOAD_NAME",
+                    "sortDirection": "asc",
+                    "type" : "string"
+                },
+                {
+                    "field": "transport",
+                    "displayName": "Transport",
+                    "translateDisplayName": "CART.COLUMN.TRANSPORT",
+                    "sortDirection": "asc",
+                    "type" : "string"
+                },
+                {
+                    "field": "status",
+                    "displayName": "Status",
+                    "translateDisplayName": "CART.COLUMN.STATUS",
+                    "sortDirection": "asc",
+                    "type" : "string"
+                },
+                {
+                    "field": "createdAt",
+                    "displayName": "Created Date",
+                    "translateDisplayName": "CART.COLUMN.CREATED_DATE",
+                    "type" : "date",
+                    "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                    "filter": {
+                        "placeholder": "Date...",
+                        "type": "input",
+                        "disableCancelFilterButton": true
+                    }
+                }
+            ]
+        },
+        "facility": {
+            "metaTabs": {
+                "facility": [
+                    {
+                        "title": "Facility Details",
+                        "translateDisplayName": "METATABS.FACILITY.TABTITLE",
+                        "field": "facility",
+                        "default": true,
+                        "data": [
+                            {
+                                "title": "Full Name",
+                                "translateDisplayName": "METATABS.FACILITY.FULLNAME",
+                                "field": "fullName"
+                            },
+                            {
+                                "title": "Description",
+                                "translateDisplayName": "METATABS.FACILITY.DESCRIPTION",
+                                "field": "description"
+                            },
+                            {
+                                "title": "Name",
+                                "translateDisplayName": "METATABS.FACILITY.NAME",
+                                "field": "name"
+                            },
+                            {
+                                "title": "URL",
+                                "translateDisplayName": "METATABS.FACILITY.URL",
+                                "field": "url"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

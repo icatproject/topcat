@@ -19,11 +19,10 @@ describe('Service: Cart', function() {
     var Cart;
     var Config;
     var $sessionStorage;
-    var LocalStorageManager;
     var $localStorage;
     var APP_CONSTANT;
 
-    beforeEach(inject(function(_$rootScope_, _CartItem_, _$log_, _Cart_, _Config_, _$sessionStorage_, _LocalStorageManager_, _$localStorage_, _APP_CONSTANT_) {
+    beforeEach(inject(function(_$rootScope_, _CartItem_, _$log_, _Cart_, _Config_, _$sessionStorage_, _$localStorage_, _APP_CONSTANT_) {
         $rootScope = _$rootScope_;
         spyOn($rootScope, '$broadcast').and.callThrough();
         CartItem = _CartItem_;
@@ -31,7 +30,6 @@ describe('Service: Cart', function() {
         Cart = _Cart_;
         Config = _Config_;
         $sessionStorage = _$sessionStorage_;
-        LocalStorageManager = _LocalStorageManager_;
         $localStorage = _$localStorage_;
         APP_CONSTANT = _APP_CONSTANT_;
     }));
@@ -538,8 +536,6 @@ describe('Service: Cart', function() {
             'entityType': 'dataset',
             'entityId': 123457,
             'name': 'my test dataset 2',
-            'size': null,
-            'availability': null,
             'parentEntities': [
                 {
                   'entityType': 'investigation',
@@ -557,8 +553,6 @@ describe('Service: Cart', function() {
                 'entityType': 'dataset',
                 'entityId': 123456,
                 'name': 'my test dataset 1',
-                'size': null,
-                'availability': null,
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
@@ -571,8 +565,6 @@ describe('Service: Cart', function() {
                 'entityType': 'dataset',
                 'entityId': 123457,
                 'name': 'my test dataset 2',
-                'size': null,
-                'availability': null,
                 'parentEntities': [
                     {
                       'entityType': 'investigation',
@@ -714,11 +706,6 @@ describe('Service: Cart', function() {
             }
         };
 
-        //init localstorage
-        LocalStorageManager.init({facilityName: 'dls'}, 'vcf21513');
-
-        //console.log('$localStorage', JSON.stringify($localStorage, null, 2));
-
         spyOn(Cart, 'save').and.callThrough();
 
         //deregister Cart:Change listener
@@ -732,71 +719,6 @@ describe('Service: Cart', function() {
 
         expect(Cart.save).toHaveBeenCalled();
     });
-
-/*    it('restore cart after removing all items', function() {
-        var items = [
-            {
-                'facilityName': 'dls',
-                'entityType': 'dataset',
-                'entityId': 123456,
-                'name': 'my test dataset 1',
-                'size': null,
-                'availability': 'ONLINE',
-                'parentEntities': [
-                    {
-                      'entityType': 'investigation',
-                      'entityId': 7654321
-                    }
-                ]
-            },
-            {
-                'facilityName': 'dls',
-                'entityType': 'dataset',
-                'entityId': 123457,
-                'name': 'my test dataset 2',
-                'size': null,
-                'availability': 'ONLINE',
-                'parentEntities': [
-                    {
-                      'entityType': 'investigation',
-                      'entityId': 7654321
-                    }
-                ]
-            }
-        ];
-
-        $sessionStorage.sessions = {
-            dls: {
-                sessionId: 'cedf298d-640e-44cf-900d-5f5bf22dddad',
-                userName: 'vcf21513'
-            }
-        };
-
-        //init localstorage
-        LocalStorageManager.init({facilityName: 'dls'}, 'vcf21513');
-
-        spyOn(Cart, 'restore').and.callThrough();
-        spyOn(Cart, 'save').and.callThrough();
-
-        //deregister Cart:Change listener
-        delete $rootScope.$$listeners['Cart:change'];
-
-        //console.log(JSON.stringify($rootScope.$$listeners, null, 2));
-
-        angular.forEach(items, function(item) {
-            Cart.addItem(item.facilityName, item.entityType, item.entityId, item.name, item.parentEntities);
-        });
-
-        Cart.save();
-
-        Cart.save.calls.reset();
-
-        Cart.removeAllItems();
-        expect(Cart.save).not.toHaveBeenCalled();
-
-    });*/
-
-
 });
 
 

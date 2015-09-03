@@ -166,7 +166,9 @@
             if (typeof config.site.facilitiesGridOptions !== 'undefined') {
                 return config.site.facilitiesGridOptions;
             } else {
-                throw new Error('\'facilitiesGridOptions\' not configured');
+                if (this.getFacilities.length > 1) {
+                    throw new Error('\'facilitiesGridOptions\' not configured');
+                }
             }
         };
 

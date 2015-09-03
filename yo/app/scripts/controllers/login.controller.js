@@ -191,8 +191,6 @@
                     };
 
                     //Do login stuff here
-                    //initialise an empty cart for the user
-                    //LocalStorageManager.init(facility, data.userName);
                     Cart.restore();
 
                     //login to smartclient is installed/online

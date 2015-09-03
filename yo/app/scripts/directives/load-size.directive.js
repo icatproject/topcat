@@ -13,18 +13,17 @@
 
         function loadSize() {
 
-            if ($scope.ngModel.entity.getSize() === null) {
-                var params = {};
-                params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getEntityId();
-                var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
 
-                usSpinnerService.spin('spinner-size-' + $scope.ngModel.uid);
+            var params = {};
+            params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getEntityId();
+            var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());
 
-                IdsManager.getSize($sessionStorage.sessions, facility, params).then(function(data){
-                    $scope.ngModel.entity.setSize(parseInt(data));
-                    usSpinnerService.stop('spinner-size-' + $scope.ngModel.uid);
-                });
-            }
+            usSpinnerService.spin('spinner-size-' + $scope.ngModel.uid);
+
+            IdsManager.getSize($sessionStorage.sessions, facility, params).then(function(data){
+                $scope.ngModel.entity.size = parseInt(data);
+                usSpinnerService.stop('spinner-size-' + $scope.ngModel.uid);
+            });
         }
     }
 

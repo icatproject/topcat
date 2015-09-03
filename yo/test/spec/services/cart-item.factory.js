@@ -25,14 +25,12 @@ describe('Service: CartItem', function() {
         var entityType = 'dataset';
         var id = 123456;
         var name = 'my test name';
-        var size = null;
-        var availability = 'ONLINE';
         var parentEntities = [{
             entityType: 'investigation',
             id: 7654321
         }];
 
-        var item = new CartItem(facilityName, userName, entityType, id, name, size, availability, parentEntities);
+        var item = new CartItem(facilityName, userName, entityType, id, name, parentEntities);
 
         expect(item).toEqual(jasmine.any(CartItem));
 
@@ -41,8 +39,6 @@ describe('Service: CartItem', function() {
         expect(item.getEntityType()).toEqual('dataset');
         expect(item.getEntityId()).toEqual(123456);
         expect(item.getName()).toEqual('my test name');
-        expect(item.getSize()).toEqual(null);
-        expect(item.getAvailability()).toEqual('ONLINE');
         expect(item.getParentEntities()).toEqual([
             {
               'entityType': 'investigation',
@@ -56,8 +52,6 @@ describe('Service: CartItem', function() {
             'entityType': 'dataset',
             'entityId': 123456,
             'name': 'my test name',
-            'size': null,
-            'availability': 'ONLINE',
             'parentEntities': [
                 {
                   'entityType': 'investigation',
@@ -73,22 +67,18 @@ describe('Service: CartItem', function() {
         var entityType = 'dataset';
         var id = 123456;
         var name = 'my test name';
-        var size = null;
-        var availability = 'ONLINE';
         var parentEntities = [{
             entityType: 'investigation',
             id: 7654321
         }];
 
-        var item = new CartItem(facilityName, userName, entityType, id, name, size, availability, parentEntities);
+        var item = new CartItem(facilityName, userName, entityType, id, name, parentEntities);
 
         expect(item.getFacilityName()).toEqual('dls');
         expect(item.getUserName()).toEqual('simple/jane');
         expect(item.getEntityType()).toEqual('dataset');
         expect(item.getEntityId()).toEqual(123456);
         expect(item.getName()).toEqual('my test name');
-        expect(item.getSize()).toEqual(null);
-        expect(item.getAvailability()).toEqual('ONLINE');
         expect(item.getParentEntities()).toEqual([
             {
               'entityType': 'investigation',
@@ -101,8 +91,6 @@ describe('Service: CartItem', function() {
         item.setEntityType('datafile');
         item.setEntityId(888);
         item.setName('test datafile');
-        item.setSize(777);
-        item.setAvailability('ARCHIVE');
         item.setParentEntities([
             {
                 'entityType': 'investigation',
@@ -119,8 +107,6 @@ describe('Service: CartItem', function() {
         expect(item.getEntityType()).toEqual('datafile');
         expect(item.getEntityId()).toEqual(888);
         expect(item.getName()).toEqual('test datafile');
-        expect(item.getSize()).toEqual(777);
-        expect(item.getAvailability()).toEqual('ARCHIVE');
         expect(item.getParentEntities()).toEqual([
             {
                 'entityType': 'investigation',

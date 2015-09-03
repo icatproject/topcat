@@ -9,7 +9,7 @@
         module : 'angularApp',
         resolve : {
             APP_CONFIG : ['$http', function($http) {
-                return $http.get('data/config-multi.json');
+                return $http.get('config/topcat_dls.json');
             } ],
             LANG : ['$http', function($http) {
                 return $http.get('languages/en.json');
@@ -92,9 +92,6 @@
                 .state('home', {
                     abstract: true,
                     resolve: {
-                        /*smartClientRunning : ['SmartClientManager', function(SmartClientManager) {
-                            return SmartClientManager.ping();
-                        }],*/
                         cartInit : ['Cart', function(Cart) {
                             return Cart.restore();
                         }],
@@ -110,21 +107,13 @@
                       '': {
                         templateUrl: 'views/main-browse.html'
                       }
-                    },
+                    }/*,
                     sticky: true,
-                    deepStateRedirect: true
+                    deepStateRedirect: true*/
                 })
-                /*.state('home.browse.main', {
-                    url: '',
-                    abstract: true,
-                    templateUrl: 'views/main-browse.html'
-                })*/
                 .state('home.browse.facility', {
                     url: '/facilities',
                     resolve: {
-                        /*sessions: ['DataManager', function(DataManager){
-                            return DataManager.login();
-                        }],*/
                         authenticate : ['Authenticate', function(Authenticate) {
                             return Authenticate.authenticate();
                         }]
@@ -170,8 +159,8 @@
                         controller: 'MyDataController as md'
                       }
                     },
-                    sticky: true,
-                    deepStateRedirect: true
+                    /*sticky: true,
+                    deepStateRedirect: true*/
                 })
                 .state('home.cart', {
                     url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',
@@ -186,8 +175,8 @@
                         controller: 'CartController'
                       }
                     },
-                    sticky: true,
-                    deepStateRedirect: true
+                    /*sticky: true,
+                    deepStateRedirect: true*/
                 })
                 .state('home.download', {
                     url: '/download',
@@ -202,8 +191,8 @@
                         controller: 'DownloadController'
                       }
                     },
-                    sticky: true,
-                    deepStateRedirect: true
+                    /*sticky: true,
+                    deepStateRedirect: true*/
                 })
                 // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
                 .state('about', {
