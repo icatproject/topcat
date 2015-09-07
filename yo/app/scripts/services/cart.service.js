@@ -5,9 +5,57 @@
         .module('angularApp')
         .service('Cart', Cart);
 
-    Cart.$inject =['$rootScope', '$q', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', 'SmartClientPollManager', '$log'];
+    Cart.$inject =['$rootScope', '$q', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', 'SmartClientPollManager', '$translate', '$log'];
 
-    function Cart($rootScope, $q, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, SmartClientPollManager, $log) { //jshint ignore: line
+    function Cart($rootScope, $q, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, SmartClientPollManager, $translate, $log) { //jshint ignore: line
+        var self  = this;
+
+        function add(facilityName, entityType, entityId, name, parentEntities) {
+            var addedItemsCount = 0;
+            var itemExistsCount = 0;
+            //get item from cart
+            var item = self.getItem(facilityName, entityType, entityId);
+
+            if (typeof item === 'object') {
+                $rootScope.$broadcast('Cart:itemExists', item);
+                itemExistsCount++;
+            } else {
+                var newItem = new CartItem(facilityName, $sessionStorage.sessions[facilityName].userName, entityType, entityId, name);
+                newItem.setParentEntities(parentEntities);
+
+                $log.debug('newItem', newItem);
+
+                $log.debug('newItem', self._cart);
+
+                self._cart.items.push(newItem);
+                addedItemsCount++;
+                $rootScope.$broadcast('Cart:itemAdded', {added: addedItemsCount});
+            }
+
+            //remove child items
+            var itemsToRemove = [];
+
+            _.each(self._cart.items, function(cartItem) {
+                //deal with items from the same facility
+                if (!(cartItem.getFacilityName() === facilityName && cartItem.getEntityType() === entityType && cartItem.getEntityId() === entityId)) {
+                    if (cartItem.getFacilityName() === facilityName) {
+                        _.each(cartItem.getParentEntities(), function(parent) {
+                            if (parent.entityType === entityType && parent.entityId === entityId) {
+                                itemsToRemove.push(cartItem);
+                            }
+                        });
+                    }
+                }
+            });
+
+            _.each(itemsToRemove, function(item) {
+                this.removeItem(item.getFacilityName(), item.getEntityType(), item.getEntityId());
+            }, self);
+
+
+            return {added: addedItemsCount, exists: itemExistsCount};
+        }
+
         /**
          * Initialise a cart
          * @return {[type]} [description]
@@ -28,50 +76,17 @@
          * @param {[type]} parentEntities      [description]
          */
         this.addItem = function(facilityName, entityType, entityId, name, parentEntities) {
-            var addedItemsCount = 0;
-            var itemExistsCount = 0;
-            //get item from cart
-            var item = this.getItem(facilityName, entityType, entityId);
+            var result = add(facilityName, entityType, entityId, name, parentEntities);
 
-            if (typeof item === 'object') {
-                $rootScope.$broadcast('Cart:itemExists', item);
-                itemExistsCount++;
-            } else {
-                var newItem = new CartItem(facilityName, $sessionStorage.sessions[facilityName].userName, entityType, entityId, name);
-                newItem.setParentEntities(parentEntities);
-
-                $log.debug('newItem', newItem);
-
-                $log.debug('newItem', this._cart);
-
-                this._cart.items.push(newItem);
-                addedItemsCount++;
-                $rootScope.$broadcast('Cart:itemAdded', {added: addedItemsCount});
-            }
-
-            //remove child items
-            var itemsToRemove = [];
-
-            _.each(this._cart.items, function(cartItem) {
-                //deal with items from the same facility
-                if (!(cartItem.getFacilityName() === facilityName && cartItem.getEntityType() === entityType && cartItem.getEntityId() === entityId)) {
-                    if (cartItem.getFacilityName() === facilityName) {
-                        _.each(cartItem.getParentEntities(), function(parent) {
-                            if (parent.entityType === entityType && parent.entityId === entityId) {
-                                itemsToRemove.push(cartItem);
-                            }
-                        });
-                    }
-                }
-            });
-
-            _.each(itemsToRemove, function(item) {
-                this.removeItem(item.getFacilityName(), item.getEntityType(), item.getEntityId());
-            }, this);
-
-
-            $rootScope.$broadcast('Cart:change', {added: addedItemsCount, exists: itemExistsCount});
+            $rootScope.$broadcast('Cart:change', result);
         };
+
+        this.restoreItem = function(facilityName, entityType, entityId, name, parentEntities) {
+            add(facilityName, entityType, entityId, name, parentEntities);
+        };
+
+
+
 
         /**
          * Remove an item from the cart
@@ -257,15 +272,6 @@
         this.save = function() {
             $log.debug('save called');
             RemoteStorageManager.setStore(this.getCart());
-
-            /*.then(function(data) {
-                $log.debug('Cart saved', data.data);
-            }, function(error) {
-                inform.add(error, {
-                    'ttl': 4000,
-                    'type': 'danger'
-                });
-            });*/
         };
 
         /**
@@ -302,11 +308,8 @@
          * @return {[type]} [description]
          */
         this.restore = function() {
-            $log.debug('restore called');
             var _self = this;
             var def = $q.defer();
-
-            $log.debug('restore $sessionStorage.sessions', $sessionStorage.sessions);
 
             //clear all
             _self.reset();
@@ -315,12 +318,7 @@
             _.each($sessionStorage.sessions, function(session, key) {
                 var facility = Config.getFacilityByName(APP_CONFIG, key);
 
-                $log.debug('restore facility', facility);
-                $log.debug('restore session.userName', session.userName);
-
-
                 RemoteStorageManager.getUserStore(facility, session.userName).then(function(items) {
-                    $log.debug('restored items !!!!', items);
                     _self._restoreItems(items);
                     def.resolve({restored: true});
                 }, function(error) {
@@ -348,35 +346,10 @@
             //must has at least one session
             if (_.size($sessionStorage.sessions) > 0) {
                 return true;
-                //must have a cart
-                /*if (typeof cartSession !== 'undefined') {
-                    //must have items in the cart
-                    if (cartSession.items.length > 0) {
-                        return true;
-                    }
-                }*/
             }
 
             return false;
         };
-
-
-        /*this.getFacilitiesCart = function(){
-            var facilityCarts = {};
-
-            _.each(this.getItems(), function(item) {
-                //initialise array
-                if (typeof facilityCarts[item.getFacilityName()] === 'undefined') {
-                    facilityCarts[item.facilityName] = [];
-                }
-
-                facilityCarts[item.facilityName].push(item);
-            });
-
-            $log.debug('facilityCarts', facilityCarts);
-
-            return facilityCarts;
-        };*/
 
         this.getFacilitiesCart = function(){
             var facilityCarts = {};
@@ -397,11 +370,7 @@
         this.submit = function(downloadRequests) {
 
             _.each(downloadRequests, function(downloadRequest) {
-                //facilityName, userName, sessionId, icatUrl, fileName, status, transport, email
-
                 var facility = Config.getFacilityByName(APP_CONFIG, downloadRequest.facilityName);
-
-                $log.debug(JSON.stringify(downloadRequest, null, 2));
 
                 var cartRequest = new CartRequest(
                     facility.facilityName,
@@ -415,38 +384,49 @@
                     downloadRequest.email
                 );
 
-                //$log.debug(JSON.stringify(cartRequest, null, 2));
-
                 TopcatManager.submitCart(facility, cartRequest).then(function(data){
-                    //$log.debug('cart submit', data);
-
                     if (downloadRequest.transportType.type === 'smartclient') {
                         SmartClientManager.getData($sessionStorage.sessions[downloadRequest.facilityName].sessionId, facility, data.value).then(function(){
-                            $log.debug('Job submitted to Smartclient', data);
+                            //$log.debug('Job submitted to Smartclient', data);
 
                             //start a poll
                             SmartClientPollManager.createPoller(facility, $sessionStorage.sessions[downloadRequest.facilityName].userName, data.value);
                         }, function(error) {
-                            inform.add('Failed to add job to Smartclient: ' + error, {
+                            inform.add($translate.instant('CART.SUBMIT.NOTIFY_MESSAGE.FAILURE', {'errorMEssage' : error}), {
                                 'ttl': 4000,
                                 'type': 'danger'
                             });
                         });
                     }
 
-                    inform.add('Cart successfully submitted', {
+                    inform.add($translate.instant('CART.SUBMIT.NOTIFY_MESSAGE.SUCCESS'), {
                         'ttl': 4000,
                         'type': 'success'
                     });
                 }, function(error) {
-                    inform.add('Failed to submit cart', {
+                    inform.add($translate.instant('CART.SUBMIT.NOTIFY_MESSAGE.ERROR', {'errorMEssage' : error}), {
                         'ttl': 4000,
                         'type': 'danger'
                     });
-
-                    $log.debug(error);
                 });
             });
         };
+
+        $rootScope.$on('Cart:change', function(){
+            self.save();
+        });
+
+        $rootScope.$on('Logout:success', function(){
+            if (self.isRestorable()) {
+                self.restore();
+            }
+
+        });
+
+        $rootScope.$on('SESSION:EXPIRED', function(event, data){
+            if (typeof data.facilityName !== 'undefined' && typeof data.userName !== 'undefined') {
+                self.removeUserItems(data.facilityName, data.userName);
+            }
+        });
     }
 })();

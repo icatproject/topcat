@@ -371,6 +371,9 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
     this.getPage = function() {
         ConfigUtils.getLoggedInFacilities(self.facilityObjs, self.sessions).then(function (data){
+
+            //var totalItemsFromLoggedInServers = 0;
+
             _.each(data, function(facility) {
                 var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
                 var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, self.entityType);
@@ -383,7 +386,8 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                 self.gridOptions.data = [];
 
                 getDataPromise(self.entityType, self.sessions, facility, options).then(function(data){
-                    self.gridOptions.totalItems = self.gridOptions.totalItems || 0;
+                    self.gridOptions.totalItems = 0;
+
                     $log.log('gridOptions.totalItems', self.gridOptions.totalItems);
                     $log.log('self.gridOptions', self.gridOptions);
 
@@ -430,7 +434,13 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                             }
 
                             if (Cart.hasItem(facility.facilityName, self.entityType, row.entity.id)) {
-                               self.scope.gridApi.selection.selectRow(row.entity);
+                                //the below selectRow api call fires the rowSelectionChanged callback which in turn calls
+                                //Cart.addItem(). The Cart.addItem() broadcast a Cart::Change which fires a Cart.save().
+                                //Since we only need to mark the row as selected, we do not want to preform a save to the
+                                //backend. To get around this, we add a fromEvent property to the row which can be picked up
+                                //by rowSelectionChanged and act accordingly.
+                                row.fromEvent = 'preSelection';
+                                self.scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
                     }
@@ -456,7 +466,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                 getDataPromise(self.entityType, self.sessions, facility, options).then(function(data){
                     self.gridOptions.data = self.gridOptions.data.concat(data.data);
-                    self.gridOptions.totalItems = data.totalItems;
+                    //self.gridOptions.totalItems = data.totalItems;
 
                     $timeout(function() {
                         var rows = self.scope.gridApi.core.getVisibleRows(self.scope.gridApi.grid);
@@ -487,6 +497,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                             }
 
                             if (Cart.hasItem(facility.facilityName, self.entityType, row.entity.id)) {
+                               row.fromEvent = 'preSelection';
                                self.scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
@@ -514,7 +525,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                 getDataPromise(self.entityType, self.sessions, facility, options).then(function(data){
                     self.gridOptions.data = self.gridOptions.data.concat(data.data);
-                    self.gridOptions.totalItems = data.totalItems;
+                    //self.gridOptions.totalItems = data.totalItems;
 
                     $timeout(function() {
                         var rows = self.scope.gridApi.core.getVisibleRows(self.scope.gridApi.grid);
@@ -545,6 +556,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                             }
 
                             if (Cart.hasItem(facility.facilityName, self.entityType, row.entity.id)) {
+                               row.fromEvent = 'preSelection';
                                self.scope.gridApi.selection.selectRow(row.entity);
                             }
                         });
@@ -565,7 +577,10 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             var rows = self.scope.gridApi.core.getVisibleRows(self.scope.gridApi.grid);
 
             //pre-select items in cart here
+            //
             _.each(rows, function(row) {
+                row.fromEvent = 'preSelection';
+
                 if (Cart.hasItem(row.entity.facilityName, self.entityType, row.entity.id)) {
                     self.scope.gridApi.selection.selectRow(row.entity);
                 } else {
@@ -577,7 +592,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     };
 
 
-    this.sortChangedForPage = function(grid, sortColumns) {
+    this.sortChanged = function(grid, sortColumns) {
         if (sortColumns.length === 0) {
             //paginationOptions.sort = null;
         } else {
@@ -589,7 +604,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     };
 
 
-    this.paginationChangedForPage = function (newPage, pageSize) {
+    this.paginationChanged = function (newPage, pageSize) {
         self.paginateParams.pageNumber = newPage;
         self.paginateParams.pageSize = pageSize;
 
@@ -598,7 +613,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         self.getPage(self.paginateParams);
     };
 
-    this.filterChangedForPage = function () {
+    this.filterChanged = function () {
         var grid = this.grid;
         var sortOptions = [];
 
@@ -665,23 +680,24 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             self.paginateParams.order = sortColumns[0].sort.direction;
         }
 
-        self.scope.firstPage = 1;
-        self.scope.currentPage = 1;
-        self.paginateParams.start = 0;
+        //set parameters to go back to the first page if page type is scroll
+        if (self.pagingType === 'scroll') {
+            self.scope.firstPage = 1;
+            self.scope.currentPage = 1;
+            self.paginateParams.start = 0;
 
-        $timeout(function() {
-            self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
-        });
+            $timeout(function() {
+                self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
+            });
+        }
 
         $log.debug('sortChanged paginateParams', self.paginateParams);
 
         self.getPage();
-
-
     };
 
 
-    this.needLoadMoreDataForScroll = function() {
+    this.needLoadMoreData = function() {
         //$log.debug('needLoadMoreData called');
         //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start + self.pageSize;
@@ -696,7 +712,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     };
 
 
-    this.needLoadMoreDataTopForScroll = function() {
+    this.needLoadMoreDataTop = function() {
         //$log.debug('needLoadMoreDataTop called');
         //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start - self.pageSize;
@@ -710,14 +726,13 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         self.scope.currentPage--;
     };
 
-    this.filterChangedForScroll = function (grid) {
+    this.filterChanged = function (grid) {
         $log.debug('this.grid', grid );
         $log.debug('filterChanged column', grid.columns);
 
         var sortOptions = [];
 
         _.each(grid.columns, function(value, index) {
-            $log.debug('myvalue', value);
             var searchTerms = [];
             var isValid = true;
 
@@ -740,7 +755,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                     //validate term entered is a valid date before requesting page
                     _.each(grid.columns[index].filters, function(filter) {
                         //$log.debug('filter', filter);
-                        if (typeof filter.term !== 'undefined' && filter.term.trim() !== '') {
+                        if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
                             if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                 isValid = false;
                             }
@@ -754,14 +769,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                     //validate term entered is a valid date before requesting page
                     if ((typeof grid.columns[index].filters[0].term !== 'undefined') && (typeof grid.columns[index].filters[1].term !== 'undefined')) {
-                        if (typeof grid.columns[index].filters[0].term !== 'undefined' && grid.columns[index].filters[0].term.trim() !== '') {
+                        if (typeof grid.columns[index].filters[0].term !== 'undefined' && grid.columns[index].filters[0].term !== null && grid.columns[index].filters[0].term.trim() !== '') {
                             $log.debug('term 1 is defined and not empty');
                             if (grid.columns[index].filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                 isValid = false;
                             }
                         }
 
-                        if (typeof grid.columns[index].filters[1].term !== 'undefined' && grid.columns[index].filters[1].term.trim() !== '') {
+                        if (typeof grid.columns[index].filters[1].term !== 'undefined' && grid.columns[index].filters[1].term !== null && grid.columns[index].filters[1].term.trim() !== '') {
                             if (grid.columns[index].filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                 isValid = false;
                             }
@@ -786,13 +801,16 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
         self.paginateParams.search = sortOptions;
 
-        self.scope.firstPage = 1;
-        self.scope.currentPage = 1;
-        self.paginateParams.start = 0;
+        //set parameters to go back to the first page if page type is scroll
+        if (self.pagingType === 'scroll') {
+            self.scope.firstPage = 1;
+            self.scope.currentPage = 1;
+            self.paginateParams.start = 0;
 
-        $timeout(function() {
-            self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
-        });
+            $timeout(function() {
+                self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
+            });
+        }
 
         //only make get page call if all filters are valid
         var isAllValid = true;
@@ -811,9 +829,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
 
     this.rowSelectionChanged = function(row){ //jshint ignore: line
-        $log.debug('rowSelectionChanged row', row);
-        $log.debug('rowSelectionChanged self.entityType', self.entityType);
-
         var parentEntities = [];
 
         //get the parent entities if type is dataset
@@ -829,10 +844,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             }
         }
 
-        $log.debug('parentEntities', parentEntities);
-
         if (row.isSelected === true) {
-            Cart.addItem(row.entity.facilityName, self.entityType, row.entity.id, row.entity.name, parentEntities);
+            if(typeof row.fromEvent !== 'undefined' && row.fromEvent === 'preSelection') {
+                Cart.restoreItem(row.entity.facilityName, self.entityType, row.entity.id, row.entity.name, parentEntities);
+            } else {
+                Cart.addItem(row.entity.facilityName, self.entityType, row.entity.id, row.entity.name, parentEntities);
+            }
+
+
         } else {
             Cart.removeItem(row.entity.facilityName, self.entityType, row.entity.id);
         }

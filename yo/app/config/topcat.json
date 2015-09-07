@@ -55,11 +55,8 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+
+                                "type": "input"
                             }
                         },
                         {
@@ -74,11 +71,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -90,11 +83,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         }
@@ -114,11 +103,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "cellTooltip": true,
                             "link": true
@@ -140,11 +125,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "cellTooltip": true,
                             "link": true
@@ -157,11 +138,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true,
                             "cellTooltip": true,
@@ -175,11 +152,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -198,11 +171,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -214,13 +183,11 @@
                             "filters": [
                                 {
                                     "placeholder": "From...",
-                                    "type": "input",
-                                    "disableCancelFilterButton": true
+                                    "type": "input"
                                 },
                                 {
                                     "placeholder": "To...",
-                                    "type": "input",
-                                    "disableCancelFilterButton": true
+                                    "type": "input"
                                 }
                             ]
                         },
@@ -232,8 +199,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -250,11 +216,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -272,8 +234,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -284,8 +245,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -302,11 +262,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -318,11 +274,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -334,11 +286,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -349,8 +297,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -579,11 +526,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -597,11 +540,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -614,11 +553,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         }
@@ -636,11 +571,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -654,11 +585,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -670,11 +597,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -685,8 +608,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder" : "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -697,8 +619,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -715,11 +636,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -730,11 +647,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         }
@@ -752,11 +665,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -767,11 +676,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -783,11 +688,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -799,8 +700,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -811,8 +711,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -829,11 +728,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -845,8 +740,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -857,8 +751,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -875,11 +768,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -890,11 +779,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -905,8 +790,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -1238,11 +1122,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1256,11 +1136,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -1273,11 +1149,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         }
@@ -1295,11 +1167,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1313,11 +1181,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -1329,11 +1193,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1345,11 +1205,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1361,11 +1217,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         }
                     ]
@@ -1381,11 +1233,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "visible": false
                         },
@@ -1397,11 +1245,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "link": true
                         }
@@ -1423,11 +1267,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1439,11 +1279,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -1454,11 +1290,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -1470,11 +1302,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -1493,11 +1321,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1509,11 +1333,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         }
                     ]
@@ -1530,11 +1350,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             },
                             "link": true
                         },
@@ -1553,11 +1369,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1569,11 +1381,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         }
                     ]
@@ -1590,11 +1398,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1606,11 +1410,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         },
                         {
@@ -1622,11 +1422,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
                             }
                         }
                     ]
@@ -1998,15 +1794,10 @@
                     "displayName": "Facility Full Name",
                     "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
                     "enableSorting": false,
-                    "sortDirection": "asc",
                     "filter": {
                         "condition": "starts_with",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     },
                     "link": true
                 },
@@ -2017,11 +1808,7 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 }
             ]
@@ -2033,49 +1820,34 @@
                     "field": "entityId",
                     "displayName": "Id",
                     "translateDisplayName": "CART.COLUMN.ID",
-                    "sortDirection": "asc",
                     "type" : "number",
                     "filter": {
                         "condition": "starts_with",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 },
                 {
                     "field": "name",
                     "displayName": "Facility",
                     "translateDisplayName": "CART.COLUMN.NAME",
-                    "sortDirection": "asc",
                     "type" : "string",
                     "filter": {
                         "condition": "starts_with",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 },
                 {
                     "field": "entityType",
                     "displayName": "Type",
                     "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
-                    "sortDirection": "asc",
                     "cellFilter": "entityTypeTitle",
                     "type" : "string",
                     "filter": {
                         "condition": "starts_with",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 },
                 {
@@ -2087,11 +1859,7 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 },
                 {
@@ -2102,11 +1870,7 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 },
                 {
@@ -2117,11 +1881,7 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 }
             ]
@@ -2150,9 +1910,6 @@
                         "filter": {
                             "condition": "starts_with",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": true
                         }
@@ -2165,9 +1922,6 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": false
                         },
@@ -2181,9 +1935,6 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": false
                         }
@@ -2203,9 +1954,6 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": false
                         }
@@ -2219,9 +1967,6 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": false
                         }
@@ -2246,9 +1991,6 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": true
                         },
@@ -2269,9 +2011,6 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": true
                         }
@@ -2285,9 +2024,6 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
                             "type": "input",
                             "disableCancelFilterButton": true
                         }
@@ -2301,41 +2037,36 @@
                 {
                     "field": "fileName",
                     "displayName": "Download Name",
-                    "translateDisplayName": "DOWNLOAD.COLUMN.DOWNLOAD_NAME",
-                    "sortDirection": "asc",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
                     "type" : "string"
                 },
                 {
                     "field": "facilityName",
                     "displayName": "Facility",
-                    "translateDisplayName": "CART.COLUMN.FACILITY_NAME",
-                    "sortDirection": "asc",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.FACILITY_NAME",
                     "type" : "string"
                 },
                 {
                     "field": "transport",
                     "displayName": "Transport",
-                    "translateDisplayName": "CART.COLUMN.TRANSPORT",
-                    "sortDirection": "asc",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
                     "type" : "string"
                 },
                 {
                     "field": "status",
                     "displayName": "Status",
-                    "translateDisplayName": "CART.COLUMN.STATUS",
-                    "sortDirection": "asc",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
                     "type" : "string"
                 },
                 {
                     "field": "createdAt",
                     "displayName": "Created Date",
-                    "translateDisplayName": "CART.COLUMN.CREATED_DATE",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
                     "type" : "date",
                     "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                     "filter": {
                         "placeholder": "Date...",
-                        "type": "input",
-                        "disableCancelFilterButton": true
+                        "type": "input"
                     }
                 }
             ]

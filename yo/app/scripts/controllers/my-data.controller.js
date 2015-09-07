@@ -30,16 +30,16 @@
 
                 //sort callback
                 $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-                    MyDataModel.sortChangedForPage(grid, sortColumns);
+                    MyDataModel.sortChanged(grid, sortColumns);
                 });
 
                 //pagination callback
                 $scope.gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
-                    MyDataModel.paginationChangedForPage(newPage, pageSize);
+                    MyDataModel.paginationChanged(newPage, pageSize);
                 });
 
                 $scope.gridApi.core.on.filterChanged($scope, function() {
-                    MyDataModel.filterChangedForPage(this.grid);
+                    MyDataModel.filterChanged(this.grid);
                 });
 
                 $scope.gridApi.selection.on.rowSelectionChanged($scope, function(row) {
@@ -64,19 +64,19 @@
 
                 //sort callback
                 $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-                    MyDataModel.sortChangedForScroll(grid, sortColumns);
+                    MyDataModel.sortChanged(grid, sortColumns);
                 });
 
                 $scope.gridApi.infiniteScroll.on.needLoadMoreData($scope, function() {
-                    MyDataModel.needLoadMoreDataForScroll();
+                    MyDataModel.needLoadMoreData();
                 });
 
                 $scope.gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, function() {
-                    MyDataModel.needLoadMoreDataTopForScroll();
+                    MyDataModel.needLoadMoreDataTop();
                 });
 
                 $scope.gridApi.core.on.filterChanged($scope, function () {
-                    MyDataModel.filterChangedForScroll(this.grid);
+                    MyDataModel.filterChanged(this.grid);
                 });
 
                 $scope.gridApi.selection.on.rowSelectionChanged($scope, function(row){

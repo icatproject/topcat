@@ -10,7 +10,7 @@
     "angular-resource": "1.3.14",
     "angular-sanitize": "1.3.14",
     "angular-route": "1.3.14",
-    "angular-bootstrap": "0.12.1",
+    "angular-bootstrap": "0.13.4",
     "angular-ui-router": "0.2.15",
     "angular-deferred-bootstrap": "0.1.7",
     "angularjs-truncate": "*",

@@ -182,6 +182,7 @@
                     server : facility.icatUrl
                 },
                 info : {
+                    'skipRefreshSession' : true,
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
                 }
@@ -245,10 +246,6 @@
             var params = {
                     headers: {
                         'Content-Type': undefined
-                    },
-                    info : {
-                        'facilityKeyName' : facility.facilityName,
-                        'facilityTitle' : facility.title
                     }
                 };
             $log.debug('icatservice refresh session');

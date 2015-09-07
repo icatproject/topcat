@@ -4,7 +4,7 @@
     <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="my-data-grid">
         <div class="no-rows row" ng-show="isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
-                <span>You no not have any data</span>
+                <span translate="MY_DATA.EMPTY"></span>
             </div>
         </div>
     </div>
@@ -12,7 +12,7 @@
     <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="my-data-grid">
         <div class="row" ng-show="isEmpty">
             <div class="empty-message center-block">
-                <span>You no not have any data</span>
+                <span translate="MY_DATA.EMPTY"></span>
             </div>
         </div>
     </div>

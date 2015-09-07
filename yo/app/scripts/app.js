@@ -281,9 +281,5 @@
         .run(['$rootScope', 'Cart', function($rootScope, Cart) {
             //init and restore cart when user refresh page
             Cart.init();
-
-            /*if (Cart.isRestorable()) {
-                Cart.restore();
-            }*/
         }]);
 })();

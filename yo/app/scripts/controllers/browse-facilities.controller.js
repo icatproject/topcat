@@ -11,10 +11,6 @@
     function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseFacilitiesModel, $log) { //jshint ignore: line
         var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
 
-        var currentRouteName = RouteUtils.getCurrentRouteName($state);
-
-        $log.warn('BrowseFacilitiesController currentRouteName', currentRouteName, $state);
-
         //apply only to browse pages
         if ( $state.current.name === 'home.browse.facility') {
             //redirect if only one facility

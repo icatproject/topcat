@@ -184,7 +184,7 @@
 
                     var filterCount = value.search.length;
                     if (filterCount === 1) {
-                        if (typeof value.search[0] !== 'undefined' && value.search[0].trim() !== '') {
+                        if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
                             $log.debug('search filter', value);
                             if (value.type === 'string') {
                                 $log.debug('string search filter', value);
@@ -200,8 +200,8 @@
                     }
 
                     if(filterCount > 1) {
-                        if (typeof value.search[0] !== 'undefined' && value.search[0].trim() !== '') {
-                            if (typeof value.search[1] !== 'undefined' && value.search[1].trim() !== '') {
+                        if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
+                            if (typeof value.search[1] !== 'undefined' && value.search[1] !== null && value.search[1].trim() !== '') {
                                 if (value.type === 'date') {
                                     $log.debug('date search filter', value);
                                     searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[1] + ' 23:59:59}');

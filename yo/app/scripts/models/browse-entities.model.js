@@ -115,8 +115,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 value.type = 'string';
             }
 
-            $log.debug('value', value);
-
             if (angular.isDefined(value.type) && value.type === 'date') {
                 //value.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><input class="form-control input-sm" datepicker-popup type="date" ng-model="colFilter.term" /></filter-datepicker></div>';
             }
@@ -140,7 +138,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             }
 
             //size column
-            //make sure for only investigation and dataset
+            //apply only to investigations and datasets
             if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
                 if(angular.isDefined(value.field) && value.field === 'size') {
                     value.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}" spinner-key="spinner-size-{{row.uid}}" class="grid-cell-spinner"></span><span>{{ row.entity.size | bytes }}</span></div>';
@@ -165,39 +163,25 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
      * @return {[type]}                   [description]
      */
     function makeGridNoUnselect(facility, currentEntityType, structure, $stateParams, gridOptions) {
-        $log.debug('makeRowUnselectable called');
         var selectableEntities = getSelectableParentEntities(facility, currentEntityType, structure);
 
-        $log.debug('cartItems', Cart.getItems());
-
-        $log.debug('makeRowUnselectable selectableEntities', selectableEntities);
-
         if (selectableEntities.length !== 0) {
-            $log.debug('makeRowUnselectable length greater than 0');
             var isInCart = false;
 
             //deal with investigation parent
             _.each(selectableEntities, function(entityType) {
                 var id = $stateParams[entityType + 'Id'];
 
-                $log.debug('makeRowUnselectable id:', id);
-
                 if(typeof id === 'string') {
                     id = parseInt(id);
                 }
 
-                $log.debug('getItem params', facility.facilityName, entityType, id);
-
                 var item = Cart.getItem(facility.facilityName, entityType, id);
-
-                $log.debug('makeRowUnselectable item:', item);
 
                 if (item !== false) {
                     isInCart = true;
                 }
             });
-
-            $log.debug('makeRowUnselectable isInCart:' + isInCart);
 
             if (isInCart === true) {
                 gridOptions.noUnselect = true;
@@ -254,7 +238,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
             //get the default sort columnDef
             var defaultSortColumn = getDefaultSort(self.gridOptions.columnDefs);
-            $log.debug('init defaultSortColumn', defaultSortColumn);
 
             //set default column if no default column set
             if (defaultSortColumn.length === 0) {
@@ -266,8 +249,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 });
             }
 
-            $log.debug('init defaultSortColumn after', defaultSortColumn);
-
             self.paginateParams = {
                 start: 0,
                 numRows: self.pageSize,
@@ -276,9 +257,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 includes: self.options.includes
             };
 
-            //this.makeRowUnselectable(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
             makeGridNoUnselect(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
-
     };
 
 
@@ -292,9 +271,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             enableRowSelection: self.enableSelection(),
             enableRowHeaderSelection: self.enableSelection(),
             enableSelectAll: false,
-            //modifierKeysToMultiSelect: true,
             multiSelect: true,
-            //flatEntityAccess: true,
             rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
         });
 
@@ -308,55 +285,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             self.gridOptions.infiniteScrollDown = true;
         }
 
-        $log.debug('self.gridOptions after setGridOptions', self.gridOptions);
+        //$log.debug('self.gridOptions after setGridOptions', self.gridOptions);
     };
-
-    /*this.makeRowUnselectable = function(facility, currentEntityType, structure, $stateParams, gridOptions) {
-        $log.debug('makeRowUnselectable called');
-        var selectableEntities = getSelectableParentEntities(facility, currentEntityType, structure);
-
-        $log.debug('cartItems', Cart.getItems());
-
-        $log.debug('makeRowUnselectable selectableEntities', selectableEntities);
-
-        if (selectableEntities.length !== 0) {
-            $log.debug('makeRowUnselectable length greater than 0');
-            var isInCart = false;
-
-            //deal with investigation parent
-            _.each(selectableEntities, function(entityType) {
-                var id = $stateParams[entityType + 'Id'];
-
-                $log.debug('makeRowUnselectable id:', id);
-
-                if(typeof id === 'string') {
-                    id = parseInt(id);
-                }
-
-                $log.debug('getItem params', facility.facilityName, entityType, id);
-
-                var item = Cart.getItem(facility.facilityName, entityType, id);
-
-                $log.debug('makeRowUnselectable item:', item);
-
-                if (item !== false) {
-                    isInCart = true;
-                }
-            });
-
-            $log.debug('makeRowUnselectable isInCart:' + isInCart);
-
-            if (isInCart === true) {
-                gridOptions.isRowSelectable = function(row) {
-                    $log.debug('makeRowUnselectable row:', row);
-
-                    //preselect the row
-                    row.isSelected = true;
-                    return false;
-                };
-            }
-        }
-    };*/
 
     /**
      * Loads data for both pagination and infinte scroll. This method is called by ui-grid to load the first page of data
@@ -365,11 +295,11 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
      */
     this.getPage = function() {
         //$log.debug('getpage called', paginateParams);
-        $log.debug('getData options self.currentRouteSegment', self.currentRouteSegment);
-        $log.debug('getData options self.facility.facilityName', self.facility.facilityName);
-        $log.debug('getData options self.sessions', self.sessions);
-        $log.debug('getData options self.stateParams', self.stateParams);
-        $log.debug('getData options self.paginateParams', self.paginateParams);
+        //$log.debug('getData options self.currentRouteSegment', self.currentRouteSegment);
+        //$log.debug('getData options self.facility.facilityName', self.facility.facilityName);
+        //$log.debug('getData options self.sessions', self.sessions);
+        //$log.debug('getData options self.stateParams', self.stateParams);
+        //$log.debug('getData options self.paginateParams', self.paginateParams);
 
         $log.debug('self.gridOptions', self.gridOptions);
 
@@ -395,7 +325,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 _.each(rows, function(row) {
                     //fill size data
                     if (self.hasSizeField) {
-                        //$log.debug('has size field');
                         if (self.currentEntityType === 'investigation' || self.currentEntityType === 'dataset') {
                             if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
                                 var params = {};
@@ -422,7 +351,13 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                     //select the row if item is in the cart
                     if (Cart.hasItem(self.facility.facilityName, self.currentEntityType, row.entity.id)) {
-                       self.scope.gridApi.selection.selectRow(row.entity);
+                        //the below selectRow api call fires the rowSelectionChanged callback which in turn calls
+                        //Cart.addItem(). The Cart.addItem() broadcast a Cart::Change which fires a Cart.save().
+                        //Since we only need to mark the row as selected, we do not want to preform a save to the
+                        //backend. To get around this, we add a fromEvent property to the row which can be picked up
+                        //by rowSelectionChanged and act accordingly.
+                        row.fromEvent = 'preSelection';
+                        self.scope.gridApi.selection.selectRow(row.entity);
                     }
                 });
 
@@ -448,7 +383,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                 _.each(rows, function(row) {
                     //file size data
                     if (self.hasSizeField) {
-                        //$log.debug('has size field');
                         if (self.currentEntityType === 'investigation' || self.currentEntityType === 'dataset') {
                             if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
                                 var params = {};
@@ -464,6 +398,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     }
 
                     if (Cart.hasItem(self.facility.facilityName, self.currentEntityType, row.entity.id)) {
+                       row.fromEvent = 'preSelection';
                        self.scope.gridApi.selection.selectRow(row.entity);
                     }
                 });
@@ -505,6 +440,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     }
 
                     if (Cart.hasItem(self.facility.facilityName, self.currentEntityType, row.entity.id)) {
+                       row.fromEvent = 'preSelection';
                        self.scope.gridApi.selection.selectRow(row.entity);
                     }
                 });
@@ -520,6 +456,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
             //pre-select items in cart here
             _.each(rows, function(row) {
+                row.fromEvent = 'preSelection';
+
                 if (Cart.hasItem(self.facility.facilityName, self.currentEntityType, row.entity.id)) {
                    self.scope.gridApi.selection.selectRow(row.entity);
                 } else {
@@ -557,7 +495,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         return route;
     };
 
-    //page sort callback
+    /*//page sort callback
     this.sortChangedForPage = function(grid, sortColumns) {
         if (sortColumns.length === 0) {
             //paginationOptions.sort = null;
@@ -569,10 +507,10 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
         //$log.debug('sortChanged paginateParams', paginateParams);
         self.getPage();
-    };
+    };*/
 
     //pagination callback
-    this.paginationChangedForPage = function(newPage, pageSize) {
+    this.paginationChanged = function(newPage, pageSize) {
         self.paginateParams.pageNumber = newPage;
         self.paginateParams.pageSize = pageSize;
 
@@ -600,7 +538,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
 
     //sort callback
-    this.sortChangedForScroll = function(grid, sortColumns) {
+    this.sortChanged = function(grid, sortColumns) {
         //$log.debug('sortChanged callback grid', grid);
         //$log.debug('sortChanged callback sortColumns', sortColumns);
 
@@ -613,22 +551,23 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             self.paginateParams.order = sortColumns[0].sort.direction;
         }
 
-        //$log.debug('sortChanged callback sortColumns after', sortColumns);
+        //set parameters to go back to the first page if page type is scroll
+        if (self.pagingType === 'scroll') {
+            self.scope.firstPage = 1;
+            self.scope.currentPage = 1;
+            self.paginateParams.start = 0;
 
-        self.scope.firstPage = 1;
-        self.scope.currentPage = 1;
-        self.paginateParams.start = 0;
-
-        $timeout(function() {
-            self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
-        });
+            $timeout(function() {
+                self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
+            });
+        }
 
         self.getPage();
 
         //$log.debug('sortChanged paginateParams', paginateParams);
     };
 
-    this.needLoadMoreDataForScroll = function() {
+    this.needLoadMoreData = function() {
         //$log.debug('needLoadMoreData called');
         //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start + self.pageSize;
@@ -643,7 +582,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
     };
 
 
-    this.needLoadMoreDataTopForScroll = function() {
+    this.needLoadMoreDataTop = function() {
         //$log.debug('needLoadMoreDataTop called');
         //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start - self.pageSize;
@@ -657,9 +596,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         self.scope.currentPage--;
     };
 
-    this.filterChangedForScroll = function (grid) {
-        $log.debug('this.grid', grid );
-        $log.debug('filterChanged column', grid.columns);
+    this.filterChanged = function (grid) {
+        $log.debug('filterChanged called', grid.columns);
 
         var sortOptions = [];
 
@@ -687,7 +625,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                     //validate term entered is a valid date before requesting page
                     _.each(grid.columns[index].filters, function(filter) {
                         //$log.debug('filter', filter);
-                        if (typeof filter.term !== 'undefined' && filter.term.trim() !== '') {
+                        if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
                             if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                 isValid = false;
                             }
@@ -701,14 +639,13 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                     //validate term entered is a valid date before requesting page
                     if ((typeof grid.columns[index].filters[0].term !== 'undefined') && (typeof grid.columns[index].filters[1].term !== 'undefined')) {
-                        if (typeof grid.columns[index].filters[0].term !== 'undefined' && grid.columns[index].filters[0].term.trim() !== '') {
-                            $log.debug('term 1 is defined and not empty');
+                        if (typeof grid.columns[index].filters[0].term !== 'undefined' && grid.columns[index].filters[0].term !== null && grid.columns[index].filters[0].term.trim() !== '') {
                             if (grid.columns[index].filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                 isValid = false;
                             }
                         }
 
-                        if (typeof grid.columns[index].filters[1].term !== 'undefined' && grid.columns[index].filters[1].term.trim() !== '') {
+                        if (typeof grid.columns[index].filters[1].term !== 'undefined' && grid.columns[index].filters[1].term !== null && grid.columns[index].filters[1].term.trim() !== '') {
                             if (grid.columns[index].filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                 isValid = false;
                             }
@@ -731,18 +668,20 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
         self.paginateParams.search = sortOptions;
 
-        self.scope.firstPage = 1;
-        self.scope.currentPage = 1;
-        self.paginateParams.start = 0;
+        //set parameters to go back to the first page if page type is scroll
+        if (self.pagingType === 'scroll') {
+            self.scope.firstPage = 1;
+            self.scope.currentPage = 1;
+            self.paginateParams.start = 0;
 
-        $timeout(function() {
-            self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
-        });
+            $timeout(function() {
+                self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
+            });
+        }
 
         //only make get page call if all filters are valid
         var isAllValid = true;
         _.each(sortOptions, function(sortOption) {
-            $log.debug('sortOption', sortOption);
             if (sortOption.isValid === false) {
                 isAllValid = false;
                 return false;
@@ -775,7 +714,11 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         }
 
         if (row.isSelected === true) {
-            Cart.addItem(self.facility.facilityName, self.currentEntityType, row.entity.id, row.entity.name, parentEntities);
+            if(typeof row.fromEvent !== 'undefined' && row.fromEvent === 'preSelection') {
+                Cart.restoreItem(self.facility.facilityName, self.currentEntityType, row.entity.id, row.entity.name, parentEntities);
+            } else {
+                Cart.addItem(self.facility.facilityName, self.currentEntityType, row.entity.id, row.entity.name, parentEntities);
+            }
         } else {
             Cart.removeItem(self.facility.facilityName, self.currentEntityType, row.entity.id);
         }
@@ -783,7 +726,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
     this.rowSelectionChangedBatch = function(rows){
         _.each(rows, function(row) {
-            self.rowSelectionChangedForScroll(row);
+            self.rowSelectionChanged(row);
         });
 
     };

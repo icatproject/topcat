@@ -79,6 +79,7 @@ body {
   top: 0;
   bottom: 0;
   width: 100%;
+  z-index: -10;
 }
 
 .no-rows .empty-message {
@@ -147,4 +148,9 @@ body {
 
 a[ng-click]{
     cursor: pointer;
+}
+
+.glyphicon.glyphicon-shopping-cart {
+    font-size: 16px;
+    color: #5e5e5e;
 }

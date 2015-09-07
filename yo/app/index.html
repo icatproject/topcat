@@ -58,6 +58,8 @@
                     </ul>
                   </li> -->
 
+                  <li ng-if="vm.isLoggedIn()"><p class="navbar-text"><span class="glyphicon glyphicon-shopping-cart"></span> <span><cart-item-count singular="{{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}" plural="{{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}"></cart-item-count></span></p></li>
+
                   <li class="dropdown">
                     <a class="dropdown-toggle pointer" data-toggle="dropdown" role="button" aria-expanded="false"><span translate="MAIN_NAVIGATION.LOGIN"></span><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -66,9 +68,9 @@
                       </li>
                       <li class="divider" ng-if="vm.isLoggedIn()"></li>
                       <li ng-repeat="facilityName in vm.facilitiesToLogout()" ng-if="vm.isLoggedIn()" >
-                        <a ui-sref="logout.facility({facilityName: facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{facilityName : facilityName}"></a>
+                        <a ui-sref="logout.facility({facilityName: facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{facilityName : vm.getFacilityTitleByFacilityName(facilityName), userName: vm.getUserNameByFacilityName(facilityName)}"></a>
                       </li>
-                      <li ng-if="vm.isLoggedIn()">
+                      <li ng-if="vm.isLoggedIn() && vm.facilities.length > 1">
                         <a ui-sref="logout" translate="MAIN_NAVIGATION.LOGOUT_ALL"></a>
                       </li>
                     </ul>
@@ -194,7 +196,6 @@
         <script src="scripts/controllers/parameter-modal.controller.js"></script>
         <script src="scripts/controllers/meta-panel.controller.js"></script>
         <script src="scripts/controllers/browse-facilities.controller.js"></script>
-        <script src="scripts/controllers/browse-panel.controller.js"></script>
         <script src="scripts/controllers/modal-instance.controller.js"></script>
         <script src="scripts/controllers/test.controller.js"></script>
         <script src="scripts/controllers/login.controller.js"></script>
@@ -214,6 +215,7 @@
         <script src="scripts/directives/load-download-size.directive.js"></script>
         <script src="scripts/directives/load-download-status.directive.js"></script>
         <script src="scripts/directives/filter-datepicker.directive.js"></script>
+        <script src="scripts/directives/cart-item-count.directive.js"></script>
 
         <!-- filters -->
         <script src="scripts/filters/bytes.filter.js"></script>

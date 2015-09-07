@@ -19,8 +19,6 @@
             var url = TOPCAT_API_PATH + '/cart/submit';
             var params = {
                     info : {
-                        'facilityKeyName' : facility.facilityName,
-                        'facilityTitle' : facility.title
                     }
                 };
 
@@ -38,8 +36,6 @@
                     userName: userName
                 },
                 info : {
-                    'facilityKeyName' : facility.facilityName,
-                    'facilityTitle' : facility.title
                 }
             };
 
@@ -51,8 +47,6 @@
 
             var params = {
                 info : {
-                    'facilityKeyName' : facility.facilityName,
-                    'facilityTitle' : facility.title
                 }
             };
 
@@ -69,8 +63,6 @@
                     userName: userName
                 },
                 info : {
-                    'facilityKeyName' : facility.facilityName,
-                    'facilityTitle' : facility.title
                 }
             };
 
@@ -88,8 +80,6 @@
                     userName: userName
                 },
                 info : {
-                    'facilityKeyName' : facility.facilityName,
-                    'facilityTitle' : facility.title
                 }
             };
 
@@ -109,8 +99,6 @@
                     userName: userName
                 },
                 info : {
-                    'facilityKeyName' : facility.facilityName,
-                    'facilityTitle' : facility.title
                 }
             };
 
@@ -127,8 +115,6 @@
                     userName: userName
                 },
                 info : {
-                    'facilityKeyName' : facility.facilityName,
-                    'facilityTitle' : facility.title
                 }
             };
 
@@ -145,8 +131,6 @@
                     userName: userName
                 },
                 info : {
-                    'facilityKeyName' : facility.facilityName,
-                    'facilityTitle' : facility.title
                 }
             };
 

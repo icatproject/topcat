@@ -11,13 +11,23 @@
         var self = this;
 
         /**
-         * This function transpose the site config file to settings used by ui-grid
+         * This function converts the grid options in the config file to options used by ui-grid
          *
          * @return {[type]} [description]
          */
         function configToUIGridOptions() {
             //$log.debug('configToUIGridOptions called');
             var gridOptions = Config.getSiteCartGridOptions(APP_CONFIG);
+
+            //add a delete column
+            gridOptions.columnDefs.push({
+                name : 'actions',
+                translateDisplayName: 'CART.COLUMN.ACTIONS',
+                enableFiltering: false,
+                enable: false,
+                enableSorting: false,
+                cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs"></a></div>'
+            });
 
             //do the work of transposing
             _.mapValues(gridOptions.columnDefs, function(value) {
@@ -55,19 +65,6 @@
                 return value;
             });
 
-            //add a delete column
-            gridOptions.columnDefs.push({
-                name : 'action',
-                displayName : 'Action',
-                translateDisplayName: 'CART.COLUMN.ACTION',
-                enableFiltering: false,
-                enable: false,
-                enableColumnMenu: false,
-                enableSorting: false,
-                enableHiding: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)">Remove</a></div>'
-            });
-
             return gridOptions;
         }
 
@@ -79,8 +76,7 @@
                 enableFiltering: self.options.enableFiltering,
                 enableRowSelection: false,
                 enableRowHeaderSelection: false,
-                paginationPageSizes: self.paginationPageSizes,
-                //rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
+                paginationPageSizes: self.paginationPageSizes
             });
         }
 
@@ -105,7 +101,6 @@
         };
 
         this.removeAllItems = function() {
-            $log.debug('remove all called');
             Cart.removeAllItems();
             self.gridOptions.data = [];
         };

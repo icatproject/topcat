@@ -4,7 +4,7 @@
     <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
         <div class="no-rows row" ng-show="isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
-                <span>Cart is empty</span>
+                <span translate="DOWNLOAD.EMPTY"></span>
             </div>
         </div>
     </div>
@@ -12,12 +12,12 @@
     <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
         <div class="row" ng-show="isEmpty">
             <div class="empty-message center-block">
-                <span>cart is empty</span>
+                <span translate="DOWNLOAD.EMPTY"></span>
             </div>
         </div>
     </div>
 
     <div class="cart-buttom-section">
-        <button ng-click="refresh()" type="button" class="btn btn-primary pull-right">Refresh</button>
+        <button ng-click="refresh()" type="button" class="btn btn-primary pull-right" translate="DOWNLOAD.BUTTON.REFRESH.TEXT"></button>
     </div>
 </div>

@@ -20,7 +20,8 @@
         CartModel.init($scope);
         CartModel.setCart();
 
-        $scope.items = Cart.getItems();
+        //get reference to the items in the cart directly
+        $scope.items = Cart._cart.items;
 
         $scope.$watchCollection(function() {
             return $scope.items;
@@ -40,24 +41,6 @@
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) { //jshint ignore: line
             if (toState.name === 'home.cart') {
                 CartModel.refreshData();
-            }
-        });
-
-        $rootScope.$on('Cart:change', function(){
-            Cart.save();
-        });
-
-
-        $rootScope.$on('Logout:success', function(){
-            if (Cart.isRestorable()) {
-                Cart.restore();
-            }
-
-        });
-
-        $rootScope.$on('SESSION:EXPIRED', function(event, data){
-            if (typeof data.facilityName !== 'undefined' && typeof data.userName !== 'undefined') {
-                Cart.removeUserItems(data.facilityName, data.userName);
             }
         });
 

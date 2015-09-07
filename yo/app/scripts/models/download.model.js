@@ -19,15 +19,15 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
 
         if (data.transport === 'https') {
             if (data.status === 'COMPLETE') {
-                html = '<a href="' + data.transportUrl + '/ids/getData?preparedId=' + data.preparedId + '&outname=' + data.fileName + '">Download</a>';
+                html = '<a href="' + data.transportUrl + '/ids/getData?preparedId=' + data.preparedId + '&outname=' + data.fileName + '" translate="DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT" class="btn btn-primary btn-xs"></a>';
             } else {
-                html = '<span class="not-active">Download</span>';
+                html = '<span class="not-active" translate="DOWNLOAD.ACTIONS.LINK.NON_ACTIVE_DOWNLOAD.TEXT" class="btn btn-primary btn-xs disabled"></span>';
             }
         } else if (data.transport === 'globus') {
-            html ='<a href="' + $state.href('globus-faq') + '">Download Via Globus</a>';
+            html ='<a href="' + $state.href('globus-faq') + '" translate="DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TEXT" class="btn btn-primary btn-xs"></a>';
         } else if (data.transport === 'smartclient') {
             if (data.status === 'COMPLETE') {
-                html ='<a ng-click="grid.appScope.smartClientModal()">Download</a>';
+                html ='<a ng-click="grid.appScope.smartClientModal()" translate="DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TEXT" class="btn btn-primary btn-xs"></a>';
             }
         }
 
@@ -39,24 +39,41 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
         //$log.debug('configToUIGridOptions called');
         var gridOptions = Config.getSiteMyDownloadGridOptions(APP_CONFIG);
 
-        //do the work of transposing
-        _.mapValues(gridOptions.columnDefs, function(value) {
-            //replace filter condition to one expected by ui-grid
-
-            return value;
-        });
-
         //add a Download column
         gridOptions.columnDefs.push({
-            name : 'download',
-            displayName : 'Actions',
-            translateDisplayName: 'CART.COLUMN.DOWNLOAD',
+            name : 'actions',
+            translateDisplayName: 'DOWNLOAD.COLUMN.ACTIONS',
             enableFiltering: false,
             enable: false,
             enableColumnMenu: false,
             enableSorting: false,
             enableHiding: false,
-            cellTemplate : '<div class="ui-grid-cell-contents"><span bind-html-compile="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity, grid.renderContainers.body.visibleRowCache.indexOf(row))">Remove</a></span></div>'
+            cellTemplate : '<div class="ui-grid-cell-contents"><span bind-html-compile="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity, grid.renderContainers.body.visibleRowCache.indexOf(row))" translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs"></a></span></div>'
+        });
+
+        //do the work of transposing
+        _.mapValues(gridOptions.columnDefs, function(value) {
+            //replace filter condition to one expected by ui-grid
+            if (angular.isDefined(value.filter)) {
+                if (angular.isDefined(value.filter.condition) && angular.isString(value.filter.condition)) {
+                    value.filter.condition = uiGridConstants.filter[value.filter.condition.toUpperCase()];
+                }
+            }
+
+            //default type to string if not defined
+            if (! angular.isDefined(value.type)) {
+                value.type = 'string';
+            }
+
+            //replace translate text
+            if (angular.isDefined(value.translateDisplayName) && angular.isString(value.translateDisplayName)) {
+                value.displayName = value.translateDisplayName;
+                delete value.translateDisplayName;
+
+                value.headerCellFilter = 'translate';
+            }
+
+            return value;
         });
 
         return gridOptions;
@@ -70,6 +87,7 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
             enableFiltering: self.options.enableFiltering,
             enableRowSelection: false,
             enableRowHeaderSelection: false,
+            gridMenuShowHideColumns: false,
             paginationPageSizes: self.paginationPageSizes
         });
     }

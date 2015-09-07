@@ -1,1 +1,1 @@
-<button type="button" class="btn btn-primary" ng-click="dc.openModal()">Download Cart</button>
+<button type="button" class="btn btn-primary" ng-click="dc.openModal()" ng-class="{'disabled': dc.cartItems.length === 0}"translate="CART.BUTTON.DOWNLOAD_CART.TEXT"></button>

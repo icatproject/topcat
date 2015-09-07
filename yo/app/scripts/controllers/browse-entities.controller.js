@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowseEntitiesController', BrowseEntitiesController);
 
-    BrowseEntitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseEntitiesModel', 'uiGridConstants', '$log'];
+    BrowseEntitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseEntitiesModel', 'uiGridConstants', '$templateCache', '$log'];
 
-    function BrowseEntitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, BrowseEntitiesModel, uiGridConstants, $log) { //jshint ignore: line
+    function BrowseEntitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, BrowseEntitiesModel, uiGridConstants, $templateCache, $log) { //jshint ignore: line
         var facilityName = $stateParams.facilityName;
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         var currentEntityType = RouteService.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
@@ -27,28 +27,39 @@
 
         BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams, $scope.gridOptions);
 
+        /*$templateCache.put('ui-grid/selectionSelectAllButtons',
+            '<div><span class="glyphicon glyphicon-shopping-cart" tooltip="Check items in this column to add to cart" tooltip-append-to-body tooltip-placement="bottom"></span></div>'
+        );
+
+        $templateCache.put('ui-grid/selectionRowHeaderButtons',
+            "<div class=\"ui-grid-selection-row-header-buttons ui-grid-icon-ok\" ng-class=\"{'ui-grid-row-selected': row.isSelected}\" ng-click=\"selectButtonClick(row, $event)\" tooltip=\"Check item to add to cart\" tooltip-placement=\"bottom\">&nbsp;</div>"
+        );*/
+
         if (pagingType === 'page') {
             $scope.gridOptions.onRegisterApi = function(gridApi) {
                 $scope.gridApi = gridApi;
 
-                //sort callback
+                //sort change callback
                 $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-                    BrowseEntitiesModel.sortChangedForPage(grid, sortColumns);
+                    BrowseEntitiesModel.sortChanged(grid, sortColumns);
                 });
 
                 //pagination callback
                 $scope.gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
-                    BrowseEntitiesModel.paginationChangedForPage(newPage, pageSize);
+                    BrowseEntitiesModel.paginationChanged(newPage, pageSize);
                 });
 
+                //filter change callback
                 $scope.gridApi.core.on.filterChanged($scope, function() {
-                    BrowseEntitiesModel.filterChangedForPage(this.grid);
+                    BrowseEntitiesModel.filterChanged(this.grid);
                 });
 
+                //row single row selection callback
                 $scope.gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                     BrowseEntitiesModel.rowSelectionChanged(row);
                 });
 
+                //multiple rows selection callback
                 $scope.gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
                     BrowseEntitiesModel.rowSelectionChangedBatch(rows);
                 });
@@ -65,27 +76,32 @@
 
                 $scope.gridApi = gridApi;
 
-                //sort callback
+                //sort change callback
                 $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-                    BrowseEntitiesModel.sortChangedForScroll(grid, sortColumns);
+                    BrowseEntitiesModel.sortChanged(grid, sortColumns);
                 });
 
+                //scroll down more data callback (append data)
                 $scope.gridApi.infiniteScroll.on.needLoadMoreData($scope, function() {
-                    BrowseEntitiesModel.needLoadMoreDataForScroll();
+                    BrowseEntitiesModel.needLoadMoreData();
                 });
 
+                //scoll up more data at top callback (prepend data)
                 $scope.gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, function() {
-                    BrowseEntitiesModel.needLoadMoreDataTopForScroll();
+                    BrowseEntitiesModel.needLoadMoreDataTop();
                 });
 
+                //filter change calkback
                 $scope.gridApi.core.on.filterChanged($scope, function () {
-                    BrowseEntitiesModel.filterChangedForScroll(this.grid);
+                    BrowseEntitiesModel.filterChanged(this.grid);
                 });
 
+                //single row selection callback
                 $scope.gridApi.selection.on.rowSelectionChanged($scope, function(row){
                     BrowseEntitiesModel.rowSelectionChanged(row);
                 });
 
+                //multiple rows selection callback
                 $scope.gridApi.selection.on.rowSelectionChangedBatch ($scope, function(rows){
                     BrowseEntitiesModel.rowSelectionChangedBatch(rows);
                 });
@@ -94,11 +110,9 @@
             BrowseEntitiesModel.getPage();
         }
 
-
         $rootScope.$on('Cart:itemRemoved', function(){
             BrowseEntitiesModel.refreshSelection($scope);
         });
-
 
         /**
          * Function required by view expression to get the next route segment

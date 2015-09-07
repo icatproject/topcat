@@ -7,12 +7,13 @@
         controller('DownloadCartModalController', DownloadCartModalController).
         directive('downloadCart', downloadCart);
 
-    DownloadCartController.$inject = ['$modal', '$log'];
+    DownloadCartController.$inject = ['$modal', 'Cart', '$log'];
     DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING', '$log'];
     downloadCart.$inject = [];
 
-    function DownloadCartController ($modal, $log) { //jshint ignore: line
+    function DownloadCartController ($modal, Cart, $log) { //jshint ignore: line
         var dc = this;
+        dc.cartItems = Cart._cart.items;
 
         dc.openModal = function() {
             var modalInstance = $modal.open({

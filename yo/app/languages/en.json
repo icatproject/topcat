@@ -7,7 +7,7 @@
         "LANGUAGE": "Language",
         "LOGIN": "Login",
         "LOGOUT": "Logout",
-        "LOGOUT_FACILITY" : "Logout {{facilityName}}",
+        "LOGOUT_FACILITY" : "Logout {{facilityName}} ({{userName}})",
         "LOGOUT_ALL": "Logout All",
         "MAIN_TAB" : {
             "MY_DATA" : "My Data",
@@ -71,9 +71,6 @@
         "DATAFILE" : {
             "NAME" : "Datafile"
         }
-    },
-    "MY_DATA" : {
-        "TITLE" : "My Data"
     },
     "BROWSE": {
         "COLUMN": {
@@ -179,6 +176,10 @@
             "SEARCH_BUTTON" : "Search"
         }
     },
+    "MY_DATA" : {
+        "TITLE" : "My Data",
+        "EMPTY" : "You no not have any data"
+    },
     "CART" : {
         "TITLE" : "Cart",
         "COLUMN" : {
@@ -187,24 +188,119 @@
             "ENTITY_TYPE" : "Type",
             "FACILITY" : "Facility",
             "SIZE" : "Size",
-            "AVAILABILITY" : "Availability"
+            "AVAILABILITY" : "Availability",
+            "ACTIONS" : "Action"
         },
         "EMPTY" : "Cart is empty",
         "BUTTON" : {
-            "REMOVE_ALL" : "Remove All"
+            "REMOVE_ALL" : {
+                "TEXT" : "Remove All"
+            },
+            "DOWNLOAD_CART" : {
+                "TEXT" : "Download Cart"
+            }
+        },
+        "ACTIONS" : {
+            "LINK": {
+                "REMOVE" : {
+                    "TEXT" : "Remove"
+                }
+            }
+        },
+        "SUBMIT_CART" : {
+            "NOTIFY_MESSAGE" : {
+                "SUCCESS" : "Cart successfully submitted",
+                "FAILURE" : "Failed to add job to Smartclient: {errorMessage}",
+                "ERROR" : "Failed to submit cart: {errorMessage}"
+            }
+        },
+        "DOWNLOAD" : {
+            "MODAL" : {
+                "TITLE" : "Download",
+                "MESSAGE" : "",
+                "IS_ARCHIVED_MESSAGE" : "A requested download has items that are archived and must be restored. Once your download is submitted, please check your Download Order periodically for the availablilty status. When the status is \"Online\", you can initiate the download of your files.",
+                "EMAIL_ME_MESSAGE" : "Email me when download is ready",
+                "COLUMN" : {
+                    "FILE_NAME" : "Download Name",
+                    "TRANSPORT" : "Transport",
+                    "SIZE" : "Facility" ,
+                    "SERVER" : "Status",
+                    "AVAILABILITY" : "Availability"
+                },
+                "BUTTON" : {
+                    "OK" : {
+                        "TEXT" : "OK"
+                    },
+                    "CANCEL" : {
+                        "TEXT" : "Cancel"
+                    }
+                }
+            }
+
+        },
+        "BASKET" : {
+            "ITEMS" : {
+                "TEXT" : {
+                    "SINGULAR" : "item",
+                    "PLURAL" : "items"
+                }
+            }
         }
     },
     "DOWNLOAD" : {
         "TITLE" : "Download Orders",
         "COLUMN" : {
-            "ID" : "Id",
-            "NAME" : "Name",
-            "ENTITY_TYPE" : "Type",
-            "FACILITY" : "Facility",
-            "SIZE" : "Size",
-            "AVAILABILITY" : "Availability"
+            "FILE_NAME" : "Download Name",
+            "TRANSPORT" : "Transport",
+            "FACILITY" : "Facility" ,
+            "STATUS" : "Status",
+            "CREATED_AT" : "Created At",
+            "ACTIONS" : "Actions"
         },
-        "EMPTY" : "No Download"
+        "EMPTY" : "No Downloads",
+        "REMOVE_DOWNLOAD" : {
+            "MODAL" : {
+                "TITLE" : "Remove download",
+                "MESSAGE" : "Are you sure you want to remove this download?",
+                "BUTTON" : {
+                    "OK" : {
+                        "TEXT" : "OK"
+                    },
+                    "CANCEL" : {
+                        "TEXT" : "Cancel"
+                    }
+                }
+            },
+            "NOTIFY_MESSAGE" : {
+                "SUCCESS" : "Download successfully removed",
+                "FAILURE" : "Failed to removed download. Either the download has already been removed or you do not have the correct permission.",
+                "ERROR" : "Failed to removed download: {errorMessage}"
+            }
+        },
+        "ACTIONS" : {
+            "LINK": {
+                "HTTP_DOWNLOAD" : {
+                    "TEXT" : "Download"
+                },
+                "GLOBUS_DOWNLOAD" : {
+                    "TEXT" : "Download via Globus"
+                },
+                "SMARTCLIENT_DOWNLOAD" : {
+                    "TEXT" : "@:DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT"
+                },
+                "REMOVE" : {
+                    "TEXT" : "Remove"
+                },
+                "NON_ACTIVE_DOWNLOAD" : {
+                    "TEXT" : "@:DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT"
+                }
+            }
+        },
+        "BUTTON" : {
+            "REFRESH" : {
+                "TEXT" : "Refresh"
+            }
+        }
     },
     "ABOUT" : {
         "TITLE" : "About"

@@ -68,14 +68,6 @@
             }
 
             $log.debug('RemoteStorageManager Init called');
-
-            /*if (typeof $localStorage[APP_CONSTANT.storageName] === 'undefined') {
-                $localStorage.$default(getNewUserStore(facility, userName));
-            } else {
-                if (typeof manager.getUserStore(facility, userName) !== 'undefined') {
-                    _.merge($localStorage, getNewUserStore(facility, userName));
-                }
-            }*/
         };
 
         /**
@@ -148,8 +140,8 @@
                     cartItems: myCart.items
                 };
 
-                $log.debug('saveCartOject', saveCartOject);
-                $log.debug(JSON.stringify(saveCartOject, null, 2));
+                //$log.debug('saveCartOject', saveCartOject);
+                //$log.debug(JSON.stringify(saveCartOject, null, 2));
 
 
                 TopcatManager.saveCart(facility, userName, saveCartOject);

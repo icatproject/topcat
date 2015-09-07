@@ -22,10 +22,14 @@
         var loggedInFacilities = _.keys($sessionStorage.sessions);
         var notLoggedInFacilities = getNotLoggedInFacilitiesObjects(allFacilityNames, loggedInFacilities, APP_CONFIG, Config);
 
-        vm.facilities = notLoggedInFacilities;
-        vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, allFacilityNames[0]).authenticationType;
-        vm.user.facilityName = vm.facilities[0].facilityName;
-        vm.user.plugin = getAuthenticationTypes(vm.user.facilityName)[0].plugin;
+        $log.debug('notLoggedInFacilities', notLoggedInFacilities);
+
+        if (notLoggedInFacilities.length !== 0) {
+            vm.facilities = notLoggedInFacilities;
+            vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, allFacilityNames[0]).authenticationType;
+            vm.user.facilityName = vm.facilities[0].facilityName;
+            vm.user.plugin = getAuthenticationTypes(vm.user.facilityName)[0].plugin;
+        }
 
         vm.updateAuthenticationTypes = updateAuthenticationTypes;
         vm.getAuthenticationTypes = getAuthenticationTypes;

@@ -7,7 +7,7 @@
         .controller('RemoveDownloadModalController', RemoveDownloadModalController);
 
     DownloadController.$inject = ['$rootScope', '$scope', '$state', 'APP_CONFIG', 'Config', 'Cart', 'DownloadModel', '$sessionStorage', '$modal', 'uiGridConstants', '$log'];
-    RemoveDownloadModalController.$inject = ['$modalInstance', 'APP_CONFIG', 'Config', 'row', 'TopcatManager', 'inform', '$log'];
+    RemoveDownloadModalController.$inject = ['$modalInstance', 'APP_CONFIG', 'Config', 'row', 'TopcatManager', 'inform', '$translate', '$log'];
 
 
     function DownloadController($rootScope, $scope, $state, APP_CONFIG, Config, Cart, DownloadModel, $sessionStorage, $modal, uiGridConstants, $log) { //jshint ignore: line
@@ -56,7 +56,7 @@
         };
     }
 
-    function RemoveDownloadModalController($modalInstance, APP_CONFIG, Config, row, TopcatManager, inform, $log) { //jshint ignore: line
+    function RemoveDownloadModalController($modalInstance, APP_CONFIG, Config, row, TopcatManager, inform, $translate, $log) { //jshint ignore: line
         var vm = this;
 
         vm.ok = function() {
@@ -66,18 +66,18 @@
 
             TopcatManager.removeDownloadByPreparedId(facility, row.userName, row.preparedId).then(function(data) {
                 if (typeof data.value !== 'undefined') {
-                    inform.add('Download successfully removed', {
+                    inform.add($translate.instant('DOWNLOAD.REMOVE_DOWNLOAD.NOTIFY_MESSAGE.SUCCESS'), {
                         'ttl': 4000,
                         'type': 'success'
                     });
                 } else if (_.isEmpty(data) === true) {
-                    inform.add('Failed to removed download. Either the download has already been removed or you do not have the correct permission.', {
+                    inform.add($translate.instant('DOWNLOAD.REMOVE_DOWNLOAD.NOTIFY_MESSAGE.FAILURE'), {
                         'ttl': 0,
                         'type': 'danger'
                     });
                 }
             }, function(error) { //jshint ignore: line
-                inform.add('Failed to removed download: ' + error, {
+                inform.add($translate.instant('DOWNLOAD.REMOVE_DOWNLOAD.NOTIFY_MESSAGE.ERROR', {'errorMEssage' : error}), {
                     'ttl': 0,
                     'type': 'danger'
                 });

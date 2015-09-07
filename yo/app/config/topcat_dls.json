@@ -46,42 +46,6 @@
                     "enableFiltering": true,
                     "columnDefs": [
                         {
-                            "field": "id",
-                            "displayName": "Id",
-                            "enableSorting": false,
-                            "type": "number",
-                            "visible": false,
-                            "filter": {
-                                "condition": "starts_with",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
-                            }
-                        },
-                        {
-                            "field": "name",
-                            "displayName": "Name",
-                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.NAME",
-                            "type": "string",
-                            "visible": false,
-                            "sort": {
-                                "direction": "asc"
-                            },
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
-                            },
-                            "link": true
-                        },
-                        {
                             "field": "fullName",
                             "displayName": "Full Name",
                             "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
@@ -89,11 +53,10 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": false
+                                "type": "input"
+                            },
+                            "sort": {
+                                "direction": "asc"
                             },
                             "link": true
                         }
@@ -104,8 +67,7 @@
                     "columnDefs": [
                         {
                             "field": "name",
-                            "displayName": "name",
-                            "enableSorting": false,
+                            "displayName": "Name",
                             "type": "string",
                             "sort": {
                                 "direction": "asc"
@@ -113,11 +75,7 @@
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "cellTooltip": true,
                             "link": true
@@ -139,11 +97,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "sort": {
                                 "direction": "asc"
@@ -160,11 +114,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "cellTooltip": true,
                             "link": true
@@ -172,16 +122,11 @@
                         {
                             "field": "name",
                             "displayName": "Name",
-                            "enableSorting": false,
                             "type": "string",
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "cellTooltip": true,
                             "link": true
@@ -195,17 +140,12 @@
                         {
                             "field": "investigationInstruments[0].instrument.fullName",
                             "displayName": "Instrument",
-                            "enableSorting": false,
                             "type": "string",
                             "visible": true,
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -217,13 +157,11 @@
                             "filters": [
                                 {
                                     "placeholder": "From...",
-                                    "type": "input",
-                                    "disableCancelFilterButton": true
+                                    "type": "input"
                                 },
                                 {
                                     "placeholder": "To...",
-                                    "type": "input",
-                                    "disableCancelFilterButton": true
+                                    "type": "input"
                                 }
                             ]
                         },
@@ -235,8 +173,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -253,11 +190,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "sort": {
                                 "direction": "asc"
@@ -279,8 +212,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -291,8 +223,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -309,11 +240,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             },
                             "cellTooltip": true
                         },
@@ -326,11 +253,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -342,11 +265,7 @@
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
-                                "flags": {
-                                    "caseSensitive": false
-                                },
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         },
                         {
@@ -357,8 +276,7 @@
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
                                 "placeholder": "Date...",
-                                "type": "input",
-                                "disableCancelFilterButton": true
+                                "type": "input"
                             }
                         }
                     ]
@@ -549,7 +467,7 @@
     "site": {
         "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/api/v1",
         "home" : "my-data",
-        "pagingType": "scroll",
+        "pagingType": "page",
         "useFileForData": false,
         "useFileForSession": false,
         "paginationNumberOfRows": 10,
@@ -569,16 +487,10 @@
                     "field": "fullName",
                     "displayName": "Facility Full Name",
                     "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
-                    "enableSorting": false,
-                    "sortDirection": "asc",
                     "filter": {
                         "condition": "starts_with",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     },
                     "link": true
                 },
@@ -589,11 +501,7 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 }
             ]
@@ -605,16 +513,11 @@
                     "field": "name",
                     "displayName": "Facility",
                     "translateDisplayName": "CART.COLUMN.NAME",
-                    "sortDirection": "asc",
                     "type" : "string",
                     "filter": {
                         "condition": "starts_with",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     },
                     "cellTooltip": true
                 },
@@ -622,7 +525,6 @@
                     "field": "entityType",
                     "displayName": "Type",
                     "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
-                    "sortDirection": "asc",
                     "cellFilter": "entityTypeTitle",
                     "type" : "string",
                     "filter": {
@@ -631,8 +533,7 @@
                         "flags": {
                             "caseSensitive": false
                         },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 },
                 {
@@ -643,11 +544,7 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 },
                 {
@@ -658,11 +555,7 @@
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
-                        "flags": {
-                            "caseSensitive": false
-                        },
-                        "type": "input",
-                        "disableCancelFilterButton": false
+                        "type": "input"
                     }
                 }
             ]
@@ -684,11 +577,7 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
-                            "type": "input",
-                            "disableCancelFilterButton": false
+                            "type": "input"
                         },
                         "cellTooltip": true,
                         "link": true
@@ -701,28 +590,19 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
-                            "type": "input",
-                            "disableCancelFilterButton": false
+                            "type": "input"
                         },
                         "link": true
                     },
                     {
                         "field": "investigationInstruments[0].instrument.fullName",
                         "displayName": "Instrument",
-                        "enableSorting": false,
                         "type": "number",
                         "visible": true,
                         "filter": {
                             "condition": "starts_with",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
-                            "type": "input",
-                            "disableCancelFilterButton": true
+                            "type": "input"
                         }
                     },
                     {
@@ -740,11 +620,10 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
-                            "type": "input",
-                            "disableCancelFilterButton": false
+                            "type": "input"
+                        },
+                        "sort": {
+                            "direction": "desc"
                         }
                     },
                     {
@@ -756,11 +635,7 @@
                         "filter": {
                             "condition": "contains",
                             "placeholder": "Containing...",
-                            "flags": {
-                                "caseSensitive": false
-                            },
-                            "type": "input",
-                            "disableCancelFilterButton": false
+                            "type": "input"
                         }
                     }
                 ]
@@ -771,35 +646,45 @@
             "columnDefs": [
                 {
                     "field": "fileName",
-                    "displayName": "Download Name",
-                    "translateDisplayName": "DOWNLOAD.COLUMN.DOWNLOAD_NAME",
-                    "sortDirection": "asc",
-                    "type" : "string"
+                    "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "type": "input"
+                    }
                 },
                 {
                     "field": "transport",
-                    "displayName": "Transport",
-                    "translateDisplayName": "CART.COLUMN.TRANSPORT",
-                    "sortDirection": "asc",
-                    "type" : "string"
+                    "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "type": "input"
+                    }
                 },
                 {
                     "field": "status",
-                    "displayName": "Status",
-                    "translateDisplayName": "CART.COLUMN.STATUS",
-                    "sortDirection": "asc",
-                    "type" : "string"
+                    "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "type": "input"
+                    }
                 },
                 {
                     "field": "createdAt",
-                    "displayName": "Created Date",
-                    "translateDisplayName": "CART.COLUMN.CREATED_DATE",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
                     "type" : "date",
                     "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                     "filter": {
                         "placeholder": "Date...",
-                        "type": "input",
-                        "disableCancelFilterButton": true
+                        "type": "input"
+                    },
+                    "sort": {
+                        "direction": "desc"
                     }
                 }
             ]
