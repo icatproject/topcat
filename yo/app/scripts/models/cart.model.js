@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('CartModel', CartModel);
 
-    CartModel.$inject = ['APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'uiGridConstants', '$sessionStorage', 'Cart', '$log'];
+    CartModel.$inject = ['APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'uiGridConstants', '$sessionStorage', 'Cart', '$translate', '$log'];
 
-    function CartModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGridConstants, $sessionStorage, Cart, $log){ //jshint ignore: line
+    function CartModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGridConstants, $sessionStorage, Cart, $translate, $log){ //jshint ignore: line
         var self = this;
 
         /**
@@ -26,7 +26,7 @@
                 enableFiltering: false,
                 enable: false,
                 enableSorting: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs"></a></div>'
+                cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
             });
 
             //do the work of transposing

@@ -28,12 +28,12 @@
         BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams, $scope.gridOptions);
 
         /*$templateCache.put('ui-grid/selectionSelectAllButtons',
-            '<div><span class="glyphicon glyphicon-shopping-cart" tooltip="Check items in this column to add to cart" tooltip-append-to-body tooltip-placement="bottom"></span></div>'
-        );
+            '<div><span class="glyphicon glyphicon-shopping-cart" tooltip="Click [✓] in this column to add/remove items from cart" tooltip-append-to-body="true"></span></div>'
+        );*/
 
         $templateCache.put('ui-grid/selectionRowHeaderButtons',
-            "<div class=\"ui-grid-selection-row-header-buttons ui-grid-icon-ok\" ng-class=\"{'ui-grid-row-selected': row.isSelected}\" ng-click=\"selectButtonClick(row, $event)\" tooltip=\"Check item to add to cart\" tooltip-placement=\"bottom\">&nbsp;</div>"
-        );*/
+            '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" tooltip="' + $translate.instant('BROWSE.SELECTOR.TOOLTIP.TEXT') + '" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
+        );
 
         if (pagingType === 'page') {
             $scope.gridOptions.onRegisterApi = function(gridApi) {

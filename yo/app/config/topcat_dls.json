@@ -4,7 +4,7 @@
             "facilityName": "dls",
             "title": "DIAMOND",
             "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
-            "idsUrl": "https://fdsstoraged20.fds.rl.ac.uk:8181",
+            "idsUrl": "https://fdsgos11.fds.rl.ac.uk:8181",
             "idsIsToLevel": true,
             "facilityId": 1,
             "hierarchy": [
@@ -33,12 +33,12 @@
                     "displayName" : "Https",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
+                    "url": "https://fdsgos11.fds.rl.ac.uk:8181"
                 },
                 {
                     "displayName" : "Globus",
                     "type" : "globus",
-                    "url": "https://fdsstoraged20.fds.rl.ac.uk:8181"
+                    "url": "https://fdsgos11.fds.rl.ac.uk:8181"
                 }
             ],
             "browseOptions": {

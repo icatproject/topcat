@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('MyDataController', MyDataController);
 
-    MyDataController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'MyDataModel', '$log'];
+    MyDataController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'MyDataModel', '$templateCache', '$log'];
 
-    function MyDataController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, MyDataModel, $log) {
+    function MyDataController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, MyDataModel, $templateCache, $log) {
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         var entityType = Config.getSiteMyDataGridEntityType(APP_CONFIG);
         var facilities = Config.getFacilities(APP_CONFIG);
@@ -23,6 +23,10 @@
         };
 
         MyDataModel.init(facilities, $scope, entityType, currentRouteSegment, sessions, $stateParams);
+
+        $templateCache.put('ui-grid/selectionRowHeaderButtons',
+            '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" tooltip="' + $translate.instant('MY_DATA.SELECTOR.TOOLTIP.TEXT') + '" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
+        );
 
         if (pagingType === 'page') {
             $scope.gridOptions.onRegisterApi = function(gridApi) {

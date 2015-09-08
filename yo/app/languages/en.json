@@ -162,7 +162,12 @@
                 "SORT_DESCENDING": ": activate to sort column descending"
             }
         },
-        "EMPTY" : "Nothing to display"
+        "EMPTY" : "Nothing to display",
+        "SELECTOR" : {
+            "TOOLTIP" : {
+                "TEXT" : "Click to add/remove this item from cart"
+            }
+        }
     },
     "SEARCH" : {
         "FORM" : {
@@ -178,7 +183,12 @@
     },
     "MY_DATA" : {
         "TITLE" : "My Data",
-        "EMPTY" : "You no not have any data"
+        "EMPTY" : "You no not have any data",
+        "SELECTOR" : {
+            "TOOLTIP" : {
+                "TEXT" : "@:BROWSE.SELECTOR.TOOLTIP.TEXT"
+            }
+        }
     },
     "CART" : {
         "TITLE" : "Cart",
@@ -194,16 +204,25 @@
         "EMPTY" : "Cart is empty",
         "BUTTON" : {
             "REMOVE_ALL" : {
-                "TEXT" : "Remove All"
+                "TEXT" : "Remove All",
+                "TOOLTIP" : {
+                    "TEXT" : "Click to remove all items from cart"
+                }
             },
             "DOWNLOAD_CART" : {
-                "TEXT" : "Download Cart"
+                "TEXT" : "Download Cart",
+                "TOOLTIP" : {
+                    "TEXT" : "Click to submit this cart for download"
+                }
             }
         },
         "ACTIONS" : {
             "LINK": {
                 "REMOVE" : {
-                    "TEXT" : "Remove"
+                    "TEXT" : "Remove",
+                    "TOOLTIP" : {
+                    "TEXT" : "Click to remove this item from the cart"
+                }
                 }
             }
         },
@@ -280,25 +299,43 @@
         "ACTIONS" : {
             "LINK": {
                 "HTTP_DOWNLOAD" : {
-                    "TEXT" : "Download"
+                    "TEXT" : "Download",
+                    "TOOLTIP" : {
+                        "TEXT" : "Click to download this via the browser"
+                    }
                 },
                 "GLOBUS_DOWNLOAD" : {
-                    "TEXT" : "Download via Globus"
+                    "TEXT" : "Download via Globus",
+                    "TOOLTIP" : {
+                        "TEXT" : "Click to find out how to download this via Globus FTP"
+                    }
                 },
                 "SMARTCLIENT_DOWNLOAD" : {
-                    "TEXT" : "@:DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT"
+                    "TEXT" : "@:DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT",
+                    "TOOLTIP" : {
+                        "TEXT" : "Check your Smart Client home directory for your files"
+                    }
                 },
                 "REMOVE" : {
-                    "TEXT" : "Remove"
+                    "TEXT" : "Remove",
+                    "TOOLTIP" : {
+                        "TEXT" : "Click to remove from download order list"
+                    }
                 },
                 "NON_ACTIVE_DOWNLOAD" : {
-                    "TEXT" : "@:DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT"
+                    "TEXT" : "@:DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT",
+                    "TOOLTIP" : {
+                        "TEXT" : "This download is not yet ready"
+                    }
                 }
             }
         },
         "BUTTON" : {
             "REFRESH" : {
-                "TEXT" : "Refresh"
+                "TEXT" : "Refresh",
+                "TOOLTIP" : {
+                    "TEXT" : "Refresh download order"
+                }
             }
         }
     },

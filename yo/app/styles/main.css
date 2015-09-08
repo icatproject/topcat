@@ -146,11 +146,24 @@ body {
   text-decoration: none;
 }
 
+/* make ng-click a pointer on rollover */
 a[ng-click]{
     cursor: pointer;
 }
 
+/*cart trolly item count icon*/
 .glyphicon.glyphicon-shopping-cart {
     font-size: 16px;
     color: #5e5e5e;
 }
+
+/* pager page input box width */
+.ui-grid-pager-control input {
+  width: 80px;
+}
+
+/* pager row count select width */
+.ui-grid-pager-row-count-picker select {
+  width: 80px;
+}
+
