@@ -144,7 +144,7 @@ public class CheckStatusWorker {
             DataSelection dataSelection = new DataSelection();
             dataSelection.addDatafile(fileId);
 
-            Status status = ids.getStatus(this.sessionId, dataSelection);
+            Status status = ids.getStatus(null, dataSelection);
 
             if (status.equals(Status.ONLINE)) {
                 logger.info(fileId + " is online, removing");

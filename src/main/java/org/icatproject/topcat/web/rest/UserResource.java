@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
+import org.icatproject.topcat.Constants;
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartDTO;
 import org.icatproject.topcat.domain.CartItem;
@@ -507,9 +508,25 @@ public class UserResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response ping() {
         logger.info("ping() called");
-        return Response.ok().entity("ok").build();
 
+        StringValue value = new StringValue("ok");
+
+        return Response.ok().entity(value).build();
     }
+
+
+    @GET
+    @Path("/version")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getVersion() {
+        logger.info("getVersion() called");
+
+        StringValue value = new StringValue(Constants.API_VERSION);
+
+        return Response.ok().entity(value).build();
+    }
+
+
 
     /**
      * Check userName matches session

@@ -285,8 +285,111 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             self.gridOptions.infiniteScrollDown = true;
         }
 
-        //$log.debug('self.gridOptions after setGridOptions', self.gridOptions);
+        $log.debug('self.gridOptions after setGridOptions', self.gridOptions);
     };
+
+
+    //@TODO applyFilterAndGetPage() and filterChanged() should be combined and
+    //refactored as they work pretty much the same. filterChanged() uses
+    //gridApi.grid.colDef while applyFilterAndGetPage() uses gridOptions.columnDefs
+    //to build the search terms. There should be no reason why filterChanged() cannot
+    //use gridOptions.columnDefs. applyFilterAndGetPage() however, cannot use
+    //grid.colDef as doesn't seem possible to retrieve it.
+    this.applyFilterAndGetPage = function (columnDefs) {
+        $log.debug('applyFilterAndGetPage called', columnDefs);
+
+        var sortOptions = [];
+
+        _.each(columnDefs, function(value, index) {
+            var searchTerms = [];
+            var isValid = true;
+
+            var columnType = 'string';
+            if (typeof columnDefs[index].type !== 'undefined') {
+                columnType = columnDefs[index].type;
+            }
+
+            if (typeof columnDefs[index].filter !== 'undefined' || typeof columnDefs[index].filters !== 'undefined') {
+                if (columnType === 'string') {
+                    if (typeof columnDefs[index].filter !== 'undefined') {
+                        searchTerms.push(columnDefs[index].filter.term);
+                    }
+                }
+
+                if (columnType === 'date') {
+                    //filter or filters?
+                    if (typeof columnDefs[index].filters !== 'undefined') {
+                        var filterCount = columnDefs[index].filters.length;
+
+                        if (filterCount === 1) {
+                            //validate term entered is a valid date before requesting page
+                            _.each(columnDefs[index].filters, function(filter) {
+                                //$log.debug('filter', filter);
+                                if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
+                                    if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                        searchTerms.push(columnDefs[index].filters[0].term);
+                                    }
+                                }
+                            });
+                        } else if (filterCount > 1) {
+                            //validate term entered is a valid date before requesting page
+                            if ((typeof columnDefs[index].filters[0].term !== 'undefined') && (typeof columnDefs[index].filters[1].term !== 'undefined')) {
+                                if (typeof columnDefs[index].filters[0].term !== 'undefined' && columnDefs[index].filters[0].term !== null && columnDefs[index].filters[0].term.trim() !== '') {
+                                    if (columnDefs[index].filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                        isValid = false;
+                                    }
+                                }
+
+                                if (typeof columnDefs[index].filters[1].term !== 'undefined' && columnDefs[index].filters[1].term !== null && columnDefs[index].filters[1].term.trim() !== '') {
+                                    if (columnDefs[index].filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                        isValid = false;
+                                    }
+                                }
+                            } else if (! ((typeof columnDefs[index].filters[0].term === 'undefined') && (typeof columnDefs[index].filters[1].term === 'undefined'))) {
+                                isValid = false;
+                            }
+
+                            if (isValid) {
+                                searchTerms.push(columnDefs[index].filters[0].term);
+                                searchTerms.push(columnDefs[index].filters[1].term);
+                            }
+                        }
+                    } else if (typeof columnDefs[index].filter !== 'undefined') {
+                        if (typeof columnDefs[index].filter.term !== 'undefined' && columnDefs[index].filter.term !== null && columnDefs[index].filter.term.trim() !== '') {
+                            if (columnDefs[index].filter.term.match(/\d{4}\-\d{2}\-\d{2}/) !== null ) {
+                                searchTerms.push(columnDefs[index].filter.term);
+                            }
+                        }
+
+                    }
+                }
+
+                sortOptions.push({
+                    field: columnDefs[index].field,
+                    search: searchTerms,
+                    type: columnType,
+                    isValid: isValid
+                });
+            }
+        });
+
+        self.paginateParams.search = sortOptions;
+
+        //set parameters to go back to the first page if page type is scroll
+        if (self.pagingType === 'scroll') {
+            self.scope.firstPage = 1;
+            self.scope.currentPage = 1;
+            self.paginateParams.start = 0;
+
+            $timeout(function() {
+                self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
+            });
+        }
+
+        self.getPage();
+    };
+
+
 
     /**
      * Loads data for both pagination and infinte scroll. This method is called by ui-grid to load the first page of data
@@ -300,8 +403,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         //$log.debug('getData options self.sessions', self.sessions);
         //$log.debug('getData options self.stateParams', self.stateParams);
         //$log.debug('getData options self.paginateParams', self.paginateParams);
-
-        $log.debug('self.gridOptions', self.gridOptions);
 
         DataManager.getData(self.currentRouteSegment, self.facility.facilityName, self.sessions, self.stateParams, self.paginateParams).then(function(data){
             self.gridOptions.data = data.data;
@@ -369,7 +470,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
     };
 
 
-    self.appendPage = function() {
+    this.appendPage = function() {
         //$log.debug('append called', paginateParams);
 
         DataManager.getData(self.currentRouteSegment, self.facility.facilityName, self.sessions, self.stateParams, self.paginateParams).then(function(data){
@@ -519,23 +620,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         self.getPage();
     };
 
-    this.filterChangedForPage = function (grid) {
-        var sortOptions = [];
-
-        _.each(grid.columns, function(value, index) {
-            $log.debug('grid.columns[' + index + ']', grid.columns[index]);
-
-            sortOptions.push({
-                field: grid.columns[index].field,
-                search: grid.columns[index].filters[0].term,
-            });
-        });
-
-        self.paginateParams.search = sortOptions;
-
-        self.getPage();
-    };
-
 
     //sort callback
     this.sortChanged = function(grid, sortColumns) {
@@ -596,74 +680,75 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         self.scope.currentPage--;
     };
 
-    this.filterChanged = function (grid) {
-        $log.debug('filterChanged called', grid.columns);
+    this.filterChanged = function (columns) {
+        $log.debug('filterChanged called', columns);
 
         var sortOptions = [];
 
-        _.each(grid.columns, function(value, index) {
-            $log.debug('myvalue', value);
+        _.each(columns, function(value, index) {
             var searchTerms = [];
             var isValid = true;
 
             var columnType = 'string';
-            if (typeof grid.columns[index].colDef.type !== 'undefined') {
-                columnType = grid.columns[index].colDef.type;
+            if (typeof columns[index].colDef.type !== 'undefined') {
+                columnType = columns[index].colDef.type;
             }
 
-            if (columnType === 'string') {
-                searchTerms.push(grid.columns[index].filters[0].term);
-            }
+            if (typeof columns[index].filters !== 'undefined') {
+                if (columnType === 'string') {
+                    searchTerms.push(columns[index].filters[0].term);
+                }
 
-            if (columnType === 'date') {
-                //determine if 2 filters was configured
-                var filterCount = grid.columns[index].filters.length;
+                if (columnType === 'date') {
+                    //determine if 2 filters was configured
+                    var filterCount = columns[index].filters.length;
 
-                if (filterCount === 1) {
-                    searchTerms.push(grid.columns[index].filters[0].term);
+                    if (filterCount === 1) {
+                        searchTerms.push(columns[index].filters[0].term);
 
-                    //validate term entered is a valid date before requesting page
-                    _.each(grid.columns[index].filters, function(filter) {
-                        //$log.debug('filter', filter);
-                        if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
-                            if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
-                                isValid = false;
+                        //validate term entered is a valid date before requesting page
+                        _.each(columns[index].filters, function(filter) {
+                            //$log.debug('filter', filter);
+                            if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
+                                if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                    isValid = false;
+                                }
                             }
-                        }
-                    });
-                } else if (filterCount > 1) {
-                    //$log.debug('grid.columns[index].filters', grid.columns[index].filters);
-                    //only allow 2 filters and ignore the rest if defined
-                    searchTerms.push(grid.columns[index].filters[0].term);
-                    searchTerms.push(grid.columns[index].filters[1].term);
+                        });
+                    } else if (filterCount > 1) {
+                        //$log.debug('columns[index].filters', columns[index].filters);
+                        //only allow 2 filters and ignore the rest if defined
+                        searchTerms.push(columns[index].filters[0].term);
+                        searchTerms.push(columns[index].filters[1].term);
 
-                    //validate term entered is a valid date before requesting page
-                    if ((typeof grid.columns[index].filters[0].term !== 'undefined') && (typeof grid.columns[index].filters[1].term !== 'undefined')) {
-                        if (typeof grid.columns[index].filters[0].term !== 'undefined' && grid.columns[index].filters[0].term !== null && grid.columns[index].filters[0].term.trim() !== '') {
-                            if (grid.columns[index].filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
-                                isValid = false;
+                        //validate term entered is a valid date before requesting page
+                        if ((typeof columns[index].filters[0].term !== 'undefined') && (typeof columns[index].filters[1].term !== 'undefined')) {
+                            if (typeof columns[index].filters[0].term !== 'undefined' && columns[index].filters[0].term !== null && columns[index].filters[0].term.trim() !== '') {
+                                if (columns[index].filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                    isValid = false;
+                                }
                             }
-                        }
 
-                        if (typeof grid.columns[index].filters[1].term !== 'undefined' && grid.columns[index].filters[1].term !== null && grid.columns[index].filters[1].term.trim() !== '') {
-                            if (grid.columns[index].filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
-                                isValid = false;
+                            if (typeof columns[index].filters[1].term !== 'undefined' && columns[index].filters[1].term !== null && columns[index].filters[1].term.trim() !== '') {
+                                if (columns[index].filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                                    isValid = false;
+                                }
                             }
-                        }
-                    } else
+                        } else
 
-                    if (! ((typeof grid.columns[index].filters[0].term === 'undefined') && (typeof grid.columns[index].filters[1].term === 'undefined'))) {
-                        isValid = false;
+                        if (! ((typeof columns[index].filters[0].term === 'undefined') && (typeof columns[index].filters[1].term === 'undefined'))) {
+                            isValid = false;
+                        }
                     }
                 }
-            }
 
-            sortOptions.push({
-                field: grid.columns[index].field,
-                search: searchTerms,
-                type: columnType,
-                isValid: isValid
-            });
+                sortOptions.push({
+                    field: columns[index].field,
+                    search: searchTerms,
+                    type: columnType,
+                    isValid: isValid
+                });
+            }
         });
 
         self.paginateParams.search = sortOptions;

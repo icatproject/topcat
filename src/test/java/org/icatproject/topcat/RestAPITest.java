@@ -96,7 +96,7 @@ public class RestAPITest {
         get(restAPIUrl + "/ping").then().statusCode(200);
 
         String ping = get(restAPIUrl + "/ping").asString();
-        assertEquals("ok", ping);
+        assertEquals("{\"value\":\"ok\"}", ping);
     }
 
 

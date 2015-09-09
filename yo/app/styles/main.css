@@ -167,3 +167,12 @@ a[ng-click]{
   width: 80px;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
+.navbar-brand {
+    padding-top: 0;
+    padding-left: 0;
+}
+

@@ -1,5 +1,5 @@
 {
-    "SITE_NAME": "TopCAT v2",
+    "SITE_NAME_LOGO": "<img alt=\"Diamond Light Source\" src=\"http://www.diamond.ac.uk/Home/Events/2015/BSSM-Showcase-2015/content/02/text_files/file3/document/logo_transparent.png\" height=\"50px\">",
     "MAIN_NAVIGATION": {
         "HOME": "Home",
         "ABOUT": "About",
@@ -54,7 +54,7 @@
             "NAME" : "Facility"
         },
         "INSTRUMENT" : {
-            "NAME" : "Instrument"
+            "NAME" : "Beamline"
         },
         "FACILITYCYCLE" : {
             "NAME" : "Facility Cycle"
@@ -84,8 +84,8 @@
             },
             "INSTRUMENT":{
                 "ID": "Id",
-                "NAME": "Instrument Name",
-                "FULLNAME": "Instrument Full Name",
+                "NAME": "Beamline Name",
+                "FULLNAME": "Beamline Full Name",
                 "TYPE": "Type",
                 "URL": "Website"
             },
@@ -340,10 +340,12 @@
         }
     },
     "ABOUT" : {
-        "TITLE" : "About"
+        "TITLE" : "About",
+        "HTML" : "<p>Topcat v2</p>"
     },
     "CONTACT" : {
-        "TITLE" : "Contact"
+        "TITLE" : "Contact",
+        "HTML" : "<p>For TopCat problems, please submit as issue to the TopCat project on <a href=\"https://github.com/icatproject/topcat\">Github</a></p><p>For installation help and general issues, please post to the <a href=\"https://groups.google.com/forum/#!forum/icatgroup\">icatgroup</a></p>"
     },
     "GLOBUS_FAQ" : {
         "TITLE" : "Globus FAQ"
@@ -421,5 +423,8 @@
             "SIZE" : "File Size",
             "LOCATION" : "Location"
         }
+    },
+    "FOOTER" : {
+        "HTML" : "<div ><a href=\"http://www.diamond.ac.uk\">Diamond Light Source</a> | <a href=\"http://www.diamond.ac.uk/Legal.html\">Privacy Policy</a> | <a href=\"http://www.diamond.ac.uk/Home/About.html\">About Us</a></div>"
     }
 }

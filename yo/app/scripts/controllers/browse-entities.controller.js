@@ -37,6 +37,8 @@
 
         if (pagingType === 'page') {
             $scope.gridOptions.onRegisterApi = function(gridApi) {
+                $log.warn('onRegisterApi called for page', gridApi);
+
                 $scope.gridApi = gridApi;
 
                 //sort change callback
@@ -51,7 +53,7 @@
 
                 //filter change callback
                 $scope.gridApi.core.on.filterChanged($scope, function() {
-                    BrowseEntitiesModel.filterChanged(this.grid);
+                    BrowseEntitiesModel.filterChanged(this.grid.columns);
                 });
 
                 //row single row selection callback
@@ -65,14 +67,15 @@
                 });
             };
 
-            BrowseEntitiesModel.getPage();
+            //BrowseEntitiesModel.getPage();
+            BrowseEntitiesModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
         } else {
             $scope.firstPage = 1;
             $scope.lastPage = null;
             $scope.currentPage = 1;
 
             $scope.gridOptions.onRegisterApi = function(gridApi) {
-                $log.debug('onRegisterApi called', gridApi);
+                $log.warn('onRegisterApi called for scroll', gridApi);
 
                 $scope.gridApi = gridApi;
 
@@ -93,7 +96,7 @@
 
                 //filter change calkback
                 $scope.gridApi.core.on.filterChanged($scope, function () {
-                    BrowseEntitiesModel.filterChanged(this.grid);
+                    BrowseEntitiesModel.filterChanged(this.grid.columns);
                 });
 
                 //single row selection callback
@@ -107,7 +110,7 @@
                 });
             };
 
-            BrowseEntitiesModel.getPage();
+            BrowseEntitiesModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
         }
 
         $rootScope.$on('Cart:itemRemoved', function(){

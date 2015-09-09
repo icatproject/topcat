@@ -136,5 +136,13 @@
 
             return $http.put(url, {}, params);
         };
+
+        this.getVersion = function() {
+            var url = TOPCAT_API_PATH + '/version';
+
+            var params = {};
+
+            return $http.put(url, {}, params);
+        };
     }
 })();
