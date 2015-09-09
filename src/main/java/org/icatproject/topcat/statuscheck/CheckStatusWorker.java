@@ -120,7 +120,7 @@ public class CheckStatusWorker {
         return fileIds;
     }
 
-    public boolean checkStatus() throws IOException, BadRequestException, NotFoundException, InsufficientPrivilegesException, InternalException, NotImplementedException, IcatException_Exception {
+    public boolean checkStatus() throws IOException, BadRequestException, NotFoundException, InsufficientPrivilegesException, InternalException, NotImplementedException, IcatException_Exception, InterruptedException {
         if (! file.exists()) {
             return true;
         }
@@ -149,6 +149,13 @@ public class CheckStatusWorker {
             if (status.equals(Status.ONLINE)) {
                 logger.info(fileId + " is online, removing");
                 i.remove();
+            } else if (status.equals(Status.ARCHIVED)) {
+                logger.info("Is archive, calling isPrepared in 5 minutes for preparedId " + this.preparedId);
+                Thread.sleep(300000);
+                ids.isPrepared(this.preparedId);
+                logger.info("isPrepared called sleeping for 5 minutes");
+                Thread.sleep(300000);
+                break;
             } else {
                 //if not online as false and exit the loop
                 logger.info(fileId + " not online, breaking from loop");

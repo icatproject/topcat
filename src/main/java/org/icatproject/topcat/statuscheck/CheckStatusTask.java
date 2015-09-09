@@ -39,8 +39,7 @@ public class CheckStatusTask implements Runnable {
             try {
                 //wait a minute to give ids some time to process
                 logger.debug("Waiting 60 seconds before checking....");
-                //Thread.sleep(60000);
-                Thread.sleep(10000);
+                Thread.sleep(60000);
                 CheckStatusWorker worker = new CheckStatusWorker(preparedId, downloadRepository);
 
                 status = worker.checkStatus();
@@ -49,7 +48,7 @@ public class CheckStatusTask implements Runnable {
                 //wait 10 minutes for the next try
                 if (status == false) {
                     logger.debug("Waiting 10 minutes before rechecking....");
-                    Thread.sleep(60000);
+                    Thread.sleep(600000);
                 }
             } catch (InterruptedException | BadRequestException | NotFoundException | InsufficientPrivilegesException | InternalException | NotImplementedException | IOException | IcatException_Exception e) {
                 logger.debug("Thread interrupted", e);
