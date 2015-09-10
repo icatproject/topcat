@@ -1,12 +1,5 @@
 # general
-file.directory=d:/temp/preparedIds
-
-# ids details to get status of files. Setting only required for 2 level storage
-# format: topcat_facility_key authentiation_type 'username' username 'password' password
-# Note string with ' ' are literal strings and should not be changed (unless your
-# authenticator uses a different key other than 'username' and 'password'
-# If more than one ids then a comma should be used to separate each one
-ids.readers = dls db username root password password
+file.directory=../data/preparedfiles
 
 # enable send email
 mail.enable=true

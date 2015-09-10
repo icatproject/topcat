@@ -8,7 +8,6 @@ import org.icatproject.ids.client.InternalException;
 import org.icatproject.ids.client.NotFoundException;
 import org.icatproject.ids.client.NotImplementedException;
 import org.icatproject.topcat.repository.DownloadRepository;
-import org.icatproject_4_5_0.IcatException_Exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,6 @@ public class CheckStatusTask implements Runnable {
 
     private String preparedId;
     private DownloadRepository downloadRepository;
-
 
     public CheckStatusTask() {
 
@@ -34,7 +32,6 @@ public class CheckStatusTask implements Runnable {
 
         boolean status = false;
 
-
         do {
             try {
                 //wait a minute to give ids some time to process
@@ -50,14 +47,13 @@ public class CheckStatusTask implements Runnable {
                     logger.debug("Waiting 10 minutes before rechecking....");
                     Thread.sleep(600000);
                 }
-            } catch (InterruptedException | BadRequestException | NotFoundException | InsufficientPrivilegesException | InternalException | NotImplementedException | IOException | IcatException_Exception e) {
+            } catch (InterruptedException | BadRequestException | NotFoundException | InsufficientPrivilegesException | InternalException | NotImplementedException | IOException e) {
                 logger.debug("Thread interrupted", e);
 
                 Thread.currentThread().interrupt();
                 return;
             }
         } while (status == false);
-
     }
 
     public String getPreparedId() {

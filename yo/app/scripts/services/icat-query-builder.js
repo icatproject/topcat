@@ -88,8 +88,7 @@
             if (angular.isDefined(queryParams)) {
                 if (!_.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
                     //TODO needs refactoring
-
-                    //temp array to avaoid duplicates
+                    //temp array to avoid duplicates
                     var temp = [];
 
                     _.each(searchExpr.current.nodes, function(node) {
@@ -157,7 +156,45 @@
 
                 //set sort
                 if (angular.isDefined(queryParams.sortField) && angular.isDefined(queryParams.order)) {
-                    query.order(ICATAlias.getAlias(entityName) + '.' + queryParams.sortField, sortOrder(queryParams.order));
+                    //works but not sure for all scenarios!! Need rafactoring!!
+                    //temp array to avoid duplicates
+                    var t = [];
+
+                    var sortQuery = ICATAlias.getAlias(entityName) + '.' + queryParams.sortField;
+
+                    //check if filter has more than 2 levels as icat can only deal with 2 in JPQL
+                    if ((sortQuery.match(/\./g) || []).length >= 2) {
+
+                        //replace any array square brackets [] from the string
+                        sortQuery = sortQuery.replace(/\[\d+\]/g, '');
+
+                        //we need to split the strig to 1 level chunks (i.e. contain one .)
+                        var parts = sortQuery.split('.');
+                        var pairs = _.chunk(parts, 2);
+
+                        //variable to hold alias
+                        var alias = '';
+                        //variable to hold the number of chunks
+                        var length = pairs.length;
+
+                        _.each(pairs, function(pair, index) {
+                            if (length > index + 1) {
+                                //if not last chunk
+                                alias = pair.join('');
+                                var p = pair.join('.') + ' ' + alias;
+
+                                //check unique
+                                if (t.indexOf(p) === -1) {
+                                    t.push(p);
+                                    query.from(pair.join('.') + ' ' + alias);
+                                }
+                            } else {
+                                sortQuery = alias + '.' + pair.join('.');
+                            }
+                        });
+                    }
+
+                    query.order(sortQuery, sortOrder(queryParams.order));
                 }
             }
 

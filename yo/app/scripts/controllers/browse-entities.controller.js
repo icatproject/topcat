@@ -37,8 +37,6 @@
 
         if (pagingType === 'page') {
             $scope.gridOptions.onRegisterApi = function(gridApi) {
-                $log.warn('onRegisterApi called for page', gridApi);
-
                 $scope.gridApi = gridApi;
 
                 //sort change callback
@@ -75,8 +73,6 @@
             $scope.currentPage = 1;
 
             $scope.gridOptions.onRegisterApi = function(gridApi) {
-                $log.warn('onRegisterApi called for scroll', gridApi);
-
                 $scope.gridApi = gridApi;
 
                 //sort change callback

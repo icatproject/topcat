@@ -14,8 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import org.icatproject.ids.client.BadRequestException;
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
@@ -28,11 +26,6 @@ import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.IdsReader;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.utils.PropertyHandler;
-import org.icatproject_4_5_0.ICAT;
-import org.icatproject_4_5_0.ICATService;
-import org.icatproject_4_5_0.IcatException_Exception;
-import org.icatproject_4_5_0.Login.Credentials;
-import org.icatproject_4_5_0.Login.Credentials.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +36,10 @@ public class CheckStatusWorker {
     private String filePath;
     private File file;
     private IdsClient ids;
-    private String sessionId;
-    private ICAT service;
     private DownloadRepository downloadRepository;
     private List<Long> fileIds;
 
-    public CheckStatusWorker(String preparedId, DownloadRepository downloadRepository) throws IOException, IcatException_Exception, InternalException, BadRequestException, NotFoundException, NotImplementedException {
+    public CheckStatusWorker(String preparedId, DownloadRepository downloadRepository) throws IOException, InternalException, BadRequestException, NotFoundException, NotImplementedException {
         this.preparedId = preparedId;
         this.downloadRepository = downloadRepository;
         setFileIds(new ArrayList<Long>());
@@ -76,8 +67,6 @@ public class CheckStatusWorker {
 
         file = new File(filePath);
 
-
-        this.sessionId = getSessionId(idsReader, icatUrl);
         this.ids = getIdsClient(idsUrl);
 
         //create file if it doesn't already exists
@@ -120,7 +109,7 @@ public class CheckStatusWorker {
         return fileIds;
     }
 
-    public boolean checkStatus() throws IOException, BadRequestException, NotFoundException, InsufficientPrivilegesException, InternalException, NotImplementedException, IcatException_Exception, InterruptedException {
+    public boolean checkStatus() throws IOException, BadRequestException, NotFoundException, InsufficientPrivilegesException, InternalException, NotImplementedException, InterruptedException {
         if (! file.exists()) {
             return true;
         }
@@ -189,47 +178,9 @@ public class CheckStatusWorker {
         } else {
             logger.info("not empty, writing file");
             writePreparedFile(file, fileIds);
-            //refresh session
-            service.refresh(sessionId);
 
             return false;
         }
-    }
-
-
-    private String getSessionId(IdsReader idsReader, String icatUrl) throws IcatException_Exception, MalformedURLException {
-        logger.info(idsReader.getFacilityName() + " " + idsReader.getUserName() + " " + icatUrl);
-
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(idsReader.getUserNameKey(), idsReader.getUserName());
-        parameters.put(idsReader.getPasswordKey(), idsReader.getPassword());
-
-
-        if (!icatUrl.matches(".*/ICATService/ICAT\\?wsdl$")) {
-            if (icatUrl.matches(".*/$")) {
-                icatUrl = icatUrl + "ICATService/ICAT?wsdl";
-            } else {
-                icatUrl = icatUrl + "/ICATService/ICAT?wsdl";
-            }
-        }
-        URL url = new URL(icatUrl);
-
-        service = new ICATService(url, new QName("http://icatproject.org", "ICATService")).getICATPort();
-
-        Credentials credentials = new Credentials();
-        List<Entry> entries = credentials.getEntry();
-        for (String key : parameters.keySet()) {
-            Entry entry = new Entry();
-            entry.setKey(key);
-            entry.setValue(parameters.get(key));
-            entries.add(entry);
-        }
-        String sessionId = service.login(idsReader.getAuthenticatorType(), credentials);
-
-        logger.info("User: "+ idsReader.getUserName() + " sessionId: " + sessionId);
-
-        return sessionId;
-
     }
 
     private IdsClient getIdsClient(String idsUrl) throws MalformedURLException {
@@ -238,9 +189,6 @@ public class CheckStatusWorker {
 
         return ids;
     }
-
-
-
 
     public String getPreparedId() {
         return preparedId;

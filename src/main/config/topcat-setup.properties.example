@@ -33,7 +33,6 @@ mail.from=from@example.com
 mail.property=mail.smtp.port="25":mail.smtp.from="wayne.chung@stfc.ac.uk"
 
 
-
 # A Glassfish file user to access the topcat admin service
 adminUsername topcatadmin
 adminPassword change-me

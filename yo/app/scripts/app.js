@@ -164,8 +164,7 @@
                     },
                     views: {
                         'my-data@home': {
-                            templateUrl: 'views/main-my-data.html',
-                            controller: 'MyDataController as md'
+                            templateUrl: 'views/main-my-data.html'
                         },
                         '@home.my-data': {
                             templateUrl: 'views/partial-my-data-panel.html',

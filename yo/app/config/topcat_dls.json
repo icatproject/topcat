@@ -597,7 +597,7 @@
                     {
                         "field": "investigationInstruments[0].instrument.fullName",
                         "displayName": "Instrument",
-                        "type": "number",
+                        "type": "string",
                         "visible": true,
                         "filter": {
                             "condition": "starts_with",

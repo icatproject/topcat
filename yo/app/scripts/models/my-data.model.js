@@ -66,7 +66,7 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
      */
     function getIncludesForRoutes(params, entityType, nextRouteSegment) {
         //if (typeof params.includes === 'undefined') {
-            params.includes = [];
+            params.includes = params.includes || [];
         //}
 
         if (entityType === 'investigation') {
@@ -214,6 +214,8 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     function configToUIGridOptions(entityType) {
         var gridOptions = Config.getSiteMyDataGridOptions(APP_CONFIG)[entityType];
 
+        $log.debug('configToUIGridOptions', gridOptions);
+
         //do the work of transposing
         _.mapValues(gridOptions.columnDefs, function(value) {
             //replace filter condition to one expected by ui-grid
@@ -360,6 +362,8 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
         $log.debug('self.gridOptions', self.gridOptions);
 
+        $log.debug('init self.paginateParams', JSON.stringify(self.paginateParams.includes, null, 2));
+
         /**
          * Loads data for both pagination and infinte scroll. This method is called by ui-grid to load the first page of data
          * for infinite scroll and to load next page data for paginated pages
@@ -477,7 +481,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             _.each(data, function(facility) {
                 var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
                 var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, self.entityType);
+                $log.debug('getPage paginateParams before getIncludesForRoutes', JSON.stringify(self.paginateParams.includes, null, 2));
+
+
+
                 self.paginateParams = getIncludesForRoutes(self.paginateParams, self.entityType, nextRouteSegment);
+
+                $log.debug('getPage paginateParams after getIncludesForRoutes', JSON.stringify(self.paginateParams.includes, null, 2));
+
 
                 var options = _.extend(self.stateParams, self.paginateParams);
                 options.user = true;

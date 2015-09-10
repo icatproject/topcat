@@ -92,7 +92,7 @@
                 });
             };
 
-            MyDataModel.applyFilterAndGetPage();
+            MyDataModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
         }
 
         $scope.$watchCollection(function() {
