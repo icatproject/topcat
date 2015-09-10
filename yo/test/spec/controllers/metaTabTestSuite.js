@@ -76,7 +76,7 @@ describe('MetatabTest', function() {
 		};
 	}));
 
-	it('should set message variable to broadcast value', function() {
+	it('should set data variable to broadcast value', function() {
 
 		state.current.param.entityType = 'instrument';
 		createDataManager(mockInstrument);
@@ -86,7 +86,7 @@ describe('MetatabTest', function() {
 		$rootScope.$broadcast('rowclick', testRowClickMessage);
 		//scope.$digest();
 
-		expect(scope.message.type).toEqual('Test');
-		expect(scope.message.id).toEqual(101);
+		expect(scope.data.type).toEqual('Test');
+		expect(scope.data.id).toEqual(101);
 	});
 });

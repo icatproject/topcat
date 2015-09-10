@@ -10,36 +10,37 @@
     function MetaPanelController($rootScope, $scope, $state, $stateParams, DataManager, APP_CONFIG, Config, RouteUtils, $sessionStorage, MetaDataManager, inform, $log){
         var vm = this;
 
-        var facilityName = $stateParams.facilityName;
-        var currentEntityType = RouteUtils.getCurrentEntityType($state);
-
         var tabs = [];
+        $scope.data = null;
 
-        //if facility then get the facility meta tab config from site, else get config from facility config
-        if (currentEntityType === 'facility') {
-            tabs = Config.getSiteFacilitiesMetaTabs(APP_CONFIG);
-        } else {
-            tabs = Config.getMetaTabsByEntityType(APP_CONFIG, facilityName, currentEntityType);
-        }
+        $scope.$on('rowclick', function(event, data){
+            //if facility then get the facility meta tab config from site, else get config from facility config
+            if (data.type === 'facility') {
+                tabs = Config.getSiteFacilitiesMetaTabs(APP_CONFIG);
+            } else {
+                tabs = Config.getMetaTabsByEntityType(APP_CONFIG, data.facilityName, data.type);
+            }
 
-        var options = MetaDataManager.getTabQueryOptions(tabs);
+            $log.debug('MetaPanelController data', data);
 
-        var sessions = $sessionStorage.sessions;
+            var options = MetaDataManager.getTabQueryOptions(tabs);
+            var sessions = $sessionStorage.sessions;
 
-
-        $scope.message = null;
-
-        $scope.$on('rowclick', function(event, message){
-
-            $scope.message = message;
+            $scope.data = data;
 
             if(typeof tabs !== 'undefined') {
-
                 vm.tabs = [];
 
-                var facility = Config.getFacilityByName(APP_CONFIG, message.facilityName);
+                var facility = Config.getFacilityByName(APP_CONFIG, data.facilityName);
 
-                DataManager.getEntityById(sessions, facility, message.type, message.id, options)
+                /*//deal with special case where entity type is a proposal
+                var entityType = data.type;
+
+                if (data.type === 'propropal') {
+                    entityType = 'investigation';
+                }*/
+
+                DataManager.getEntityById(sessions, facility, data.type, data.id, options)
                 .then(function(data) {
                     vm.tabs = MetaDataManager.updateTabs(data, tabs);
                 }, function(error) {

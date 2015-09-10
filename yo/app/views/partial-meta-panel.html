@@ -1,11 +1,3 @@
-<!-- <ul class="nav nav-tabs nav-tabs-head" role="tablist">
-    <li ui-sref-active="active"><a ui-sref="home.browse.main.facilities.meta1" role="tab">Meta 1</a></li>
-    <li ui-sref-active="active"><a ui-sref="home.browse.main.facilities.meta2" role="tab">Meta 2</a></li>
-</ul>
-<div ui-view="meta1" ng-show="$state.includes('home.browse.main.facilities.meta1')"></div>
-<div ui-view="meta2" ng-show="$state.includes('home.browse.main.facilities.meta2')"></div>
- -->
-
 <tabset>
     	<tab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
       		<div class="tab-content">

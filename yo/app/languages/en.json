@@ -1,5 +1,5 @@
 {
-    "SITE_NAME_LOGO": "<img alt=\"Diamond Light Source\" src=\"http://www.diamond.ac.uk/Home/Events/2015/BSSM-Showcase-2015/content/02/text_files/file3/document/logo_transparent.png\" height=\"50px\">",
+    "SITE_NAME_LOGO": "<img alt=\"Diamond Light Source\" src=\"images/diamond/diamond_logo.png\" height=\"50px\">",
     "MAIN_NAVIGATION": {
         "HOME": "Home",
         "ABOUT": "About",

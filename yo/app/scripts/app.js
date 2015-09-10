@@ -146,6 +146,15 @@
                         }
                     }
                 })
+                /*.state('home.my-data', {
+                    abstract: true,
+                    //url: '/my-data',
+                    views: {
+                      '': {
+                        templateUrl: 'views/main-my-data.html'
+                      }
+                    }
+                })*/
                 .state('home.my-data', {
                     url: '/my-data', //?data&meta&pagingType&query&type&facility&startDate&endDate',
                     resolve: {
@@ -154,10 +163,18 @@
                         }]
                     },
                     views: {
-                      'my-data': {
-                        templateUrl: 'views/main-my-data.html',
-                        controller: 'MyDataController as md'
-                      }
+                        'my-data@home': {
+                            templateUrl: 'views/main-my-data.html',
+                            controller: 'MyDataController as md'
+                        },
+                        '@home.my-data': {
+                            templateUrl: 'views/partial-my-data-panel.html',
+                            controller: 'MyDataController as md'
+                        },
+                        'meta-view@home.my-data' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
                     },
                     /*sticky: true,
                     deepStateRedirect: true*/

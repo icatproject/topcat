@@ -17,11 +17,17 @@
              * @return {String} the current entity type
              */
             getCurrentEntityType : function(state) {
+                // if (angular.isDefined(state.current.param)) {
+                //     return state.current.param.entityType || 'facility';
+                // }
+
+                // return 'facility';
+
                 if (angular.isDefined(state.current.param)) {
-                    return state.current.param.entityType || 'facility';
+                    return state.current.param.entityType;
                 }
 
-                return 'facility';
+                return;
             },
 
 

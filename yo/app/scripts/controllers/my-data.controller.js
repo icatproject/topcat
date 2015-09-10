@@ -122,8 +122,13 @@
         };
 
         $scope.showTabs = function(row) { //jshint ignore: line
-            /*var data = {'type' : currentEntityType, 'id' : row.entity.id, facilityName: facilityName};
-            $rootScope.$broadcast('rowclick', data);*/
+            $log.debug('showtab row',  row);
+
+            $log.debug('showtab entityType',  entityType);
+
+
+            var data = {'type' : entityType, 'id' : row.entity.id, facilityName: row.entity.facilityName};
+            $rootScope.$broadcast('rowclick', data);
         };
     }
 })();

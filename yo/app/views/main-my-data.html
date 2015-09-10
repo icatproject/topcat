@@ -1,18 +1,11 @@
-<h1 translate="MY_DATA.TITLE"></h1>
-
-<div class="my-data-container">
-    <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="my-data-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="MY_DATA.EMPTY"></span>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box my-data-box">
+                <div ui-view></div>
             </div>
-        </div>
-    </div>
-
-    <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="my-data-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="MY_DATA.EMPTY"></span>
+            <div class="box meta-box">
+                <div ui-view="meta-view"></div>
             </div>
         </div>
     </div>

@@ -1,43 +1,43 @@
 <div class="search-form">
-    <form role="form" novalidate="novalidate">
+    <form role="form" novalidate="novalidate" tooltip="Search functionality coming soon" tooltip-placement="bottom">
         <div class="form-group has-feedback">
             <label class="control-label sr-only" for="searchText"></label>
-            <input type="text" class="form-control input-sm" id="searchText" translate translate-attr-placeholder="SEARCH.FORM.SEARCH_TEXT_PLACEHOLDER" ng-model="searchForm.form.query">
+            <input type="text" class="form-control input-sm" id="searchText" translate translate-attr-placeholder="SEARCH.FORM.SEARCH_TEXT_PLACEHOLDER" ng-model="searchForm.form.query" disabled>
             <span class="glyphicon glyphicon-search form-control-feedback"></span>
         </div>
         <div class="form-group">
-            <select class="form-control input-sm" ng-options="item.id as item.name for item in searchForm.init.searchTypeItems" ng-model="searchForm.form.type">
+            <select class="form-control input-sm" ng-options="item.id as item.name for item in searchForm.init.searchTypeItems" ng-model="searchForm.form.type" disabled>
                 <option style="display:none" value="" translate="SEARCH.FORM.SELECT_TYPE"></option>
             </select>
         </div>
         <div class="form-group">
-            <select class="form-control input-sm" ng-options="item.id as item.name for item in searchForm.init.facilityItems" ng-model="searchForm.form.facility" id="facility" name="facility">
+            <select class="form-control input-sm" ng-options="item.id as item.name for item in searchForm.init.facilityItems" ng-model="searchForm.form.facility" id="facility" name="facility" disabled>
                 <option style="display:none" value="" translate="SEARCH.FORM.SELECT_FACILITY"></option>
             </select>
         </div>
         <div class="form-group">
             <p class="input-group">
-                <input type="text" class="form-control input-sm" datepicker-popup="{{ searchForm.init.datepickers.dateformat }}" ng-model="searchForm.form.startDate" is-open="searchForm.init.datepickers.startDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" />
+                <input type="text" class="form-control input-sm" datepicker-popup="{{ searchForm.init.datepickers.dateformat }}" ng-model="searchForm.form.startDate" is-open="searchForm.init.datepickers.startDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" disabled />
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'startDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'startDate')" disabled><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
             </p>
         </div>
         <div class="form-group">
             <p class="input-group">
-                <input type="text" class="form-control input-sm" datepicker-popup="{{ searchForm.init.datepickers.dateformat }}" ng-model="searchForm.form.endDate" is-open="searchForm.init.datepickers.endDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" placeholder="{{'SEARCH.FORM.END_DATE_PLACEHOLDER' | translate}}" />
+                <input type="text" class="form-control input-sm" datepicker-popup="{{ searchForm.init.datepickers.dateformat }}" ng-model="searchForm.form.endDate" is-open="searchForm.init.datepickers.endDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" placeholder="{{'SEARCH.FORM.END_DATE_PLACEHOLDER' | translate}}" disabled />
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'endDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'endDate')" disabled><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
             </p>
         </div>
         <div class="form-group" ng-controller="ParameterModalController as modal">
             <div class="btn-group btn-group-justified" role="group">
                 <div class="btn-group" role="group">
-                    <button type="button" class="form-control btn btn-default btn-sm" ng-click="modal.openModal(searchForm.form, 'sm')" translate="SEARCH.FORM.ADD_PARAMETER_BUTTON"></button>
+                    <button type="button" class="form-control btn btn-default btn-sm" ng-click="modal.openModal(searchForm.form, 'sm')" translate="SEARCH.FORM.ADD_PARAMETER_BUTTON" disabled></button>
                 </div>
                 <div class="btn-group" role="group">
-                    <button class="form-control btn btn-default btn-sm" ng-click="modal.openModal(searchForm.form, 'sm')" translate="SEARCH.FORM.ADD_SAMPLE_BUTTON"></button>
+                    <button class="form-control btn btn-default btn-sm" ng-click="modal.openModal(searchForm.form, 'sm')" translate="SEARCH.FORM.ADD_SAMPLE_BUTTON" disabled></button>
                 </div>
             </div>
 
@@ -56,6 +56,6 @@
                  </li>
             </ul>
         </div>
-        <button type="submit" class="form-control btn btn-default" ng-click="searchForm.search()" translate="SEARCH.FORM.SEARCH_BUTTON"></button>
+        <button type="submit" class="form-control btn btn-default" ng-click="searchForm.search()" translate="SEARCH.FORM.SEARCH_BUTTON" disabled></button>
     </form>
 </div>

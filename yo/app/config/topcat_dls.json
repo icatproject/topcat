@@ -467,7 +467,7 @@
     "site": {
         "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/api/v1",
         "home" : "my-data",
-        "pagingType": "page",
+        "pagingType": "scroll",
         "useFileForData": false,
         "useFileForSession": false,
         "paginationNumberOfRows": 10,
