@@ -221,9 +221,12 @@
                     templateUrl: 'views/main-about.html'
                 })
                 .state('contact', {
-
                     url: '/contact',
                     templateUrl: 'views/main-contact.html'
+                })
+                .state('help', {
+                    url: '/help',
+                    templateUrl: 'views/main-help.html'
                 })
                 .state('globus-faq', {
                     url: '/globus-faq',

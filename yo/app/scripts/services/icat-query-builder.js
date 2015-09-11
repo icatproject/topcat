@@ -107,6 +107,13 @@
                             //replace any array square brackets [] from the string
                             q = q.replace(/\[\d+\]/g, '');
 
+                            $log.warn('q', q);
+
+                            //replace % with
+                            //q = q.replace(/\%/g, '*');
+
+
+
                             //we need to split the strig to 1 level chunks (i.e. contain one .)
                             var parts = q.split('.');
                             var pairs = _.chunk(parts, 2);
@@ -217,16 +224,11 @@
 
             if (! _.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
                 _.each(queryParams.search, function(value) {
-                    $log.debug('value', value);
-
                     var filterCount = value.search.length;
                     if (filterCount === 1) {
                         if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
-                            $log.debug('search filter', value);
                             if (value.type === 'string') {
-                                $log.debug('string search filter', value);
-
-                                searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search[0].toUpperCase() + '%');
+                                searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search[0].toUpperCase().replace('*', '%').replace('?', '_').replace('?', '_') + '%');
                             }
 
                             if (value.type === 'date') {
@@ -240,7 +242,6 @@
                         if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
                             if (typeof value.search[1] !== 'undefined' && value.search[1] !== null && value.search[1].trim() !== '') {
                                 if (value.type === 'date') {
-                                    $log.debug('date search filter', value);
                                     searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[1] + ' 23:59:59}');
                                 }
                             }

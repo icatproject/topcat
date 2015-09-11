@@ -80,7 +80,7 @@
                 });
 
                 $scope.gridApi.core.on.filterChanged($scope, function () {
-                    MyDataModel.filterChanged(this.grid);
+                    MyDataModel.filterChanged(this.grid.columns);
                 });
 
                 $scope.gridApi.selection.on.rowSelectionChanged($scope, function(row){
