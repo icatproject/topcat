@@ -6,10 +6,10 @@
         .module('angularApp')
         .controller('BrowseFacilitiesController', BrowseFacilitiesController);
 
-    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseFacilitiesModel', '$log'];
+    BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseFacilitiesModel'];
 
-    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseFacilitiesModel, $log) { //jshint ignore: line
-        var currentEntityType = RouteUtils.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
+    function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseFacilitiesModel) {
+        var currentEntityType = RouteUtils.getCurrentEntityType($state);
 
         //apply only to browse pages
         if ( $state.current.name === 'home.browse.facility') {
@@ -19,7 +19,6 @@
 
                 //get next entity in hierarchy
                 var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facilityName);
-                //var nextRouteSegment = RouteUtils.getNextRouteSegmentName(structure, structure[1]);
                 var nextRouteSegment = structure[0] + '-' + structure[1];
 
                 $state.go('home.browse.facility.' + nextRouteSegment, {facilityName : facilityName});

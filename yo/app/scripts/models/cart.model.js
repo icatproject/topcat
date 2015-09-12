@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('CartModel', CartModel);
 
-    CartModel.$inject = ['APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'uiGridConstants', '$sessionStorage', 'Cart', '$translate', '$log'];
+    CartModel.$inject = ['APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', 'uiGridConstants', '$sessionStorage', 'Cart', '$translate'];
 
-    function CartModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGridConstants, $sessionStorage, Cart, $translate, $log){ //jshint ignore: line
+    function CartModel(APP_CONFIG, Config, ConfigUtils, RouteUtils, uiGridConstants, $sessionStorage, Cart, $translate){
         var self = this;
 
         /**
@@ -16,7 +16,6 @@
          * @return {[type]} [description]
          */
         function configToUIGridOptions() {
-            //$log.debug('configToUIGridOptions called');
             var gridOptions = Config.getSiteCartGridOptions(APP_CONFIG);
 
             //add a delete column

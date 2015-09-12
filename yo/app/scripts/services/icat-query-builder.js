@@ -4,9 +4,9 @@
     angular.
         module('angularApp').service('ICATQueryBuilder', ICATQueryBuilder);
 
-    ICATQueryBuilder.$inject = ['ICATAlias', '$log'];
+    ICATQueryBuilder.$inject = ['ICATAlias'];
 
-    function ICATQueryBuilder(ICATAlias, $log) {
+    function ICATQueryBuilder(ICATAlias) {
         //private methods
         //
         /**
@@ -107,13 +107,6 @@
                             //replace any array square brackets [] from the string
                             q = q.replace(/\[\d+\]/g, '');
 
-                            $log.warn('q', q);
-
-                            //replace % with
-                            //q = q.replace(/\%/g, '*');
-
-
-
                             //we need to split the strig to 1 level chunks (i.e. contain one .)
                             var parts = q.split('.');
                             var pairs = _.chunk(parts, 2);
@@ -212,8 +205,6 @@
             var searchExpr = squel.expr();
             var entityAlias = ICATAlias.getAlias(entityName);
 
-            $log.debug('queryParams', queryParams);
-
             if (! angular.isDefined(queryParams)) {
                 return searchExpr;
             }
@@ -232,7 +223,6 @@
                             }
 
                             if (value.type === 'date') {
-                                $log.debug('date search filter', value);
                                 searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[0] + ' 23:59:59}');
                             }
                         }
@@ -292,9 +282,7 @@
 
         this.getFacilityCyclesByInstrumentId = function(mySessionId, facility, queryParams) {
             validateRequiredArguments(mySessionId, facility, queryParams);
-            //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
-            //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
-            $log.debug('queryParams', queryParams);
+
             var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                 .field('COUNT(fc)')
                 .from('FacilityCycle', 'fc')
@@ -351,8 +339,6 @@
         };
 
         this.getInvestigations = function(mySessionId, facility, queryParams) {
-            $log.debug('getInvestigations fired');
-
             validateRequiredArguments(mySessionId, facility, queryParams);
 
             var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
@@ -403,8 +389,6 @@
         };
 
         this.getMyInvestigations = function(mySessionId, facility, queryParams) {
-            $log.debug('getMyInvestigations fired', queryParams);
-
             validateRequiredArguments(mySessionId, facility, queryParams);
 
             var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
@@ -573,9 +557,7 @@
 
         this.getInvestigationsByFacilityCycleId = function(mySessionId, facility, queryParams){
             validateRequiredArguments(mySessionId, facility, queryParams);
-            //SELECT fc FROM FacilityCycle fc, fc.facility f, f.investigations inv, inv.investigationInstruments invins, invins.instrument ins
-            //WHERE (f.id = 1 AND ins.id = 11 AND (inv.startDate BETWEEN fc.startDate AND fc.endDate)) ORDER BY fc.name ASC LIMIT 0, 50
-            $log.debug('queryParams', queryParams);
+
             var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                 .field('inv')
                 .from('Investigation', 'inv')
@@ -758,8 +740,6 @@
                 server: facility.icatUrl
             });
 
-            $log.debug('queryParams', queryParams);
-
             return params;
         };
 
@@ -826,8 +806,6 @@
         this.getDatasets = function(mySessionId, facility, queryParams) {
             validateRequiredArguments(mySessionId, facility, queryParams);
 
-            $log.debug(queryParams);
-
             var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                 .field('COUNT(ds)')
                 .from('Dataset', 'ds')
@@ -879,8 +857,6 @@
 
         this.getMyDatasets = function(mySessionId, facility, queryParams) {
             validateRequiredArguments(mySessionId, facility, queryParams);
-
-            $log.debug(queryParams);
 
             var countQuery = squel.ICATSelect({ autoQuoteAliasNames: false })
                 .field('COUNT(ds)')

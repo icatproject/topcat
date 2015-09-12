@@ -4,13 +4,15 @@
     angular
         .module('angularApp')
         .controller('DownloadController', DownloadController)
-        .controller('RemoveDownloadModalController', RemoveDownloadModalController);
+        .controller('RemoveDownloadModalController', RemoveDownloadModalController)
+        .controller('SmartClientDownloadModalController', SmartClientDownloadModalController);
 
-    DownloadController.$inject = ['$rootScope', '$scope', '$state', 'APP_CONFIG', 'Config', 'Cart', 'DownloadModel', '$sessionStorage', '$modal', 'uiGridConstants', '$log'];
-    RemoveDownloadModalController.$inject = ['$modalInstance', 'APP_CONFIG', 'Config', 'row', 'TopcatManager', 'inform', '$translate', '$log'];
+    DownloadController.$inject = ['$rootScope', '$scope', '$state', 'APP_CONFIG', 'Config', 'Cart', 'DownloadModel', '$sessionStorage', '$modal'];
+    RemoveDownloadModalController.$inject = ['$modalInstance', 'APP_CONFIG', 'Config', 'row', 'TopcatManager', 'inform', '$translate'];
+    SmartClientDownloadModalController.$inject = ['$modalInstance'];
 
 
-    function DownloadController($rootScope, $scope, $state, APP_CONFIG, Config, Cart, DownloadModel, $sessionStorage, $modal, uiGridConstants, $log) { //jshint ignore: line
+    function DownloadController($rootScope, $scope, $state, APP_CONFIG, Config, Cart, DownloadModel, $sessionStorage, $modal) {
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
 
         $scope.isEmpty = false;
@@ -43,7 +45,6 @@
                 $scope.gridOptions.data.splice(rowIndex, 1);
                 $scope.gridApi.grid.refresh(true);
             }, function () {
-                $log.debug('Remove cancelled');
             });
         };
 
@@ -52,11 +53,16 @@
         };
 
         $scope.smartClientModal = function() {
-            window.alert('Your files were downloaded by the Smart Client. Please check your home smartclient directory for the downloaded files');
+            $modal.open({
+                templateUrl: 'views/smartclient-download-modal.html',
+                controller: 'SmartClientDownloadModalController as sc',
+            });
+
+            //window.alert('Your files were downloaded by the Smart Client. Please check your home smartclient directory for the downloaded files');
         };
     }
 
-    function RemoveDownloadModalController($modalInstance, APP_CONFIG, Config, row, TopcatManager, inform, $translate, $log) { //jshint ignore: line
+    function RemoveDownloadModalController($modalInstance, APP_CONFIG, Config, row, TopcatManager, inform, $translate) {
         var vm = this;
 
         vm.ok = function() {
@@ -87,6 +93,15 @@
         };
 
         vm.cancel = function() {
+            $modalInstance.dismiss('cancel');
+        };
+    }
+
+
+    function SmartClientDownloadModalController($modalInstance) {
+        var sc = this;
+
+        sc.ok = function() {
             $modalInstance.dismiss('cancel');
         };
     }

@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .service('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', 'IdsManager', 'usSpinnerService', 'inform', '$log'];
+BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', 'IdsManager', 'usSpinnerService', 'inform'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ BrowseEntitiesModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'RouteServi
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, usSpinnerService, inform, $log){  //jshint ignore: line
+function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, usSpinnerService, inform){
     var self = this;
 
     /**
@@ -86,12 +86,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
      * @return {[type]}                   [description]
      */
     function configToUIGridOptions(facility, currentEntityType) {
-        //$log.debug('BrowseEntitiesModel configToUIGridOptions called');
-        //$log.debug('BrowseEntitiesModel configToUIGridOptions currentEntityType', currentEntityType);
-
         var gridOpts = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.facilityName, currentEntityType);
-
-        //$log.debug('BrowseEntitiesModel gridOptions', gridOptions);
 
         //do the work of transposing
         _.mapValues(gridOpts.columnDefs, function(value) {
@@ -127,7 +122,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
             //replace links
             if (angular.isDefined(value.link) && value.link === true) {
-                //$log.debug('link value', value);
                 delete value.link;
                 value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row)}}">{{row.entity.' + value.field + '}}</a></div>';
             }
@@ -284,8 +278,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             self.gridOptions.infiniteScrollUp = true;
             self.gridOptions.infiniteScrollDown = true;
         }
-
-        $log.debug('self.gridOptions after setGridOptions', self.gridOptions);
     };
 
 
@@ -296,8 +288,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
     //use gridOptions.columnDefs. applyFilterAndGetPage() however, cannot use
     //grid.colDef as doesn't seem possible to retrieve it.
     this.applyFilterAndGetPage = function (columnDefs) {
-        $log.debug('applyFilterAndGetPage called', columnDefs);
-
         var sortOptions = [];
 
         _.each(columnDefs, function(value, index) {
@@ -324,7 +314,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                         if (filterCount === 1) {
                             //validate term entered is a valid date before requesting page
                             _.each(columnDefs[index].filters, function(filter) {
-                                //$log.debug('filter', filter);
                                 if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
                                     if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                         searchTerms.push(columnDefs[index].filters[0].term);
@@ -397,13 +386,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
      * @return {[type]} [description]
      */
     this.getPage = function() {
-        //$log.debug('getpage called', paginateParams);
-        //$log.debug('getData options self.currentRouteSegment', self.currentRouteSegment);
-        //$log.debug('getData options self.facility.facilityName', self.facility.facilityName);
-        //$log.debug('getData options self.sessions', self.sessions);
-        //$log.debug('getData options self.stateParams', self.stateParams);
-        //$log.debug('getData options self.paginateParams', self.paginateParams);
-
         DataManager.getData(self.currentRouteSegment, self.facility.facilityName, self.sessions, self.stateParams, self.paginateParams).then(function(data){
             self.gridOptions.data = data.data;
             self.gridOptions.totalItems = data.totalItems;
@@ -440,7 +422,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                                     row.entity.size = -1;
                                     usSpinnerService.stop('spinner-size-' + row.uid);
 
-                                    $log.debug(error);
                                     inform.add(error, {
                                         'ttl': 4000,
                                         'type': 'danger'
@@ -464,15 +445,16 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
             }, 0);
         }, function(error){
-            $log.debug('Unable to retrieve data:' + error);
-
+            //TODO
+            inform.add(error, {
+                'ttl': 4000,
+                'type': 'danger'
+            });
         });
     };
 
 
     this.appendPage = function() {
-        //$log.debug('append called', paginateParams);
-
         DataManager.getData(self.currentRouteSegment, self.facility.facilityName, self.sessions, self.stateParams, self.paginateParams).then(function(data){
             self.gridOptions.data = self.gridOptions.data.concat(data.data);
             self.gridOptions.totalItems = data.totalItems;
@@ -596,20 +578,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         return route;
     };
 
-    /*//page sort callback
-    this.sortChangedForPage = function(grid, sortColumns) {
-        if (sortColumns.length === 0) {
-            //paginationOptions.sort = null;
-        } else {
-            //$log.debug('sortColumns[0].field', sortColumns[0].field);
-            self.paginateParams.sortField = sortColumns[0].field;
-            self.paginateParams.order = sortColumns[0].sort.direction;
-        }
-
-        //$log.debug('sortChanged paginateParams', paginateParams);
-        self.getPage();
-    };*/
-
     //pagination callback
     this.paginationChanged = function(newPage, pageSize) {
         self.paginateParams.pageNumber = newPage;
@@ -623,14 +591,9 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
     //sort callback
     this.sortChanged = function(grid, sortColumns) {
-        //$log.debug('sortChanged callback grid', grid);
-        //$log.debug('sortChanged callback sortColumns', sortColumns);
-
-        if (sortColumns.length === 0) {
-            //paginationOptions.sort = null;
-        } else {
+        if (sortColumns.length !== 0) {
             sortColumns = [sortColumns[0]];
-            //$log.debug('sort Column  by', sortColumns[0].field);
+
             self.paginateParams.sortField = sortColumns[0].field;
             self.paginateParams.order = sortColumns[0].sort.direction;
         }
@@ -647,19 +610,12 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
         }
 
         self.getPage();
-
-        //$log.debug('sortChanged paginateParams', paginateParams);
     };
 
     this.needLoadMoreData = function() {
-        //$log.debug('needLoadMoreData called');
-        //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start + self.pageSize;
         self.scope.gridApi.infiniteScroll.saveScrollPercentage();
         self.appendPage(self.paginateParams);
-
-        //$log.debug ('scrollUp: ', scope.firstPage - 1 > 0);
-        //$log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
 
         self.scope.gridApi.infiniteScroll.dataLoaded(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
         self.scope.currentPage++;
@@ -667,22 +623,15 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
 
     this.needLoadMoreDataTop = function() {
-        //$log.debug('needLoadMoreDataTop called');
-        //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start - self.pageSize;
         self.scope.gridApi.infiniteScroll.saveScrollPercentage();
         self.prependPage(self.paginateParams);
-
-        //$log.debug ('scrollUp: ', scope.firstPage -1 > 0);
-        //$log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
 
         self.scope.gridApi.infiniteScroll.dataLoaded(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
         self.scope.currentPage--;
     };
 
     this.filterChanged = function (columns) {
-        $log.debug('filterChanged called', columns);
-
         var sortOptions = [];
 
         _.each(columns, function(value, index) {
@@ -708,7 +657,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
 
                         //validate term entered is a valid date before requesting page
                         _.each(columns[index].filters, function(filter) {
-                            //$log.debug('filter', filter);
                             if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
                                 if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                     isValid = false;
@@ -716,7 +664,6 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
                             }
                         });
                     } else if (filterCount > 1) {
-                        //$log.debug('columns[index].filters', columns[index].filters);
                         //only allow 2 filters and ignore the rest if defined
                         searchTerms.push(columns[index].filters[0].term);
                         searchTerms.push(columns[index].filters[1].term);

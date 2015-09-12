@@ -4,17 +4,16 @@
     angular.
         module('angularApp').service('IdsService', IdsService);
 
-    IdsService.$inject = ['$http', '$q', 'APP_CONFIG', 'Config', '$log'];
+    IdsService.$inject = ['$http'];
 
     /*jshint -W098 */
-    function IdsService($http, $q, APP_CONFIG, Config, $log) { //jshint ignore:  line
+    function IdsService($http) {
         /**
          * Get ICAT version
          * @param  {[type]} facility [description]
          * @return {[type]}          [description]
          */
         this.getSize = function(mySessionId, facility, options) {
-            //$log.debug('IdsService getSize called');
             var url = facility.idsUrl + '/ids/getSize';
             var params = {
                     params : {

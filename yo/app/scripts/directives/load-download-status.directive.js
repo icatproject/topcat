@@ -4,9 +4,9 @@
     angular.
         module('angularApp').directive('loadDownloadStatus', loadDownloadStatus);
 
-    loadDownloadStatus.$inject = ['APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService', '$log'];
+    loadDownloadStatus.$inject = ['APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService'];
 
-    function loadDownloadStatus(APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService, $log) { //jshint ignore: line
+    function loadDownloadStatus(APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService) {
         return {
             restrict: 'A',
             scope: {

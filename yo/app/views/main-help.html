@@ -9,7 +9,7 @@
 
         <img src="images/guide/login.png" alt="Login" />
 
-        <p>You can login by entering your username and password provided by the <a href="http://www.diamond.ac.uk/Users/" target="_blank">Diamond User Office</a>. Alternatively, to view only public data, select <strong><em>Anonymous</em></strong> from the <strong>Authentication Type</strong> drop down menu anc click login.</p>
+        <p>You can login by entering your username and password provided by the <a href="http://www.diamond.ac.uk/Users/" target="_blank">Diamond User Office</a>. Alternatively, to view only public data, select <strong>Anonymous</strong> from the <strong>Authentication Type</strong> drop down menu anc click login.</p>
 
         <p>Once successfully logged in, you will see a page with four tabs.</p>
         <img src="images/guide/tabs.png" alt="Login" />
@@ -48,13 +48,13 @@
 
     <div>
         <h1 class="page-header">Browse</h1>
-        <p>The <a ui-sref="home.broswe">Browse</a> tab allows you to browse your data and any public data.</p> The grid works the same as the grid in the My Data tab. You can sort and filter. You can drill drown the data hierarchy using the hyperlinks in each row. You can also use the breadcrumb to go up the hierarchy. The breadcrumb is useful to tell where you are in the data hierarchy.</p>
+        <p>The <a ui-sref="home.broswe">Browse</a> tab allows you to browse your data and any public data.</p> The grid works the same as in the My Data tab. You can sort and filter as well as drill drown the data hierarchy using the hyperlinks on each row. You can use the breadcrumb to go up the hierarchy. The breadcrumb is a useful reference to tell you where you are in the data hierarchy.</p>
 
         <p><img src="images/guide/breadcrumb.png" alt="Breadcrumb" /></p>
 
         <p>If the first column of the gird is a tick box, you can click the box to add the item to your cart. Please note if you select an investigation, all dataset and datafile belonging to that investigation will be selected. It is not possible for example to unselect one datafile if the parent investigation is already selected.</p>
 
-        <p>Similarly to My Data, clicking on a row (not hyperlink) will display it's meta data information in the panel at the bottom of the page.</p>
+        <p>Similar to My Data, clicking on a row (not hyperlink) will display it's meta data information in the panel at the bottom of the page.</p>
     </div>
 
 
@@ -65,16 +65,16 @@
 
         <p><img src="images/guide/cart.png" alt="Cart" /></p>
 
-        <p>Here you can remove already added items or request download of the item by Clicking the <strong>Download Cart</strong> button. When the button is clicked, you will see a Download modal window and be presented with serveral options.</p>
+        <p>Here you can remove already added items or request download of the items in the cart by Clicking the <strong>Download Cart</strong> button. When the button is clicked, you will be presented with modal window with several options.</p>
 
         <p><img src="images/guide/download_modal.png" alt="Download Modal Window" /></p>
 
-        <p>The <strong>Download Name</strong> is a name that identify the particular download. It is also used as the filename when your download becomes available.</p>
+        <p>The <strong>Download Name</strong> is a name that identify your particular download. It is used as the filename when your download becomes ready.</p>
 
-        <p>The <strong>Transport</strong> selection option determines how you want to download the file. The options are as follows:</p>
+        <p>The <strong>Transport</strong> selection option determines the transport mechanism to download your files. Three options are possible:</p>
 
         <div>
-            <table class="table table-bordered">
+            <table class="table table-bordered tranport-table">
                 <thead>
                     <tr>
                         <th>Transport Name</th>
@@ -85,26 +85,30 @@
                 <tbody>
                     <tr>
                         <td>Https</td>
-                        <td>Your download will be done via https via your browser or other tools suc as wget, curl etc.</td>
+                        <td>Your files are prepared so you can initiate a download via https using your browser or other tools such as <a href="http://www.gnu.org/software/wget/" target="_blank">wget</a>, <a href="http://curl.haxx.se/" target="_blank">curl</a> etc. Your files will be downloaded as a compressed zip file.</td>
                         <td>None</td>
                     </tr>
                     <tr>
                         <td>Globus</td>
-                        <td>Your download will be prepared so you can initial a Globus ftp download (Better description from Frazer needed)</td>
-                        <td>Signup at https://www.globus.org/SignUp<br/><a href="https://www.globus.org/globus-connect-personal" target="_blank">Globus Connect Personal</a> client is required</td>
+                        <td>Your files are prepared so you can initial a <a href="https://www.globus.org" target="_blank">Globus Online</a> download (See <a ui-sref="globus-help">Globus help</a> for more information).</td>
+                        <td><p><a href="https://www.globus.org/SignUp" target="_blank">Globus Online Signup</a></p><p><a href="https://www.globus.org/globus-connect-personal" target="_blank">Globus Connect Personal client</a> is required</p></td>
                     </tr>
                     <tr>
                         <td>Smartclient</td>
-                        <td>Your files are downloaded individually to your machine via the Smart client (<a href="https://github.com/icatproject/ids.smartclient/wiki" target="_blank">more details</a>). The Smartclient option will only appear if the Smart Client is already on you machine.</td>
+                        <td>Your files are automatically downloaded individually to your machine via the Smart client tool (<a href="https://github.com/icatproject/ids.smartclient/wiki" target="_blank">more details</a>). The Smartclient option will only appear if the Smart Client is already on you machine.</td>
                         <td><a href="https://github.com/icatproject/ids.smartclient" target="_blank">Smart Client</a> is required</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <p>You can optionally enter your email. When your download is available, an email will be sent.</p>
+        <p>You can optionally enter your email. When your download is available, an email will be sent notifying you that your download is available.</p>
 
-        <p>Clicking the <strong>Ok</strong> button on the modal will submit your download request to be process and you should see a <strong>Cart successfully submitted</strong> notification. The request will be added to the Download Order list in the <a ui-sref="home.download">Download</a> tab.</p>
+        <p>Clicking the <strong>Ok</strong> button on the modal will submit your download request to be processed. You should see a <strong>Cart successfully submitted</strong> notification popup on the right corner. The request will be added to the Download Order list on the <a ui-sref="home.download">Download</a> tab.</p>
+
+        <p>If smartclient transport was selected for the request, you will see the <strong>Datafiles to retrieve</strong> counter increase in value.</p>
+
+        <p><img src="images/guide/smartclient.png" alt="Smart Client Datafiles to retrieve counter" /></p>
     </div>
 
     <div>
@@ -114,11 +118,15 @@
 
         <p><img src="images/guide/download.png" alt="Download Order" /></p>
 
-        <p>The <strong>Status</strong> column gives you the current status of your download. Possible values are <strong>RESTORING</strong> and <strong>COMPLETE</strong>. The <strong>Download</strong> button is disabled when the status is restoring. Once its status becomes complete, you can click the download button to download the file via the browser if <strong>Https</strong> transport type was used. Alternatively, use can right click the button and copy the link address and use tools such as <a href="http://www.gnu.org/software/wget/" target="_blank">wget</a> or <a href="http://curl.haxx.se/" target="_blank">curl</a> to download the file.</p>
+        <p>The <strong>Status</strong> column gives you the current status of your download. Possible values are <strong>RESTORING</strong> and <strong>COMPLETE</strong>. The <strong>Download</strong> button is disabled when the status is restoring. Once its status becomes complete, you can click the download button to download the file via the browser if <strong>Https</strong> transport type was used for that request. Alternatively, use can right click the button and copy the link address and use tools such as <a href="http://www.gnu.org/software/wget/" target="_blank">wget</a> or <a href="http://curl.haxx.se/" target="_blank">curl</a> to download the file.</p>
 
-        <p>For download using Smartclient as the tranport type, your files are downloaded you your machine as soon as is restored from tape archive. The complete status for smartClient download means all files were downloaded to your machine. Since smartclient download files individually rather than a zip archive, you can access already downloaded files in your Smart Client home directory even though the entire download has not yet completed.</p>
+        <p class="alert alert-info">Please note that download resuming and is not supported. Multi-part download managers are also not supported.</p>
 
-        <p>For download using Globus as the transport type, when the status is complete for the download, you can login to <a href="https://www.globus.org/SignIn" target="_blank">Globus Online</a> and initial the download to your endpoint.</p>
+        <p>For downloads using Smartclient as the transport type, your files are downloaded you your machine as soon as they are restored from tape archives. The complete status for smartClient downloads means all files were downloaded to your machine. Since smartclient download files individually rather than a zip archive, you can access already downloaded files in your Smart Client home directory even though the entire download has not yet completed.</p>
+
+        <p>For downloads using Globus as the transport type, when the status is complete, you can login to <a href="https://www.globus.org/SignIn" target="_blank">Globus Online</a> and initiate file transfer to your endpoint.</p>
+
+        <p class="alert alert-info">Download statuses are not automatically updated on the Download tab. You must click the <strong>Refresh</strong> button or refresh the browser periodically to get the latest status. It is recommended you enter your email address when submitting a download so you get notified when your download is available.</p>
     </div>
 
 </div>

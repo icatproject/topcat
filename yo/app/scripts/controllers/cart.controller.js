@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('CartController', CartController);
 
-    CartController.$inject = ['$rootScope', '$scope', 'APP_CONFIG', 'Config', 'Cart', 'CartModel', '$sessionStorage', '$log'];
+    CartController.$inject = ['$rootScope', '$scope', 'APP_CONFIG', 'Config', 'Cart', 'CartModel'];
 
-    function CartController($rootScope, $scope, APP_CONFIG, Config, Cart, CartModel, $sessionStorage, $log) { //jshint ignore: line
+    function CartController($rootScope, $scope, APP_CONFIG, Config, Cart, CartModel) {
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
 
         $scope.isEmpty = false;

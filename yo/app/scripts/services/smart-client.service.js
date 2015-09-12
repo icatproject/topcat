@@ -4,10 +4,10 @@
     angular.
         module('angularApp').service('SmartClientService', SmartClientService);
 
-    SmartClientService.$inject = ['$http', '$q', 'APP_CONFIG', 'APP_CONSTANT', 'Config', '$log'];
+    SmartClientService.$inject = ['$http', '$q', 'APP_CONFIG', 'APP_CONSTANT'];
 
     /*jshint -W098 */
-    function SmartClientService($http, $q, APP_CONFIG, APP_CONSTANT, Config, $log) { //jshint ignore:  line
+    function SmartClientService($http, $q, APP_CONFIG, APP_CONSTANT) {
 
         /**
          * Get ICAT version
@@ -15,7 +15,6 @@
          * @return {[type]}          [description]
          */
         this.ping = function() {
-            $log.debug('SmartClientService ping called');
             var url = APP_CONSTANT.smartClientUrl + '/ping';
 
             var params = {

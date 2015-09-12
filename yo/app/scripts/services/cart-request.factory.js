@@ -5,9 +5,9 @@
         .module('angularApp')
         .factory('CartRequest', CartRequest);
 
-    CartRequest.$inject = ['$log'];
+    CartRequest.$inject = [];
 
-    function CartRequest($log) { //jshint ignore: line
+    function CartRequest() {
 
         var cart = function (facilityName, userName, sessionId, icatUrl, fileName, status, transport, transportUrl, email) {
             this.setFacilityName(facilityName);

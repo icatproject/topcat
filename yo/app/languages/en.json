@@ -338,6 +338,17 @@
                     "TEXT" : "Refresh download order"
                 }
             }
+        },
+        "SMARTCLIENT_DOWNLOAD" : {
+            "MODAL" : {
+                "TITLE" : "Smart Client Download",
+                "MESSAGE" : "Your files were downloaded by the Smart Client. Please check your smartclient home directory for your files",
+                "BUTTON" : {
+                    "CLOSE" : {
+                        "TEXT" : "Ok"
+                    }
+                }
+            }
         }
     },
     "ABOUT" : {
@@ -346,14 +357,14 @@
     },
     "CONTACT" : {
         "TITLE" : "Contact",
-        "HTML" : "<p>For TopCat problems, please submit as issue to the TopCat project on <a href=\"https://github.com/icatproject/topcat\">Github</a></p><p>For installation help and general issues, please post to the <a href=\"https://groups.google.com/forum/#!forum/icatgroup\">icatgroup</a></p>"
+        "HTML" : "<p>For TopCat problems, please submit an issue to the TopCat project at <a href=\"https://github.com/icatproject/topcat\">Github</a></p><p>For installation help and general issues, please post to the <a href=\"https://groups.google.com/forum/#!forum/icatgroup\">icatgroup</a></p>"
     },
     "HELP" : {
         "TITLE" : "Help",
         "HTML" : ""
     },
-    "GLOBUS_FAQ" : {
-        "TITLE" : "Globus FAQ"
+    "GLOBUS_HELP" : {
+        "TITLE" : "Globus Help"
     },
     "RESPONSE": {
         "ERROR" : {

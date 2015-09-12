@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('MyDataController', MyDataController);
 
-    MyDataController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'MyDataModel', '$templateCache', '$log'];
+    MyDataController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'MyDataModel', '$templateCache'];
 
-    function MyDataController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, MyDataModel, $templateCache, $log) {
+    function MyDataController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, MyDataModel, $templateCache) {
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         var entityType = Config.getSiteMyDataGridEntityType(APP_CONFIG);
         var facilities = Config.getFacilities(APP_CONFIG);
@@ -62,8 +62,6 @@
             $scope.currentPage = 1;
 
             $scope.gridOptions.onRegisterApi = function(gridApi) {
-                $log.debug('onRegisterApi called', gridApi);
-
                 $scope.gridApi = gridApi;
 
                 //sort callback
@@ -121,12 +119,7 @@
             return MyDataModel.getNextRouteUrl(row);
         };
 
-        $scope.showTabs = function(row) { //jshint ignore: line
-            $log.debug('showtab row',  row);
-
-            $log.debug('showtab entityType',  entityType);
-
-
+        $scope.showTabs = function(row) {
             var data = {'type' : entityType, 'id' : row.entity.id, facilityName: row.entity.facilityName};
             $rootScope.$broadcast('rowclick', data);
         };

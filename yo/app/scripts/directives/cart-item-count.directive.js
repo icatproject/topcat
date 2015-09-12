@@ -4,9 +4,9 @@
     angular.
         module('angularApp').directive('cartItemCount', cartItemCount);
 
-    cartItemCount.$inject = ['Cart', '$log'];
+    cartItemCount.$inject = ['Cart'];
 
-    function cartItemCount(Cart, $log) { //jshint ignore: line
+    function cartItemCount(Cart) {
         return {
             restrict: 'E', //E = element, A = attribute, C = class, M = comment
             scope: {

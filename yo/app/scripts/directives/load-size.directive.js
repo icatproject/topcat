@@ -4,16 +4,12 @@
     angular.
         module('angularApp').controller('LoadSizeController', LoadSizeController);
 
-    LoadSizeController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService', '$log'];
+    LoadSizeController.$inject = ['$scope', '$element', '$attrs', 'uiGridConstants', 'APP_CONFIG', 'Config', 'IdsManager', '$sessionStorage', '$timeout', 'usSpinnerService'];
 
-    function LoadSizeController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService, $log) { //jshint ignore: line
+    function LoadSizeController ($scope, $element, $attrs, uiGridConstants, APP_CONFIG, Config, IdsManager, $sessionStorage, $timeout, usSpinnerService) {
         $timeout(loadSize, 0);
 
-        $log.debug('LoadSizeController called');
-
         function loadSize() {
-
-
             var params = {};
             params[$scope.ngModel.entity.getEntityType()  + 'Ids'] = $scope.ngModel.entity.getEntityId();
             var facility = Config.getFacilityByName(APP_CONFIG, $scope.ngModel.entity.getFacilityName());

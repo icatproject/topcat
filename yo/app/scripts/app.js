@@ -79,6 +79,9 @@
             $httpProvider.interceptors.push('HttpErrorInterceptor');
             $httpProvider.interceptors.push('ICATRequestInterceptor');
         }])
+        .config(['$logProvider', function($logProvider){
+            $logProvider.debugEnabled(false);
+        }])
         .config(function($stateProvider, $urlRouterProvider) {
             //workaround https://github.com/angular-ui/ui-router/issues/1022
             $urlRouterProvider.otherwise(function($injector) {
@@ -228,14 +231,9 @@
                     url: '/help',
                     templateUrl: 'views/main-help.html'
                 })
-                .state('globus-faq', {
-                    url: '/globus-faq',
-                    templateUrl: 'views/main-globus-faq.html'
-                })
-                .state('test', {
-                    url: '/test',
-                    templateUrl: 'views/test.html',
-                    controller: 'TestController as test'
+                .state('globus-help', {
+                    url: '/globus-help',
+                    templateUrl: 'views/main-globus-help.html'
                 })
                 .state('login', {
                     url: '/login',
@@ -257,9 +255,6 @@
                 ;
 
         })
-        .config(['$logProvider', function($logProvider) {
-            $logProvider.debugEnabled(true);
-        }])
         .config(function (pollerConfig) {
             pollerConfig.neverOverwrite = true;
         })
@@ -281,13 +276,6 @@
                     $state.go('login');
                 }
             });
-
-            //save last page to rootscope
-            /*$rootScope.$on('$stateChangeStart', function() {
-                $log.debug.log('previous state', $previousState.get() !== null ? $previousState.get().state.name : $previousState.get());
-                $rootScope.previousState = $previousState.get();
-            });*/
-
         }])
         .run(['SmartClientPollManager', function(SmartClientPollManager) {
             //run checking of smartclient

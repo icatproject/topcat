@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('Cart', Cart);
 
-    Cart.$inject =['$rootScope', '$q', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', 'SmartClientPollManager', '$translate', '$log'];
+    Cart.$inject =['$rootScope', '$q', 'APP_CONFIG', 'Config', 'CartItem', 'RemoteStorageManager', '$sessionStorage', 'FacilityCart', 'CartRequest', 'TopcatManager', 'inform', 'SmartClientManager', 'SmartClientPollManager', '$translate'];
 
-    function Cart($rootScope, $q, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, SmartClientPollManager, $translate, $log) { //jshint ignore: line
+    function Cart($rootScope, $q, APP_CONFIG, Config, CartItem, RemoteStorageManager, $sessionStorage, FacilityCart, CartRequest, TopcatManager, inform, SmartClientManager, SmartClientPollManager, $translate) {
         var self  = this;
 
         function add(facilityName, entityType, entityId, name, parentEntities) {
@@ -22,10 +22,6 @@
             } else {
                 var newItem = new CartItem(facilityName, $sessionStorage.sessions[facilityName].userName, entityType, entityId, name);
                 newItem.setParentEntities(parentEntities);
-
-                $log.debug('newItem', newItem);
-
-                $log.debug('newItem', self._cart);
 
                 self._cart.items.push(newItem);
                 addedItemsCount++;
@@ -270,7 +266,6 @@
          * @return {[type]} [description]
          */
         this.save = function() {
-            $log.debug('save called');
             RemoteStorageManager.setStore(this.getCart());
         };
 
@@ -387,8 +382,6 @@
                 TopcatManager.submitCart(facility, cartRequest).then(function(data){
                     if (downloadRequest.transportType.type === 'smartclient') {
                         SmartClientManager.getData($sessionStorage.sessions[downloadRequest.facilityName].sessionId, facility, data.value).then(function(){
-                            //$log.debug('Job submitted to Smartclient', data);
-
                             //start a poll
                             SmartClientPollManager.createPoller(facility, $sessionStorage.sessions[downloadRequest.facilityName].userName, data.value);
                         }, function(error) {

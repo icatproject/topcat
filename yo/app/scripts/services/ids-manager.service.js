@@ -4,10 +4,9 @@
     angular.
         module('angularApp').service('IdsManager', IdsManager);
 
-    IdsManager.$inject = ['$http', '$q', 'IdsService', '$log'];
+    IdsManager.$inject = ['$http', '$q', 'IdsService'];
 
-    function IdsManager($http, $q, IdsService, $log) { //jshint ignore: line
-
+    function IdsManager($http, $q, IdsService) {
         function getErrorMessage(error) {
             var errorMessage = '';
 
@@ -46,7 +45,6 @@
          * @return {Object}          a promise containing the list of instruments
          */
         this.getSize = function(sessions, facility, options) {
-            //$log.debug('IdsManager getSize called');
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 

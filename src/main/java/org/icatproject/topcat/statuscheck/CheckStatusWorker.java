@@ -23,7 +23,6 @@ import org.icatproject.ids.client.InternalException;
 import org.icatproject.ids.client.NotFoundException;
 import org.icatproject.ids.client.NotImplementedException;
 import org.icatproject.topcat.domain.Download;
-import org.icatproject.topcat.domain.IdsReader;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.utils.PropertyHandler;
 import org.slf4j.Logger;
@@ -52,11 +51,9 @@ public class CheckStatusWorker {
 
         String icatUrl = download.getIcatUrl();
         String idsUrl = download.getTransportUrl();
-        IdsReader idsReader = properties.getIdsReaders().get(download.getFacilityName());
         String prepared_file_directory = properties.getPath();
 
-        logger.info("CheckStatusWorker params: " + icatUrl + " " + idsUrl + " " + prepared_file_directory +  " " + idsReader.getAuthenticatorType() + " " +
-                idsReader.getUserName() + " " + idsReader.getPassword());
+        logger.info("CheckStatusWorker params: " + icatUrl + " " + idsUrl + " " + prepared_file_directory);
 
 
         if (prepared_file_directory.matches("/$")) {

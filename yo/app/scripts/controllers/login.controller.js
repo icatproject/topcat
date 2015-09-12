@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', 'deviceDetector', 'SMARTCLIENTPING', 'SmartClientManager', '$log'];
+    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', 'deviceDetector', 'SMARTCLIENTPING', 'SmartClientManager'];
 
-    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, deviceDetector, SMARTCLIENTPING, SmartClientManager, $log) { //jshint ignore: line
+    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, deviceDetector, SMARTCLIENTPING, SmartClientManager) {
         var vm = this;
         vm.user = {};
 
@@ -21,8 +21,6 @@
         var allFacilityNames = ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG));
         var loggedInFacilities = _.keys($sessionStorage.sessions);
         var notLoggedInFacilities = getNotLoggedInFacilitiesObjects(allFacilityNames, loggedInFacilities, APP_CONFIG, Config);
-
-        $log.debug('notLoggedInFacilities', notLoggedInFacilities);
 
         if (notLoggedInFacilities.length !== 0) {
             vm.facilities = notLoggedInFacilities;
@@ -63,7 +61,7 @@
                 try {
                     vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, $localStorage.login.facilityName).authenticationType;
                 } catch(error) {
-                    $log.debug('facility ' + $localStorage.login.facilityName + ' is not configured');
+
                 }
 
                 var rememberedPlugin = _.find(vm.authenticationTypes, function(plugin) {
@@ -199,11 +197,7 @@
 
                     //login to smartclient is installed/online
                     if (SMARTCLIENTPING.ping === 'online') {
-                        SmartClientManager.connect(data.sessionId, facility).then(function(connectData) {
-                            $log.debug('SmartClientPollManager login', connectData);
-                        }, function() {
-                            $log.debug('Unable to login to smartcient');
-                        });
+                        SmartClientManager.connect(data.sessionId, facility);
                     }
 
                     $rootScope.$broadcast('Login:success', {facility: facility, userName: data.userName});
@@ -228,8 +222,7 @@
                         try {
                             json = JSON.parse(data);
                         } catch(error) {
-                            //$log.debug('could not parse error string: ' + error);
-                            //throw new Error('could not parse error string: ' + error);
+
                         }
 
                         if (angular.isDefined(json)) {
@@ -244,7 +237,7 @@
                 }
             }, function(error) {
                 var errorMessage = (error !== null) ? error : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE');
-                $log.debug(errorMessage);
+
                 inform.add(errorMessage, {
                     'ttl': 4000,
                     'type': 'danger'
@@ -258,10 +251,7 @@
 
             var notLoggedInFacilitiesNames = _.difference(allFacilityNames, loggedInFacilities);
 
-            //$log.debug('notLoggedInFacilitiesNames', notLoggedInFacilitiesNames);
-
             _.each(notLoggedInFacilitiesNames, function(facilityName) {
-                //$log.debug('facilityName', facilityName);
                 notLoggedInFacilitiesObject.push(Config.getFacilityByName(APP_CONFIG, facilityName));
             });
 

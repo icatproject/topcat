@@ -182,3 +182,15 @@ a[ng-click]{
     padding-left: 0;
 }
 
+#globus_help .dl-horizontal dt{
+    text-align: left;
+    margin-left: 10px;
+    margin-bottom: 1em;
+    width: auto;
+    padding-right: 1em;
+}
+
+#globus_help .dl-horizontal dd{
+    margin-left: 10px;
+    margin-bottom: 1em;
+}

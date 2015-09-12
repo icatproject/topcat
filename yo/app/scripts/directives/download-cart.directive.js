@@ -7,11 +7,11 @@
         controller('DownloadCartModalController', DownloadCartModalController).
         directive('downloadCart', downloadCart);
 
-    DownloadCartController.$inject = ['$modal', 'Cart', '$log'];
-    DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING', '$log'];
+    DownloadCartController.$inject = ['$modal', 'Cart'];
+    DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING'];
     downloadCart.$inject = [];
 
-    function DownloadCartController ($modal, Cart, $log) { //jshint ignore: line
+    function DownloadCartController ($modal, Cart) {
         var dc = this;
         dc.cartItems = Cart._cart.items;
 
@@ -31,7 +31,7 @@
     }
 
 
-    function DownloadCartModalController($modalInstance, Cart, SMARTCLIENTPING, $log) { //jshint ignore: line
+    function DownloadCartModalController($modalInstance, Cart, SMARTCLIENTPING) {
         var vm = this;
         var facilityCart = Cart.getFacilitiesCart();
 
@@ -56,14 +56,8 @@
                     if (typeof smartClientTransportExists === 'undefined') {
                         cart.transportOptions.push(smartClientTransport);
                     }
-                } else {
-                    $log.debug('No ids found. Unable to add Smartclient as an option');
                 }
-
-
             }
-
-            $log.debug('cart.transportOptions', cart.transportOptions);
 
             //set the default transport dropdown
             if (cart.transportOptions.length === 1) {
@@ -88,8 +82,6 @@
                     download.email = vm.email;
                 });
             }
-
-            $log.debug(JSON.stringify(vm.downloads, null, 2));
             ///submit the cart for download
             Cart.submit(vm.downloads);
         };

@@ -76,8 +76,6 @@
                 }
             });
 
-            $log.debug(entity, field);
-
             //for each row, change the field from a string to a JavaScript date object and unwrap
             //the object from the entity key
             _.each(data[0].data, function(value, key) {
@@ -160,9 +158,6 @@
          * @return {[type]}          [description]
          */
         manager.logout = function(sessions, facility, options) {
-            $log.debug('DataManager.logout called for facility' , facility);
-            $log.debug('DataManager.logout called for sessions' , sessions);
-
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
@@ -306,20 +301,11 @@
 
 
         manager.getInstrumentsByProposalId = function(sessions, facility, options) {
-            //$log.debug('manager.getProposalsByInstrumentId options', options);
-
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
             ICATService.getInstrumentsByProposalId(sessionId, facility, options).then(function(data) {
                 var result = {};
-
-                /*_.each(data[0].data, function(value, index) {
-                    data[0].data[index] = {
-                        'id' : value,
-                        'name' : value
-                    };
-                });*/
 
                 prepProcessData(data, facility, 'Instrument', 'instrument');
                 result.data  = data[0].data;
@@ -506,8 +492,6 @@
          * @return {[type]}          [description]
          */
         manager.getProposalsByInstrumentId = function(sessions, facility, options) {
-            //$log.debug('manager.getProposalsByInstrumentId options', options);
-
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
@@ -534,8 +518,6 @@
         };
 
         manager.getProposalsByFacilityCycleId = function(sessions, facility, options) {
-            //$log.debug('manager.getProposalsByInstrumentId options', options);
-
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
@@ -563,8 +545,6 @@
 
 
         manager.getInvestigationsByProposalId = function(sessions, facility, options) {
-            //$log.debug('manager.getInvestigationsByProposalId options', options);
-
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 
@@ -590,8 +570,6 @@
          * @return {[type]}          [description]
          */
         manager.getInvestigationsByInstrumentId = function(sessions, facility, options) {
-            //$log.debug('manager.getInvestigationsByInstrumentId options', options);
-
             var sessionId = getSessionValueForFacility(sessions, facility);
             var def = $q.defer();
 

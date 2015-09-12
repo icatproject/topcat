@@ -4,9 +4,9 @@ angular
     .module('angularApp')
     .service('DownloadModel', DownloadModel);
 
-DownloadModel.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'uiGridConstants', 'TopcatService', '$sessionStorage', '$compile', '$translate', '$log'];
+DownloadModel.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'uiGridConstants', 'TopcatService', '$sessionStorage', '$compile', '$translate'];
 
-function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, TopcatService, $sessionStorage, $compile, $translate, $log){  //jshint ignore: line
+function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, TopcatService, $sessionStorage, $compile, $translate){
     var self = this;
 
     /**
@@ -24,7 +24,7 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
                 html = '<span class="inline-block" tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.NON_ACTIVE_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"><button translate="DOWNLOAD.ACTIONS.LINK.NON_ACTIVE_DOWNLOAD.TEXT" class="btn btn-primary btn-xs disabled"></button></span>';
             }
         } else if (data.transport === 'globus') {
-            html ='<a href="' + $state.href('globus-faq') + '" translate="DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
+            html ='<a href="' + $state.href('globus-help') + '" translate="DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
         } else if (data.transport === 'smartclient') {
             if (data.status === 'COMPLETE') {
                 html ='<a ng-click="grid.appScope.smartClientModal()" translate="DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
@@ -36,7 +36,6 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
 
 
     function configToUIGridOptions() {
-        //$log.debug('configToUIGridOptions called');
         var gridOptions = Config.getSiteMyDownloadGridOptions(APP_CONFIG);
 
         //add a Download column
@@ -106,9 +105,6 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
             var facility = Config.getFacilityByName(APP_CONFIG, key);
 
             TopcatService.getMyDownloads(facility, session.userName).then(function(data) {
-                $log.debug('results', data.data);
-
-                //
                 _.each(data.data, function(entity) {
                     entity.downloadLink = getDownloadUrl(entity);
                 });

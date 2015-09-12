@@ -12,7 +12,7 @@ if arg == "INSTALL":
         app = actions.getAppName("topcatv2")
         if app: actions.asadmin("undeploy " + app)
 
-        topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "ids.readers", "mail.enable"])
+        topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "mail.enable"])
 
         if not actions.configFileExists(topcatProperties.get("file.directory")):
             abort("Please create directory " + topcatProperties.get("file.directory") + ". If the path is relative, the directory will be relative to the glassfish domain config directory as specified in topcat-setup.properties")

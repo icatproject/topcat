@@ -5,9 +5,9 @@
         .module('angularApp')
         .factory('FacilityCart', FacilityCart);
 
-    FacilityCart.$inject = ['$filter', 'APP_CONFIG', 'Config', '$log'];
+    FacilityCart.$inject = ['$filter', 'APP_CONFIG', 'Config'];
 
-    function FacilityCart($filter, APP_CONFIG, Config, $log) { //jshint ignore: line
+    function FacilityCart($filter, APP_CONFIG, Config) {
 
         var cart = function (facilityName) {
             this.facilityName = facilityName;
@@ -104,14 +104,11 @@
         };
 
         cart.prototype.calcAvailability = function() {
-            $log.debug('calcAvailability called');
             var isAvailable = true;
             var isUnset = false;
 
             _.each(this.items, function(item) {
                 var status = item.getAvailability();
-                $log.debug('status', status);
-
 
                 if (status === null) {
                     isUnset = true;
@@ -125,7 +122,6 @@
             });
 
             if (isUnset === true) {
-                $log.debug('availability is null');
                 return null;
             } else {
                 if (isAvailable === true) {
@@ -147,8 +143,6 @@
                 if (typeof params[item.entityType + 'Ids'] === 'undefined') {
                     params[item.entityType + 'Ids'] = [];
                 }
-
-                $log.debug(item);
 
                 params[item.entityType + 'Ids'].push(item.entityId);
             });

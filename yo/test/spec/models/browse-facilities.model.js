@@ -43,8 +43,6 @@ describe('Service: BrowseFacilitiesModel', function() {
     it('configToUIGridOptions', function() {
         var gridOptions = BrowseFacilitiesModel.configToUIGridOptions(JSONFile);
 
-        //console.log(JSON.stringify(gridOptions, null, 2));
-
         expect(gridOptions).toEqual({
           'enableFiltering': true,
           'columnDefs': [

@@ -4,9 +4,9 @@
     angular.
         module('angularApp').service('TopcatManager', TopcatManager);
 
-    TopcatManager.$inject = ['$http', '$q', 'TopcatService', '$log'];
+    TopcatManager.$inject = ['$http', '$q', 'TopcatService'];
 
-    function TopcatManager($http, $q, TopcatService, $log) { //jshint ignore: line
+    function TopcatManager($http, $q, TopcatService) {
         function getErrorMessage(error) {
             var errorMessage = '';
 
@@ -60,8 +60,6 @@
 
                     result = data.data.cartItems;
                 }
-
-                $log.debug('TopcatManager getCartItems', result);
 
                 def.resolve(result);
             }, function(error){

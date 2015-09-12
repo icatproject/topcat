@@ -4,10 +4,10 @@
     angular.
         module('angularApp').service('TopcatService', TopcatService);
 
-    TopcatService.$inject = ['$http', '$q', 'APP_CONFIG', 'Config', '$sessionStorage', '$log'];
+    TopcatService.$inject = ['$http', '$q', 'APP_CONFIG', 'Config', '$sessionStorage'];
 
     /*jshint -W098 */
-    function TopcatService($http, $q, APP_CONFIG, Config, $sessionStorage, $log) { //jshint ignore: line
+    function TopcatService($http, $q, APP_CONFIG, Config, $sessionStorage) {
         var TOPCAT_API_PATH = Config.getSiteConfig(APP_CONFIG).topcatApiPath;
 
         /**

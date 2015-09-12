@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('SmartClientPollManager', SmartClientPollManager);
 
-    SmartClientPollManager.$inject = ['APP_CONFIG', 'SMARTCLIENTPING', 'Config', 'SmartClientManager', '$sessionStorage', 'TopcatManager', 'poller', '$log'];
+    SmartClientPollManager.$inject = ['APP_CONFIG', 'SMARTCLIENTPING', 'Config', 'SmartClientManager', '$sessionStorage', 'TopcatManager', 'poller'];
 
-    function SmartClientPollManager(APP_CONFIG, SMARTCLIENTPING, Config, SmartClientManager, $sessionStorage, TopcatManager, poller, $log) { //jshint ignore: line
+    function SmartClientPollManager(APP_CONFIG, SMARTCLIENTPING, Config, SmartClientManager, $sessionStorage, TopcatManager, poller) {
         var self = this;
 
         this.createPoller = function(facility, userName, preparedId) {
@@ -32,27 +32,18 @@
                 ]
             });
 
-            $log.debug('smartClientPoller', smartClientPoller);
-
             smartClientPoller.promise.then(null, null, function(result) {
                 if (result.status === 200) {
                     _.each(result.data, function(data) {
                         if (data.toGet === 0) {
                             TopcatManager.completeDownloadByPreparedId(facility, userName, preparedId).then(function(completeData) {
                                 if (typeof completeData.value !== 'undefined' && completeData.value === preparedId) {
-                                    $log.debug('Stopping and removing poller');
                                     smartClientPoller.stop();
                                     smartClientPoller.remove();
                                 }
-                            }, function(error) {
-                                $log.debug('Failed to mark smartclient download as complete:' + error);
                             });
-                        } else {
-                            $log.debug(data.toGet + '/' + data.size + ' retrieved');
                         }
                     });
-                } else {
-                    $log.debug('Failed to get result from SmartClient');
                 }
             });
         };
@@ -64,9 +55,7 @@
                 //check smartclient is online
                 if (SMARTCLIENTPING.ping === 'online') {
                     //login to the smartclient
-                    SmartClientManager.connect(session.sessionId, facility).then(function(connectData) {
-                        $log.debug('SmartClientPollManager login', connectData);
-
+                    SmartClientManager.connect(session.sessionId, facility).then(function() {
                         //get list of smartclient downloads that has restoring status
                         TopcatManager.getMyRestoringSmartClientDownloads(facility, session.userName).then(function(data) {
                             _.each(data, function(smartClientDownload) {
@@ -75,7 +64,7 @@
                             });
                         });
                     }, function(error) { //jshint ignore: line
-                        $log.debug('Unable to login to smartcient');
+                        //$log.debug('Unable to login to smartcient');
                     });
                 }
             });

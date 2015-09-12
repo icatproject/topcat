@@ -5,13 +5,11 @@
         .module('angularApp')
         .factory('HttpErrorInterceptor', HttpErrorInterceptor);
 
-    HttpErrorInterceptor.$inject = ['$rootScope', 'inform', '$translate', '$sessionStorage', '$injector', '$q', '$log'];
+    HttpErrorInterceptor.$inject = ['$rootScope', 'inform', '$translate', '$sessionStorage', '$injector', '$q'];
 
-    function HttpErrorInterceptor($rootScope, inform, $translate, $sessionStorage, $injector, $q, $log){
+    function HttpErrorInterceptor($rootScope, inform, $translate, $sessionStorage, $injector, $q){
         return {
             responseError: function(rejection) {
-                    $log.debug('bad response', rejection);
-
                     var state;
                     var userName;
 
@@ -39,8 +37,8 @@
                     }
 
                     if(rejection.status === 403){
-                        $log.debug('HttpErrorInterceptor', rejection);
-                        $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
+                        //$log.debug('HttpErrorInterceptor', rejection);
+                        //$log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
 
                         state = $injector.get('$state');
 
@@ -70,8 +68,8 @@
                     }
 
                     if(rejection.status === 400){
-                        $log.debug('HttpErrorInterceptor', rejection);
-                        $log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
+                        //$log.debug('HttpErrorInterceptor', rejection);
+                        //$log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
 
                         state = $injector.get('$state');
 
@@ -80,13 +78,12 @@
                         try {
                             data = JSON.parse(rejection.data);
                         } catch(error){
-                            $log.debug('Error parsing server message');
+                            //$log.debug('Error parsing server message');
                         }
 
                         if (typeof data !== 'undefined') {
                             //check it is an InsufficientPrivilegesException error meaning session expired
                             if (idsInvalidUUID(data) || icatInsufficientPrivileges(data)) {
-                                $log.debug('session expired deleting session');
                                 userName = $sessionStorage.sessions[rejection.config.info.facilityKeyName].userName;
                                 delete $sessionStorage.sessions[rejection.config.info.facilityKeyName];
 

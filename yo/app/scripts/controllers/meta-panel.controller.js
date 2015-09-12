@@ -5,9 +5,9 @@
     .module('angularApp')
     .controller('MetaPanelController', MetaPanelController);
 
-    MetaPanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams','DataManager', 'APP_CONFIG', 'Config', 'RouteUtils', '$sessionStorage', 'MetaDataManager', 'inform', '$log'];
+    MetaPanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams','DataManager', 'APP_CONFIG', 'Config', 'RouteUtils', '$sessionStorage', 'MetaDataManager', 'inform'];
 
-    function MetaPanelController($rootScope, $scope, $state, $stateParams, DataManager, APP_CONFIG, Config, RouteUtils, $sessionStorage, MetaDataManager, inform, $log){
+    function MetaPanelController($rootScope, $scope, $state, $stateParams, DataManager, APP_CONFIG, Config, RouteUtils, $sessionStorage, MetaDataManager, inform){
         var vm = this;
 
         var tabs = [];
@@ -20,8 +20,6 @@
             } else {
                 tabs = Config.getMetaTabsByEntityType(APP_CONFIG, data.facilityName, data.type);
             }
-
-            $log.debug('MetaPanelController data', data);
 
             var options = MetaDataManager.getTabQueryOptions(tabs);
             var sessions = $sessionStorage.sessions;
@@ -44,8 +42,6 @@
                 .then(function(data) {
                     vm.tabs = MetaDataManager.updateTabs(data, tabs);
                 }, function(error) {
-                    $log.error(error);
-
                     inform.add(error, {
                         'ttl': 4000,
                         'type': 'danger'

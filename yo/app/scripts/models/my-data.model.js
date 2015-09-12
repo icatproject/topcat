@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .service('MyDataModel', MyDataModel);
 
-MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', 'IdsManager', '$timeout', '$state', 'Cart', '$sessionStorage', 'usSpinnerService', 'moment', '$log'];
+MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteService', 'uiGridConstants', 'DataManager', 'IdsManager', '$timeout', '$state', 'Cart', '$sessionStorage', 'usSpinnerService', 'moment'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ MyDataModel.$inject = ['$rootScope', 'APP_CONFIG', 'Config', 'ConfigUtils', 'Rou
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, usSpinnerService, moment, $log){  //jshint ignore: line
+function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, uiGridConstants, DataManager, IdsManager, $timeout, $state, Cart, $sessionStorage, usSpinnerService, moment){
     var self = this;
 
     /**
@@ -84,8 +84,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         }
 
         if (entityType === 'dataset') {
-            $log.debug('nextRouteSegment', nextRouteSegment);
-
             if (nextRouteSegment.indexOf('instrument') > -1) {
                 if (params.includes.indexOf('dataset.investigation.investigationInstruments.instrument') === -1) {
                     params.includes.push('dataset.investigation inv');
@@ -214,8 +212,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     function configToUIGridOptions(entityType) {
         var gridOptions = Config.getSiteMyDataGridOptions(APP_CONFIG)[entityType];
 
-        $log.debug('configToUIGridOptions', gridOptions);
-
         //do the work of transposing
         _.mapValues(gridOptions.columnDefs, function(value) {
             //replace filter condition to one expected by ui-grid
@@ -337,7 +333,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
         //get the default sort columnDef
         var defaultSortColumn = getDefaultSort(self.gridOptions.columnDefs);
-        $log.debug('init defaultSortColumn', defaultSortColumn);
 
         //set default column if no default column set
         if (defaultSortColumn.length === 0) {
@@ -359,11 +354,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
         self.gridOptions.totalItems = 0; //initiate totalItems
 
-
-        $log.debug('self.gridOptions', self.gridOptions);
-
-        $log.debug('init self.paginateParams', JSON.stringify(self.paginateParams.includes, null, 2));
-
         /**
          * Loads data for both pagination and infinte scroll. This method is called by ui-grid to load the first page of data
          * for infinite scroll and to load next page data for paginated pages
@@ -379,8 +369,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     //use gridOptions.columnDefs. applyFilterAndGetPage() however, cannot use
     //grid.colDef as doesn't seem possible to retrieve it.
     this.applyFilterAndGetPage = function (columnDefs) {
-        $log.debug('applyFilterAndGetPage called', columnDefs);
-
         var sortOptions = [];
 
         _.each(columnDefs, function(value, index) {
@@ -407,7 +395,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                         if (filterCount === 1) {
                             //validate term entered is a valid date before requesting page
                             _.each(columnDefs[index].filters, function(filter) {
-                                //$log.debug('filter', filter);
                                 if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
                                     if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                         searchTerms.push(columnDefs[index].filters[0].term);
@@ -481,14 +468,8 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             _.each(data, function(facility) {
                 var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
                 var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, self.entityType);
-                $log.debug('getPage paginateParams before getIncludesForRoutes', JSON.stringify(self.paginateParams.includes, null, 2));
-
-
 
                 self.paginateParams = getIncludesForRoutes(self.paginateParams, self.entityType, nextRouteSegment);
-
-                $log.debug('getPage paginateParams after getIncludesForRoutes', JSON.stringify(self.paginateParams.includes, null, 2));
-
 
                 var options = _.extend(self.stateParams, self.paginateParams);
                 options.user = true;
@@ -498,10 +479,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                 getDataPromise(self.entityType, self.sessions, facility, options).then(function(data){
                     self.gridOptions.totalItems = 0;
-
-                    $log.log('gridOptions.totalItems', self.gridOptions.totalItems);
-                    $log.log('self.gridOptions', self.gridOptions);
-
                     self.gridOptions.data = self.gridOptions.data.concat(data.data);
                     self.gridOptions.totalItems = self.gridOptions.totalItems + data.totalItems;
 
@@ -725,9 +702,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     };
 
     this.sortChangedForScroll = function(grid, sortColumns) {
-        $log.debug('sortChangedForScroll grid', grid);
-        $log.debug('sortChangedForScroll sortColumns', sortColumns);
-
         if (sortColumns.length === 0) {
             //paginationOptions.sort = null;
         } else {
@@ -747,21 +721,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
             });
         }
 
-        $log.debug('sortChanged paginateParams', self.paginateParams);
-
         self.getPage();
     };
 
 
     this.needLoadMoreData = function() {
-        //$log.debug('needLoadMoreData called');
-        //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start + self.pageSize;
         self.scope.gridApi.infiniteScroll.saveScrollPercentage();
         self.appendPage(self.paginateParams);
-
-        //$log.debug ('scrollUp: ', scope.firstPage - 1 > 0);
-        //$log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
 
         self.scope.gridApi.infiniteScroll.dataLoaded(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
         self.scope.currentPage++;
@@ -769,22 +736,15 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
 
     this.needLoadMoreDataTop = function() {
-        //$log.debug('needLoadMoreDataTop called');
-        //$log.debug('curentPage: ' , scope.currentPage, 'lastPage: ', scope.lastPage);
         self.paginateParams.start = self.paginateParams.start - self.pageSize;
         self.scope.gridApi.infiniteScroll.saveScrollPercentage();
         self.prependPage(self.paginateParams);
-
-        //$log.debug ('scrollUp: ', scope.firstPage -1 > 0);
-        //$log.debug ('scrollDown: ', scope.currentPage + 1 < scope.lastPage);
 
         self.scope.gridApi.infiniteScroll.dataLoaded(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
         self.scope.currentPage--;
     };
 
     this.filterChanged = function (columns) {
-        $log.debug('filterChanged called', columns);
-
         var sortOptions = [];
 
         _.each(columns, function(value, index) {
@@ -810,7 +770,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
 
                         //validate term entered is a valid date before requesting page
                         _.each(columns[index].filters, function(filter) {
-                            //$log.debug('filter', filter);
                             if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
                                 if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                     isValid = false;
@@ -818,7 +777,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                             }
                         });
                     } else if (filterCount > 1) {
-                        //$log.debug('columns[index].filters', columns[index].filters);
                         //only allow 2 filters and ignore the rest if defined
                         searchTerms.push(columns[index].filters[0].term);
                         searchTerms.push(columns[index].filters[1].term);
@@ -919,7 +877,6 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     };
 
     this.getNextRouteUrl = function (row) {
-        //$log.log('row', row);
         return $state.href('home.browse.facility.' + row.entity.nextRouteSegment, row.entity.nextRouteStateParam);
     };
 }

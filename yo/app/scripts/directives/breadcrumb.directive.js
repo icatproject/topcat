@@ -4,13 +4,10 @@
     angular.
         module('angularApp').controller('BreadCrumbController', BreadCrumbController);
 
-    BreadCrumbController.$inject = ['$scope', '$state', '$stateParams', 'RouteService', '$translate', '$log'];
+    BreadCrumbController.$inject = ['$scope', '$state', '$stateParams', 'RouteService'];
 
-    function BreadCrumbController ($scope, $state, $stateParams, RouteService, $translate, $log) {
+    function BreadCrumbController ($scope, $state, $stateParams, RouteService) {
         var bc = this;
-
-        $log.debug($state);
-
         var previousRoutes = RouteService.getPreviousRoutes($state);
 
         var items = [];

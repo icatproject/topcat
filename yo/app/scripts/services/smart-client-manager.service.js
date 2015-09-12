@@ -4,9 +4,9 @@
     angular.
         module('angularApp').service('SmartClientManager', SmartClientManager);
 
-    SmartClientManager.$inject = ['$http', '$q', 'SmartClientService', '$log'];
+    SmartClientManager.$inject = ['$http', '$q', 'SmartClientService'];
 
-    function SmartClientManager($http, $q, SmartClientService, $log) { //jshint ignore: line
+    function SmartClientManager($http, $q, SmartClientService) {
         function getErrorMessage(error) {
             var errorMessage = '';
 
@@ -43,8 +43,6 @@
                 def.resolve({ping: 'offline'});
                 //def.reject('Failed to ping the Smartclient: ' + getErrorMessage(error, status));
             });
-
-            $log.debug('def.promise', def.promise);
 
             return def.promise;
         };

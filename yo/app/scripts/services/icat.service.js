@@ -36,8 +36,6 @@
                 }
             };
 
-            $log.debug('params', params);
-
             var deferred = $q.defer();
             var asyncCalls = [
                 $http.get(RESTAPI, itemsQueryParams),
@@ -128,8 +126,6 @@
          * @return {[type]}            [description]
          */
         this.login = function(facility, credential) {
-            //$log.debug('login called for facility' , facility);
-
             var url = facility.icatUrl + '/icat/session';
 
             var credentialObj = {
@@ -174,8 +170,6 @@
          * @return {[type]}             [description]
          */
         this.logout = function(mySessionId, facility, options) { //jshint ignore:line
-            //$log.debug('icatservice.logout called for facility' , facility);
-
             var url = facility.icatUrl + '/icat/session/' + mySessionId;
             var params = {
                 params : {
@@ -200,8 +194,6 @@
          * @return {[type]}             [description]
          */
         this.getSession = function(mySessionId, facility, options) { //jshint ignore:line
-            $log.debug('icatservice.getSession called for facility', mySessionId, facility, options);
-
             var url = facility.icatUrl + '/icat/session/' + mySessionId;
             var params = {
                 params : {
@@ -244,11 +236,11 @@
         this.refreshSession = function(mySessionId, facility) {
             var url = facility.icatUrl + '/icat/session/' + mySessionId + '?server=' + facility.icatUrl;
             var params = {
-                    headers: {
-                        'Content-Type': undefined
-                    }
-                };
-            $log.debug('icatservice refresh session');
+                headers: {
+                    'Content-Type': undefined
+                }
+            };
+
             return $http.put(url, {}, params);
         };
 
@@ -377,7 +369,6 @@
          * @return {[type]}             [description]
          */
         this.getInvestigations = function(mySessionId, facility, options) {
-            $log.debug('getInvestigations options', options);
             var params = ICATQueryBuilder.getInvestigations(mySessionId, facility, options);
 
             return getPromise(mySessionId, facility, params);
@@ -392,7 +383,6 @@
          * @return {[type]}             [description]
          */
         this.getMyInvestigations = function(mySessionId, facility, options) {
-            $log.debug('getMyInvestigations options', options);
             var params = ICATQueryBuilder.getMyInvestigations(mySessionId, facility, options);
 
             return getPromise(mySessionId, facility, params);
@@ -521,7 +511,6 @@
          * @return {[type]}             [description]
          */
         this.getDatasetsByInvestigationId = function(mySessionId, facility, options) {
-            $log.debug('getDatasetsByInvestigationId options', options);
             var params = ICATQueryBuilder.getDatasetsByInvestigationId(mySessionId, facility, options);
 
             return getPromise(mySessionId, facility, params);

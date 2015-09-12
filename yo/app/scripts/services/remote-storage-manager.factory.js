@@ -5,28 +5,10 @@
         .module('angularApp')
         .factory('RemoteStorageManager', RemoteStorageManager);
 
-    RemoteStorageManager.$inject = ['TopcatManager', '$sessionStorage', 'APP_CONFIG', 'Config', 'APP_CONSTANT', 'inform', '$log'];
+    RemoteStorageManager.$inject = ['TopcatManager', '$sessionStorage', 'APP_CONFIG', 'Config'];
 
-    function RemoteStorageManager(TopcatManager, $sessionStorage, APP_CONFIG, Config, APP_CONSTANT, inform, $log) { //jshint ignore: line
+    function RemoteStorageManager(TopcatManager, $sessionStorage, APP_CONFIG, Config) {
         var manager = {};
-
-        /**
-         * Returns a userStore object based on the username and facility
-         *
-         * @param  {[type]} facility [description]
-         * @param  {[type]} userName [description]
-         * @return {[type]}          [description]
-         */
-        /*function getNewUserStore(facility, userName) {
-            var obj = {};
-            obj[APP_CONSTANT.storageName] = {};
-            var storeKey = getStoreKey(facility.facilityName, userName);
-            obj[APP_CONSTANT.storageName][storeKey] = {
-                items: []
-            };
-
-            return obj;
-        }*/
 
         /**
          * Returns a string base of the username and the facility which will be used
@@ -66,8 +48,6 @@
             if (!facility || ! userName) {
                 throw new Error('facility and userName required');
             }
-
-            $log.debug('RemoteStorageManager Init called');
         };
 
         /**
@@ -140,10 +120,6 @@
                     cartItems: myCart.items
                 };
 
-                //$log.debug('saveCartOject', saveCartOject);
-                //$log.debug(JSON.stringify(saveCartOject, null, 2));
-
-
                 TopcatManager.saveCart(facility, userName, saveCartOject);
             });
         };
@@ -157,16 +133,6 @@
          */
         manager.resetUser = function(facility, userName) {
             TopcatManager.removeCart(facility, userName);
-        };
-
-        /**
-         * Entirely delete the local storage on the browser. This deletes everything even,
-         * the storage that does not belong to the current user
-         *
-         * @return {[type]} [description]
-         */
-        manager.reset = function() {
-            $log.debug('reset called');
         };
 
         return manager;
