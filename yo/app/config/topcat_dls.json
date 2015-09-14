@@ -489,7 +489,7 @@
         }
     },
     "site": {
-        "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/api/v1",
+        "topcatApiPath": "api/v1",
         "home" : "my-data",
         "pagingType": "scroll",
         "useFileForData": false,

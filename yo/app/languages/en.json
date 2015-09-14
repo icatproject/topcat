@@ -302,13 +302,13 @@
                 "HTTP_DOWNLOAD" : {
                     "TEXT" : "Download",
                     "TOOLTIP" : {
-                        "TEXT" : "Click to download this via the browser"
+                        "TEXT" : "Click to download via the browser"
                     }
                 },
                 "GLOBUS_DOWNLOAD" : {
                     "TEXT" : "Download via Globus",
                     "TOOLTIP" : {
-                        "TEXT" : "Click to find out how to download this via Globus FTP"
+                        "TEXT" : "Click to find out how to download this using Globus Online"
                     }
                 },
                 "SMARTCLIENT_DOWNLOAD" : {
@@ -320,7 +320,7 @@
                 "REMOVE" : {
                     "TEXT" : "Remove",
                     "TOOLTIP" : {
-                        "TEXT" : "Click to remove from download order list"
+                        "TEXT" : "Click to remove download order list"
                     }
                 },
                 "NON_ACTIVE_DOWNLOAD" : {

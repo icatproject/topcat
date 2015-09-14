@@ -80,7 +80,7 @@
             $httpProvider.interceptors.push('ICATRequestInterceptor');
         }])
         .config(['$logProvider', function($logProvider){
-            $logProvider.debugEnabled(false);
+            $logProvider.debugEnabled(true);
         }])
         .config(function($stateProvider, $urlRouterProvider) {
             //workaround https://github.com/angular-ui/ui-router/issues/1022

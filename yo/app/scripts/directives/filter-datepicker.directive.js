@@ -2,16 +2,42 @@
     'use strict';
 
     angular.
-        module('angularApp').controller('FilterDatepickerController', FilterDatepickerController);
+        module('angularApp')
+        .controller('FilterDatepickerController', FilterDatepickerController)
+        .directive('datepickerPopup', function (){
+            return {
+                restrict: 'EAC',
+                require: 'ngModel',
+                link: function(scope, elem, attrs, ngModel) {
+                    ngModel.$parsers.push(function toModel(date) {
+                        return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                    });
+                }
+            };
+        });
 
-    FilterDatepickerController.$inject = ['$scope'];
+    FilterDatepickerController.$inject = ['$scope', '$log'];
 
-    function FilterDatepickerController ($scope) {
-        $scope.opened = false;
-
+    function FilterDatepickerController ($scope, $log) { //jshint ignore: line
         //Datepicker
         $scope.dateOptions = {
+            'dateformat' : 'yyyy-MM-dd',
             'show-weeks' : false
+        };
+
+        $scope.open = function(event){ //jshint ignore: line
+            //event.preventDefault();
+            //event.stopPropagation();
+            console.log('datepicker clicked');
+            $scope.status.opened = true;
+        };
+
+        /*$scope.clear = function () {
+            $scope.ngModel = null;
+        };*/
+
+        $scope.status = {
+            opened: false
         };
     }
 
@@ -22,30 +48,12 @@
 
     function filterDatepicker() {
         return {
-            restrict: 'E',
+            restrict: 'A',
             scope:{
               ngModel: '=',
-              dateOptions: '=',
-              opened: '='
             },
-            link: function($scope, element, attrs) { //jshint ignore: line
-              $scope.open = function(event){
-                event.preventDefault();
-                event.stopPropagation();
-                $scope.opened = true;
-              };
-
-              $scope.clear = function () {
-                $scope.ngModel = null;
-              };
-            },
-            controller: 'FilterDatepickerController',
-            template: '<p class="input-group">' +
-                '<input type="text" class="form-control input-sm" datepicker-popup="datePickerOptions" ng-model="ngModel" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />' +
-                '<span class="input-group-btn">' +
-                '<button class="btn btn-default input-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>' +
-                '</span>' +
-                '</p>'
+            controller: 'FilterDatepickerController'
+            //template: '<input type="text" class="ui-grid-filter-input" ng-click="open($event)" ng-model="ngModel" datepicker-popup is-open="status.opened" datepicker-options="dateOptions" close-text="Close" datepicker-append-to-body="true"/>'
         };
     }
 

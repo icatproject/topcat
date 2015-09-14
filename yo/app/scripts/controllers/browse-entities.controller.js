@@ -25,6 +25,27 @@
             appScopeProvider: $scope
         };
 
+        $scope.dateOptions = {
+            'dateformat' : 'yyyy-MM-dd',
+            'show-weeks' : false
+        };
+
+        $scope.open = function(event){ //jshint ignore: line
+            //event.preventDefault();
+            //event.stopPropagation();
+            console.log('datepicker clicked');
+            $scope.status.opened = true;
+        };
+
+        /*$scope.clear = function () {
+            $scope.ngModel = null;
+        };*/
+
+        $scope.status = {
+            opened: false
+        };
+
+
         BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams, $scope.gridOptions);
 
         /*$templateCache.put('ui-grid/selectionSelectAllButtons',

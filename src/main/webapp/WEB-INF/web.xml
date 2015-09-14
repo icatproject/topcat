@@ -30,4 +30,9 @@
 		<filter-name>noCache</filter-name>
 		<url-pattern>*.json</url-pattern>
 	</filter-mapping>
+
+	<mime-mapping>
+        <extension>json</extension>
+        <mime-type>application/json</mime-type>
+    </mime-mapping>
 </web-app>
