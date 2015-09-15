@@ -221,7 +221,7 @@ public class DownloadRepository {
                             valuesMap.put("userName", downloads.get(0).getUserName());
                             valuesMap.put("facilityName", downloads.get(0).getFacilityName());
                             valuesMap.put("preparedId", downloads.get(0).getPreparedId());
-                            valuesMap.put("downloadUrl", downloads.get(0).getTransportUrl() + "/ids/getData?preparedId=" + downloads.get(0).getPreparedId() + "&outName=" + downloads.get(0).getFacilityName());
+                            valuesMap.put("downloadUrl", downloads.get(0).getTransportUrl() + "/ids/getData?preparedId=" + downloads.get(0).getPreparedId() + "&outname=" + downloads.get(0).getFileName());
                             valuesMap.put("fileName", downloads.get(0).getFileName());
 
                             StrSubstitutor sub = new StrSubstitutor(valuesMap);
