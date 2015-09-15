@@ -22,7 +22,7 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.NotSupportedException;
 import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 
 /**
- * 
+ *
  * @author sn65
  */
 public class ICATWebInterfaceBase {
@@ -78,12 +78,7 @@ public class ICATWebInterfaceBase {
     public ArrayList<TInvestigation> searchByAdvancedPagination(String sessionId, TAdvancedSearchDetails details,
             int start, int end) throws TopcatException {
         return new ArrayList<TInvestigation>();
-    }    
-    
-    public ArrayList<TInvestigation> searchByFreeTextPagination(String sessionId, TAdvancedSearchDetails searchDetails,
-            int start, int end) throws TopcatException {
-        throw new NotSupportedException("Free text search is not currently supported by this server.");
-    }    
+    }
 
     public ArrayList<TDatafile> searchDatafilesByParameter(String sessionId, TAdvancedSearchDetails details)
             throws TopcatException {
@@ -99,11 +94,11 @@ public class ICATWebInterfaceBase {
             throws TopcatException {
         return new ArrayList<TDataset>();
     }
-    
+
     public ArrayList<TInvestigation> getInvestigationsInInstrument(
-            String sessionId, String instrumentId) throws TopcatException {        
+            String sessionId, String instrumentId) throws TopcatException {
         return new ArrayList<TInvestigation>();
-    }    
+    }
 
     public ArrayList<TDatasetParameter> getParametersInDataset(String sessionId, Long datasetId) throws TopcatException {
         return new ArrayList<TDatasetParameter>();
@@ -173,6 +168,6 @@ public class ICATWebInterfaceBase {
         throw new NotSupportedException("createDataSet is not supported");
     }
 
-    
+
 
 }

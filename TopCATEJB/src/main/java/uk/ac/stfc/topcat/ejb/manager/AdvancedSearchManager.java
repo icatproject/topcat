@@ -43,7 +43,7 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
  * This class implements advanced search TODO: implement advancedsearch
  * pagination
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -55,7 +55,7 @@ public class AdvancedSearchManager {
     /**
      * This method returns all investigations in a given facility that meets the
      * AdvancedSearch details.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -81,7 +81,7 @@ public class AdvancedSearchManager {
     /**
      * This method searches *ALL* the servers to get the investigations that
      * meet the advanced search details.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param searchDetails
@@ -122,12 +122,12 @@ public class AdvancedSearchManager {
         }
         return resultInvestigations;
     }
-    
-    
+
+
     /**
      * This method calls the icat instance of the server requested to search of
      * the investigations that meet the input search details.
-     * 
+     *
      * @param session
      * @param searchDetails
      * @return
@@ -158,109 +158,12 @@ public class AdvancedSearchManager {
         }
         return returnTInvestigations;
     }
-    
-    
-    /**
-     * This method searches *ALL* the servers to get the investigations that
-     * meet the free search query.
-     * 
-     * @param manager
-     * @param topcatSessionId
-     * @param searchDetails
-     * @return
-     * @throws TopcatException
-     */
-    public ArrayList<TInvestigation> searchFreeTextInvestigation(EntityManager manager, String topcatSessionId,
-            TAdvancedSearchDetails searchDetails) throws TopcatException {
-        logger.info("searchFreeTextInvestigation: topcatSessionId (" + topcatSessionId + ")");
-        // Get the list of valid sessions using topcatSessionId
-        // Go through each icat session and gather the results.
-        ArrayList<TInvestigation> resultInvestigations = null;
-        List<TopcatUserSession> userSessions = null;
-        if (searchDetails.getFacilityList().size() == 0) {                        
-            userSessions = UserManager.getValidUserSessionByTopcatSession(manager, topcatSessionId);
-        } else {
-            userSessions = new ArrayList<TopcatUserSession>();
-            for (String facility : searchDetails.getFacilityList()) {
-                TopcatUserSession facilitySession = UserManager.getValidUserSessionByTopcatSessionAndServerName(
-                        manager, topcatSessionId, facility);
-                if (facilitySession != null) {
-                    userSessions.add(facilitySession);
-                }
-            }
-        }
-
-        for (TopcatUserSession userSession : userSessions) {
-            logger.info("in searchFreeTextInvestigation - " + userSession.getTopcatSessionId());
-            
-            ArrayList<TInvestigation> tmpList = null;
-            
-            try {
-                tmpList = searchFreeTextInvestigationUsingICATSession(userSession, 
-                    searchDetails);
-            } catch(NotSupportedException e) {
-                logger.warn("searchFreeTextInvestigation: " + e.getMessage());
-            } catch (Exception e) {
-                logger.error("searchFreeTextInvestigation: exception" + e.getMessage());
-            }
-            
-            if (tmpList == null) {
-                continue;
-            }
-            if (resultInvestigations != null) {
-                resultInvestigations.addAll(tmpList);
-            } else {
-                resultInvestigations = tmpList;
-            }
-        }
-        return resultInvestigations;
-    }
-    
-    
-    /**
-     * This method calls the icat instance of the server requested to search of
-     * the investigations that meet the input search details.
-     * 
-     * @param session
-     * @param searchDetails
-     * @return
-     * @throws TopcatException
-     */
-    private ArrayList<TInvestigation> searchFreeTextInvestigationUsingICATSession(TopcatUserSession session,
-            TAdvancedSearchDetails searchDetails) throws TopcatException {
-        logger.debug("searchFreeTextInvestigationUsingICATSession: Searching server "
-                + session.getUserId().getServerId().getServerUrl() + "  with icat session id "
-                + session.getIcatSessionId());
-        // Get the ICAT Service url
-        // call the search using keyword method
-        ArrayList<TInvestigation> returnTInvestigations = new ArrayList<TInvestigation>();
-        try {
-            logger.trace(session.getUserId().getServerId().getName() + " Version:"
-                    + session.getUserId().getServerId().getVersion() + "  URL: "
-                    + session.getUserId().getServerId().getServerUrl());
-            ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(
-                    session.getUserId().getServerId().getName(), session.getUserId().getServerId().getVersion(),
-                    session.getUserId().getServerId().getServerUrl());
-            return service.searchByFreeTextPagination(session.getIcatSessionId(), searchDetails, 0, 200);
-        } catch (TopcatException e) {
-            throw e;
-        } catch (MalformedURLException ex) {
-            logger.error("searchFreeTextInvestigationUsingICATSession:" + ex.getMessage());
-        } catch (Exception ex) {
-            logger.error("searchFreeTextInvestigationUsingICATSession: (Unknown expetion)" + ex.getMessage());
-        }
-        return returnTInvestigations;
-    }
-    
-    
-    
-
 
 
     /**
      * This method returns all datafiles that match the parameter if given else
      * the instrument and Run number range.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -290,7 +193,7 @@ public class AdvancedSearchManager {
     /**
      * This method calls the icat instance of the server requested to search for
      * datafiles that correspond to given parameter
-     * 
+     *
      * @param session
      * @param searchDetails
      * @return
@@ -323,7 +226,7 @@ public class AdvancedSearchManager {
     /**
      * This method calls the icat instance of the server requested to search for
      * datafiles that correspond to given instrument and run number range
-     * 
+     *
      * @param session
      * @param searchDetails
      * @return

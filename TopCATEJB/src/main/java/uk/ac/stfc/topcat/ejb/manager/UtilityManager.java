@@ -51,7 +51,7 @@ import uk.ac.stfc.topcat.ejb.entity.TopcatUserSession;
 /**
  * This has utilties such as getting list of facilities etc.
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -63,7 +63,7 @@ public class UtilityManager {
 
     /**
      * This method returns all the facility names currently used by the Topcat.
-     * 
+     *
      * @param manager
      * @return
      */
@@ -108,7 +108,7 @@ public class UtilityManager {
 
     /**
      * This method returns all the instrument names from a given server
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -144,7 +144,7 @@ public class UtilityManager {
     /**
      * This method implements the returns of all the instrument names from a
      * given server
-     * 
+     *
      * @param manager
      * @param sessionId
      * @param server
@@ -164,7 +164,7 @@ public class UtilityManager {
 
     /**
      * This method returns all the investigation types from a given server
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -200,7 +200,7 @@ public class UtilityManager {
     /**
      * This method implements the return of all the investigation types from a
      * given server
-     * 
+     *
      * @param sessionId
      * @param server
      * @return
@@ -222,7 +222,7 @@ public class UtilityManager {
 
     /**
      * Get all of the facility cycles from a given facility and instrument.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -256,7 +256,7 @@ public class UtilityManager {
 
     /**
      * Get all of the facility cycles from a given server and instrument.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param instrument
@@ -280,7 +280,7 @@ public class UtilityManager {
 
     /**
      * Get all of the facility cycles from a given server.
-     * 
+     *
      * @param sessionId
      * @param server
      * @return a list of <code>TFacilityCycle</code>
@@ -303,7 +303,7 @@ public class UtilityManager {
     /**
      * This method returns all the investigations of the user as the
      * investigator from a given server.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -328,7 +328,7 @@ public class UtilityManager {
     /**
      * This method returns all the investigations for the user as the
      * investigator from given input server name.
-     * 
+     *
      * @param sessionId
      * @param server
      * @return
@@ -348,7 +348,7 @@ public class UtilityManager {
 
     /**
      * This method returns all the investigations from a given server.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -364,6 +364,7 @@ public class UtilityManager {
                     .createNamedQuery("TopcatUserSession.findByTopcatSessionIdAndServerName")
                     .setParameter("topcatSessionId", topcatSessionId).setParameter("serverName", facilityName)
                     .getSingleResult();
+
             return getAllInvestigationsInServer(userSession.getIcatSessionId(), userSession.getUserId().getServerId());
         } catch (javax.persistence.NoResultException ex) {
         }
@@ -372,7 +373,7 @@ public class UtilityManager {
 
     /**
      * This method returns all the investigations from given input server name.
-     * 
+     *
      * @param sessionId
      * @param server
      * @return
@@ -393,7 +394,7 @@ public class UtilityManager {
     /**
      * This method returns all user investigations of which the user is
      * investigator from a given facility and instrument name.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -421,7 +422,7 @@ public class UtilityManager {
     /**
      * This method returns all user investigations of which the user is
      * investigator from a given server and instrument name.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param userName
@@ -452,7 +453,7 @@ public class UtilityManager {
     /**
      * This method returns all the investigation for the user in a given server
      * and the given instrument.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -477,7 +478,7 @@ public class UtilityManager {
     /**
      * This method returns all the investigation for the user in a given server
      * and the given instrument.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param userName
@@ -490,8 +491,8 @@ public class UtilityManager {
         try {
             ICATWebInterfaceBase service = ICATInterfaceFactory.getInstance().createICATInterface(server.getName(),
                     server.getVersion(), server.getServerUrl());
-            
-            return service.getInvestigationsInInstrument(sessionId, instrumentName);            
+
+            return service.getInvestigationsInInstrument(sessionId, instrumentName);
         } catch (MalformedURLException ex) {
             logger.error("getAllInvestigationsInServerAndInstrument: for " + instrumentName + " " + ex.getMessage());
         }
@@ -502,7 +503,7 @@ public class UtilityManager {
     /**
      * This method returns all user investigations of which the user is
      * investigator from a given facility instrument name and facility cycle.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -532,7 +533,7 @@ public class UtilityManager {
     /**
      * This method returns all user investigations of which the user is
      * investigator from a given server , instrument name and facility cycle.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param userName
@@ -568,7 +569,7 @@ public class UtilityManager {
     /**
      * This method returns all the investigation for the user in a given server,
      * the given instrument and facility cycle.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -595,7 +596,7 @@ public class UtilityManager {
     /**
      * This method returns all the investigation for the user in a given server,
      * the given instrument and facility cycle.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param userName
@@ -625,7 +626,7 @@ public class UtilityManager {
     /**
      * This method returns the investigation details from the given facility for
      * the given investigation id.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -650,7 +651,7 @@ public class UtilityManager {
     /**
      * This method returns the investigation details from the given server for
      * the given investigation id.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param investigationId
@@ -674,7 +675,7 @@ public class UtilityManager {
     /**
      * This method returns datasets for a given investigation number on given
      * input server
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -699,7 +700,7 @@ public class UtilityManager {
     /**
      * This method returns datasets for a given investigation number on given
      * input server
-     * 
+     *
      * @param sessionId
      * @param server
      * @param investigationNumber
@@ -723,7 +724,7 @@ public class UtilityManager {
     /**
      * This method get the parameters corresponding to the input datasetid on
      * the given server.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -747,7 +748,7 @@ public class UtilityManager {
     /**
      * This method get the parameters corresponding to the input datasetid on
      * the given server.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param datasetId
@@ -765,12 +766,12 @@ public class UtilityManager {
         }
         return new ArrayList<TDatasetParameter>();
     }
-    
+
 
     /**
      * This method returns the datafile name corresponding to a given datasetid
      * in a given input server
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -794,7 +795,7 @@ public class UtilityManager {
     /**
      * This method returns the datafile name corresponding to a given datasetid
      * in a given input server
-     * 
+     *
      * @param sessionId
      * @param server
      * @param datasetId
@@ -815,7 +816,7 @@ public class UtilityManager {
     /**
      * This method returns datafiles corresponding to a given datasetid in a
      * given input server
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -840,7 +841,7 @@ public class UtilityManager {
     /**
      * This method returns datafiles corresponding to a given datasetid in a
      * given input server
-     * 
+     *
      * @param sessionId
      * @param server
      * @param datasetId
@@ -862,7 +863,7 @@ public class UtilityManager {
     /**
      * This method get the parameters corresponding to the input datafileid on
      * the given server.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -886,7 +887,7 @@ public class UtilityManager {
     /**
      * This method get the parameters corresponding to the input datafileid on
      * the given server.
-     * 
+     *
      * @param sessionId
      * @param server
      * @param datafileId
@@ -907,7 +908,7 @@ public class UtilityManager {
 
     /**
      * Get a list of parameter names known to a facility.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -939,7 +940,7 @@ public class UtilityManager {
 
     /**
      * Get a list of parameter units for the given facility and parameter name.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -976,7 +977,7 @@ public class UtilityManager {
      * Get the expected type of the parameter value for the given facility,
      * parameter name and parameter units. If the units are '--ALL--' then
      * return types for all units.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -1012,7 +1013,7 @@ public class UtilityManager {
 
     /**
      * Get a list of authentication details for a facility.
-     * 
+     *
      * @param manager
      * @param facilityName
      *            a string containing the facility name
@@ -1044,7 +1045,7 @@ public class UtilityManager {
 
     /**
      * Get the data file formats for the given facility.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName
@@ -1078,7 +1079,7 @@ public class UtilityManager {
 
     /**
      * Get the data set types for the given facility.
-     * 
+     *
      * @param manager
      * @param topcatSessionId
      * @param facilityName

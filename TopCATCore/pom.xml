@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.icatproject</groupId>
         <artifactId>topcat.root</artifactId>
-        <version>1.12.1-SNAPSHOT</version>
+        <version>1.13.0-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -34,7 +34,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>1.10</version>
@@ -53,7 +53,7 @@
                         </configuration>
                         <id>wsimport-generate-ICAT_420</id>
                         <phase>generate-sources</phase>
-                    </execution>                    
+                    </execution>
                 </executions>
 
                 <dependencies>
@@ -72,13 +72,13 @@
                     <catalog>${basedir}/src/jax-ws-catalog.xml</catalog>
                 </configuration>
 
-            </plugin>
+            </plugin> -->
         </plugins>
 
         <pluginManagement>
             <plugins>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
-                <plugin>
+                <!-- <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
                     <version>1.0.0</version>
@@ -108,7 +108,7 @@
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
-                </plugin>
+                </plugin> -->
             </plugins>
         </pluginManagement>
         <finalName>TopCATCore</finalName>
@@ -140,12 +140,12 @@
             <type>jar</type>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>webservices-rt</artifactId>
             <version>1.4</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>log4j</groupId>
@@ -156,7 +156,13 @@
         <dependency>
             <groupId>org.icatproject</groupId>
             <artifactId>icat.client</artifactId>
-            <version>4.3.0</version>
+            <version>4.3.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.icatproject</groupId>
+            <artifactId>icat.client</artifactId>
+            <version>4.5.0</version>
         </dependency>
 
         <dependency>

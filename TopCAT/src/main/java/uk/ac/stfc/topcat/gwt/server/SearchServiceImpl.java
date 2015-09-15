@@ -135,35 +135,6 @@ public class SearchServiceImpl extends UrlBasedRemoteServiceServlet implements S
         return investigationList;
     }
 
-
-    /*
-     * This method searches all the icat servers >= 4.3 for user investigations for given search query
-     * Search is CASE insensitive and return maximum of 200 results
-     *
-     * @see uk.ac.stfc.topcat.gwt.client.SearchService#
-     * getFreeTextSearchResultsInvestigation(java.lang.String,
-     * uk.ac.stfc.topcat.core.gwt.module.TAdvancedSearchDetails)
-     */
-    @Override
-    public List<TInvestigation> getFreeTextSearchResultsInvestigation(String sessionId,
-            TAdvancedSearchDetails searchDetails) throws TopcatException {
-
-        if (sessionId == null) {
-            sessionId = getSessionId();
-            logger.debug("session id:" + sessionId);
-        }
-
-        List<TInvestigation> investigationList = new ArrayList<TInvestigation>();
-
-        try {
-            investigationList = searchManager.searchFreeTextInvestigation(sessionId, searchDetails);
-        } catch (Exception e) {
-            logger.error("searchManager.searchFreeTextInvestigation:" + e.getMessage());
-        }
-
-        return investigationList;
-    }
-
     /**
      * This methods searches for the datafiles that meet the criteria given in
      * the searchDetails NOTE: only instruments and run number start and end

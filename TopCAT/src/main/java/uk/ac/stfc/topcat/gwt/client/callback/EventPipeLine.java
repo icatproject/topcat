@@ -523,46 +523,6 @@ public class EventPipeLine implements LoginInterface {
 
 
     /**
-     * This method searches for all the investigations that match the given
-     * search details.
-     *
-     * @param searchDetails
-     */
-    public void searchForInvestigationByFreeText(final TAdvancedSearchDetails searchDetails) {
-        waitDialog.setMessage("  Searching...");
-        waitDialog.show();
-
-        searchService.getFreeTextSearchResultsInvestigation(null, searchDetails,
-                new AsyncCallback<List<TInvestigation>>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        if (caught instanceof SessionException) {
-                            checkStillLoggedIn();
-                        } else if (caught instanceof BadParameterException) {
-                            showErrorDialog("Error " + ((BadParameterException) caught).getMessage());
-                        } else {
-                            showErrorDialog("Error retrieving data from server");
-                        }
-                    }
-
-                    @Override
-                    public void onSuccess(List<TInvestigation> result) {
-                        ArrayList<TopcatInvestigation> invList = new ArrayList<TopcatInvestigation>();
-                        if (result != null) {
-                            for (TInvestigation inv : result)
-                                invList.add(new TopcatInvestigation(inv.getServerName(), inv.getFacilityName(), inv.getInvestigationId(), inv
-                                        .getInvestigationName(), inv.getTitle(), inv.getVisitId(), inv.getStartDate(),
-                                        inv.getEndDate()));
-                        }
-                        waitDialog.hide();
-                        mainWindow.getMainPanel().getSearchPanel().setInvestigations(invList);
-                    }
-                });
-    }
-
-
-
-    /**
      * Get additional details about an investigation. An asynchronous call is
      * made to the server and an <code>AddInvestigationDetailsEvent</code> is
      * fired when the results have been returned.

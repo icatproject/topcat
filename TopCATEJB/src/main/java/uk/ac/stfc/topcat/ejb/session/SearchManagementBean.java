@@ -40,7 +40,7 @@ import uk.ac.stfc.topcat.ejb.manager.BasicSearchManager;
 /**
  * This is stateless bean implementation for searching icat servers.
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -90,14 +90,6 @@ public class SearchManagementBean implements SearchManagementBeanLocal {
             TAdvancedSearchDetails searchDetails) throws TopcatException {
         return advancedSearchManager.searchAdvancedInvestigation(manager, topcatSessionId, searchDetails);
     }
-    
-    
-    @Override
-    public ArrayList<TInvestigation> searchFreeTextInvestigation(String topcatSessionId,
-            TAdvancedSearchDetails searchDetails) throws TopcatException {
-        return advancedSearchManager.searchFreeTextInvestigation(manager, topcatSessionId, searchDetails);
-    }
-    
 
     @Override
     public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String facilityName,

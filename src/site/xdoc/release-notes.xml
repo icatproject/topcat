@@ -6,13 +6,21 @@
     </properties>
 
     <body>
+    	<section name="1.12.0">
+            <ul>
+                <li>Add support for ICAT 4.5.0</li>
+                <li>Removed free text search</li>
+                <li>Enabled "Check Selected Size" button</li>
+                <li>Use ids.client 1.2.0</li>
+            </ul>
+        </section>
         <section name="1.12.0">
             <ul>
                 <li>Added External redirect Authentication type</li>
                 <li>Changed url separator token from &amp; to ;</li>
                 <li>Last used icat server and authentication type now saved to a cookie</li>
                 <li>Added ability for users to create datasets</li>
-                <li>Added ability for users to upload a datafile (See <a href="installation.html#File_Upload">installation</a> doc.)</li>                
+                <li>Added ability for users to upload a datafile (See <a href="installation.html#File_Upload">installation</a> doc.)</li>
                 <li>Removed support for ICAT servers below 4.2</li>
                 <li>Changed persistence.xml to enable logging to be configured at container level</li>
                 <li>Added new configuration options to topcat-setup.properties to change the url path of topcat and topcatadmin</li>
@@ -25,7 +33,7 @@
                 <li>Added ability to delete downloads in "My Downloads"</li>
                 <li>Bug fixes</li>
                 <li>schema changes (See <a href="installation.html#Schema_Upgrade"> schema upgrade instructions</a>):
-                    <ul>                        
+                    <ul>
                         <li>Add ALLOW_UPLOAD and ALLOW_CREATE_DATASET column to TOPCAT_ICAT_SERVER</li>
                         <li>Add MESSAGE column to TOPCAT_USER_DOWNLOAD</li>
                     </ul>
@@ -49,7 +57,7 @@
                 <li>schema changes:
                     <ul>
                         <li>Add the column DOWNLOAD_TYPE to the table TOPCAT_ICAT_SERVER</li>
-                        
+
                     </ul>
                 </li>
             </ul>
@@ -115,4 +123,4 @@
         </section>
 
     </body>
-</document>   
+</document>

@@ -108,7 +108,7 @@ public class DownloadManager {
         if (topcatSessions.size() > 0) {
             TopcatUser user = topcatSessions.get(0).getUserId();
 
-            manager.createNamedQuery("TopcatUserDownload.deleteByIdandUserId").setParameter("id", id).setParameter("userId", user.getId()).executeUpdate();
+            manager.createNamedQuery("TopcatUserDownload.deleteByIdandUserId").setParameter("id", id).setParameter("userId", user).executeUpdate();
             manager.flush();
         }
     }

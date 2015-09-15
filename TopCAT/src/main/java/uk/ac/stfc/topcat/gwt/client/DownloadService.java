@@ -170,7 +170,7 @@ public interface DownloadService extends RemoteService {
 
 
     /**
-     * Contact the server and delete a given download.
+     * Get the file size from the ids
      *
      * @param facility
      *            the facility data

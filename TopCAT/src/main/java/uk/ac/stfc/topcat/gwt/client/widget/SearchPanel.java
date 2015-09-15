@@ -101,7 +101,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
     private AdvancedSearchSubPanel advancedSearchSubPanel;
     private ParameterSearchSubPanel parameterSearchSubPanel;
     private FacilitiesSearchSubPanel facilitiesSearchSubPanel;
-    private FreeTextSearchSubPanel freeTextSearchSubPanel;
     private InvestigationPanel investigationPanel;
 
     // Radio button for type of search
@@ -153,14 +152,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         td_cntntpnlFacilitiesSearch.setWidth("705px");
         topPanel.add(getFacilitiesSearchPanel(), td_cntntpnlFacilitiesSearch);
 
-        // Free Text Search Panel
-        TableData td_cntntpnlFreeTextSearch = new TableData();
-        td_cntntpnlFreeTextSearch.setHeight("100%");
-        td_cntntpnlFreeTextSearch.setWidth("705px");
-        topPanel.add(getFreeTextSearchPanel(), td_cntntpnlFreeTextSearch);
-        topPanel.add(new Text(""));
-
-
         // Pagination
         invPageProxy = new PagingModelMemoryProxy(investigationList);
         PagingLoader<PagingLoadResult<TopcatInvestigation>> loader = new BasePagingLoader<PagingLoadResult<TopcatInvestigation>>(
@@ -202,13 +193,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
      */
     public FacilitiesSearchSubPanel getFacilitiesSearchSubPanel() {
         return facilitiesSearchSubPanel;
-    }
-
-    /**
-     * @return the free text search sub panel
-     */
-    public FreeTextSearchSubPanel getFreeTextSearchSubPanel() {
-        return freeTextSearchSubPanel;
     }
 
 
@@ -422,40 +406,6 @@ public class SearchPanel extends Composite implements InvestigationSearchCallbac
         cp.add(facilitiesSearchSubPanel);
         return cp;
     }
-
-
-
-    /**
-     * Set up a ContentPanel containing the freeTextSearchSubPanel.
-     *
-     * @return a ContentPanel containing the freeTextSearchSubPanel
-     */
-    private ContentPanel getFreeTextSearchPanel() {
-        ContentPanel cp = new ContentPanel();
-        cp.setTitleCollapse(true);
-        cp.setFrame(true);
-        cp.setExpanded(false);
-        cp.setHeadingText("Free Text Search");
-        cp.setCollapsible(true);
-        cp.addListener(Events.Expand, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        cp.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-            @Override
-            public void handleEvent(ComponentEvent event) {
-                EventPipeLine.getInstance().getTcEvents().fireResize();
-            }
-        });
-        freeTextSearchSubPanel = new FreeTextSearchSubPanel();
-        cp.add(freeTextSearchSubPanel);
-        return cp;
-    }
-
-
-
 
 
     /**

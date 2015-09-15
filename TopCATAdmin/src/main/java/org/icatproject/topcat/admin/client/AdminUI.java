@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is Topcat Admin Consol
  * <p>
- * 
+ *
  * @author Mr. Noris Nyamekye
  * @version 28-Jun-2013
  * @since 28-Jun-2013
@@ -60,12 +60,12 @@ public class AdminUI extends Composite {
 	private static boolean table1Flag = false;
 
 	public enum validationMessages {
-		FACILITY_NAME("Please provide a valid Facility Name to proceed e.g. ISIS"), 
+		FACILITY_NAME("Please provide a valid Facility Name to proceed e.g. ISIS"),
 		ICAT_URL("Please provide a valid ICAT URL to proceed e.g. https://example.com"),
 		DOWNLOAD_TYPE("Please select a download type"),
-		DOWNLOAD_SERVICE_URL("Please provide a valid Download Service URL to proceed e.g. https://example.com/IDS"), 
-		DISPLAY_NAME("Please provide a valid Display Name to proceed e.g. \"Facility ID\""), 
-		FACILITY_NAME_DUPLICATION("Facility Name already exists, please use a different Facility Name"), 
+		DOWNLOAD_SERVICE_URL("Please provide a valid Download Service URL to proceed e.g. https://example.com/IDS"),
+		DISPLAY_NAME("Please provide a valid Display Name to proceed e.g. \"Facility ID\""),
+		FACILITY_NAME_DUPLICATION("Facility Name already exists, please use a different Facility Name"),
 		DISPLAY_NAME_DUPLICATION("Display Name already exists, please use a different Display Name");
 
 		private validationMessages(final String text) {
@@ -80,11 +80,11 @@ public class AdminUI extends Composite {
 		}
 	}
 
-	// The array lists beneath, will contain the id numbers for the ICAT Server and Authentication Table 
+	// The array lists beneath, will contain the id numbers for the ICAT Server and Authentication Table
 	ArrayList<Long> idArrayTable0 = new ArrayList<Long>();
 	ArrayList<Long> idArrayTable1 = new ArrayList<Long>();
-	
-	// The array lists beneath, will contain the numbers of associated authentications, to the ICATs in the ICAT Server Table 
+
+	// The array lists beneath, will contain the numbers of associated authentications, to the ICATs in the ICAT Server Table
 	ArrayList<Integer> numberOfAuthDetails = new ArrayList<Integer>();
 	Constants headerNames = new Constants();
 
@@ -123,10 +123,10 @@ public class AdminUI extends Composite {
 
 	@UiField
 	FlowPanel flowPanel;
-	
+
 	@UiField
 	CheckBox allowUpload;
-	
+
 	@UiField
 	CheckBox allowCreateDataset;
 
@@ -144,7 +144,7 @@ public class AdminUI extends Composite {
 		/**
 		 * Recreates/Creates a new ICAT server table and populates it with ICATs
 		 * and their information.
-		 * 
+		 *
 		 * @param a
 		 *            list of <code>TFacilities</code>
 		 * @return
@@ -163,10 +163,10 @@ public class AdminUI extends Composite {
 		table0.setText(0, 6, Constants.DOWNLOAD_SERVICE_URL);
 		table0.setText(0, 7, Constants.ALLOW_UPLOAD);
 		table0.setText(0, 8, Constants.ALLOW_CREATE_DATASET);
-		
+
 		table0.getRowFormatter().setStyleName(0, "header");
 
-		// Sets the width for each column 
+		// Sets the width for each column
 		table0.getColumnFormatter().setWidth(0, "110px");
 		table0.getColumnFormatter().setWidth(1, "90px");
 		table0.getColumnFormatter().setWidth(2, "190px");
@@ -180,17 +180,17 @@ public class AdminUI extends Composite {
 		idArrayTable0.clear();
 		idArrayTable0.add(null);
 
-		
-		
-		//Populates the Table 
+
+
+		//Populates the Table
 		for (TFacility facility : result) {
 			c = 0;
-			
+
 			table0.setText(r, c++, facility.getName());
 			table0.setText(r, c++, facility.getVersion());
-			
+
 			String[]  bits =  facility.getUrl().split("/ICATService/ICAT\\?wsdl");
-			
+
 			table0.setText(r, c++, bits[0]);
 			table0.setText(r, c++, facility.getSearchPluginName());
 			table0.setText(r, c++, facility.getDownloadPluginName());
@@ -198,27 +198,27 @@ public class AdminUI extends Composite {
             table0.setText(r, c++, facility.getDownloadServiceUrl());
             table0.setText(r, c++, (facility.isAllowUpload() ? "yes" : "no"));
             table0.setText(r, c++, (facility.isAllowCreateDataset() ? "yes" : "no"));
-            table0.getRowFormatter().setStyleName(r, "table_style");			
+            table0.getRowFormatter().setStyleName(r, "table_style");
 			idArrayTable0.add(facility.getId());
-			
+
 			r++;
 		}
-		
-		
-		// Check if a row is selected 
+
+
+		// Check if a row is selected
 		if (!(table0Row == 0) && table0Flag) {
 			handleRowSelection("table0");
 			table0Flag = false;
 		}
-		
+
 		for(int col=0; col < 9; col++){
 			for(int row=1; row <table0.getRowCount(); row++){
 				table0.getCellFormatter().setStyleName(1, 1, "cell");
 			}
 		}
 
-		// Adding an edit, delete, ping and show Authentication button to each end of the row except the Header row  
-		
+		// Adding an edit, delete, ping and show Authentication button to each end of the row except the Header row
+
 		Button[] deleteBtn = new Button[r];
 		Button[] editBtn = new Button[r];
 		Button[] pingICatBtn = new Button[r];
@@ -247,10 +247,10 @@ public class AdminUI extends Composite {
 			table0.setWidget(i, 13, authDetailsBtn[i]);
 			authDetailsBtn[i].setTitle("Show the Authetication Details associated with this ICAT");
 			authDetailsBtn[i].setPixelSize(50, 50);
-			
+
 
 		}
-		
+
 		setSplitterPosition();
 		checkIncompleteIcat();
 	}
@@ -259,7 +259,7 @@ public class AdminUI extends Composite {
 		/**
 		 * Recreates/Creates a new Authentication Details table and populates it
 		 * with an ICAT's associated authentication details
-		 * 
+		 *
 		 * @param a
 		 *            list of <code>TAuthentication</code>
 		 * @return
@@ -333,7 +333,7 @@ public class AdminUI extends Composite {
 		/**
 		 * Initialise the the Add/Edit Menu for the ICAT Server Table and sets
 		 * it Visible
-		 * 
+		 *
 		 * @param menuType
 		 * @return
 		 * @throws
@@ -354,7 +354,7 @@ public class AdminUI extends Composite {
 		editMenu.setText(6, 0, Constants.DOWNLOAD_SERVICE_URL + ":");
 		editMenu.setText(7, 0, Constants.ALLOW_UPLOAD + ":");
 		editMenu.setText(8, 0, Constants.ALLOW_CREATE_DATASET + ":");
-		
+
 
 		editMenu.getColumnFormatter().setWidth(0, "170px");
 		editMenu.getColumnFormatter().setWidth(1, "5px");
@@ -386,11 +386,16 @@ public class AdminUI extends Composite {
 		}
 
 		// THESE ARE THE ITEMS IN THE VERSION LISTBOX
-		txtVersion.insertItem("v42", "v42", 0);
-		txtVersion.insertItem("v43", "v43", 1);
-		if (menuType.equals(MENU_ADD)
-				|| table0.getText(table0Row, 1).trim().equals("v43")) {
+		txtVersion.insertItem("v43", "v43", 0);
+		txtVersion.insertItem("v44", "v44", 1);
+		txtVersion.insertItem("v45", "v45", 2);
+
+		if (menuType.equals(MENU_ADD) || table0.getText(table0Row, 1).trim().equals("v45")) {
+			txtVersion.setItemSelected(2, true);
+		} else if (table0.getText(table0Row, 1).trim().equals("v44")){
 			txtVersion.setItemSelected(1, true);
+		} else if (table0.getText(table0Row, 1).trim().equals("v43")){
+			txtVersion.setItemSelected(0, true);
 		}
 
 		// THESE ARE THE ITEMS IN THE PLUGIN_NAME LISTBOX
@@ -423,8 +428,8 @@ public class AdminUI extends Composite {
 				.equals(txtDownloadPluginName.getItemText(1))) {
 			txtDownloadPluginName.setItemSelected(1, true);
 		}
-		
-		
+
+
 		// THESE ARE THE ITEMS IN THE DOWNLOAD_PLUGIN_NAME LISTBOX
         txtDownloadTypeName.insertItem("local", 0);
         txtDownloadTypeName.insertItem("archived", 1);
@@ -436,7 +441,7 @@ public class AdminUI extends Composite {
                 .equals(txtDownloadTypeName.getItemText(1))) {
             txtDownloadTypeName.setItemSelected(1, true);
         }
-		
+
 
 		if (menuType.equals(MENU_EDIT)) {
 			btnMenu.setText("update");
@@ -454,7 +459,7 @@ public class AdminUI extends Composite {
 		/**
 		 * Initialise the the Add/Edit Menu for the Authentication Details Table
 		 * and sets it Visible
-		 * 
+		 *
 		 * @param menuType
 		 * @return
 		 * @throws
@@ -528,13 +533,13 @@ public class AdminUI extends Composite {
 					.equals(txtAuthType.getItemText(4))
 					&& menuType.equals(MENU_EDIT)) {
 				txtAuthType.setItemSelected(4, true);
-				
+
 			} else if (table1.getText(table1Row, 1).trim()
                     .equals(txtAuthType.getItemText(5))
                     && menuType.equals(MENU_EDIT)) {
                 txtAuthType.setItemSelected(5, true);
             }
-			
+
 
 			if (menuType.equals(MENU_EDIT)) {
 				txtAuthURL.setText(table1.getText(table1Row, 3).trim());
@@ -598,8 +603,8 @@ public class AdminUI extends Composite {
 		alertDialogBox.setVisible(false);
 	}
 
-	private void clearAuthMenu() {    
-	    if (editAuthMenu.isCellPresent(0, 1)) {    
+	private void clearAuthMenu() {
+	    if (editAuthMenu.isCellPresent(0, 1)) {
 	        editAuthMenu.clearCell(0, 1);
 	    }
 		btnAuthMenu.setText("save");
@@ -609,7 +614,7 @@ public class AdminUI extends Composite {
 		txtAuthType.clear();
 		authMenu.setModal(false);
 		authMenu.setVisible(false);
-		lbl3.setText(null);	    
+		lbl3.setText(null);
 	}
 
 	private boolean validationCheck() {
@@ -649,7 +654,7 @@ public class AdminUI extends Composite {
 			editMenu.setWidget(2, 1, new Image("images/exclamation-icon.png"));
 			invalidSUrl = true;
 		}
-		
+
 		if (txtDownloadServiceUrl.getText().trim().isEmpty() && !(txtDownloadPluginName.getSelectedIndex() == 0)) {
 			if ((invalidName || invalidSUrl) != true) {
 				lbl1.setText(validationMessages.DOWNLOAD_SERVICE_URL.toString());
@@ -858,14 +863,14 @@ public class AdminUI extends Composite {
 				handlePingButtonEvent(result, urlSelection);
 			}
 		};
-	    
+
 		// make the call to the server
 		dataService.ping(url, urlSelection, callback);
 
 	}
 
 	private void checkIncompleteIcat() {
-		// checks 
+		// checks
 		AsyncCallback<ArrayList<Integer>> callback = new AsyncCallback<ArrayList<Integer>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert("Server error: " + caught.getMessage());
@@ -895,7 +900,7 @@ public class AdminUI extends Composite {
 	        }
 		 return serverURL;
 	}
-	
+
 	@UiHandler("table0")
 	void handleTable0ButtonsClick(ClickEvent e) {
 
@@ -903,12 +908,12 @@ public class AdminUI extends Composite {
 		table0Row = cell.getRowIndex();
 		table0Column = cell.getCellIndex();
 		String url;
-		
+
 		if (table0Row != 0){
 			handleRowSelection("table0");
 			authTableCall();
 		}
-			
+
 		switch (table0Column) {
 		case 9:
 			inititialiseMenu(MENU_EDIT);
@@ -1122,7 +1127,7 @@ public class AdminUI extends Composite {
 		PingDialogBox.center();
 		PingDialogBox.setVisible(true);
 	}
-	
+
 	void selectNewEntry() {
 		table0Row = table0.getRowCount();
 		table0.getRowFormatter().setStyleName(table0Row, "selected");

@@ -36,7 +36,7 @@ import uk.ac.stfc.topcat.core.gwt.module.exception.TopcatException;
 /**
  * This is local interface to the search management stateless session bean
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -58,9 +58,6 @@ public interface SearchManagementBeanLocal {
 
     public ArrayList<TInvestigation> searchAdvancedInvestigation(String topcatSessionId,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
-    
-    public ArrayList<TInvestigation> searchFreeTextInvestigation(String topcatSessionId,
-            TAdvancedSearchDetails searchDetails) throws TopcatException;
 
     public ArrayList<TInvestigation> searchAdvancedInvestigationInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
@@ -70,6 +67,6 @@ public interface SearchManagementBeanLocal {
 
     public ArrayList<TDatafile> searchAdvancedDatafileInServer(String topcatSessionId, String facilityName,
             TAdvancedSearchDetails searchDetails) throws TopcatException;
-    
+
 
 }
