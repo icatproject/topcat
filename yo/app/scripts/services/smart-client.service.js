@@ -45,6 +45,8 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 info : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title,
                     'smartClient' : true
                 },
                 'transformRequest': function(obj) {
@@ -74,7 +76,9 @@
             var url = APP_CONSTANT.smartClientUrl + '/getData';
             var params = {
                 info : {
-                    'smartClient' : true
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title,
+                    'smartClient' : true,
                 },
                 'transformRequest': function(obj) {
                     var str = [];
@@ -111,6 +115,8 @@
                     }
                 },
                 info : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title,
                     'smartClient' : true
                 }
             };

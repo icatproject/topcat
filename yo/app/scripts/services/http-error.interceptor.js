@@ -31,6 +31,19 @@
                         return false;
                     }
 
+                    function isSmartClientSessionExpired(data) {
+                        if (data.code === 'ICAT reports') {
+                            if (data.message.indexOf('Unable to find user by sessionid') > -1) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+
+
+
                     //by pass interceptor if byPassIntercepter is set to true
                     if (typeof rejection.config.byPassIntercepter !== 'undefined' && rejection.config.byPassIntercepter === true) {
                         return $q.reject(rejection);
@@ -73,22 +86,20 @@
 
                         state = $injector.get('$state');
 
-                        var data;
-
-                        try {
-                            data = JSON.parse(rejection.data);
-                        } catch(error){
-                            //$log.debug('Error parsing server message');
-                        }
-
-                        if (typeof data !== 'undefined') {
+                        if (typeof rejection.data !== 'undefined') {
                             //check it is an InsufficientPrivilegesException error meaning session expired
-                            if (idsInvalidUUID(data) || icatInsufficientPrivileges(data)) {
+                            if (idsInvalidUUID(rejection.data) || icatInsufficientPrivileges(rejection.data) || isSmartClientSessionExpired(rejection.data)) {
+                                //if (typeof $sessionStorage.sessions[rejection.config.info.facilityKeyName] !== 'undefined')
+
                                 userName = $sessionStorage.sessions[rejection.config.info.facilityKeyName].userName;
                                 delete $sessionStorage.sessions[rejection.config.info.facilityKeyName];
 
                                 //broadcast session expiry
-                                $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.info.facilityKeyName, userName: userName});
+                                if (typeof rejection.config.info.facilityKeyName !== 'undefined' && typeof userName !== 'undefined') {
+                                    $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.info.facilityKeyName, userName: userName});
+                                } else {
+                                    $rootScope.$broadcast('SESSION:EXPIRED', {});
+                                }
                             }
                         }
 

@@ -36,7 +36,7 @@
         }
     },
     "SESSION" : {
-        "EXPIRED_ERROR" : "You session has expired. You must login again to the {{facilityTitle}} facility"
+        "EXPIRED_ERROR" : "Your session has expired. You must login again to the {{facilityTitle}} facility"
     },
     "RESTAPI" : {
         "BAD_REQUEST_ERROR" : "There was a bad request made to the server"
