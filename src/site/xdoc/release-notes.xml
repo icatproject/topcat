@@ -6,7 +6,7 @@
     </properties>
 
     <body>
-    	<section name="1.12.0">
+    	<section name="1.13.0">
             <ul>
                 <li>Add support for ICAT 4.5.0</li>
                 <li>Removed free text search</li>
