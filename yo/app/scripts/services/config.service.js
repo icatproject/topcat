@@ -243,5 +243,9 @@
                 throw new Error('\'browseOptions\' for \'entityType\' ' + entityType + ' for facility \'' + facilityName + '\' not configured');
             }
         };
+
+        this.getPages = function(config) {
+            return config.site.pages;
+        };
     }
 })();

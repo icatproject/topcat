@@ -213,28 +213,6 @@
                     /*sticky: true,
                     deepStateRedirect: true*/
                 })
-                // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
-                .state('about', {
-                    /*resolve : {
-                        authenticate : ['Authenticate', function(Authenticate) {
-                            return Authenticate.authenticate();
-                        }]
-                    },*/
-                    url: '/about',
-                    templateUrl: 'views/main-about.html'
-                })
-                .state('contact', {
-                    url: '/contact',
-                    templateUrl: 'views/main-contact.html'
-                })
-                .state('help', {
-                    url: '/help',
-                    templateUrl: 'views/main-help.html'
-                })
-                .state('globus-help', {
-                    url: '/globus-help',
-                    templateUrl: 'views/main-globus-help.html'
-                })
                 .state('login', {
                     url: '/login',
                     templateUrl: 'views/login.html',
@@ -281,7 +259,8 @@
             //run checking of smartclient
             SmartClientPollManager.runOnStartUp();
         }])
-        .run(['RouteCreatorService', function(RouteCreatorService) {
+        .run(['RouteCreatorService', 'PageCreatorService', function(RouteCreatorService, PageCreatorService) {
+            PageCreatorService.createStates();
             RouteCreatorService.createStates();
         }])
         //TODO controller is run before restore completes as it is an ajax call

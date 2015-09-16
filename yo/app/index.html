@@ -32,39 +32,21 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" ui-sref="homeRoute" translate="SITE_NAME_LOGO">
-                  <!-- <span translate="SITE_NAME"></span> -->
-                </a>
-                <!-- <a class="navbar-brand" ui-sref="homeRoute" translate="SITE_NAME"></a> -->
+                <a class="navbar-brand" ui-sref="homeRoute" translate="SITE_NAME_LOGO"></a>
               </div>
               <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                   <li ng-class="{active: $state.includes('home')}">
                     <a ui-sref="homeRoute" translate="MAIN_NAVIGATION.HOME"></a>
                   </li>
-                  <li ng-class="{active: $state.includes('about')}">
-                    <a ui-sref="about" translate="MAIN_NAVIGATION.ABOUT"></a>
-                  </li>
-                  <li ng-class="{active: $state.includes('contact')}">
-                    <a ui-sref="contact" translate="MAIN_NAVIGATION.CONTACT"></a>
-                  </li>
-                  <li ng-class="{active: $state.includes('help')}">
-                    <a ui-sref="help" translate="MAIN_NAVIGATION.HELP"></a>
+                  <li ng-repeat="item in vm.leftLinks" ng-class="{active: vm.isActive(item)}">
+                    <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
                   </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                  <!-- <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span translate="MAIN_NAVIGATION.LANGUAGE"></span><span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                      <li>
-                        <a ng-click="vm.changeLanguage('en')" translate="LANGUAGE.BUTTON_LANG_EN"></a>
-                      </li>
-                      <li>
-                        <a ng-click="vm.changeLanguage('fr')" translate="LANGUAGE.BUTTON_LANG_FR"></a>
-                      </li>
-                    </ul>
-                  </li> -->
-
+                  <li ng-repeat="item in vm.rightLinks" ng-class="{active: vm.isActive(item)}">
+                    <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
+                  </li>
                   <li ng-if="vm.isLoggedIn()"><p class="navbar-text"><span class="glyphicon glyphicon-shopping-cart"></span> <span><cart-item-count singular="{{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}" plural="{{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}"></cart-item-count></span></p></li>
 
                   <li class="dropdown">
@@ -82,21 +64,8 @@
                       </li>
                     </ul>
                   </li>
-
-                  <!-- navbar split button. Doesn't look very good on mobile -->
-                  <!-- <li class="dropdown-split-left"><a ui-sref="login">{{'MAIN_NAVIGATION.LOGIN' | translate}}</a></li>
-                  <li class="dropdown dropdown-split-right">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                      <i class="caret"></i>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                      <li>
-                          <a ui-sref="logout">{{'MAIN_NAVIGATION.LOGOUT_ALL' | translate}}</a>
-                      </li>
-                    </ul>
-                  </li> -->
                 </ul>
-              </div><!--/.nav-collapse -->
+              </div>
             </div>
           </div>
       </div>
@@ -169,10 +138,12 @@
         <script src="scripts/services/squel-custom-query.service.js"></script>
         <script src="scripts/services/runtime-states.provider.js"></script>
         <script src="scripts/services/route.service.js"></script>
+        <script src="scripts/services/page-creator.service.js"></script>
         <script src="scripts/services/route-creator.service.js"></script>
         <script src="scripts/services/data-manager.service.js"></script>
         <script src="scripts/services/icat.service.js"></script>
         <script src="scripts/services/icat-alias.service.js"></script>
+        <script src="scripts/services/icat-query-builder.js"></script>
         <script src="scripts/services/config.service.js"></script>
         <script src="scripts/services/config-utils.service.js"></script>
         <script src="scripts/services/route-utils.service.js"></script>
@@ -229,12 +200,6 @@
         <script src="scripts/filters/bytes.filter.js"></script>
         <script src="scripts/filters/facility-title.filter.js"></script>
 
-
-
-        <!--<script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script> -->
-        <!-- <script src="scripts/services/datatable-query-builder.js"></script> -->
-        <script src="scripts/services/icat-query-builder.js"></script>
         <!-- endbuild -->
 </body>
 </html>

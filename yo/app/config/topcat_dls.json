@@ -3,8 +3,8 @@
         "dls": {
             "facilityName": "dls",
             "title": "DIAMOND",
-            "icatUrl": "https://facilities02.esc.rl.ac.uk:8181",
-            "idsUrl": "https://fdsgos11.fds.rl.ac.uk:8181",
+            "icatUrl": "https://facilities02.esc.rl.ac.uk",
+            "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
             "idsIsToLevel": true,
             "facilityId": 1,
             "hierarchy": [
@@ -33,12 +33,12 @@
                     "displayName" : "Https",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://fdsgos11.fds.rl.ac.uk:8181"
+                    "url": "https://fdsgos11.fds.rl.ac.uk"
                 },
                 {
                     "displayName" : "Globus",
                     "type" : "globus",
-                    "url": "https://fdsgos11.fds.rl.ac.uk:8181"
+                    "url": "https://fdsgos11.fds.rl.ac.uk"
                 }
             ],
             "browseOptions": {
@@ -489,7 +489,7 @@
         }
     },
     "site": {
-        "topcatApiPath": "https://localhost:8181/topcatv2-0.1-SNAPSHOT/api/v1",
+        "topcatApiPath": "api/v1",
         "home" : "my-data",
         "pagingType": "scroll",
         "useFileForData": false,
@@ -756,6 +756,43 @@
                     }
                 ]
             }
-        }
+        },
+        "pages" : [
+            {
+                "url" : "/about",
+                "stateName": "about",
+                "templateTranslateName" : "PAGE.ABOUT.HTML",
+                "addToNavBar": {
+                    "linkLabel" : "MAIN_NAVIGATION.ABOUT",
+                    "align" : "left"
+                }
+
+            },
+            {
+                "url" : "/contact",
+                "stateName": "contact",
+                "templateTranslateName" : "PAGE.CONTACT.HTML",
+                "addToNavBar": {
+                    "linkLabel" : "MAIN_NAVIGATION.CONTACT",
+                    "align" : "left"
+                }
+
+            },
+            {
+                "url" : "/help",
+                "stateName": "help",
+                "templateTranslateName" : "PAGE.HELP.HTML",
+                "addToNavBar": {
+                    "linkLabel" : "MAIN_NAVIGATION.HELP",
+                    "align" : "left"
+                }
+            },
+            {
+                "url" : "/globus-help",
+                "stateName": "globus-help",
+                "templateTranslateName" : "PAGE.GLOBUS_HELP.HTML"
+            }
+
+        ]
     }
 }
