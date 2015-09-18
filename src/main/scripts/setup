@@ -4,21 +4,32 @@ import os
 
 # TopCATv2
 
+def uninstall():
+    app = actions.getAppName("topcatv2")
+    if app: actions.asadmin("undeploy " + app)
+
+    actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
+    actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
+    actions.asadmin("delete-javamail-resource mail/topcatv2", tolerant=True)
+    actions.deleteFileRealmUser(props["adminUsername"]);
+
 actions, options, arg = getActions()
-props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot"])
+props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot", "adminUsername", "adminPassword"])
+
+prop_name = "topcat.properties"
 
 if arg == "INSTALL":
+    actions.installFile(prop_name)
+
     try:
-        app = actions.getAppName("topcatv2")
-        if app: actions.asadmin("undeploy " + app)
+        uninstall()
+
+        actions.addFileRealmUser(props["adminUsername"], props["adminPassword"], "topcatAdmin");
 
         topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "mail.enable"])
 
         if not actions.configFileExists(topcatProperties.get("file.directory")):
             abort("Please create directory " + topcatProperties.get("file.directory") + ". If the path is relative, the directory will be relative to the glassfish domain config directory as specified in topcat-setup.properties")
-
-        actions.installFile("topcat.properties")
-
 
         actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
         actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
@@ -38,14 +49,10 @@ if arg == "INSTALL":
         abort(str(e))
 
 else:  # UNINSTALL
+    actions.removeFile(prop_name)
+
     try:
-
-        app = actions.getAppName("topcatv2")
-        if app: actions.asadmin("undeploy " + app)
-
-        actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
-        actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
-        actions.asadmin("delete-javamail-resource mail/topcatv2", tolerant=True)
+        uninstall();
 
     except Exception, e:
         abort(str(e))
