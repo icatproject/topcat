@@ -50,8 +50,7 @@ public class RestAPITest {
             .addPackages(true, "org.icatproject")
             .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
             .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-            .setWebXML(new File("src/main/webapp/WEB-INF", "/web.xml"));
-
+            .setWebXML(new File("src/test/resources-glassfish-embedded/web.xml"));
     }
 
     @EJB

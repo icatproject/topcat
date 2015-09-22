@@ -11,19 +11,13 @@ mail.enable=true
 # ${preparedId} - the prepared Id of the download request
 # ${fileName} - the download name
 # ${downloadUrl} - the download url
-mail.subject = TopCAT Download ${fileName} Completed
+mail.subject=TopCAT Download ${fileName} Completed
 
 # The email body message for https downloads. All subject tokens as above are available.
-mail.body.https = Hi ${userName},\n\nYour download ${fileName} has completed and ready for download at ${downloadUrl}.\n\nThank you for using TopCAT.
+mail.body.https=Hi ${userName},\n\nYour download ${fileName} has completed and ready for download at ${downloadUrl}.\n\nThank you for using TopCAT.
 
 # The email body message for https downloads. All subject tokens as above are available.
-mail.body.globus = Hi ${userName}, \n\nYour Globus download ${fileName} is ready. Please see https:/example.com/#/globus-faq for more information on how to download using Globus.\n\nThanks you for using TopCAT
+mail.body.globus=Hi ${userName}, \n\nYour Globus download ${fileName} is ready. Please see https:/example.com/#/globus-faq for more information on how to download using Globus.\n\nThanks you for using TopCAT
 
 # The email body message for smartclient downloads. All subject tokens as above are available.
-mail.body.smartclient = Hi ${userName}, \n\nYour SmartClient download ${fileName} is ready. Please check your smartclient home directory for your files.\n\nThanks you for using TopCAT
-
-
-
-
-
-
+mail.body.smartclient=Hi ${userName}, \n\nYour SmartClient download ${fileName} is ready. Please check your smartclient home directory for your files.\n\nThanks you for using TopCAT
