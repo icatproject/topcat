@@ -4,15 +4,13 @@
     angular.
         module('angularApp').factory('PageCreatorService', PageCreatorService);
 
-    PageCreatorService.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'RuntimeStatesProvider', '$translate', '$log'];
+    PageCreatorService.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'RuntimeStatesProvider', '$translate'];
 
-    function PageCreatorService(APP_CONFIG, Config, RouteService, RuntimeStatesProvider, $translate, $log) {
+    function PageCreatorService(APP_CONFIG, Config, RouteService, RuntimeStatesProvider, $translate) {
         var route = {};
 
         route.createStates = function() {
             var pages = Config.getPages(APP_CONFIG);
-
-            $log.debug('pages', pages);
 
             _.each(pages, function(page) {
                 var state = {

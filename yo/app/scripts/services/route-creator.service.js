@@ -13,6 +13,8 @@
         route.createStates = function() {
             var routes = RouteService.getAllRoutes(APP_CONFIG);
 
+            console.log('generated routes', routes);
+
             _.each(routes, function(route) {
                 var stateName = 'home.browse.facility.' + route.route;
                 var state = {

@@ -35,6 +35,15 @@
             </includes>
         </fileSet>
 
+        <fileSet>
+            <outputDirectory>topcatv2</outputDirectory>
+            <directory>${project.basedir}/target</directory>
+            <includes>
+                <include>*.war</include>
+                <include>*.json.example</include>
+            </includes>
+        </fileSet>
+
     </fileSets>
 
 

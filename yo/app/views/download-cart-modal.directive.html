@@ -6,21 +6,11 @@
     <form role="form">
         <table class="table-bordered table-condensed" width="100%">
             <tr>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.FILE_NAME">
-                    Filename
-                </th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.TRANSPORT">
-                    Transport
-                </th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.SIZE">
-                    Size
-                </th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.SERVER">
-                    Server
-                </th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.AVAILABILITY">
-                    Availability
-                </th>
+                <th translate="CART.DOWNLOAD.MODAL.COLUMN.FILE_NAME"></th>
+                <th translate="CART.DOWNLOAD.MODAL.COLUMN.TRANSPORT"></th>
+                <th translate="CART.DOWNLOAD.MODAL.COLUMN.SIZE"></th>
+                <th translate="CART.DOWNLOAD.MODAL.COLUMN.FACILITY"></th>
+                <th translate="CART.DOWNLOAD.MODAL.COLUMN.AVAILABILITY"></th>
             </tr>
             <tr ng-repeat="download in dcm.downloads">
                 <td>
@@ -40,14 +30,17 @@
                 </td>
             </tr>
         </table>
-        <div class="panel panel-default has-archived">
-            <div class="panel-body" >
-                <p translate="CART.DOWNLOAD.MODAL.IS_ARCHIVED_MESSAGE"></p>
-            </div>
-        </div>
 
-        <div>
-            <p translate="CART.DOWNLOAD.MODAL.EMAIL_ME_MESSAGE"></p><input type="text" class="form-control input-sm inline" id="emailNotification" placeholder="email@address" ng-model="dcm.email" />
+        <div ng-if="::dcm.hasArchive()">
+            <div class="panel panel-default" >
+                <div class="panel-body" >
+                    <p translate="CART.DOWNLOAD.MODAL.IS_ARCHIVED_MESSAGE"></p>
+                </div>
+            </div>
+
+            <div>
+                <p translate="CART.DOWNLOAD.MODAL.EMAIL_ME_MESSAGE"></p><input type="text" class="form-control input-sm inline" id="emailNotification" placeholder="email@address" ng-model="dcm.email" />
+            </div>
         </div>
     </form>
 </div>

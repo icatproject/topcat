@@ -8,7 +8,7 @@
         "LANGUAGE": "Language",
         "LOGIN": "Login",
         "LOGOUT": "Logout",
-        "LOGOUT_FACILITY" : "Logout {{facilityName}} ({{userName}})",
+        "LOGOUT_FACILITY" : "Logout ({{userName}})",
         "LOGOUT_ALL": "Logout All",
         "MAIN_TAB" : {
             "MY_DATA" : "My Data",
@@ -238,7 +238,7 @@
             "MODAL" : {
                 "TITLE" : "Download",
                 "MESSAGE" : "",
-                "IS_ARCHIVED_MESSAGE" : "A requested download has items that are archived and must be restored. Once your download is submitted, please check your Download Order periodically for the availablilty status. When the status is \"Online\", you can initiate the download of your files.",
+                "IS_ARCHIVED_MESSAGE" : "Your requested download may have items that are archived and must be restored from tape. Once your download is submitted, please check your Download Order periodically for the availablilty status. When the status is \"COMPLETE\", you can initiate the download of your files. It is recommended that you enter you email below so you will be notified when you download can be initiated.",
                 "EMAIL_ME_MESSAGE" : "Email me when download is ready",
                 "COLUMN" : {
                     "FILE_NAME" : "Download Name",

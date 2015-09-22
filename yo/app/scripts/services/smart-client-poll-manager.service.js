@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('SmartClientPollManager', SmartClientPollManager);
 
-    SmartClientPollManager.$inject = ['APP_CONFIG', 'SMARTCLIENTPING', 'Config', 'SmartClientManager', '$sessionStorage', 'TopcatManager', 'poller'];
+    SmartClientPollManager.$inject = ['APP_CONFIG', 'SMARTCLIENTPING', 'Config', 'SmartClientManager', '$sessionStorage', 'TopcatManager', 'poller', 'inform'];
 
-    function SmartClientPollManager(APP_CONFIG, SMARTCLIENTPING, Config, SmartClientManager, $sessionStorage, TopcatManager, poller) {
+    function SmartClientPollManager(APP_CONFIG, SMARTCLIENTPING, Config, SmartClientManager, $sessionStorage, TopcatManager, poller, inform) {
         var self = this;
 
         this.createPoller = function(facility, userName, preparedId) {
@@ -64,7 +64,11 @@
                             });
                         });
                     }, function(error) { //jshint ignore: line
-                        //$log.debug('Unable to login to smartcient');
+                        console.log('Unable to login to smartcient');
+                        inform.add(error, {
+                            'ttl': 0,
+                            'type': 'danger'
+                        });
                     });
                 }
             });

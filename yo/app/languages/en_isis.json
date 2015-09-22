@@ -243,8 +243,8 @@
                 "COLUMN" : {
                     "FILE_NAME" : "Download Name",
                     "TRANSPORT" : "Transport",
-                    "SIZE" : "Facility" ,
-                    "SERVER" : "Status",
+                    "SIZE" : "Size" ,
+                    "FACILITY" : "Facility",
                     "AVAILABILITY" : "Availability"
                 },
                 "BUTTON" : {

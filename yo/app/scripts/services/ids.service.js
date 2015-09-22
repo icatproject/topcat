@@ -35,6 +35,25 @@
         };
 
 
+        this.isTwoLevel = function(facility, options) {
+            var url = facility.idsUrl + '/ids/isTwoLevel';
+            var params = {
+                    params : {
+                    },
+                    info : {
+                        'facilityKeyName' : facility.facilityName,
+                        'facilityTitle' : facility.title
+                    }
+                };
+
+            params = _.merge(params, {
+                params : options
+            });
+
+            return $http.get(url, params);
+        };
+
+
         this.getStatus = function(mySessionId, facility, options) {
             var url = facility.idsUrl + '/ids/getStatus';
             var params = {

@@ -57,6 +57,29 @@
             return def.promise;
         };
 
+
+        /**
+         * Get the size from the ids
+         * @param  {Object} sessions session object containing logged in sessions
+         * @param  {Object} facility the facility object
+         * @return {Object}          a promise containing the list of instruments
+         */
+        this.isTwoLevel = function(facility, options) {
+            var def = $q.defer();
+
+            IdsService.isTwoLevel(facility, options).then(function(data) {
+                if (data.data === 'true') {
+                    def.resolve(true);
+                } else {
+                    def.resolve(false);
+                }
+            }, function(error) {
+                def.reject('Failed to retrieve data for facility ' + error.config.info.facilityTitle + ': ' + getErrorMessage(error, status));
+            });
+
+            return def.promise;
+        };
+
         /**
          * Get the status from the ids
          * @param  {Object} sessions session object containing logged in sessions

@@ -7,31 +7,48 @@
         controller('DownloadCartModalController', DownloadCartModalController).
         directive('downloadCart', downloadCart);
 
-    DownloadCartController.$inject = ['$modal', 'Cart'];
-    DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING'];
+    DownloadCartController.$inject = ['$rootScope', '$modal', 'Cart', 'inform'];
+    DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING', 'idsInfos'];
     downloadCart.$inject = [];
 
-    function DownloadCartController ($modal, Cart) {
+    function DownloadCartController ($rootScope, $modal, Cart, inform) {
         var dc = this;
         dc.cartItems = Cart._cart.items;
 
         dc.openModal = function() {
-            var modalInstance = $modal.open({
+            $modal.open({
                 templateUrl : 'views/download-cart-modal.directive.html',
                 controller : 'DownloadCartModalController as dcm',
+                resolve: {
+                    idsInfos : ['Config', 'APP_CONFIG', 'IdsManager', '$sessionStorage', function(Config, APP_CONFIG, IdsManager, $sessionStorage) {
+                        var sessions = $sessionStorage.sessions;
+                        var facilities = [];
+
+                        _.each(sessions, function(session, key) {
+                            var facility = Config.getFacilityByName(APP_CONFIG, key);
+
+                            IdsManager.isTwoLevel(facility).then(function(data) {
+                                facility.isTwoLevel = data;
+                            }, function(error){
+                                inform.add(error, {
+                                    'ttl': 0,
+                                    'type': 'danger'
+                                });
+                            });
+
+                            facilities.push(facility);
+                        });
+
+                        return facilities;
+                    }]
+                },
                 size : 'lg'
-            });
-
-            modalInstance.result.then(function() {
-
-            }, function() {
-
             });
         };
     }
 
 
-    function DownloadCartModalController($modalInstance, Cart, SMARTCLIENTPING) {
+    function DownloadCartModalController($modalInstance, Cart, SMARTCLIENTPING, idsInfos) {
         var vm = this;
         var facilityCart = Cart.getFacilitiesCart();
 
@@ -72,6 +89,19 @@
 
             vm.downloads.push(cart);
         });
+
+        vm.hasArchive = function() {
+            var isTwoLevel = false;
+
+            _.each(idsInfos, function(idsInfo) {
+                if (typeof idsInfo.isTwoLevel !== 'undefined' && idsInfo.isTwoLevel === true) {
+                    isTwoLevel = true;
+                    return false;
+                }
+            });
+
+            return isTwoLevel;
+        };
 
 
         vm.ok = function() {

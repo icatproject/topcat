@@ -9,7 +9,8 @@
     BrowseFacilitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteUtils', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseFacilitiesModel'];
 
     function BrowseFacilitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteUtils, DataManager, $q, inform, $sessionStorage, BrowseFacilitiesModel) {
-        var currentEntityType = RouteUtils.getCurrentEntityType($state);
+        //can only be facility entity for browse facilities
+        var currentEntityType = 'facility';
 
         //apply only to browse pages
         if ( $state.current.name === 'home.browse.facility') {
@@ -34,11 +35,6 @@
 
         $scope.currentEntityType = currentEntityType;
         $scope.isScroll = (pagingType === 'scroll') ? true : false;
-
-        /*if (!angular.isDefined($rootScope.cart)) {
-            $rootScope.cart = [];
-            $rootScope.ref = [];
-        }*/
 
         var facilities = Config.getFacilities(APP_CONFIG);
 

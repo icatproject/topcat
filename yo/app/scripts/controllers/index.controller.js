@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('IndexController', IndexController);
 
-    IndexController.$inject = ['$scope', '$translate', 'APP_CONFIG', 'Config', '$sessionStorage', '$state', '$log'];
+    IndexController.$inject = ['$scope', '$translate', 'APP_CONFIG', 'Config', '$sessionStorage', '$state'];
 
-    function IndexController($scope, $translate, APP_CONFIG, Config, $sessionStorage, $state, $log) {
+    function IndexController($scope, $translate, APP_CONFIG, Config, $sessionStorage, $state) {
         var vm = this;
 
         var pages = Config.getPages(APP_CONFIG);
@@ -25,8 +25,9 @@
             }
         });
 
-        $log.debug('leftLinks', leftLinks);
-        $log.debug('rightLinks', rightLinks);
+        var facilities = Config.getFacilities(APP_CONFIG);
+
+        vm.facilities = facilities;
 
         vm.changeLanguage = function (langKey) {
             $translate.use(langKey);
@@ -38,10 +39,6 @@
 
         vm.isLoggedIn = function(){
             return ! (_.isEmpty($sessionStorage.sessions));
-        };
-
-        vm.facilities = function() {
-            Config.getFacilities(APP_CONFIG);
         };
 
         vm.getUserNameByFacilityName = function(facilityName) {
@@ -57,6 +54,18 @@
 
         vm.isActive = function(page) {
             return $state.includes(page.stateName);
+        };
+
+        vm.isSingleFacility = function () {
+            if (_.size(facilities) === 1) {
+                return true;
+            }
+
+            return false;
+        };
+
+        vm.getSingleFacility = function () {
+            return facilities[Object.keys(facilities)[0]];
         };
     }
 })();

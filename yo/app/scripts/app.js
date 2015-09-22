@@ -9,7 +9,7 @@
         module : 'angularApp',
         resolve : {
             APP_CONFIG : ['$http', function($http) {
-                return $http.get('config/topcat_dls.json');
+                return $http.get('config/topcat.json');
             } ],
             LANG : ['$http', function($http) {
                 return $http.get('languages/en.json');
@@ -97,7 +97,7 @@
                     resolve: {
                         cartInit : ['Cart', function(Cart) {
                             return Cart.restore();
-                        }],
+                        }]
                     },
                     //url: '',
                     templateUrl: 'views/abstract-home.html',
