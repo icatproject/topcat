@@ -12,7 +12,7 @@
                 return $http.get('config/topcat.json');
             } ],
             LANG : ['$http', function($http) {
-                return $http.get('languages/en.json');
+                return $http.get('languages/lang.json');
             } ],
             SMARTCLIENTPING : ['$http', '$q', function($http, $q) {
                 var def = $q.defer();

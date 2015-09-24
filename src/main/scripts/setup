@@ -45,6 +45,9 @@ if arg == "INSTALL":
 
         actions.deploy("topcatv2-*.war", contextroot=props["topcatUrlRoot"], deploymentorder=140)
 
+        actions.installToAppWeb("topcat.json", "topcatv2", "config")
+        actions.installToAppWeb("lang.json", "topcatv2", "languages")
+
     except Exception, e:
         abort(str(e))
 

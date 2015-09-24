@@ -49,7 +49,7 @@
 
     <dependencySets>
 
-        <dependencySet>
+        <!-- <dependencySet>
             <outputDirectory>topcatv2</outputDirectory>
             <useTransitiveDependencies>false</useTransitiveDependencies>
             <unpack>true</unpack>
@@ -61,7 +61,7 @@
             <includes>
                 <include>org.icatproject:icat.utils</include>
             </includes>
-        </dependencySet>
+        </dependencySet> -->
 
     </dependencySets>
 
