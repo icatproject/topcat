@@ -95,7 +95,10 @@ function DownloadModel($rootScope, $state, APP_CONFIG, Config, uiGridConstants, 
         this.scope = scope;
 
         self.options = configToUIGridOptions();
-        self.paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
+        self.pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
+        self.pageSize = Config.getSitePageSize(APP_CONFIG, self.pagingType); //the number of rows for grid
+        self.scrollRowFromEnd = Config.getSiteScrollRowFromEnd(APP_CONFIG, self.pagingType);
+        self.paginationPageSizes = Config.getPaginationPageSizes(APP_CONFIG, self.pagingType); //the number of rows for grid
 
         setGridOptions(scope.gridOptions);
     };

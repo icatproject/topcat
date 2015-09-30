@@ -47,7 +47,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             return [];
         }
 
-        var gridOptions = Config.getBrowseOptionsByFacilityName(APP_CONFIG, facility.facilityName);
+        var gridOptions = Config.getBrowseGridOptionsByFacilityName(APP_CONFIG, facility.facilityName);
         var parentEntities = [];
 
         //check column def to see if investigation or dataset is selectable
@@ -86,7 +86,7 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
      * @return {[type]}                   [description]
      */
     function configToUIGridOptions(facility, currentEntityType) {
-        var gridOpts = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.facilityName, currentEntityType);
+        var gridOpts = Config.getEntityBrowseGridOptionsByFacilityName(APP_CONFIG, facility.facilityName, currentEntityType);
 
         //do the work of transposing
         _.mapValues(gridOpts.columnDefs, function(value) {
@@ -224,8 +224,8 @@ function BrowseEntitiesModel($rootScope, APP_CONFIG, Config, RouteService, uiGri
             self.nextRouteSegment = RouteService.getNextRouteSegmentName(self.structure, currentEntityType);
             self.pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
             self.pageSize = Config.getSitePageSize(APP_CONFIG, self.pagingType); //the number of rows for grid
-            self.scrollRowFromEnd = Config.getSiteConfig(APP_CONFIG).scrollRowFromEnd;
-            self.paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
+            self.scrollRowFromEnd = Config.getSiteScrollRowFromEnd(APP_CONFIG, self.pagingType);
+            self.paginationPageSizes = Config.getPaginationPageSizes(APP_CONFIG, self.pagingType); //the number of rows for grid
             self.gridOptions = scope.gridOptions;
             self.hasSizeField = hasField(self.options, 'size');
 

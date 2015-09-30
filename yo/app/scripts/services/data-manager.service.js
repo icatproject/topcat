@@ -66,7 +66,7 @@
          * @return {[type]}          [description]
          */
         function prepProcessData(data, facility, entity, field) {
-            var browseConfig = Config.getEntityBrowseOptionsByFacilityName(APP_CONFIG, facility.facilityName, field);
+            var browseConfig = Config.getEntityBrowseGridOptionsByFacilityName(APP_CONFIG, facility.facilityName, field);
 
             var dateColumns = [];
             //get column config and get fields where the column type is date

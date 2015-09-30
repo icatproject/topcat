@@ -43,7 +43,7 @@
                             });
                         } else {
                             content.push({
-                                'title': dataV.title,
+                                'title': dataV.displayName,
                                 'value': icatDataCurrent[dataV.field]
                             });
                         }
@@ -66,7 +66,7 @@
                     if (angular.isDefined(currentTab.translateDisplayName)) {
                         tabTitle = $translate.instant(currentTab.translateDisplayName);
                     } else {
-                        tabTitle = currentTab.title;
+                        tabTitle = currentTab.displayName;
                     }
                     var tabData = currentTab.data;
                     var tabContent = [];

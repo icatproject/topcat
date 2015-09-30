@@ -325,8 +325,8 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
         self.options = configToUIGridOptions(entityType);
         self.pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         self.pageSize = Config.getSitePageSize(APP_CONFIG, self.pagingType); //the number of rows for grid
-        self.scrollRowFromEnd = Config.getSiteConfig(APP_CONFIG).scrollRowFromEnd;
-        self.paginationPageSizes = Config.getSiteConfig(APP_CONFIG).paginationPageSizes; //the number of rows for grid
+        self.scrollRowFromEnd = Config.getSiteScrollRowFromEnd(APP_CONFIG, self.pagingType);
+        self.paginationPageSizes = Config.getPaginationPageSizes(APP_CONFIG, self.pagingType); //the number of rows for grid
         self.hasSizeField = hasField(self.options, 'size');
 
         setGridOptions(self.scope.gridOptions);

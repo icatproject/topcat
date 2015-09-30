@@ -50,8 +50,8 @@
                     }
 
                     if(rejection.status === 403){
-                        //$log.debug('HttpErrorInterceptor', rejection);
-                        //$log.debug('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
+                        console.log('HttpErrorInterceptor', rejection);
+                        console.log('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
 
                         state = $injector.get('$state');
 
@@ -70,10 +70,10 @@
                         }
 
 
-                        //if (typeof userName !== 'undefined' && typeof rejection.config.info.facilityKeyName !== 'undefined') {
-                        //broadcast session expiry
-                        $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.info.facilityKeyName, userName: userName});
-                        //}
+                        if (typeof userName !== 'undefined' && typeof rejection.config.info.facilityKeyName !== 'undefined') {
+                            //broadcast session expiry
+                            $rootScope.$broadcast('SESSION:EXPIRED', {facilityName: rejection.config.info.facilityKeyName, userName: userName});
+                        }
 
                         if (_.size($sessionStorage.sessions) === 0) {
                             state.go('login');

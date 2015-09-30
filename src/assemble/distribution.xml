@@ -41,6 +41,7 @@
             <includes>
                 <include>*.war</include>
                 <include>*.json.example</include>
+                <include>*.css.example</include>
             </includes>
         </fileSet>
 

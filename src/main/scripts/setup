@@ -47,6 +47,7 @@ if arg == "INSTALL":
 
         actions.installToAppWeb("topcat.json", "topcatv2", "config")
         actions.installToAppWeb("lang.json", "topcatv2", "languages")
+        actions.installToAppWeb("topcat.css", "topcatv2", "styles")
 
     except Exception, e:
         abort(str(e))

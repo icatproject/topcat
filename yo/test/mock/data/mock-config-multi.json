@@ -28,7 +28,7 @@
                     "plugin": "anon"
                 }
             ],
-            "browseOptions": {
+            "browseGridOptions": {
                 "instrument": {
                     "enableFiltering": true,
                     "columnDefs": [
@@ -566,7 +566,7 @@
                     "plugin": "uows"
                 }
             ],
-            "browseOptions": {
+            "browseGridOptions": {
                 "instrument": {
                     "enableFiltering": true,
                     "columnDefs": [
@@ -1238,7 +1238,7 @@
                     "plugin": "simple"
                 }
             ],
-            "browseOptions": {
+            "browseGridOptions": {
                 "instrument": {
                     "enableFiltering": true,
                     "columnDefs": [
@@ -1978,19 +1978,19 @@
     "site": {
         "icatDataProxyHost": "https://localhost:3001",
         "home" : "my-data",
-        "pagingType": "scroll",
-        "useFileForData": false,
-        "useFileForSession": false,
-        "paginationNumberOfRows": 10,
-        "paginationPageSizes": [
-            10,
-            25,
-            50,
-            100,
-            1000
-        ],
-        "scrollPageSize": 50,
-        "scrollRowFromEnd": 10,
+        "paging" : {
+            "pagingType": "scroll",
+            "paginationNumberOfRows": 10,
+            "paginationPageSizes": [
+                10,
+                25,
+                50,
+                100,
+                1000
+            ],
+            "scrollPageSize": 50,
+            "scrollRowFromEnd": 10
+        },
         "facilitiesGridOptions": {
             "enableFiltering": true,
             "columnDefs": [

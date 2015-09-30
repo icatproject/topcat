@@ -56,7 +56,7 @@ describe('MetaDataManagerTest', function () {
 				var results = mockResult;
 				var tab = tabs[count];
 				var expectedResult = {
-					'title': tab.title,
+					'title': tab.displayName,
 					'content': ''
 				};
 

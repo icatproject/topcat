@@ -109,36 +109,67 @@
             }
         };
 
+        this.getPaging = function(config) {
+            if (typeof config.site.paging !== 'undefined') {
+                return config.site.paging;
+            } else {
+                throw new Error('\'paging\' object not configured for site');
+            }
+        };
 
         this.getSitePagingType = function(config) {
-            if (typeof config.site.pagingType !== 'undefined') {
-                if (config.site.pagingType === 'scroll' || config.site.pagingType === 'page') {
-                    return config.site.pagingType;
+            var paging = this.getPaging(config);
+
+            if (typeof paging.pagingType !== 'undefined') {
+                if (paging.pagingType === 'scroll' || paging.pagingType === 'page') {
+                    return paging.pagingType;
                 } else {
-                    throw new Error('\'pagingType\' must be \'page\' or \'scroll\'');
+                    throw new Error('\'paging.pagingType\' must be \'page\' or \'scroll\'');
                 }
             } else {
-                throw new Error('\'pagingType\' not configured for site');
+                throw new Error('\'paging.pagingType\' not configured for site');
             }
         };
 
         this.getSitePageSize = function(config, pagingType) {
+            var paging = this.getPaging(config);
+
             if (pagingType === 'page') {
-                return config.site.paginationNumberOfRows;
+                return paging.paginationNumberOfRows;
             }
 
             if (pagingType === 'scroll') {
-                return config.site.scrollPageSize;
+                if (typeof paging.scrollPageSize !== 'undefined') {
+                    return paging.scrollPageSize;
+                } else {
+                    throw new Error('\'paging.scrollPageSize\' not configure for site');
+                }
             } else {
-                throw new Error('\'pagingType\' must be \'page\' or \'scroll\'');
+                throw new Error('\'paging.pagingType\' must be \'page\' or \'scroll\'');
             }
         };
 
-        this.getSiteScrollRowFromEnd = function(config) {
-            if (typeof config.site.scrollRowFromEnd !== 'undefined') {
-                return config.site.scrollRowFromEnd;
-            } else {
-                throw new Error('\'scrollRowFromEnd\' not set for site');
+        this.getPaginationPageSizes = function(config, pagingType) {
+            if (pagingType === 'page') {
+                var paging = this.getPaging(config);
+
+                if (typeof paging.paginationPageSizes !== 'undefined') {
+                    return paging.paginationPageSizes;
+                } else {
+                    throw new Error('\'paging.paginationPageSizes\' not set for site');
+                }
+            }
+        };
+
+        this.getSiteScrollRowFromEnd = function(config, pagingType) {
+            if (pagingType === 'scroll') {
+                var paging = this.getPaging(config);
+
+                if (typeof paging.scrollRowFromEnd !== 'undefined') {
+                    return paging.scrollRowFromEnd;
+                } else {
+                    throw new Error('\'paging.scrollRowFromEnd\' not set for site');
+                }
             }
         };
 
@@ -158,7 +189,15 @@
          * @return {[type]} [description]
          */
         this.getSiteFacilitiesMetaTabs = function(config) {
-            return config.site.facility.metaTabs.facility;
+            if (typeof config.site.metaTabs !== 'undefined') {
+                if (typeof config.site.metaTabs.facility !== 'undefined') {
+                    return config.site.metaTabs.facility;
+                } else {
+                    throw new Error('\'metaTab.facility\' not set for site');
+                }
+            } else {
+                throw new Error('\'metaTab\' not set for site');
+            }
         };
 
 
@@ -226,21 +265,21 @@
         };
 
 
-        this.getBrowseOptionsByFacilityName = function(config, facilityName) {
-            if (typeof config.facilities[facilityName].browseOptions !== 'undefined') {
-                return config.facilities[facilityName].browseOptions;
+        this.getBrowseGridOptionsByFacilityName = function(config, facilityName) {
+            if (typeof config.facilities[facilityName].browseGridOptions !== 'undefined') {
+                return config.facilities[facilityName].browseGridOptions;
             } else {
-                throw new Error('\'browseOptions\' for facility \'' + facilityName + '\' not configured');
+                throw new Error('\'browseGridOptions\' for facility \'' + facilityName + '\' not configured');
             }
         };
 
-        this.getEntityBrowseOptionsByFacilityName = function(config, facilityName, entityType) {
-            var browseOptions = this.getBrowseOptionsByFacilityName(config, facilityName);
+        this.getEntityBrowseGridOptionsByFacilityName = function(config, facilityName, entityType) {
+            var browseGridOptions = this.getBrowseGridOptionsByFacilityName(config, facilityName);
 
-            if (typeof browseOptions[entityType] !== 'undefined') {
-                return browseOptions[entityType];
+            if (typeof browseGridOptions[entityType] !== 'undefined') {
+                return browseGridOptions[entityType];
             } else {
-                throw new Error('\'browseOptions\' for \'entityType\' ' + entityType + ' for facility \'' + facilityName + '\' not configured');
+                throw new Error('\'browseGridOptions\' for \'entityType\' ' + entityType + ' for facility \'' + facilityName + '\' not configured');
             }
         };
 
