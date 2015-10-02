@@ -16,8 +16,8 @@ glassfish=/opt/glassfish4
 # Glassfish admin port (default 4848)
 port=4848
 
-#url root where topcat will be deployed. Leave blank for the default of / or enter your required root url (do not end url with /)
-topcatUrlRoot=
+#url root context where topcat will be deployed. use / for root context or enter your required url but do not end with /
+topcatUrlRoot=/
 
 # Email setup see http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-javamail-resource.htm#GSRFM00035
 #the smtp host address

@@ -1,0 +1,13 @@
+tt {
+	font-family: Courier, monospace;
+	font-size: 12px;
+	background-color: palegreen
+}
+
+p.call {
+	font-family: Courier, monospace;
+	padding: 8 0 0 0;
+	font-weight: normal;
+	font-size: 13px;
+	color: red;
+}

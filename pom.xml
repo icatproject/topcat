@@ -8,6 +8,7 @@
     <packaging>war</packaging>
     <version>0.1-SNAPSHOT</version>
     <name>topcatv2</name>
+    <description>Web frontend for ICAT</description>
 
     <build>
         <resources>
@@ -114,6 +115,21 @@
                     </filesets>
                 </configuration>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <dependencies>
+                    <dependency><!-- add support for ssh/scp -->
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>1.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -274,6 +290,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <repoUrl>http://www.icatproject.org/mvn/repo</repoUrl>
+        <project.scm.id>github</project.scm.id>
     </properties>
 
     <repositories>
@@ -282,5 +301,67 @@
             <url>http://www.icatproject.org/mvn/repo</url>
         </repository>
     </repositories>
+
+    <scm>
+        <connection>scm:git:https://github.com/icatproject/topcat.git</connection>
+        <developerConnection>scm:git:https://github.com/icatproject/topcat.git</developerConnection>
+        <url>https://github.com/icatproject/topcat</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/icatproject/topcat/issues</url>
+        <system>GitHub</system>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>The ICAT Collaboration</name>
+        <url>http://www.icatproject.org</url>
+    </organization>
+
+    <distributionManagement>
+        <downloadUrl>http://www.icatproject.org/mvn/repo</downloadUrl>
+        <site>
+            <id>website</id>
+            <url>scp://www.icatproject.org/var/www/html/mvn/site/topcat/${project.version}</url>
+        </site>
+        <repository>
+            <id>repo</id>
+            <url>scp://www.icatproject.org/var/www/html/mvn/repo</url>
+        </repository>
+    </distributionManagement>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>dependencies</report>
+                            <report>issue-tracking</report>
+                            <report>license</report>
+                            <report>plugins</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
