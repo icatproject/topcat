@@ -9,7 +9,7 @@
         <a name="installation" />
         <section name="Installation">
 
-            <subsection name="Compatibility">TopCAT requires icat.server 4.6-SNAPSHOT and ids.server 1.5.0-SNAPSHOT</subsection>
+            <subsection name="Compatibility">TopCAT requires icat.server 4.6 and ids.server 1.5</subsection>
 
             <subsection name="Prerequisites">
                 <ul>

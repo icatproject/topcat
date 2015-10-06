@@ -75,7 +75,7 @@ TopCAT v2 uses angular-translate to in order to store text in a single file. The
 
 #### topcat.css
 
-An empty style sheet to to allow you to customise your TopCAT site.
+An empty style sheet to allow you to customise your TopCAT site.
 
 This file is copied to the glassfish application web languages styles directory on installation.
 

@@ -50,9 +50,8 @@
                         <phase>validate</phase>
                         <configuration>
                             <target>
-                                <copy file="${basedir}/yo/app/config/topcat.json" tofile="${project.build.directory}/topcat.json.example" />
-                                <copy file="${basedir}/yo/app/config/topcat_multi.json" tofile="${project.build.directory}/topcat-multi.json.example" />
-                                <copy file="${basedir}/yo/app/languages/lang.json" tofile="${project.build.directory}/lang.json.example" />
+                                <copy file="${basedir}/yo/app/config/topcat.json.example" tofile="${project.build.directory}/topcat.json.example" />
+                                <copy file="${basedir}/yo/app/languages/lang.json.example" tofile="${project.build.directory}/lang.json.example" />
                                 <copy file="${basedir}/yo/app/styles/topcat.css" tofile="${project.build.directory}/topcat.css.example" />
                             </target>
                         </configuration>
@@ -71,7 +70,9 @@
                             <directory>yo/dist</directory>
                             <excludes>
                                 <exclude>**/config/*.json</exclude>
+                                <exclude>**/config/*.example</exclude>
                                 <exclude>**/languages/*.json</exclude>
+                                <exclude>**/languages/*.example</exclude>
                             </excludes>
                         </resource>
                     </webResources>

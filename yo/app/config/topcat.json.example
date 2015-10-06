@@ -1,6 +1,6 @@
 {
     "site": {
-        "topcatApiPath": "https://localhost:8181/api/v1",
+        "topcatApiPath": "api/v1",
         "home" : "my-data",
         "paging" : {
             "pagingType": "scroll",
@@ -296,8 +296,8 @@
         "dls": {
             "facilityName": "dls",
             "title": "DIAMOND",
-            "icatUrl": "https://facilities02.esc.rl.ac.uk",
-            "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
+            "icatUrl": "https://myicat.server.ac.uk",
+            "idsUrl": "https://myids.server.ac.uk",
             "facilityId": 1,
             "hierarchy": [
                 "facility",
@@ -325,12 +325,7 @@
                     "displayName" : "Https",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://fdsgos11.fds.rl.ac.uk"
-                },
-                {
-                    "displayName" : "Globus",
-                    "type" : "globus",
-                    "url": "https://fdsgos11.fds.rl.ac.uk"
+                    "url": "https://myids.server.ac.uk"
                 }
             ],
             "browseGridOptions": {
