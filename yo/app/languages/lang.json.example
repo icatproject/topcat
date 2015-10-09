@@ -85,8 +85,8 @@
             },
             "INSTRUMENT":{
                 "ID": "Id",
-                "NAME": "Beamline Name",
-                "FULLNAME": "Beamline Full Name",
+                "NAME": "Beamline",
+                "FULLNAME": "Beamline",
                 "TYPE": "Type",
                 "URL": "Website"
             },
@@ -112,7 +112,11 @@
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
                 "SIZE" : "Size",
-                "FACILITY" : "Facility"
+                "FACILITY" : "Facility",
+                "INSTRUMENT" : {
+                    "NAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME",
+                    "FULLNAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME"
+                }
             },
             "DATASET":{
                 "ID": "Id",

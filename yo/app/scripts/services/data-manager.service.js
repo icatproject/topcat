@@ -29,7 +29,7 @@
             if (error.status === 0) {
                 errorMessage = 'Unable to contact icat server';
             } else {
-                if (error.data !== null) {
+                if (error.data !== null || typeof error.data !== 'undefined') {
                     if (typeof error.data.message !== 'undefined') {
                         errorMessage = error.data.message;
                     } else {

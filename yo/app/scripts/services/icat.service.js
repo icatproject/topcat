@@ -238,6 +238,11 @@
             var params = {
                 headers: {
                     'Content-Type': undefined
+                },
+                info : {
+                    'skipRefreshSession' : true,
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title
                 }
             };
 

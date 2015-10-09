@@ -20,7 +20,6 @@
             "columnDefs": [
                 {
                     "field": "fullName",
-                    "displayName": "Facility Full Name",
                     "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
                     "filter": {
                         "condition": "starts_with",
@@ -31,7 +30,6 @@
                 },
                 {
                     "field": "name",
-                    "displayName": "Facility Name",
                     "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
                     "filter": {
                         "condition": "contains",
@@ -46,7 +44,6 @@
             "columnDefs": [
                 {
                     "field": "name",
-                    "displayName": "Facility",
                     "translateDisplayName": "CART.COLUMN.NAME",
                     "type" : "string",
                     "filter": {
@@ -58,7 +55,6 @@
                 },
                 {
                     "field": "entityType",
-                    "displayName": "Type",
                     "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
                     "cellFilter": "entityTypeTitle",
                     "type" : "string",
@@ -70,7 +66,6 @@
                 },
                 {
                     "field": "size",
-                    "displayName": "Size",
                     "translateDisplayName": "CART.COLUMN.SIZE",
                     "type" : "number",
                     "filter": {
@@ -92,7 +87,6 @@
                 "columnDefs": [
                     {
                         "field": "title",
-                        "displayName": "Title",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
                         "type": "string",
                         "filter": {
@@ -105,7 +99,6 @@
                     },
                     {
                         "field": "visitId",
-                        "displayName": "Visit Id",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                         "type": "string",
                         "filter": {
@@ -117,7 +110,7 @@
                     },
                     {
                         "field": "investigationInstruments[0].instrument.fullName",
-                        "displayName": "Instrument",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
                         "type": "string",
                         "visible": true,
                         "filter": {
@@ -128,13 +121,11 @@
                     },
                     {
                         "field": "size",
-                        "displayName": "Size",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
                         "type": "number"
                     },
                     {
                         "field": "startDate",
-                        "displayName": "Start Date",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd'",
@@ -154,7 +145,6 @@
                     },
                     {
                         "field": "endDate",
-                        "displayName": "End Date",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd'",
@@ -316,7 +306,6 @@
                     "columnDefs": [
                         {
                             "field": "fullName",
-                            "displayName": "Full Name",
                             "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "filter": {
@@ -336,7 +325,6 @@
                     "columnDefs": [
                         {
                             "field": "name",
-                            "displayName": "Name",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
                             "type": "number",
                             "sort": {
@@ -351,7 +339,6 @@
                         },
                         {
                             "field": "description",
-                            "displayName": "Description",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
                             "type": "string",
                             "filter": {
@@ -362,7 +349,6 @@
                         },
                         {
                             "field": "startDate",
-                            "displayName": "Start Date",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
@@ -373,7 +359,6 @@
                         },
                         {
                             "field": "endDate",
-                            "displayName": "End Date",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
@@ -389,7 +374,7 @@
                     "columnDefs": [
                         {
                             "field": "name",
-                            "displayName": "Name",
+                            "translateDisplayName": "BROWSE.COLUMN.PROPOSAL.NAME",
                             "type": "string",
                             "sort": {
                                 "direction": "asc"
@@ -413,7 +398,6 @@
                     "columnDefs": [
                         {
                             "field": "title",
-                            "displayName": "Title",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
                             "type": "string",
                             "filter": {
@@ -430,7 +414,6 @@
                         },
                         {
                             "field": "visitId",
-                            "displayName": "Visit Id",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                             "type": "string",
                             "filter": {
@@ -443,7 +426,7 @@
                         },
                         {
                             "field": "name",
-                            "displayName": "Name",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                             "type": "string",
                             "filter": {
                                 "condition": "starts_with",
@@ -455,13 +438,12 @@
                         },
                         {
                             "field": "size",
-                            "displayName": "Size",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
                         {
                             "field": "investigationInstruments[0].instrument.fullName",
-                            "displayName": "Instrument",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "visible": true,
                             "filter": {
@@ -472,7 +454,6 @@
                         },
                         {
                             "field": "startDate",
-                            "displayName": "Start Date",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
@@ -489,7 +470,6 @@
                         },
                         {
                             "field": "endDate",
-                            "displayName": "End Date",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
@@ -512,7 +492,6 @@
                     "columnDefs": [
                         {
                             "field": "name",
-                            "displayName": "Dataset Name",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
                             "type": "string",
                             "filter": {
@@ -528,13 +507,11 @@
                         },
                         {
                             "field": "size",
-                            "displayName": "Size",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
                         {
                             "field": "createTime",
-                            "displayName": "Create Date",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
@@ -551,7 +528,6 @@
                         },
                         {
                             "field": "modTime",
-                            "displayName": "Modified Time",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
@@ -574,7 +550,6 @@
                     "columnDefs": [
                         {
                             "field": "name",
-                            "displayName": "Datafile Name",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.NAME",
                             "type": "string",
                             "filter": {
@@ -586,7 +561,6 @@
                         },
                         {
                             "field": "location",
-                            "displayName": "Location",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.LOCATION",
                             "type": "string",
                             "cellTooltip" :true,
@@ -598,7 +572,6 @@
                         },
                         {
                             "field": "fileSize",
-                            "displayName": "File Size",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
                             "type": "number",
                             "cellFilter": "bytes",
@@ -610,7 +583,6 @@
                         },
                         {
                             "field": "modTime",
-                            "displayName": "Modified Time",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
