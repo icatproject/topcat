@@ -157,7 +157,7 @@ a[ng-click]{
     cursor: pointer;
 }
 
-/*cart trolly item count icon*/
+/* cart trolly item count icon*/
 .glyphicon.glyphicon-shopping-cart {
     font-size: 16px;
     color: #5e5e5e;
@@ -177,11 +177,13 @@ a[ng-click]{
   display: inline-block;
 }
 
+/* nav bar logo */
 .navbar-brand {
     padding-top: 0;
     padding-left: 0;
 }
 
+/* help */
 #globus_help .dl-horizontal dt{
     text-align: left;
     margin-left: 10px;
@@ -193,4 +195,14 @@ a[ng-click]{
 #globus_help .dl-horizontal dd{
     margin-left: 10px;
     margin-bottom: 1em;
+}
+
+/* loading bar spinner */
+#loading-bar-spinner {
+  display: block;
+  position: fixed;
+  z-index: 10002;
+  right: 10px;
+  left: auto;
+  top: 70px;
 }

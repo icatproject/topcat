@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <body>
     <menu name="Contents">
-        <item name="TopCAT Installation" href="index.html"/>
+        <item name="TopCAT Installation" href="installation.html"/>
         <item name="Quick Configuration Guide" href="quick-configuration-guide.html"/>
         <item name="Configuration" href="configuration.html"/>
         <item name="-topcat.json configuration" href="topcat-json-configuration.html"/>

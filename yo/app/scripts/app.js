@@ -58,8 +58,8 @@
             'ng.deviceDetector',
             'angularMoment',
             'emguo.poller',
-            'angular-bind-html-compile'
-
+            'angular-bind-html-compile',
+            'angular-loading-bar'
         ])
         .constant('_', window._)
         .constant('APP_CONSTANT', {

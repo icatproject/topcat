@@ -5,7 +5,7 @@ import os
 # TopCATv2
 
 def uninstall():
-    app = actions.getAppName("topcatv2")
+    app = actions.getAppName("topcat")
     if app: actions.asadmin("undeploy " + app)
 
     actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
@@ -43,11 +43,11 @@ if arg == "INSTALL":
         if topcatProperties["mail.enable"].lower() == 'true':
             actions.asadmin("create-javamail-resource --mailhost " + props["mail.host"] + " --mailuser " + props["mail.user"] + " --fromaddress " + props["mail.from"] + " --property " + props["mail.property"] + " mail/topcatv2")
 
-        actions.deploy("topcatv2-*.war", contextroot=props["topcatUrlRoot"], deploymentorder=140)
+        actions.deploy("topcat-*.war", contextroot=props["topcatUrlRoot"], deploymentorder=140)
 
-        actions.installToAppWeb("topcat.json", "topcatv2", "config")
-        actions.installToAppWeb("lang.json", "topcatv2", "languages")
-        actions.installToAppWeb("topcat.css", "topcatv2", "styles")
+        actions.installToAppWeb("topcat.json", "topcat", "config")
+        actions.installToAppWeb("lang.json", "topcat", "languages")
+        actions.installToAppWeb("topcat.css", "topcat", "styles")
 
     except Exception, e:
         abort(str(e))

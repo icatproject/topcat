@@ -13,7 +13,7 @@ TopCAT requires icat.server 4.6 and ids.server 1.5.0
 
 ##Configure
 
-See [configuration page](configure.html)
+See [configuration page](configuration.html)
 
 
 ##Install
