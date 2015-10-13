@@ -1,27 +1,32 @@
-# Facility Object Properties
+#set($h1 = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+#set($h4 = '####')
 
-## Property: _**facilityName**_ (required)
+$h1 Facility Object Properties
+
+$h2 Property: _**facilityName**_ (required)
 
 Value: string
 
 A facility name used internally by TopCAT. This must match the key/property name of the facility object.
 
 
-## Property: _**title**_ (required)
+$h2 Property: _**title**_ (required)
 
 Value: string
 
 The name of the facility you wish to display to the user. This name appears in columns and notification messages.
 
 
-## Property: _**icatUrl**_ (required)
+$h2 Property: _**icatUrl**_ (required)
 
 Value: string
 
 The icat server url for the facility.
 
 
-## Property: _**facilityId**_ (required)
+$h2 Property: _**facilityId**_ (required)
 
 Value: integer
 
@@ -35,14 +40,14 @@ wget --no-check-certificate --post-data json=%7B%22plugin%22%3A%22ldap%22%2C%20%
 ```
 
 
-## Property: _**idsUrl**_ (required)
+$h2 Property: _**idsUrl**_ (required)
 
 Value: string
 
 The url of the ids server for the facility.
 
 
-## Property: _**hierarchy**_ (required)
+$h2 Property: _**hierarchy**_ (required)
 
 Value: Array of strings
 
@@ -59,17 +64,17 @@ Example:
 
 ```
 
-The hierarchy property defines how your icat data is browsed in TopCAT. Your icat data in made of different entities (see [icat schema](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html)) with the root entity being facility. By defining a hierarchy, you specify the next entity that should be displayed when a user browse the data in a facility.
+The hierarchy property defines how your icat data is browsed in TopCAT. Your icat data in made of different entities (see [icat schema](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html)) with the root entity being facility. By defining a hierarchy, you specify the next entity that should be displayed when a user browse the data in a facility.
 
 The supported entities are:
 
-  - [facility](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Facility)
-  - [instrument](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Instrument)
-  - [facilityCycle](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#FacilityCycle)
+  - [facility](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Facility)
+  - [instrument](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Instrument)
+  - [facilityCycle](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#FacilityCycle)
   - proposal
-  - [investigation](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Investigation)
-  - [dataset](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Dataset)
-  - [datafile](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Datafile)
+  - [investigation](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Investigation)
+  - [dataset](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Dataset)
+  - [datafile](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Datafile)
 
 **proposal** is not a real icat entity but a virtual one created for TopCAT. It represents the name column of the Investigation entity. It only has one field called **name** and can be used to group investigations using the same name value.
 
@@ -101,7 +106,7 @@ Hierarchy rules:
       - dataset → datafile
 
 
-## Property: _**authenticationType**_ (required)
+$h2 Property: _**authenticationType**_ (required)
 
 Value: array of authenticationType object
 
@@ -134,7 +139,7 @@ An authenticationType object has the following properties:
   - **plugin** (string - required) - the icat plugin name used for authentication. i.e. **db**, **ldap**, **uows**, **anon** (depends on icat server).
 
 
-## Property: _**downloadTransportType**_ (required)
+$h2 Property: _**downloadTransportType**_ (required)
 
 Value: array of downloadTransportType object
 
@@ -143,15 +148,15 @@ Example:
 ```
 "downloadTransportType": [
     {
-        "displayName" : "Https",
+        "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
         "type" : "https",
         "default" : true,
-        "url": "https://fdsgos11.fds.rl.ac.uk"
+        "url": "https://ids.mysite.ac.uk"
     },
     {
-        "displayName" : "Globus",
+        "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
         "type" : "globus",
-        "url": "https://fdsgos11.fds.rl.ac.uk"
+        "url": "https://ids.mysite.ac.uk"
     }
 ]
 ```
@@ -161,7 +166,8 @@ The downloadTransportType property sets the possible download transport type tha
 A downloadTransportType object has the following properties:
 
 
-  - **displayName** (string - required) - the dropdown menu option name the the user select
+  - **displayName** (string - Either displayName or translateDisplayName must be set) - the dropdown menu option name the the user select
+  - **translateDisplayName** (string - Either displayName or translateDisplayName must be set) - the dropdown menu option name using a property from lang.json. This property has priority over displayName
   - **type** (string - required) - the transport type. Must be **https** or **globus**. (For globus, a globus polling software (yet to be release) is required to be installed on the ids in addition to a globus server installation)
   - **default** (boolean - optional) - which downloadTransportType should be the default on the dropdown menu. Only one downloadTransportType should have this property
   - **url** (string - required) - the url of the ids server.
@@ -170,9 +176,9 @@ A downloadTransportType object has the following properties:
 TopCAT also support a transport call smartclient which uses a desktop application call [IDS Smart Client](http://icatproject.org/user-documentation/ids-smartclient/) to download files. TopCAT automatically detects if the application is running. If it is running, TopCAT will add the option to the transport dropdown menu.
 
 
-## Property: _**browseGridOptions**_ (required)
+$h2 Property: _**browseGridOptions**_ (required)
 
-Value: object mapping hierarchy values to [GridOptions](gridoption) objects
+Value: object mapping hierarchy values to [GridOptions](gridoption.html) objects
 
 Example:
 
@@ -226,7 +232,7 @@ This configures the grid displayed on the browse tab. Browsing data is based on 
 For each entity defined in the hierarchy array, you must add a matching property with a [GridOptions](gridoption.html) object as its value in the browseGridOptions object.
 
 
-## Property: _**metaTabs**_ (Optional)
+$h2 Property: _**metaTabs**_ (Optional)
 
 Value: object with a property for each hierarchy entity with an array of [metaTab object](metatab.html) as its value
 
@@ -263,4 +269,4 @@ Example:
 ```
 
 
-For each entity defined in the hierachy, you should have a corresponding property (named the same as the entity) in the metaTab object. Each property must have a [metaTab object](#metatab-object-properties) as its value.
+For each entity defined in the hierachy, you should have a corresponding property (named the same as the entity) in the metaTab object. Each property must have a [metaTab object](metatab.html) as its value.

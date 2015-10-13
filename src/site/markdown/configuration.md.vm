@@ -1,4 +1,9 @@
-# TopCAT Configuration
+#set($h1 = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+#set($h4 = '####')
+
+$h1 TopCAT Configuration
 
 TopCAT v2 is configured using 5 files:
 
@@ -8,13 +13,13 @@ TopCAT v2 is configured using 5 files:
  - lang.json
  - topcat.css
 
-## topcat-setup.properties
+$h2 topcat-setup.properties
 
 This properties file configures glassfish and database used by TopCAT.
 
 This file is copied to the glassfish domain config directory on installation.
 
-### Configuration properties
+$h3 Configuration properties
 
   - **driver** - is the name of the jdbc driver and must match the jar file for your database that you stored in the previous step.
   - **dbProperties** -
@@ -30,13 +35,13 @@ This file is copied to the glassfish domain config directory on installation.
   - **adminPassword** - The basic authentication password for the admin REST API
 
 
-## topcat.properties
+$h2 topcat.properties
 
 This properties file configures the TopCAT application backend.
 
 Here you configure the location of preparedfiles, enable email and various email templates.
 
-### Configuration properties
+$h3 Configuration properties
 
   - **file.directory** - is the directory path for temporary prepared files
   - **mail.enable** - whether to enable mailing
@@ -51,7 +56,7 @@ Here you configure the location of preparedfiles, enable email and various email
   - **mail.body.globus** - is the email body message for https downloads. All subject tokens as above are available.
   - **mail.body.smartclient** - is the email body message for smartclient downloads. All subject tokens as above are available.
 
-## topcat.json
+$h2 topcat.json
 
 This json file configures the TopCAT frontend.
 
@@ -63,7 +68,7 @@ Please note this json file is deleted from the application web directory on topc
 
 See [topcat.json options](topcat-json-configuration.html) for configurtion properties.
 
-## lang.json
+$h2 lang.json
 
 This json file configures all text on the TopCAT frontend. Static html pages can also be created using this file in addition to topcat.json
 
@@ -73,7 +78,7 @@ Please note this json file is deleted from the application web directory on topc
 
 TopCAT v2 uses angular-translate to in order to store text in a single file. The file contains a single json object. Please see the "Teaching your app a language" section from the [angular-translate guide ](https://angular-translate.github.io/docs/#/guide/02_getting-started) for details. You should use the lang.json.example that comes with the topcat distro as your starting point.
 
-## topcat.css
+$h2 topcat.css
 
 An empty style sheet to allow you to customise your TopCAT site.
 

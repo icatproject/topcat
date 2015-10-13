@@ -1,11 +1,15 @@
-# Page Object Properties
+#set($h1 = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+#set($h4 = '####')
 
-## Page Object Example
+$h1 Page Object Properties
+
+$h2 Page Object Example
 
 In topcat.json:
 
 ```
-
 "pages" : [
     {
         "url" : "/about",
@@ -47,40 +51,32 @@ In lang.json object:
 }
 ```
 
-## Property: _**url**_ (required)
+$h2 Property: _**url**_ (required)
 
 Value: string
-
-Example: see [Page](#Page-Object-Example) object example
 
 The relative url of the page. It must start with a /.
 
 
-## Property: _**stateName**_ (required)
+$h2 Property: _**stateName**_ (required)
 
 Value: string
-
-Example: see [Page](#Page-Object-Example) object example
 
 A unique name for the page state/route. This name can be used to create hyperlinks in html pages using the attribute `ui-sref="STATE_NAME"` instead of `href=""`. e.g. `<a ui-sref="about">Link</a>` where the stateName for the page is named `about`.
 
 
-## Property: _**templateTranslateName**_ (required)
+$h2 Property: _**templateTranslateName**_ (required)
 
 Value: string
 
-Example: see [Page](#Page-Object-Example) object example
-
 The content of the html page must be set in the lang.json file. The value for templateTranslateName must be a property in lang.json whose value is the html content of the page.
 
-Note that json specification does not allow new lines in values so html content must be in a single line and escaped. This [online tool](http://bernhardhaeussner.de/odd/json-escape/) can be used to do this.
+Note that json specification does not allow new lines in values so html content must be in a single line and escaped. This [Escape for JSON and Javascript online tool](http://bernhardhaeussner.de/odd/json-escape/) can be used to do this.
 
 
-## Property: _**addToNavBar**_ (Optional)
+$h2 Property: _**addToNavBar**_ (Optional)
 
 Value: object
-
-Example: see [Page](#Page-Object-Example) object example
 
 This property, if set, will add a navigation button on the main navigation bar.
 

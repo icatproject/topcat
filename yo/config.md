@@ -273,7 +273,7 @@ Example:
 
 This configures the grid displayed on the browse facilities page. The browse facilities page is only displayed if multiple facilities are set.
 
-See the [icat schema for facility](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Facility) for possible column fields.
+See the [icat schema for facility](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#Facility) for possible column fields.
 
 ****
 
@@ -455,7 +455,7 @@ Example:
 
 This configures the grid displayed on the My Data tab. The My Data grid can list either investigation or dataset entity types. The type you want to list is set using the _**entityType**_ property in the GridOption object. This entityType property is specific to myDataGridOptions and is not used elsewhere.
 
-Once entityType is set, the possible fields available are as per the [icat schema](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html) for investigation or dataset. In addition, the following fields are also available:
+Once entityType is set, the possible fields available are as per the [icat schema](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html) for investigation or dataset. In addition, the following fields are also available:
 
   - **size** (number) - displays the total size of the entity. The size is retrieved from the ids server via an ajax call. A spinner is display while the result is being retrieved.
   - **availability** (string) - displays the availability of an item. The availability status is retrieved from the ids server via an ajax call. This is useful if the ids is configure for two level storage where files may have to be restored from tape. If files are always online, this field will not be of any use.
@@ -670,7 +670,7 @@ This defines the columns for a grid.
 
 Value: Array of strings
 
-For grids that display an entity, it is possible to add a field from a different entity that has a relationship to the current entity. For example, if the grid entity is investigation, it is possible to add a column to display the instrument name of the investigation. To do this, you must add an includes property and add a relationship (see [icat schema](#http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Facility)) using dot notation. e.g.
+For grids that display an entity, it is possible to add a field from a different entity that has a relationship to the current entity. For example, if the grid entity is investigation, it is possible to add a column to display the instrument name of the investigation. To do this, you must add an includes property and add a relationship (see [icat schema](#http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#Facility)) using dot notation. e.g.
 
 ```
 "includes" : [
@@ -738,7 +738,7 @@ The column name that will be shown in the grid header. See also [translateDispla
 
 Value: string
 
-The data property name whose value will be used for this column. For icat enitities please see [icat schema](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html) for field names.
+The data property name whose value will be used for this column. For icat enitities please see [icat schema](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html) for field names.
 
 You can also use fields of related icat entities. See [includes property](#property-includes-optional).
 
@@ -1066,17 +1066,17 @@ Example:
 
 ```
 
-The hierarchy property defines how your icat data is browsed in TopCAT. Your icat data in made of different entities (see [icat schema](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html)) with the root entity being facility. By defining a hierarchy, you specify the next entity that should be displayed when a user browse the data in a facility.
+The hierarchy property defines how your icat data is browsed in TopCAT. Your icat data in made of different entities (see [icat schema](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html)) with the root entity being facility. By defining a hierarchy, you specify the next entity that should be displayed when a user browse the data in a facility.
 
 The supported entities are:
 
-  - [facility](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Facility)
-  - [instrument](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Instrument)
-  - [facilityCycle](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#FacilityCycle)
+  - [facility](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#Facility)
+  - [instrument](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#Instrument)
+  - [facilityCycle](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#FacilityCycle)
   - proposal
-  - [investigation](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Investigation)
-  - [dataset](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Dataset)
-  - [datafile](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Datafile)
+  - [investigation](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#Investigation)
+  - [dataset](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#Dataset)
+  - [datafile](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#Datafile)
 
 **proposal** is not a real icat entity but a virtual one created for TopCAT. It represents the name column of the Investigation entity. It only has one field called **name** and can used to group investigations using the same name value.
 
@@ -1320,9 +1320,9 @@ Example:
 
 ```
 
-It is possible to add a tab containing metadata from a related entity. For example, if the current entity is an investigation we can add a tab to list all investigation users for the investigation. To do this, we add a queryParams properties and an array which maps the relationship from investigation to investigation user using the entity class name (see [icat schema](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html)) e.g.
+It is possible to add a tab containing metadata from a related entity. For example, if the current entity is an investigation we can add a tab to list all investigation users for the investigation. To do this, we add a queryParams properties and an array which maps the relationship from investigation to investigation user using the entity class name (see [icat schema](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html)) e.g.
 
-[InvestigationUser](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#InvestigationUser) → [User](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#User)
+[InvestigationUser](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#InvestigationUser) → [User](http://icatproject.org/mvn/site/icat/server/${icat.schema.version.doc}/schema.html#User)
 
 
 ###### Property: _**data**_ (required)

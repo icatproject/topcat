@@ -2,6 +2,7 @@
     "site": {
         "topcatApiPath": "api/v1",
         "home" : "my-data",
+        "enableEuCookieLaw" : true,
         "paging" : {
             "pagingType": "scroll",
             "paginationNumberOfRows": 10,
@@ -266,8 +267,12 @@
                 "url" : "/globus-help",
                 "stateName": "globus-help",
                 "templateTranslateName" : "PAGE.GLOBUS_HELP.HTML"
+            },
+            {
+                "url" : "/cookie-policy",
+                "stateName": "cookie-policy",
+                "templateTranslateName" : "PAGE.COOKIE_POLICY.HTML"
             }
-
         ]
     },
     "facilities": {
@@ -294,7 +299,7 @@
             ],
             "downloadTransportType": [
                 {
-                    "displayName" : "Https",
+                    "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
                     "url": "https://idsdev.isis.cclrc.ac.uk"

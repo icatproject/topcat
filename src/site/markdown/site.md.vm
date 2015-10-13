@@ -1,6 +1,11 @@
-# Site Object Properties
+#set($h1 = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+#set($h4 = '####')
 
-## Property: _**topcatApiPath**_ (required)
+$h1 Site Object Properties
+
+$h2 Property: _**topcatApiPath**_ (required)
 
 Value: String
 
@@ -14,9 +19,7 @@ Example:
 
 The relative or full path to the TopCAT api. You must leave this as **api/v1** unless you want the TopCAT api hosted on a different server from the web frontend.
 
-****
-
-## Property: _**home**_ (Required)
+$h2 Property: _**home**_ (Required)
 
 Value: String (must be **my-data**, **browse**, **cart** or **download**)
 
@@ -32,8 +35,22 @@ TopCAT allows you define which main tab should be the home page.
 
 Possible values are **home**, **browse**, **cart** or **download**.
 
+$h2 Property: _**enableEuCookieLaw**_ (Required)
 
-## Property: _**paging**_ (Required)
+Value: boolean
+
+Example:
+
+```
+    "site": {
+        "enableEuCookieLaw" : true,
+}
+```
+
+Set whether to enable EU Cookie Law consent bar displayed at the bottom of the site.
+
+
+$h2 Property: _**paging**_ (Required)
 
 Value: Paging Object (see [Paging](paging.html) object)
 
@@ -53,7 +70,7 @@ Example :
 This configures the pagination type used throughout the entire TopCAT frontend.
 
 
-## Property: _**facilitiesGridOptions**_ (Required)
+$h2 Property: _**facilitiesGridOptions**_ (Required)
 
 Value: GridOptions Object (see [GridOption](gridoption.html) object)
 
@@ -94,11 +111,11 @@ Example:
 
 This configures the grid displayed on the browse facilities page. The browse facilities page is only displayed if multiple facilities are set.
 
-See the [icat schema for facility](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html#Facility) for possible column fields.
+See the [icat schema for facility](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Facility) for possible column fields.
 
 
 
-## Property: _**cartGridOptions**_ (Required)
+$h2 Property: _**cartGridOptions**_ (Required)
 
 Value: GridOption Object (see [GridOption](gridoption.html) object)
 
@@ -168,7 +185,7 @@ Possible column fields are:
   - **availability** (string) - displays the availability of an item. The availability status is retrieved from the ids server via an ajax call. This is useful if the ids is configure for two level storage where files may have to be restored from tape. If files are always online, this field will not be of any use.
 
 
-## Property: _**myDataGridOptions**_ (Required)
+$h2 Property: _**myDataGridOptions**_ (Required)
 
 Value: GridOption Object (see [GridOption](gridoption.html) object)
 
@@ -275,14 +292,14 @@ Example:
 
 This configures the grid displayed on the My Data tab. The My Data grid can list either investigation or dataset entity types. The type you want to list is set using the _**entityType**_ property in the GridOption object. This entityType property is specific to myDataGridOptions and is not used elsewhere.
 
-Once entityType is set, the possible fields available are as per the [icat schema](http://icatproject.org/mvn/site/icat/server/4.6.0-SNAPSHOT/schema.html) for investigation or dataset. In addition, the following fields are also available:
+Once entityType is set, the possible fields available are as per the [icat schema](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html) for investigation or dataset. In addition, the following fields are also available:
 
   - **size** (number) - displays the total size of the entity. The size is retrieved from the ids server via an ajax call. A spinner is display while the result is being retrieved.
   - **availability** (string) - displays the availability of an item. The availability status is retrieved from the ids server via an ajax call. This is useful if the ids is configure for two level storage where files may have to be restored from tape. If files are always online, this field will not be of any use.
 
 
 
-## Property: _**myDownloadGridOptions**_ (Required)
+$h2 Property: _**myDownloadGridOptions**_ (Required)
 
 Value: GridOption Object (see [GridOption](gridoption.html) object)
 
@@ -353,7 +370,7 @@ Possible column fields are:
   - **createdAt** (date) - the timestamp when the download request was submitted
 
 
-## Property: _**metaTabs**_ (required)
+$h2 Property: _**metaTabs**_ (required)
 
 Value: object with a property named **facility** whose value is a array containing a [metaTab object](metatab.html)
 
@@ -397,14 +414,14 @@ Example:
 
 This property sets the metadata to be displayed in the metatab panel area (at the bottom half of the page) when a user click on a row on the browse facilties grid.
 
-For the site object, the metaTabs properties must have a single property named **facility**
+For the site object, the metaTabs properties must have a single property named **facility**.
 
 
-## Property: _**pages**_ (Optional)
+$h2 Property: _**pages**_ (Optional)
 
 Value : array of page objects (see [Page](page.html) object)
 
-Example: See [Page](#Page-Object-Example) object
+Example: See [Page](page.html#Page-Object-Example) object
 
 You can create simple html pages in TopCAT. Each page is defined using a page object which defines the url of the page. The html page content is defined in lang.json file.
 

@@ -17,7 +17,7 @@
                     <input type="text" class="form-control input-sm" placeholder="Filename" ng-model="download.fileName" />
                 </td>
                 <td>
-                    <select ng-options="item.displayName for item in download.transportOptions" ng-model="download.transportType"></select>
+                    <select ng-options="item.transportName for item in download.transportOptions" ng-model="download.transportType"></select>
                 </td>
                 <td>
                     <span us-spinner="{radius:2, width:2, length: 2}" spinner-key="spinner-size-{{download.facilityName}}" class="element-spinner"></span><span load-download-size ng-model="download">{{download.size | bytes}}</span>

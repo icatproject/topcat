@@ -41,18 +41,12 @@
                         return false;
                     }
 
-
-
-
                     //by pass interceptor if byPassIntercepter is set to true
                     if (typeof rejection.config.byPassIntercepter !== 'undefined' && rejection.config.byPassIntercepter === true) {
                         return $q.reject(rejection);
                     }
 
                     if(rejection.status === 403){
-                        console.log('HttpErrorInterceptor', rejection);
-                        console.log('HttpErrorInterceptor facilityTitle', rejection.config.info.facilityTitle);
-
                         state = $injector.get('$state');
 
                         inform.clear();

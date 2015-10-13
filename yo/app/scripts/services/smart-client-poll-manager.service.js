@@ -64,7 +64,6 @@
                             });
                         });
                     }, function(error) { //jshint ignore: line
-                        console.log('Unable to login to smartcient');
                         inform.add(error, {
                             'ttl': 0,
                             'type': 'danger'

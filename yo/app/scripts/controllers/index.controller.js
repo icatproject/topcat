@@ -29,6 +29,8 @@
 
         vm.facilities = facilities;
 
+        vm.euCookieLaw = Config.getEuCookieLaw(APP_CONFIG);
+
         vm.changeLanguage = function (langKey) {
             $translate.use(langKey);
         };

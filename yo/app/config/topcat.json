@@ -1,7 +1,8 @@
 {
     "site": {
-        "topcatApiPath": "https://localhost:8181/api/v1",
+        "topcatApiPath": "api/v1",
         "home" : "my-data",
+        "enableEuCookieLaw" : true,
         "paging" : {
             "pagingType": "scroll",
             "paginationNumberOfRows": 10,
@@ -281,6 +282,11 @@
                 "url" : "/globus-help",
                 "stateName": "globus-help",
                 "templateTranslateName" : "PAGE.GLOBUS_HELP.HTML"
+            },
+            {
+                "url" : "/cookie-policy",
+                "stateName": "cookie-policy",
+                "templateTranslateName" : "PAGE.COOKIE_POLICY.HTML"
             }
 
         ]
@@ -315,13 +321,13 @@
             ],
             "downloadTransportType": [
                 {
-                    "displayName" : "Https",
+                    "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
                     "url": "https://fdsgos11.fds.rl.ac.uk"
                 },
                 {
-                    "displayName" : "Globus",
+                    "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
                     "type" : "globus",
                     "url": "https://fdsgos11.fds.rl.ac.uk"
                 }
@@ -683,6 +689,20 @@
                             {
                                 "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
                                 "field": "name"
+                            }
+                        ]
+                    },
+                    {
+                        "displayName": "Publications",
+                        "field": "publications",
+                        "queryParams": [
+                            "Publication"
+                        ],
+                        "default": "false",
+                        "data": [
+                            {
+                                "displayName": "Reference",
+                                "field": "fullReference"
                             }
                         ]
                     }

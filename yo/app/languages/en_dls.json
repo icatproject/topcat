@@ -38,6 +38,14 @@
     "SESSION" : {
         "EXPIRED_ERROR" : "Your session has expired. You must login again to the {{facilityTitle}} facility"
     },
+    "EU_COOKIE_LAW" : {
+        "HTML" : {
+            "MESSAGE" : "This site uses cookies. By continuing, you are giving consent to cookies being used.",
+            "MORE_INFO" : "More information",
+            "CONSENT_BUTTON": "I understand"
+        },
+        "COOKIE_POLICY_STATENAME" : "cookie-policy"
+    },
     "RESTAPI" : {
         "BAD_REQUEST_ERROR" : "There was a bad request made to the server"
     },
@@ -349,6 +357,17 @@
                     }
                 }
             }
+        },
+        "TRANSPORT" : {
+            "HTTPS" : {
+                "NAME" : "Https"
+            },
+            "GLOBUS" : {
+                "NAME" : "Globus"
+            },
+            "SMARTCLIENT" : {
+                "NAME" : "Smartclient"
+            }
         }
     },
     "ABOUT" : {
@@ -365,6 +384,9 @@
     },
     "GLOBUS_HELP" : {
         "TITLE" : "Globus Help"
+    },
+    "COOKIE_POLICY" : {
+        "TITLE" : "Cookie Policy"
     },
     "RESPONSE": {
         "ERROR" : {
@@ -455,6 +477,9 @@
         },
         "GLOBUS_HELP" : {
             "HTML" : "<h1 translate=\"GLOBUS_HELP.TITLE\">GLOBUS HELP</h1>\n\n<h1 class=\"page-header\">Downloading from Globus Online</h1>\n\n<div id=\"globus_help\">\n    <dl class=\"dl-horizontal\">\n        <dt>1.</dt>\n        <dd>\n            <div>\n                <p>Sign up for a <a href=\"https://www.globus.org/SignUp\" target=\"_blank\">Globus Online</a> account</p>\n            </div>\n        </dd>\n        <dt>2.</dt>\n        <dd>\n            <div>\n                <p>Download the <a href=\"https://www.globus.org/globus-connect-personal\" target=\"_blank\">Globus Connect Client</a> onto your machine and follow the setup instructions</p>\n            </div>\n        </dd>\n        <dt>3.</dt>\n        <dd>\n            <div>\n                <p>Go to TopCAT, browse and add items you wish to download to your cart. Once added, click on the <strong>Cart</strong> tab and click the <strong>Download Cart</strong> button.</p>\n            </div>\n        </dd>\n        <dt>4.</dt>\n        <dd>\n            <div>\n                <p>On the modal window, set the transport to <strong>Globus</strong>. You may also give a name for your download. This is the name you will see in Globus Online. Optionally enter an email address (recommended). An email will be sent to you when your files are ready to be transfered.</p>\n            </div>\n        </dd>\n        <dt>5.</dt>\n        <dd>\n            <div>\n                <p>Periodically check the TopCAT Download tab to see if the status of your download is complete. If you've entered your email address when submitting the Download, you can just wait until you've received an email notifying your download is ready.</p>\n            </div>\n        </dd>\n        <dt>6.</dt>\n        <dd>\n            <div>\n                <p>Once your download is ready, login to <a href=\"https://www.globus.org/SignIn\" target=\"_blank\">Globus Online</a> and navigate to Quick Links → Transfer Files.</p>\n            </div>\n        </dd>\n        <dt>7.</dt>\n        <dd>\n            <div>\n                <p>In the left panel enter your personal endpoint name eg. <strong>username#endpointname</strong></p>\n            </div>\n        </dd>\n        <dt>8.</dt>\n        <dd>\n            <div>\n                <p>In the right panel enter the endpoint: <strong>stfc#dls</strong></p>\n            </div>\n        </dd>\n        <dt>9.</dt>\n        <dd>\n            <div>\n                <p>You will then be prompted to login. You can use your Diamond/Federal Credentials</p>\n            </div>\n        </dd>\n        <dt>10.</dt>\n        <dd>\n            <div>\n                <p>If your download request is ready, you should see a folder with the name you set earlier. You can now initiate a transfer of your request files to your endpoint.</p>\n            </div>\n        </dd>\n    </dl>\n</div>\n"
+        },
+        "COOKIE_POLICY" : {
+            "HTML" : "<h1 translate=\"COOKIE_POLICY.TITLE\"></h1>\n\n<div>\n    <h3>Use of Cookies, Local storage and Session Storage</h3>\n\n    <p>In order to make TopCAT easy and reliable to use, we place small amounts of information on your device. These include small files known as cookies, local storage and sessin storage. They cannot be used to identify you personally.</p>\n\n    <p>These pieces of information are used to improve services for you, through:</p>\n    <ul>\n        <li>enabling a service to recognise your device so you don't have to give the same information during one task or over a given time period</li>\n        <li>recognising that you have already given a username and password so you don't need to enter it for every web page requested</li>\n    </ul>\n\n    <p>You may refuse to accept cookies, local storage and session storage by activating the setting on your browser which allows you to refuse them. Unless you have adjusted your browser setting so that it will refuse cookies, local storage and session storage our system may issue cookies, local storage and session storage when you visit our site.</p>\n\n    <p>For more information on cookies, and how to delete and control them visit <a target=\"_blank\" href=\"http://aboutcookies.org/\">AboutCookies.org</a> or <a target=\"_blank\" href=\"http://www.allAboutCookies.org/\">AllAboutCookies.org</a>.</p>\n\n    <p>The list below shows all of the cookies, local storage and session storage that are set by TopCAT.</p>\n\n    <table class=\"table table-bordered cookie-info-table\">\n        <tr>\n            <th>Cookie/Local Storage/Session Storage</th>\n            <th>Name</th>\n            <th>Purpose</th>\n        </tr>\n        <tr>\n            <td>Consent Cookie</td>\n            <td>consent</td>\n            <td>\n                <p>This cookie is used to tell us that you have consented to cookies, local storage and session storage being uses and do not wish to see the cookie message again.</p>\n                <p>This cookie expires after 365 days.</p>\n            </td>\n        </tr>\n        <tr>\n            <td>Last login Local Storage</td>\n            <td>ngStorage-login</td>\n            <td>\n                <p>This stores your last selected facility and authentication type on your browser's local storage.</p>\n                <p>This local storage does not expire and remains util removed by the user.</p>\n            </td>\n        </tr>\n        <tr>\n            <td>TopCAT Session Storage</td>\n            <td>ngStorage-sessions</td>\n            <td>\n                <p>This stores your session information in your browser's session storage.</p>\n                <p>This session storage expires when you close your browser.</p>\n            </td>\n        </tr>\n    </table>\n\n    <h3>How to control and delete cookies</h3>\n\n    <p><strong>We will not use cookies to collect personally identifiable information about you.</strong></p>\n\n    <p>However, if you wish to restrict or block the cookies which are set by our websites, or indeed any other website, you can do this through your browser settings. The \"Help\" function within your browser should tell you how.</p>\n\n    <p>Alternatively, you may wish to visit the <a target=\"_blank\" href=\"http://aboutcookies.org/\">AboutCookies.org</a> website, which contains comprehensive information on how to do this on a wide variety of browsers. You will also find details on how to delete cookies from your machine as well as more general information about cookies.</p>\n\n    <p><strong>Please be aware that restricting cookies may have an impact upon the functionality of TopCAT.</strong></p>\n\n    <p>For information on how to do this on the browser of your mobile phone you will need to refer to your handset manual.</p>\n</div>"
         }
     }
 }

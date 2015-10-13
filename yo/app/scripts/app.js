@@ -9,7 +9,7 @@
         module : 'angularApp',
         resolve : {
             APP_CONFIG : ['$http', function($http) {
-                return $http.get('config/topcat.json');
+                return $http.get('config/topcat_multi.json');
             } ],
             LANG : ['$http', function($http) {
                 return $http.get('languages/lang.json');
@@ -59,11 +59,11 @@
             'angularMoment',
             'emguo.poller',
             'angular-bind-html-compile',
-            'angular-loading-bar'
+            'angular-loading-bar',
+            'ipCookie'
         ])
         .constant('_', window._)
         .constant('APP_CONSTANT', {
-            storageName: 'TopCAT_0.1',
             smartClientUrl: 'https://localhost:8888'
         })
         .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
@@ -248,7 +248,7 @@
             $rootScope.$stateParams = $stateParams;
         }])
         .run(['$rootScope', '$state', function ($rootScope, $state) {
-            //watch for state change resolve authentication errors
+            //listen for state change resolve authentication errors
             $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
                 if (error && error.isAuthenticated === false) {
                     $state.go('login');

@@ -1,5 +1,9 @@
-#topcat.json Properties
+#set($h1 = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+#set($h4 = '####')
 
+$h1 topcat.json Properties
 
 The topcat.json file is a json object with two properties:
 
@@ -24,6 +28,7 @@ A simplified summary of the configuration object is shown below:
 &nbsp;&nbsp;&nbsp;&nbsp;[site](site.html):&nbsp;{<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[topcatApiPath](site.html#Property:_topcatApiPath_required)&quot;:&nbsp;&quot;string&quot;,<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[home](site.html#Property:_home_Required)&quot;&nbsp;:&nbsp;&quot;string&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[enableEuCookieLaw](site.html#Property:_enableEuCookieLaw_Required)&quot;&nbsp;:&nbsp;&quot;string&quot;,<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[paging](site.html#Property:_paging_Required)&quot;&nbsp;:&nbsp;[{}](paging.html)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[facilitiesGridOptions](site.html#Property:_facilitiesGridOptions_Required)&quot;:&nbsp;[{}](gridoption.html),<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[cartGridOptions](site.html#Property:_cartGridOptions_Required)&quot;&nbsp;:&nbsp;[{}](gridoption.html)<br />
@@ -66,7 +71,7 @@ facilities: {
 ```
 
 
-## Site Configuration
+$h2 Site Configuration
 
 The topcat.json configuration must contain one property named **site**.
 
@@ -74,6 +79,7 @@ The site object covers the configuration which are not specific to a particular 
 
   - The topcat API url
   - The home state name
+  - Enable EU Cookie Law consent
   - The pagination across the whole site. Scoll or page.
   - The grid configuration for My Data tab
   - The grid configuration for facilities browse (shown when you have more than one facility)
@@ -84,7 +90,7 @@ The site object covers the configuration which are not specific to a particular 
 
 
 
-## Facilities Configuration
+$h2 Facilities Configuration
 
 For each facility you wish to add to TopCAT, you must add a property/key and a facility object to the facilities object.
 

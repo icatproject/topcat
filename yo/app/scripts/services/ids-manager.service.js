@@ -59,7 +59,7 @@
 
 
         /**
-         * Get the size from the ids
+         * Get isTwoLEvel for a single ids
          * @param  {Object} sessions session object containing logged in sessions
          * @param  {Object} facility the facility object
          * @return {Object}          a promise containing the list of instruments
@@ -79,6 +79,42 @@
 
             return def.promise;
         };
+
+        /**
+         * isTwoLevel for array of facilities
+         *
+         * @param  {[type]}  facilities [description]
+         * @param  {[type]}  options    [description]
+         * @return {Boolean}            [description]
+         */
+        this.isTwoLevelMulti = function(facilities, options) {
+            var requests = [];
+
+            _.each(facilities, function(facility) {
+                requests.push(IdsService.isTwoLevel(facility, options));
+            });
+
+            return $q.all(requests);
+        };
+
+        /**
+         * Get isTwoLEvel for multiple faciltiies and return deferred promise
+         * @param  {[type]}  facilities [description]
+         * @param  {[type]}  options    [description]
+         * @return {Boolean}            [description]
+         */
+        this.isTwoLevelForFacilities = function(facilities, options) {
+            var def = $q.defer();
+
+            this.isTwoLevelMulti(facilities, options).then(function(result) {
+                def.resolve(result);
+            }, function(error) { //jshint ignore: line
+                def.reject('Failed to retrieve data from ids');
+            });
+
+            return def.promise;
+        };
+
 
         /**
          * Get the status from the ids

@@ -28,7 +28,6 @@
         $scope.open = function(event){ //jshint ignore: line
             //event.preventDefault();
             //event.stopPropagation();
-            console.log('datepicker clicked');
             $scope.status.opened = true;
         };
 

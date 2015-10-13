@@ -264,6 +264,9 @@
             return config.site.home;
         };
 
+        this.getEuCookieLaw = function(config) {
+            return config.site.enableEuCookieLaw;
+        };
 
         this.getBrowseGridOptionsByFacilityName = function(config, facilityName) {
             if (typeof config.facilities[facilityName].browseGridOptions !== 'undefined') {

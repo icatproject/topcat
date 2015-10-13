@@ -8,7 +8,7 @@
         directive('downloadCart', downloadCart);
 
     DownloadCartController.$inject = ['$rootScope', '$modal', 'Cart', 'inform'];
-    DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING', 'idsInfos'];
+    DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING', 'idsInfos', '$translate'];
     downloadCart.$inject = [];
 
     function DownloadCartController ($rootScope, $modal, Cart, inform) {
@@ -20,35 +20,30 @@
                 templateUrl : 'views/download-cart-modal.directive.html',
                 controller : 'DownloadCartModalController as dcm',
                 resolve: {
-                    idsInfos : ['Config', 'APP_CONFIG', 'IdsManager', '$sessionStorage', function(Config, APP_CONFIG, IdsManager, $sessionStorage) {
+                    idsInfos : ['$q', 'Config', 'APP_CONFIG', 'IdsManager', '$sessionStorage', function($q, Config, APP_CONFIG, IdsManager, $sessionStorage) {
                         var sessions = $sessionStorage.sessions;
                         var facilities = [];
 
                         _.each(sessions, function(session, key) {
                             var facility = Config.getFacilityByName(APP_CONFIG, key);
-
-                            IdsManager.isTwoLevel(facility).then(function(data) {
-                                facility.isTwoLevel = data;
-                            }, function(error){
-                                inform.add(error, {
-                                    'ttl': 0,
-                                    'type': 'danger'
-                                });
-                            });
-
                             facilities.push(facility);
                         });
 
-                        return facilities;
+                        return IdsManager.isTwoLevelForFacilities(facilities);
                     }]
                 },
                 size : 'lg'
+            }).opened.catch(function (error) {
+                inform.add(error, {
+                    'ttl': 0,
+                    'type': 'danger'
+                });
             });
         };
     }
 
 
-    function DownloadCartModalController($modalInstance, Cart, SMARTCLIENTPING, idsInfos) {
+    function DownloadCartModalController($modalInstance, Cart, SMARTCLIENTPING, idsInfos, $translate) {
         var vm = this;
         var facilityCart = Cart.getFacilitiesCart();
 
@@ -57,18 +52,30 @@
         _.each(facilityCart, function(cart) {
             cart.transportOptions = cart.getDownloadTransportType();
 
-            //check if smartclient is online and of so add the option to the transport type dropdown
+            //translate transport name
+            _.each(cart.transportOptions, function(options) {
+                options.transportName = options.displayName;
+
+                if (typeof options.translateDisplayName !== 'undefined') {
+                    options.transportName = $translate.instant(options.translateDisplayName);
+                }
+            });
+
+            //check if smartclient is online and if so add the option to the transport type dropdown
             if (typeof SMARTCLIENTPING !== 'undefined' && SMARTCLIENTPING.ping === 'online') {
                 var httpTransport = _.find(cart.transportOptions, {type: 'https'});
 
                 if (typeof httpTransport !== 'undefined') {
+                    var translateName = $translate.instant('DOWNLOAD.TRANSPORT.SMARTCLIENT.NAME');
+
                     var smartClientTransport = {
-                        displayName : 'Smartclient',
+                        translateDisplayName: 'DOWNLOAD.TRANSPORT.SMARTCLIENT.NAME',
+                        transportName : translateName,
                         type : 'smartclient',
                         url: httpTransport.url,
                     };
 
-                    var smartClientTransportExists = _.find(cart.transportOptions, smartClientTransport);
+                    var smartClientTransportExists = _.find(cart.transportOptions, {type: 'smartclient'});
 
                     if (typeof smartClientTransportExists === 'undefined') {
                         cart.transportOptions.push(smartClientTransport);
@@ -93,10 +100,9 @@
         vm.hasArchive = function() {
             var isTwoLevel = false;
 
-            _.each(idsInfos, function(idsInfo) {
-                if (typeof idsInfo.isTwoLevel !== 'undefined' && idsInfo.isTwoLevel === true) {
+            _.each(idsInfos, function(data){
+                if (typeof data.data !== 'undefined' && data.data === 'true') {
                     isTwoLevel = true;
-                    return false;
                 }
             });
 

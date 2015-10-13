@@ -92,6 +92,10 @@
                 </div>
             </div>
         </footer>
+        <div ng-if="vm.euCookieLaw">
+            <div class="container-fluid" consent></div>
+        </div>
+
         <!-- build:js(.) scripts/oldieshim.js -->
         <!--[if lt IE 9]>
         <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -130,6 +134,7 @@
         <script src="bower_components/angularpoller/angular-poller.min.js"></script>
         <script src="bower_components/angular-bind-html-compile/angular-bind-html-compile.js"></script>
         <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+        <script src="bower_components/angular-cookie/angular-cookie.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
@@ -187,6 +192,7 @@
         <script src="scripts/controllers/download.controller.js"></script>
         <script src="scripts/controllers/home-route.controller.js"></script>
         <!-- directives -->
+        <script src="scripts/directives/eu-cookie-consent.directive.js"></script>
         <script src="scripts/directives/breadcrumb.directive.js"></script>
         <script src="scripts/directives/load-size.directive.js"></script>
         <script src="scripts/directives/load-availability.directive.js"></script>
