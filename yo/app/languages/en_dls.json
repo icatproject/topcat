@@ -463,7 +463,7 @@
         }
     },
     "FOOTER" : {
-        "HTML" : "<div ><a href=\"http://www.diamond.ac.uk\">Diamond Light Source</a> | <a href=\"http://www.diamond.ac.uk/Legal.html\">Privacy Policy</a> | <a href=\"http://www.diamond.ac.uk/Home/About.html\">About Us</a></div>"
+        "HTML" : "<div ><a href=\"http://www.diamond.ac.uk\">Diamond Light Source</a> | <a href=\"http://www.diamond.ac.uk/Legal.html\">Privacy Policy</a> | <a ui-sref=\"cookie-policy\">Cookie Policy</a> | <a href=\"http://www.diamond.ac.uk/Home/About.html\">About Us</a></div>"
     },
     "PAGE" : {
         "ABOUT" : {

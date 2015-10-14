@@ -468,7 +468,7 @@
         }
     },
     "FOOTER" : {
-        "HTML" : "<div ><a href=\"http://www.mysite.ac.uk\">My Site Home</a> | <a href=\"http://www.mysite.ac.uk\">Privacy Policy</a> | <a href=\"http://www.mysite.ac.uk/about.html\">About Us</a></div>"
+        "HTML" : "<div ><a href=\"http://www.mysite.ac.uk\">My Site Home</a> | <a href=\"http://www.mysite.ac.uk\">Privacy Policy</a> | <a ui-sref=\"cookie-policy\">Cookie Policy</a> | <a href=\"http://www.mysite.ac.uk/about.html\">About Us</a></div>"
     },
     "PAGE" : {
         "ABOUT" : {

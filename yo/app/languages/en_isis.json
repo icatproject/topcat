@@ -467,7 +467,7 @@
         }
     },
     "FOOTER" : {
-        "HTML" : "<div ><a href=\"http://http://www.isis.stfc.ac.uk\">ISIS pulsed neutron and muon source</a> | <a href=\"http://www.isis.stfc.ac.uk/about/aboutisis.html\">About Us</a></div>"
+        "HTML" : "<div ><a href=\"http://http://www.isis.stfc.ac.uk\">ISIS pulsed neutron and muon source</a> | <a ui-sref=\"cookie-policy\">Cookie Policy</a> | <a href=\"http://www.isis.stfc.ac.uk/about/aboutisis.html\">About Us</a></div>"
     },
     "PAGE" : {
         "ABOUT" : {
