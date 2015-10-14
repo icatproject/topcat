@@ -40,7 +40,7 @@
     },
     "EU_COOKIE_LAW" : {
         "HTML" : {
-            "MESSAGE" : "This site uses cookies and similar technologies. By continuing, you are giving consent to these technologies being used.",consent to cookies and similar technologies being used.",
+            "MESSAGE" : "This site uses cookies and similar technologies. By continuing, you are giving consent to these technologies being used.",
             "MORE_INFO" : "More information",
             "CONSENT_BUTTON": "I understand"
         },
@@ -268,7 +268,6 @@
                     }
                 }
             }
-
         },
         "BASKET" : {
             "ITEMS" : {
@@ -362,7 +361,6 @@
                 }
             }
         },
-        ,
         "TRANSPORT" : {
             "HTTPS" : {
                 "NAME" : "Https"
