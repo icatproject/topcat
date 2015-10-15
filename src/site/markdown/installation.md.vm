@@ -7,7 +7,9 @@ $h1 TopCAT Installation Guide
 
 $h2 Compatibility
 
-TopCAT requires icat.server 4.6 and ids.server 1.5.0
+TopCAT requires icat.server 4.6-SNAPSHOT  and ids.server 1.5.0.
+
+icat.server 4.5 also works but you will [not be able to login using Firefox](https://github.com/icatproject/icat.server/issues/149).
 
 $h2 Prerequisites
 

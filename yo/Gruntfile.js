@@ -392,26 +392,19 @@ module.exports = function (grunt) {
     },
 
     'string-replace': {
+      //set log debugging to false on distro
       dist: {
         files: [{
           expand: true,
-          cwd: '<%= yeoman.app %>/config',
-          src: 'topcat.json',
-          dest: '<%= yeoman.dist %>/config'
+          cwd: '.tmp/concat/scripts',
+          src: 'scripts.js',
+          dest: '.tmp/concat/scripts'
         }],
         options: {
           replacements: [
-            // place files inline example
             {
-              pattern: '"icatDataProxyHost": "https://localhost:3001"',
-              replacement: function() {
-                if (env === 'production') {
-                  return '"icatDataProxyHost": "https://topcat-dev.esc.rl.ac.uk:3001"';
-                } else {
-                  return '"icatDataProxyHost": "https://localhost:3001"';
-                }
-
-              }
+              pattern: '$logProvider.debugEnabled(true);',
+              replacement: '$logProvider.debugEnabled(false);'
             }
           ]
         }
@@ -479,6 +472,7 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'postcss',
     'concat',
+    'string-replace',
     'ngAnnotate',
     'copy:dist',
     'cdnify',
@@ -486,8 +480,7 @@ module.exports = function (grunt) {
     'uglify',
     'filerev',
     'usemin',
-    'htmlmin',
-    'string-replace'
+    'htmlmin'
   ]);
 
   grunt.registerTask('default', [
