@@ -6,3 +6,4 @@
 .settings
 .externalToolBuilders/
 derby.log
+npm-debug.log
