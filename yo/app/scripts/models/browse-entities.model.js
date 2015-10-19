@@ -87,6 +87,18 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
      */
     function configToUIGridOptions(facility, currentEntityType) {
         var entityGridOptions = Config.getEntityBrowseGridOptionsByFacilityName(APP_CONFIG, facility.facilityName, currentEntityType);
+        var downloadColumn = {
+            name : 'actions',
+            visible: false,
+            translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
+            enableFiltering: false,
+            enable: false,
+            enableColumnMenu: false,
+            enableSorting: false,
+            enableHiding: false,
+            cellTemplate : '<div class="ui-grid-cell-contents"><download-datafile></download-datafile></div>'
+        };
+        entityGridOptions.columnDefs.push(downloadColumn);
 
         //do the work of transposing
         _.mapValues(entityGridOptions.columnDefs, transposeColumnDef);
@@ -95,16 +107,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         if(entityGridOptions.enableDownload){
             IdsManager.isTwoLevel(facility).then(function(isTwoLevel){
                 if(!isTwoLevel){
-                    entityGridOptions.columnDefs.push(transposeColumnDef({
-                        name : 'actions',
-                        translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
-                        enableFiltering: false,
-                        enable: false,
-                        enableColumnMenu: false,
-                        enableSorting: false,
-                        enableHiding: false,
-                        cellTemplate : '<div class="ui-grid-cell-contents"><download-datafile></download-datafile></div>'
-                    }));
+                    downloadColumn.visible = true;
                 }
             });
         }
