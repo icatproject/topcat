@@ -1,6 +1,6 @@
 {
     "site": {
-        "topcatApiPath": "api/v1",
+        "topcatApiPath": "https://topcat-dev.esc.rl.ac.uk/api/v1",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "paging" : {
