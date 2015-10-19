@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.icatproject</groupId>
         <artifactId>topcat.root</artifactId>
-        <version>1.13.1</version>
+        <version>1.13.2-SNAPSHOT</version>
     </parent>
 
     <properties>
