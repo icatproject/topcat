@@ -439,6 +439,8 @@ Example:
 
 ```
 
+Possible fields:
+
   - **show* (boolean) - If true the message will be displayed, otherwise it is hidden.
   - **message** (string) - The message you want to be displayed. This can include HTML markup.
 
