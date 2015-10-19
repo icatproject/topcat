@@ -18,7 +18,7 @@
         },
         "serviceStatus": {
             "show": true,
-            "message": "Site is down for maintenance"
+            "message": "<strong>Service status:</strong> Site is down for maintenance"
         },
         "facilitiesGridOptions": {
             "enableFiltering": true,

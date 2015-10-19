@@ -8,7 +8,7 @@
                 	ng-click="serviceStatusController.close()">
                 	<span aria-hidden="true">&times;</span>
                 </button>
-                <strong>Service status:</strong> {{serviceStatusController.message}}
+                <span ng-bind-html="serviceStatusController.message"></span>
             </div>
         </div>
     </div>
