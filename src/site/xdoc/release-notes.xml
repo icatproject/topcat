@@ -6,6 +6,11 @@
     </properties>
 
     <body>
+    	<section name="1.13.1">
+            <ul>
+                <li>Fixed download issue using browse all tree view (This issue is specific to the ISIS facility. If you are already using version 1.13.0, it is not necessary to upgrade).</li>
+            </ul>
+        </section>
     	<section name="1.13.0">
             <ul>
                 <li>Add support for ICAT 4.5.0</li>

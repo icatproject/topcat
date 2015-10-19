@@ -48,7 +48,7 @@ import uk.ac.stfc.topcat.ejb.session.UtilityLocal;
 /**
  * Webservice interface to the TopCAT
  * <p>
- * 
+ *
  * @author Mr. Srikanth Nagella
  * @version 1.0, &nbsp; 30-APR-2010
  * @since iCAT Version 3.3
@@ -66,7 +66,7 @@ public class TOPCAT {
     @EJB
     private UtilityLocal utility;
 
-    private static final String VERSION = "1.12.0";
+    private static final String VERSION = "1.13.1";
 
     @WebMethod(operationName = "login")
     public String login() throws AuthenticationException {
@@ -102,7 +102,7 @@ public class TOPCAT {
 
     /**
      * Web service operation
-     * 
+     *
      * @throws TopcatException
      */
     @WebMethod(operationName = "searchBasicInvestigationByKeywordsInServer")
@@ -116,7 +116,7 @@ public class TOPCAT {
 
     /**
      * Web service operation
-     * 
+     *
      * @throws TopcatException
      */
     @WebMethod(operationName = "getMyInvestigationsInServer")
@@ -128,7 +128,7 @@ public class TOPCAT {
 
     /**
      * Web service operation
-     * 
+     *
      * @throws TopcatException
      */
     @WebMethod(operationName = "getDatafilesDownloadURL")
@@ -140,7 +140,7 @@ public class TOPCAT {
 
     /**
      * Web service operation
-     * 
+     *
      * @throws TopcatException
      */
     @WebMethod(operationName = "getDownloadServiceURL")
@@ -150,7 +150,7 @@ public class TOPCAT {
 
     /**
      * Web service operation
-     * 
+     *
      * @throws TopcatException
      */
     @WebMethod(operationName = "getStatus")
@@ -179,7 +179,7 @@ public class TOPCAT {
 
     /**
      * Web service operation
-     * 
+     *
      */
     public String getVersion() {
         return VERSION;

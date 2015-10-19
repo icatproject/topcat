@@ -838,6 +838,7 @@ public class BrowsePanel extends Composite {
         // Create map of selected datasets
         // map: key = facility name, value = list of dataset ids
         HashMap<String, ArrayList<Long>> dsMap = new HashMap<String, ArrayList<Long>>();
+
         for (ICATNode node : selectedItems) {
             if (node.getNodeType() == ICATNodeType.DATASET) {
                 //check if dataset parent is already selected
@@ -858,6 +859,7 @@ public class BrowsePanel extends Composite {
                 }
 
                 idList.add(new Long(node.getDatasetId()));
+
                 dataSelectionMap.get(node.getFacility()).addDataset(new Long(node.getDatasetId()));
                 dsMap.put(node.getFacility(), idList);
             }
@@ -888,7 +890,22 @@ public class BrowsePanel extends Composite {
                     //get parent node
                     ICATNode parentNode = tree.getStore().getParent(node);
                     //check if node is a dataset
-                    if (parentNode.getNodeType() == ICATNodeType.DATASET) {
+                    if (parentNode.getNodeType() == ICATNodeType.DATAFILE) {
+                        //again get the parent to get the investigation
+                        ICATNode tempNode = tree.getStore().getParent(parentNode);
+
+                        if (tempNode.getNodeType() == ICATNodeType.DATASET) {
+                        	ICATNode tempNode1 = tree.getStore().getParent(tempNode);
+
+                        	if (tempNode1.getNodeType() == ICATNodeType.INVESTIGATION) {
+                                investigationNode = tempNode1;
+                            }
+                        }
+
+                        if (tempNode.getNodeType() == ICATNodeType.INVESTIGATION) {
+                            investigationNode = tempNode;
+                        }
+                    } else if (parentNode.getNodeType() == ICATNodeType.DATASET) {
                         //again get the parent to get the investigation
                         ICATNode tempNode = tree.getStore().getParent(parentNode);
 
@@ -916,6 +933,7 @@ public class BrowsePanel extends Composite {
                 }
 
                 idList.add(new Long(node.getDatafileId()));
+
                 dataSelectionMap.get(node.getFacility()).addDatafile(new Long(node.getDatafileId()));
                 dfMap.put(node.getFacility(), idList);
             }
