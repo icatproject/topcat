@@ -10,7 +10,7 @@
         var bc = this;
         var previousRoutes = RouteService.getPreviousRoutes($state);
         var sessionId = $stateParams.facilityName ? $sessionStorage.sessions[$stateParams.facilityName].sessionId : null;
-        var facility = Config.getFacilityByName(APP_CONFIG, $stateParams.facilityName);
+        var facility = $stateParams.facilityName ? Config.getFacilityByName(APP_CONFIG, $stateParams.facilityName) : null;
         var promises = [];
         var items = [];
 
