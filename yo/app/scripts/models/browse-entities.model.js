@@ -4,7 +4,7 @@ angular
     .module('angularApp')
     .service('BrowseEntitiesModel', BrowseEntitiesModel);
 
-BrowseEntitiesModel.$inject = ['$rootScope', '$translate', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', 'IdsManager', 'usSpinnerService', 'inform'];
+BrowseEntitiesModel.$inject = ['$rootScope', '$translate', '$q', 'APP_CONFIG', 'Config', 'RouteService', 'uiGridConstants', 'DataManager', '$timeout', '$state', 'Cart', 'IdsManager', 'usSpinnerService', 'inform'];
 
 //TODO infinite scroll not working as it should when results are filtered. This is because the last page is determined by total items
 //rather than the filtered total. We need to make another query to get the filtered total in order to make it work
@@ -12,7 +12,7 @@ BrowseEntitiesModel.$inject = ['$rootScope', '$translate', 'APP_CONFIG', 'Config
 //TODO sorting need fixing, ui-grid sorting is additive only rather than sorting by a single column. Queries are
 //unable to do this at the moment. Do we want single column sort or multiple column sort. ui-grid currently does not
 //support single column soting but users have submitted is as a feature request
-function BrowseEntitiesModel($rootScope,  $translate, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, usSpinnerService, inform){
+function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, RouteService, uiGridConstants, DataManager, $timeout, $state, Cart, IdsManager, usSpinnerService, inform){
     var self = this;
 
     /**
@@ -88,23 +88,28 @@ function BrowseEntitiesModel($rootScope,  $translate, APP_CONFIG, Config, RouteS
     function configToUIGridOptions(facility, currentEntityType) {
         var entityGridOptions = Config.getEntityBrowseGridOptionsByFacilityName(APP_CONFIG, facility.facilityName, currentEntityType);
 
+        //do the work of transposing
+        _.mapValues(entityGridOptions.columnDefs, transposeColumnDef);
+
         //add a Download column if enableDownload
         if(entityGridOptions.enableDownload){
-            entityGridOptions.columnDefs.push({
-                name : 'actions',
-                translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
-                enableFiltering: false,
-                enable: false,
-                enableColumnMenu: false,
-                enableSorting: false,
-                enableHiding: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><download-datafile></download-datafile></div>'
+            IdsManager.isTwoLevel(facility).then(function(isTwoLevel){
+                if(!isTwoLevel){
+                    entityGridOptions.columnDefs.push(transposeColumnDef({
+                        name : 'actions',
+                        translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
+                        enableFiltering: false,
+                        enable: false,
+                        enableColumnMenu: false,
+                        enableSorting: false,
+                        enableHiding: false,
+                        cellTemplate : '<div class="ui-grid-cell-contents"><download-datafile></download-datafile></div>'
+                    }));
+                }
             });
         }
 
-
-        //do the work of transposing
-        _.mapValues(entityGridOptions.columnDefs, function(value) {
+        function transposeColumnDef(value){
             //replace filter condition to one expected by ui-grid
             if (angular.isDefined(value.filter)) {
                 if (angular.isDefined(value.filter.condition) && angular.isString(value.filter.condition)) {
@@ -149,17 +154,16 @@ function BrowseEntitiesModel($rootScope,  $translate, APP_CONFIG, Config, RouteS
 
             //size column
             //apply only to investigations and datasets
-            if (currentEntityType === 'investigation' || currentEntityType === 'dataset') {
+            if(currentEntityType === 'investigation' || currentEntityType === 'dataset') {
                 if(angular.isDefined(value.field) && value.field === 'size') {
                     value.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}" spinner-key="spinner-size-{{row.uid}}" class="grid-cell-spinner"></span><span>{{ row.entity.size | bytes }}</span></div>';
                     value.enableSorting = false;
                     value.enableFiltering = false;
                 }
             }
-
             return value;
-        });
-
+        }
+        
         return entityGridOptions;
     }
 
