@@ -425,3 +425,20 @@ Example: See [Page](page.html#Page-Object-Example) object
 
 You can create simple html pages in TopCAT. Each page is defined using a page object which defines the url of the page. The html page content is defined in lang.json file.
 
+$h2 Property: _**serviceStatus**_ (Optional)
+
+Value : serviceStatus Object
+
+Example: 
+
+```
+"serviceStatus": {
+    "show": true,
+    "message": "<strong>Service status:</strong> Site is down for maintenance"
+}
+
+```
+
+  - **show* (boolean) - If true the message will be displayed, otherwise it is hidden.
+  - **message** (string) - The message you want to be displayed. This can include HTML markup.
+
