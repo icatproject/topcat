@@ -209,8 +209,14 @@
 
                     //sets the form to pristine state
                     form.$setPristine();
-                    //$state.go('home.browse.facility');
-                    $state.go(RouteUtils.getHomeRouteName());
+                    
+                    try {
+                        $state.go($sessionStorage.lastState.name, $sessionStorage.lastState.params);
+                    } catch(e) {
+                        //$state.go('home.browse.facility');
+                        $state.go(RouteUtils.getHomeRouteName());
+                    }
+                    $sessionStorage.lastState = null;
                 } else {
                     //@TODO is this code still necessary??
 
