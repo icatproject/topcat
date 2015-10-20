@@ -5,3 +5,4 @@ dist
 bower_components
 yo/*.html
 npm-debug.log
+app/config/topcat_dev.json

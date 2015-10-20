@@ -14,8 +14,10 @@
 
     app.controller('ServiceStatusController', ['APP_CONFIG', function(APP_CONFIG){
         var serviceStatus = APP_CONFIG.site.serviceStatus;
-        this.show = serviceStatus.show;
-        this.message = serviceStatus.message;
+        if(serviceStatus){
+            this.show = serviceStatus.show;
+            this.message = serviceStatus.message;
+        }
 
         this.close = function(){
             this.show = false;
