@@ -28,6 +28,15 @@ if arg == "INSTALL":
 
         topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "mail.enable"])
 
+        if not os.path.isfile("topcat.json"):
+            abort("topcat.json not found.")
+
+        if not os.path.isfile("lang.json"):
+            abort("lang.json not found")
+
+        if not os.path.isfile("topcat.css"):
+            abort("topcat.css not found")
+
         if not actions.configFileExists(topcatProperties.get("file.directory")):
             abort("Please create directory " + topcatProperties.get("file.directory") + ". If the path is relative, the directory will be relative to the glassfish domain config directory as specified in topcat-setup.properties")
 
@@ -60,5 +69,3 @@ else:  # UNINSTALL
 
     except Exception, e:
         abort(str(e))
-
-
