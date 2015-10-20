@@ -69,7 +69,9 @@
                 });
 
                 if (typeof rememberedFacility !== 'undefined') {
-                    vm.user.plugin = rememberedPlugin.plugin;
+                    if (typeof rememberedPlugin !== 'undefined') {
+                        vm.user.plugin = rememberedPlugin.plugin;
+                    }
                 }
             }
         }
