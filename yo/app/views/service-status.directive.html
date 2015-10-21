@@ -1,0 +1,15 @@
+<div ng-show="serviceStatusController.show">
+    <div class="row">
+        <div class="col-sm-4 col-sm-push-4">
+            <div class="alert alert-info">
+                <button 
+                	type="button" class="close"
+                	aria-label="Close"
+                	ng-click="serviceStatusController.close()">
+                	<span aria-hidden="true">&times;</span>
+                </button>
+                <span ng-bind-html="serviceStatusController.message"></span>
+            </div>
+        </div>
+    </div>
+</div>
