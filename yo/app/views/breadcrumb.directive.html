@@ -1,0 +1,9 @@
+
+<ul class="breadcrumb">
+	<li ng-repeat="item in bc.items">
+		<span ng-show="!$last">
+			<a ui-sref="{{item.route}}" translate="{{item.translate}}">{{item.title}}</a>
+		</span>
+		<span ng-show="$last" translate="{{item.translate}}"></span>
+	</li>
+</ul>

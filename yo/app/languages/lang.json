@@ -152,15 +152,13 @@
                 "DATAFILE_MOD_TIME": "Modified Time"
             },
             "ACTIONS":{
-                "NAME": "Actions"
-            }
-        },
-        "ACTIONS":{
-            "LINK":{
-                "DOWNLOAD":{
-                    "TEXT": "Download",
-                    "TOOLTIP": {
-                        "TEXT": "Click to download"
+                "NAME": "Actions",
+                "LINK":{
+                    "DOWNLOAD":{
+                        "TEXT": "Download",
+                        "TOOLTIP": {
+                            "TEXT": "Click to download"
+                        }
                     }
                 }
             }

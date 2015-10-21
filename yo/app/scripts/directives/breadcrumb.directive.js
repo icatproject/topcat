@@ -64,6 +64,12 @@
         
         
         $q.all(promises).then(function(){
+
+            items.push({
+                translate: 'ENTITIES.FACILITY.NAME',
+                route: 'home.browse.facility'
+            });
+
             _.each(previousRoutes, function(route){
                 var item = {
                     translate: 'ENTITIES.' + route.entity.toUpperCase() + '.NAME',
@@ -99,7 +105,7 @@
                 //@ reads the attribute value, = provides two-way binding, & works with functions
                 items: '@'
             },
-            template: '<ul class="breadcrumb"><li ng-repeat="item in bc.items"><span ng-show="! $last"><a ui-sref="{{ item.route }}">{{item.title}}</a></span><span ng-show="$last" translate="{{ item.translate }}"></span></li></ul>',
+            templateUrl: 'views/breadcrumb.directive.html',
             //templateUrl: 'views/breadcrumb.directive.html',
             controller: 'BreadCrumbController',
             controllerAs: 'bc'
