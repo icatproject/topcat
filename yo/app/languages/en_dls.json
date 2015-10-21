@@ -146,6 +146,17 @@
                 "CHECKSUM": "Checksum",
                 "DATAFILE_CREATE_TIME": "Create Time",
                 "DATAFILE_MOD_TIME": "Modified Time"
+            },
+            "ACTIONS":{
+                "NAME": "Actions",
+                "LINK":{
+                    "DOWNLOAD":{
+                        "TEXT": "Download",
+                        "TOOLTIP": {
+                            "TEXT": "Click to download"
+                        }
+                    }
+                }
             }
         },
         "INTERFACE" : {
