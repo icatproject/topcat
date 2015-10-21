@@ -210,13 +210,18 @@
                     //sets the form to pristine state
                     form.$setPristine();
                     
-                    try {
+                    var lastState = $sessionStorage.lastState;
+                    var sessions = $sessionStorage.sessions;
+                    var previouslyBrowsingFacility = lastState && lastState.name.match(/^home.browse.facility.facility-/);
+                    var isFacilitySession = lastState && sessions[lastState.params.facilityName] && sessions[lastState.params.facilityName].sessionId;
+
+                    //if previously browsing a facility make sure there is a session for that facility.
+                    if((previouslyBrowsingFacility && isFacilitySession) || !previouslyBrowsingFacility){
                         $state.go($sessionStorage.lastState.name, $sessionStorage.lastState.params);
-                    } catch(e) {
+                    } else {
                         //$state.go('home.browse.facility');
                         $state.go(RouteUtils.getHomeRouteName());
                     }
-                    $sessionStorage.lastState = null;
                 } else {
                     //@TODO is this code still necessary??
 
