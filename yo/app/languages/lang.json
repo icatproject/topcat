@@ -191,6 +191,11 @@
             "TOOLTIP" : {
                 "TEXT" : "Click to add/remove this item from cart"
             }
+        },
+        "BREADCRUMB": {
+            "ROOT": {
+                "NAME": "Top"
+            }
         }
     },
     "SEARCH" : {

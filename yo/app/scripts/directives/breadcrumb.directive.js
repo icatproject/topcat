@@ -66,21 +66,23 @@
         $q.all(promises).then(function(){
 
             items.push({
-                translate: 'ENTITIES.FACILITY.NAME',
+                translate: 'BROWSE.BREADCRUMB.ROOT.NAME',
                 route: 'home.browse.facility'
             });
 
-            _.each(previousRoutes, function(route){
+            _.each(previousRoutes, function(route, i){
                 var item = {
                     translate: 'ENTITIES.' + route.entity.toUpperCase() + '.NAME',
                     title: titles[route.entity]
                 };
 
                 //special case for facility
-                if (route.route === 'facility') {
-                    item.route = 'home.browse.facility('+ JSON.stringify($stateParams) + ')';
+                var nextRoute = previousRoutes[i + 1];
+
+                if(nextRoute){
+                    item.route = 'home.browse.facility.' + nextRoute.route + '('+ JSON.stringify($stateParams) + ')';
                 } else {
-                    item.route = 'home.browse.facility.' + route.route + '('+ JSON.stringify($stateParams) + ')';
+                    item.route = $state.current.name;
                 }
 
                 items.push(item);
