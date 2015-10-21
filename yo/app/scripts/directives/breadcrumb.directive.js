@@ -21,6 +21,26 @@
         if($stateParams.proposalId){
             titles.proposal = $stateParams.proposalId;
         }
+        if($stateParams.instrumentId){
+            promises.push(ICATService.getEntityById(
+                sessionId,
+                facility,
+                'Instrument',
+                $stateParams.instrumentId
+            ).success(function(data){
+                titles.instrument = data[0].Instrument.name;
+            }));
+        }
+        if($stateParams.facilityCycleId){
+            promises.push(ICATService.getEntityById(
+                sessionId,
+                facility,
+                'FacilityCycle',
+                $stateParams.facilityCycleId
+            ).success(function(data){
+                titles.facilityCycle = data[0].FacilityCycle.name;
+            }));
+        }
         if($stateParams.investigationId){
             promises.push(ICATService.getEntityById(
                 sessionId,
