@@ -64,11 +64,13 @@
         
         
         $q.all(promises).then(function(){
-
-            items.push({
-                translate: 'BROWSE.BREADCRUMB.ROOT.NAME',
-                route: 'home.browse.facility'
-            });
+            
+            if(_.keys(APP_CONFIG.facilities).length > 1){
+                items.push({
+                    translate: 'BROWSE.BREADCRUMB.ROOT.NAME',
+                    route: 'home.browse.facility'
+                });
+            }
 
             _.each(previousRoutes, function(route, i){
                 var item = {
