@@ -216,8 +216,8 @@
                     var isFacilitySession = lastState && sessions[lastState.params.facilityName] && sessions[lastState.params.facilityName].sessionId;
 
                     //if previously browsing a facility make sure there is a session for that facility.
-                    if((previouslyBrowsingFacility && isFacilitySession) || !previouslyBrowsingFacility){
-                        $state.go($sessionStorage.lastState.name, $sessionStorage.lastState.params);
+                    if(lastState && ((previouslyBrowsingFacility && isFacilitySession) || !previouslyBrowsingFacility)){
+                        $state.go(lastState.name, lastState.params);
                     } else {
                         //$state.go('home.browse.facility');
                         $state.go(RouteUtils.getHomeRouteName());
