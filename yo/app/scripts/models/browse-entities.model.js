@@ -59,9 +59,10 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
 
             makeGridNoUnselect(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
     
-            var columnDefs = scope.gridOptions.columnDefs;
-            applyFilters(columnDefs);
-            updateUrl(columnDefs);
+            self.columnDefs = scope.gridOptions.columnDefs;
+            restoreState();
+            applyFilters(self.columnDefs);
+            updateUrl(self.columnDefs);
             this.getPage();
     };
 
@@ -371,7 +372,9 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         });
     };
 
-    // private
+
+
+    // PRIVATE
 
     /**
      * Get the parent entities of the current entity type
@@ -733,6 +736,19 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         $state.go($state.current.name, {q: q}, {location: 'replace'});
     }
 
+
+    //restoreColumnDefsFilters? restoreColumnDefs
+    function restoreState(){
+        var q = self.stateParams.q;
+        if(q && q !== ''){
+            q = JSON.parse(q);
+        } else {
+            q = {};
+        }
+
+        console.log(q);
+
+    }
 
 }
 
