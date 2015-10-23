@@ -44,9 +44,6 @@
             opened: false
         };
 
-
-        BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams, $scope.gridOptions);
-
         /*$templateCache.put('ui-grid/selectionSelectAllButtons',
             '<div><span class="glyphicon glyphicon-shopping-cart" tooltip="Click [✓] in this column to add/remove items from cart" tooltip-append-to-body="true"></span></div>'
         );*/
@@ -85,9 +82,6 @@
                     BrowseEntitiesModel.rowSelectionChangedBatch(rows);
                 });
             };
-
-            //BrowseEntitiesModel.getPage();
-            BrowseEntitiesModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
         } else {
             $scope.firstPage = 1;
             $scope.lastPage = null;
@@ -127,7 +121,7 @@
                 });
             };
 
-            BrowseEntitiesModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
+            BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
         }
 
         $rootScope.$on('Cart:itemRemoved', function(){

@@ -58,6 +58,11 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             };
 
             makeGridNoUnselect(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
+    
+            var columnDefs = scope.gridOptions.columnDefs;
+            applyFilters(columnDefs);
+            updateUrl(columnDefs);
+            this.getPage();
     };
 
 
@@ -84,18 +89,6 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             self.gridOptions.infiniteScrollUp = true;
             self.gridOptions.infiniteScrollDown = true;
         }
-    };
-
-
-    //@TODO applyFilterAndGetPage() and filterChanged() should be combined and
-    //refactored as they work pretty much the same. filterChanged() uses
-    //gridApi.grid.colDef while applyFilterAndGetPage() uses gridOptions.columnDefs
-    //to build the search terms. There should be no reason why filterChanged() cannot
-    //use gridOptions.columnDefs. applyFilterAndGetPage() however, cannot use
-    //grid.colDef as doesn't seem possible to retrieve it.
-    this.applyFilterAndGetPage = function (columnsDefs) {
-        updateFiltering(columnsDefs);
-        this.getPage();
     };
 
     /**
@@ -327,13 +320,13 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
 
     //sort callback
     this.sortChanged = function(grid, sortColumns) {
-        updateSorting(sortColumns);
+        applySorters(sortColumns);
         updateUrl(grid.columns);
         this.getPage();
     };
 
     this.filterChanged = function (columns) {
-        updateFiltering(columns);
+        applyFilters(columns);
         updateUrl(columns);
         if(isAllFiltersValid(columns)){
             this.getPage();
@@ -694,7 +687,21 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         return out;
     }
 
-    function updatePaging(){
+    function applySorters(sortColumns){
+        if (sortColumns.length !== 0) {
+            sortColumns = [sortColumns[0]];
+            self.paginateParams.sortField = sortColumns[0].field;
+            self.paginateParams.order = sortColumns[0].sort.direction;
+        }
+        applyPaging();
+    }
+
+    function applyFilters(columns){
+        self.paginateParams.search = searchOptions(columns);
+        applyPaging();
+    }
+
+    function applyPaging(){
         //set parameters to go back to the first page if page type is scroll
         if (self.pagingType === 'scroll') {
             self.scope.firstPage = 1;
@@ -705,20 +712,6 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
                 self.scope.gridApi.infiniteScroll.resetScroll(self.scope.firstPage - 1 > 0, self.scope.currentPage + 1 < self.scope.lastPage);
             });
         }
-    }
-
-    function updateSorting(sortColumns){
-        if (sortColumns.length !== 0) {
-            sortColumns = [sortColumns[0]];
-            self.paginateParams.sortField = sortColumns[0].field;
-            self.paginateParams.order = sortColumns[0].sort.direction;
-        }
-        updatePaging();
-    }
-
-    function updateFiltering(columns){
-        self.paginateParams.search = searchOptions(columns);
-        updatePaging();
     }
 
     function updateUrl(columns){
