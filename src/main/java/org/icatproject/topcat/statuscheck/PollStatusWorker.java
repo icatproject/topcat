@@ -28,19 +28,22 @@ import org.icatproject.topcat.utils.PropertyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CheckStatusWorker {
-    private static final Logger logger = LoggerFactory.getLogger(CheckStatusWorker.class);
+public class PollStatusWorker {
+    private static final Logger logger = LoggerFactory.getLogger(PollStatusWorker.class);
 
     private String preparedId;
     private String filePath;
     private File file;
     private IdsClient ids;
     private DownloadRepository downloadRepository;
+    private PollBean pollBean;
     private List<Long> fileIds;
 
-    public CheckStatusWorker(String preparedId, DownloadRepository downloadRepository) throws IOException, InternalException, BadRequestException, NotFoundException, NotImplementedException {
+    public PollStatusWorker(String preparedId, DownloadRepository downloadRepository, PollBean pollBean) throws IOException, InternalException, BadRequestException, NotFoundException, NotImplementedException {
         this.preparedId = preparedId;
         this.downloadRepository = downloadRepository;
+        this.pollBean = pollBean;
+
         setFileIds(new ArrayList<Long>());
 
         Download download = downloadRepository.getDownloadsByPreparedId(preparedId);
@@ -156,6 +159,7 @@ public class CheckStatusWorker {
             params.put("preparedId", this.preparedId);
 
             downloadRepository.setCompleteByPreparedId(params);
+            pollBean.remove(this.preparedId);
 
             File file = new File(this.filePath);
             boolean result = false;

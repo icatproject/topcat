@@ -2,6 +2,7 @@ package org.icatproject.topcat.web.rest;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -365,6 +366,7 @@ public class UserResource {
                 download.setStatus(DownloadStatus.RESTORING);
             } else {
                 download.setStatus(DownloadStatus.COMPLETE);
+                download.setCompletedAt(new Date());
             }
 
             try {

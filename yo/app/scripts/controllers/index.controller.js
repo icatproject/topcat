@@ -44,7 +44,9 @@
         };
 
         vm.getUserNameByFacilityName = function(facilityName) {
-            return $sessionStorage.sessions[facilityName].userName;
+            if (typeof $sessionStorage.sessions[facilityName] !== 'undefined') {
+                return $sessionStorage.sessions[facilityName].userName;
+            }
         };
 
         vm.getFacilityTitleByFacilityName = function(facilityName) {

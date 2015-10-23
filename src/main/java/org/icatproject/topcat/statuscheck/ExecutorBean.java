@@ -1,5 +1,7 @@
 package org.icatproject.topcat.statuscheck;
 
+import java.util.concurrent.Future;
+
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,11 +18,19 @@ public class ExecutorBean {
     @EJB
     private DownloadRepository downloadRepository;
 
+    @EJB
+    private PollBean pollBean;
+
+    @EJB
+    private PollFutureBean pollFutureBean;
+
     public ExecutorBean() {
     }
 
     public void executeAsync(String preparedId) {
-        this.executorService.submit(new CheckStatusTask(preparedId, downloadRepository));
+        Future<?> future = this.executorService.submit(new PollStatusTask(preparedId, downloadRepository, pollBean));
+
+        pollFutureBean.add(preparedId, future);
     }
 }
 

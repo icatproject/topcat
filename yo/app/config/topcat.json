@@ -1,8 +1,12 @@
 {
     "site": {
-        "topcatApiPath": "https://topcat-dev.esc.rl.ac.uk/api/v1",
+        "topcatApiPath": "https://localhost:8181/api/v1",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
+        "serviceStatus": {
+            "show": true,
+            "message": "<p><strong>Service status:</strong> Site will go down for maintenance on 01 Novemember 2015 at 09:00.</p> We apologies for any inconvenience caused.</p>"
+        },
         "paging" : {
             "pagingType": "scroll",
             "paginationNumberOfRows": 10,
@@ -15,10 +19,6 @@
             ],
             "scrollPageSize": 50,
             "scrollRowFromEnd": 10
-        },
-        "serviceStatus": {
-            "show": false,
-            "message": "<strong>Service status:</strong> Site is down for maintenance"
         },
         "facilitiesGridOptions": {
             "enableFiltering": true,

@@ -86,6 +86,10 @@ public class Download implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedAt;
 
+    @Column(name = "COMPLETED_AT")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date completedAt;
+
     public Download() {
     }
 
@@ -214,6 +218,14 @@ public class Download implements Serializable {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public Date getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Date completedAt) {
+        this.completedAt = completedAt;
     }
 
     public String toString() {

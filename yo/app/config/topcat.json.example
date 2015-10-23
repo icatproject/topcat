@@ -3,6 +3,10 @@
         "topcatApiPath": "api/v1",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
+        "serviceStatus": {
+            "show": false,
+            "message": "<p><strong>Service status:</strong> Site will go down for maintenance on 01 Novemember 2015 at 09:00.</p> We apologies for any inconvenience caused.</p>"
+        },
         "paging" : {
             "pagingType": "scroll",
             "paginationNumberOfRows": 10,

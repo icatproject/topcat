@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -26,7 +27,9 @@ import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
-import org.icatproject.topcat.statuscheck.ExecuteCheck;
+import org.icatproject.topcat.statuscheck.ExecutePoll;
+import org.icatproject.topcat.statuscheck.PollBean;
+import org.icatproject.topcat.statuscheck.PollFutureBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +50,13 @@ public class AdminResource {
     private ICATClientBean icatClientService;
 
     @EJB
-    private ExecuteCheck executeCheck;
+    private ExecutePoll executePoll;
+
+    @EJB
+    private PollBean pollBean;
+
+    @EJB
+    private PollFutureBean pollFutureBean;
 
 
     @GET
@@ -109,15 +118,76 @@ public class AdminResource {
 
 
     @GET
-    @Path("/checkStatus")
+    @Path("/poll/run")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response checkStatus(
-            @QueryParam("facilityName") String facilityName,
-            @QueryParam("transport") String transport,
-            @QueryParam("preparedId") String preparedId) {
-        logger.info("checkStatus() called");
+    public Response runAllPoll() {
+        logger.info("runAllPoll() called");
 
-        int count = executeCheck.run();
+        int count = executePoll.run();
+
+        LongValue value = new LongValue(new Long(count));
+
+        return Response.ok().entity(value).build();
+    }
+
+    @GET
+    @Path("/poll/run/{preparedId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response runOnePoll(@PathParam("preparedId") String preparedId) {
+        logger.info("runOnePoll() called");
+
+        int count = executePoll.runByPreparedId(preparedId);
+
+        LongValue value = new LongValue(new Long(count));
+
+        return Response.ok().entity(value).build();
+    }
+
+    @GET
+    @Path("/poll/list")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getCurrentPoll() {
+        logger.info("getCurrentPoll() called");
+
+        List<StringValue> values = new ArrayList<StringValue>();
+
+        List<String> preparedIds = pollBean.getAll();
+
+        for (String preparedId : preparedIds) {
+            logger.info("getCurrentPoll() preparedId: " + preparedId);
+            StringValue value = new StringValue(preparedId);
+
+            values.add(value);
+        }
+
+        return Response.ok().entity(new GenericEntity<List<StringValue>>(values){}).build();
+    }
+
+    @DELETE
+    @Path("/poll/run")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response removeAllPoll() {
+        logger.info("removeAllPoll() called");
+
+        int count = pollFutureBean.cancelAll();
+
+        logger.info(count + " poll task cancelled");
+
+        LongValue value = new LongValue(new Long(count));
+
+        return Response.ok().entity(value).build();
+    }
+
+
+    @DELETE
+    @Path("/poll/run/{preparedId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response removeOnePoll(@PathParam("preparedId") String preparedId) {
+        logger.info("removeOnePoll() called");
+
+        int count = pollFutureBean.cancelByPreparedId(preparedId);
+
+        logger.info(count + " poll task cancelled for preparedId: " + preparedId);
 
         LongValue value = new LongValue(new Long(count));
 
