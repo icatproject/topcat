@@ -656,30 +656,45 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
 
     this.filterChanged = function (columns) {
         var sortOptions = [];
+        var q = {};
 
-        _.each(columns, function(value, index) {
+        console.log('columns:');
+        console.log(columns);
+
+        _.each(columns, function(column) {
             var searchTerms = [];
             var isValid = true;
 
             var columnType = 'string';
-            if (typeof columns[index].colDef.type !== 'undefined') {
-                columnType = columns[index].colDef.type;
+            if (typeof column.colDef.type !== 'undefined') {
+                columnType = column.colDef.type;
             }
 
-            if (typeof columns[index].filters !== 'undefined') {
+            var filters = [];
+            if(column.filter && column.filter.term && column.filter.term !== ''){
+                filters.push(column.filter);
+            } else if(column.filters){
+                _.each(column.filters, function(filter){
+                    if(filter.term && filter.term !== ''){
+                        filters.push(filter);
+                    }
+                });
+            }
+
+            if (filters.length > 0){
                 if (columnType === 'string') {
-                    searchTerms.push(columns[index].filters[0].term);
+                    searchTerms.push(filters[0].term);
                 }
 
                 if (columnType === 'date') {
                     //determine if 2 filters was configured
-                    var filterCount = columns[index].filters.length;
+                    var filterCount = filters.length;
 
                     if (filterCount === 1) {
-                        searchTerms.push(columns[index].filters[0].term);
+                        searchTerms.push(filters[0].term);
 
                         //validate term entered is a valid date before requesting page
-                        _.each(columns[index].filters, function(filter) {
+                        _.each(filters, function(filter) {
                             if (typeof filter.term !== 'undefined' && filter.term !== null && filter.term.trim() !== '') {
                                 if (filter.term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                     isValid = false;
@@ -688,37 +703,48 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
                         });
                     } else if (filterCount > 1) {
                         //only allow 2 filters and ignore the rest if defined
-                        searchTerms.push(columns[index].filters[0].term);
-                        searchTerms.push(columns[index].filters[1].term);
+                        searchTerms.push(filters[0].term);
+                        searchTerms.push(filters[1].term);
 
                         //validate term entered is a valid date before requesting page
-                        if ((typeof columns[index].filters[0].term !== 'undefined') && (typeof columns[index].filters[1].term !== 'undefined')) {
-                            if (typeof columns[index].filters[0].term !== 'undefined' && columns[index].filters[0].term !== null && columns[index].filters[0].term.trim() !== '') {
-                                if (columns[index].filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                        if ((typeof filters[0].term !== 'undefined') && (typeof filters[1].term !== 'undefined')) {
+                            if (typeof filters[0].term !== 'undefined' && filters[0].term !== null && filters[0].term.trim() !== '') {
+                                if (filters[0].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                     isValid = false;
                                 }
                             }
 
-                            if (typeof columns[index].filters[1].term !== 'undefined' && columns[index].filters[1].term !== null && columns[index].filters[1].term.trim() !== '') {
-                                if (columns[index].filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
+                            if (typeof filters[1].term !== 'undefined' && filters[1].term !== null && filters[1].term.trim() !== '') {
+                                if (filters[1].term.match(/\d{4}\-\d{2}\-\d{2}/) === null ) {
                                     isValid = false;
                                 }
                             }
                         } else
 
-                        if (! ((typeof columns[index].filters[0].term === 'undefined') && (typeof columns[index].filters[1].term === 'undefined'))) {
+                        if (! ((typeof filters[0].term === 'undefined') && (typeof filters[1].term === 'undefined'))) {
                             isValid = false;
                         }
                     }
                 }
 
                 sortOptions.push({
-                    field: columns[index].field,
+                    field: column.field,
                     search: searchTerms,
                     type: columnType,
                     isValid: isValid
                 });
+
             }
+
+            var sortDirection = column.sort && column.sort.direction ? column.sort.direction : 'asc';
+
+            if(searchTerms.length > 0 || sortDirection !== 'asc'){
+                q[column.field] = {
+                    terms: searchTerms,
+                    sort: column.sort.direction
+                };
+            }
+
         });
 
         self.paginateParams.search = sortOptions;
@@ -746,6 +772,12 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         if (isAllValid === true) {
             self.getPage();
         }
+
+        q = _.keys(q).length > 0 ? JSON.stringify(q) : null;
+
+        console.log('q:');
+        console.log(q);
+        $state.go($state.current.name, {q: q}, {location: 'replace'});
     };
 
     this.rowSelectionChanged = function(row){
@@ -784,6 +816,14 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             self.rowSelectionChanged(row);
         });
 
+    };
+
+    this.getFilterParams = function(){
+        //will return a hash that can be merged into the url    
+    };
+
+    this.setFilterParams = function(){
+        //will take a hash that can be used to update the filterOptions
     };
 }
 

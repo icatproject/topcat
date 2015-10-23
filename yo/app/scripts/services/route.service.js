@@ -67,6 +67,8 @@
                     }
                 });
 
+                url += '?q';
+
                 routes.push({
                     route: getRouteSegments(val),
                     url: url,

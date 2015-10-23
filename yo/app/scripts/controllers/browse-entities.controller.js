@@ -55,6 +55,7 @@
             '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" tooltip="' + $translate.instant('BROWSE.SELECTOR.TOOLTIP.TEXT') + '" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
         );
 
+
         if (pagingType === 'page') {
             $scope.gridOptions.onRegisterApi = function(gridApi) {
                 $scope.gridApi = gridApi;
