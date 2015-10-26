@@ -365,6 +365,7 @@
 
                 def.resolve(result);
             }, function(error){
+                console.log(error);
                 def.reject('Failed to retrieve data: ' + getErrorMessage(error));
                 //throw new MyException('Failed to retrieve data from server');
             });
@@ -834,6 +835,8 @@
 
             //merge $stateparams with options
             _.extend(options, $stateParams);
+            console.log('getData options');
+            console.log(options);
 
             var routeSegment = RouteService.getLastTwoSegment(currentRouteSegment);
 

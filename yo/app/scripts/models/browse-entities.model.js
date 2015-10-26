@@ -33,6 +33,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             self.paginationPageSizes = Config.getPaginationPageSizes(APP_CONFIG, self.pagingType); //the number of rows for grid
             self.gridOptions = scope.gridOptions;
             self.hasSizeField = hasField(self.options, 'size');
+            self.pagePromiseCanceler = null;
 
             self.setGridOptions(self.scope.gridOptions);
 
@@ -58,12 +59,12 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             };
 
             makeGridNoUnselect(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
-    
-            self.columnDefs = scope.gridOptions.columnDefs;
-            restoreState(self.columnDefs);
-            applyFilters(self.columnDefs);
-            applySorters(extractSortColumns(self.columnDefs));
-            updateUrl(self.columnDefs);
+            
+            var columnDefs = scope.gridOptions.columnDefs;
+            restoreState(columnDefs);
+            applyFilters(columnDefs);
+            applySorters(extractSortColumns(columnDefs));
+            updateUrl(columnDefs);
             this.getPage();
     };
 
@@ -99,7 +100,22 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
      * @return {[type]} [description]
      */
     this.getPage = function() {
-        DataManager.getData(self.currentRouteSegment, self.facility.facilityName, self.sessions, self.stateParams, self.paginateParams).then(function(data){
+        if(self.pagePromiseCanceler){
+            self.pagePromiseCanceler.resolve();
+        }
+
+        self.pagePromiseCanceler = $q.defer();
+
+        var params = _.merge(self.paginateParams, {
+            canceler: self.pagePromiseCanceler.promise
+        });
+
+        DataManager.getData(self.currentRouteSegment, self.facility.facilityName, self.sessions, self.stateParams, params).then(function(data){
+            self.pagePromiseCanceler = null;
+            if(!data.data){
+                return;
+            }
+
             self.gridOptions.data = data.data;
             self.gridOptions.totalItems = data.totalItems;
 
@@ -161,7 +177,8 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             //TODO
             inform.add(error, {
                 'ttl': 4000,
-                'type': 'danger'
+                'type': 'danger',
+
             });
         });
     };
@@ -751,9 +768,12 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         } else {
             q = {};
         }
+
+        console.log('columns', columns);
         
         _.each(columns, function(column){
             var filterState = q[column.field];
+            console.log('filter state');
             if(filterState){
                 if(filterState.sort){
                     if(!column.sort){
@@ -761,12 +781,15 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
                     }
                     column.sort.direction = filterState.sort;
                 }
+                console.log('checking ' + column.field + ' terms');
                 if(filterState.terms && filterState.terms.length === 1 && column.filter){
+                    console.log('set ' + column.field + ' terms');
                     column.filter.term = filterState.terms[0];
                 } else if(column.filters) {
                     _.each(column.filters, function(filter, i){
                         var term = filterState.terms[i];
                         if(term){
+                            console.log('set ' + column.field + ' terms');
                             filter.term = term;
                         }
                     });
