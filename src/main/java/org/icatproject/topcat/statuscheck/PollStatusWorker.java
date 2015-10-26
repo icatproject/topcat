@@ -94,16 +94,14 @@ public class PollStatusWorker {
 
 
     public List<Long> getFileIdsFromIDS() throws InternalException, BadRequestException, NotFoundException, NotImplementedException {
-        logger.info("getting datafiles for " + preparedId);
+        logger.info("getting datafileIds for " + preparedId);
 
         List<Long> fileIds = ids.getDatafileIds(preparedId);
 
-        if (this.fileIds == null || this.fileIds.isEmpty()) {
+        if (fileIds == null || fileIds.isEmpty()) {
             logger.info("returned list is empty");
         } else {
-            for(Long id : fileIds) {
-                logger.info("id:" + id);
-            }
+            logger.info(preparedId + " has " + fileIds.size() + " files");
         }
 
         return fileIds;
@@ -136,24 +134,26 @@ public class PollStatusWorker {
             Status status = ids.getStatus(null, dataSelection);
 
             if (status.equals(Status.ONLINE)) {
-                logger.info(fileId + " is online, removing");
+                logger.info(fileId + " is ONLINE for " + this.preparedId);
                 i.remove();
             } else if (status.equals(Status.ARCHIVED)) {
-                logger.info("Is archive, calling isPrepared in 5 minutes for preparedId " + this.preparedId);
+                logger.info(fileId + " is ARCHIVED for  "+ this.preparedId + " calling isPrepared in 5 minutes");
                 Thread.sleep(300000);
                 ids.isPrepared(this.preparedId);
-                logger.info("isPrepared called sleeping for 5 minutes");
+                logger.info("isPrepared called for " + this.preparedId + ". Sleeping for 5 minutes");
                 Thread.sleep(300000);
                 break;
+            } else if (status.equals(Status.RESTORING)){
+                logger.info(fileId + " is RESTORING for " + this.preparedId + ". Breaking from loop");
+                break;
             } else {
-                //if not online as false and exit the loop
-                logger.info(fileId + " not online, breaking from loop");
+                logger.info(fileId + " is UNKNOWN for " + this.preparedId + ". Breaking from loop");
                 break;
             }
         }
 
         if (fileIds.isEmpty()) {
-            logger.info("is empty, marking download as available");
+            logger.info(this.preparedId + " file is empty, marking download as available");
 
             Map<String, String> params = new HashMap<String, String>();
             params.put("preparedId", this.preparedId);
@@ -165,7 +165,7 @@ public class PollStatusWorker {
             boolean result = false;
 
             if (file.exists()) {
-                logger.info("preparedId " + this.preparedId + " is available, deleting file" + this.filePath);
+                logger.info(this.preparedId + " is available, deleting file" + this.filePath);
                 result = file.delete();
             }
 

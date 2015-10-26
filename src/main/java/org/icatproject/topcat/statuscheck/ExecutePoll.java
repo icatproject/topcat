@@ -51,11 +51,11 @@ public class ExecutePoll {
             for(Download download : downloads) {
                 //only execute if not already in poll list
                 if (! pollBean.has(download.getPreparedId())) {
-                    logger.debug("Run status check for preparedId " + download.getPreparedId() + " for user " + download.getUserName() + " with the download name of " + download.getFileName());
+                    logger.info("Run status check for preparedId " + download.getPreparedId() + " for user " + download.getUserName() + " with the download name of " + download.getFileName());
                     executorBean.executeAsync(download.getPreparedId());
                     count++;
                 } else {
-                    logger.debug("preparedId " + download.getPreparedId() + " is already polling... skip polling");
+                    logger.info("preparedId " + download.getPreparedId() + " is already polling... skip polling");
                 }
 
             }
@@ -87,11 +87,11 @@ public class ExecutePoll {
 
         //only execute if not already in poll list
         if (! pollBean.has(download.getPreparedId())) {
-            logger.debug("Run status poll for preparedId " + download.getPreparedId() + " for user " + download.getUserName() + " with the download name of " + download.getFileName());
+            logger.info("Run status poll for preparedId " + download.getPreparedId() + " for user " + download.getUserName() + " with the download name of " + download.getFileName());
             executorBean.executeAsync(download.getPreparedId());
             count++;
         } else {
-            logger.debug("preparedId " + download.getPreparedId() + " is already polling... skip polling");
+            logger.info("preparedId " + download.getPreparedId() + " is already polling... skip polling");
         }
 
         return count;

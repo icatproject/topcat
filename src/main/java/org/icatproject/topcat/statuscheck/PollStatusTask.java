@@ -30,7 +30,7 @@ public class PollStatusTask implements Runnable {
 
     @Override
     public void run() {
-        logger.debug("New thread running...");
+        logger.info("New poll starting...");
 
         pollBean.add(preparedId);
 
@@ -39,7 +39,7 @@ public class PollStatusTask implements Runnable {
         do {
             try {
                 //wait a minute to give ids some time to process
-                logger.debug("Waiting 60 seconds before checking....");
+                logger.info("Waiting 60 seconds before checking....");
                 Thread.sleep(60000);
                 PollStatusWorker worker = new PollStatusWorker(preparedId, downloadRepository, pollBean);
 
@@ -48,7 +48,7 @@ public class PollStatusTask implements Runnable {
 
                 //wait 10 minutes for the next try
                 if (status == false) {
-                    logger.debug("Waiting 10 minutes before rechecking....");
+                    logger.info("Waiting 10 minutes before rechecking....");
                     Thread.sleep(600000);
                 }
             } catch (InterruptedException | BadRequestException | NotFoundException | InsufficientPrivilegesException | InternalException | NotImplementedException | IOException e) {
