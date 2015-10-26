@@ -768,12 +768,9 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         } else {
             q = {};
         }
-
-        console.log('columns', columns);
         
         _.each(columns, function(column){
             var filterState = q[column.field];
-            console.log('filter state');
             if(filterState){
                 if(filterState.sort){
                     if(!column.sort){
@@ -781,15 +778,12 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
                     }
                     column.sort.direction = filterState.sort;
                 }
-                console.log('checking ' + column.field + ' terms');
                 if(filterState.terms && filterState.terms.length === 1 && column.filter){
-                    console.log('set ' + column.field + ' terms');
                     column.filter.term = filterState.terms[0];
                 } else if(column.filters) {
                     _.each(column.filters, function(filter, i){
                         var term = filterState.terms[i];
                         if(term){
-                            console.log('set ' + column.field + ' terms');
                             filter.term = term;
                         }
                     });
