@@ -59,13 +59,15 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             };
 
             makeGridNoUnselect(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
-            
+
             var columnDefs = scope.gridOptions.columnDefs;
-            restoreState(columnDefs);
-            applyFilters(columnDefs);
-            applySorters(extractSortColumns(columnDefs));
-            updateUrl(columnDefs);
-            this.getPage();
+            restoreState().then(function(){ 
+                saveState();
+                applyFilters(columnDefs);
+                applySorters(extractSortColumns(columnDefs));
+                self.getPage();
+            });
+            
     };
 
 
@@ -340,13 +342,13 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
     //sort callback
     this.sortChanged = function(grid, sortColumns) {
         applySorters(sortColumns);
-        updateUrl(grid.columns);
+        saveState();
         this.getPage();
     };
 
     this.filterChanged = function (columns) {
         applyFilters(columns);
-        updateUrl(columns);
+        saveState();
         if(isAllFiltersValid(columns)){
             this.getPage();
         }
@@ -735,59 +737,17 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         }
     }
 
-    function updateUrl(columns){
-        var q = {};
-
-        _.each(columns, function(column){
-            var sortDirection = column.sort && column.sort.direction ? column.sort.direction : 'asc';
-            var searchTerms = extractColumnSearchOption(column).search;
-            var isSearchTerms = searchTerms && searchTerms.length > 0;
-            var isSortDirection = sortDirection !== 'asc';
-            if(isSearchTerms || isSortDirection){
-                var filterState = {};
-                if(isSearchTerms){
-                    filterState.terms = searchTerms;
-                }
-                if(isSortDirection){
-                    filterState.sort = sortDirection;
-                }
-                q[column.field] = filterState;
-            }
-        });
-
-        q = _.keys(q).length > 0 ? JSON.stringify(q) : null;
-
-        $state.go($state.current.name, {q: q}, {location: 'replace'});
+    function saveState(){
+        var state = JSON.stringify(self.scope.gridApi.saveState.save());
+        $state.go($state.current.name, {state: state}, {location: 'replace'});
     }
 
-
-    function restoreState(columns){
-        var q = self.stateParams.q;
-        if(q && q !== ''){
-            q = JSON.parse(q);
-        } else {
-            q = {};
-        }
-        
-        _.each(columns, function(column){
-            var filterState = q[column.field];
-            if(filterState){
-                if(filterState.sort){
-                    if(!column.sort){
-                        column.sort = {};
-                    }
-                    column.sort.direction = filterState.sort;
-                }
-                if(filterState.terms && filterState.terms.length === 1 && column.filter){
-                    column.filter.term = filterState.terms[0];
-                } else if(column.filters) {
-                    _.each(column.filters, function(filter, i){
-                        var term = filterState.terms[i];
-                        if(term){
-                            filter.term = term;
-                        }
-                    });
-                }
+    function restoreState(){
+        return $timeout(function() {
+            var state = self.stateParams.state;
+            if(state && state !== ''){
+                state = JSON.parse(state);
+                self.scope.gridApi.saveState.restore(self.scope, state);
             }
         });
     }

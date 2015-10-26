@@ -67,7 +67,7 @@
                     }
                 });
 
-                url += '?q';
+                url += '?state';
 
                 routes.push({
                     route: getRouteSegments(val),

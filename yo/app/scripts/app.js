@@ -53,6 +53,7 @@
             'ui.grid.pagination',
             'ui.grid.infiniteScroll',
             'ui.grid.selection',
+            'ui.grid.saveState',
             'bytes',
             'angularSpinner',
             'ng.deviceDetector',

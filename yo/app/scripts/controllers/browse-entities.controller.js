@@ -21,6 +21,8 @@
 
         $scope.isEmpty = false;
 
+        console.log('$scope', $scope);
+
         $scope.gridOptions = {
             appScopeProvider: $scope
         };
@@ -81,6 +83,8 @@
                 $scope.gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
                     BrowseEntitiesModel.rowSelectionChangedBatch(rows);
                 });
+
+                BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
             };
         } else {
             $scope.firstPage = 1;
@@ -119,9 +123,11 @@
                 $scope.gridApi.selection.on.rowSelectionChangedBatch ($scope, function(rows){
                     BrowseEntitiesModel.rowSelectionChangedBatch(rows);
                 });
+
+                BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
             };
 
-            BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
+           
         }
 
         $rootScope.$on('Cart:itemRemoved', function(){
