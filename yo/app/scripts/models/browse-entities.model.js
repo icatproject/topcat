@@ -760,17 +760,15 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             * pageSize is referenced in multiple places - ideally this should be one.
             * pageNumber gets referenced in multiple places.
             * maybe we should get rid of the paginate params feature and just reference gridOptions?
-            
+
 
     */
     function saveState(){
-        var uiGridState = JSON.stringify(_.merge(self.scope.gridApi.saveState.save(), {
+        var uiGridState = JSON.stringify({
+            columns: self.scope.gridApi.saveState.save().columns,
             pageSize: self.paginateParams.pageSize,
             pageNumber: self.paginateParams.pageNumber ? self.paginateParams.pageNumber : 1
-        }));
-
-        console.log('self.scope', self.scope);
-
+        });
         $state.go($state.current.name, {uiGridState: uiGridState}, {location: 'replace'});
     }
 
