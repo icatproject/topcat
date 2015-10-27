@@ -20,9 +20,7 @@
         $scope.isScroll = (pagingType === 'scroll') ? true : false;
 
         $scope.isEmpty = false;
-
-        console.log('$scope', $scope);
-
+        
         $scope.gridOptions = {
             appScopeProvider: $scope
         };

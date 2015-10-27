@@ -61,7 +61,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             makeGridNoUnselect(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
 
             var columnDefs = scope.gridOptions.columnDefs;
-            restoreState().then(function(){ 
+            restoreState().then(function(){
                 saveState();
                 applyFilters(columnDefs);
                 applySorters(extractSortColumns(columnDefs));
@@ -82,7 +82,20 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             enableRowHeaderSelection: self.enableSelection(),
             enableSelectAll: false,
             multiSelect: true,
-            rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
+            rowTemplate: '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>',
+            saveWidths: false,
+            saveOrder: false,
+            saveScroll: false,
+            saveFocus: false,
+            saveVisible: false,
+            saveSort: true,
+            saveFilter: true,
+            savePinning: false,
+            saveGrouping: false,
+            saveGroupingExpandedStates: false,
+            saveTreeView: false,
+            saveSelection: false
+
         });
 
         if (self.pagingType === 'page') {
@@ -317,6 +330,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
 
         self.paginateParams.start = (self.paginateParams.pageNumber - 1) * self.paginateParams.pageSize;
         self.paginateParams.numRows = self.paginateParams.pageSize;
+        saveState();
         self.getPage();
     };
 
@@ -468,6 +482,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
      */
     function configToUIGridOptions(facility, currentEntityType) {
         var entityGridOptions = Config.getEntityBrowseGridOptionsByFacilityName(APP_CONFIG, facility.facilityName, currentEntityType);
+
         var downloadColumn = {
             name : 'actions',
             visible: false,
@@ -547,7 +562,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             }
             return value;
         }
-        
+
         return entityGridOptions;
     }
 
@@ -737,17 +752,43 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         }
     }
 
+    /*
+        #todo
+
+        Both saveState and restoreState could do with some refactoring.
+
+            * pageSize is referenced in multiple places - ideally this should be one.
+            * pageNumber gets referenced in multiple places.
+            * maybe we should get rid of the paginate params feature and just reference gridOptions?
+            
+
+    */
     function saveState(){
-        var state = JSON.stringify(self.scope.gridApi.saveState.save());
-        $state.go($state.current.name, {state: state}, {location: 'replace'});
+        var uiGridState = JSON.stringify(_.merge(self.scope.gridApi.saveState.save(), {
+            pageSize: self.paginateParams.pageSize,
+            pageNumber: self.paginateParams.pageNumber ? self.paginateParams.pageNumber : 1
+        }));
+
+        console.log('self.scope', self.scope);
+
+        $state.go($state.current.name, {uiGridState: uiGridState}, {location: 'replace'});
     }
 
     function restoreState(){
         return $timeout(function() {
-            var state = self.stateParams.state;
-            if(state && state !== ''){
-                state = JSON.parse(state);
-                self.scope.gridApi.saveState.restore(self.scope, state);
+            var uiGridState = self.stateParams.uiGridState;
+            if(uiGridState && uiGridState !== ''){
+                uiGridState = JSON.parse(uiGridState);
+                self.pageSize = uiGridState.pageSize;
+                self.paginateParams.pageSize = uiGridState.pageSize;
+                self.paginateParams.pageNumber = uiGridState.pageNumber;
+                self.paginateParams.start = (self.paginateParams.pageNumber - 1) * self.paginateParams.pageSize;
+                self.paginateParams.numRows = self.paginateParams.pageSize;
+                self.gridOptions.paginationCurrentPage = self.paginateParams.pageNumber;
+                self.gridOptions.paginationPageSize = self.paginateParams.pageSize;
+                delete uiGridState.pageSize;
+                delete uiGridState.pageNumber;
+                self.scope.gridApi.saveState.restore(self.scope, uiGridState);
             }
         });
     }
