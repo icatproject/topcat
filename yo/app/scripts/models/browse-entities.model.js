@@ -60,11 +60,11 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
 
             makeGridNoUnselect(self.facility, self.currentEntityType, self.structure, self.stateParams, self.gridOptions);
 
-            var columnDefs = scope.gridOptions.columnDefs;
             restoreState().then(function(){
+                var columns = scope.gridApi.grid.columns;
                 saveState();
-                applyFilters(columnDefs);
-                applySorters(extractSortColumns(columnDefs));
+                applyFilters(columns);
+                applySorters(columns);
                 self.getPage();
             });
             
@@ -725,11 +725,12 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         return out;
     }
 
-    function applySorters(sortColumns){
-        if (sortColumns.length !== 0) {
-            sortColumns = [sortColumns[0]];
-            self.paginateParams.sortField = sortColumns[0].field;
-            self.paginateParams.order = sortColumns[0].sort.direction;
+    function applySorters(columns){
+        columns = _.select(columns, function(column){ return column.sort && column.sort.direction; });
+        if (columns.length !== 0) {
+            columns = [columns[0]];
+            self.paginateParams.sortField = columns[0].field;
+            self.paginateParams.order = columns[0].sort.direction;
         }
         applyPaging();
     }
@@ -790,12 +791,5 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             }
         });
     }
-
-    function extractSortColumns(columns){
-        return _.select(columns, function(column){
-            return column.sort && column.sort.direction;
-        });
-    }
-
 }
 
