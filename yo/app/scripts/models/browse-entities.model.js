@@ -760,7 +760,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
 
             * pageSize is referenced in multiple places - ideally this should be one.
             * pageNumber gets referenced in multiple places.
-            * maybe we should get rid of the paginate params feature and just reference gridOptions?
+            * maybe we should get rid of the paginate params feature and just reference gridApi.grid.options?
 
 
     */
