@@ -16,6 +16,8 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   grunt.loadNpmTasks('grunt-string-replace');
+  grunt.loadNpmTasks('grunt-protractor-runner');
+  grunt.loadNpmTasks('grunt-exec');
 
   // Configurable paths for the application
   var appConfig = {
@@ -450,8 +452,15 @@ module.exports = function (grunt) {
                   }
               }
         }
+    },
+    exec: {
+      webdriver: {
+        cmd: "node ./node_modules/protractor/bin/webdriver-manager start"
+      }
     }
   });
+
+  grunt.registerTask('webdriver', ['exec:webdriver']);
 
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
@@ -506,8 +515,5 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
-
-
-  grunt.loadNpmTasks('grunt-protractor-runner');
 
 };
