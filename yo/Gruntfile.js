@@ -432,6 +432,24 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+
+    protractor: {
+        options: {
+              configFile: 'test/protractor.conf.js', //your protractor config file
+              keepAlive: false, // If false, the grunt process stops when the test fails.
+              noColor: false, // If true, protractor will not use colors in its output.
+              args: {
+                  // Arguments passed to the command
+              }
+          },
+        chrome: {
+            options: {
+                  args: {
+                      browser: 'chrome'
+                  }
+              }
+        }
     }
   });
 
@@ -488,4 +506,8 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+
+  grunt.loadNpmTasks('grunt-protractor-runner');
+
 };
