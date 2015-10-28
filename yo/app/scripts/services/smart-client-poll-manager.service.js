@@ -50,25 +50,32 @@
 
         this.runOnStartUp = function() {
             _.each($sessionStorage.sessions, function(session, key) {
-                var facility = Config.getFacilityByName(APP_CONFIG, key);
+                var facility = null;
+                try {
+                    facility = Config.getFacilityByName(APP_CONFIG, key);
+                } catch (error){
+
+                }
 
                 //check smartclient is online
-                if (SMARTCLIENTPING.ping === 'online') {
-                    //login to the smartclient
-                    SmartClientManager.connect(session.sessionId, facility).then(function() {
-                        //get list of smartclient downloads that has restoring status
-                        TopcatManager.getMyRestoringSmartClientDownloads(facility, session.userName).then(function(data) {
-                            _.each(data, function(smartClientDownload) {
-                                //create a poller for each preparedId
-                                self.createPoller(facility, session.userName, smartClientDownload.preparedId);
+                if (facility !== null) {
+                    if (SMARTCLIENTPING.ping === 'online') {
+                        //login to the smartclient
+                        SmartClientManager.connect(session.sessionId, facility).then(function() {
+                            //get list of smartclient downloads that has restoring status
+                            TopcatManager.getMyRestoringSmartClientDownloads(facility, session.userName).then(function(data) {
+                                _.each(data, function(smartClientDownload) {
+                                    //create a poller for each preparedId
+                                    self.createPoller(facility, session.userName, smartClientDownload.preparedId);
+                                });
+                            });
+                        }, function(error) { //jshint ignore: line
+                            inform.add(error, {
+                                'ttl': 0,
+                                'type': 'danger'
                             });
                         });
-                    }, function(error) { //jshint ignore: line
-                        inform.add(error, {
-                            'ttl': 0,
-                            'type': 'danger'
-                        });
-                    });
+                    }
                 }
             });
         };

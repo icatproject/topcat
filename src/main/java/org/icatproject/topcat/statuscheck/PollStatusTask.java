@@ -11,24 +11,28 @@ import org.icatproject.topcat.repository.DownloadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CheckStatusTask implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(CheckStatusTask.class);
+public class PollStatusTask implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(PollStatusTask.class);
 
     private String preparedId;
     private DownloadRepository downloadRepository;
+    private PollBean pollBean;
 
-    public CheckStatusTask() {
+    public PollStatusTask() {
 
     }
 
-    public CheckStatusTask(String preparedId, DownloadRepository downloadRepository) {
+    public PollStatusTask(String preparedId, DownloadRepository downloadRepository, PollBean pollBean) {
         this.preparedId = preparedId;
         this.downloadRepository = downloadRepository;
+        this.pollBean = pollBean;
     }
 
     @Override
     public void run() {
         logger.debug("New thread running...");
+
+        pollBean.add(preparedId);
 
         boolean status = false;
 
@@ -37,7 +41,7 @@ public class CheckStatusTask implements Runnable {
                 //wait a minute to give ids some time to process
                 logger.debug("Waiting 60 seconds before checking....");
                 Thread.sleep(60000);
-                CheckStatusWorker worker = new CheckStatusWorker(preparedId, downloadRepository);
+                PollStatusWorker worker = new PollStatusWorker(preparedId, downloadRepository, pollBean);
 
                 status = worker.checkStatus();
                 logger.info(preparedId + " online status is " + status);

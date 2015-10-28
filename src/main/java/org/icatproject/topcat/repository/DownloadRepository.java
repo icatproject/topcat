@@ -207,6 +207,7 @@ public class DownloadRepository {
 
             if (downloads.size() > 0) {
                 downloads.get(0).setStatus(DownloadStatus.COMPLETE);
+                downloads.get(0).setCompletedAt(new Date());
                 em.flush();
 
                 EmailValidator emailValidator = EmailValidator.getInstance();
