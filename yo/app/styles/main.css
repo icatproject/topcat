@@ -226,3 +226,8 @@ a[ng-click]{
 .eu-cookie-law-consent-button {
   float: right;
 }
+
+.list-noindent {
+  list-style-position: inside;
+  padding-left:0;
+}

@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('BrowseEntitiesController', BrowseEntitiesController);
 
-    BrowseEntitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseEntitiesModel', 'uiGridConstants', '$templateCache'];
+    BrowseEntitiesController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'BrowseEntitiesModel', 'uiGridConstants', 'Utils', '$templateCache'];
 
-    function BrowseEntitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, BrowseEntitiesModel, uiGridConstants, $templateCache) {
+    function BrowseEntitiesController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, BrowseEntitiesModel, uiGridConstants, Utils, $templateCache) {
         var facilityName = $stateParams.facilityName;
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         var currentEntityType = RouteService.getCurrentEntityType($state); //possible options: facility, cycle, instrument, investigation dataset, datafile
@@ -148,6 +148,10 @@
         $scope.showTabs = function(row) {
             var data = {'type' : currentEntityType, 'id' : row.entity.id, facilityName: facilityName};
             $rootScope.$broadcast('rowclick', data);
+        };
+
+        $scope.getFieldValuesAsHtmlList = function(row, field) {
+            return Utils.getFieldValuesAsHtmlList(row, field);
         };
     }
 })();

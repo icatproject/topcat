@@ -267,6 +267,21 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                 value.enableFiltering = false;
             }
 
+            if (/\[\d+\]/g.test(value.field)) {
+                var split = value.field.split(/\[\d+\]/);
+                var field = split[0];
+
+                if (typeof value.cellTemplate !== 'undefined' && value.cellTemplate.indexOf('glyphicon') === -1) {
+                    console.log('cellTemplate replaced');
+
+                    value.cellTemplate = value.cellTemplate.replace(/<\/div>$/, ' <span ng-if="row.entity.' + field + '.length > 1" class="glyphicon glyphicon-list" tooltip-html-unsafe="{{grid.appScope.getFieldValuesAsHtmlList(row.entity, \'' + value.field + '\')}}" tooltip-placement="right" tooltip-append-to-body="true"></span></div>');
+                } else {
+                    console.log('cellTemplate set');
+
+                    value.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}} <span ng-if="row.entity.' + field + '.length > 1" class="glyphicon glyphicon-list" tooltip-html-unsafe="{{grid.appScope.getFieldValuesAsHtmlList(row.entity, \'' + value.field + '\')}}" tooltip-placement="right" tooltip-append-to-body="true"></span></div>';
+                }
+            }
+
             return value;
         });
 

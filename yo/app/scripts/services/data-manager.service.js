@@ -126,6 +126,17 @@
         }
 
         /**
+         * Unique the array of entities by its id
+         * @param  {[type]} data [description]
+         * @return {[type]}      [description]
+         */
+        function uniqueEntityById(data) {
+            return _.uniq(data, function(item) {
+                return item.id;
+            });
+        }
+
+        /**
          * Perform a login
          * @param  {[type]} facility   [description]
          * @param  {[type]} credential [description]
@@ -288,7 +299,7 @@
             ICATService.getInstruments(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Instrument', 'instrument');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -308,7 +319,7 @@
                 var result = {};
 
                 prepProcessData(data, facility, 'Instrument', 'instrument');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -333,7 +344,7 @@
             ICATService.getFacilityCycles(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'FacilityCycle', 'facilityCycle');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -360,7 +371,7 @@
             ICATService.getFacilityCyclesByInstrumentId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'FacilityCycle', 'facilityCycle');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -420,7 +431,7 @@
             ICATService.getInvestigations(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Investigation', 'investigation');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -446,7 +457,7 @@
             ICATService.getMyInvestigations(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Investigation', 'investigation');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -472,7 +483,7 @@
             ICATService.getInvestigationsByFacilityCycleId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Investigation', 'investigation');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -506,7 +517,7 @@
                 });
 
                 //prepProcessData(data, facility, 'Proposal', 'proposal');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -532,7 +543,7 @@
                 });
 
                 //prepProcessData(data, facility, 'Proposal', 'proposal');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -551,7 +562,7 @@
             ICATService.getInvestigationsByProposalId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Investigation', 'investigation');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -576,7 +587,7 @@
             ICATService.getInvestigationsByInstrumentId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Investigation', 'investigation');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -603,7 +614,7 @@
             ICATService.getInvestigationsByInstrumentIdByFacilityCycleId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Investigation', 'investigation');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -629,7 +640,7 @@
             ICATService.getDatasets(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Dataset', 'dataset');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -655,7 +666,7 @@
             ICATService.getMyDatasets(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Dataset', 'dataset');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -681,7 +692,7 @@
             ICATService.getDatasetsByInstrumentId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Dataset', 'dataset');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -706,7 +717,7 @@
             ICATService.getDatasetsByInvestigationId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Dataset', 'dataset');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -732,7 +743,7 @@
             ICATService.getDatafiles(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Datafile', 'datafile');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -758,7 +769,7 @@
             ICATService.getDatafilesByDatasetId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Datafile', 'datafile');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -783,7 +794,7 @@
             ICATService.getDatafilesByInstrumentId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Datafile', 'datafile');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);
@@ -808,7 +819,7 @@
             ICATService.getDatafilesByInvestigationId(sessionId, facility, options).then(function(data) {
                 var result = {};
                 prepProcessData(data, facility, 'Datafile', 'datafile');
-                result.data  = data[0].data;
+                result.data  = uniqueEntityById(data[0].data);
                 result.totalItems = data[1].data[0];
 
                 def.resolve(result);

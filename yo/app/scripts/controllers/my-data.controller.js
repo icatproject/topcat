@@ -6,9 +6,9 @@
         .module('angularApp')
         .controller('MyDataController', MyDataController);
 
-    MyDataController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'MyDataModel', '$templateCache'];
+    MyDataController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'MyDataModel', 'Utils', '$templateCache'];
 
-    function MyDataController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, MyDataModel, $templateCache) {
+    function MyDataController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, MyDataModel, Utils, $templateCache) {
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
         var entityType = Config.getSiteMyDataGridEntityType(APP_CONFIG);
         var facilities = Config.getFacilities(APP_CONFIG);
@@ -122,6 +122,10 @@
         $scope.showTabs = function(row) {
             var data = {'type' : entityType, 'id' : row.entity.id, facilityName: row.entity.facilityName};
             $rootScope.$broadcast('rowclick', data);
+        };
+
+        $scope.getFieldValuesAsHtmlList = function(row, field) {
+            return Utils.getFieldValuesAsHtmlList(row, field);
         };
     }
 })();
