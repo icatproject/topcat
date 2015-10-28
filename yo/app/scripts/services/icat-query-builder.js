@@ -85,12 +85,13 @@
         function buildParams(query, countQuery, searchExpr, queryParams, entityName) {
             var params = {};
 
-            //let the promise canceler pass through
-            if(queryParams.canceler){
-                params.canceler = queryParams.canceler;
-            }
-
             if (angular.isDefined(queryParams)) {
+
+                //let the promise canceler pass through
+                if(angular.isDefined(queryParams.canceler)){
+                    params.canceler = queryParams.canceler;
+                }
+
                 if (!_.isEmpty(queryParams.search) && _.isArray(queryParams.search)) {
                     //TODO needs refactoring
                     //temp array to avoid duplicates

@@ -12,50 +12,50 @@ describe('Service: RouteService', function() {
 
     var possibleRoutes = [
         //'facility-instrument',
-        '/{facilityName}/instrument',
+        '/{facilityName}/instrument?uiGridState',
         //'facility-proposal',
-        '/{facilityName}/proposal',
+        '/{facilityName}/proposal?uiGridState',
         //'facility-investigation',
-        '/{facilityName}/investigation',
+        '/{facilityName}/investigation?uiGridState',
         //'facility-dataset',
-        '/{facilityName}/dataset',
+        '/{facilityName}/dataset?uiGridState',
         //'facility-datafile',
-        '/{facilityName}/datafile',
+        '/{facilityName}/datafile?uiGridState',
         //'instrument-proposal',
-        '/{facilityName}/instrument/{instrumentId}/proposal',
+        '/{facilityName}/instrument/{instrumentId}/proposal?uiGridState',
         //'instrument-investigation',
-        '/{facilityName}/instrument/{instrumentId}/investigation',
+        '/{facilityName}/instrument/{instrumentId}/investigation?uiGridState',
         //'instrument-dataset',
-        '/{facilityName}/instrument/{instrumentId}/dataset',
+        '/{facilityName}/instrument/{instrumentId}/dataset?uiGridState',
         //'instrument-datafile',
-        '/{facilityName}/instrument/{instrumentId}/datafile',
+        '/{facilityName}/instrument/{instrumentId}/datafile?uiGridState',
         //'proposal-investigation',
-        '/{facilityName}/proposal/{proposalId}/investigation',
-        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation',
+        '/{facilityName}/proposal/{proposalId}/investigation?uiGridState',
+        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation?uiGridState',
         //'proposal-dataset',
-        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/dataset',
-        '/{facilityName}/proposal/{proposalId}/dataset',
+        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/dataset?uiGridState',
+        '/{facilityName}/proposal/{proposalId}/dataset?uiGridState',
         //'proposal-datafile',
-        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/datafile',
-        '/{facilityName}/proposal/{proposalId}/datafile',
+        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/datafile?uiGridState',
+        '/{facilityName}/proposal/{proposalId}/datafile?uiGridState',
         //'investigation-dataset',
-        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/dataset',
-        '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/dataset',
-        '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/dataset',
-        '/{facilityName}/investigation/{investigationId}/dataset',
+        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/dataset?uiGridState',
+        '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/dataset?uiGridState',
+        '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/dataset?uiGridState',
+        '/{facilityName}/investigation/{investigationId}/dataset?uiGridState',
         //'investigation-datafile',
-        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/datafile',
-        '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/datafile',
-        '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/datafile',
-        '/{facilityName}/investigation/{investigationId}/datafile',
+        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/datafile?uiGridState',
+        '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/datafile?uiGridState',
+        '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/datafile?uiGridState',
+        '/{facilityName}/investigation/{investigationId}/datafile?uiGridState',
         //'dataset-datafile',
-        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/dataset/{datasetId}/datafile',
-        '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-        '/{facilityName}/instrument/{instrumentId}/dataset/{datasetId}/datafile',
-        '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
-        '/{facilityName}/proposal/{proposalId}/dataset/{datasetId}/datafile',
-        '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
+        '/{facilityName}/instrument/{instrumentId}/proposal/{proposalId}/dataset/{datasetId}/datafile?uiGridState',
+        '/{facilityName}/instrument/{instrumentId}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
+        '/{facilityName}/instrument/{instrumentId}/dataset/{datasetId}/datafile?uiGridState',
+        '/{facilityName}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
+        '/{facilityName}/proposal/{proposalId}/dataset/{datasetId}/datafile?uiGridState',
+        '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
         '/{facilityName}/dataset/{datsetId}/datafile'
     ];
 
@@ -96,12 +96,12 @@ describe('Service: RouteService', function() {
         expect(params).toEqual([
             {
                 'route': 'facility-dataset-datafile',
-                'url': '/{facilityName}/dataset/{datasetId}/datafile',
+                'url': '/{facilityName}/dataset/{datasetId}/datafile?uiGridState',
                 'entity': 'datafile'
             },
             {
                 'route': 'facility-dataset',
-                'url': '/{facilityName}/dataset',
+                'url': '/{facilityName}/dataset?uiGridState',
                 'entity': 'dataset'
             }
         ]);
@@ -127,17 +127,17 @@ describe('Service: RouteService', function() {
         expect(params).toEqual([
             {
                 'route': 'facility-investigation-dataset-datafile',
-                'url': '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'url': '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
                 'entity': 'datafile'
             },
             {
                 'route': 'facility-investigation-dataset',
-                'url': '/{facilityName}/investigation/{investigationId}/dataset',
+                'url': '/{facilityName}/investigation/{investigationId}/dataset?uiGridState',
                 'entity': 'dataset'
             },
             {
                 'route': 'facility-investigation',
-                'url': '/{facilityName}/investigation',
+                'url': '/{facilityName}/investigation?uiGridState',
                 'entity': 'investigation'
             }
         ]);
@@ -164,22 +164,22 @@ describe('Service: RouteService', function() {
         expect(params).toEqual([
             {
                 'route': 'facility-facilityCycle-investigation-dataset-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
                 'entity': 'datafile'
             },
             {
                 'route': 'facility-facilityCycle-investigation-dataset',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset?uiGridState',
                 'entity': 'dataset'
             },
             {
                 'route': 'facility-facilityCycle-investigation',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation?uiGridState',
                 'entity': 'investigation'
             },
             {
                 'route': 'facility-facilityCycle',
-                'url': '/{facilityName}/facilityCycle',
+                'url': '/{facilityName}/facilityCycle?uiGridState',
                 'entity': 'facilityCycle'
             }
         ]);
@@ -208,32 +208,32 @@ describe('Service: RouteService', function() {
         expect(params).toEqual([
             {
                 'route': 'facility-instrument-facilityCycle-proposal-investigation-dataset-datafile',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
                 'entity': 'datafile'
             },
             {
                 'route': 'facility-instrument-facilityCycle-proposal-investigation-dataset',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation/{investigationId}/dataset?uiGridState',
                 'entity': 'dataset'
             },
             {
                 'route': 'facility-instrument-facilityCycle-proposal-investigation',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal/{proposalId}/investigation?uiGridState',
                 'entity': 'investigation'
             },
             {
                 'route': 'facility-instrument-facilityCycle-proposal',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle/{facilityCycleId}/proposal?uiGridState',
                 'entity': 'proposal'
             },
             {
                 'route': 'facility-instrument-facilityCycle',
-                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle',
+                'url': '/{facilityName}/instrument/{instrumentId}/facilityCycle?uiGridState',
                 'entity': 'facilityCycle'
             },
             {
                 'route': 'facility-instrument',
-                'url': '/{facilityName}/instrument',
+                'url': '/{facilityName}/instrument?uiGridState',
                 'entity': 'instrument'
             }
         ]);
@@ -268,37 +268,37 @@ describe('Service: RouteService', function() {
         expect(params).toEqual([
             {
                 'route': 'facility-facilityCycle-investigation-dataset-datafile',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
                 'entity': 'datafile'
             },
             {
                 'route': 'facility-facilityCycle-investigation-dataset',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation/{investigationId}/dataset?uiGridState',
                 'entity': 'dataset'
             },
             {
                 'route': 'facility-facilityCycle-investigation',
-                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation',
+                'url': '/{facilityName}/facilityCycle/{facilityCycleId}/investigation?uiGridState',
                 'entity': 'investigation'
             },
             {
                 'route': 'facility-facilityCycle',
-                'url': '/{facilityName}/facilityCycle',
+                'url': '/{facilityName}/facilityCycle?uiGridState',
                 'entity': 'facilityCycle'
             },
             {
                 'route': 'facility-investigation-dataset-datafile',
-                'url': '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile',
+                'url': '/{facilityName}/investigation/{investigationId}/dataset/{datasetId}/datafile?uiGridState',
                 'entity': 'datafile'
             },
             {
                 'route': 'facility-investigation-dataset',
-                'url': '/{facilityName}/investigation/{investigationId}/dataset',
+                'url': '/{facilityName}/investigation/{investigationId}/dataset?uiGridState',
                 'entity': 'dataset'
             },
             {
                 'route': 'facility-investigation',
-                'url': '/{facilityName}/investigation',
+                'url': '/{facilityName}/investigation?uiGridState',
                 'entity': 'investigation'
             }
         ]);
