@@ -455,12 +455,17 @@ module.exports = function (grunt) {
     },
     exec: {
       webdriver: {
-        cmd: "node ./node_modules/protractor/bin/webdriver-manager start"
+        cmd: function(option){
+          return 'node ./node_modules/protractor/bin/webdriver-manager ' + option + ' --standalone';
+        }
       }
     }
   });
 
-  grunt.registerTask('webdriver', ['exec:webdriver']);
+  grunt.registerTask('webdriver', function(arg1){
+    var option = arg1 ? arg1 : 'start';
+    grunt.task.run("exec:webdriver:" + option);
+  });
 
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
