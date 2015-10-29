@@ -464,7 +464,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('webdriver', function(arg1){
     var option = arg1 ? arg1 : 'start';
-    grunt.task.run("exec:webdriver:" + option);
+    grunt.task.run('exec:webdriver:' + option);
   });
 
 

@@ -9,7 +9,7 @@
         module : 'angularApp',
         resolve : {
             APP_CONFIG : ['$http', function($http) {
-                return $http.get('config/topcat.json');
+                return $http.get('config/topcat_dev.json');
             } ],
             LANG : ['$http', function($http) {
                 return $http.get('languages/lang.json');
@@ -240,9 +240,6 @@
     /*.config(function($stickyStateProvider) {
       $stickyStateProvider.enableDebug(true);
     })*/
-        .run(['SessionManager', function(SessionManager){
-            SessionManager.cleanup();
-        }])
         .run(['SquelCustomQuery', function(SquelCustomQuery){
             SquelCustomQuery.init();
         }])
