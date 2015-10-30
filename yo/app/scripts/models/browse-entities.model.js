@@ -319,7 +319,6 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
         });
 
         var route = $state.href('home.browse.facility.' + self.nextRouteSegment, params);
-
         return route;
     };
 
@@ -771,6 +770,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             pageNumber: self.paginateParams.pageNumber ? self.paginateParams.pageNumber : 1
         });
         $state.go($state.current.name, {uiGridState: uiGridState}, {location: 'replace'});
+    
     }
 
     function restoreState(){
