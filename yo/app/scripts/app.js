@@ -240,6 +240,9 @@
     /*.config(function($stickyStateProvider) {
       $stickyStateProvider.enableDebug(true);
     })*/
+        .run(['SessionManager', function(SessionManager){
+            SessionManager.cleanup();
+        }])
         .run(['SquelCustomQuery', function(SquelCustomQuery){
             SquelCustomQuery.init();
         }])
