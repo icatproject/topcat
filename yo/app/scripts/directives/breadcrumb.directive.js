@@ -80,7 +80,7 @@
                     title: titles[route.entity]
                 };
 
-                if(i == previousRoutes.length - 1){
+                if(i === previousRoutes.length - 1){
                     item.translate = 'ENTITIES.' + route.entity.toUpperCase() + '.NAME';
                 }
 
