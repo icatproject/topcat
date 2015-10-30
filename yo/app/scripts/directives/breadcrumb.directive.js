@@ -13,8 +13,11 @@
         var facility = $stateParams.facilityName ? Config.getFacilityByName(APP_CONFIG, $stateParams.facilityName) : null;
         var promises = [];
         var items = [];
-
         var titles = {};
+        var breadcrumb = APP_CONFIG.site.breadcrumb;
+
+        this.maxTitleLength = breadcrumb && breadcrumb.maxTitleLength ? breadcrumb.maxTitleLength : 1000000;
+
         if(facility){
             titles.facility = facility.title;
         }
@@ -74,9 +77,12 @@
 
             _.each(previousRoutes, function(route, i){
                 var item = {
-                    translate: 'ENTITIES.' + route.entity.toUpperCase() + '.NAME',
                     title: titles[route.entity]
                 };
+
+                if(i === previousRoutes.length - 1){
+                    item.translate = 'ENTITIES.' + route.entity.toUpperCase() + '.NAME';
+                }
 
                 //special case for facility
                 var nextRoute = previousRoutes[i + 1];

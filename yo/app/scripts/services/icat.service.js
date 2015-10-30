@@ -12,6 +12,8 @@
         function getPromise(mySessionId, facility, params) {
             var RESTAPI = facility.icatUrl + '/icat/entityManager';
 
+
+
             var itemsQueryParams = {
                 params : {
                     sessionId : mySessionId,
@@ -21,7 +23,8 @@
                 info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
-                }
+                },
+                timeout: params.canceler
             };
 
             var countQueryParams = {
@@ -33,27 +36,41 @@
                 info : {
                     'facilityKeyName' : facility.facilityName,
                     'facilityTitle' : facility.title
-                }
+                },
+                timeout: params.canceler
             };
 
             var deferred = $q.defer();
+
+
             var asyncCalls = [
                 $http.get(RESTAPI, itemsQueryParams),
                 $http.get(RESTAPI, countQueryParams)
             ];
+            var cancelled = false;
 
             $q.all(asyncCalls).then(
                 function(data) {
                     $log.debug('promise data', data);
-
-                    deferred.resolve(data);
+                    if(!cancelled){
+                        deferred.resolve(data);
+                    }
                 }, function(errors) {
-                    deferred.reject(errors);
+                    if(errors.status > 0){
+                        deferred.reject(errors);
+                    }
                 }, function(updates) {
                     deferred.update(updates);
                 }
             );
 
+            /*
+            if(params.canceler){
+                params.canceler.then(function(){
+                    cancelled = true;
+                });
+            }
+            */
             return deferred.promise;
         }
 

@@ -20,6 +20,9 @@
             "scrollPageSize": 50,
             "scrollRowFromEnd": 10
         },
+        "breadcrumb": {
+            "maxTitleLength": 30
+        },
         "facilitiesGridOptions": {
             "enableFiltering": true,
             "columnDefs": [

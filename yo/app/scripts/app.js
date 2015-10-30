@@ -58,6 +58,7 @@
             'ui.grid.pagination',
             'ui.grid.infiniteScroll',
             'ui.grid.selection',
+            'ui.grid.saveState',
             'bytes',
             'angularSpinner',
             'ng.deviceDetector',
@@ -255,7 +256,17 @@
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
         }])
-        .run(['$rootScope', '$state', function ($rootScope, $state) {
+        .run(['$rootScope', '$state', '$sessionStorage', function ($rootScope, $state, $sessionStorage) {
+            //store the last state
+            $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams){
+                if(!toState.name.match(/^(login|logout)/)){
+                    $sessionStorage.lastState = {
+                        name: toState.name,
+                        params: toParams
+                    };
+                }
+            });
+
             //listen for state change resolve authentication errors
             $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
                 if (error && error.isAuthenticated === false) {

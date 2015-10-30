@@ -67,6 +67,8 @@
                     }
                 });
 
+                url += '?uiGridState';
+
                 routes.push({
                     route: getRouteSegments(val),
                     url: url,

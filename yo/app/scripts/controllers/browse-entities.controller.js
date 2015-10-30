@@ -20,7 +20,7 @@
         $scope.isScroll = (pagingType === 'scroll') ? true : false;
 
         $scope.isEmpty = false;
-
+        
         $scope.gridOptions = {
             appScopeProvider: $scope
         };
@@ -44,9 +44,6 @@
             opened: false
         };
 
-
-        BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams, $scope.gridOptions);
-
         /*$templateCache.put('ui-grid/selectionSelectAllButtons',
             '<div><span class="glyphicon glyphicon-shopping-cart" tooltip="Click [✓] in this column to add/remove items from cart" tooltip-append-to-body="true"></span></div>'
         );*/
@@ -54,6 +51,7 @@
         $templateCache.put('ui-grid/selectionRowHeaderButtons',
             '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" tooltip="' + $translate.instant('BROWSE.SELECTOR.TOOLTIP.TEXT') + '" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
         );
+
 
         if (pagingType === 'page') {
             $scope.gridOptions.onRegisterApi = function(gridApi) {
@@ -83,10 +81,9 @@
                 $scope.gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
                     BrowseEntitiesModel.rowSelectionChangedBatch(rows);
                 });
-            };
 
-            //BrowseEntitiesModel.getPage();
-            BrowseEntitiesModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
+                BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
+            };
         } else {
             $scope.firstPage = 1;
             $scope.lastPage = null;
@@ -124,9 +121,11 @@
                 $scope.gridApi.selection.on.rowSelectionChangedBatch ($scope, function(rows){
                     BrowseEntitiesModel.rowSelectionChangedBatch(rows);
                 });
+
+                BrowseEntitiesModel.init(facility, $scope, currentEntityType, currentRouteSegment, sessions, $stateParams);
             };
 
-            BrowseEntitiesModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
+           
         }
 
         $rootScope.$on('Cart:itemRemoved', function(){

@@ -16,6 +16,8 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   grunt.loadNpmTasks('grunt-string-replace');
+  grunt.loadNpmTasks('grunt-protractor-runner');
+  grunt.loadNpmTasks('grunt-exec');
 
   // Configurable paths for the application
   var appConfig = {
@@ -432,7 +434,37 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+
+    protractor: {
+        options: {
+              configFile: 'test/protractor.conf.js', //your protractor config file
+              keepAlive: false, // If false, the grunt process stops when the test fails.
+              noColor: false, // If true, protractor will not use colors in its output.
+              args: {
+                  // Arguments passed to the command
+              }
+          },
+        chrome: {
+            options: {
+                  args: {
+                      browser: 'chrome'
+                  }
+              }
+        }
+    },
+    exec: {
+      webdriver: {
+        cmd: function(option){
+          return 'node ./node_modules/protractor/bin/webdriver-manager ' + option + ' --standalone';
+        }
+      }
     }
+  });
+
+  grunt.registerTask('webdriver', function(arg1){
+    var option = arg1 ? arg1 : 'start';
+    grunt.task.run('exec:webdriver:' + option);
   });
 
 
@@ -488,4 +520,5 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
 };

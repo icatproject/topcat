@@ -17,20 +17,21 @@
                 var stateName = 'home.browse.facility.' + route.route;
                 var state = {
                     url: route.url,
-                        views: {
-                            '@home.browse' : {
-                                templateUrl: 'views/partial-browse-panel.html',
-                                controller: 'BrowseEntitiesController'
-                            },
-                            'meta-view@home.browse' : {
-                                templateUrl: 'views/partial-meta-panel.html',
-                                controller: 'MetaPanelController as meta'
-                            }
+                    views: {
+                        '@home.browse' : {
+                            templateUrl: 'views/partial-browse-panel.html',
+                            controller: 'BrowseEntitiesController'
                         },
-                        param: {
-                            entityType : route.entity
+                        'meta-view@home.browse' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
                         }
-                };
+                    },
+                    param: {
+                        entityType : route.entity
+                    },
+                    reloadOnSearch: false
+            };
 
                 RuntimeStatesProvider.addState(stateName, state);
             });
