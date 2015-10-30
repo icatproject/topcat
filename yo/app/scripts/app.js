@@ -17,7 +17,12 @@
             SMARTCLIENTPING : ['$http', '$q', function($http, $q) {
                 var def = $q.defer();
 
-                $http.get('https://localhost:8888/ping', {timeout: 50}).then(function() {
+                $http.get('https://localhost:8888/ping', {
+                    timeout: 50,
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    }
+                }).then(function() {
                     def.resolve({ping: 'online'});
                 }, function(error) { //jshint ignore: line
                     def.resolve({ping: 'offline'});

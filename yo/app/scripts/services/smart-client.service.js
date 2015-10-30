@@ -20,6 +20,9 @@
             var params = {
                 info : {
                     'smartClient' : true
+                },
+                headers: {
+                    'Content-Type' : 'application/json'
                 }
             };
 
