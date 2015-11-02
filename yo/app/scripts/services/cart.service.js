@@ -367,6 +367,8 @@
             _.each(downloadRequests, function(downloadRequest) {
                 var facility = Config.getFacilityByName(APP_CONFIG, downloadRequest.facilityName);
 
+                console.log('downloadRequest', downloadRequest);
+
                 var cartRequest = new CartRequest(
                     facility.facilityName,
                     $sessionStorage.sessions[downloadRequest.facilityName].userName,
@@ -376,6 +378,7 @@
                     downloadRequest.availability,
                     downloadRequest.transportType.type,
                     downloadRequest.transportType.url,
+                    downloadRequest.transportType.zipType,
                     downloadRequest.email
                 );
 

@@ -13,6 +13,7 @@ public class CartSubmitDTO {
     private String transport;
     private String transportUrl;
     private String email;
+    private String zipType;
 
 
     public String getFacilityName() {
@@ -85,6 +86,14 @@ public class CartSubmitDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getZipType() {
+        return zipType;
+    }
+
+    public void setZipType(String zipType) {
+        this.zipType = zipType;
     }
 
 

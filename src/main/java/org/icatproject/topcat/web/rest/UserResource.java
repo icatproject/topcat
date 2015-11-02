@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.icatproject.ids.client.DataSelection;
-import org.icatproject.ids.client.IdsClient;
+import org.icatproject.ids.client.IdsClient.Flag;
 import org.icatproject.topcat.Constants;
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartDTO;
@@ -298,10 +298,6 @@ public class UserResource {
             throw new BadRequestException("fileName is required");
         }
 
-        /*if (cartSubmitDTO.getStatus() == null) {
-            throw new BadRequestException("status is required and must be ONLINE, ARCHIVED");
-        }*/
-
         if (cartSubmitDTO.getTransport() == null || cartSubmitDTO.getTransport().trim().isEmpty()) {
             throw new BadRequestException("transport is required");
         }
@@ -350,8 +346,10 @@ public class UserResource {
 
         DataSelection dataSelection =  CartUtils.cartToDataSelection(cart);
 
-        logger.info("Send prepareData request to " + cartSubmitDTO.getTransportUrl());
-        String preparedId = idsClientService.prepareData(cartSubmitDTO.getTransportUrl(), cartSubmitDTO.getSessionId(), dataSelection, IdsClient.Flag.ZIP_AND_COMPRESS);
+        Flag zipType = CartUtils.getZipFlag(cartSubmitDTO.getZipType());
+
+        logger.info("Send prepareData request to " + cartSubmitDTO.getTransportUrl() + " for zipType " + zipType.toString());
+        String preparedId = idsClientService.prepareData(cartSubmitDTO.getTransportUrl(), cartSubmitDTO.getSessionId(), dataSelection, zipType);
         logger.info("Returned prepareId " + preparedId);
 
         boolean isTwoLevel = idsClientService.isTwoLevel(cartSubmitDTO.getTransportUrl());

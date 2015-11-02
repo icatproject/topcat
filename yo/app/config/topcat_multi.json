@@ -319,7 +319,8 @@
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://fdsgos11.fds.rl.ac.uk"
+                    "url": "https://fdsgos11.fds.rl.ac.uk",
+                    "zipType": "ZIP"
                 },
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
@@ -798,7 +799,8 @@
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://idsdev.isis.cclrc.ac.uk"
+                    "url": "https://idsdev.isis.cclrc.ac.uk",
+                    "zipType": "ZIP"
                 }
             ],
             "browseGridOptions": {
