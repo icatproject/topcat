@@ -33,6 +33,10 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             self.gridOptions = scope.gridOptions;
             self.hasSizeField = hasField(self.options, 'size');
             self.pagePromiseCanceler = null;
+            self.getSizePromiseCanceler = null;
+
+            //to do:
+            //self.getSizeCanceler
 
             self.setGridOptions(self.scope.gridOptions);
 
@@ -68,6 +72,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
             });
 
     };
+
 
 
     this.setGridOptions = function(gridOptions) {
@@ -155,6 +160,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
                             if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
                                 var params = {};
                                 params[self.currentEntityType  + 'Ids'] = row.entity.id;
+                                params.canceler = getGetSizePromiseCanceler().promise;
 
                                 usSpinnerService.spin('spinner-size-' + row.uid);
 
@@ -214,6 +220,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
                             if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
                                 var params = {};
                                 params[self.currentEntityType  + 'Ids'] = row.entity.id;
+                                params.canceler = getGetSizePromiseCanceler().promise;
 
                                 IdsManager.getSize(self.sessions, self.facility, params).then(function(data){
                                     row.entity.size = parseInt(data);
@@ -257,6 +264,7 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
                         if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
                             var params = {};
                             params[self.currentEntityType  + 'Ids'] = row.entity.id;
+                            params.canceler = getGetSizePromiseCanceler().promise;
 
                             IdsManager.getSize(self.sessions, self.facility, params).then(function(data){
                                 row.entity.size = parseInt(data);
@@ -407,6 +415,25 @@ function BrowseEntitiesModel($rootScope,  $translate, $q, APP_CONFIG, Config, Ro
 
 
     // PRIVATE
+
+    $rootScope.$on('$stateChangeSuccess', function(){
+        if(self.pagePromiseCanceler){
+            self.pagePromiseCanceler.resolve();
+            self.pagePromiseCanceler = null;
+        }
+        if(self.getSizePromiseCanceler){
+            self.getSizePromiseCanceler.resolve();
+            self.getSizePromiseCanceler = null;
+        }
+    });
+
+    function getGetSizePromiseCanceler(){
+        if(!self.getSizePromiseCanceler){
+            self.getSizePromiseCanceler = $q.defer();
+        }
+        return self.getSizePromiseCanceler;
+    }
+
 
     /**
      * Get the parent entities of the current entity type
