@@ -55,6 +55,11 @@ $h3 Configuration properties
   - **mail.body.https** - is the email body message for https downloads. All subject tokens as above are available.
   - **mail.body.globus** - is the email body message for https downloads. All subject tokens as above are available.
   - **mail.body.smartclient** - is the email body message for smartclient downloads. All subject tokens as above are available.
+  - **ids.getStatus.max** - the maximum number of datafiles for a getStatus call to the IDS for two level storage
+  - **poll.delay** - the delay in milliseconds before polling starts. This delay is to gives the ids a chance to do its thing before we query it
+  - **poll.interval.wait** - the wait time in milliseconds between each poll to the IDS.
+  - **poll.isprepared.wait** - the wait time in millisecond if an isPrepared call has to be made to the IDS. An isPrepared call is made if getStatus returns an ARCHIVE status. This gives the polling additional wait time for the IDS to prepare a request.
+
 
 $h2 topcat.json
 
