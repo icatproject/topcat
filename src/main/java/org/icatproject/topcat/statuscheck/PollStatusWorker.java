@@ -39,6 +39,7 @@ public class PollStatusWorker {
     private PollBean pollBean;
     private List<Long> fileIds;
     private int maxPerStatus;
+    private int pollIsPreparedWait;
 
     public PollStatusWorker(String preparedId, DownloadRepository downloadRepository, PollBean pollBean) throws IOException, InternalException, BadRequestException, NotFoundException, NotImplementedException {
         this.preparedId = preparedId;
@@ -58,6 +59,7 @@ public class PollStatusWorker {
         String prepared_file_directory = properties.getPath();
 
         this.maxPerStatus = properties.getMaxPerGetStatus();
+        this.pollIsPreparedWait = properties.getPollDelay();
 
         logger.info("CheckStatusWorker params: " + icatUrl + " " + idsUrl + " " + prepared_file_directory);
 
@@ -142,11 +144,9 @@ public class PollStatusWorker {
                 //remove the ids from fileIds list
                 fileIds.removeAll(datafiles);
             } else if (status.equals(Status.ARCHIVED)) {
-                logger.info(datafiles.toString() + " is ARCHIVED for  "+ this.preparedId + " calling isPrepared in 5 minutes");
-                Thread.sleep(300000);
                 ids.isPrepared(this.preparedId);
-                logger.info("isPrepared called for " + this.preparedId + ". Sleeping for 5 minutes");
-                Thread.sleep(300000);
+                logger.info("isPrepared called for " + this.preparedId + ". Sleeping for " + pollIsPreparedWait + " milliseconds");
+                Thread.sleep(pollIsPreparedWait);
                 break;
             } else if (status.equals(Status.RESTORING)){
                 logger.info(datafiles.toString() + " is RESTORING for " + this.preparedId + ". Breaking from loop");
@@ -297,6 +297,18 @@ public class PollStatusWorker {
 
     public void setMaxPerStatus(int maxPerStatus) {
         this.maxPerStatus = maxPerStatus;
+    }
+
+
+
+    public int getPollIsPreparedWait() {
+        return pollIsPreparedWait;
+    }
+
+
+
+    public void setPollIsPreparedWait(int pollIsPreparedWait) {
+        this.pollIsPreparedWait = pollIsPreparedWait;
     }
 
 }

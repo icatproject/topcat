@@ -29,6 +29,10 @@ public class PropertyHandler {
     private String mailBodyGlobus;
     private String mailBodySmartClient;
     private int maxPerGetStatus;
+    private int pollDelay;
+    private int pollIntervalWait;
+    private int pollIsPreparedWait;
+
 
     private PropertyHandler() {
         CheckedProperties props = new CheckedProperties();
@@ -43,12 +47,39 @@ public class PropertyHandler {
             mailBodyGlobus = props.getProperty("mail.body.globus");
             mailBodySmartClient = props.getProperty("mail.body.smartclient");
             maxPerGetStatus = props.getPositiveInt("ids.getStatus.max");
+            pollDelay = props.getPositiveInt("poll.delay");
+            pollIntervalWait = props.getPositiveInt("poll.interval.wait");
+            pollIsPreparedWait = props.getPositiveInt("poll.isprepared.wait");
         } catch (CheckedPropertyException e) {
             logger.info("Property file topcat.properties not loaded");
             e.printStackTrace();
         }
 
         logger.info("Property file topcat.properties loaded");
+    }
+
+    public int getPollDelay() {
+        return pollDelay;
+    }
+
+    public void setPollDelay(int pollDelay) {
+        this.pollDelay = pollDelay;
+    }
+
+    public int getPollIntervalWait() {
+        return pollIntervalWait;
+    }
+
+    public void setPollIntervalWait(int pollIntervalWait) {
+        this.pollIntervalWait = pollIntervalWait;
+    }
+
+    public int getPollIsPreparedWait() {
+        return pollIsPreparedWait;
+    }
+
+    public void setPollIsPreparedWait(int pollIsPreparedWait) {
+        this.pollIsPreparedWait = pollIsPreparedWait;
     }
 
     public String getPath() {
