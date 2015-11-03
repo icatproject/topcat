@@ -21,3 +21,6 @@ mail.body.globus=Hi ${userName}, \n\nYour Globus download ${fileName} is ready. 
 
 # The email body message for smartclient downloads. All subject tokens as above are available.
 mail.body.smartclient=Hi ${userName}, \n\nYour SmartClient download ${fileName} is ready. Please check your smartclient home directory for your files.\n\nThanks you for using TopCAT
+
+# The maximum number of datafiles for a getStatus call to the IDS for two level storage
+ids.getStatus.max=100

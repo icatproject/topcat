@@ -28,6 +28,7 @@ public class PropertyHandler {
     private String mailBodyHttps;
     private String mailBodyGlobus;
     private String mailBodySmartClient;
+    private int maxPerGetStatus;
 
     private PropertyHandler() {
         CheckedProperties props = new CheckedProperties();
@@ -41,13 +42,13 @@ public class PropertyHandler {
             mailBodyHttps = props.getProperty("mail.body.https");
             mailBodyGlobus = props.getProperty("mail.body.globus");
             mailBodySmartClient = props.getProperty("mail.body.smartclient");
+            maxPerGetStatus = props.getPositiveInt("ids.getStatus.max");
         } catch (CheckedPropertyException e) {
             logger.info("Property file topcat.properties not loaded");
             e.printStackTrace();
         }
 
         logger.info("Property file topcat.properties loaded");
-
     }
 
     public String getPath() {
@@ -73,5 +74,13 @@ public class PropertyHandler {
 
     public String getMailBodySmartClient() {
         return mailBodySmartClient;
+    }
+
+    public int getMaxPerGetStatus() {
+        return maxPerGetStatus;
+    }
+
+    public void setMaxPerGetStatus(int maxPerGetStatus) {
+        this.maxPerGetStatus = maxPerGetStatus;
     }
 }

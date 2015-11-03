@@ -10,10 +10,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.ListUtils;
 import org.icatproject.ids.client.BadRequestException;
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
@@ -38,6 +38,7 @@ public class PollStatusWorker {
     private DownloadRepository downloadRepository;
     private PollBean pollBean;
     private List<Long> fileIds;
+    private int maxPerStatus;
 
     public PollStatusWorker(String preparedId, DownloadRepository downloadRepository, PollBean pollBean) throws IOException, InternalException, BadRequestException, NotFoundException, NotImplementedException {
         this.preparedId = preparedId;
@@ -55,6 +56,8 @@ public class PollStatusWorker {
         String icatUrl = download.getIcatUrl();
         String idsUrl = download.getTransportUrl();
         String prepared_file_directory = properties.getPath();
+
+        this.maxPerStatus = properties.getMaxPerGetStatus();
 
         logger.info("CheckStatusWorker params: " + icatUrl + " " + idsUrl + " " + prepared_file_directory);
 
@@ -123,8 +126,75 @@ public class PollStatusWorker {
         }
         br.close();
 
+        //make copy of array
+        List<Long> fileIdsCopy = new ArrayList<Long>(fileIds);
+
+        List<List<Long>> s = ListUtils.partition(fileIdsCopy, maxPerStatus);
+
+        for (List<Long> datafiles : s) {
+            DataSelection dataSelection = new DataSelection();
+            dataSelection.addDatafiles(datafiles);
+
+            Status status = ids.getStatus(null, dataSelection);
+
+            if (status.equals(Status.ONLINE)) {
+                logger.info(datafiles.toString() + " is ONLINE for " + this.preparedId);
+                //remove the ids from fileIds list
+                fileIds.removeAll(datafiles);
+            } else if (status.equals(Status.ARCHIVED)) {
+                logger.info(datafiles.toString() + " is ARCHIVED for  "+ this.preparedId + " calling isPrepared in 5 minutes");
+                Thread.sleep(300000);
+                ids.isPrepared(this.preparedId);
+                logger.info("isPrepared called for " + this.preparedId + ". Sleeping for 5 minutes");
+                Thread.sleep(300000);
+                break;
+            } else if (status.equals(Status.RESTORING)){
+                logger.info(datafiles.toString() + " is RESTORING for " + this.preparedId + ". Breaking from loop");
+                break;
+            } else {
+                logger.info(datafiles.toString() + " is UNKNOWN for " + this.preparedId + ". Breaking from loop");
+                break;
+            }
+        }
+
+        if (fileIds.isEmpty()) {
+            logger.info(this.preparedId + " file is empty, marking download as available");
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("preparedId", this.preparedId);
+
+            downloadRepository.setCompleteByPreparedId(params);
+            pollBean.remove(this.preparedId);
+
+            File file = new File(this.filePath);
+            boolean result = false;
+
+            if (file.exists()) {
+                logger.info(this.preparedId + " is available, deleting file" + this.filePath);
+                result = file.delete();
+            }
+
+            if (result) {
+                logger.info("delete successful");
+            } else {
+                logger.info("delete failed");
+            }
+
+            return true;
+        } else {
+            logger.info("not empty, writing file");
+            writePreparedFile(file, fileIds);
+
+            return false;
+        }
+
+
+
+
         //iterate fileids and check it status using getStatus from the ids
+        /*
         Iterator<Long> i = fileIds.iterator();
+
         while (i.hasNext()) {
             Long fileId = i.next();
 
@@ -182,6 +252,7 @@ public class PollStatusWorker {
 
             return false;
         }
+        */
     }
 
     private IdsClient getIdsClient(String idsUrl) throws MalformedURLException {
@@ -214,6 +285,18 @@ public class PollStatusWorker {
 
     public void setFileIds(List<Long> fileIds) {
         this.fileIds = fileIds;
+    }
+
+
+
+    public int getMaxPerStatus() {
+        return maxPerStatus;
+    }
+
+
+
+    public void setMaxPerStatus(int maxPerStatus) {
+        this.maxPerStatus = maxPerStatus;
     }
 
 }

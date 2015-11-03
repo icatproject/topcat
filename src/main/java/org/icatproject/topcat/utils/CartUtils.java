@@ -44,5 +44,4 @@ public class CartUtils {
             return Flag.ZIP;
         }
     }
-
 }

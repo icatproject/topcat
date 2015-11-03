@@ -26,7 +26,7 @@ if arg == "INSTALL":
 
         actions.addFileRealmUser(props["adminUsername"], props["adminPassword"], "topcatAdmin");
 
-        topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "mail.enable"])
+        topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "mail.enable", "ids.getStatus.max"])
 
         if not os.path.isfile("topcat.json"):
             abort("topcat.json not found.")

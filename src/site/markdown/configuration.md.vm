@@ -55,6 +55,7 @@ $h3 Configuration properties
   - **mail.body.https** - is the email body message for https downloads. All subject tokens as above are available.
   - **mail.body.globus** - is the email body message for https downloads. All subject tokens as above are available.
   - **mail.body.smartclient** - is the email body message for smartclient downloads. All subject tokens as above are available.
+  - **ids.getStatus.max** - the maximum number of datafiles for a getStatus call to the IDS for two level storage
 
 $h2 topcat.json
 
