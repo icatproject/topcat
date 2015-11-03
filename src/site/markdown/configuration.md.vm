@@ -46,7 +46,7 @@ $h3 Configuration properties
   - **file.directory** - is the directory path for temporary prepared files
   - **mail.enable** - whether to enable mailing
   - **mail.subject** - the subject of the  the email. The following tokens are available:
-      - **${userName}** - user username
+      - **${userName}** - user fullname or username
       - **${email}** - user email
       - **${facilityName}** - the facility key name
       - **${preparedId}** - the prepared Id of the download request

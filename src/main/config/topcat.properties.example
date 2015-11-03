@@ -5,7 +5,7 @@ file.directory=../data/preparedfiles
 mail.enable=true
 
 # The email subject. Tokens available are:
-# ${userName} - user username
+# ${userName} - user fullname or username
 # ${email} - user email
 # ${facilityName} - the facility key (defined in frontend config)
 # ${preparedId} - the prepared Id of the download request

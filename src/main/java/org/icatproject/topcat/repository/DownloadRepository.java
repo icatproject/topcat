@@ -16,6 +16,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.icatproject.User;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.utils.MailBean;
@@ -216,10 +217,23 @@ public class DownloadRepository {
                 if (properties.isMailEnable() == true) {
                     if (downloads.get(0).getEmail() != null) {
                         if (emailValidator.isValid(downloads.get(0).getEmail())) {
+                            //get fullName if exists
+                            String userName = downloads.get(0).getUserName();
+                            String userJpql = "SELECT u FROM user u  WHERE u.name = :name";
+                            List<User> users = new ArrayList<User>();
+
+                            TypedQuery<User> user = em.createQuery(userJpql, User.class);
+                            query.setParameter("name", downloads.get(0).getUserName());
+                            users = user.getResultList();
+
+                            if (users != null && users.size() > 0) {
+                                userName = users.get(0).getFullName();
+                            }
+
 
                             Map<String, String> valuesMap = new HashMap<String, String>();
                             valuesMap.put("email", downloads.get(0).getEmail());
-                            valuesMap.put("userName", downloads.get(0).getUserName());
+                            valuesMap.put("userName", userName);
                             valuesMap.put("facilityName", downloads.get(0).getFacilityName());
                             valuesMap.put("preparedId", downloads.get(0).getPreparedId());
                             valuesMap.put("downloadUrl", downloads.get(0).getTransportUrl() + "/ids/getData?preparedId=" + downloads.get(0).getPreparedId() + "&outname=" + downloads.get(0).getFileName());
