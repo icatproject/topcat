@@ -322,10 +322,14 @@ public class UserResource {
             throw new BadRequestException("There is no cart found for " + cartSubmitDTO.getUserName() + " on the facility " + cartSubmitDTO.getFacilityName());
         }
 
+        //get user full
+        String fullName = icatClientService.getFullName(cartSubmitDTO.getIcatUrl(), cartSubmitDTO.getSessionId());
+
         Download download = new Download();
         download.setFacilityName(cartSubmitDTO.getFacilityName());
         download.setFileName(cartSubmitDTO.getFileName());
         download.setUserName(cartSubmitDTO.getUserName());
+        download.setFullName(fullName);
         download.setTransport(cartSubmitDTO.getTransport());
         download.setTransportUrl(cartSubmitDTO.getTransportUrl());
         download.setIcatUrl(cartSubmitDTO.getIcatUrl());
