@@ -79,12 +79,14 @@ Vagrant.configure(2) do |config|
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=100
     cd /home/vagrant
 
-
-
     sudo cp /vagrant/provision/glassfish /etc/init.d/
     sudo chmod 0755 /etc/init.d/glassfish
     sudo update-rc.d glassfish defaults
 
     sudo rm -rf /home/vagrant/*.zip /home/vagrant/mysql-connector-java-5.1.37
+
+    sudo cp /vagrant/provision/glassfish /etc/apache2/sites-available
+    sudo /etc/init.d/apache2 restart
+
   }
 end

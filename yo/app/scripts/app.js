@@ -9,7 +9,10 @@
         module : 'angularApp',
         resolve : {
             APP_CONFIG : ['$http', function($http) {
-                return $http.get('config/topcat_dev.json');
+                if(parseInt(window.location.port) === 10080){
+                    return $http.get('config/topcat_dev.json');
+                }
+                return $http.get('config/topcat.json');
             } ],
             LANG : ['$http', function($http) {
                 return $http.get('languages/lang.json');
