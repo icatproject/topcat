@@ -1,0 +1,26 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          glassfish
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts a glassfish server
+### END INIT INFO
+
+GLASSFISH_HOME=${GLASSFISH_HOME:-"/opt/glassfish4/glassfish"}
+
+case "$1" in
+start)
+    $GLASSFISH_HOME/bin/asadmin start-domain >/dev/null
+    ;;
+stop)
+    $GLASSFISH_HOME/bin/asadmin stop-domain >/dev/null
+    ;;
+restart)
+    $GLASSFISH_HOME/bin/asadmin restart-domain >/dev/null
+    ;;
+\*)
+    echo "usage: $0 (start|stop|restart|help)"
+esac
