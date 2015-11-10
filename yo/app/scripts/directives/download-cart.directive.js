@@ -30,6 +30,9 @@
                         });
 
                         return IdsManager.isTwoLevelForFacilities(facilities);
+                    }],
+                    SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
+                        return SmartClientManager.ping();
                     }]
                 },
                 size : 'lg'
@@ -119,8 +122,6 @@
                 });
             }
             //submit the cart for download
-
-            console.log('vm.downloads', vm.downloads);
 
             Cart.submit(vm.downloads);
         };

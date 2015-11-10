@@ -363,11 +363,8 @@
 
 
         this.submit = function(downloadRequests) {
-
             _.each(downloadRequests, function(downloadRequest) {
                 var facility = Config.getFacilityByName(APP_CONFIG, downloadRequest.facilityName);
-
-                console.log('downloadRequest', downloadRequest);
 
                 var cartRequest = new CartRequest(
                     facility.facilityName,

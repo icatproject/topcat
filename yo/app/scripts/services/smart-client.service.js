@@ -22,8 +22,9 @@
                     'smartClient' : true
                 },
                 headers: {
-                    'Content-Type' : 'application/json'
-                }
+                    'Accept' : 'application/json'
+                },
+                timeout: 200
             };
 
             return $http.get(url, params);

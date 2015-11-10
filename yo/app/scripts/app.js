@@ -13,23 +13,7 @@
             } ],
             LANG : ['$http', function($http) {
                 return $http.get('languages/lang.json');
-            } ],
-            SMARTCLIENTPING : ['$http', '$q', function($http, $q) {
-                var def = $q.defer();
-
-                $http.get('https://localhost:8888/ping', {
-                    timeout: 50,
-                    headers: {
-                        'Content-Type' : 'application/json'
-                    }
-                }).then(function() {
-                    def.resolve({ping: 'online'});
-                }, function(error) { //jshint ignore: line
-                    def.resolve({ping: 'offline'});
-                });
-
-                return def.promise;
-            }]
+            } ]
         }
     });
 
@@ -222,21 +206,35 @@
                 .state('login', {
                     url: '/login',
                     templateUrl: 'views/login.html',
-                    controller: 'LoginController as vm'
+                    controller: 'LoginController as vm',
+                    resolve: {
+                        SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
+                            return SmartClientManager.ping();
+                        }]
+                    }
                 })
                 .state('logout', {
                     url: '/logout',
-                    controller: 'LogoutController'
+                    controller: 'LogoutController',
+                    resolve: {
+                        SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
+                            return SmartClientManager.ping();
+                        }]
+                    }
                 })
                 .state('logout.facility', {
                     url: '/:facilityName',
-                    controller: 'LogoutController'
+                    controller: 'LogoutController',
+                    resolve: {
+                        SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
+                            return SmartClientManager.ping();
+                        }]
+                    }
                 })
                 .state('homeRoute', {
                     url: '/',
                     controller: 'HomeRouteController'
-                })
-                ;
+                });
 
         })
         .config(function (pollerConfig) {
