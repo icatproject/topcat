@@ -6,6 +6,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 10080
   config.vm.network "forwarded_port", guest: 4848, host: 14848
   config.vm.network "forwarded_port", guest: 8181, host: 18181
+  config.vm.network "forwarded_port", guest: 3306, host: 13306
 
   config.vm.provision "shell", inline: %{
 
@@ -85,8 +86,11 @@ Vagrant.configure(2) do |config|
 
     sudo rm -rf /home/vagrant/*.zip /home/vagrant/mysql-connector-java-5.1.37
 
-    sudo cp /vagrant/provision/glassfish /etc/apache2/sites-available
+    sudo cp /vagrant/provision/default /etc/apache2/sites-available
     sudo /etc/init.d/apache2 restart
+
+
+    sudo apt-get install nodejs npm maven 
 
   }
 end
