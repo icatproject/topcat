@@ -47,6 +47,9 @@ public class Download implements Serializable {
     @Column(name = "USER_NAME", nullable = false)
     private String userName;
 
+    @Column(name = "FULL_NAME")
+    private String fullName;
+
     @Column(name = "TRANSPORT", nullable = false)
     private String transport;
 
@@ -115,6 +118,15 @@ public class Download implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @XmlTransient
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getTransport() {

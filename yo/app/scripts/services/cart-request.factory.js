@@ -9,7 +9,7 @@
 
     function CartRequest() {
 
-        var cart = function (facilityName, userName, sessionId, icatUrl, fileName, status, transport, transportUrl, email) {
+        var cart = function (facilityName, userName, sessionId, icatUrl, fileName, status, transport, transportUrl, zipType, email) {
             this.setFacilityName(facilityName);
             this.setUserName(userName);
             this.setSessionId(sessionId);
@@ -18,6 +18,7 @@
             this.setStatus(status);
             this.setTransport(transport);
             this.setTransportUrl(transportUrl);
+            this.setZipType(zipType);
             this.setEmail(email);
         };
 
@@ -101,6 +102,14 @@
             this.transportUrl = transportUrl;
         };
 
+        cart.prototype.getZipType = function(){
+            return this.zipType;
+        };
+
+        cart.prototype.setZipType = function(zipType){
+            this.zipType = zipType;
+        };
+
         cart.prototype.getEmail = function(){
             return this.email;
         };
@@ -118,7 +127,8 @@
                 fileName: this.getFileName(),
                 status: this.getStatus(),
                 transport: this.getTransport(),
-                transportUrl: this.getTransportUrl,
+                transportUrl: this.getTransportUrl(),
+                zipType: this.getZipType(),
                 email: this.getEmail()
             };
         };

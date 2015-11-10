@@ -9,7 +9,19 @@ $h2 Property: _**facilityName**_ (required)
 
 Value: string
 
-A facility name used internally by TopCAT. This must match the key/property name of the facility object.
+A facility name used internally by TopCAT. **This name MUST match the property name of the facility object** e.g.
+
+```
+"facilities": {
+    "MY_PROPERTY_NAME": {
+        "faciltyName": "MY_PROPERTY_NAME"
+        .
+        .
+        .
+    }
+}
+
+```
 
 
 $h2 Property: _**title**_ (required)
@@ -151,7 +163,8 @@ Example:
         "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
         "type" : "https",
         "default" : true,
-        "url": "https://ids.mysite.ac.uk"
+        "url": "https://ids.mysite.ac.uk",
+        "zipType": "ZIP"
     },
     {
         "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
@@ -171,6 +184,9 @@ A downloadTransportType object has the following properties:
   - **type** (string - required) - the transport type. Must be **https** or **globus**. (For globus, a globus polling software (yet to be release) is required to be installed on the ids in addition to a globus server installation)
   - **default** (boolean - optional) - which downloadTransportType should be the default on the dropdown menu. Only one downloadTransportType should have this property
   - **url** (string - required) - the url of the ids server.
+  - **zipType** (string - optional. Defaults to ZIP) - the zip compression type of downloaded zip files. Possible values are:
+    - **ZIP** - zip file with no compression (recommended for large download files)
+    - **ZIP_AND_COMPRESS** - zip file with compression (deflate level 6). This may reduce the download speed as the limiting factor is the speed of compression hence the cpu. If your data is already compressed use ZIP.
 
 
 TopCAT also support a transport call smartclient which uses a desktop application call [IDS Smart Client](http://icatproject.org/user-documentation/ids-smartclient/) to download files. TopCAT automatically detects if the application is running. If it is running, TopCAT will add the option to the transport dropdown menu.

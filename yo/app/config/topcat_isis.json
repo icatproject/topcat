@@ -1,6 +1,6 @@
 {
     "site": {
-        "topcatApiPath": "api/v1",
+        "topcatApiPath": "https://localhost:8181/api/v1",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "serviceStatus": {
@@ -8,7 +8,7 @@
             "message": "<p><strong>Service status:</strong> Site will go down for maintenance on 01 Novemember 2015 at 09:00.</p> We apologies for any inconvenience caused.</p>"
         },
         "paging" : {
-            "pagingType": "scroll",
+            "pagingType": "page",
             "paginationNumberOfRows": 10,
             "paginationPageSizes": [
                 10,
@@ -306,7 +306,8 @@
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://idsdev.isis.cclrc.ac.uk"
+                    "url": "https://idsdev.isis.cclrc.ac.uk",
+                    "zipType": "ZIP"
                 }
             ],
             "browseGridOptions": {
@@ -716,6 +717,32 @@
                             {
                                 "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
                                 "field": "name"
+                            }
+                        ]
+                    },
+                    {
+                        "displayName": "Instruments",
+                        "field": "investigationInstruments",
+                        "queryParams": [
+                            "InvestigationInstrument",
+                            "Instrument"
+                        ],
+                        "default": "false",
+                        "data": [
+                            {
+                                "field": "instrument",
+                                "default": false,
+                                "data": [
+                                    {
+                                        "displayName": "Name",
+                                        "field": "name"
+                                    },
+                                    {
+                                        "displayName": "Full Name",
+                                        "field": "fullName"
+                                    }
+
+                                ]
                             }
                         ]
                     }
