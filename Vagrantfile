@@ -9,16 +9,16 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 10080
   config.vm.network "forwarded_port", guest: 4848, host: 14848
   config.vm.network "forwarded_port", guest: 8181, host: 18181
-  config.vm.network "forwarded_port", guest: 3306, host: 13306
 
-  config.vm.provision "shell", inline: %{
+  config.vm.provision "shell", privileged: false, inline: %{
 
     sudo apt-get update
 
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password secret"
     sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip
-    mysql -u root --password=secret < /vagrant/provision/icat.sql
+    echo "create database icat;" | mysql -u root --password=secret
+    echo "create database topcat;" | mysql -u root --password=secret
 
     sudo add-apt-repository ppa:webupd8team/java
     sudo apt-get update
@@ -77,6 +77,7 @@ Vagrant.configure(2) do |config|
     mkdir data
     mkdir data/ids
     mkdir data/ids/cache
+    mkdir data/preparedfiles
     cd /home/vagrant/ids.server
     sudo ./setup configure
     sudo ./setup install
@@ -92,7 +93,29 @@ Vagrant.configure(2) do |config|
     sudo cp /vagrant/provision/000-default.conf /etc/apache2/sites-available
     sudo /etc/init.d/apache2 restart
 
-    sudo apt-get --assume-yes install nodejs npm maven 
+    curl -sL https://deb.nodesource.com/setup | sudo bash
+    sudo apt-get --assume-yes install nodejs maven phantomjs
+    sudo npm install -g bower
+    sudo npm install -g grunt-cli
+    sudo cp /vagrant/provision/phantomjs_bin.sh /etc/profile.d
+    source /vagrant/provision/phantomjs_bin.sh
+
+    sudo iptables -t nat -I OUTPUT -p tcp -o lo --dport 18181 -j REDIRECT --to-ports 8181
+
+    cd /vagrant
+    mvn clean install
+    cp /vagrant/target/topcat-*.zip /home/vagrant/
+    cd /home/vagrant/
+    unzip topcat-*.zip
+    cd topcatv2
+    sudo cp /vagrant/provision/topcat.properties /home/vagrant/topcatv2/topcat.properties
+    sudo cp /vagrant/provision/topcat-setup.properties /home/vagrant/topcatv2/topcat-setup.properties
+    sudo cp /vagrant/yo/app/config/topcat_dev.json /home/vagrant/topcatv2/topcat.json
+    sudo cp /vagrant/yo/app/languages/lang.json /home/vagrant/topcatv2/lang.json
+    sudo cp /vagrant/yo/app/styles/topcat.css /home/vagrant/topcatv2/topcat.css
+    chmod 0755 ./setup
+    sudo ./setup configure
+    sudo ./setup install
 
   }
 end
