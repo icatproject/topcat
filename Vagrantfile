@@ -89,8 +89,8 @@ Vagrant.configure(2) do |config|
 
     sudo rm -rf /home/vagrant/*.zip /home/vagrant/mysql-connector-java-5.1.37
 
-    #sudo cp /vagrant/provision/000-default.conf /etc/apache2/sites-available
-    #sudo /etc/init.d/apache2 restart
+    sudo cp /vagrant/provision/000-default.conf /etc/apache2/sites-available
+    sudo /etc/init.d/apache2 restart
 
     sudo apt-get --assume-yes install nodejs npm maven 
 
