@@ -2,7 +2,10 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "hashicorp/precise32"
+  config.vm.box = "ubuntu/trusty32"
+  config.vm.provider "virtualbox" do |v|
+      v.memory = 4096
+    end
   config.vm.network "forwarded_port", guest: 80, host: 10080
   config.vm.network "forwarded_port", guest: 4848, host: 14848
   config.vm.network "forwarded_port", guest: 8181, host: 18181
@@ -86,11 +89,10 @@ Vagrant.configure(2) do |config|
 
     sudo rm -rf /home/vagrant/*.zip /home/vagrant/mysql-connector-java-5.1.37
 
-    sudo cp /vagrant/provision/default /etc/apache2/sites-available
-    sudo /etc/init.d/apache2 restart
+    #sudo cp /vagrant/provision/000-default.conf /etc/apache2/sites-available
+    #sudo /etc/init.d/apache2 restart
 
-
-    sudo apt-get install nodejs npm maven 
+    sudo apt-get --assume-yes install nodejs npm maven 
 
   }
 end
