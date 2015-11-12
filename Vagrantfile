@@ -2,16 +2,14 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/trusty32"
-  config.vm.provider "virtualbox" do |v|
-      v.memory = 4096
-    end
   config.vm.network "forwarded_port", guest: 80, host: 10080
   config.vm.network "forwarded_port", guest: 4848, host: 14848
   config.vm.network "forwarded_port", guest: 8181, host: 18181
+  config.vm.box = "ubuntu/trusty32"
+  config.vm.provider("virtualbox") { |v| v.memory = 1024 * 4 }
 
   config.vm.provision "shell", privileged: false, inline: %{
-
+  
     sudo apt-get update
 
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
@@ -100,22 +98,19 @@ Vagrant.configure(2) do |config|
     sudo cp /vagrant/provision/phantomjs_bin.sh /etc/profile.d
     source /vagrant/provision/phantomjs_bin.sh
 
+    sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
+    sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
+    sudo apt-get --assume-yes install iptables-persistent
     sudo iptables -t nat -I OUTPUT -p tcp -o lo --dport 18181 -j REDIRECT --to-ports 8181
+    sudo sh -c "iptables-save > /etc/iptables/rules.v4"
+    sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
 
-    cd /vagrant
-    mvn clean install
-    cp /vagrant/target/topcat-*.zip /home/vagrant/
-    cd /home/vagrant/
-    unzip topcat-*.zip
-    cd topcatv2
-    sudo cp /vagrant/provision/topcat.properties /home/vagrant/topcatv2/topcat.properties
-    sudo cp /vagrant/provision/topcat-setup.properties /home/vagrant/topcatv2/topcat-setup.properties
-    sudo cp /vagrant/yo/app/config/topcat_dev.json /home/vagrant/topcatv2/topcat.json
-    sudo cp /vagrant/yo/app/languages/lang.json /home/vagrant/topcatv2/lang.json
-    sudo cp /vagrant/yo/app/styles/topcat.css /home/vagrant/topcatv2/topcat.css
-    chmod 0755 ./setup
-    sudo ./setup configure
-    sudo ./setup install
+    sudo cp /vagrant/provision/topcat_build_install /usr/bin/topcat_build_install
+    sudo chmod 755 /usr/bin/topcat_build_install
+    topcat_build_install
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=110
+
+    /vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
 
   }
 end
