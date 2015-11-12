@@ -51,7 +51,9 @@
             IdsService.getSize(sessionId, facility, options).then(function(data) {
                 def.resolve(data.data);
             }, function(error) {
-                def.reject('Failed to retrieve data for facility ' + error.config.info.facilityTitle + ': ' + getErrorMessage(error, status));
+                if(error.status > 0){
+                    def.reject('Failed to retrieve data for facility ' + error.config.info.facilityTitle + ': ' + getErrorMessage(error, status));
+                }
             });
 
             return def.promise;

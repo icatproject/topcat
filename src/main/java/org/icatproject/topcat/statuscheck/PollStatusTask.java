@@ -8,6 +8,7 @@ import org.icatproject.ids.client.InternalException;
 import org.icatproject.ids.client.NotFoundException;
 import org.icatproject.ids.client.NotImplementedException;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.utils.PropertyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,11 @@ public class PollStatusTask implements Runnable {
     public void run() {
         logger.info("New poll starting...");
 
+        PropertyHandler properties = PropertyHandler.getInstance();
+
+        int pollDelay = properties.getPollDelay();
+        int pollIntervalWait = properties.getPollIntervalWait();
+
         pollBean.add(preparedId);
 
         boolean status = false;
@@ -39,8 +45,8 @@ public class PollStatusTask implements Runnable {
         do {
             try {
                 //wait a minute to give ids some time to process
-                logger.info("Waiting 60 seconds before checking....");
-                Thread.sleep(60000);
+                logger.info("Waiting " + pollDelay + " milliseconds before checking....");
+                Thread.sleep(pollDelay);
                 PollStatusWorker worker = new PollStatusWorker(preparedId, downloadRepository, pollBean);
 
                 status = worker.checkStatus();
@@ -48,8 +54,8 @@ public class PollStatusTask implements Runnable {
 
                 //wait 10 minutes for the next try
                 if (status == false) {
-                    logger.info("Waiting 10 minutes before rechecking....");
-                    Thread.sleep(600000);
+                    logger.info("Waiting " + pollIntervalWait + " milliseconds before rechecking....");
+                    Thread.sleep(pollIntervalWait);
                 }
             } catch (InterruptedException | BadRequestException | NotFoundException | InsufficientPrivilegesException | InternalException | NotImplementedException | IOException e) {
                 logger.debug("Thread interrupted", e);

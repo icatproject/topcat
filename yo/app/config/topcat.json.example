@@ -326,7 +326,8 @@
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://myids.server.ac.uk"
+                    "url": "https://myids.server.ac.uk",
+                    "zipType": "ZIP"
                 }
             ],
             "browseGridOptions": {

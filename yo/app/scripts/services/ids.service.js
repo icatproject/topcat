@@ -15,17 +15,21 @@
          */
         this.getSize = function(mySessionId, facility, options) {
             var url = facility.idsUrl + '/ids/getSize';
+
             var params = {
-                    params : {
-                        sessionId : mySessionId,
-                        server : facility.idsUrl
-                    },
-                    info : {
-                        'facilityKeyName' : facility.facilityName,
-                        'facilityTitle' : facility.title
-                    },
-                    cache: true
-                };
+                params : {
+                    sessionId : mySessionId,
+                    server : facility.idsUrl
+                },
+                info : {
+                    'facilityKeyName' : facility.facilityName,
+                    'facilityTitle' : facility.title
+                },
+                cache: true,
+                timeout: options.canceler
+            };
+
+            delete options.canceler;
 
             params = _.merge(params, {
                 params : options

@@ -216,10 +216,18 @@ public class DownloadRepository {
                 if (properties.isMailEnable() == true) {
                     if (downloads.get(0).getEmail() != null) {
                         if (emailValidator.isValid(downloads.get(0).getEmail())) {
+                            //get fullName if exists
+                            String userName = downloads.get(0).getUserName();
+
+                            String fullName = downloads.get(0).getFullName();
+
+                            if (fullName != null && ! fullName.trim().isEmpty()) {
+                                userName = fullName;
+                            }
 
                             Map<String, String> valuesMap = new HashMap<String, String>();
                             valuesMap.put("email", downloads.get(0).getEmail());
-                            valuesMap.put("userName", downloads.get(0).getUserName());
+                            valuesMap.put("userName", userName);
                             valuesMap.put("facilityName", downloads.get(0).getFacilityName());
                             valuesMap.put("preparedId", downloads.get(0).getPreparedId());
                             valuesMap.put("downloadUrl", downloads.get(0).getTransportUrl() + "/ids/getData?preparedId=" + downloads.get(0).getPreparedId() + "&outname=" + downloads.get(0).getFileName());

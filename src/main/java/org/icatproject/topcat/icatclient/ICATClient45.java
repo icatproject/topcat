@@ -2,6 +2,7 @@ package org.icatproject.topcat.icatclient;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.icatproject_4_5_0.ICATService;
 import org.icatproject_4_5_0.IcatException_Exception;
 import org.icatproject_4_5_0.Login.Credentials;
 import org.icatproject_4_5_0.Login.Credentials.Entry;
+import org.icatproject_4_5_0.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +107,28 @@ public class ICATClient45 implements ICATClientInterface {
 
         return result;
 
+    }
+
+
+    @Override
+    public String getFullName(String icatSessionId) throws TopcatException {
+        List<Object> result = new ArrayList<Object>();
+
+        String fullName = null;
+
+        try {
+            result = service.search(icatSessionId, "SELECT u FROM User u WHERE u.name = :user");
+        } catch (IcatException_Exception e) {
+            throwNewICATException(e);
+        }
+
+        if (result != null && ! result.isEmpty()) {
+            User user = (User) result.get(0);
+
+            fullName = user.getFullName();
+        }
+
+        return fullName;
     }
 
 
@@ -231,9 +255,6 @@ public class ICATClient45 implements ICATClientInterface {
             throw new IcatException(e.getMessage());
         }
         */
-
-
     }
-
 
 }

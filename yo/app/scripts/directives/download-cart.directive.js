@@ -118,7 +118,10 @@
                     download.email = vm.email;
                 });
             }
-            ///submit the cart for download
+            //submit the cart for download
+
+            console.log('vm.downloads', vm.downloads);
+
             Cart.submit(vm.downloads);
         };
 
