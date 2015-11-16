@@ -5,8 +5,11 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 10080
   config.vm.network "forwarded_port", guest: 4848, host: 14848
   config.vm.network "forwarded_port", guest: 8181, host: 18181
+  config.vm.network "forwarded_port", guest: 3306, host: 13306
   config.vm.box = "ubuntu/trusty32"
   config.vm.provider("virtualbox") { |v| v.memory = 1024 * 4 }
+  config.vm.network :private_network, ip: '192.168.50.50'
+  config.vm.synced_folder '.', '/vagrant', nfs: true
 
   config.vm.provision "shell", privileged: false, inline: %{
   
@@ -110,7 +113,10 @@ Vagrant.configure(2) do |config|
     topcat_build_install
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=110
 
-    /vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
+    #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
+
+    mysql -u root --password=secret icat < /vagrant/provision/icat.sql
 
   }
 end
+
