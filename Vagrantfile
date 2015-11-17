@@ -44,6 +44,18 @@ Vagrant.configure(2) do |config|
     sudo cp /home/vagrant/ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
 
     sudo /opt/glassfish4/bin/asadmin start-domain
+    sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
+    sudo /opt/glassfish4/bin/asadmin set server.http-service.access-logging-enabled=true
+    sudo /opt/glassfish4/bin/asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
+    sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+    sudo /opt/glassfish4/bin/asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
+    sudo /opt/glassfish4/bin/asadmin delete-ssl --type http-listener http-listener-2
+    sudo /opt/glassfish4/bin/asadmin delete-network-listener http-listener-2
+    sudo /opt/glassfish4/bin/asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
+    sudo /opt/glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
+    sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
+  
+
     mkdir /home/vagrant/bin
 
     wget http://www.icatproject.org/mvn/repo/org/icatproject/authn_simple/1.0.1/authn_simple-1.0.1-distro.zip
@@ -54,8 +66,7 @@ Vagrant.configure(2) do |config|
     sudo ./setup configure
     sudo ./setup install
     cd /home/vagrant
-
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=60
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
     wget http://www.icatproject.org/mvn/repo/org/icatproject/icat.server/4.5.1/icat.server-4.5.1-distro.zip
     unzip icat.server-4.5.1-distro.zip
@@ -66,7 +77,7 @@ Vagrant.configure(2) do |config|
     sudo ./setup install
     cd /home/vagrant
 
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.5.1.deployment-order=80
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.5.1.deployment-order=100
 
 
     wget http://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
@@ -82,17 +93,7 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant/ids.server
     sudo ./setup configure
     sudo ./setup install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=100
-    sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
-    sudo /opt/glassfish4/bin/asadmin set server.http-service.access-logging-enabled=true
-    sudo /opt/glassfish4/bin/asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
-    sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
-    sudo /opt/glassfish4/bin/asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
-    sudo /opt/glassfish4/bin/asadmin delete-ssl --type http-listener http-listener-2
-    sudo /opt/glassfish4/bin/asadmin delete-network-listener http-listener-2
-    sudo /opt/glassfish4/bin/asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
-    sudo /opt/glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
-    sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
 
     cd /home/vagrant
 
@@ -122,7 +123,7 @@ Vagrant.configure(2) do |config|
     sudo cp /vagrant/provision/topcat_build_install /usr/bin/topcat_build_install
     sudo chmod 755 /usr/bin/topcat_build_install
     topcat_build_install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=110
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=140
 
     #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
 
