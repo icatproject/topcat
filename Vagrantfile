@@ -83,6 +83,17 @@ Vagrant.configure(2) do |config|
     sudo ./setup configure
     sudo ./setup install
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=100
+    sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
+    sudo /opt/glassfish4/bin/asadmin set server.http-service.access-logging-enabled=true
+    sudo /opt/glassfish4/bin/asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
+    sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+    sudo /opt/glassfish4/bin/asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
+    sudo /opt/glassfish4/bin/asadmin delete-ssl --type http-listener http-listener-2
+    sudo /opt/glassfish4/bin/asadmin delete-network-listener http-listener-2
+    sudo /opt/glassfish4/bin/asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
+    sudo /opt/glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
+    sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
+
     cd /home/vagrant
 
     sudo cp /vagrant/provision/glassfish /etc/init.d/
