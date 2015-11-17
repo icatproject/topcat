@@ -37,8 +37,12 @@
         this.ping = function() {
             var def = $q.defer();
 
-            SmartClientService.ping().then(function() {
-                def.resolve({ping: 'online'});
+            SmartClientService.ping().then(function(data) {
+                if (data.status === 200) {
+                    def.resolve({ping: 'online'});
+                } else {
+                    def.resolve({ping: 'offline'});
+                }
             }, function(error) { //jshint ignore: line
                 def.resolve({ping: 'offline'});
                 //def.reject('Failed to ping the Smartclient: ' + getErrorMessage(error, status));

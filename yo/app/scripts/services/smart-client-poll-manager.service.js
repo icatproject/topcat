@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('SmartClientPollManager', SmartClientPollManager);
 
-    SmartClientPollManager.$inject = ['APP_CONFIG', 'SMARTCLIENTPING', 'Config', 'SmartClientManager', '$sessionStorage', 'TopcatManager', 'poller', 'inform'];
+    SmartClientPollManager.$inject = ['APP_CONFIG', 'Config', 'SmartClientManager', '$sessionStorage', 'TopcatManager', 'poller', 'inform'];
 
-    function SmartClientPollManager(APP_CONFIG, SMARTCLIENTPING, Config, SmartClientManager, $sessionStorage, TopcatManager, poller, inform) {
+    function SmartClientPollManager(APP_CONFIG, Config, SmartClientManager, $sessionStorage, TopcatManager, poller, inform) {
         var self = this;
 
         this.createPoller = function(facility, userName, preparedId) {
@@ -59,23 +59,25 @@
 
                 //check smartclient is online
                 if (facility !== null) {
-                    if (SMARTCLIENTPING.ping === 'online') {
-                        //login to the smartclient
-                        SmartClientManager.connect(session.sessionId, facility).then(function() {
-                            //get list of smartclient downloads that has restoring status
-                            TopcatManager.getMyRestoringSmartClientDownloads(facility, session.userName).then(function(data) {
-                                _.each(data, function(smartClientDownload) {
-                                    //create a poller for each preparedId
-                                    self.createPoller(facility, session.userName, smartClientDownload.preparedId);
+                    SmartClientManager.ping().then(function(pingData){
+                        if (pingData.ping === 'online') {
+                            //login to the smartclient
+                            SmartClientManager.connect(session.sessionId, facility).then(function() {
+                                //get list of smartclient downloads that has restoring status
+                                TopcatManager.getMyRestoringSmartClientDownloads(facility, session.userName).then(function(data) {
+                                    _.each(data, function(smartClientDownload) {
+                                        //create a poller for each preparedId
+                                        self.createPoller(facility, session.userName, smartClientDownload.preparedId);
+                                    });
+                                });
+                            }, function(error) { //jshint ignore: line
+                                inform.add(error, {
+                                    'ttl': 0,
+                                    'type': 'danger'
                                 });
                             });
-                        }, function(error) { //jshint ignore: line
-                            inform.add(error, {
-                                'ttl': 0,
-                                'type': 'danger'
-                            });
-                        });
-                    }
+                        }
+                    });
                 }
             });
         };
