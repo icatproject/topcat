@@ -17,7 +17,7 @@ Vagrant.configure(2) do |config|
 
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password secret"
-    sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip
+    sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential 
     echo "create database icat;" | mysql -u root --password=secret
     echo "create database topcat;" | mysql -u root --password=secret
 
