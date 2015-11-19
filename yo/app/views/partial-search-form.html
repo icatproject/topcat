@@ -19,7 +19,7 @@
             <p class="input-group">
                 <input type="text" class="form-control input-sm" datepicker-popup="{{ searchForm.init.datepickers.dateformat }}" ng-model="searchForm.form.startDate" is-open="searchForm.init.datepickers.startDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" />
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'startDate')" disabled><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'startDate')"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
             </p>
         </div>
@@ -27,7 +27,7 @@
             <p class="input-group">
                 <input type="text" class="form-control input-sm" datepicker-popup="{{ searchForm.init.datepickers.dateformat }}" ng-model="searchForm.form.endDate" is-open="searchForm.init.datepickers.endDate" min-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" placeholder="{{'SEARCH.FORM.END_DATE_PLACEHOLDER' | translate}}"/>
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'endDate')" disabled><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default input-sm" ng-click="searchForm.open($event, 'endDate')"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
             </p>
         </div>
