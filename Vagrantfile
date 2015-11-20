@@ -106,7 +106,7 @@ Vagrant.configure(2) do |config|
     sudo cp /vagrant/provision/000-default.conf /etc/apache2/sites-available
     sudo /etc/init.d/apache2 restart
 
-    curl -sL https://deb.nodesource.com/setup | sudo bash
+    curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
     sudo apt-get --assume-yes install nodejs maven phantomjs
     sudo npm install -g bower
     sudo npm install -g grunt-cli
