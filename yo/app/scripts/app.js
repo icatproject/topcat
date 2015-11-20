@@ -79,7 +79,7 @@
         .config(function($stateProvider, $urlRouterProvider, APP_CONFIG) {
 
             var maintenanceMode = APP_CONFIG.site.maintenanceMode;
-            if(maintenanceMode.show){
+            if(maintenanceMode && maintenanceMode.show){
                 $stateProvider.state('maintenance-mode', {
                     url: '{path:.*}',
                     views: {

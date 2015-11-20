@@ -110,6 +110,7 @@ Vagrant.configure(2) do |config|
     sudo apt-get --assume-yes install nodejs maven phantomjs
     sudo npm install -g bower
     sudo npm install -g grunt-cli
+    sudo chown -R vagrant:vagrant /home/vagrant/.npm
     sudo cp /vagrant/provision/phantomjs_bin.sh /etc/profile.d
     source /vagrant/provision/phantomjs_bin.sh
 
