@@ -31,6 +31,11 @@
 
         vm.euCookieLaw = Config.getEuCookieLaw(APP_CONFIG);
 
+        var maintenanceMode = APP_CONFIG.site.maintenanceMode;
+        if(maintenanceMode){
+            this.showMaintenanceMode = maintenanceMode.show;
+        }
+
         vm.changeLanguage = function (langKey) {
             $translate.use(langKey);
         };

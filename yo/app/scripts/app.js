@@ -76,7 +76,22 @@
         .config(['$logProvider', function($logProvider){
             $logProvider.debugEnabled(true);
         }])
-        .config(function($stateProvider, $urlRouterProvider) {
+        .config(function($stateProvider, $urlRouterProvider, APP_CONFIG) {
+
+            var maintenanceMode = APP_CONFIG.site.maintenanceMode;
+            if(maintenanceMode && maintenanceMode.show){
+                $stateProvider.state('maintenance-mode', {
+                    url: '{path:.*}',
+                    views: {
+                      '': {
+                        templateUrl: 'views/maintenance-mode.html',
+                        controller: 'MaintenanceModeController as maintenanceModeController'
+                      }
+                    }
+                });
+                return;
+            }
+
             //workaround https://github.com/angular-ui/ui-router/issues/1022
             $urlRouterProvider.otherwise(function($injector) {
                 var $state = $injector.get('$state');
