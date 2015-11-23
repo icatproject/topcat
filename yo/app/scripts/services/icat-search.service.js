@@ -14,15 +14,13 @@
                 var url = APP_CONFIG.facilities[facilityName].icatUrl + '/icat/lucene/data';
                 promises.push($http({
                     url: url, 
-                    method: "GET",
+                    method: 'GET',
                     params: {
                         sessionId: sessionId,
                         query: JSON.stringify(query)
                     }
                 }).then(function(response){
-                    _.each(response.data, function(result){
-                        results.push(result);
-                    });
+                    results = _.sortBy(_.flatten([results, response.data]), 'score');
                     fn.call(null, results);
                 }));
             });
