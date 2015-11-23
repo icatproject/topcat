@@ -13,19 +13,20 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", privileged: false, inline: %{
   
+    sudo add-apt-repository ppa:openjdk-r/ppa
     sudo apt-get update
 
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password secret"
-    sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential 
+    sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential openjdk-8-jdk
     echo "create database icat;" | mysql -u root --password=secret
     echo "create database topcat;" | mysql -u root --password=secret
 
-    sudo add-apt-repository ppa:webupd8team/java
-    sudo apt-get update
-    sudo debconf-set-selections <<< "debconf shared/accepted-oracle-license-v1-1 select true"
-    sudo debconf-set-selections <<< "debconf shared/accepted-oracle-license-v1-1 seen true"
-    sudo apt-get --assume-yes install oracle-java7-installer
+    #sudo add-apt-repository ppa:webupd8team/java -y
+    #sudo apt-get update
+    #sudo debconf-set-selections <<< "debconf shared/accepted-oracle-license-v1-1 select true"
+    #sudo debconf-set-selections <<< "debconf shared/accepted-oracle-license-v1-1 seen true"
+    #sudo apt-get --assume-yes install oracle-java8-installer
 
     wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
     sudo unzip glassfish-4.0.zip -d /opt
@@ -68,8 +69,8 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
-    wget http://www.icatproject.org/mvn/repo/org/icatproject/icat.server/4.5.1/icat.server-4.5.1-distro.zip
-    unzip icat.server-4.5.1-distro.zip
+    wget http://icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.0-SNAPSHOT/icat.server-4.6.0-20151119.143437-6-distro.zip
+    unzip icat.server-4.6.0-20151119.143437-6-distro.zip
     sudo cp /vagrant/provision/icat.properties /home/vagrant/icat.server/icat.properties
     sudo cp /vagrant/provision/icat-setup.properties /home/vagrant/icat.server/icat-setup.properties
     cd /home/vagrant/icat.server
@@ -77,7 +78,7 @@ Vagrant.configure(2) do |config|
     sudo ./setup install
     cd /home/vagrant
 
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.5.1.deployment-order=100
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.0-SNAPSHOT.deployment-order=100
 
 
     wget http://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
