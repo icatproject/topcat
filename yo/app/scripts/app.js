@@ -5,7 +5,7 @@
      * deferred bootstrap to load main configuration to APP_CONFIG
      */
     window.deferredBootstrapper.bootstrap({
-        element : document.body,
+        element : document.documentElement,
         module : 'angularApp',
         resolve : {
             APP_CONFIG : ['$http', function($http) {
