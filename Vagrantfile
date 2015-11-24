@@ -21,6 +21,9 @@ Vagrant.configure(2) do |config|
     sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential openjdk-8-jdk
     echo "create database icat;" | mysql -u root --password=secret
     echo "create database topcat;" | mysql -u root --password=secret
+    echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root --password=secret
+    sudo cp /vagrant/provision/my.cnf /etc/mysql/my.cnf
+    sudo /etc/init.d/mysql restart
 
     #sudo add-apt-repository ppa:webupd8team/java -y
     #sudo apt-get update
@@ -34,6 +37,7 @@ Vagrant.configure(2) do |config|
     wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
     unzip mysql-connector-java-5.1.37.zip
     sudo cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
+
 
     wget http://www.icatproject.org/mvn/repo/org/icatproject/ids.plugin/1.3.0/ids.plugin-1.3.0.jar
     sudo cp /home/vagrant/ids.plugin-1.3.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
