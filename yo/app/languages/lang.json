@@ -205,7 +205,7 @@
             "SELECT_TYPE": "Select a Search Type",
             "SELECT_FACILITY": "Select a Facility",
             "START_DATE_PLACEHOLDER" : "Start Date",
-            "END_DATE_PLACEHOLDER" : "Start Date",
+            "END_DATE_PLACEHOLDER" : "End Date",
             "ADD_PARAMETER_BUTTON" : "Add Parameter",
             "ADD_SAMPLE_BUTTON" : "Add Sample",
             "SEARCH_BUTTON" : "Search"

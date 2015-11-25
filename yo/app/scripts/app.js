@@ -137,7 +137,7 @@
                         },
                         'search-form-view': {
                             templateUrl: 'views/partial-search-form.html',
-                            controller: 'SearchFormController as searchForm'
+                            controller: 'SearchFormController as searchFormController'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
@@ -147,7 +147,7 @@
                 })
 
                 .state('home.browse.facility.search', {
-                    url: '^/search?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    url: '^/search?text&type&startDate&endDate&parameters&samples&facilities',
                     views: {
                         '@home.browse' : {
                             templateUrl: 'views/search-results.html',
