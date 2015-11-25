@@ -17,10 +17,11 @@
                     method: 'GET',
                     params: {
                         sessionId: sessionId,
-                        query: JSON.stringify(query)
+                        query: JSON.stringify(query),
+                        maxCount: 1000
                     }
                 }).then(function(response){
-                    results = _.sortBy(_.flatten([results, response.data]), 'score');
+                    results = _.sortBy(_.flatten([results, response.data]), 'score').reverse();
                     fn.call(null, results);
                 }));
             });

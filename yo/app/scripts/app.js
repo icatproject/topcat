@@ -150,7 +150,8 @@
                     url: '^/search?data&meta&pagingType&query&type&facility&startDate&endDate',
                     views: {
                         '@home.browse' : {
-                            templateUrl: 'views/search-result.html'
+                            templateUrl: 'views/search-results.html',
+                            controller: 'SearchResultsController as searchResultsController'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
