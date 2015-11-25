@@ -1,5 +1,6 @@
 {
     "SITE_NAME_LOGO": "<img alt=\"Diamond Light Source\" src=\"images/diamond/diamond_logo.png\" height=\"50px\">",
+    "SITE_TITLE": "Topcat",
     "MAIN_NAVIGATION": {
         "HOME": "Home",
         "ABOUT": "About",

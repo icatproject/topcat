@@ -21,6 +21,9 @@ Vagrant.configure(2) do |config|
     sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential openjdk-8-jdk
     echo "create database icat;" | mysql -u root --password=secret
     echo "create database topcat;" | mysql -u root --password=secret
+    echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root --password=secret
+    sudo cp /vagrant/provision/my.cnf /etc/mysql/my.cnf
+    sudo /etc/init.d/mysql restart
 
     #sudo add-apt-repository ppa:webupd8team/java -y
     #sudo apt-get update
@@ -34,6 +37,7 @@ Vagrant.configure(2) do |config|
     wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
     unzip mysql-connector-java-5.1.37.zip
     sudo cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
+
 
     wget http://www.icatproject.org/mvn/repo/org/icatproject/ids.plugin/1.3.0/ids.plugin-1.3.0.jar
     sudo cp /home/vagrant/ids.plugin-1.3.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
@@ -69,8 +73,8 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
-    wget http://icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.0-SNAPSHOT/icat.server-4.6.0-20151119.143437-6-distro.zip
-    unzip icat.server-4.6.0-20151119.143437-6-distro.zip
+    wget http://icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.0-SNAPSHOT/icat.server-4.6.0-20151124.155406-7-distro.zip
+    unzip icat.server-4.6.0-20151124.155406-7-distro.zip
     sudo cp /vagrant/provision/icat.properties /home/vagrant/icat.server/icat.properties
     sudo cp /vagrant/provision/icat-setup.properties /home/vagrant/icat.server/icat-setup.properties
     cd /home/vagrant/icat.server
@@ -129,7 +133,12 @@ Vagrant.configure(2) do |config|
 
     #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
 
-    mysql -u root --password=secret icat < /vagrant/provision/icat.sql
+    mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
+
+    sudo apt-get --assume-yes  install python-pip
+    sudo pip install suds
+    cd /home/vagrant/icat.server
+    ./icatadmin https://localhost:8181 simple username root password root -- populate
 
   }
 end
