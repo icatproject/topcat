@@ -73,8 +73,8 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
-    wget http://icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.0-SNAPSHOT/icat.server-4.6.0-20151119.143437-6-distro.zip
-    unzip icat.server-4.6.0-20151119.143437-6-distro.zip
+    wget http://icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.0-SNAPSHOT/icat.server-4.6.0-20151124.155406-7-distro.zip
+    unzip icat.server-4.6.0-20151124.155406-7-distro.zip
     sudo cp /vagrant/provision/icat.properties /home/vagrant/icat.server/icat.properties
     sudo cp /vagrant/provision/icat-setup.properties /home/vagrant/icat.server/icat-setup.properties
     cd /home/vagrant/icat.server
@@ -133,7 +133,7 @@ Vagrant.configure(2) do |config|
 
     #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
 
-    mysql -u root --password=secret icat < /vagrant/provision/icat.sql
+    mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 
   }
 end
