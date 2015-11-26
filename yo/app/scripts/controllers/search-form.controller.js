@@ -5,19 +5,19 @@
     var app = angular.module('angularApp');
 
     app.controller('SearchFormController', ['$sessionStorage', '$state', '$filter', 'APP_CONFIG', function($sessionStorage, $state, $filter, APP_CONFIG){
-        this.text = '';
-        this.type = '';
+        this.text = $state.params.text || '';
+        this.type = $state.params.type || '';
         var facilities = [];
         _.each($sessionStorage.sessions, function(session, name){
             facilities.push({
                 name: name,
                 title: APP_CONFIG.facilities[name].facilityName,
-                selected: true
+                selected: $state.params.facilities ? _.include(JSON.parse($state.params.facilities), name) : true
             });
         });
         this.facilities = facilities;
-        this.startDate = null;
-        this.endDate = null;
+        this.startDate = $state.params.startDate;
+        this.endDate = $state.params.endDate;
         this.isStartDateOpen = false;
         this.isEndDateOpen = false;
         this.dateFormat = 'yyyy-MM-dd';
