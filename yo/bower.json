@@ -2,15 +2,16 @@
   "name": "ui-route",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "1.3.14",
+    "jquery": "1.11.3",
+    "angular": "1.4.8",
     "json3": "3.3.2",
     "es5-shim": "3.1.1",
     "normalize-css": "3.0.3",
-    "bootstrap": "3.2.0",
+    "bootstrap": "3.3.6",
     "angular-resource": "1.3.14",
-    "angular-sanitize": "1.3.14",
-    "angular-route": "1.3.14",
-    "angular-bootstrap": "0.13.4",
+    "angular-sanitize": "1.4.8",
+    "angular-route": "1.4.8",
+    "angular-bootstrap": "0.14.3",
     "angular-ui-router": "0.2.15",
     "angular-deferred-bootstrap": "0.1.7",
     "angularjs-truncate": "*",
@@ -18,12 +19,12 @@
     "angular-inform": "0.0.18",
     "lodash": "3.10.1",
     "angular-pretty-bytes": "1.0.1",
-    "ngstorage": "0.3.4",
-    "angular-translate": "2.6.1",
-    "angular-translate-loader-static-files": "2.6.1",
+    "ngstorage": "0.3.10",
+    "angular-translate": "2.8.1",
+    "angular-translate-loader-static-files": "2.8.1",
     "squel": "4.0.0",
-    "angular-ui-grid": "3.0.4",
-    "angular-spinner": "0.6.2",
+    "angular-ui-grid": "3.0.7",
+    "angular-spinner": "0.8.0",
     "ng-device-detector": "1.1.8",
     "angular-moment": "0.10.2",
     "angularpoller": "git://github.com/emmaguo/angular-poller.git#e5103c8176f1e13200064fa650011b2877da8853",
@@ -35,8 +36,5 @@
     "angular-mocks": "1.3.14",
     "karma-read-json": "1.1.0"
   },
-  "appPath": "app",
-  "resolutions": {
-    "angular": "1.3.14"
-  }
+  "appPath": "app"
 }

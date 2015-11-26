@@ -25,7 +25,7 @@
         MyDataModel.init(facilities, $scope, entityType, currentRouteSegment, sessions, $stateParams);
 
         $templateCache.put('ui-grid/selectionRowHeaderButtons',
-            '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" tooltip="' + $translate.instant('MY_DATA.SELECTOR.TOOLTIP.TEXT') + '" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
+            '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" uib-tooltip="' + $translate.instant('MY_DATA.SELECTOR.TOOLTIP.TEXT') + '" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
         );
 
         if (pagingType === 'page') {

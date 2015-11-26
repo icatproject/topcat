@@ -5,14 +5,14 @@
         .module('angularApp')
         .controller('ParameterModalController', ParameterModalController);
 
-    ParameterModalController.$inject = ['$modal'];
+    ParameterModalController.$inject = ['$uibModal'];
 
-    function ParameterModalController($modal) {
+    function ParameterModalController($uibModal) {
         var vm = this;
 
         // open a model window
         vm.openModal = function(form, size) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl : 'views/search/parameter-modal.html',
                 controller : 'ModalInstanceController as filter',
                 size : size,

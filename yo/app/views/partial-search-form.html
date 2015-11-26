@@ -15,7 +15,7 @@
         </div>
         <div class="form-group">
             <p class="input-group">
-                <input type="text" class="form-control input-sm" datepicker-popup="{{searchFormController.dateformat}}" ng-model="searchFormController.startDate" is-open="searchFormController.isStartDateOpen"  close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" />
+                <input type="text" class="form-control input-sm" uib-datepicker-popup="{{searchFormController.dateFormat}}" ng-model="searchFormController.startDate" is-open="searchFormController.isStartDateOpen"  close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" />
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default input-sm" ng-click="searchFormController.openStartDate()"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
@@ -23,7 +23,7 @@
         </div>
         <div class="form-group">
             <p class="input-group">
-                <input type="text" class="form-control input-sm" datepicker-popup="{{searchFormController.dateformat}}" ng-model="searchFormController.endDate" is-open="searchFormController.isEndDateOpen" close-text="Close" placeholder="{{'SEARCH.FORM.END_DATE_PLACEHOLDER' | translate}}"/>
+                <input type="text" class="form-control input-sm" uib-datepicker-popup="{{searchFormController.dateFormat}}" ng-model="searchFormController.endDate" is-open="searchFormController.isEndDateOpen" close-text="Close" placeholder="{{'SEARCH.FORM.END_DATE_PLACEHOLDER' | translate}}"/>
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default input-sm" ng-click="searchFormController.openEndDate()"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>

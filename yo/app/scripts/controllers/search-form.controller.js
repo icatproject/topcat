@@ -35,7 +35,7 @@
         this.search = function(){
             var params = {};
 
-            console.log('this.startDate', this.startDate);
+            console.log('this.startDate', typeof this.startDate);
 
             if(this.text !== '') params.text = this.text;
             if(this.type !== '') params.type = this.type;

@@ -7,12 +7,12 @@
         .controller('RemoveDownloadModalController', RemoveDownloadModalController)
         .controller('SmartClientDownloadModalController', SmartClientDownloadModalController);
 
-    DownloadController.$inject = ['$rootScope', '$scope', '$state', 'APP_CONFIG', 'Config', 'Cart', 'DownloadModel', '$sessionStorage', '$modal'];
+    DownloadController.$inject = ['$rootScope', '$scope', '$state', 'APP_CONFIG', 'Config', 'Cart', 'DownloadModel', '$sessionStorage', '$uibModal'];
     RemoveDownloadModalController.$inject = ['$modalInstance', 'APP_CONFIG', 'Config', 'row', 'TopcatManager', 'inform', '$translate'];
     SmartClientDownloadModalController.$inject = ['$modalInstance'];
 
 
-    function DownloadController($rootScope, $scope, $state, APP_CONFIG, Config, Cart, DownloadModel, $sessionStorage, $modal) {
+    function DownloadController($rootScope, $scope, $state, APP_CONFIG, Config, Cart, DownloadModel, $sessionStorage, $uibModal) {
         var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
 
         $scope.isEmpty = false;
@@ -31,7 +31,7 @@
 
 
         $scope.remove = function(row, rowIndex) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'views/remove-download-modal.html',
                 controller: 'RemoveDownloadModalController as vm',
                 resolve: {
@@ -53,7 +53,7 @@
         };
 
         $scope.smartClientModal = function() {
-            $modal.open({
+            $uibModal.open({
                 templateUrl: 'views/smartclient-download-modal.html',
                 controller: 'SmartClientDownloadModalController as sc',
             });

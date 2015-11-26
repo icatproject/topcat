@@ -7,16 +7,16 @@
         controller('DownloadCartModalController', DownloadCartModalController).
         directive('downloadCart', downloadCart);
 
-    DownloadCartController.$inject = ['$rootScope', '$modal', 'Cart', 'inform'];
+    DownloadCartController.$inject = ['$rootScope', '$uibModal', 'Cart', 'inform'];
     DownloadCartModalController.$inject = ['$modalInstance', 'Cart', 'SMARTCLIENTPING', 'idsInfos', '$translate'];
     downloadCart.$inject = [];
 
-    function DownloadCartController ($rootScope, $modal, Cart, inform) {
+    function DownloadCartController ($rootScope, $uibModal, Cart, inform) {
         var dc = this;
         dc.cartItems = Cart._cart.items;
 
         dc.openModal = function() {
-            $modal.open({
+            $uibModal.open({
                 templateUrl : 'views/download-cart-modal.directive.html',
                 controller : 'DownloadCartModalController as dcm',
                 resolve: {

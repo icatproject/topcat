@@ -1,4 +1,4 @@
-<tabset>
+<uibTabset>
     	<tab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
       		<div class="tab-content">
 				<div class="param-item" ng-repeat="content in tab.content">
@@ -7,5 +7,5 @@
 				</div>
 			</div>
     	</tab>
-</tabset>
+</uibTabset>
 

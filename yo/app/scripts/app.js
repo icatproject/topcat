@@ -68,6 +68,8 @@
                 suffix: '.json'
             });
             $translateProvider.preferredLanguage('en');
+
+            $translateProvider.useSanitizeValueStrategy(null);
          }])
         .config(['$httpProvider', function($httpProvider) {
             $httpProvider.interceptors.push('HttpErrorInterceptor');

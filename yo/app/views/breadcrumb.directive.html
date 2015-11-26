@@ -5,7 +5,7 @@
 			<a 
 				ui-sref="{{item.route}}"
 				ng-if="!item.translate && item.title.length > bc.maxTitleLength"
-				tooltip="{{item.title}}"
+				uib-tooltip="{{item.title}}"
 				tooltip-placement="bottom"
 			>{{item.title | limitTo : bc.maxTitleLength}}...</a>
 			<a
