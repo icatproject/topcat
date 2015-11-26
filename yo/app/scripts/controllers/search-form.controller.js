@@ -37,13 +37,19 @@
                 text: null,
                 type: null,
                 startDate: null,
-                endDate: null
+                endDate: null,
+                facilities: null
             };
 
             if(this.text !== '') params.text = this.text;
             if(this.type !== '') params.type = this.type;
             if(this.startDate) params.startDate = $filter('date')(this.startDate, this.dateFormat);
             if(this.endDate) params.endDate = $filter('date')(this.endDate, this.dateFormat);
+
+            var _facilities = _.select(facilities, function(facility){ return facility.selected; });
+            _facilities = _.map(_facilities, function(facility){ return facility.name; });
+            if(_facilities.length > 0) params.facilities = JSON.stringify(_facilities);
+
 
             $state.go('home.browse.facility.search', params);
         };

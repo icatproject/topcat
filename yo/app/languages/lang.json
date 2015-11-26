@@ -204,11 +204,19 @@
             "SEARCH_TEXT_PLACEHOLDER": "Search Text",
             "SELECT_TYPE": "Select a Search Type",
             "SELECT_FACILITY": "Select a Facility",
+            "INVESTIGATION_TYPE": "Investigation",
+            "DATASET_TYPE": "Dataset",
+            "DATAFILE_TYPE": "Datafile",
             "START_DATE_PLACEHOLDER" : "Start Date",
             "END_DATE_PLACEHOLDER" : "End Date",
             "ADD_PARAMETER_BUTTON" : "Add Parameter",
             "ADD_SAMPLE_BUTTON" : "Add Sample",
             "SEARCH_BUTTON" : "Search"
+        },
+        "COLUMN": {
+            "NAME": "Name",
+            "CREATE_TIME": "Create Time",
+            "MOD_TIME": "Modified Time"
         }
     },
     "MY_DATA" : {
