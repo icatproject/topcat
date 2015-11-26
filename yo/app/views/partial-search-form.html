@@ -54,9 +54,12 @@
                  </li>
             </ul>
         </div>
-        <div class="form-group" ng-show="searchFormController.facilities.length > 1">
-            <div class="checkbox" ng-repeat="facility in searchFormController.facilities">
-                <label><input type="checkbox" ng-model="facility.selected"> {{facility.title}}</label>
+        <div ng-show="searchFormController.facilities.length > 1">
+            <div class="form-group" ng-repeat="facility in searchFormController.facilities">
+                <div class="input-group">
+                    <label class="input-group-addon"><input type="checkbox" ng-model="facility.selected"></label>
+                    <span class="form-control">{{facility.title}}</span>
+                </div>
             </div>
         </div>
         <button type="submit" class="form-control btn btn-default" ng-click="searchFormController.search()" translate="SEARCH.FORM.SEARCH_BUTTON"></button>

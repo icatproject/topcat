@@ -31,17 +31,13 @@
             "Investigation": {
                 "columnDefs": [
                     {
-                        "field": "name",
-                        "translateDisplayName": "SEARCH.COLUMN.NAME",
+                        "field": "title",
+                        "translateDisplayName": "SEARCH.COLUMN.TITLE",
                         "link": true
                     },
                     {
-                        "field": "createTime",
-                        "translateDisplayName": "SEARCH.COLUMN.CREATE_TIME"
-                    },
-                    {
-                        "field": "modTime",
-                        "translateDisplayName": "SEARCH.COLUMN.MOD_TIME"
+                        "field": "startDate",
+                        "translateDisplayName": "SEARCH.COLUMN.START_DATE"
                     }
                 ]
             },
@@ -53,12 +49,8 @@
                         "link": true
                     },
                     {
-                        "field": "createTime",
-                        "translateDisplayName": "SEARCH.COLUMN.CREATE_TIME"
-                    },
-                    {
-                        "field": "modTime",
-                        "translateDisplayName": "SEARCH.COLUMN.MOD_TIME"
+                        "field": "startDate",
+                        "translateDisplayName": "SEARCH.COLUMN.START_DATE"
                     }
                 ]
             },
@@ -72,10 +64,6 @@
                     {
                         "field": "createTime",
                         "translateDisplayName": "SEARCH.COLUMN.CREATE_TIME"
-                    },
-                    {
-                        "field": "modTime",
-                        "translateDisplayName": "SEARCH.COLUMN.MOD_TIME"
                     }
                 ]
             }
