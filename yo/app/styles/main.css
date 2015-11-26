@@ -231,3 +231,9 @@ a[ng-click]{
   list-style-position: inside;
   padding-left:0;
 }
+
+.ng-submitted .ng-invalid {
+  border-width: 2px;
+  border-color: #FB6F6F;
+  border-style: solid;
+}
