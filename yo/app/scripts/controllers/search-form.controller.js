@@ -33,16 +33,17 @@
         };
 
         this.search = function(){
+            if(!this.type) return;
+
             var params = {
                 text: null,
-                type: null,
+                type: this.type,
                 startDate: null,
                 endDate: null,
                 facilities: null
             };
 
             if(this.text !== '') params.text = this.text;
-            if(this.type !== '') params.type = this.type;
             if(this.startDate) params.startDate = $filter('date')(this.startDate, this.dateFormat);
             if(this.endDate) params.endDate = $filter('date')(this.endDate, this.dateFormat);
 

@@ -9,7 +9,7 @@
     	var type = $stateParams.type;
 
         var gridOptions = {data: []};
-        _.merge(gridOptions, APP_CONFIG.site.searchGridOptions);
+        _.merge(gridOptions, APP_CONFIG.site.searchGridOptions[type]);
         this.gridOptions = gridOptions;
 
      	var query = {target: type}
