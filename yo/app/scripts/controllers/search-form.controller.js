@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('SearchFormController', ['$sessionStorage', '$state', 'APP_CONFIG', function($sessionStorage, $state, APP_CONFIG){
+    app.controller('SearchFormController', ['$sessionStorage', '$state', '$filter', 'APP_CONFIG', function($sessionStorage, $state, $filter, APP_CONFIG){
         this.text = '';
         this.type = '';
         var facilities = [];
@@ -33,18 +33,19 @@
         };
 
         this.search = function(){
-            var params = {};
-
-            console.log('this.startDate', typeof this.startDate);
+            var params = {
+                text: null,
+                type: null,
+                startDate: null,
+                endDate: null
+            };
 
             if(this.text !== '') params.text = this.text;
             if(this.type !== '') params.type = this.type;
-            if(this.startDate !== '') params.startDate = this.startDate;
-            if(this.endDate !== '') params.endDate = this.endDate;
+            if(this.startDate) params.startDate = $filter('date')(this.startDate, this.dateFormat);
+            if(this.endDate) params.endDate = $filter('date')(this.endDate, this.dateFormat);
 
-            console.log('params', params);
-
-            $state.go('home.browse.facility.search', params, {'reload' : false});
+            $state.go('home.browse.facility.search', params);
         };
 
 
