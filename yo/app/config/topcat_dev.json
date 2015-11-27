@@ -36,6 +36,10 @@
                         "link": true
                     },
                     {
+                        "field": "size",
+                        "translateDisplayName": "SEARCH.COLUMN.SIZE"
+                    },
+                    {
                         "field": "startDate",
                         "translateDisplayName": "SEARCH.COLUMN.START_DATE"
                     }
@@ -49,6 +53,10 @@
                         "link": true
                     },
                     {
+                        "field": "size",
+                        "translateDisplayName": "SEARCH.COLUMN.SIZE"
+                    },
+                    {
                         "field": "startDate",
                         "translateDisplayName": "SEARCH.COLUMN.START_DATE"
                     }
@@ -60,6 +68,10 @@
                         "field": "name",
                         "translateDisplayName": "SEARCH.COLUMN.NAME",
                         "link": true
+                    },
+                    {
+                        "field": "size",
+                        "translateDisplayName": "SEARCH.COLUMN.SIZE"
                     },
                     {
                         "field": "createTime",

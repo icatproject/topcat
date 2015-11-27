@@ -5,10 +5,12 @@
 
     app.service('ICATSearchService', ['$http', '$sessionStorage', '$q', 'APP_CONFIG', function($http, $sessionStorage, $q, APP_CONFIG){
 
-        this.search = function(facilityNames, query, fn){
+        this.search = function(facilityNames, query, fn, cancelerPromise){
             var results = [];
             var promises = [];
             var canceler = $q.defer();
+
+            if(cancelerPromise) cancelerPromise.then(function(){ canceler.resolve(); });
 
             _.each(facilityNames, function(facilityName){
                 var sessionId = $sessionStorage.sessions[facilityName].sessionId;
@@ -24,6 +26,12 @@
                     timeout: canceler.promise
                 }).then(function(response){
                     results = _.sortBy(_.flatten([results, response.data]), 'score').reverse();
+                    results = _.map(results, function(result){
+                        var out = result[query.target];
+                        out.score = result.score;
+                        out.facilityName = facilityName;
+                        return out;
+                    });
                     fn.call(null, results);
                 }));
             });
