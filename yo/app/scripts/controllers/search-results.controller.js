@@ -9,7 +9,9 @@
     	var type = $stateParams.type;
     	var startDate = $stateParams.startDate;
     	var endDate = $stateParams.endDate;
+
         var canceler = $q.defer();
+        $scope.$on('$destroy', function(){ canceler.resolve(); });
 
         var gridOptions = {data: []};
         _.merge(gridOptions, APP_CONFIG.site.searchGridOptions[type]);
