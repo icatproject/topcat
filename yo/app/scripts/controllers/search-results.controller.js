@@ -17,7 +17,7 @@
         _.merge(gridOptions, APP_CONFIG.site.searchGridOptions[type]);
         _.each(gridOptions.columnDefs, function(column){
             if(column.field == 'size'){
-                column.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}" spinner-key="spinner-{{row.entity.facilityName}}-{{row.entity.id}}" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+                column.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.isSizeNotLoaded" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
             }
         });
         this.gridOptions = gridOptions;
@@ -31,14 +31,17 @@
         	gridOptions.data = results;
         }, canceler.promise).then(function(){
             _.each(gridOptions.data, function(entity){
-                var spinnerKey = 'spinner-' + entity.facilityName + '-' + entity.id;
+                entity.isSizeNotLoaded = true;
                 getSize(entity.facilityName, entity.id).then(function(data){
                     entity.size = parseInt(data);
-                    $timeout(function(){ usSpinnerService.stop(spinnerKey); });
+                    entity.isSizeNotLoaded = false;
                 });
-                $timeout(function(){ usSpinnerService.spin(spinnerKey) });
             });
         });
+
+        this.showSpinner = function(){
+            return true;
+        };
 
         //proxy to simplify later refactor
         function getSize(facilityName, id){
