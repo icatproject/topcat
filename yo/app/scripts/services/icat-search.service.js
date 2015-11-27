@@ -8,6 +8,7 @@
         this.search = function(facilityNames, query, fn){
             var results = [];
             var promises = [];
+            var canceler = $q.defer();
 
             _.each(facilityNames, function(facilityName){
                 var sessionId = $sessionStorage.sessions[facilityName].sessionId;
@@ -19,14 +20,15 @@
                         sessionId: sessionId,
                         query: JSON.stringify(query),
                         maxCount: 1000
-                    }
+                    },
+                    timeout: canceler.promise
                 }).then(function(response){
                     results = _.sortBy(_.flatten([results, response.data]), 'score').reverse();
                     fn.call(null, results);
                 }));
             });
 
-            return $q.all(promises);
+            return _.assign($q.all(promises), {cancel: function(){ canceler.resolve(); }});
         };
 
     }]);
