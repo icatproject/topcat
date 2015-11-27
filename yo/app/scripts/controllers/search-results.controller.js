@@ -3,7 +3,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('SearchResultsController', ['$stateParams', '$scope', '$q', '$sessionStorage', '$timeout', 'ICATSearchService', 'IdsManager', 'APP_CONFIG', 'usSpinnerService', function($stateParams, $scope, $q, $sessionStorage, $timeout, ICATSearchService, IdsManager, APP_CONFIG, usSpinnerService){
+    app.controller('SearchResultsController', ['$stateParams', '$scope', '$q', '$sessionStorage', '$timeout', 'ICATSearchService', 'IdsManager', 'APP_CONFIG', function($stateParams, $scope, $q, $sessionStorage, $timeout, ICATSearchService, IdsManager, APP_CONFIG){
     	var facilities = $stateParams.facilities ? JSON.parse($stateParams.facilities) : [];
     	var text = $stateParams.text;
     	var type = $stateParams.type;
@@ -17,7 +17,7 @@
         _.merge(gridOptions, APP_CONFIG.site.searchGridOptions[type]);
         _.each(gridOptions.columnDefs, function(column){
             if(column.field == 'size'){
-                column.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.isSizeNotLoaded" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+                column.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
             }
         });
         this.gridOptions = gridOptions;
@@ -31,17 +31,11 @@
         	gridOptions.data = results;
         }, canceler.promise).then(function(){
             _.each(gridOptions.data, function(entity){
-                entity.isSizeNotLoaded = true;
                 getSize(entity.facilityName, entity.id).then(function(data){
                     entity.size = parseInt(data);
-                    entity.isSizeNotLoaded = false;
                 });
             });
         });
-
-        this.showSpinner = function(){
-            return true;
-        };
 
         //proxy to simplify later refactor
         function getSize(facilityName, id){
