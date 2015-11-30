@@ -34,8 +34,7 @@
                 value = $filter('date')(this.dateValue, this.dateFormat);
             }
 
-            if(!this.name || !this.valueType ||  !value) return;
-            console.log('value', value);
+            if(_.isUndefined(this.name) || _.isUndefined(this.valueType) ||  _.isUndefined(value)) return;
 
             $uibModalInstance.close({
                 name: this.name,
