@@ -4,7 +4,8 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('SearchFormController', ['$sessionStorage', '$state', '$filter', 'APP_CONFIG', function($sessionStorage, $state, $filter, APP_CONFIG){
+    app.controller('SearchFormController', function($sessionStorage, $state, $filter, $uibModal, APP_CONFIG){
+        var that = this;
         this.text = $state.params.text || '';
         this.type = $state.params.type || '';
         var facilities = [];
@@ -21,6 +22,8 @@
         this.isStartDateOpen = false;
         this.isEndDateOpen = false;
         this.dateFormat = 'yyyy-MM-dd';
+        this.parameters = [];
+        this.samples = [];
 
         this.openStartDate = function(){
             this.isStartDateOpen = true;
@@ -32,6 +35,34 @@
             this.isEndDateOpen = true;
         };
 
+        this.openParameterModal = function(){
+            var modal = $uibModal.open({
+                templateUrl : 'views/search/parameter-modal.html',
+                size : 'sm',
+                controller: 'ParameterModalController as parameterModalController'
+            }).result.then(function(parameter){
+                that.parameters.push(parameter);
+            });
+        };
+
+        this.removeParameter = function(parameter){
+            _.remove(that.parameters, parameter);
+        };
+
+        this.openSampleModal = function(){
+            var modal = $uibModal.open({
+                templateUrl : 'views/search/sample-modal.html',
+                size : 'sm',
+                controller: 'SampleModalController as sampleModalController'
+            }).result.then(function(sample){
+                that.samples.push(sample);
+            });
+        };
+
+        this.removeSample = function(sample){
+            _.remove(that.samples, function(i){ return i == sample; });
+        };
+
         this.search = function(){
             if(!this.type) return;
 
@@ -40,7 +71,9 @@
                 type: this.type,
                 startDate: null,
                 endDate: null,
-                facilities: null
+                facilities: null,
+                parameters: null,
+                samples: null
             };
 
             if(this.text !== '') params.text = this.text;
@@ -50,127 +83,15 @@
             var _facilities = _.select(facilities, function(facility){ return facility.selected; });
             _facilities = _.map(_facilities, function(facility){ return facility.name; });
             if(_facilities.length > 0) params.facilities = JSON.stringify(_facilities);
-
+            if(this.parameters.length > 0) params.parameters = JSON.stringify(_.map(this.parameters, function(parameter){ return _.pick(parameter, ['name', 'valueType', 'value']); }));
+            if(this.samples.length > 0) params.samples = JSON.stringify(this.samples);
 
             $state.go('home.browse.facility.search', params);
         };
 
 
-    }]);
+    });
 
 
 })();
 
-if(false) {
-    (function() {
-        'use strict';
-
-        angular
-            .module('angularApp')
-            .controller('SearchFormController', SearchFormController);
-
-        SearchFormController.$inject = ['$state', '$filter'];
-
-        function SearchFormController($state, $filter) {
-            var vm = this;
-            vm.form = {};
-
-            //prefill the search form with the parameters from the querystring
-            if (typeof $state.params !== 'undefined') {
-                vm.form = $state.params;
-            }
-
-            //set form defaults
-            vm.init = {
-                facilityItems : [
-                    {'name' : 'facility 1', 'id' : 'facility one'},
-                    {'name' : 'facility 2', 'id' : 'facility two'},
-                    {'name' : 'facility 3', 'id' : 'facility three'}
-                ],
-                searchTypeItems : [
-                    {'name' : 'Investigation', 'id' : 'investigation'},
-                    {'name' : 'Dataset', 'id' : 'dataset'},
-                    {'name' : 'Datafile', 'id' : 'datafile'}
-                ],
-                datepickers : {
-                    dateformat : 'yyyy-MM-dd',
-                    startDate: false,
-                    endDate: false
-                }
-            };
-
-            vm.open = function($event, datePicker) {
-                $event.preventDefault();
-                $event.stopPropagation();
-                vm.closeAll();
-
-                vm.init.datepickers[datePicker] = true;
-            };
-
-            vm.closeAll = function() {
-                vm.init.datepickers.startDate = false;
-                vm.init.datepickers.endDate = false;
-            };
-
-            /**
-             * Perform a search
-             */
-            vm.search = function() {
-                var params = searchFormToQueryParams($filter, vm.form);
-
-                //TODO why need reload:true to work
-                $state.go('home.browse.facility.search', params, {'reload' : false});
-
-
-            };
-
-
-            //$scope.initialise();
-        }
-
-
-
-
-        /**
-         * Format the values passed from the search form.
-         * The date values are formated to something sensible using the angular filter functions
-         *
-         * @param $filter angular filter helper
-         * @param data the data values
-         * @returns
-         */
-        function searchFormToQueryParams($filter, data) {
-            var params = {};
-
-            if (typeof data !== 'undefined') {
-                if ('meta' in data) {
-                    params.meta = data.meta;
-                }
-
-                if ('query' in data) {
-                    params.query =  data.query;
-                }
-
-                if ('type' in data) {
-                    params.type =  data.type;
-                }
-
-                if ('facility' in data) {
-                    params.facility =  data.facility;
-                }
-
-                if ('startDate' in data) {
-                    params.startDate = $filter('date')(data.startDate, 'yyyy-MM-dd');
-                }
-
-                if ('endDate' in data) {
-                    params.endDate = $filter('date')(data.endDate, 'yyyy-MM-dd');
-                }
-
-                return params;
-            }
-
-            return data;
-        }
-    })();
-}

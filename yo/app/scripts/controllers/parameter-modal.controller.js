@@ -1,38 +1,34 @@
+
 (function() {
     'use strict';
 
-    angular
-        .module('angularApp')
-        .controller('ParameterModalController', ParameterModalController);
+    var app = angular.module('angularApp');
 
-    ParameterModalController.$inject = ['$uibModal'];
+    app.controller('ParameterModalController', function($uibModalInstance){
 
-    function ParameterModalController($uibModal) {
-        var vm = this;
+        this.name = "";
+        this.valueType = "";
+        this.value = "";
 
-        // open a model window
-        vm.openModal = function(form, size) {
-            var modalInstance = $uibModal.open({
-                templateUrl : 'views/search/parameter-modal.html',
-                controller : 'ModalInstanceController as filter',
-                size : size,
-                resolve : {
-                    searchFormData: function () {
-                        return form;
-                    }
-                }
-            });
+        this.parameterTypes = [
+             {'name' : 'Text', 'id' : 'text'},
+             {'name' : 'Number', 'id' : 'number'},
+             {'name' : 'Date', 'id' : 'date'},
+        ];
 
-            modalInstance.result.then(function(modalForm) {
-                //initialize array if form.parameters not defined
-                form.parameters = form.parameters || [];
-
-                //should push the modal form data to the form data here
-                form.parameters.push(modalForm);
-            }, function() {
-
+        this.submit = function(){
+            if(this.name === '' || this.valueType === '' || this.value === '') return;
+            $uibModalInstance.close({
+                name: this.name,
+                valueType: this.valueType,
+                value: this.value
             });
         };
-    }
-})();
 
+        this.cancel = function(){
+            $uibModalInstance.dismiss('cancel');
+        };
+    });
+
+
+})();

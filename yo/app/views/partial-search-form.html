@@ -1,5 +1,5 @@
 <div class="search-form">
-    <form role="form" novalidate="novalidate" tooltip-placement="bottom">
+    <form role="form">
         <div class="form-group has-feedback">
             <label class="control-label sr-only" for="searchText"></label>
             <input type="text" class="form-control input-sm" id="searchText" translate translate-attr-placeholder="SEARCH.FORM.SEARCH_TEXT_PLACEHOLDER" ng-model="searchFormController.text">
@@ -29,30 +29,27 @@
                 </span>
             </p>
         </div>
-        <div class="form-group" ng-controller="ParameterModalController as modal">
+        <div class="form-group">
             <div class="btn-group btn-group-justified" role="group">
                 <div class="btn-group" role="group">
-                    <button type="button" class="form-control btn btn-default btn-sm" ng-click="modal.openModal(searchFormController, 'sm')" translate="SEARCH.FORM.ADD_PARAMETER_BUTTON"></button>
+                    <button class="form-control btn btn-default btn-sm" ng-click="searchFormController.openParameterModal()" translate="SEARCH.FORM.ADD_PARAMETER_BUTTON"></button>
                 </div>
                 <div class="btn-group" role="group">
-                    <button class="form-control btn btn-default btn-sm" ng-click="modal.openModal(searchFormController, 'sm')" translate="SEARCH.FORM.ADD_SAMPLE_BUTTON"></button>
+                    <button class="form-control btn btn-default btn-sm" ng-click="searchFormController.openSampleModal()" translate="SEARCH.FORM.ADD_SAMPLE_BUTTON"></button>
                 </div>
             </div>
-
-            <!-- searchFormController: {{searchFormController}} -->
-
-            <ul class="list-unstyled">
-                <li ng-repeat="param in searchFormController.parameters">
-                <div class="row">
-                    <div class="col-sm-10">
-                        <span class="text-left"><a href="" title="Type: {{param.type}}, Value Type: {{param.valueType}}, Value: {{param.value}} ">{{param.name}}</a></span>
-                    </div>
-                    <div class="col-sm-1">
-                        <span class="text-right"><a href="#">[x]</a></span>
-                    </div>
-                 </div>
-                 </li>
-            </ul>
+        </div>
+        <div class="form-group" ng-repeat="parameter in searchFormController.parameters">
+            <div class="input-group">
+                <div class="form-control">{{parameter.name}} = {{parameter.value}}</div>
+                <div class="input-group-addon" ng-click="searchFormController.removeParameter(parameter)"><span class="glyphicon glyphicon-remove"></span></div>
+            </div>
+        </div>
+        <div class="form-group" ng-repeat="sample in searchFormController.samples">
+            <div class="input-group">
+                <div class="form-control">{{sample}}</div>
+                <div class="input-group-addon" ng-click="searchFormController.removeSample(sample)"><span class="glyphicon glyphicon-remove"></span></div>
+            </div>
         </div>
         <div ng-show="searchFormController.facilities.length > 1">
             <div class="form-group" ng-repeat="facility in searchFormController.facilities">
