@@ -32,19 +32,15 @@
             query.parameters = _.map(parameters, function(parameter){
                 var out = {};
                 out.name = parameter.name;
-                switch(parameter.valueType){
-                    case 'text':
-                        out.stringValue = parameter.value;
-                        break;
-                    case 'number':
-                        out.lowerNumericValue = parameter.value
-                        out.upperNumericValue = parameter.value
-                        break;
-                    case 'date':
-                        var date = parameter.value.replace(/-/g, '') + "0000";
-                        out.lowerDateValue = date;
-                        out.upperDateValue = date;
-                        break;
+                if(parameter.valueType === 'text'){
+                    out.stringValue = parameter.value;
+                } else if(parameter.valueType === 'number'){
+                    out.lowerNumericValue = parameter.value;
+                    out.upperNumericValue = parameter.value;
+                } else if(parameter.valueType === 'date'){
+                    var date = parameter.value.replace(/-/g, '') + "0000";
+                    out.lowerDateValue = date;
+                    out.upperDateValue = date;
                 }
                 return out;
             });
