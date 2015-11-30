@@ -9,6 +9,8 @@
     	var type = $stateParams.type;
     	var startDate = $stateParams.startDate;
     	var endDate = $stateParams.endDate;
+        var parameters = $stateParams.parameters ? JSON.parse($stateParams.parameters) : [];
+        var samples = $stateParams.samples ? JSON.parse($stateParams.samples) : [];
 
         var canceler = $q.defer();
         $scope.$on('$destroy', function(){ canceler.resolve(); });
@@ -26,6 +28,28 @@
      	if(text) query.text = text;
      	if(startDate) query.lower = startDate.replace(/-/g, '') + "0000";
      	if(endDate) query.upper = endDate.replace(/-/g, '') + "0000";
+        if(parameters.length > 0){
+            query.parameters = _.map(parameters, function(parameter){
+                var out = {};
+                out.name = parameter.name;
+                switch(parameter.valueType){
+                    case 'text':
+                        out.stringValue = parameter.value;
+                        break;
+                    case 'number':
+                        out.lowerNumericValue = parameter.value
+                        out.upperNumericValue = parameter.value
+                        break;
+                    case 'date':
+                        var date = parameter.value.replace(/-/g, '') + "0000";
+                        out.lowerDateValue = date;
+                        out.upperDateValue = date;
+                        break;
+                }
+                return out;
+            });
+        }
+        if(samples.length > 0) query.samples = samples;
 
         ICATSearchService.search(facilities, query, function(results){
         	gridOptions.data = results;
@@ -44,8 +68,6 @@
             params.canceler = canceler.promise;
             return IdsManager.getSize($sessionStorage.sessions, APP_CONFIG.facilities[facilityName], params);
         }
-
-        console.log('gridOptions', gridOptions);
 
     }]);
 
