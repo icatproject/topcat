@@ -22,8 +22,8 @@
         this.isStartDateOpen = false;
         this.isEndDateOpen = false;
         this.dateFormat = 'yyyy-MM-dd';
-        this.parameters = [];
-        this.samples = [];
+        this.parameters = $state.params.parameters ? JSON.parse($state.params.parameters) : [];
+        this.samples = $state.params.samples ? JSON.parse($state.params.samples) : [];
 
         this.openStartDate = function(){
             this.isStartDateOpen = true;
