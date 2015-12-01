@@ -3,7 +3,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('SearchResultsController', ['$stateParams', '$scope', '$q', '$sessionStorage', '$timeout', 'ICATSearchService', 'IdsManager', 'APP_CONFIG', function($stateParams, $scope, $q, $sessionStorage, $timeout, ICATSearchService, IdsManager, APP_CONFIG){
+    app.controller('SearchResultsController', function($stateParams, $scope, $q, $sessionStorage, $timeout, ICATSearchService, IdsManager, APP_CONFIG, Cart){
     	var facilities = $stateParams.facilities ? JSON.parse($stateParams.facilities) : [];
     	var text = $stateParams.text;
     	var type = $stateParams.type;
@@ -11,6 +11,7 @@
     	var endDate = $stateParams.endDate;
         var parameters = $stateParams.parameters ? JSON.parse($stateParams.parameters) : [];
         var samples = $stateParams.samples ? JSON.parse($stateParams.samples) : [];
+        var gridApi;
 
         var canceler = $q.defer();
         $scope.$on('$destroy', function(){ canceler.resolve(); });
@@ -49,6 +50,15 @@
 
         ICATSearchService.search(facilities, query, function(results){
         	gridOptions.data = results;
+            $timeout(function(){
+                _.each(results, function(row){
+                    if (Cart.hasItem(row.facilityName, type.toLowerCase(), row.id)) {
+                        gridApi.selection.selectRow(row);
+                    } else {
+                        gridApi.selection.unSelectRow(row);
+                    }
+                });
+            });
         }, canceler.promise).then(function(){
             _.each(gridOptions.data, function(entity){
                 getSize(entity.facilityName, entity.id).then(function(data){
@@ -65,6 +75,36 @@
             return IdsManager.getSize($sessionStorage.sessions, APP_CONFIG.facilities[facilityName], params);
         }
 
-    }]);
+        function addItem(row){
+            Cart.addItem(row.facilityName, type.toLowerCase(), row.id, row.name, []);
+        }
+
+        function removeItem(row){
+            Cart.removeItem(row.facilityName, type.toLowerCase(), row.id);
+        }
+
+        gridOptions.onRegisterApi = function(_gridApi) {
+            gridApi = _gridApi;
+
+            gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                    addItem(row.entity);
+                } else {
+                    removeItem(row.entity);
+                }
+            });
+
+            gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                _.each(rows, function(row){
+                    if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                        addItem(row.entity.entity);
+                    } else {
+                        removeItem(row.entity);
+                    }
+                });
+            });
+        };
+
+    });
 
 })();
