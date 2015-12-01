@@ -5,6 +5,7 @@ import os
 # TopCATv2
 
 def uninstall():
+    if not actions.isInstalled(): return
     app = actions.getAppName("topcat")
     if app: actions.asadmin("undeploy " + app)
 
