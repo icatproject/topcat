@@ -24,6 +24,7 @@
         $scope.items = Cart._cart.items;
 
         $scope.$watchCollection(function() {
+            $scope.totalSize = _.reduce(Cart.getItems(), function(total, item){ return total + item.size }, 0) || 0;
             return $scope.items;
         }, function(newCol) {
             if(newCol.length === 0) {
