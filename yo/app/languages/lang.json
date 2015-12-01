@@ -228,6 +228,7 @@
             "ENTITY_TYPE" : "Type",
             "FACILITY" : "Facility",
             "SIZE" : "Size",
+            "FACILITY_NAME" : "Facility",
             "AVAILABILITY" : "Availability",
             "ACTIONS" : "Action"
         },
