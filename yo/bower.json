@@ -36,5 +36,9 @@
     "angular-mocks": "1.3.14",
     "karma-read-json": "1.1.0"
   },
-  "appPath": "app"
+  "appPath": "app",
+  "resolutions": {
+    "angular": "1.3.14",
+    "angular-translate": "2.6.1"
+  }
 }

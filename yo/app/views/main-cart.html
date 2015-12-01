@@ -23,7 +23,11 @@
         </div>
     </div>
     <div class="cart-buttom-section">
-        <button ng-click="removeAllItems()" type="button" class="btn btn-primary pull-right" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" uib-tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="left"></button>
+        <div>
+            <b>Total size: {{totalSize|bytes}}</b>
+        </div>
+        <br>
+        <button ng-click="removeAllItems()" type="button" class="btn btn-primary pull-right" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="left"></button>
 
         <download-cart></download-cart>
     </div>

@@ -73,6 +73,16 @@
                     }
                 },
                 {
+                    "field": "facilityName",
+                    "translateDisplayName": "CART.COLUMN.FACILITY_NAME",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "type": "input"
+                    }
+                },
+                {
                     "field": "size",
                     "translateDisplayName": "CART.COLUMN.SIZE",
                     "type" : "number",

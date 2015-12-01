@@ -25,13 +25,13 @@
                     },
                     timeout: canceler.promise
                 }).then(function(response){
-                    results = _.sortBy(_.flatten([results, response.data]), 'score').reverse();
-                    results = _.map(results, function(result){
+                    var _results = _.map(response.data, function(result){
                         var out = result[query.target];
                         out.score = result.score;
                         out.facilityName = facilityName;
                         return out;
                     });
+                    results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
                     fn.call(null, results);
                 }));
             });

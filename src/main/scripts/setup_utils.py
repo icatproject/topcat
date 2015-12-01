@@ -228,7 +228,6 @@ class Actions(object):
             elif c.isupper(): uc = True
         if not (digit and lc and uc) : abort("password must contain at least one digit, a lower case character and an upper case character")
 
-        self.asadmin("delete-file-user " + username, tolerant=True)
         f = open("pw", "w")
         print >> f, "AS_ADMIN_USERPASSWORD=" + password
         f.close()
@@ -327,6 +326,10 @@ class Actions(object):
         stringErr.close()
 
         return out, err, rc
+
+    def isInstalled(self):
+        return 'topcat' in self.execute(self.asadminCommand + " list-applications")[0]
+
 
     def asadmin(self, command, tolerant=False, printOutput=False):
         cmd = self.asadminCommand + " " + command
