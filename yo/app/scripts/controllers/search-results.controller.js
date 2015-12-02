@@ -70,7 +70,7 @@
         //proxy to simplify later refactor
         function getSize(facilityName, id){
             var params = {};
-            params[type  + 'Ids'] = id;
+            params[type.replace(/^./, function myFunction(x){return x.toLowerCase();})  + 'Ids'] = id;
             params.canceler = canceler.promise;
             return IdsManager.getSize($sessionStorage.sessions, APP_CONFIG.facilities[facilityName], params);
         }
