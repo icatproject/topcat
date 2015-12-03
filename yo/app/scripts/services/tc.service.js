@@ -99,6 +99,15 @@
 		        		query = _.flatten(query);
 		        	}
 
+		        	query = _.map(query, function(i){
+		        		if(typeOf(i) == 'function') i = i.call(this);
+		        		return i;
+		        	});
+
+		        	while(_.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0){
+		        		query = _.flatten(query);
+		        	}
+
 		        	var _query = [];
 		        	for(var i = 0; i < query.length; i++){
 		        		var fragments = query[i].split(/\?/);
@@ -250,6 +259,7 @@
 		var out = typeof data;
 		if(out == 'object'){
 			if(data instanceof Array) return 'array';
+			if(data instanceof Function) return 'function';
 			if(data.then instanceof Function) return 'promise';
 		}
 		return out;
