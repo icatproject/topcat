@@ -148,7 +148,23 @@
 	        			'select ' + instanceName + ' from ' + type + ' ' + instanceName
 	        		], query], options).then(function(results){
 	        			out.resolve(_.map(results, function(result){
-	        				return result[type];
+	        				var out = result[type];
+	        				out.getSize = overload(out, {
+	        					'object': function(options){
+	        						var that = this;
+	        						return extendPromise(facility.ids().getSize(type, this.id, options).then(function(size){
+			        					that.size = size;
+			        				}));
+	        					},
+	        					'promise': function(timeout){
+	        						return this.getSize({timeout: timeout});
+	        					},
+	        					'': function(){
+	        						return this.getSize({});
+	        					}
+	        				});
+
+	        				return out;
 	        			}));
 	        		}, function(results){
 	        			out.reject(results);
@@ -196,6 +212,24 @@
     			}, function(){ out.reject(); });
     			return out.promise;
     		};
+
+    		this.getSize = overload(this, {
+    			'string, number, object': function(type, id, options){
+    				var idsParamName = type.replace(/^./, function(s){ return s.toLowerCase(); }) + "Ids";
+    				var params = {
+    					server: facility.config().icatUrl,
+    					sessionId: facility.icat().session().sessionId
+    				};
+    				params[idsParamName] = id;
+    				return this.get('getSize', params,  options);
+    			},
+    			'string, number, promise': function(type, id, timeout){
+    				return this.getSize(type, id, {timeout: timeout});
+    			},
+    			'string, number': function(type, id){
+    				return this.getSize(type, id, {});
+    			}
+    		});
 
     		generateRestMethods.call(this, facility.config().idsUrl + '/ids/');
     	}
@@ -287,7 +321,9 @@
 				}
 			});
 
-			if(!found){
+			if(argTypeOfs.length == 0 && variations['']){
+				out = variations.default.apply(_this, args);
+			} else if(!found){
 				out = variations.default.apply(_this, args);
 			}
 
