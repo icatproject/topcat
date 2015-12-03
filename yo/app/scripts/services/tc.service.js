@@ -7,7 +7,6 @@
     app.service('tc', function($sessionStorage, $http, $q, APP_CONFIG){
     	var that = this;
     	var facilities = {};
-    	var cancellerStack = [];
 
     	this.facility = function(facilityName){
     		if(!facilities[facilityName]) facilities[facilityName] = new Facility(facilityName);
@@ -27,6 +26,10 @@
 			}, function(){ out.reject(); });
 			return extendPromise(out.promise);
 		};
+
+		this.icat = function(facilityName){ return this.facility(facilityName).icat(); };
+
+		this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
 
     	function Facility(facilityName){
     		var icat;
@@ -91,10 +94,8 @@
 	        };
 
 	        this.query = overload(this, {
-	        	'array': function(query){
-		        	if(typeof query == 'string') query = [query];
-
-		        	while(_.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0){
+	        	'array, object': function(query, options){
+	        		while(_.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0){
 		        		query = _.flatten(query);
 		        	}
 
@@ -111,47 +112,32 @@
 		        	}
 		        	return this.get('entityManager', {
 	                    sessionId: this.session().sessionId,
-	                    query: _query.join(''),
+	                    query: _query.join(' '),
 	                    server: facility.config().icatUrl
-	                });
+	                }, options);
+	        	},
+	        	'promise, array': function(timeout, query){
+		        	return this.query(query, {timeout: timeout});
+		        },
+		        'promise, string': function(timeout, query){
+		        	return this.query([query], {timeout: timeout});
+		        },
+	        	'array': function(query){
+		        	return this.query(query, {});
 		        },
 		        'string': function(query){
-		        	return this.query([query]);
+		        	return this.query([query], {});
 		        }
 	        });
 
-	        this.query = function(query){
-	        	if(typeof query == 'string') query = [query];
-
-	        	while(_.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0){
-	        		query = _.flatten(query);
-	        	}
-
-	        	var _query = [];
-	        	for(var i = 0; i < query.length; i++){
-	        		var fragments = query[i].split(/\?/);
-	        		for(var j in fragments){
-	        			_query.push(fragments[j]);
-	        			if(j < fragments.length - 1){
-	        				i++;
-	        				_query.push(jpqlSanitize(query[i]));
-	        			}
-	        		}
-	        	}
-	        	return this.get('entityManager', {
-                    sessionId: this.session().sessionId,
-                    query: _query.join(' '),
-                    server: facility.config().icatUrl
-                });
-	        };
 
 	        this.entities = overload(this, {
-	        	'string, array': function(type, query){
+	        	'string, array, object': function(type, query, options){
 	        		var out = $q.defer();
 	        		var instanceName = type.replace(/^./, function(s){ return s.toLowerCase(); })
 	        		this.query([[
 	        			'select ' + instanceName + ' from ' + type + ' ' + instanceName
-	        		], query]).then(function(results){
+	        		], query], options).then(function(results){
 	        			out.resolve(_.map(results, function(result){
 	        				return result[type];
 	        			}));
@@ -160,15 +146,35 @@
 	        		});
 	        		return extendPromise(out.promise);
 	        	},
+	        	'string, promise, array': function(type, timeout, query){
+	        		return this.entities(type, query, {timeout: timeout});
+	        	},
+	        	'string, promise, string': function(type, timeout, query){
+	        		return this.entities(type, [query], {timeout: timeout});
+	        	},
+	        	'string, array': function(type, query){
+	        		return this.entities(type, query, {});
+	        	},
 	        	'string, string': function(type, query){
-	        		return this.entities(type, [query]);
+	        		return this.entities(type, [query], {});
+	        	},
+	        	'string, promise': function(type, timeout){
+	        		return this.entities(type, [], {timeout: timeout});
 	        	},
 	        	'string': function(type){
-	        		return this.entities(type, []);
+	        		return this.entities(type, [], {});
 	        	}
 	        });
 
-			
+	        this.entity = function(){
+        		var out = $q.defer();
+        		this.entities.apply(this, arguments).then(function(results){
+        			out.resolve(results[0]);
+        		}, function(results){
+        			out.reject(results);
+        		});
+        		return extendPromise(out.promise);
+        	};
 
     		generateRestMethods.call(this, facility.config().icatUrl + '/icat/');
     	}
@@ -186,102 +192,51 @@
     	}
 
     	function generateRestMethods(prefix){
-			this.get = overload(this, {
-				'string, object, object': function(offset, params, options){
-					if(!options.headers) options.headers = {};
-					if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
-					params = urlEncode(params);
-					var url = prefix + offset;
-					if(params !== '') url += '?' + params;
-	    			var out = $q.defer();
-					$http.get(url, options).then(function(response){
-						out.resolve(response.data);
-					}, function(response){
-						out.reject(response.data);
-					});
-					return extendPromise(out.promise);
+			
+			defineMethod.call(this, 'get');
+			defineMethod.call(this, 'delete');
+			defineMethod.call(this, 'post');
+			defineMethod.call(this, 'put');
 
-	    		},
-	    		'string, object': function(offset, params){
-	    			return this.get(offset, params, {});
-	    		},
-	    		'string': function(offset){
-	    			return this.get(offset, {}, {});
-	    		}
-			});
+			function defineMethod(methodName){
+				this[methodName] = overload(this, {
+					'string, string, object': function(offset, params, options){
+						if(methodName.match(/post|put/)){
+							if(!options.headers) options.headers = {};
+							if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+						}
+						if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
+						var url = prefix + offset;
+						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
+						var out = $q.defer();
+						var args = [url];
+						if(methodName.match(/post|put/)) args.push(params);
+						args.push(options);
+						$http[methodName].apply($http, args).then(function(response){
+							out.resolve(response.data);
+						}, function(response){
+							out.reject(response.data);
+						});
+						return extendPromise(out.promise);
+		    		},
+					'string, object, object': function(offset, params, options){
+						return this[methodName].call(this, offset, urlEncode(params), options)
+		    		},
+		    		'string, promise, object': function(offset, timeout, params){
+		    			return this[methodName].call(this, offset, params, {timeout: timeout});
+		    		},
+		    		'string, object': function(offset, params){
+		    			return this[methodName].call(this, offset, params, {});
+		    		},
+		    		'string, promise': function(offset, timeout){
+		    			return this[methodName].call(this, offset, {}, {timeout: timeout});
+		    		},
+		    		'string': function(offset){
+		    			return this[methodName].call(this, offset, {}, {});
+		    		}
+				});
+			}
 
-			this.delete = overload(this, {
-				'string, object, object': function(offset, params, options){
-					if(!options.headers) options.headers = {};
-					if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
-					params = urlEncode(params);
-					var url =  prefix + offset;
-					if(params !== '') url += '?' + params;
-	    			var out = $q.defer();
-					$http.delete(url, options).then(function(response){
-						out.resolve(response.data);
-					}, function(response){
-						out.reject(response.data);
-					});
-					return extendPromise(out.promise);
-	    		},
-	    		'string, object': function(offset, params){
-	    			return this.delete(offset, params, {});
-	    		},
-	    		'string': function(offset){
-	    			return this.delete(offset, {}, {});
-	    		}
-			});
-
-			this.post = overload(this, {
-				'string, string, object': function(offset, params, options){
-					if(!options.headers) options.headers = {};
-					if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-					if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
-					var url = prefix + offset;
-					var out = $q.defer();
-					$http.post(url, params, options).then(function(response){
-						out.resolve(response.data);
-					}, function(response){
-						out.reject(response.data);
-					});
-					return extendPromise(out.promise);
-	    		},
-				'string, object, object': function(offset, params, options){
-					return this.post(offset, urlEncode(params), options)
-	    		},
-	    		'string, object': function(offset, params){
-	    			return this.post(offset, params, {});
-	    		},
-	    		'string': function(offset){
-	    			return this.post(offset, {}, {});
-	    		}
-			});
-
-			this.put = overload(this, {
-				'string, string, object': function(offset, params, options){
-					if(!options.headers) options.headers = {};
-					if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-					if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
-					var url = prefix + offset;
-					var out = $q.defer();
-					$http.put(url, params, options).then(function(response){
-						out.resolve(response.data);
-					}, function(response){
-						out.reject(response.data);
-					});
-					return extendPromise(out.promise);
-	    		},
-				'string, object, object': function(offset, params, options){
-					return this.put(offset, urlEncode(params), options)
-	    		},
-	    		'string, object': function(offset, params){
-	    			return this.put(offset, params, {});
-	    		},
-	    		'string': function(offset){
-	    			return this.put(offset, {}, {});
-	    		}
-			});
 		}
 
 		var topcatApiPath = this.config().topcatApiPath;
