@@ -154,6 +154,7 @@
 	        						var that = this;
 	        						return extendPromise(facility.ids().getSize(type, this.id, options).then(function(size){
 			        					that.size = size;
+			        					return size;
 			        				}));
 	        					},
 	        					'promise': function(timeout){
@@ -163,7 +164,6 @@
 	        						return this.getSize({});
 	        					}
 	        				});
-
 	        				return out;
 	        			}));
 	        		}, function(results){
