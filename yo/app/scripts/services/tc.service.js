@@ -293,7 +293,6 @@
 		var out = typeof data;
 		if(out == 'object'){
 			if(data instanceof Array) return 'array';
-			if(data instanceof Function) return 'function';
 			if(data.then instanceof Function) return 'promise';
 		}
 		return out;
