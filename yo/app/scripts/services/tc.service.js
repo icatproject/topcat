@@ -119,11 +119,42 @@
 		        			}
 		        		}
 		        	}
-		        	return this.get('entityManager', {
+
+		        	var defered = $q.defer();
+		        	
+		        	this.get('entityManager', {
 	                    sessionId: this.session().sessionId,
 	                    query: _query.join(' '),
 	                    server: facility.config().icatUrl
-	                }, options);
+	                }, options).then(function(results){
+	                	defered.resolve(_.map(results, function(result){
+	                		var type = _.keys(result)[0];
+	                		if(typeOf(result) != 'object' || !type) return result;
+	        				var out = result[type];
+	        				out.entityType = type;
+	        				out.getSize = overload(out, {
+	        					'object': function(options){
+	        						var that = this;
+	        						return extendPromise(facility.ids().getSize(type, this.id, options).then(function(size){
+			        					that.size = size;
+			        					return size;
+			        				}));
+	        					},
+	        					'promise': function(timeout){
+	        						return this.getSize({timeout: timeout});
+	        					},
+	        					'': function(){
+	        						return this.getSize({});
+	        					}
+	        				});
+	        				return out;
+	        			}));
+
+	                }, function(response){
+	                	defered.reject(response);
+	                });
+
+	                return extendPromise(defered.promise);
 	        	},
 	        	'promise, array': function(timeout, query){
 		        	return this.query(query, {timeout: timeout});
@@ -142,34 +173,10 @@
 
 	        this.entities = overload(this, {
 	        	'string, array, object': function(type, query, options){
-	        		var out = $q.defer();
 	        		var instanceName = type.replace(/^./, function(s){ return s.toLowerCase(); })
-	        		this.query([[
+	        		return extendPromise(this.query([[
 	        			'select ' + instanceName + ' from ' + type + ' ' + instanceName
-	        		], query], options).then(function(results){
-	        			out.resolve(_.map(results, function(result){
-	        				var out = result[type];
-	        				out.getSize = overload(out, {
-	        					'object': function(options){
-	        						var that = this;
-	        						return extendPromise(facility.ids().getSize(type, this.id, options).then(function(size){
-			        					that.size = size;
-			        					return size;
-			        				}));
-	        					},
-	        					'promise': function(timeout){
-	        						return this.getSize({timeout: timeout});
-	        					},
-	        					'': function(){
-	        						return this.getSize({});
-	        					}
-	        				});
-	        				return out;
-	        			}));
-	        		}, function(results){
-	        			out.reject(results);
-	        		});
-	        		return extendPromise(out.promise);
+	        		], query], options));
 	        	},
 	        	'string, promise, array': function(type, timeout, query){
 	        		return this.entities(type, query, {timeout: timeout});
