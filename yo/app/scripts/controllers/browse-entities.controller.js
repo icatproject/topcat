@@ -4,20 +4,26 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController2', function($state, tc){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, tc){
 
         //e.g. 'facility-instrument' i.e. from 'facility' to 'instrument'
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
         var entityInstanceName = stateFromTo.replace(/^.*-/, '');
         var gridOptionsName = entityInstanceName;
+        if(entityInstanceName == 'proposal') entityInstanceName = 'investigation';
         var facilityName = $state.params.facilityName;
         var facility = tc.facility(facilityName);
         var facilityId = facility.config().facilityId;
         var icat = tc.icat(facilityName);
-        var gridOptions = facility.config().gridOptions[gridOptionsName];
-        var uiGridState = JSON
+        var gridOptions = _.merge({data: []}, facility.config().browseGridOptions[gridOptionsName]);
+        var uiGridState = $state.params.uiGridState ? JSON.parse($state.params.uiGridState) : null;
+        var pagingConfig = tc.config().paging;
+        var isScroll = pagingConfig.pagingType == 'scroll';
+        var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
+        var page = 1;
 
-        if(entityInstanceName == 'proposal') entityInstanceName = 'investigation';
+        this.gridOptions = gridOptions;
+        this.isScroll = isScroll;
 
         var stateFromToQueries = {
             'facility-proposal': [
@@ -67,15 +73,51 @@
 
         var query = stateFromToQueries[stateFromTo];
 
-        function getPage(pageNumber, maxNumber, orderBy, orderByDirection){
-            maxNumber = maxNumber || 10;
+        function getPage(orderBy, orderByDirection){
             orderByDirection = orderByDirection || 'asc';
             var _query = [query];
             if(orderBy) _query.push('orderBy ' + entityInstanceName + '.' + orderBy + ' ' + orderByDirection);
-            _query.push(['limit ?, ?', pageNumber - 1,  maxNumber]);
-            return
+            _query.push(['limit ?, ?', (page - 1) * pageSize, pageSize]);
+            var out = icat.query(_query);
+            if(gridOptionsName == 'proposal'){
+                var defered = $q.defer();
+                out.then(function(names){
+                    defered.resolve(_.map(names, function(name){ return {name: name}; }));
+                }, function(response){
+                    defered.reject(response);
+                });
+                out = defered.promise;
+            }
+            return out;
         }
 
+        gridOptions.onRegisterApi = function(gridApi) {
+            getPage().then(function(results){
+                gridOptions.data = results;
+            });
+
+            if(isScroll){
+                //scroll down more data callback (append data)
+                gridApi.infiniteScroll.on.needLoadMoreData($scope, function() {
+                    page++;
+                    getPage().then(function(results){
+                        _.each(results, function(result){ gridOptions.data.push(result); });
+                        if(results.length == 0) page--;
+                    });
+                });
+
+                //scoll up more data at top callback (prepend data)
+                gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, function() {
+                    page--;
+                    getPage().then(function(results){
+                        _.each(results.reverse(), function(result){ gridOptions.data.unshift(result); });
+                        if(results.length == 0) page++;
+                    });
+                });
+            }
+
+
+        };
 
 
     });
@@ -84,7 +126,7 @@
 
 })();
 
-if(true){
+if(false){
     (function() {
         'use strict';
 

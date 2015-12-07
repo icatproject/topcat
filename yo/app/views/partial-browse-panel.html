@@ -5,7 +5,7 @@
 </ul> -->
 <div bread-crumb></div>
 <div>
-    <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-save-state class="browse-grid">
+    <div ng-if="browseEntitiesController.isScroll" ui-grid="browseEntitiesController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-save-state class="browse-grid">
         <div class="no-rows row" ng-show="isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
                 <span translate="BROWSE.EMPTY"></span>
@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection ui-grid-save-state class="browse-grid">
+    <div ng-if="!browseEntitiesController.isScroll" ui-grid="browseEntitiesController.gridOptions" ui-grid-pagination ui-grid-selection ui-grid-save-state class="browse-grid">
         <div class="no-rows row" ng-show="isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
                 <span translate="BROWSE.EMPTY"></span>
