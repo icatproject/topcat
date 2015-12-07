@@ -31,6 +31,8 @@
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
 
+        console.log('gridOptions', gridOptions);
+
         function generateQuery(stateFromTo, isCount){
             var queries = {
                 'facility-proposal': [
@@ -88,7 +90,7 @@
             var out = [queries[stateFromTo]];
             if(orderByColumns.length > 0){
                 out.push('order by ' + _.map(orderByColumns, function(orderByColumn){
-                    return entityInstanceName + '.' + orderByColumn.name + ' ' + orderByColumn.direction;
+                    return getColumnDefByField(orderByColumn.name).jpqlExpression + ' ' + orderByColumn.direction;
                 }).join(', '));
             }
             if(!isCount) out.push('limit ?, ?', function(){ return (page - 1) * pageSize; }, function(){ return pageSize; });
@@ -124,6 +126,17 @@
             return defered.promise;
         }
 
+        function getColumnDefByField(field){
+            var out;
+            _.each(gridOptions.columnDefs, function(columnDef){
+                if(columnDef.field == field){
+                    out = columnDef;
+                    return false;
+                }
+            });
+            return out;
+        }
+
         this.getNextRouteUrl = function(row){
             var hierarchy = facility.config().hierarchy
             var stateSuffixes = {};
@@ -142,7 +155,9 @@
             if(columnDef.field == 'size'){
                 columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
                 columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
             }
+            columnDef.jpqlExpression = entityInstanceName + '.' + columnDef.field;
         });
 
         if(gridOptions.enableDownload){
