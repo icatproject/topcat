@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, tc){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $timeout, tc){
 
         //e.g. 'facility-instrument' i.e. from 'facility' to 'instrument'
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
@@ -27,63 +27,72 @@
         var isSize = _.includes(columnNames, 'size');
         var orderBy = columnNames[0];
         var orderByDirection = 'asc';
+        var totalItems;
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
 
-        var stateFromToQueries = {
-            'facility-proposal': [
-                'select DISTINCT investigation.name from Investigation investigation, investigation.facility facility',
-                'where facility.id = ?', facilityId
-            ],
-            'facility-instrument': [
-                'select instrument from Instrument instrument, instrument.facility facility',
-                'where facility.id = ?', facilityId
-            ],
-            'instrument-facilityCycle': [
-                'select facilityCycle from',
-                'FacilityCycle facilityCycle,',
-                'facilityCycle.facility facility,',
-                'facility.investigations investigation,',
-                'investigation.investigationInstruments investigationInstrument,',
-                'investigationInstrument.instrument instrument',
-                'where facility.id = ?', facilityId,
-                'and instrument.id = ?', $state.params.instrumentId,
-                'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
-            ],
-            'facilityCycle-proposal': [
-                'select DISTINCT investigation.name from',
-                'Investigation investigation,',
-                'investigation.investigationInstruments investigationInstrument,',
-                'investigationInstrument.instrument instrument,',
-                'instrument.facility facility,',
-                'facility.facilityCycles facilityCycle',
-                'where facility.id = ?', facilityId,
-                'and instrument.id = ?', $state.params.instrumentId,
-                'and facilityCycle.id = ?', $state.params.facilityCycleId,
-                'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
-            ],
-            'proposal-investigation': [
-                'select investigation from Investigation investigation',
-                'where investigation.name = ?', $state.params.proposalId
-            ],
-            'investigation-dataset': [
-                'select dataset from Dataset dataset, dataset.investigation investigation',
-                'where investigation.id = ?', $state.params.investigationId
-            ],
-            'dataset-datafile': [
-                'select datafile from Datafile datafile, datafile.dataset dataset',
-                'where dataset.id = ?', $state.params.datasetId
-            ]
-        };
+        function generateQuery(stateFromTo, isCount){
+            var queries = {
+                'facility-proposal': [
+                    'select ' + item('DISTINCT investigation.name') + ' from Investigation investigation, investigation.facility facility',
+                    'where facility.id = ?', facilityId
+                ],
+                'facility-instrument': [
+                    'select ' + item('instrument') + ' from Instrument instrument, instrument.facility facility',
+                    'where facility.id = ?', facilityId
+                ],
+                'instrument-facilityCycle': [
+                    'select ' + item('facilityCycle') + ' from',
+                    'FacilityCycle facilityCycle,',
+                    'facilityCycle.facility facility,',
+                    'facility.investigations investigation,',
+                    'investigation.investigationInstruments investigationInstrument,',
+                    'investigationInstrument.instrument instrument',
+                    'where facility.id = ?', facilityId,
+                    'and instrument.id = ?', $state.params.instrumentId,
+                    'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
+                ],
+                'facilityCycle-proposal': [
+                    'select ' + item('DISTINCT investigation.name') + ' from',
+                    'Investigation investigation,',
+                    'investigation.investigationInstruments investigationInstrument,',
+                    'investigationInstrument.instrument instrument,',
+                    'instrument.facility facility,',
+                    'facility.facilityCycles facilityCycle',
+                    'where facility.id = ?', facilityId,
+                    'and instrument.id = ?', $state.params.instrumentId,
+                    'and facilityCycle.id = ?', $state.params.facilityCycleId,
+                    'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
+                ],
+                'proposal-investigation': [
+                    'select ' + item('investigation') + ' from Investigation investigation',
+                    'where investigation.name = ?', $state.params.proposalId
+                ],
+                'investigation-dataset': [
+                    'select ' + item('dataset') + ' from Dataset dataset, dataset.investigation investigation',
+                    'where investigation.id = ?', $state.params.investigationId
+                ],
+                'dataset-datafile': [
+                    'select ' + item('datafile') + ' from Datafile datafile, datafile.dataset dataset',
+                    'where dataset.id = ?', $state.params.datasetId
+                ]
+            };
 
-        var query = [stateFromToQueries[stateFromTo],
-            'order by ' + entityInstanceName + '.' + orderBy + ' ' + orderByDirection,
-            'limit ?, ?', function(){ return (page - 1) * pageSize; }, pageSize
-        ];
+            //maybe use some sort of safe string feature instead.
+            function item(defaultExpression){
+                var out = defaultExpression;
+                if(isCount) out = "count(" + out + ")";
+                return out;
+            }
 
-        function getPage(orderBy, orderByDirection){
-            var out = icat.query(canceler.promise, query);
+            var out = [queries[stateFromTo], 'order by ' + entityInstanceName + '.' + orderBy + ' ' + orderByDirection];
+            if(!isCount) out.push('limit ?, ?', function(){ return (page - 1) * pageSize; }, function(){ return pageSize; });
+            return out;
+        }
+
+        function getPage(){
+            var out = icat.query(canceler.promise, generateQuery(stateFromTo));
             if(gridOptionsName == 'proposal'){
                 var defered = $q.defer();
                 out.then(function(names){
@@ -99,6 +108,16 @@
                 });
             }
             return out;
+        }
+
+        function getTotalItems(){
+            var defered = $q.defer();
+            icat.query(canceler.promise, generateQuery(stateFromTo, true)).then(function(results){
+                defered.resolve(results[0]);
+            }, function(results){
+                defered.reject(results);
+            });
+            return defered.promise;
         }
 
         this.getNextRouteUrl = function(row){
@@ -135,9 +154,21 @@
             });
         }
 
+        gridOptions.paginationPageSizes = pagingConfig.paginationPageSizes;
+        gridOptions.paginationNumberOfRows = pagingConfig.paginationNumberOfRows;
+        gridOptions.useExternalPagination = true;
+
+
         gridOptions.onRegisterApi = function(gridApi) {
+
             getPage().then(function(results){
                 gridOptions.data = results;
+                if(!isScroll){
+                    getTotalItems().then(function(_totalItems){
+                        gridOptions.totalItems = _totalItems;
+                        totalItems = _totalItems;
+                    });
+                }
             });
 
             if(isScroll){
@@ -156,6 +187,15 @@
                     getPage().then(function(results){
                         _.each(results.reverse(), function(result){ gridOptions.data.unshift(result); });
                         if(results.length == 0) page++;
+                    });
+                });
+            } else {
+                //pagination callback
+                gridApi.pagination.on.paginationChanged($scope, function(_page, _pageSize) {
+                    page = _page;
+                    pageSize = _pageSize;
+                    getPage().then(function(results){
+                        gridOptions.data = results;
                     });
                 });
             }
