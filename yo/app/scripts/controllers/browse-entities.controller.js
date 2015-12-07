@@ -86,7 +86,7 @@
                 return out;
             }
 
-            var out = [queries[stateFromTo], sortQuery];
+            var out = [queries[stateFromTo], filterQuery, sortQuery];
 
             if(!isCount) out.push('limit ?, ?', function(){ return (page - 1) * pageSize; }, function(){ return pageSize; });
             return out;
@@ -194,7 +194,20 @@
 
             //filter change calkback
             gridApi.core.on.filterChanged($scope, function() {
-                
+                filterQuery = [];
+                _.each(gridOptions.columnDefs, function(columnDef){
+                    
+                });
+                page = 1;
+                getPage().then(function(results){
+                    gridOptions.data = results;
+                    if(!isScroll){
+                        getTotalItems().then(function(_totalItems){
+                            gridOptions.totalItems = _totalItems;
+                            totalItems = _totalItems;
+                        });
+                    }
+                });
             });
 
             if(isScroll){
