@@ -121,6 +121,20 @@
             }
         });
 
+        if(gridOptions.enableDownload){
+            gridOptions.columnDefs.push({
+                name : 'actions',
+                visible: true,
+                translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
+                enableFiltering: false,
+                enable: false,
+                enableColumnMenu: false,
+                enableSorting: false,
+                enableHiding: false,
+                cellTemplate : '<div class="ui-grid-cell-contents"><download-datafile></download-datafile></div>'
+            });
+        }
+
         gridOptions.onRegisterApi = function(gridApi) {
             getPage().then(function(results){
                 gridOptions.data = results;

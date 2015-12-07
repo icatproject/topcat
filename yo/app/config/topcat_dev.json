@@ -491,6 +491,7 @@
                 "datafile": {
                     "enableFiltering": true,
                     "enableSelection": true,
+                    "enableDownload": true,
                     "columnDefs": [
                         {
                             "field": "name",
