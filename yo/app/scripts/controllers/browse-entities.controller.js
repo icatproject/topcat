@@ -25,13 +25,12 @@
         $scope.$on('$destroy', function(){ canceler.resolve(); });
         var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field; });
         var isSize = _.includes(columnNames, 'size');
-        var orderByColumns = [];
+        var sortQuery = [];
+        var filterQuery = [];
         var totalItems;
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
-
-        console.log('gridOptions', gridOptions);
 
         function generateQuery(stateFromTo, isCount){
             var queries = {
@@ -87,12 +86,8 @@
                 return out;
             }
 
-            var out = [queries[stateFromTo]];
-            if(orderByColumns.length > 0){
-                out.push('order by ' + _.map(orderByColumns, function(orderByColumn){
-                    return getColumnDefByField(orderByColumn.name).jpqlExpression + ' ' + orderByColumn.direction;
-                }).join(', '));
-            }
+            var out = [queries[stateFromTo], sortQuery];
+
             if(!isCount) out.push('limit ?, ?', function(){ return (page - 1) * pageSize; }, function(){ return pageSize; });
             return out;
         }
@@ -124,17 +119,6 @@
                 defered.reject(results);
             });
             return defered.promise;
-        }
-
-        function getColumnDefByField(field){
-            var out;
-            _.each(gridOptions.columnDefs, function(columnDef){
-                if(columnDef.field == field){
-                    out = columnDef;
-                    return false;
-                }
-            });
-            return out;
         }
 
         this.getNextRouteUrl = function(row){
@@ -195,16 +179,22 @@
 
             //sort change callback
             gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
-                orderByColumns = sortColumns.map(function(sortColumn){
-                    return {
-                        name: sortColumn.field,
-                        direction: sortColumn.sort.direction
-                    };
-                });
+                sortQuery = [];
+                if(sortColumns.length > 0){
+                    sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
+                        console.log(sortColumn);
+                        return sortColumn.colDef.jpqlExpression + ' ' + sortColumn.sort.direction;
+                    }).join(', '));
+                }
                 page = 1;
                 getPage().then(function(results){
                     gridOptions.data = results;
                 });
+            });
+
+            //filter change calkback
+            gridApi.core.on.filterChanged($scope, function() {
+                
             });
 
             if(isScroll){
