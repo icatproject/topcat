@@ -157,7 +157,7 @@
                 columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
-            columnDef.jpqlExpression = entityInstanceName + '.' + columnDef.field;
+            columnDef.jpqlExpression = columnDef.jpqlExpression || entityInstanceName + '.' + columnDef.field;
         });
 
         if(gridOptions.enableDownload){
