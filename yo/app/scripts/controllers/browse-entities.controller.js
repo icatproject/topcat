@@ -25,6 +25,8 @@
         $scope.$on('$destroy', function(){ canceler.resolve(); });
         var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field; });
         var isSize = _.includes(columnNames, 'size');
+        var orderBy = columnNames[0];
+        var orderByDirection = 'asc';
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
@@ -75,14 +77,13 @@
             ]
         };
 
-        var query = stateFromToQueries[stateFromTo];
+        var query = [stateFromToQueries[stateFromTo],
+            'order by ' + entityInstanceName + '.' + orderBy + ' ' + orderByDirection,
+            'limit ?, ?', function(){ return (page - 1) * pageSize; }, pageSize
+        ];
 
         function getPage(orderBy, orderByDirection){
-            orderByDirection = orderByDirection || 'asc';
-            var _query = [query];
-            if(orderBy) _query.push('orderBy ' + entityInstanceName + '.' + orderBy + ' ' + orderByDirection);
-            _query.push(['limit ?, ?', (page - 1) * pageSize, pageSize]);
-            var out = icat.query(canceler.promise, _query);
+            var out = icat.query(canceler.promise, query);
             if(gridOptionsName == 'proposal'){
                 var defered = $q.defer();
                 out.then(function(names){
