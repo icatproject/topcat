@@ -4,7 +4,7 @@
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "paging" : {
-            "pagingType": "page",
+            "pagingType": "scroll",
             "paginationNumberOfRows": 10,
             "paginationPageSizes": [
                 10,

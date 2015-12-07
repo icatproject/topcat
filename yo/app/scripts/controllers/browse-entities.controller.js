@@ -25,8 +25,7 @@
         $scope.$on('$destroy', function(){ canceler.resolve(); });
         var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field; });
         var isSize = _.includes(columnNames, 'size');
-        var orderBy = columnNames[0];
-        var orderByDirection = 'asc';
+        var orderByColumns = [];
         var totalItems;
 
         this.gridOptions = gridOptions;
@@ -86,7 +85,12 @@
                 return out;
             }
 
-            var out = [queries[stateFromTo], 'order by ' + entityInstanceName + '.' + orderBy + ' ' + orderByDirection];
+            var out = [queries[stateFromTo]];
+            if(orderByColumns.length > 0){
+                out.push('order by ' + _.map(orderByColumns, function(orderByColumn){
+                    return entityInstanceName + '.' + orderByColumn.name + ' ' + orderByColumn.direction;
+                }).join(', '));
+            }
             if(!isCount) out.push('limit ?, ?', function(){ return (page - 1) * pageSize; }, function(){ return pageSize; });
             return out;
         }
@@ -137,6 +141,7 @@
             }
             if(columnDef.field == 'size'){
                 columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+                columnDef.enableSorting = false;
             }
         });
 
@@ -157,6 +162,8 @@
         gridOptions.paginationPageSizes = pagingConfig.paginationPageSizes;
         gridOptions.paginationNumberOfRows = pagingConfig.paginationNumberOfRows;
         gridOptions.useExternalPagination = true;
+        gridOptions.useExternalSorting = true;
+        gridOptions.useExternalFiltering = true;
 
 
         gridOptions.onRegisterApi = function(gridApi) {
@@ -169,6 +176,20 @@
                         totalItems = _totalItems;
                     });
                 }
+            });
+
+            //sort change callback
+            gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
+                orderByColumns = sortColumns.map(function(sortColumn){
+                    return {
+                        name: sortColumn.field,
+                        direction: sortColumn.sort.direction
+                    };
+                });
+                page = 1;
+                getPage().then(function(results){
+                    gridOptions.data = results;
+                });
             });
 
             if(isScroll){
