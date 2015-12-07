@@ -15,12 +15,16 @@
         var facility = tc.facility(facilityName);
         var facilityId = facility.config().facilityId;
         var icat = tc.icat(facilityName);
-        var gridOptions = _.merge({data: []}, facility.config().browseGridOptions[gridOptionsName]);
+        var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browseGridOptions[gridOptionsName]);
         var uiGridState = $state.params.uiGridState ? JSON.parse($state.params.uiGridState) : null;
         var pagingConfig = tc.config().paging;
         var isScroll = pagingConfig.pagingType == 'scroll';
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
         var page = 1;
+        var canceler = $q.defer();
+        $scope.$on('$destroy', function(){ canceler.resolve(); });
+        var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field; });
+        var isSize = _.includes(columnNames, 'size');
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
@@ -78,7 +82,7 @@
             var _query = [query];
             if(orderBy) _query.push('orderBy ' + entityInstanceName + '.' + orderBy + ' ' + orderByDirection);
             _query.push(['limit ?, ?', (page - 1) * pageSize, pageSize]);
-            var out = icat.query(_query);
+            var out = icat.query(canceler.promise, _query);
             if(gridOptionsName == 'proposal'){
                 var defered = $q.defer();
                 out.then(function(names){
@@ -88,8 +92,33 @@
                 });
                 out = defered.promise;
             }
+            if(isSize){
+                out.then(function(results){
+                    _.each(results, function(result){ result.getSize(canceler.promise); });
+                });
+            }
             return out;
         }
+
+        this.getNextRouteUrl = function(row){
+            var hierarchy = facility.config().hierarchy
+            var stateSuffixes = {};
+            _.each(hierarchy, function(currentEntityType, i){
+                stateSuffixes[currentEntityType] = _.slice(hierarchy, 0, i + 2).join('-');
+            });
+            var params = _.clone($state.params);
+            params[gridOptionsName + 'Id'] = row.id || row.name;
+            return $state.href('home.browse.facility.' + stateSuffixes[gridOptionsName], params);
+        };
+
+        _.each(gridOptions.columnDefs, function(columnDef){
+            if(columnDef.link) {
+                columnDef.cellTemplate = '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row.entity)}}">{{row.entity.' + columnDef.field + '}}</a></div>';
+            }
+            if(columnDef.field == 'size'){
+                columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+            }
+        });
 
         gridOptions.onRegisterApi = function(gridApi) {
             getPage().then(function(results){
@@ -116,14 +145,9 @@
                 });
             }
 
-
         };
 
-
     });
-    
-    
-
 })();
 
 if(false){

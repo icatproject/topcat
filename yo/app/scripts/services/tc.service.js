@@ -328,7 +328,7 @@
 			});
 
 			if(argTypeOfs.length == 0 && variations['']){
-				out = variations.default.apply(_this, args);
+				out = variations[''].apply(_this, args);
 			} else if(!found){
 				out = variations.default.apply(_this, args);
 			}
