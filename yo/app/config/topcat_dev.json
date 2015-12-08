@@ -421,7 +421,7 @@
                                 "direction": "asc"
                             },
                             "cellTemplate": "<div class='ui-grid-cell-contents'>{{row.entity.name}}-{{row.entity.id}}</div>",
-                            "jpqlExpression": "concat(inv.name, '-', inv.id)"
+                            "jpqlExpression": "concat(investigation.name, '-', investigation.id)"
                         },
                         {
                             "field": "size",

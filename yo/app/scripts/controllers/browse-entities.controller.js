@@ -4,18 +4,18 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $timeout, tc){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $timeout, tc, Cart){
 
         //e.g. 'facility-instrument' i.e. from 'facility' to 'instrument'
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
         var entityInstanceName = stateFromTo.replace(/^.*-/, '');
-        var gridOptionsName = entityInstanceName;
-        if(entityInstanceName == 'proposal') entityInstanceName = 'investigation';
+        var realEntityInstanceName = entityInstanceName;
+        if(realEntityInstanceName == 'proposal') realEntityInstanceName = 'investigation';
         var facilityName = $state.params.facilityName;
         var facility = tc.facility(facilityName);
         var facilityId = facility.config().facilityId;
         var icat = tc.icat(facilityName);
-        var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browseGridOptions[gridOptionsName]);
+        var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browseGridOptions[entityInstanceName]);
         var uiGridState = $state.params.uiGridState ? JSON.parse($state.params.uiGridState) : null;
         var pagingConfig = tc.config().paging;
         var isScroll = pagingConfig.pagingType == 'scroll';
@@ -28,6 +28,7 @@
         var sortQuery = [];
         var filterQuery = [];
         var totalItems;
+        var gridApi;
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
@@ -94,7 +95,7 @@
 
         function getPage(){
             var out = icat.query(canceler.promise, generateQuery(stateFromTo));
-            if(gridOptionsName == 'proposal'){
+            if(entityInstanceName == 'proposal'){
                 var defered = $q.defer();
                 out.then(function(names){
                     defered.resolve(_.map(names, function(name){ return {name: name}; }));
@@ -121,6 +122,19 @@
             return defered.promise;
         }
 
+        function updateSelections(){
+            var timeout = $timeout(function(){
+                _.each(gridOptions.data, function(row){
+                    if (Cart.hasItem(facilityName, entityInstanceName.toLowerCase(), row.id)) {
+                        gridApi.selection.selectRow(row);
+                    } else {
+                        gridApi.selection.unSelectRow(row);
+                    }
+                });
+            });
+            canceler.promise.then(function(){ $timeout.cancel(timeout); });
+        }
+
         this.getNextRouteUrl = function(row){
             var hierarchy = facility.config().hierarchy
             var stateSuffixes = {};
@@ -128,8 +142,8 @@
                 stateSuffixes[currentEntityType] = _.slice(hierarchy, 0, i + 2).join('-');
             });
             var params = _.clone($state.params);
-            params[gridOptionsName + 'Id'] = row.id || row.name;
-            return $state.href('home.browse.facility.' + stateSuffixes[gridOptionsName], params);
+            params[entityInstanceName + 'Id'] = row.id || row.name;
+            return $state.href('home.browse.facility.' + stateSuffixes[entityInstanceName], params);
         };
 
         _.each(gridOptions.columnDefs, function(columnDef){
@@ -141,7 +155,7 @@
                 columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
-            columnDef.jpqlExpression = columnDef.jpqlExpression || entityInstanceName + '.' + columnDef.field;
+            columnDef.jpqlExpression = columnDef.jpqlExpression || realEntityInstanceName + '.' + columnDef.field;
         });
 
         if(gridOptions.enableDownload){
@@ -165,7 +179,8 @@
         gridOptions.useExternalFiltering = true;
 
 
-        gridOptions.onRegisterApi = function(gridApi) {
+        gridOptions.onRegisterApi = function(_gridApi) {
+            gridApi = _gridApi;
 
             getPage().then(function(results){
                 gridOptions.data = results;
@@ -175,6 +190,7 @@
                         totalItems = _totalItems;
                     });
                 }
+                updateSelections();
             });
 
             //sort change callback
@@ -189,6 +205,7 @@
                 page = 1;
                 getPage().then(function(results){
                     gridOptions.data = results;
+                    updateSelections();
                 });
             });
 
@@ -220,11 +237,38 @@
                 page = 1;
                 getPage().then(function(results){
                     gridOptions.data = results;
+                    updateSelections();
                     if(!isScroll){
                         getTotalItems().then(function(_totalItems){
                             gridOptions.totalItems = _totalItems;
                             totalItems = _totalItems;
                         });
+                    }
+                });
+            });
+
+            function addItem(row){
+                Cart.addItem(facilityName, entityInstanceName.toLowerCase(), row.id, row.name, []);
+            }
+
+            function removeItem(row){
+                Cart.removeItem(facilityName, entityInstanceName.toLowerCase(), row.id);
+            }
+
+            gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                    addItem(row.entity);
+                } else {
+                    removeItem(row.entity);
+                }
+            });
+
+            gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                _.each(rows, function(row){
+                    if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                        addItem(row.entity.entity);
+                    } else {
+                        removeItem(row.entity);
                     }
                 });
             });
@@ -236,6 +280,7 @@
                     getPage().then(function(results){
                         _.each(results, function(result){ gridOptions.data.push(result); });
                         if(results.length == 0) page--;
+                        updateSelections();
                     });
                 });
 
@@ -245,6 +290,7 @@
                     getPage().then(function(results){
                         _.each(results.reverse(), function(result){ gridOptions.data.unshift(result); });
                         if(results.length == 0) page++;
+                        updateSelections();
                     });
                 });
             } else {
@@ -254,6 +300,7 @@
                     pageSize = _pageSize;
                     getPage().then(function(results){
                         gridOptions.data = results;
+                        updateSelections();
                     });
                 });
             }
@@ -262,35 +309,6 @@
 
     });
 })();
-
-
-/*
-
-var filterCount = value.search.length;
-if (filterCount === 1) {
-    if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
-        if (value.type === 'string') {
-            searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search[0].toUpperCase().replace('*', '%').replace('?', '_').replace('?', '_') + '%');
-        }
-
-        if (value.type === 'date') {
-            searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[0] + ' 23:59:59}');
-        }
-    }
-}
-
-if(filterCount > 1) {
-    if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
-        if (typeof value.search[1] !== 'undefined' && value.search[1] !== null && value.search[1].trim() !== '') {
-            if (value.type === 'date') {
-                searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[1] + ' 23:59:59}');
-            }
-        }
-    }
-}
-*/
-
-
 
 if(false){
     (function() {
