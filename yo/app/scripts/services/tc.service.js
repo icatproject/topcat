@@ -357,10 +357,22 @@
 	}
 
 	function jpqlSanitize(data){
-		if(typeof data == 'string'){
+		if(typeof data == 'string' && !data.isSafe){
 			return "'" + data.replace(/'/g, "''") + "'";
 		}
 		return data;
 	}
+
+	String.prototype.safe = function(){
+		return new SafeString(this);
+	};
+
+	function SafeString(value){
+		this.value = value;
+	}
+
+	SafeString.prototype.toString = function(){
+		return this.value;
+	};
 
 })();

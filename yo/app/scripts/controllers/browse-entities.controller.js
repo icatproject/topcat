@@ -194,9 +194,28 @@
 
             //filter change calkback
             gridApi.core.on.filterChanged($scope, function() {
+                canceler.resolve();
+                canceler = $q.defer();
                 filterQuery = [];
                 _.each(gridOptions.columnDefs, function(columnDef){
-                    
+                    if(columnDef.type == 'date' && columnDef.filters){
+                        var from = columnDef.filters[0].term || '';
+                        var to = columnDef.filters[1].term || '';
+                        if(from.match(/^\d\d\d\d-\d\d-\d\d$/) && to.match(/^\d\d\d\d-\d\d-\d\d$/)){
+                            filterQuery.push([
+                                "and ? between {ts ? 00:00:00} and {ts ? 23:59:59}",
+                                columnDef.jpqlExpression.safe(),
+                                from.safe(),
+                                to.safe()
+                            ]);
+                        }
+                    } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
+                        filterQuery.push([
+                            "and UPPER(?) like concat('%', ?, '%')", 
+                            columnDef.jpqlExpression.safe(),
+                            columnDef.filter.term.toUpperCase()
+                        ]);
+                    }
                 });
                 page = 1;
                 getPage().then(function(results){
@@ -243,6 +262,35 @@
 
     });
 })();
+
+
+/*
+
+var filterCount = value.search.length;
+if (filterCount === 1) {
+    if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
+        if (value.type === 'string') {
+            searchExpr.and('UPPER(' + entityAlias + '.' + value.field + ') LIKE ?', '%' + value.search[0].toUpperCase().replace('*', '%').replace('?', '_').replace('?', '_') + '%');
+        }
+
+        if (value.type === 'date') {
+            searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[0] + ' 23:59:59}');
+        }
+    }
+}
+
+if(filterCount > 1) {
+    if (typeof value.search[0] !== 'undefined' && value.search[0] !== null && value.search[0].trim() !== '') {
+        if (typeof value.search[1] !== 'undefined' && value.search[1] !== null && value.search[1].trim() !== '') {
+            if (value.type === 'date') {
+                searchExpr.and(entityAlias + '.' + value.field + ' BETWEEN {ts ' + value.search[0] + ' 00:00:00} AND {ts ' + value.search[1] + ' 23:59:59}');
+            }
+        }
+    }
+}
+*/
+
+
 
 if(false){
     (function() {
