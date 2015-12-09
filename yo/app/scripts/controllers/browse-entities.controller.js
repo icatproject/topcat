@@ -122,10 +122,25 @@
             return defered.promise;
         }
 
+        function isAncestorInCart(){
+            var out = false;
+            _.each(Cart.getItems(), function(item){
+                _.each(['investigation', 'dataset'], function(entityType){
+                    var entityId = $state.params[entityType + "Id"];
+                    if(item.facilityName == facilityName && item.entityType == entityType && item.entityId == entityId){
+                        out = true;
+                        return false;
+                    }
+                    return !out;
+                });
+            });
+            return out;
+        }
+
         function updateSelections(){
             var timeout = $timeout(function(){
                 _.each(gridOptions.data, function(row){
-                    if (Cart.hasItem(facilityName, entityInstanceName.toLowerCase(), row.id)) {
+                    if (isAncestorInCart() || Cart.hasItem(facilityName, entityInstanceName.toLowerCase(), row.id)) {
                         gridApi.selection.selectRow(row);
                     } else {
                         gridApi.selection.unSelectRow(row);
@@ -133,6 +148,17 @@
                 });
             });
             canceler.promise.then(function(){ $timeout.cancel(timeout); });
+        }
+
+        function removeRedundantItemsFromCart(){
+            _.each(Cart.getItems(), function(item){
+                _.each(item.parentEntities, function(parentEntity){
+                    if(parentEntity.facilityName == item.facilityName && parentEntity.entityType == item.entityType && parentEntity.id == item.id){
+                        Cart.removeItem(item.facilityName, item.entityType, item.id);
+                        return false;
+                    }
+                });
+            });
         }
 
         this.getNextRouteUrl = function(row){
@@ -191,6 +217,7 @@
                     });
                 }
                 updateSelections();
+                removeRedundantItemsFromCart();
             });
 
             //sort change callback
@@ -248,11 +275,23 @@
             });
 
             function addItem(row){
-                Cart.addItem(facilityName, entityInstanceName.toLowerCase(), row.id, row.name, []);
+                if(!isAncestorInCart()){
+                    var parentEntities = [];
+                    _.each(['investigation', 'dataset', 'datafile'], function(entityType){
+                        var id = entityType + "Id";
+                        if($state.params[id]) parentEntities.push({
+                            entityType: entityType,
+                            entityId: $state.params[id]
+                        });
+                    });
+                    Cart.addItem(facilityName, entityInstanceName.toLowerCase(), row.id, row.name, parentEntities);
+                }
             }
 
             function removeItem(row){
-                Cart.removeItem(facilityName, entityInstanceName.toLowerCase(), row.id);
+                if(!isAncestorInCart()){
+                    Cart.removeItem(facilityName, entityInstanceName.toLowerCase(), row.id);
+                }
             }
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
@@ -261,6 +300,8 @@
                 } else {
                     removeItem(row.entity);
                 }
+                updateSelections();
+                removeRedundantItemsFromCart();
             });
 
             gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
@@ -271,6 +312,8 @@
                         removeItem(row.entity);
                     }
                 });
+                updateSelections();
+                removeRedundantItemsFromCart();
             });
 
             if(isScroll){
