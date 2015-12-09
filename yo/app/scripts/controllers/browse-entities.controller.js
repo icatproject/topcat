@@ -151,20 +151,22 @@
         }
 
         function removeRedundantItemsFromCart(){
-            
+            var itemsToRemove = [];
             _.each(Cart.getItems(), function(item){
                 _.each(item.parentEntities, function(parentEntity){
                     var parentInCart = false;
                     _.each(Cart.getItems(), function(_item){
                         parentInCart = item.facilityName == _item.facilityName && parentEntity.entityType == _item.entityType && parentEntity.entityId == _item.entityId;
-                        console.log(parentInCart, item.facilityName, _item.facilityName, parentEntity.entityType, _item.entityType, parentEntity.entityId, _item.entityId);
                         return !parentInCart;
                     });
                     if(parentInCart){
-                        Cart.removeItem(item.facilityName, item.entityType, item.entityId);
+                        itemsToRemove.push(item);
                         return false;
                     }
                 });
+            });
+            _.each(itemsToRemove, function(item){
+                Cart.removeItem(item.facilityName, item.entityType, item.entityId);
             });
         }
 
