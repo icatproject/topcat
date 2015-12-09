@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $timeout, tc, Cart){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc, Cart){
 
         //e.g. 'facility-instrument' i.e. from 'facility' to 'instrument'
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
@@ -179,6 +179,15 @@
             var params = _.clone($state.params);
             params[entityInstanceName + 'Id'] = row.id || row.name;
             return $state.href('home.browse.facility.' + stateSuffixes[entityInstanceName], params);
+        };
+
+        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>',
+        this.showTabs = function(row) {
+            $rootScope.$broadcast('rowclick', {
+                'type': row.entity.entityType.toLowerCase(),
+                'id' : row.entity.id,
+                facilityName: facilityName
+            });
         };
 
         _.each(gridOptions.columnDefs, function(columnDef){
