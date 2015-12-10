@@ -1,6 +1,12 @@
 (function() {
     'use strict';
 
+    var noCacheHeaders = {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    };
+
     /**
      * deferred bootstrap to load main configuration to APP_CONFIG
      */
@@ -11,12 +17,12 @@
             APP_CONFIG : ['$http', function($http) {
                 var port = parseInt(window.location.port);
                 if(port === 10080 || port === 9000){
-                    return $http.get('config/topcat_dev.json');
+                    return $http.get('config/topcat_dev.json', {headers: noCacheHeaders});
                 }
-                return $http.get('config/topcat.json');
+                return $http.get('config/topcat.json', {headers: noCacheHeaders});
             } ],
             LANG : ['$http', function($http) {
-                return $http.get('languages/lang.json');
+                return $http.get('languages/lang.json', {headers: noCacheHeaders});
             } ]
         }
     });

@@ -19,8 +19,8 @@
                     url: route.url,
                     views: {
                         '@home.browse' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseEntitiesController'
+                            templateUrl: 'views/browse-entities.html',
+                            controller: 'BrowseEntitiesController as browseEntitiesController'
                         },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
