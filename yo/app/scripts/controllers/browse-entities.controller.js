@@ -183,6 +183,30 @@
             });
         }
 
+        function saveState(){
+            var uiGridState = JSON.stringify({
+                columns: gridApi.saveState.save().columns,
+                pageSize: pageSize,
+                page: page
+            });
+            $state.go($state.current.name, {uiGridState: uiGridState}, {location: 'replace'});
+        }
+
+        function restoreState(){
+            $timeout(function(){
+                var uiGridState = $state.params.uiGridState ? JSON.parse($state.params.uiGridState) : null;
+                if(uiGridState){
+                    self.pageSize = uiGridState.pageSize;
+                    pageSize = uiGridState.pageSize;
+                    page = uiGridState.page;
+                    delete uiGridState.pageSize;
+                    delete uiGridState.page;
+                    gridApi.saveState.restore($scope, uiGridState);
+                }
+            });
+        }
+
+
         this.getNextRouteUrl = function(row){
             var hierarchy = facility.config().hierarchy
             var stateSuffixes = {};
@@ -190,6 +214,7 @@
                 stateSuffixes[currentEntityType] = _.slice(hierarchy, 0, i + 2).join('-');
             });
             var params = _.clone($state.params);
+            delete params.uiGridState;
             params[entityInstanceName + 'Id'] = row.id || row.name;
             return $state.href('home.browse.facility.' + stateSuffixes[entityInstanceName], params);
         };
@@ -238,6 +263,7 @@
 
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
+            restoreState();
 
             getPage().then(function(results){
                 gridOptions.data = results;
@@ -261,6 +287,7 @@
                     updateScroll(results.length);
                     gridOptions.data = results;
                     updateSelections();
+                    saveState();
                 });
             });
 
@@ -297,6 +324,7 @@
                     updateSelections();
                     updateScroll(results.length);
                     updateTotalItems();
+                    saveState();
                 });
             });
 
