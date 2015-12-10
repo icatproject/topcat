@@ -116,14 +116,23 @@
             return out;
         }
 
-        function getTotalItems(){
-            var defered = $q.defer();
-            icat.query(canceler.promise, generateQuery(stateFromTo, true)).then(function(results){
-                defered.resolve(results[0]);
-            }, function(results){
-                defered.reject(results);
-            });
-            return defered.promise;
+        function updateScroll(resultCount){
+            if(isScroll){
+                $timeout(function(){
+                    var isMore = resultCount == pageSize;
+                    if(page == 1) gridApi.infiniteScroll.resetScroll(false, isMore);
+                    gridApi.infiniteScroll.dataLoaded(false, isMore);
+                });
+            }
+        }
+
+        function updateTotalItems(){
+            if(!isScroll){
+                icat.query(canceler.promise, generateQuery(stateFromTo, true)).then(function(_totalItems){
+                    gridOptions.totalItems = _totalItems;
+                    totalItems = _totalItems;
+                });
+            }
         }
 
         function isAncestorInCart(){
@@ -232,13 +241,9 @@
 
             getPage().then(function(results){
                 gridOptions.data = results;
-                if(!isScroll){
-                    getTotalItems().then(function(_totalItems){
-                        gridOptions.totalItems = _totalItems;
-                        totalItems = _totalItems;
-                    });
-                }
+                updateTotalItems();
                 updateSelections();
+                updateScroll(results.length);
                 removeRedundantItemsFromCart();
             });
 
@@ -253,6 +258,7 @@
                 }
                 page = 1;
                 getPage().then(function(results){
+                    updateScroll(results.length);
                     gridOptions.data = results;
                     updateSelections();
                 });
@@ -284,15 +290,13 @@
                     }
                 });
                 page = 1;
+                
+                gridOptions.data = [];
                 getPage().then(function(results){
                     gridOptions.data = results;
                     updateSelections();
-                    if(!isScroll){
-                        getTotalItems().then(function(_totalItems){
-                            gridOptions.totalItems = _totalItems;
-                            totalItems = _totalItems;
-                        });
-                    }
+                    updateScroll(results.length);
+                    updateTotalItems();
                 });
             });
 
@@ -346,6 +350,7 @@
                         _.each(results, function(result){ gridOptions.data.push(result); });
                         if(results.length == 0) page--;
                         updateSelections();
+                        updateScroll(results.length);
                     });
                 });
 
@@ -356,6 +361,7 @@
                         _.each(results.reverse(), function(result){ gridOptions.data.unshift(result); });
                         if(results.length == 0) page++;
                         updateSelections();
+                        updateScroll(results.length);
                     });
                 });
             } else {
