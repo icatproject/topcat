@@ -102,7 +102,7 @@
             if(entityInstanceName == 'proposal'){
                 var defered = $q.defer();
                 out.then(function(names){
-                    defered.resolve(_.map(names, function(name){ return {name: name}; }));
+                    defered.resolve(_.map(names, function(name){ return {name: name, entityType: 'proposal'}; }));
                 }, function(response){
                     defered.reject(response);
                 });
