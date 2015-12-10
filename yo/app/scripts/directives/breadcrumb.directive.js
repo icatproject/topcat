@@ -88,7 +88,9 @@
                 var nextRoute = previousRoutes[i + 1];
 
                 if(nextRoute){
-                    item.route = 'home.browse.facility.' + nextRoute.route + '('+ JSON.stringify($stateParams) + ')';
+                    var params = _.clone($stateParams);
+                    delete params.uiGridState;
+                    item.route = 'home.browse.facility.' + nextRoute.route + '('+ JSON.stringify(params) + ')';
                 } else {
                     item.route = $state.current.name;
                 }
