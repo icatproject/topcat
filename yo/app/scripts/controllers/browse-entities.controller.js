@@ -90,6 +90,10 @@
             var out = [queries[stateFromTo], filterQuery, sortQuery];
 
             if(!isCount) out.push('limit ?, ?', function(){ return (page - 1) * pageSize; }, function(){ return pageSize; });
+            
+            var includes = gridOptions.includes;
+            if(includes) out.push('include ' + includes.join(', '))
+
             return out;
         }
 
