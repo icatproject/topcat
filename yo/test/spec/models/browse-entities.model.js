@@ -3,6 +3,7 @@
 //var mockConfigService;
 
 describe('Service: BrowseEntitiesModel', function() {
+    /*
     var JSONFile = {};
 
     //load mock json file
@@ -40,7 +41,7 @@ describe('Service: BrowseEntitiesModel', function() {
     });
 
 
-    /*it('configToUIGridOptions for instrument', function() {
+    it('configToUIGridOptions for instrument', function() {
         var gridOptions = BrowseEntitiesModel.configToUIGridOptions(JSONFile.facilities.dls, 'instrument');
 
         expect(gridOptions).toEqual(jasmine.objectContaining(

@@ -1,7 +1,7 @@
 'use strict';
 
 describe('BrowseEntitiesController', function(){
-
+  /*
 	beforeEach(function() {
         module(function($provide) {
             $provide.constant('LANG', {});
@@ -31,7 +31,7 @@ describe('BrowseEntitiesController', function(){
       	expect($scope.gridOptions.onRegisterApi).toBeDefined();
 
 	});
-
+  */
 
 });
 

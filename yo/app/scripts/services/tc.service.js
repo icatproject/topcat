@@ -354,7 +354,7 @@
 		if(!topcatApiPath.match(/\/$/)) topcatApiPath = topcatApiPath + '/';
 		generateRestMethods.call(this, topcatApiPath);
 
-    });
+  });
 
 	function typeOf(data){
 		var out = typeof data;
@@ -409,10 +409,10 @@
 		promise.log = function(){
 			return this.then(function(data){
 				console.log('(success)', data);	
-			}, function('(error)', data){
-				console.log(data);	
-			}, function('(notify)', data){
-        console.log(data);  
+			}, function(data){
+				console.log('(error)', data);	
+			}, function(data){
+        console.log('(notify)', data);  
       });
 		};
 		return promise;
