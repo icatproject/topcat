@@ -20,16 +20,77 @@
     	this.config = function(){ return APP_CONFIG.site; }
 
     	this.version = function(){
-			var out = $q.defer();
-			this.get('version').then(function(data){
-				out.resolve(data.value);
-			}, function(){ out.reject(); });
-			return extendPromise(out.promise);
-		};
+  			var out = $q.defer();
+  			this.get('version').then(function(data){
+  				out.resolve(data.value);
+  			}, function(){ out.reject(); });
+  			return extendPromise(out.promise);
+      };
 
-		this.icat = function(facilityName){ return this.facility(facilityName).icat(); };
+      this.search = overload(this, {
+        'array, object, object': function(facilityNames, query, options){
+          var defered = $q.defer();
+          var promises = [];
+          var results = []
 
-		this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
+          _.each(facilityNames, function(facilityName){
+            var facility = that.facility(facilityName);
+            var icat = facility.icat();
+
+            promises.push(icat.get('lucene/data', {
+                sessionId: icat.session().sessionId,
+                query: JSON.stringify(query),
+                maxCount: 1000
+            }, options).then(function(data){
+              var _results = _.map(data, function(result){
+                  var out = result[query.target];
+                  out.entityType = query.target;
+                  out.score = result.score;
+                  out.facilityName = facilityName;
+                  out.getSize = overload(out, {
+                    'object': function(options){
+                      var that = this;
+                      return extendPromise(facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+                        that.size = size;
+                        return size;
+                      }));
+                    },
+                    'promise': function(timeout){
+                      return this.getSize({timeout: timeout});
+                    },
+                    '': function(){
+                      return this.getSize({});
+                    }
+                  });
+                  return out;
+              });
+              results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
+              defered.notify(results);
+            }));
+          });
+
+          $q.all(promises).then(function(){
+            defered.resolve(results);
+          }, function(response){
+            defered.reject(response);
+          });
+
+          return extendPromise(defered.promise);
+        },
+        'array, promise, object': function(facilityNames, timeout, query){
+          return this.search(facilityNames, query, {timeout: timeout});
+        },
+        'array, object': function(facilityNames, query){
+          return this.search(facilityNames, query, {});
+        },
+        'array, string, string': function(facilityNames, target, text){
+          return this.search(facilityNames, {target: target, text: text}, {});
+        }
+      });
+
+		  this.icat = function(facilityName){ return this.facility(facilityName).icat(); };
+
+		  this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
 
     	function Facility(facilityName){
     		var icat;
@@ -69,12 +130,12 @@
     		this.login = function(plugin, username, password){
     			var params = {
     				json: JSON.stringify({
-		                plugin: plugin,
-		                credentials: [
-		                    {username: username},
-		                    {password: password}
-		                ]
-		            })
+                plugin: plugin,
+                credentials: [
+                    {username: username},
+                    {password: password}
+                ]
+            })
     			};
     			return this.post('session', params).then(function(response){
     				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
@@ -130,26 +191,25 @@
 	                	defered.resolve(_.map(results, function(result){
 	                		var type = _.keys(result)[0];
 	                		if(typeOf(result) != 'object' || !type) return result;
-	        				var out = result[type];
-	        				out.entityType = type;
-	        				out.getSize = overload(out, {
-	        					'object': function(options){
-	        						var that = this;
-	        						return extendPromise(facility.ids().getSize(type, this.id, options).then(function(size){
-			        					that.size = size;
-			        					return size;
-			        				}));
-	        					},
-	        					'promise': function(timeout){
-	        						return this.getSize({timeout: timeout});
-	        					},
-	        					'': function(){
-	        						return this.getSize({});
-	        					}
-	        				});
-	        				return out;
-	        			}));
-
+    	        				var out = result[type];
+    	        				out.entityType = type;
+    	        				out.getSize = overload(out, {
+    	        					'object': function(options){
+    	        						var that = this;
+    	        						return extendPromise(facility.ids().getSize(type, this.id, options).then(function(size){
+    			        					that.size = size;
+    			        					return size;
+    			        				}));
+    	        					},
+    	        					'promise': function(timeout){
+    	        						return this.getSize({timeout: timeout});
+    	        					},
+    	        					'': function(){
+    	        						return this.getSize({});
+    	        					}
+    	        				});
+    	        				return out;
+    	        			}));
 	                }, function(response){
 	                	defered.reject(response);
 	                });
@@ -348,10 +408,12 @@
 	function extendPromise(promise){
 		promise.log = function(){
 			return this.then(function(data){
+				console.log('(success)', data);	
+			}, function('(error)', data){
 				console.log(data);	
-			}, function(data){
-				console.error(data);	
-			});
+			}, function('(notify)', data){
+        console.log(data);  
+      });
 		};
 		return promise;
 	}
