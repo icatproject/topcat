@@ -420,6 +420,7 @@
                 },
                 "proposal": {
                     "enableFiltering": true,
+                    "enableSelection": false,
                     "columnDefs": [
                         {
                             "field": "name",
@@ -440,7 +441,7 @@
                 },
                 "investigation": {
                     "enableFiltering": true,
-                    "enableSelection": false,
+                    "enableSelection": true,
                     "includes" : [
                         "investigation.investigationInstruments.instrument",
                         "investigation.type"

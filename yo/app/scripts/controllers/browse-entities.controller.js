@@ -259,11 +259,16 @@
         gridOptions.useExternalPagination = true;
         gridOptions.useExternalSorting = true;
         gridOptions.useExternalFiltering = true;
+        var enableSelection = gridOptions.enableSelection === true;
+        gridOptions.enableSelectAll = gridOptions.enableSelectAll === true;
+        gridOptions.enableRowSelection = enableSelection;
+        gridOptions.enableRowHeaderSelection = enableSelection;
 
 
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
             restoreState();
+            console.log(gridApi);
 
             getPage().then(function(results){
                 gridOptions.data = results;
