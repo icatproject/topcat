@@ -420,7 +420,7 @@
                 },
                 "proposal": {
                     "enableFiltering": true,
-                    "enableSelection": false,
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name",

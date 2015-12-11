@@ -259,8 +259,8 @@
         gridOptions.useExternalPagination = true;
         gridOptions.useExternalSorting = true;
         gridOptions.useExternalFiltering = true;
-        var enableSelection = gridOptions.enableSelection === true;
-        gridOptions.enableSelectAll = gridOptions.enableSelectAll === true;
+        var enableSelection = gridOptions.enableSelection === true && entityInstanceName.match(/^investigation|dataset|datafile$/) !== null;
+        gridOptions.enableSelectAll = enableSelection && gridOptions.enableSelectAll === true;
         gridOptions.enableRowSelection = enableSelection;
         gridOptions.enableRowHeaderSelection = enableSelection;
 
