@@ -390,12 +390,12 @@
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://fdsgos11.fds.rl.ac.uk"
+                    "url": "https://localhost:18181"
                 },
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
                     "type" : "globus",
-                    "url": "https://fdsgos11.fds.rl.ac.uk"
+                    "url": "https://localhost:18181"
                 }
             ],
             "browseGridOptions": {

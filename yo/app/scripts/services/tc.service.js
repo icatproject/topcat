@@ -25,72 +25,72 @@
   				out.resolve(data.value);
   			}, function(){ out.reject(); });
   			return extendPromise(out.promise);
-      };
+	    };
 
-      this.search = overload(this, {
-        'array, object, object': function(facilityNames, query, options){
-          var defered = $q.defer();
-          var promises = [];
-          var results = []
+		this.search = overload(this, {
+			'array, object, object': function(facilityNames, query, options){
+				var defered = $q.defer();
+				var promises = [];
+				var results = []
 
-          _.each(facilityNames, function(facilityName){
-            var facility = that.facility(facilityName);
-            var icat = facility.icat();
+				_.each(facilityNames, function(facilityName){
+					var facility = that.facility(facilityName);
+					var icat = facility.icat();
 
-            promises.push(icat.get('lucene/data', {
-                sessionId: icat.session().sessionId,
-                query: JSON.stringify(query),
-                maxCount: 1000
-            }, options).then(function(data){
-              var _results = _.map(data, function(result){
-                  var out = result[query.target];
-                  out.entityType = query.target;
-                  out.score = result.score;
-                  out.facilityName = facilityName;
-                  out.getSize = overload(out, {
-                    'object': function(options){
-                      var that = this;
-                      return extendPromise(facility.ids().getSize(this.entityType, this.id, options).then(function(size){
-                        that.size = size;
-                        return size;
-                      }));
-                    },
-                    'promise': function(timeout){
-                      return this.getSize({timeout: timeout});
-                    },
-                    '': function(){
-                      return this.getSize({});
-                    }
-                  });
-                  return out;
-              });
-              results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
-              defered.notify(results);
-            }));
-          });
+					promises.push(icat.get('lucene/data', {
+					    sessionId: icat.session().sessionId,
+					    query: JSON.stringify(query),
+					    maxCount: 1000
+					}, options).then(function(data){
+						var _results = _.map(data, function(result){
+							var out = result[query.target];
+							out.entityType = query.target;
+							out.score = result.score;
+							out.facilityName = facilityName;
+							out.getSize = overload(out, {
+							'object': function(options){
+								var that = this;
+								return extendPromise(facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+									that.size = size;
+									return size;
+								}));
+							},
+							'promise': function(timeout){
+								return this.getSize({timeout: timeout});
+							},
+							'': function(){
+								return this.getSize({});
+							}
+							});
+							return out;
+					  });
+					  results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
+					  defered.notify(results);
+					}));
+				});
 
-          $q.all(promises).then(function(){
-            defered.resolve(results);
-          }, function(response){
-            defered.reject(response);
-          });
+				$q.all(promises).then(function(){
+					defered.resolve(results);
+				}, function(response){
+					defered.reject(response);
+				});
 
-          return extendPromise(defered.promise);
-        },
-        'array, promise, object': function(facilityNames, timeout, query){
-          return this.search(facilityNames, query, {timeout: timeout});
-        },
-        'array, object': function(facilityNames, query){
-          return this.search(facilityNames, query, {});
-        },
-        'array, string, string': function(facilityNames, target, text){
-          return this.search(facilityNames, {target: target, text: text}, {});
-        }
-      });
+				return extendPromise(defered.promise);
+			},
+			'array, promise, object': function(facilityNames, timeout, query){
+				return this.search(facilityNames, query, {timeout: timeout});
+			},
+			'array, object': function(facilityNames, query){
+				return this.search(facilityNames, query, {});
+			},
+			'array, string, string': function(facilityNames, target, text){
+				return this.search(facilityNames, {target: target, text: text}, {});
+			}
+		});
 
-		  this.icat = function(facilityName){ return this.facility(facilityName).icat(); };
+		this.icat = function(facilityName){ return this.facility(facilityName).icat(); };
 
-		  this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
+		this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
 
     	function Facility(facilityName){
     		var icat;
