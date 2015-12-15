@@ -33,7 +33,7 @@
 				var promises = [];
 				var results = [];
 				var entityType = query.target;
-				var entityInstanceName = entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
+				var entityInstanceName = instanceName(entityType);
 				_.each(facilityNames, function(facilityName){
 					var facility = that.facility(facilityName);
 					var icat = facility.icat();
@@ -78,6 +78,54 @@
 										result.facilityName = facilityName;
 										result.score = scores[result.id];
 										result.getSize = getSizeFunction(result, facility);
+										result.getAncestors = function(){
+											var currentEntity = result;
+
+											var getParentFunctions = {
+												Datafile: function(datafile){
+													var defered = $q.defer();
+													defered.resolve(_.merge(datafile.dataset, {entityType: 'Dataset', parent: datafile}));
+													return defered.promise
+												},
+												Dataset: function(dataset){
+													var defered = $q.defer();
+													defered.resolve(_.merge(dataset.investigation, {entityType: 'Investigation', parent: dataset}));
+													return defered.promise
+												},
+												Investigation: function(investigation){
+													var defered = $q.defer();
+													icat.entity('FacilityCycle', [
+														', facilityCycle.facility facility,',
+														'facility.investigations investigation',
+														'where facility.id = ?', facility.config().facilityId,
+														'and investigation.id = ?', investigation.id,
+														'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
+													], options).then(function(facilityCycle){
+														investigation.facilityCycle = facilityCycle;
+														defered.resolve(_.merge(facilityCycle, {entityType: 'FacilityCycle', parent: investigation}));
+													}, function(response){
+														defered.reject(response);
+													});
+													return defered.promise;
+												},
+												FacilityCycle: function(facilityCycle){
+
+												}
+											};
+
+											function getParent(){
+												var getParentFunction = getParentFunctions[currentEntity.entityType];
+												if(getParentFunction){
+													getParentFunction(currentEntity).then(function(entity){
+														currentEntity = entity;
+														getParent();
+													});
+												}
+											}
+
+											getParent();
+										};
+
 										return result;
 									});
 
@@ -221,7 +269,7 @@
 	                		if(typeOf(result) != 'object' || !type) return result;
     	        				var out = result[type];
     	        				out.entityType = type;
-    	        				out.getSize = getSizeFunction(result, facility);
+    	        				out.getSize = getSizeFunction(out, facility);
     	        				return out;
     	        			}));
 	                }, function(response){
@@ -247,9 +295,8 @@
 
 	        this.entities = overload(this, {
 	        	'string, array, object': function(type, query, options){
-	        		var instanceName = type.replace(/^./, function(s){ return s.toLowerCase(); })
 	        		return extendPromise(this.query([[
-	        			'select ' + instanceName + ' from ' + type + ' ' + instanceName
+	        			'select ' + instanceName(type) + ' from ' + type + ' ' + instanceName(type)
 	        		], query], options));
 	        	},
 	        	'string, promise, array': function(type, timeout, query){
@@ -296,7 +343,7 @@
 
     		this.getSize = overload(this, {
     			'string, number, object': function(type, id, options){
-    				var idsParamName = type.replace(/^./, function(s){ return s.toLowerCase(); }) + "Ids";
+    				var idsParamName = instanceName(type) + "Ids";
     				var params = {
     					server: facility.config().icatUrl,
     					sessionId: facility.icat().session().sessionId
@@ -368,7 +415,7 @@
 		if(!topcatApiPath.match(/\/$/)) topcatApiPath = topcatApiPath + '/';
 		generateRestMethods.call(this, topcatApiPath);
 
-  });
+  	});
 
 	function typeOf(data){
 		var out = typeof data;
@@ -467,6 +514,10 @@
 				return this.getSize({});
 			}
 		});
+	}
+
+	function instanceName(entityType){
+		return entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
 	}
 
 })();
