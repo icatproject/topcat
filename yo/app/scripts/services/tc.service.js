@@ -31,8 +31,9 @@
 			'array, object, object': function(facilityNames, query, options){
 				var defered = $q.defer();
 				var promises = [];
-				var results = []
-
+				var results = [];
+				var entityType = query.target;
+				var entityInstanceName = entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
 				_.each(facilityNames, function(facilityName){
 					var facility = that.facility(facilityName);
 					var icat = facility.icat();
@@ -40,32 +41,53 @@
 					promises.push(icat.get('lucene/data', {
 					    sessionId: icat.session().sessionId,
 					    query: JSON.stringify(query),
-					    maxCount: 1000
+					    maxCount: 300
 					}, options).then(function(data){
-						var _results = _.map(data, function(result){
-							var out = result[query.target];
-							out.entityType = query.target;
-							out.score = result.score;
-							out.facilityName = facilityName;
-							out.getSize = overload(out, {
-							'object': function(options){
-								var that = this;
-								return extendPromise(facility.ids().getSize(this.entityType, this.id, options).then(function(size){
-									that.size = size;
-									return size;
-								}));
-							},
-							'promise': function(timeout){
-								return this.getSize({timeout: timeout});
-							},
-							'': function(){
-								return this.getSize({});
-							}
+						if(data.length > 0){
+							var ids = [];
+							var scores = {};
+							_.each(data, function(result){
+								var entity = result[entityType];
+								ids.push(entity.id);
+								scores[entity.id] = result.score;
 							});
-							return out;
-					  });
-					  results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
-					  defered.notify(results);
+
+							var promises = [];
+							_.each(_.chunk(ids, 100), function(ids){
+								var query = [
+									function(){
+										if(entityType == 'Investigation'){
+											return 'select investigation from Investigation investigation';
+										} else if(entityType == 'Dataset') {
+											return 'select dataset from Dataset dataset';
+										} else {
+											return 'select datafile from Datafile datafile';
+										}
+									},
+									'where ?.id in (?)', entityInstanceName.safe(), ids.join(', ').safe(),
+									function(){
+										if(entityType == 'Dataset'){
+											return 'include dataset.investigation';
+										} else if(entityType == 'Datafile') {
+											return 'include datafile.dataset.investigation';
+										}
+									}
+								];
+								promises.push(icat.query(query, options).then(function(_results){
+									var _results = _.map(_results, function(result){
+										result.facilityName = facilityName;
+										result.score = scores[result.id];
+										result.getSize = getSizeFunction(result, facility);
+										return result;
+									});
+
+									results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
+									defered.notify(results);
+								}));
+							})
+							return $q.all(promises);
+						}
+
 					}));
 				});
 
@@ -130,12 +152,12 @@
     		this.login = function(plugin, username, password){
     			var params = {
     				json: JSON.stringify({
-                plugin: plugin,
-                credentials: [
-                    {username: username},
-                    {password: password}
-                ]
-            })
+		                plugin: plugin,
+		                credentials: [
+		                    {username: username},
+		                    {password: password}
+		                ]
+		            })
     			};
     			return this.post('session', params).then(function(response){
     				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
@@ -156,30 +178,36 @@
 
 	        this.query = overload(this, {
 	        	'array, object': function(query, options){
-	        		while(_.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0){
-		        		query = _.flatten(query);
-		        	}
+		        	while(true){
+			        	query = _.map(query, function(i){
+			        		if(typeOf(i) == 'function') i = i.call(this);
+			        		return i;
+			        	});
+			        	query = _.flatten(query);
+			        	var isFunction = _.select(query, function(i){ return typeOf(i) == 'function'; }).length > 0;
+			        	var isArray = _.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0;
+			        	if(!isFunction && !isArray) break;
+			        }
 
-		        	query = _.map(query, function(i){
-		        		if(typeOf(i) == 'function') i = i.call(this);
-		        		return i;
-		        	});
+			        query = _.select(query, function(i){ return i !== undefined; });
 
-		        	while(_.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0){
-		        		query = _.flatten(query);
-		        	}
-
-		        	var _query = [];
-		        	for(var i = 0; i < query.length; i++){
-		        		var fragments = query[i].split(/\?/);
-		        		for(var j in fragments){
-		        			_query.push(fragments[j]);
-		        			if(j < fragments.length - 1){
-		        				i++;
-		        				_query.push(jpqlSanitize(query[i]));
-		        			}
-		        		}
-		        	}
+			        try {
+			        	var _query = [];
+			        	for(var i = 0; i < query.length; i++){
+			        		var expression = [];
+			        		var fragments = query[i].split(/\?/);
+			        		for(var j in fragments){
+			        			expression.push(fragments[j]);
+			        			if(j < fragments.length - 1){
+			        				i++;
+			        				expression.push(jpqlSanitize(query[i]));
+			        			}
+			        		}
+			        		_query.push(expression.join(''));
+			        	}
+			        } catch(e) {
+			        	console.error("can't build query", query, e)
+			        }
 
 		        	var defered = $q.defer();
 		        	
@@ -193,21 +221,7 @@
 	                		if(typeOf(result) != 'object' || !type) return result;
     	        				var out = result[type];
     	        				out.entityType = type;
-    	        				out.getSize = overload(out, {
-    	        					'object': function(options){
-    	        						var that = this;
-    	        						return extendPromise(facility.ids().getSize(type, this.id, options).then(function(size){
-    			        					that.size = size;
-    			        					return size;
-    			        				}));
-    	        					},
-    	        					'promise': function(timeout){
-    	        						return this.getSize({timeout: timeout});
-    	        					},
-    	        					'': function(){
-    	        						return this.getSize({});
-    	        					}
-    	        				});
+    	        				out.getSize = getSizeFunction(result, facility);
     	        				return out;
     	        			}));
 	                }, function(response){
@@ -436,5 +450,23 @@
 	SafeString.prototype.toString = function(){
 		return this.value;
 	};
+
+	function getSizeFunction(result, facility){
+		return overload(result, {
+			'object': function(options){
+				var that = this;
+				return extendPromise(facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+					that.size = size;
+					return size;
+				}));
+			},
+			'promise': function(timeout){
+				return this.getSize({timeout: timeout});
+			},
+			'': function(){
+				return this.getSize({});
+			}
+		});
+	}
 
 })();
