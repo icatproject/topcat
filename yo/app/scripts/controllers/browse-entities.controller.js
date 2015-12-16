@@ -268,7 +268,6 @@
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
             restoreState();
-            console.log(gridApi);
 
             getPage().then(function(results){
                 gridOptions.data = results;

@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tc', function($sessionStorage, $http, $q, APP_CONFIG){
+    app.service('tc', function($sessionStorage, $http, $q, $state, APP_CONFIG){
     	var that = this;
     	var facilities = {};
 
@@ -24,7 +24,7 @@
   			this.get('version').then(function(data){
   				out.resolve(data.value);
   			}, function(){ out.reject(); });
-  			return extendPromise(out.promise);
+  			return out.promise;
 	    };
 
 		this.search = overload(this, {
@@ -77,55 +77,7 @@
 									var _results = _.map(_results, function(result){
 										result.facilityName = facilityName;
 										result.score = scores[result.id];
-										result.getSize = getSizeFunction(result, facility);
-										result.getAncestors = function(){
-											var currentEntity = result;
-
-											var getParentFunctions = {
-												Datafile: function(datafile){
-													var defered = $q.defer();
-													defered.resolve(_.merge(datafile.dataset, {entityType: 'Dataset', parent: datafile}));
-													return defered.promise
-												},
-												Dataset: function(dataset){
-													var defered = $q.defer();
-													defered.resolve(_.merge(dataset.investigation, {entityType: 'Investigation', parent: dataset}));
-													return defered.promise
-												},
-												Investigation: function(investigation){
-													var defered = $q.defer();
-													icat.entity('FacilityCycle', [
-														', facilityCycle.facility facility,',
-														'facility.investigations investigation',
-														'where facility.id = ?', facility.config().facilityId,
-														'and investigation.id = ?', investigation.id,
-														'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
-													], options).then(function(facilityCycle){
-														investigation.facilityCycle = facilityCycle;
-														defered.resolve(_.merge(facilityCycle, {entityType: 'FacilityCycle', parent: investigation}));
-													}, function(response){
-														defered.reject(response);
-													});
-													return defered.promise;
-												},
-												FacilityCycle: function(facilityCycle){
-
-												}
-											};
-
-											function getParent(){
-												var getParentFunction = getParentFunctions[currentEntity.entityType];
-												if(getParentFunction){
-													getParentFunction(currentEntity).then(function(entity){
-														currentEntity = entity;
-														getParent();
-													});
-												}
-											}
-
-											getParent();
-										};
-
+										decorateEntity(result, facility, options);
 										return result;
 									});
 
@@ -145,7 +97,7 @@
 					defered.reject(response);
 				});
 
-				return extendPromise(defered.promise);
+				return defered.promise;
 			},
 			'array, promise, object': function(facilityNames, timeout, query){
 				return this.search(facilityNames, query, {timeout: timeout});
@@ -186,7 +138,7 @@
     			this.get('version').then(function(data){
     				out.resolve(data.version);
     			}, function(){ out.reject(); });
-    			return extendPromise(out.promise);
+    			return out.promise;
     		};
 
     		this.session = function(){
@@ -269,14 +221,14 @@
 	                		if(typeOf(result) != 'object' || !type) return result;
     	        				var out = result[type];
     	        				out.entityType = type;
-    	        				out.getSize = getSizeFunction(out, facility);
+    	        				decorateEntity(out, facility, options);
     	        				return out;
     	        			}));
 	                }, function(response){
 	                	defered.reject(response);
 	                });
 
-	                return extendPromise(defered.promise);
+	                return defered.promise;
 	        	},
 	        	'promise, array': function(timeout, query){
 		        	return this.query(query, {timeout: timeout});
@@ -295,9 +247,9 @@
 
 	        this.entities = overload(this, {
 	        	'string, array, object': function(type, query, options){
-	        		return extendPromise(this.query([[
+	        		return this.query([[
 	        			'select ' + instanceName(type) + ' from ' + type + ' ' + instanceName(type)
-	        		], query], options));
+	        		], query], options);
 	        	},
 	        	'string, promise, array': function(type, timeout, query){
 	        		return this.entities(type, query, {timeout: timeout});
@@ -326,7 +278,7 @@
         		}, function(results){
         			out.reject(results);
         		});
-        		return extendPromise(out.promise);
+        		return out.promise;
         	};
 
     		generateRestMethods.call(this, facility.config().icatUrl + '/icat/');
@@ -388,7 +340,7 @@
 						}, function(response){
 							out.reject(response.data);
 						});
-						return extendPromise(out.promise);
+						return out.promise;
 		    		},
 					'string, object, object': function(offset, params, options){
 						return this[methodName].call(this, offset, urlEncode(params), options)
@@ -414,6 +366,215 @@
 		if(!topcatApiPath.match(/^https:\/\//)) topcatApiPath = '/' + topcatApiPath;
 		if(!topcatApiPath.match(/\/$/)) topcatApiPath = topcatApiPath + '/';
 		generateRestMethods.call(this, topcatApiPath);
+
+		(function(){
+			var methods = {
+	            get: $http.get,
+	            delete: $http.delete,
+	            post: $http.post,
+	            put: $http.put
+	        };
+
+	        _.each(methods, function(method, name){
+	            $http[name] = function(){
+	                return extendPromise(method.apply(this, arguments));
+	            };
+	        });
+
+	        var deferMethod = $q.defer;
+	        $q.defer = function(){
+	        	var out = deferMethod.apply(this, arguments);
+	        	extendPromise(out.promise);
+	        	return out;
+	        };
+
+	        function extendPromise(promise){
+				promise.log = function(){
+		            return this.then(function(data){
+		                console.log('(success)', data); 
+		            }, function(data){
+		                console.log('(error)', data);   
+		            }, function(data){
+		                console.log('(notify)', data);  
+		            });
+		        };
+
+		        var then = promise.then;
+		        promise.then = function(){
+		        	return extendPromise(then.apply(this, arguments));
+		        };
+
+		        return promise;
+			}
+
+	    })();
+
+	    function decorateEntity(entity, facility, options){
+			var icat = facility.icat();
+			var facilityName = facility.config().facilityName;
+
+			entity.getSize = overload(entity, {
+				'object': function(options){
+					var that = this;
+					return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+						that.size = size;
+						return size;
+					});
+				},
+				'promise': function(timeout){
+					return this.getSize({timeout: timeout});
+				},
+				'': function(){
+					return this.getSize({});
+				}
+			});
+
+			entity.ancestors = function(){
+				var defered = $q.defer();
+				var currentEntity = entity;
+
+				var getParentFunctions = {
+					Datafile: function(datafile){
+						var defered = $q.defer();
+						var dataset = datafile.dataset;
+						if(dataset){
+							defered.resolve(_.merge(dataset, {entityType: 'Dataset', parent: datafile}));
+						} else {
+							icat.entity('Dataset', [
+								', dataset.datafiles datafile',
+								'where datafile.id = ?', datafile.id
+							], options).then(function(dataset){
+								datafile.dataset = dataset;
+								defered.resolve(_.merge(dataset, {parent: datafile}));
+							}, function(response){
+								defered.reject(response);
+							});
+						}
+						return defered.promise
+					},
+					Dataset: function(dataset){
+						var defered = $q.defer();
+						var investigation = dataset.investigation;
+						if(investigation){
+							defered.resolve(_.merge(investigation, {entityType: 'Investigation', parent: dataset}));
+						} else {
+							icat.entity('Investigation', [
+								', investigation.datasets dataset',
+								'where dataset.id = ?', dataset.id
+							], options).then(function(investigation){
+								dataset.investigation = investigation;
+								defered.resolve(_.merge(investigation, {parent: dataset}));
+							}, function(response){
+								defered.reject(response);
+							});
+						}
+						return defered.promise
+					},
+					Investigation: function(investigation){
+						var defered = $q.defer();
+						var facilityCycle = investigation.facilityCycle;
+						if(facilityCycle){
+							defered.resolve(_.merge(facilityCycle, {parent: investigation}));
+						} else {
+							icat.entity('FacilityCycle', [
+								', facilityCycle.facility facility,',
+								'facility.investigations investigation',
+								'where facility.id = ?', facility.config().facilityId,
+								'and investigation.id = ?', investigation.id,
+								'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
+							], options).then(function(facilityCycle){
+								investigation.facilityCycle = facilityCycle;
+								defered.resolve(_.merge(facilityCycle, {parent: investigation}));
+							}, function(response){
+								defered.reject(response);
+							});
+						}
+						return defered.promise;
+					},
+					FacilityCycle: function(facilityCycle){
+						var investigation = facilityCycle.parent;
+						var defered = $q.defer();
+						var instrument = facilityCycle.instrument;
+						if(instrument){
+							defered.resolve(_.merge(instrument, {parent: facilityCycle}));
+						} else {
+							icat.entity('Instrument', [
+								', instrument.investigationInstruments investigationInstrument,',
+								'investigationInstrument.investigation investigation,',
+								'instrument.facility facility',
+								'where facility.id = ?', facility.config().facilityId,
+								'and investigation.id = ?', investigation.id,
+							], options).then(function(instrument){
+								facilityCycle.instrument = instrument;
+								defered.resolve(_.merge(instrument, {parent: investigation}));
+							}, function(response){
+								defered.reject(response);
+							});
+						}
+						return defered.promise;
+					}
+				};
+
+				function getParent(){
+					var getParentFunction = getParentFunctions[currentEntity.entityType];
+					if(getParentFunction){
+						getParentFunction(currentEntity).then(function(entity){
+							currentEntity = entity;
+							getParent();
+						});
+					} else {
+						defered.resolve(entity);
+					}
+				}
+
+				getParent();
+				return defered.promise;
+			};
+
+			entity.stateParams = function(){
+				var that = this;
+				return this.ancestors().then(function(){
+					var out = {};
+					var getStateParamFunctions =  {
+						Datafile: function(datafile){
+							return datafile.dataset;
+						},
+						Dataset: function(dataset){
+							out['datasetId'] = dataset.id;
+							return dataset.investigation;
+						},
+						Investigation: function(investigation){
+							out['investigationId'] = investigation.id;
+							out['proposalId'] = investigation.name;
+							return investigation.facilityCycle;
+						},
+						FacilityCycle: function(facilityCycle){
+							out['facilityCycleId'] = facilityCycle.id
+							return facilityCycle.instrument;
+						},
+						Instrument: function(instrument){
+							out['instrumentId'] = instrument.id
+						}
+					};
+
+					var currentEntity = that;
+					var getStateParamFunction;
+					while(currentEntity && (getStateParamFunction = getStateParamFunctions[currentEntity.entityType])){
+						currentEntity = getStateParamFunction(currentEntity);
+					}
+
+					return _.merge(out, {facilityName: facilityName});
+				});
+
+			};
+
+			entity.browse = function(){
+				this.stateParams =  function(){
+					var state = ["home.browse.facility.facility"];
+					$state.go();
+				};
+			};
+		}
 
   	});
 
@@ -466,19 +627,6 @@
 		return out.join('&');
 	}
 
-	function extendPromise(promise){
-		promise.log = function(){
-			return this.then(function(data){
-				console.log('(success)', data);	
-			}, function(data){
-				console.log('(error)', data);	
-			}, function(data){
-        console.log('(notify)', data);  
-      });
-		};
-		return promise;
-	}
-
 	function jpqlSanitize(data){
 		if(typeof data == 'string' && !data.isSafe){
 			return "'" + data.replace(/'/g, "''") + "'";
@@ -497,24 +645,6 @@
 	SafeString.prototype.toString = function(){
 		return this.value;
 	};
-
-	function getSizeFunction(result, facility){
-		return overload(result, {
-			'object': function(options){
-				var that = this;
-				return extendPromise(facility.ids().getSize(this.entityType, this.id, options).then(function(size){
-					that.size = size;
-					return size;
-				}));
-			},
-			'promise': function(timeout){
-				return this.getSize({timeout: timeout});
-			},
-			'': function(){
-				return this.getSize({});
-			}
-		});
-	}
 
 	function instanceName(entityType){
 		return entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
