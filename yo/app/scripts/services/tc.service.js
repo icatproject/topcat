@@ -77,7 +77,7 @@
 									var _results = _.map(_results, function(result){
 										result.facilityName = facilityName;
 										result.score = scores[result.id];
-										decorateEntity(result, facility, options);
+										extendEntity(result, facility, options);
 										return result;
 									});
 
@@ -221,7 +221,7 @@
 	                		if(typeOf(result) != 'object' || !type) return result;
     	        				var out = result[type];
     	        				out.entityType = type;
-    	        				decorateEntity(out, facility, options);
+    	        				extendEntity(out, facility, options);
     	        				return out;
     	        			}));
 	                }, function(response){
@@ -409,7 +409,7 @@
 
 	    })();
 
-	    function decorateEntity(entity, facility, options){
+	    function extendEntity(entity, facility, options){
 			var icat = facility.icat();
 			var facilityName = facility.config().facilityName;
 
@@ -429,74 +429,71 @@
 				}
 			});
 
-			entity.ancestors = function(){
-				var defered = $q.defer();
-				var currentEntity = entity;
-
-				var getParentFunctions = {
-					Datafile: function(datafile){
-						var defered = $q.defer();
-						var dataset = datafile.dataset;
-						if(dataset){
-							defered.resolve(_.merge(dataset, {entityType: 'Dataset', parent: datafile}));
-						} else {
-							icat.entity('Dataset', [
-								', dataset.datafiles datafile',
-								'where datafile.id = ?', datafile.id
-							], options).then(function(dataset){
-								datafile.dataset = dataset;
-								defered.resolve(_.merge(dataset, {parent: datafile}));
-							}, function(response){
-								defered.reject(response);
-							});
-						}
-						return defered.promise
-					},
-					Dataset: function(dataset){
-						var defered = $q.defer();
-						var investigation = dataset.investigation;
-						if(investigation){
-							defered.resolve(_.merge(investigation, {entityType: 'Investigation', parent: dataset}));
-						} else {
-							icat.entity('Investigation', [
-								', investigation.datasets dataset',
-								'where dataset.id = ?', dataset.id
-							], options).then(function(investigation){
-								dataset.investigation = investigation;
-								defered.resolve(_.merge(investigation, {parent: dataset}));
-							}, function(response){
-								defered.reject(response);
-							});
-						}
-						return defered.promise
-					},
-					Investigation: function(investigation){
-						var defered = $q.defer();
-						var facilityCycle = investigation.facilityCycle;
-						if(facilityCycle){
-							defered.resolve(_.merge(facilityCycle, {parent: investigation}));
-						} else {
-							icat.entity('FacilityCycle', [
-								', facilityCycle.facility facility,',
-								'facility.investigations investigation',
-								'where facility.id = ?', facility.config().facilityId,
-								'and investigation.id = ?', investigation.id,
-								'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
-							], options).then(function(facilityCycle){
-								investigation.facilityCycle = facilityCycle;
-								defered.resolve(_.merge(facilityCycle, {parent: investigation}));
-							}, function(response){
-								defered.reject(response);
-							});
-						}
-						return defered.promise;
-					},
-					FacilityCycle: function(facilityCycle){
-						var investigation = facilityCycle.parent;
+			var parentFunctions = {
+				Datafile: function(datafile){
+					var defered = $q.defer();
+					var dataset = datafile.dataset;
+					if(dataset){
+						defered.resolve(_.merge(dataset, {entityType: 'Dataset'}));
+					} else {
+						icat.entity('Dataset', [
+							', dataset.datafiles datafile',
+							'where datafile.id = ?', datafile.id
+						], options).then(function(dataset){
+							datafile.dataset = dataset;
+							defered.resolve(dataset);
+						}, function(response){
+							defered.reject(response);
+						});
+					}
+					return defered.promise
+				},
+				Dataset: function(dataset){
+					var defered = $q.defer();
+					var investigation = dataset.investigation;
+					if(investigation){
+						defered.resolve(_.merge(investigation, {entityType: 'Investigation'}));
+					} else {
+						icat.entity('Investigation', [
+							', investigation.datasets dataset',
+							'where dataset.id = ?', dataset.id
+						], options).then(function(investigation){
+							dataset.investigation = investigation;
+							defered.resolve(investigation);
+						}, function(response){
+							defered.reject(response);
+						});
+					}
+					return defered.promise
+				},
+				Investigation: function(investigation){
+					var defered = $q.defer();
+					var facilityCycle = investigation.facilityCycle;
+					if(facilityCycle){
+						defered.resolve(facilityCycle);
+					} else {
+						icat.entity('FacilityCycle', [
+							', facilityCycle.facility facility,',
+							'facility.investigations investigation',
+							'where facility.id = ?', facility.config().facilityId,
+							'and investigation.id = ?', investigation.id,
+							'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
+						], options).then(function(facilityCycle){
+							investigation.facilityCycle = facilityCycle;
+							defered.resolve(facilityCycle);
+						}, function(response){
+							defered.reject(response);
+						});
+					}
+					return defered.promise;
+				},
+				FacilityCycle: function(facilityCycle, childEntity){
+					return childEntity.parent('Investigation').then(function(investigation){
+						console.log('childEntity', childEntity)
 						var defered = $q.defer();
 						var instrument = facilityCycle.instrument;
 						if(instrument){
-							defered.resolve(_.merge(instrument, {parent: facilityCycle}));
+							defered.resolve(instrument);
 						} else {
 							icat.entity('Instrument', [
 								', instrument.investigationInstruments investigationInstrument,',
@@ -506,14 +503,61 @@
 								'and investigation.id = ?', investigation.id,
 							], options).then(function(instrument){
 								facilityCycle.instrument = instrument;
-								defered.resolve(_.merge(instrument, {parent: investigation}));
+								defered.resolve(instrument);
 							}, function(response){
 								defered.reject(response);
 							});
 						}
 						return defered.promise;
+					});
+				}
+					
+			};
+
+
+			var parent; 
+			entity.parent = overload(entity, {
+				'string, object': function(entityType, childEntity){
+					var defered = $q.defer();
+					this.parent(childEntity).then(function(entity){
+						if(!entity || entity.entityType == entityType){
+							defered.resolve(entity);
+						} else {
+							return entity.parent(entityType, childEntity);
+						}
+					});
+					return defered.promise;
+				},
+				'string': function(entityType){
+					return this.parent(entityType, entity);	
+				},
+				'object': function(childEntity){
+					var defered = $q.defer();
+					if(parent !== undefined){
+						defered.resolve(parent);
+					} else {
+						var parentFunction = parentFunctions[this.entityType];
+						if(parentFunction){
+							parentFunction(this, childEntity).then(function(_parent){
+								parent = _parent;
+								defered.resolve(parent);
+							});
+						} else {
+							parent = null;
+							defered.resolve(parent);
+						}
 					}
-				};
+					return defered.promise;
+				},
+				'': function(){
+					return this.parent(entity);	
+				}
+			});
+				
+
+			entity.ancestors = function(){
+				var defered = $q.defer();
+				var currentEntity = entity;
 
 				function getParent(){
 					var getParentFunction = getParentFunctions[currentEntity.entityType];
