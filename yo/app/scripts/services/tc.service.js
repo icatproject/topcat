@@ -488,6 +488,9 @@
 					return defered.promise;
 				},
 				FacilityCycle: function(facilityCycle, childEntity){
+					if(!_.includes(['Investigation', 'Dataset', 'Datafile'], childEntity.entityType)){
+						return resolvedPromise(null);
+					}
 					return childEntity.thisOrParent('Investigation').then(function(investigation){
 						var defered = $q.defer();
 						var instrument = facilityCycle.instrument;
@@ -510,7 +513,7 @@
 						return defered.promise;
 					});
 				}
-					
+	
 			};
 
 
@@ -553,9 +556,7 @@
 
 			entity.thisOrParent = function(entityType){
 				if(this.entityType == entityType){
-					var defered = $q.defer();
-					defered.resolve(this);
-					return defered.promise
+					return resolvedPromise(this);
 				} else {
 					return this.parent(entityType);
 				}
@@ -605,6 +606,12 @@
 					$state.go();
 				};
 			};
+		}
+
+		function resolvedPromise(value){
+			var defered = $q.defer();
+			defered.resolve(value);
+			return defered.promise;
 		}
 
   	});
