@@ -33,7 +33,7 @@
 				var promises = [];
 				var results = [];
 				var entityType = query.target;
-				var entityInstanceName = instanceName(entityType);
+				var entityInstanceName = instanceNameFromEntityType(entityType);
 				_.each(facilityNames, function(facilityName){
 					var facility = that.facility(facilityName);
 					var icat = facility.icat();
@@ -248,7 +248,7 @@
 	        this.entities = overload(this, {
 	        	'string, array, object': function(type, query, options){
 	        		return this.query([[
-	        			'select ' + instanceName(type) + ' from ' + type + ' ' + instanceName(type)
+	        			'select ' + instanceNameFromEntityType(type) + ' from ' + type + ' ' + instanceNameFromEntityType(type)
 	        		], query], options);
 	        	},
 	        	'string, promise, array': function(type, timeout, query){
@@ -295,7 +295,7 @@
 
     		this.getSize = overload(this, {
     			'string, number, object': function(type, id, options){
-    				var idsParamName = instanceName(type) + "Ids";
+    				var idsParamName = instanceNameFromEntityType(type) + "Ids";
     				var params = {
     					server: facility.config().icatUrl,
     					sessionId: facility.icat().session().sessionId
@@ -488,8 +488,7 @@
 					return defered.promise;
 				},
 				FacilityCycle: function(facilityCycle, childEntity){
-					return childEntity.parent('Investigation').then(function(investigation){
-						console.log('childEntity', childEntity)
+					return childEntity.thisOrParent('Investigation').then(function(investigation){
 						var defered = $q.defer();
 						var instrument = facilityCycle.instrument;
 						if(instrument){
@@ -518,15 +517,13 @@
 			var parent; 
 			entity.parent = overload(entity, {
 				'string, object': function(entityType, childEntity){
-					var defered = $q.defer();
-					this.parent(childEntity).then(function(entity){
+					return this.parent(childEntity).then(function(entity){
 						if(!entity || entity.entityType == entityType){
-							defered.resolve(entity);
+							return entity;
 						} else {
 							return entity.parent(entityType, childEntity);
 						}
 					});
-					return defered.promise;
 				},
 				'string': function(entityType){
 					return this.parent(entityType, entity);	
@@ -553,60 +550,50 @@
 					return this.parent(entity);	
 				}
 			});
+
+			entity.thisOrParent = function(entityType){
+				if(this.entityType == entityType){
+					var defered = $q.defer();
+					defered.resolve(this);
+					return defered.promise
+				} else {
+					return this.parent(entityType);
+				}
+			};
 				
 
 			entity.ancestors = function(){
 				var defered = $q.defer();
-				var currentEntity = entity;
-
-				function getParent(){
-					var getParentFunction = getParentFunctions[currentEntity.entityType];
-					if(getParentFunction){
-						getParentFunction(currentEntity).then(function(entity){
-							currentEntity = entity;
-							getParent();
-						});
-					} else {
-						defered.resolve(entity);
-					}
+				var out = [];
+				var childEntity = this;
+				function parent(){
+					this.parent(childEntity).then(function(entity){
+						if(entity){
+							out.push(entity);
+							parent.call(entity);
+						} else {
+							defered.resolve(out);
+						}
+					});
 				}
-
-				getParent();
+				parent.call(this);
 				return defered.promise;
 			};
 
-			entity.stateParams = function(){
+			entity.thisAndAncestors = function(){
 				var that = this;
-				return this.ancestors().then(function(){
+				return this.ancestors().then(function(ancestors){
+					return _.flatten([that, ancestors]);
+				});
+			};
+
+			entity.stateParams = function(){
+				return this.thisAndAncestors().then(function(thisAndAncestors){
 					var out = {};
-					var getStateParamFunctions =  {
-						Datafile: function(datafile){
-							return datafile.dataset;
-						},
-						Dataset: function(dataset){
-							out['datasetId'] = dataset.id;
-							return dataset.investigation;
-						},
-						Investigation: function(investigation){
-							out['investigationId'] = investigation.id;
-							out['proposalId'] = investigation.name;
-							return investigation.facilityCycle;
-						},
-						FacilityCycle: function(facilityCycle){
-							out['facilityCycleId'] = facilityCycle.id
-							return facilityCycle.instrument;
-						},
-						Instrument: function(instrument){
-							out['instrumentId'] = instrument.id
-						}
-					};
-
-					var currentEntity = that;
-					var getStateParamFunction;
-					while(currentEntity && (getStateParamFunction = getStateParamFunctions[currentEntity.entityType])){
-						currentEntity = getStateParamFunction(currentEntity);
-					}
-
+					_.each(thisAndAncestors, function(entity){
+						out[instanceNameFromEntityType(entity.entityType) + "Id"] = entity.id;
+						if(entity.entityType == 'Investigation') out['proposalId'] = entity.name;
+					});
 					return _.merge(out, {facilityName: facilityName});
 				});
 
@@ -690,7 +677,7 @@
 		return this.value;
 	};
 
-	function instanceName(entityType){
+	function instanceNameFromEntityType(entityType){
 		return entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
 	}
 
