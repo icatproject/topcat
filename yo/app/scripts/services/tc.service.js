@@ -73,6 +73,7 @@
 										}
 									}
 								];
+								console.log('options', options);
 								promises.push(icat.query(query, options).then(function(_results){
 									var _results = _.map(_results, function(result){
 										result.facilityName = facilityName;
@@ -430,7 +431,7 @@
 			});
 
 			var parentFunctions = {
-				Datafile: function(datafile){
+				Datafile: function(datafile, options){
 					var defered = $q.defer();
 					var dataset = datafile.dataset;
 					if(dataset){
@@ -448,7 +449,7 @@
 					}
 					return defered.promise
 				},
-				Dataset: function(dataset){
+				Dataset: function(dataset, options){
 					var defered = $q.defer();
 					var investigation = dataset.investigation;
 					if(investigation){
@@ -466,7 +467,7 @@
 					}
 					return defered.promise
 				},
-				Investigation: function(investigation){
+				Investigation: function(investigation, options){
 					var defered = $q.defer();
 					var facilityCycle = investigation.facilityCycle;
 					if(facilityCycle){
@@ -487,7 +488,7 @@
 					}
 					return defered.promise;
 				},
-				FacilityCycle: function(facilityCycle, childEntity){
+				FacilityCycle: function(facilityCycle, childEntity, options){
 					if(!_.includes(['Investigation', 'Dataset', 'Datafile'], childEntity.entityType)){
 						return resolvedPromise(null);
 					}
@@ -519,26 +520,29 @@
 
 			var parent; 
 			entity.parent = overload(entity, {
-				'string, object': function(entityType, childEntity){
-					return this.parent(childEntity).then(function(entity){
+				'string, object, object': function(entityType, childEntity, options){
+					return this.parent(childEntity, options).then(function(entity){
 						if(!entity || entity.entityType == entityType){
 							return entity;
 						} else {
-							return entity.parent(entityType, childEntity);
+							return entity.parent(entityType, childEntity, options);
 						}
 					});
 				},
-				'string': function(entityType){
-					return this.parent(entityType, entity);	
+				'string, promise': function(entityType, timeout){
+					return this.parent(entityType, entity, {timeout: timeout});	
 				},
-				'object': function(childEntity){
+				'string': function(entityType){
+					return this.parent(entityType, entity, {});	
+				},
+				'object, object': function(childEntity, options){
 					var defered = $q.defer();
 					if(parent !== undefined){
 						defered.resolve(parent);
 					} else {
 						var parentFunction = parentFunctions[this.entityType];
 						if(parentFunction){
-							parentFunction(this, childEntity).then(function(_parent){
+							parentFunction(this, childEntity, options).then(function(_parent){
 								parent = _parent;
 								defered.resolve(parent);
 							});
@@ -549,8 +553,17 @@
 					}
 					return defered.promise;
 				},
+				'object': function(childEntity){
+					return this.parent(childEntity, options);	
+				},
+				'object, promise': function(childEntity, timeout){
+					return this.parent(childEntity, {timeout: timeout});	
+				},
+				'promise': function(timeout){
+					return this.parent(entity, {timeout: timeout});	
+				},
 				'': function(){
-					return this.parent(entity);	
+					return this.parent(entity, {});	
 				}
 			});
 
@@ -568,7 +581,6 @@
 				var out = [];
 				var childEntity = this;
 				function parent(){
-					console.log('this', this);
 					this.parent(childEntity).then(function(entity){
 						if(entity){
 							out.push(entity);
@@ -615,8 +627,14 @@
 				});
 			};
 
-			if(entity.dataset) extendEntity(entity.dataset, facility, options);
-			if(entity.investigation) extendEntity(entity.investigation, facility, options);
+			if(entity.dataset){
+				entity.dataset.entityType = "Dataset";
+				extendEntity(entity.dataset, facility, options);
+			}
+			if(entity.investigation){
+				entity.investigation.entityType = "Investigation";
+				extendEntity(entity.investigation, facility, options);
+			}
 		}
 
 		function resolvedPromise(value){

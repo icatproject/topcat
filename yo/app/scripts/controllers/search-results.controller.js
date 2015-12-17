@@ -16,7 +16,7 @@
       var timeout = $q.defer();
       $scope.$on('$destroy', function(){ timeout.resolve(); });
 
-      var gridOptions = {data: []};
+      var gridOptions = {data: [], appScopeProvider: this};
       _.merge(gridOptions, APP_CONFIG.site.searchGridOptions[type]);
       _.each(gridOptions.columnDefs, function(columnDef){
           if(columnDef.field == 'size'){
@@ -51,10 +51,9 @@
       if(samples.length > 0) query.samples = samples;
 
       tc.search(facilities, timeout.promise, query).then(function(results){
-        console.log(gridOptions);
         _.each(results, function(entity){
-              entity.getSize(timeout.promise);
-          });
+            entity.getSize(timeout.promise);
+        });
       }, function(){
 
       }, function(results){
@@ -98,6 +97,11 @@
                   }
               });
           });
+      };
+
+      this.browse = function(row){
+        timeout.resolve();
+        row.browse();
       };
 
     });
