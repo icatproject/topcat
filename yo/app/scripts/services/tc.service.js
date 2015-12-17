@@ -568,6 +568,7 @@
 				var out = [];
 				var childEntity = this;
 				function parent(){
+					console.log('this', this);
 					this.parent(childEntity).then(function(entity){
 						if(entity){
 							out.push(entity);
@@ -613,6 +614,9 @@
 					$state.go(state, params);
 				});
 			};
+
+			if(entity.dataset) extendEntity(entity.dataset, facility, options);
+			if(entity.investigation) extendEntity(entity.investigation, facility, options);
 		}
 
 		function resolvedPromise(value){

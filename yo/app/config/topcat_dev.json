@@ -63,7 +63,6 @@
                 ]
             },
             "Datafile": {
-                "includes": ["datafile.dataset.investigation"],
                 "columnDefs": [
                     {
                         "field": "name",
@@ -75,9 +74,9 @@
                         "translateDisplayName": "SEARCH.COLUMN.SIZE"
                     },
                     {
-                        "field": "dataset",
+                        "field": "dataset.name",
                         "translateDisplayName": "SEARCH.COLUMN.DATASET",
-                        "link": true
+                        "cellTemplate": "<div class=\"ui-grid-cell-contents\"><a ng-click=\"row.entity.browse()\">{{row.entity.dataset.name}}</a></div>"
                     },
                     {
                         "field": "createTime",
