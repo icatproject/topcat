@@ -601,10 +601,17 @@
 			};
 
 			entity.browse = function(){
-				this.stateParams =  function(){
-					var state = ["home.browse.facility.facility"];
-					$state.go();
-				};
+				var that = this;
+				this.stateParams().then(function(params){
+					var state = [];
+					var hierarchy =  facility.config().hierarchy;
+					for(var i in hierarchy){
+						state.push(hierarchy[i]);
+						if (('' + hierarchy[i - 1]).toLowerCase() == that.entityType.toLowerCase()) break;
+					}
+					state = "home.browse.facility." + state.join('-');
+					$state.go(state, params);
+				});
 			};
 		}
 
