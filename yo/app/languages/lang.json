@@ -215,8 +215,13 @@
         },
         "COLUMN": {
             "NAME": "Name",
+            "SIZE": "Size",
+            "DATASET": "Dataset",
+            "INVESTIGATION": "Investigation",
             "CREATE_TIME": "Create Time",
-            "MOD_TIME": "Modified Time"
+            "MOD_TIME": "Modified Time",
+            "START_DATE": "Start Date",
+            "TITLE": "Title"
         }
     },
     "MY_DATA" : {

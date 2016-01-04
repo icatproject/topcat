@@ -73,7 +73,6 @@
 										}
 									}
 								];
-								console.log('options', options);
 								promises.push(icat.query(query, options).then(function(_results){
 									var _results = _.map(_results, function(result){
 										result.facilityName = facilityName;

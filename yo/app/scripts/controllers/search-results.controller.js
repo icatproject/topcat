@@ -24,6 +24,11 @@
               columnDef.enableSorting = false;
               columnDef.enableFiltering = false;
           }
+
+          if(columnDef.translateDisplayName){
+              columnDef.displayName = columnDef.translateDisplayName;
+              columnDef.headerCellFilter = 'translate';
+          }
       });
       this.gridOptions = gridOptions;
 

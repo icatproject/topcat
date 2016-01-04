@@ -58,7 +58,7 @@
                     },
                     {
                         "field": "investigation.title",
-                        "translateDisplayName": "SEARCH.COLUMN.NAME",
+                        "translateDisplayName": "SEARCH.COLUMN.INVESTIGATION",
                         "cellTemplate": "<div class=\"ui-grid-cell-contents\"><a ng-click=\"row.entity.investigation.browse()\">{{row.entity.investigation.title}}</a></div>"
                     },
                     {
