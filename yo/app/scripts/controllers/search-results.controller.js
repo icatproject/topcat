@@ -39,8 +39,6 @@
      	query.lower = startDate.replace(/-/g, '') + "0000";
      	query.upper = endDate.replace(/-/g, '') + "0000";
 
-      console.log(startDate, endDate);
-
       if(parameters.length > 0){
           query.parameters = _.map(parameters, function(parameter){
               var out = {};
