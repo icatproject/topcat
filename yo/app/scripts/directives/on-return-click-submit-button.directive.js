@@ -5,12 +5,15 @@
 
     var app = angular.module('angularApp');
 
-    app.directive('preventDefault', function(){
+    app.directive('onReturnClickSubmitButton', function(){
         return {
             restrict: 'A',
             link: function(scope, element, attrs){
             	$(element).on('keypress', function(e){
-            		if(e.which == 13) e.preventDefault();
+            		if(e.which == 13){
+            			e.preventDefault();
+            			$(this).parents('form').find('input[type=submit], button[type=submit]').last().trigger('click');
+            		}
             	});
             }
         };
