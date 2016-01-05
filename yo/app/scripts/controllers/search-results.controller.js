@@ -37,7 +37,7 @@
       if(startDate && !endDate) endDate = "90000-12-31";
       if(endDate && !startDate) startDate = "00000-01-01";
      	query.lower = startDate.replace(/-/g, '') + "0000";
-     	query.upper = endDate.replace(/-/g, '') + "0000";
+     	query.upper = endDate.replace(/-/g, '') + "2359";
 
       if(parameters.length > 0){
           query.parameters = _.map(parameters, function(parameter){
