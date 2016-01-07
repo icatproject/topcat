@@ -384,8 +384,6 @@
             "facilityId": 1,
             "hierarchy": [
                 "facility",
-                "instrument",
-                "facilityCycle",
                 "proposal",
                 "investigation",
                 "dataset",
@@ -552,15 +550,11 @@
                             "type": "number"
                         },
                         {
-                            "field": "investigationInstruments[0].instrument.fullName",
+                            "field": "instrumentNames",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "visible": true,
-                            "filter": {
-                                "condition": "starts_with",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "enableSorting": false
                         },
                         {
                             "field": "startDate",

@@ -232,6 +232,7 @@
             if(columnDef.link) {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row.entity)}}">{{row.entity.' + columnDef.field + '}}</a></div>';
             }
+
             if(columnDef.field == 'size'){
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
                 columnDef.enableSorting = false;
@@ -241,6 +242,10 @@
             if(columnDef.translateDisplayName){
                 columnDef.displayName = columnDef.translateDisplayName;
                 columnDef.headerCellFilter = 'translate';
+            }
+
+            if(columnDef.field == 'instrumentNames'){
+                columnDef.cellTemplate = '<div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length > 1"><span class="glyphicon glyphicon-th-list" tooltip="{{row.entity.instrumentNames}}" tooltip-placement="top" tooltip-append-to-body="true"></span> {{row.entity.firstInstrumentName}}</div><div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length <= 1">{{row.entity.firstInstrumentName}}</div>';
             }
 
             columnDef.jpqlExpression = columnDef.jpqlExpression || realEntityInstanceName + '.' + columnDef.field;
@@ -274,6 +279,8 @@
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
             restoreState();
+
+            console.log('gridApi', gridApi);
 
             getPage().then(function(results){
                 gridOptions.data = results;

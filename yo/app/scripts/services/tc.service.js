@@ -413,6 +413,13 @@
 			var icat = facility.icat();
 			var facilityName = facility.config().facilityName;
 
+			if(entity.investigationInstruments){
+				entity.firstInstrumentName = entity.investigationInstruments[0].instrument.fullName;
+				entity.instrumentNames = _.map(entity.investigationInstruments, function(investigationInstrument){
+					return investigationInstrument.instrument.fullName;
+				}).join("\n");
+			}
+
 			entity.getSize = overload(entity, {
 				'object': function(options){
 					var that = this;
