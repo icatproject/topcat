@@ -446,7 +446,7 @@ visit_id_counter = 1
 
 			instrument_ids = instruments.map{|instrument| instrument.id}
 
-			(1..3).each do
+			(rand * 3).to_i.each do
 				instrument_ids.shuffle!
 				instrument_id = instrument_ids.pop
 				InvestigationInstrument.create_fake(:investigation_id => investigation.id, :instrument_id => instrument_id).save
