@@ -114,6 +114,36 @@
 
 		this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
 
+		this.admin = function(username, password){ return new Admin(username, password); };
+
+		function Admin(username, password){
+			var headers = {'Authorization': 'Basic ' + base64Encode(username + ":" + password)};
+
+			this.downloads = overload(this, {
+				'object': function(params){
+			    	var out = $q.defer();
+		  			this.get('downloads', params, {headers: headers}).then(function(data){
+		  				out.resolve(data);
+		  			}, function(){ out.reject(); });
+		  			return out.promise;
+			    },
+			    '': function(){
+			    	return this.downloads({});
+			    }
+			});
+
+		    this.pollAll = function(){
+		    	var out = $q.defer();
+	  			this.get('poll/list', {}, {headers: headers}).then(function(data){
+	  				out.resolve(data);
+	  			}, function(){ out.reject(); });
+	  			return out.promise;
+		    };
+
+			generateRestMethods.call(this, topcatApiPath + 'admin/');
+		}
+
+
     	function Facility(facilityName){
     		var icat;
     		var ids;
@@ -722,5 +752,65 @@
 	function instanceNameFromEntityType(entityType){
 		return entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
 	}
+
+	function base64Encode(input) {
+	    var output = "";
+	    var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+	    var i = 0;
+	    var base64KeyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+	    input = utf8Encode(input);
+
+	    while (i < input.length) {
+
+	        chr1 = input.charCodeAt(i++);
+	        chr2 = input.charCodeAt(i++);
+	        chr3 = input.charCodeAt(i++);
+
+	        enc1 = chr1 >> 2;
+	        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+	        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+	        enc4 = chr3 & 63;
+
+	        if (isNaN(chr2)) {
+	            enc3 = enc4 = 64;
+	        } else if (isNaN(chr3)) {
+	            enc4 = 64;
+	        }
+
+	        output = output +
+	        base64KeyStr.charAt(enc1) + base64KeyStr.charAt(enc2) +
+	        base64KeyStr.charAt(enc3) + base64KeyStr.charAt(enc4);
+
+	    }
+
+	    return output;
+	}
+
+    function utf8Encode(string) {
+	    string = string.replace(/\r\n/g,"\n");
+	    var utftext = "";
+
+	    for (var n = 0; n < string.length; n++) {
+
+	        var c = string.charCodeAt(n);
+
+	        if (c < 128) {
+	            utftext += String.fromCharCode(c);
+	        }
+	        else if((c > 127) && (c < 2048)) {
+	            utftext += String.fromCharCode((c >> 6) | 192);
+	            utftext += String.fromCharCode((c & 63) | 128);
+	        }
+	        else {
+	            utftext += String.fromCharCode((c >> 12) | 224);
+	            utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+	            utftext += String.fromCharCode((c & 63) | 128);
+	        }
+
+	    }
+
+	    return utftext;
+			}
 
 })();

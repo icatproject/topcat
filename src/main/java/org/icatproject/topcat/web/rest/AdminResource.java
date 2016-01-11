@@ -58,6 +58,28 @@ public class AdminResource {
     @EJB
     private PollFutureBean pollFutureBean;
 
+    @GET
+    @Path("/downloads")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getDownloads(
+            @QueryParam("facilityName") String facilityName,
+            @QueryParam("status") String status,
+            @QueryParam("transport") String transport,
+            @QueryParam("preparedId") String preparedId) throws BadRequestException {
+        logger.info("getDownloads() called");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("facilityName", facilityName);
+        params.put("status", status);
+        params.put("transport", transport);
+        params.put("preparedId", preparedId);
+
+        List<Download> downloads = new ArrayList<Download>();
+        downloads = downloadRepository.getDownloads(params);
+
+        return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
+    }
+
 
     @GET
     @Path("/downloads/facility/{facilityName}")

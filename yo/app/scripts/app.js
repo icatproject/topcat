@@ -262,7 +262,15 @@
                 .state('homeRoute', {
                     url: '/',
                     controller: 'HomeRouteController'
-                });
+                }).state('home.admin', {
+                    url: '/admin',
+                    views: {
+                      'admin': {
+                        templateUrl: 'views/admin.html',
+                        controller: 'AdminController'
+                      }
+                    }
+                })
 
         })
         .config(function (pollerConfig) {
