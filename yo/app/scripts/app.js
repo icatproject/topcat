@@ -262,14 +262,10 @@
                 .state('homeRoute', {
                     url: '/',
                     controller: 'HomeRouteController'
-                }).state('home.admin', {
+                }).state('admin', {
                     url: '/admin',
-                    views: {
-                      'admin': {
-                        templateUrl: 'views/admin.html',
-                        controller: 'AdminController'
-                      }
-                    }
+                    templateUrl: 'views/admin.html',
+                    controller: 'AdminController as adminController'
                 })
 
         })

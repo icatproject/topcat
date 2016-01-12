@@ -1,7 +1,43 @@
-<h1 translate="ADMIN.PAGE_TITLE"></h1>
 
-<div class="row">
-    <div class="col-md-4 col-md-offset-4">
-        
-    </div>
+
+<div ng-if="adminController.loggedIn">
+	<h1 translate="ADMIN.PAGE_TITLE"></h1>
+
+	<div class="row" ng-if="!adminController.signedIn">
+	    <div class="col-md-12">
+	        <div ui-grid="adminController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-save-state class="browse-grid">
+		        <div class="no-rows row" ng-show="isEmpty">
+		            <div class="col-md-2 col-md-offset-5 empty-message">
+		                <span translate="BROWSE.EMPTY"></span>
+		            </div>
+		        </div>
+		    </div>
+	    </div>
+	</div>
+
+</div>
+
+<div ng-if="!adminController.loggedIn">
+	<h1 translate="ADMIN.LOGIN.PAGE_TITLE"></h1>
+	<div class="row">
+	    <div class="col-md-4 col-md-offset-4">
+	        <div ng-if="! vm.isLoggedInAll()">
+	            <form novalidate name="vm.form">
+	                <fieldset>
+	                    <div class="form-group">
+	                        <label class="control-label" for="username">{{'LOGIN.USERNAME' | translate}}</label>
+	                        <input id="username" name="username" placeholder="{{'ADMIN.LOGIN.USERNAME' | translate}}" class="form-control" type="text" ng-model="adminController.username" required>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="control-label" for="password">{{'LOGIN.PASSWORD' | translate}}</label>
+	                        <input id="password" name="password" placeholder="{{'ADMIN.LOGIN.PASSWORD' | translate}}" class="form-control" type="password" ng-model="adminController.password" required>
+	                    </div>
+	                    <div class="form-group">
+	                        <button type="submit" id="login" class="btn btn-primary" ng-click="adminController.login()" ng-disabled="adminController.username == '' || adminController.password == ''">{{'ADMIN.LOGIN.LOGIN_BUTTON' | translate}}</button>
+	                    </div>
+	                </fieldset>
+	            </form>
+	        </div>
+	    </div>
+	</div>
 </div>
