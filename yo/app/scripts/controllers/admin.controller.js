@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc, Cart){
+    app.controller('AdminController', function($state, $q, $scope, $rootScope, $timeout, tc, Cart){
 
     });
 })();
