@@ -336,7 +336,17 @@
             "enableFiltering": true,
             "columnDefs": [
                 {
-                    "field": "user_name",
+                    "field": "userName",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "type": "input"
+                    }
+                },
+                {
+                    "field": "preparedId",
                     "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
                     "type" : "string",
                     "filter": {

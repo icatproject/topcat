@@ -280,8 +280,6 @@
             gridApi = _gridApi;
             restoreState();
 
-            console.log('gridApi', gridApi);
-
             getPage().then(function(results){
                 gridOptions.data = results;
                 updateTotalItems();
