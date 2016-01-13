@@ -3,12 +3,14 @@
 
 <h1 translate="ADMIN.PAGE_TITLE"></h1>
 
-<ul class="nav nav-tabs nav-tabs-head">
-	<li ng-repeat="facility in adminController.facilities" ng-class="{active: facility.config().facilityName == $state.params.facilityName}">
-		<a ui-sref="admin({facilityName: facility.config().facilityName})">{{facility.config().title}}</a>
-	</li>
-</ul>
-<br>
+<div ng-show="adminController.facilities.length > 1">
+	<ul class="nav nav-tabs nav-tabs-head">
+		<li ng-repeat="facility in adminController.facilities" ng-class="{active: facility.config().facilityName == $state.params.facilityName}">
+			<a ui-sref="admin({facilityName: facility.config().facilityName})">{{facility.config().title}}</a>
+		</li>
+	</ul>
+	<br>
+</div>
 
 <div class="row" ng-if="!adminController.signedIn">
     <div class="col-md-12">

@@ -6,6 +6,7 @@
 
     app.controller('AdminController', function($translate, $scope, $state, tc){
     	var that = this;
+        var page = 1;
     	this.username = "";
     	this.password = "";
     	this.loggedIn = false;
@@ -44,6 +45,10 @@
             });
 
         };
+
+        function getPage(){
+
+        }
 
     });
 
