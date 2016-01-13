@@ -43,6 +43,9 @@
                                 <li ng-repeat="item in vm.leftLinks" ng-class="{active: vm.isActive(item)}">
                                     <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
                                 </li>
+                                <li ng-show="vm.isAdmin()" ng-class="{active: $state.includes('admin')}">
+                                    <a ui-sref="admin" translate="MAIN_NAVIGATION.ADMIN"></a>
+                                </li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <li ng-repeat="item in vm.rightLinks" ng-class="{active: vm.isActive(item)}">

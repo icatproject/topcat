@@ -5,7 +5,7 @@
     var app = angular.module('angularApp');
 
     app.service('tc', function($sessionStorage, $http, $q, $state, APP_CONFIG){
-    	var that = this;
+    	var tc = this;
     	var facilities = {};
 
     	this.facility = function(facilityName){
@@ -14,7 +14,7 @@
     	};
 
     	this.facilities = function(){
-    		return _.map(APP_CONFIG.facilities, function(facility){ return that.facility(facility.facilityName); });
+    		return _.map(APP_CONFIG.facilities, function(facility){ return tc.facility(facility.facilityName); });
     	};
 
     	this.config = function(){ return APP_CONFIG.site; }
@@ -35,7 +35,7 @@
 				var entityType = query.target;
 				var entityInstanceName = instanceNameFromEntityType(entityType);
 				_.each(facilityNames, function(facilityName){
-					var facility = that.facility(facilityName);
+					var facility = tc.facility(facilityName);
 					var icat = facility.icat();
 
 					promises.push(icat.get('lucene/data', {
@@ -114,17 +114,16 @@
 
 		this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
 
-		this.admin = function(username, password){ return new Admin(username, password); };
+		this.admin = function(facilityName){ return this.facility(facilityName).admin(); };
 
-		function Admin(username, password){
-
-			generateRestMethods.call(this, topcatApiPath + 'admin/');
-		}
-
+		this.adminFacilities = function(){
+			return _.select(this.facilities(), function(facility){ return facility.icat().session().isAdmin; });
+		};
 
     	function Facility(facilityName){
     		var icat;
     		var ids;
+    		var admin;
 
     		this.config = function(){ return APP_CONFIG.facilities[facilityName]; }
 
@@ -137,7 +136,30 @@
     			if(!ids) ids = new Ids(this);
     			return ids;
     		};
+
+    		this.admin = function(){
+    			if(!admin) admin = new Admin(this);
+    			return admin;
+    		}
+
     	}
+
+    	function Admin(facility){
+
+    		this.isValidSession = overload(this, {
+    			'string': function(sessionId){
+	    			return this.get('isValidSession', {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: sessionId
+	    			});
+	    		},
+	    		'': function(){
+	    			return this.isValidSession(facility.icat().session().sessionId);
+	    		}
+    		});
+
+			generateRestMethods.call(this, topcatApiPath + 'admin/');
+		}
 
     	function Icat(facility){
 

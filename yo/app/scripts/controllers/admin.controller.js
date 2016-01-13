@@ -5,6 +5,8 @@
     var app = angular.module('angularApp');
 
     app.controller('AdminController', function($translate, $scope, inform, tc){
+
+        /*
     	var that = this;
     	this.username = "";
     	this.password = "";
@@ -52,7 +54,7 @@
             });
 
         };
-
+    */
 
     });
 

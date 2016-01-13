@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', 'deviceDetector', 'SMARTCLIENTPING', 'SmartClientManager'];
+    LoginController.$inject = ['$rootScope', '$state', 'APP_CONFIG', 'Config', 'ConfigUtils', 'RouteUtils', '$translate', '$q', 'DataManager', '$sessionStorage', '$localStorage', 'inform', 'Cart', 'RemoteStorageManager', 'deviceDetector', 'SMARTCLIENTPING', 'SmartClientManager', 'tc'];
 
-    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, deviceDetector, SMARTCLIENTPING, SmartClientManager) {
+    function LoginController($rootScope, $state, APP_CONFIG, Config, ConfigUtils, RouteUtils, $translate, $q, DataManager, $sessionStorage, $localStorage, inform, Cart, RemoteStorageManager, deviceDetector, SMARTCLIENTPING, SmartClientManager, tc) {
         var vm = this;
         vm.user = {};
 
@@ -181,9 +181,14 @@
                 };
             }
 
-            var promise = DataManager.login(facility, credential);
-
-            promise.then(function(data){
+            DataManager.login(facility, credential).then(function(data){
+                var defered = $q.defer();
+                tc.admin(facility.facilityName).isValidSession(data.sessionId).then(function(isAdmin){
+                    data.isAdmin = isAdmin;
+                    defered.resolve(data);
+                });
+                return defered.promise;
+            }).then(function(data){
                 vm.session = data;
 
                 if (data !== null && angular.isDefined(data.sessionId)) {
@@ -191,7 +196,8 @@
                     //reset the form
                     $sessionStorage.sessions[form.facilityName.$modelValue]  = {
                         sessionId : data.sessionId,
-                        userName: data.userName
+                        userName: data.userName,
+                        isAdmin: data.isAdmin,
                     };
 
                     //Do login stuff here

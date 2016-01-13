@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('IndexController', IndexController);
 
-    IndexController.$inject = ['$scope', '$translate', 'APP_CONFIG', 'Config', '$sessionStorage', '$state'];
+    IndexController.$inject = ['$scope', '$translate', 'APP_CONFIG', 'Config', '$sessionStorage', '$state', 'tc'];
 
-    function IndexController($scope, $translate, APP_CONFIG, Config, $sessionStorage, $state) {
+    function IndexController($scope, $translate, APP_CONFIG, Config, $sessionStorage, $state, tc) {
         var vm = this;
 
         var pages = Config.getPages(APP_CONFIG);
@@ -71,6 +71,10 @@
             }
 
             return false;
+        };
+
+        vm.isAdmin = function(){
+            return tc.adminFacilities().length > 0;
         };
 
         vm.getSingleFacility = function () {
