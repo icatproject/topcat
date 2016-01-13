@@ -47,6 +47,20 @@ public class ICATClientBean {
 
         return service.getUserName(icatSessionId);
     }
+    /**
+     * Checks to see if the user has admin access.
+     *
+     * @param icatSessionId the icat session id
+     * @return whether the user has admin access or not
+     * @throws MalformedURLException
+     * @throws TopcatException
+     */
+
+    public Boolean isAdmin(String icatUrl, String icatSessionId) throws MalformedURLException, TopcatException {
+        ICATClientInterface service = getIcatService(icatUrl);
+
+        return service.isAdmin(icatSessionId);
+    }
 
     /**
      * get fullName buy userName

@@ -48,25 +48,6 @@
 	    </user-data-constraint>
 	</security-constraint>
 
-    <security-constraint>
-        <display-name>adminApi</display-name>
-        <web-resource-collection>
-            <web-resource-name>adminApi</web-resource-name>
-            <description />
-            <url-pattern>/api/v1/admin/*</url-pattern>
-            <http-method>GET</http-method>
-            <http-method>PUT</http-method>
-        </web-resource-collection>
-        <auth-constraint>
-            <description/>
-            <role-name>topcatAdmin</role-name>
-        </auth-constraint>
-        <user-data-constraint>
-            <description />
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
-
     <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>file</realm-name>

@@ -32,6 +32,7 @@ public class PropertyHandler {
     private int pollDelay;
     private int pollIntervalWait;
     private int pollIsPreparedWait;
+    private String[] adminUserNames;
 
 
     private PropertyHandler() {
@@ -50,6 +51,7 @@ public class PropertyHandler {
             pollDelay = props.getPositiveInt("poll.delay");
             pollIntervalWait = props.getPositiveInt("poll.interval.wait");
             pollIsPreparedWait = props.getPositiveInt("poll.isprepared.wait");
+            adminUserNames = props.getProperty("adminUserNames").split("[ ]*,[ ]*");
         } catch (CheckedPropertyException e) {
             logger.info("Property file topcat.properties not loaded");
             e.printStackTrace();
@@ -113,5 +115,9 @@ public class PropertyHandler {
 
     public void setMaxPerGetStatus(int maxPerGetStatus) {
         this.maxPerGetStatus = maxPerGetStatus;
+    }
+
+    public String[] getAdminUserNames(){
+        return adminUserNames;
     }
 }

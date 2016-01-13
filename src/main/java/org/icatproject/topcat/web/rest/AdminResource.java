@@ -1,5 +1,6 @@
 package org.icatproject.topcat.web.rest;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.icatproject.topcat.domain.LongValue;
 import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.exceptions.BadRequestException;
+import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
@@ -57,6 +59,21 @@ public class AdminResource {
 
     @EJB
     private PollFutureBean pollFutureBean;
+
+
+    @GET
+    @Path("/isValidSession")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response isValidSession(
+            @QueryParam("icatUrl") String icatUrl,
+            @QueryParam("sessionId") String sessionId)
+            throws MalformedURLException, TopcatException {
+        logger.info("isValidSession() called");
+        String isAdmin = icatClientService.isAdmin(icatUrl, sessionId) ? "true" : "false";
+
+        return Response.ok().entity(isAdmin).build();
+    }
+
 
     @GET
     @Path("/downloads")

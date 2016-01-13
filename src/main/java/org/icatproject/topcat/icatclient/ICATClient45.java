@@ -14,6 +14,7 @@ import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientInterface;
+import org.icatproject.topcat.utils.PropertyHandler;
 import org.icatproject_4_5_0.ICAT;
 import org.icatproject_4_5_0.ICATService;
 import org.icatproject_4_5_0.IcatException_Exception;
@@ -107,6 +108,31 @@ public class ICATClient45 implements ICATClientInterface {
 
         return result;
 
+    }
+
+    /**
+     * Checks to see if the user has admin access.
+     *
+     * @param icatSessionId the icat session id
+     * @return whether the user has admin access or not
+     * @throws TopcatException
+     */
+    @Override
+    public Boolean isAdmin(String icatSessionId) {
+        try {
+            String[] adminUserNames = PropertyHandler.getInstance().getAdminUserNames();
+            String userName = getUserName(icatSessionId);
+            int i;
+            for(i = 0; i < adminUserNames.length; i++){
+                if(userName.equals(adminUserNames[i])){
+                    return true;
+                }
+            }
+        } catch(Exception e){
+            //do nothing
+        }
+
+        return false;
     }
 
 
