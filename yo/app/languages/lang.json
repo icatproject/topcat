@@ -518,14 +518,7 @@
         }
     },
     "ADMIN": {
-        "PAGE_TITLE": "Admin",
-        "LOGIN": {
-            "USERNAME": "Username",
-            "PASSWORD": "Password",
-            "PAGE_TITLE": "Admin Login",
-            "LOGIN_BUTTON": "Login",
-            "DEFAULT_LOGIN_ERROR_MESSAGE": "Login failed"
-        }
+        "PAGE_TITLE": "Admin"
     }
 
 }

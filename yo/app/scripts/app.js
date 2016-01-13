@@ -263,10 +263,10 @@
                     url: '/',
                     controller: 'HomeRouteController'
                 }).state('admin', {
-                    url: '/admin',
+                    url: '/admin/:facilityName',
                     templateUrl: 'views/admin.html',
                     controller: 'AdminController as adminController'
-                })
+                });
 
         })
         .config(function (pollerConfig) {
