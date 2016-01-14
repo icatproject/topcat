@@ -107,7 +107,7 @@ public class RestAPITest {
 
     @Test
     public void getEmptyCart() {
-        get(restAPIUrl + "/admin/downloads/facility/sig?userName=vcf21513").then().log().all().statusCode(200).body("$", hasSize(0));
+        get(restAPIUrl + "/admin/downloads/facility/sig").then().log().all().statusCode(403).body("message", equalTo("please provide a valid icatUrl and sessionId"));
     }
 
 

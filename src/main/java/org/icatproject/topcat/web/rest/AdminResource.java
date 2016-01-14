@@ -26,6 +26,7 @@ import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.TopcatException;
+import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
@@ -60,7 +61,6 @@ public class AdminResource {
     @EJB
     private PollFutureBean pollFutureBean;
 
-
     @GET
     @Path("/isValidSession")
     @Produces({MediaType.APPLICATION_JSON})
@@ -74,48 +74,21 @@ public class AdminResource {
         return Response.ok().entity(isAdmin).build();
     }
 
-
-    @GET
-    @Path("/downloads")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getDownloads(
-            @QueryParam("facilityName") String facilityName,
-            @QueryParam("status") String status,
-            @QueryParam("transport") String transport,
-            @QueryParam("preparedId") String preparedId) throws BadRequestException {
-        logger.info("getDownloads() called");
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("facilityName", facilityName);
-        params.put("status", status);
-        params.put("transport", transport);
-        params.put("preparedId", preparedId);
-
-        List<Download> downloads = new ArrayList<Download>();
-        downloads = downloadRepository.getDownloads(params);
-
-        return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
-    }
-
-
     @GET
     @Path("/downloads/facility/{facilityName}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDownloadsByFacilityName(
             @PathParam("facilityName") String facilityName,
+            @QueryParam("sessionId") String sessionId,
+            @QueryParam("icatUrl") String icatUrl,
             @QueryParam("status") String status,
             @QueryParam("transport") String transport,
-            @QueryParam("preparedId") String preparedId) throws BadRequestException {
+            @QueryParam("preparedId") String preparedId) 
+            throws TopcatException, MalformedURLException {
+
+        onlyAllowAdmin(icatUrl, sessionId);
+
         logger.info("getDownloadsByFacilityName() called");
-
-        //validate status
-        if (status != null) {
-            DownloadStatus downloadStatus = DownloadStatus.valueOf(status);
-
-            if (downloadStatus == null) {
-                throw new BadRequestException("Status must be RESTORING or COMPLETE");
-            }
-        }
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("facilityName", facilityName);
@@ -232,4 +205,11 @@ public class AdminResource {
 
         return Response.ok().entity(value).build();
     }
+
+    private void onlyAllowAdmin(String icatUrl, String sessionId) throws TopcatException, MalformedURLException {
+        if(icatUrl == null || sessionId == null || !icatClientService.isAdmin(icatUrl, sessionId)){
+            throw new ForbiddenException("please provide a valid icatUrl and sessionId");
+        }
+    }
+
 }
