@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.ParseException;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -79,14 +80,17 @@ public class AdminResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDownloadsByFacilityName(
             @PathParam("facilityName") String facilityName,
+            @QueryParam("userName") String userName,
             @QueryParam("sessionId") String sessionId,
             @QueryParam("icatUrl") String icatUrl,
             @QueryParam("status") String status,
             @QueryParam("transport") String transport,
             @QueryParam("preparedId") String preparedId,
+            @QueryParam("createdAtFrom") String createdAtFrom,
+            @QueryParam("createdAtTo") String createdAtTo,
             @QueryParam("pageSize") Integer pageSize,
             @QueryParam("page") Integer page)
-            throws TopcatException, MalformedURLException {
+            throws TopcatException, MalformedURLException, ParseException {
 
         onlyAllowAdmin(icatUrl, sessionId);
 
@@ -94,9 +98,12 @@ public class AdminResource {
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("facilityName", facilityName);
+        params.put("userName", userName);
         params.put("status", status);
         params.put("transport", transport);
         params.put("preparedId", preparedId);
+        params.put("createdAtFrom", createdAtFrom);
+        params.put("createdAtTo", createdAtTo);
         params.put("pageSize", pageSize);
         params.put("page", page);
 

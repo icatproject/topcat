@@ -124,7 +124,7 @@
     		var icat;
     		var ids;
     		var admin;
-
+    		
     		this.config = function(){ return APP_CONFIG.facilities[facilityName]; }
 
     		this.icat = function(){

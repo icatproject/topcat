@@ -2,9 +2,13 @@ package org.icatproject.topcat.repository;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
+import java.text.ParseException;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -13,6 +17,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.TemporalType;
+
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -35,13 +41,16 @@ public class DownloadRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
 
-    public List<Download> getDownloadsByFacilityName(Map<String, Object> params) {
+    public List<Download> getDownloadsByFacilityName(Map<String, Object> params) throws ParseException{
         List<Download> downloads = new ArrayList<Download>();
 
         String facilityName = (String) params.get("facilityName");
+        String userName = (String) params.get("userName");
         String status = (String) params.get("status");
         String transport = (String) params.get("transport");
         String preparedId = (String) params.get("preparedId");
+        String createdAtFrom = (String) params.get("createdAtFrom");
+        String createdAtTo = (String) params.get("createdAtTo");
         Integer pageSize = (Integer) params.get("pageSize");
         Integer page = (Integer) params.get("page");
 
@@ -49,15 +58,17 @@ public class DownloadRepository {
             pageSize = 10;
         }
 
-        DownloadStatus downloadStatus = null;
-
-        if (status != null) {
-            downloadStatus = DownloadStatus.valueOf(status);
-        }
-
         if (em != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.facilityName = :facilityName");
+            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false");
+
+            if(facilityName != null) {
+                sb.append( " AND d.facilityName = :facilityName");
+            }
+
+            if(userName != null) {
+                sb.append( " AND d.userName like concat(:userName, '%')");
+            }
 
             if(status != null) {
                 sb.append( " AND d.status like concat(:status, '%')");
@@ -71,7 +82,11 @@ public class DownloadRepository {
                 sb.append( " AND d.preparedId like concat(:preparedId, '%')");
             }
 
-            //logger.debug(sb.toString());
+            if(createdAtFrom != null && createdAtTo != null) {
+                sb.append( " AND d.createdAt BETWEEN :createdAtFrom AND :createdAtTo");
+            }
+
+            logger.debug(sb.toString());
 
             TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
             
@@ -79,8 +94,12 @@ public class DownloadRepository {
                 query.setParameter("facilityName", facilityName);
             }
 
-            if(downloadStatus != null) {
-                query.setParameter("status", downloadStatus);
+            if(userName != null) {
+                query.setParameter("userName", userName);
+            }
+
+            if(status != null) {
+                query.setParameter("status", status);
             }
 
             if(transport != null) {
@@ -89,6 +108,12 @@ public class DownloadRepository {
 
             if(preparedId != null) {
                 query.setParameter("preparedId", preparedId);
+            }
+
+            if(createdAtFrom != null && createdAtTo != null) {
+                DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+                query.setParameter("createdAtFrom", format.parse(createdAtFrom), TemporalType.DATE);
+                query.setParameter("createdAtTo", format.parse(createdAtTo), TemporalType.DATE);
             }
 
             if(page != null) {

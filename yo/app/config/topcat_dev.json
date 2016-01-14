@@ -333,7 +333,6 @@
             ]
         },
         "adminGridOptions": {
-            "enableFiltering": true,
             "columnDefs": [
                 {
                     "field": "userName",
@@ -378,15 +377,18 @@
                 {
                     "field": "createdAt",
                     "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
-                    "type" : "date",
-                    "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
-                    "filter": {
-                        "placeholder": "Date...",
-                        "type": "input"
-                    },
-                    "sort": {
-                        "direction": "desc"
-                    }
+                    "type": "date",
+                    "cellFilter": "date: 'yyyy-MM-dd'",
+                    "filters": [
+                        {
+                            "placeholder": "From...",
+                            "type": "input"
+                        },
+                        {
+                            "placeholder": "To...",
+                            "type": "input"
+                        }
+                    ]
                 }
             ]
         },
