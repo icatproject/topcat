@@ -83,20 +83,22 @@ public class AdminResource {
             @QueryParam("icatUrl") String icatUrl,
             @QueryParam("status") String status,
             @QueryParam("transport") String transport,
-            @QueryParam("preparedId") String preparedId) 
+            @QueryParam("preparedId") String preparedId,
+            @QueryParam("pageSize") Integer pageSize,
+            @QueryParam("page") Integer page)
             throws TopcatException, MalformedURLException {
 
         onlyAllowAdmin(icatUrl, sessionId);
 
         logger.info("getDownloadsByFacilityName() called");
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("facilityName", facilityName);
         params.put("status", status);
         params.put("transport", transport);
         params.put("preparedId", preparedId);
-
-
+        params.put("pageSize", pageSize);
+        params.put("page", page);
 
         List<Download> downloads = new ArrayList<Download>();
         downloads = downloadRepository.getDownloadsByFacilityName(params);

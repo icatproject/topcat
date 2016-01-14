@@ -35,13 +35,19 @@ public class DownloadRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
 
-    public List<Download> getDownloadsByFacilityName(Map<String, String> params) {
+    public List<Download> getDownloadsByFacilityName(Map<String, Object> params) {
         List<Download> downloads = new ArrayList<Download>();
 
-        String facilityName = params.get("facilityName");
-        String status = params.get("status");
-        String transport = params.get("transport");
-        String preparedId = params.get("preparedId");
+        String facilityName = (String) params.get("facilityName");
+        String status = (String) params.get("status");
+        String transport = (String) params.get("transport");
+        String preparedId = (String) params.get("preparedId");
+        Integer pageSize = (Integer) params.get("pageSize");
+        Integer page = (Integer) params.get("page");
+
+        if(pageSize == null){
+            pageSize = 10;
+        }
 
         DownloadStatus downloadStatus = null;
 
@@ -53,15 +59,15 @@ public class DownloadRepository {
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.facilityName = :facilityName");
 
-            if (status != null) {
+            if(status != null) {
                 sb.append( " AND d.status like concat(:status, '%')");
             }
 
-            if (transport != null) {
+            if(transport != null) {
                 sb.append( " AND d.transport like concat(:transport, '%')");
             }
 
-            if (preparedId != null) {
+            if(preparedId != null) {
                 sb.append( " AND d.preparedId like concat(:preparedId, '%')");
             }
 
@@ -69,20 +75,25 @@ public class DownloadRepository {
 
             TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
             
-            if (facilityName != null) {
+            if(facilityName != null) {
                 query.setParameter("facilityName", facilityName);
             }
 
-            if (downloadStatus != null) {
+            if(downloadStatus != null) {
                 query.setParameter("status", downloadStatus);
             }
 
-            if (transport != null) {
+            if(transport != null) {
                 query.setParameter("transport", transport);
             }
 
-            if (preparedId != null) {
+            if(preparedId != null) {
                 query.setParameter("preparedId", preparedId);
+            }
+
+            if(page != null) {
+                query.setFirstResult((page - 1) * pageSize);
+                query.setMaxResults(pageSize);
             }
 
             logger.debug(query.toString());
