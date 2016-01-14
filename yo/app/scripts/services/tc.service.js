@@ -158,6 +158,27 @@
 	    		}
     		});
 
+    		this.downloads = overload(this, {
+    			'object, object': function(params, options){
+    				return this.get('downloads/facility/' + facility.config().facilityName, _.merge({
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId
+	    			}, params), options);
+    			},
+    			'promise, object': function(timeout, params){
+    				return this.downloads(params, {timeout: timeout});
+    			},
+    			'object': function(params){
+    				return this.downloads(params, {});
+    			},
+    			'promise': function(timeout){
+    				return this.downloads(params, {timeout: timeout});
+    			},
+	    		'': function(){
+	    			return this.downloads({}, {});
+	    		}
+    		});
+
 			generateRestMethods.call(this, topcatApiPath + 'admin/');
 		}
 
