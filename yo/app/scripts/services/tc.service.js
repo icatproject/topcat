@@ -147,14 +147,23 @@
     	function Admin(facility){
 
     		this.isValidSession = overload(this, {
-    			'string': function(sessionId){
+    			'string, object': function(sessionId, options){
 	    			return this.get('isValidSession', {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: sessionId
 	    			});
 	    		},
+          'string, promise': function(sessionId, timeout){
+            this.isValidSession(sessionId, {timeout: timeout});
+          },
+          'string': function(sessionId){
+            this.isValidSession(sessionId, {});
+          },
+          'promise': function(timeout){
+            this.isValidSession(facility.icat().session().sessionId, {timeout: timeout});
+          },
 	    		'': function(){
-	    			return this.isValidSession(facility.icat().session().sessionId);
+	    			return this.isValidSession(facility.icat().session().sessionId, {});
 	    		}
     		});
 
@@ -178,6 +187,27 @@
 	    			return this.downloads({}, {});
 	    		}
     		});
+
+        this.pollList = overload(this, {
+          'object, object': function(params, options){
+            return this.get('poll/list', {
+              icatUrl: facility.config().icatUrl,
+              sessionId: facility.icat().session().sessionId
+            }, options);
+          },
+          'promise, object': function(timeout, params){
+            return this.pollList(params, {timeout: timeout});
+          },
+          'object': function(params){
+            return this.pollList(params, {});
+          },
+          'promise': function(timeout){
+            return this.pollList(params, {timeout: timeout});
+          },
+          '': function(){
+            return this.pollList({}, {});
+          }
+        });
 
 			generateRestMethods.call(this, topcatApiPath + 'admin/');
 		}

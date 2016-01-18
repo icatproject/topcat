@@ -80,9 +80,9 @@ public class AdminResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDownloadsByFacilityName(
             @PathParam("facilityName") String facilityName,
-            @QueryParam("userName") String userName,
-            @QueryParam("sessionId") String sessionId,
             @QueryParam("icatUrl") String icatUrl,
+            @QueryParam("sessionId") String sessionId,
+            @QueryParam("userName") String userName,
             @QueryParam("status") String status,
             @QueryParam("transport") String transport,
             @QueryParam("preparedId") String preparedId,
@@ -167,7 +167,13 @@ public class AdminResource {
     @GET
     @Path("/poll/list")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getCurrentPoll() {
+    public Response getCurrentPoll(
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        onlyAllowAdmin(icatUrl, sessionId);
+
         logger.info("getCurrentPoll() called");
 
         List<StringValue> values = new ArrayList<StringValue>();

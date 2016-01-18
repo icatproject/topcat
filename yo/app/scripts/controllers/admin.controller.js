@@ -6,51 +6,57 @@
 
     app.controller('AdminController', function($translate, $scope, $state, $timeout, tc){
     	var that = this;
-        var page = 1;
-        var gridApi;
-        var pageSize = 10;
-        var filters = {};
-    	this.username = "";
-    	this.password = "";
-    	this.loggedIn = false;
+      var page = 1;
+      var gridApi;
+      var pageSize = 10;
+      var filters = {};
+
     	this.facilities = tc.adminFacilities();
 
-        this.gridOptions = _.merge({
-            data: [],
-            appScopeProvider: this,
-            enableFiltering: true,
-            enableSelectAll: false,
-            enableRowSelection: false,
-            enableRowHeaderSelection: false,
-            infiniteScrollDown: true,
-            useExternalPagination: true,
-            useExternalFiltering: true
-        }, tc.config().adminGridOptions);
+      this.gridOptions = _.merge({
+          data: [],
+          appScopeProvider: this,
+          enableFiltering: true,
+          enableSelectAll: false,
+          enableRowSelection: false,
+          enableRowHeaderSelection: false,
+          infiniteScrollDown: true,
+          useExternalPagination: true,
+          useExternalFiltering: true
+      }, tc.config().adminGridOptions);
 
-        _.each(this.gridOptions.columnDefs, function(columnDef){
-            columnDef.enableSorting = false;
-            columnDef.enableHiding = false;
-            columnDef.enableColumnMenu = false;
-        });
+      _.each(this.gridOptions.columnDefs, function(columnDef){
+          columnDef.enableSorting = false;
+          columnDef.enableHiding = false;
+          columnDef.enableColumnMenu = false;
+      });
 
-        if($state.params.facilityName == ''){
-            $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
-            return;
-        }
+      if($state.params.facilityName == ''){
+          $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
+          return;
+      }
 
-        var admin = tc.admin($state.params.facilityName);
+      var admin = tc.admin($state.params.facilityName);
+      var pollListPromise = admin.pollList();
 
-        function updateScroll(resultCount){
-            $timeout(function(){
-                var isMore = resultCount == pageSize;
-                if(page == 1) gridApi.infiniteScroll.resetScroll(false, isMore);
-                gridApi.infiniteScroll.dataLoaded(false, isMore);
+      function updateScroll(resultCount){
+          $timeout(function(){
+              var isMore = resultCount == pageSize;
+              if(page == 1) gridApi.infiniteScroll.resetScroll(false, isMore);
+              gridApi.infiniteScroll.dataLoaded(false, isMore);
+          });
+      }
+
+      function getPage(){
+          return admin.downloads(_.merge({page: page, pageSize: pageSize}, filters)).then(function(downloads){
+            pollListPromise.then(function(pollList){
+              _.each(downloads, function(download){
+                download.isPolling = _.includes(pollList, download.preparedId);
+              });
             });
-        }
-
-        function getPage(){
-            return admin.downloads(_.merge({page: page, pageSize: pageSize}, filters));
-        }
+            return downloads;
+          });
+      }
 
     	this.gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
