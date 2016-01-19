@@ -457,7 +457,7 @@ public class UserResource {
         return Response.ok().entity(preparedId).build();
     }
 
-
+    /*
     @PUT
     @Path("/downloads/{preparedId}/complete")
     @Produces({MediaType.APPLICATION_JSON})
@@ -503,7 +503,7 @@ public class UserResource {
         StringValue id = new StringValue(preparedId);
         return Response.ok().entity(id).build();
     }
-
+    */
 
 
 

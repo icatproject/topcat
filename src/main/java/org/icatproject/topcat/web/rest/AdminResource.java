@@ -113,7 +113,7 @@ public class AdminResource {
         return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
     }
 
-
+    /*
     @PUT
     @Path("/downloads/facility/{facilityName}/complete")
     @Produces({MediaType.APPLICATION_JSON})
@@ -220,6 +220,8 @@ public class AdminResource {
 
         return Response.ok().entity(value).build();
     }
+
+    */
 
     private void onlyAllowAdmin(String icatUrl, String sessionId) throws TopcatException, MalformedURLException {
         if(icatUrl == null || sessionId == null || !icatClientService.isAdmin(icatUrl, sessionId)){
