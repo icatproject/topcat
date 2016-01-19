@@ -332,7 +332,30 @@ public class DownloadRepository {
         return null;
     }
 
+    public Download getDownloadByPreparedId(String preparedId) {
+        List<Download> downloads = new ArrayList<Download>();
 
+        if (em != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT d FROM Download d WHERE d.preparedId = :preparedId");
+
+            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
+            query.setParameter("preparedId", preparedId);
+
+            logger.debug(query.toString());
+
+            downloads = query.getResultList();
+
+            if (downloads.size() > 0) {
+                return downloads.get(0);
+            }
+
+        }
+
+        return null;
+    }
+
+    //todo: try and remove - a preparedId can only correspond to a single download (not a List).
     public Download getDownloadsByPreparedId(String preparedId) {
         List<Download> downloads = new ArrayList<Download>();
 

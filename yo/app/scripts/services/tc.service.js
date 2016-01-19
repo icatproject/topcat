@@ -145,6 +145,7 @@
     	}
 
     	function Admin(facility){
+    		var that = this;
 
     		this.isValidSession = overload(this, {
     			'string, object': function(sessionId, options){
@@ -172,7 +173,37 @@
     				return this.get('downloads/facility/' + facility.config().facilityName, _.merge({
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId
-	    			}, params), options);
+	    			}, params), options).then(function(downloads){
+    					_.each(downloads, function(download){
+
+    						download.delete = overload(download, {
+	    						'object': function(options){
+	    							return that.deleteDownload(this.preparedId, options);
+	    						},
+	    						'promise': function(timeout){
+	    							return this.delete(this.preparedId, {timeout: timeout});
+	    						},
+	    						'': function(){
+	    							return this.delete(this.preparedId, {});
+	    						}
+	    					});
+
+    						download.restore = overload(download, {
+	    						'object': function(options){
+	    							return that.restoreDownload(this.preparedId, options);
+	    						},
+	    						'promise': function(timeout){
+	    							return this.restore(this.preparedId, {timeout: timeout});
+	    						},
+	    						'': function(){
+	    							return this.restore(this.preparedId, {});
+	    						}
+	    					});
+
+    					});
+
+    					return downloads;
+	    			});
     			},
     			'promise, object': function(timeout, params){
     				return this.downloads(params, {timeout: timeout});
@@ -188,24 +219,54 @@
 	    		}
     		});
 
-			this.pollList = overload(this, {
-				'object, object': function(params, options){
-					return this.get('poll/list', {
-					  icatUrl: facility.config().icatUrl,
-					  sessionId: facility.icat().session().sessionId
-					}, options);
+			this.deleteDownload = overload(this, {
+				'string, object': function(preparedId, options){
+					return this.put('download/' + preparedId + '/isDeleted', {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId,
+	    				preparedId: preparedId,
+	    				value: 'true'
+	    			}, options);
 				},
-				'promise, object': function(timeout, params){
-					return this.pollList(params, {timeout: timeout});
+				'string, promise': function(preparedId, timeout){
+					return this.deleteDownload(preparedId, {timeout: timeout});
 				},
-				'object': function(params){
-					return this.pollList(params, {});
+				'string': function(preparedId){
+					return this.deleteDownload(preparedId, {});
+				}
+			});
+
+			this.restoreDownload = overload(this, {
+				'string, object': function(preparedId, options){
+					return this.put('download/' + preparedId + '/isDeleted', {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId,
+	    				preparedId: preparedId,
+	    				value: 'false'
+	    			}, options);
 				},
-				'promise': function(timeout){
-					return this.pollList(params, {timeout: timeout});
+				'string, promise': function(preparedId, timeout){
+					return this.restoreDownload(preparedId, {timeout: timeout});
 				},
-				'': function(){
-					return this.pollList({}, {});
+				'string': function(preparedId){
+					return this.restoreDownload(preparedId, {});
+				}
+			});
+
+			this.setDownloadStatus = overload(this, {
+				'string, string, object': function(preparedId, status, options){
+					return this.put('download/' + preparedId + '/status', {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId,
+	    				preparedId: preparedId,
+	    				value: status
+	    			}, options);
+				},
+				'string, string, promise': function(preparedId, status, timeout){
+					return this.setDownloadStatus(preparedId, status, {timeout: timeout});
+				},
+				'string, string': function(preparedId, status){
+					return this.setDownloadStatus(preparedId, status, {});
 				}
 			});
 

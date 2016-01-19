@@ -37,7 +37,6 @@
       }
 
       var admin = tc.admin($state.params.facilityName);
-      var pollListPromise = admin.pollList();
 
       function updateScroll(resultCount){
           $timeout(function(){
@@ -48,14 +47,7 @@
       }
 
       function getPage(){
-          return admin.downloads(_.merge({page: page, pageSize: pageSize}, filters)).then(function(downloads){
-            pollListPromise.then(function(pollList){
-              _.each(downloads, function(download){
-                download.isPolling = _.includes(pollList, download.preparedId);
-              });
-            });
-            return downloads;
-          });
+        return admin.downloads(_.merge({page: page, pageSize: pageSize}, filters));
       }
 
     	this.gridOptions.onRegisterApi = function(_gridApi) {

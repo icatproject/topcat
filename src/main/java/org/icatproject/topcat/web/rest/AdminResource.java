@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 import java.text.ParseException;
 
 import javax.ejb.EJB;
@@ -17,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,6 +30,7 @@ import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
+import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
@@ -113,6 +116,59 @@ public class AdminResource {
         return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
     }
 
+    @PUT
+    @Path("/download/{preparedId}/status")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response setDownloadStatus(
+        @PathParam("preparedId") String preparedId,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("value") String value)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        onlyAllowAdmin(icatUrl, sessionId);
+
+        Download download = downloadRepository.getDownloadByPreparedId(preparedId);
+
+        if(download == null){
+            throw new NotFoundException("could not find download");
+        }
+
+        download.setStatus(DownloadStatus.valueOf(value));
+
+        downloadRepository.save(download);
+
+        return Response.ok().build();
+    }
+    
+    @PUT
+    @Path("/download/{preparedId}/isDeleted")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response deleteDownload(
+        @PathParam("preparedId") String preparedId,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("value") Boolean value)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        onlyAllowAdmin(icatUrl, sessionId);
+
+        Download download = downloadRepository.getDownloadByPreparedId(preparedId);
+
+        if(download == null){
+            throw new NotFoundException("could not find download");
+        }
+
+        download.setIsDeleted(value);
+        if(value){
+            download.setDeletedAt(new Date());
+        }
+
+        downloadRepository.save(download);
+
+        return Response.ok().build();
+    }
+    
     /*
     @PUT
     @Path("/downloads/facility/{facilityName}/complete")
