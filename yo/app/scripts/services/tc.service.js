@@ -153,15 +153,15 @@
 	    				sessionId: sessionId
 	    			});
 	    		},
-          'string, promise': function(sessionId, timeout){
-            this.isValidSession(sessionId, {timeout: timeout});
-          },
-          'string': function(sessionId){
-            this.isValidSession(sessionId, {});
-          },
-          'promise': function(timeout){
-            this.isValidSession(facility.icat().session().sessionId, {timeout: timeout});
-          },
+				'string, promise': function(sessionId, timeout){
+					return this.isValidSession(sessionId, {timeout: timeout});
+				},
+				'string': function(sessionId){
+					return this.isValidSession(sessionId, {});
+				},
+				'promise': function(timeout){
+					return this.isValidSession(facility.icat().session().sessionId, {timeout: timeout});
+				},
 	    		'': function(){
 	    			return this.isValidSession(facility.icat().session().sessionId, {});
 	    		}
@@ -188,26 +188,26 @@
 	    		}
     		});
 
-        this.pollList = overload(this, {
-          'object, object': function(params, options){
-            return this.get('poll/list', {
-              icatUrl: facility.config().icatUrl,
-              sessionId: facility.icat().session().sessionId
-            }, options);
-          },
-          'promise, object': function(timeout, params){
-            return this.pollList(params, {timeout: timeout});
-          },
-          'object': function(params){
-            return this.pollList(params, {});
-          },
-          'promise': function(timeout){
-            return this.pollList(params, {timeout: timeout});
-          },
-          '': function(){
-            return this.pollList({}, {});
-          }
-        });
+			this.pollList = overload(this, {
+				'object, object': function(params, options){
+					return this.get('poll/list', {
+					  icatUrl: facility.config().icatUrl,
+					  sessionId: facility.icat().session().sessionId
+					}, options);
+				},
+				'promise, object': function(timeout, params){
+					return this.pollList(params, {timeout: timeout});
+				},
+				'object': function(params){
+					return this.pollList(params, {});
+				},
+				'promise': function(timeout){
+					return this.pollList(params, {timeout: timeout});
+				},
+				'': function(){
+					return this.pollList({}, {});
+				}
+			});
 
 			generateRestMethods.call(this, topcatApiPath + 'admin/');
 		}
