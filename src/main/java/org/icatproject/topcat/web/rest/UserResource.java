@@ -43,7 +43,6 @@ import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.idsclient.IdsClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
-import org.icatproject.topcat.statuscheck.ExecutorBean;
 import org.icatproject.topcat.utils.CartUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,9 +64,6 @@ public class UserResource {
 
     @EJB
     private IdsClientBean idsClientService;
-
-    @EJB
-    private ExecutorBean executorBean;
 
 
     @GET
@@ -377,11 +373,6 @@ public class UserResource {
                 logger.debug(e.getMessage());
 
                 throw new BadRequestException("Unable to submit for cart for download");
-            }
-
-            // if isTwoLevel storage and is https request start a check status thread
-            if (isTwoLevel == true && cartSubmitDTO.getTransport().equals("https")) {
-                executorBean.executeAsync(preparedId);
             }
 
         } else {

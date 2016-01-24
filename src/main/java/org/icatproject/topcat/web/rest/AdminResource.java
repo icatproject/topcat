@@ -34,9 +34,6 @@ import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
-import org.icatproject.topcat.statuscheck.ExecutePoll;
-import org.icatproject.topcat.statuscheck.PollBean;
-import org.icatproject.topcat.statuscheck.PollFutureBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,15 +52,6 @@ public class AdminResource {
 
     @EJB
     private ICATClientBean icatClientService;
-
-    @EJB
-    private ExecutePoll executePoll;
-
-    @EJB
-    private PollBean pollBean;
-
-    @EJB
-    private PollFutureBean pollFutureBean;
 
     @GET
     @Path("/isValidSession")

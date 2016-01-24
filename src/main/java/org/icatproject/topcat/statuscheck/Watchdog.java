@@ -3,25 +3,20 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import java.net.URL;
 import java.net.MalformedURLException;
 
 import org.apache.commons.collections4.ListUtils;
 
-import java.text.ParseException;
-
-
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Schedule;
-import javax.ejb.Stateless;
 
 import javax.persistence.Persistence;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.PersistenceContext;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,21 +27,24 @@ import org.icatproject.topcat.utils.PropertyHandler;
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
 import org.icatproject.ids.client.IdsClient.Status;
-import org.icatproject.ids.client.BadRequestException;
-import org.icatproject.ids.client.InternalException;
 
 @Singleton
 public class Watchdog {
   private static final Logger logger = LoggerFactory.getLogger(Watchdog.class);
   private Map<Long, Date> lastChecks = new HashMap<Long, Date>();
-  private Map<Long, List<Long>> fileIds = new HashMap<Long, List<Long>>();
+  private AtomicBoolean busy = new AtomicBoolean(false);
 
   @PersistenceContext(unitName="topcatv2")
   EntityManager em;
 
   @Schedule(hour="*", minute="*")
-  private void poll() throws MalformedURLException, InternalException, BadRequestException {
-    logger.info("poll");
+  private void poll() {
+    if(!busy.compareAndSet(false, true)){
+      return;
+    }
+
+    logger.debug("poll");
+
     PropertyHandler properties = PropertyHandler.getInstance();
     int pollDelay = properties.getPollDelay();
     int pollIntervalWait = properties.getPollIntervalWait();
@@ -70,39 +68,44 @@ public class Watchdog {
         }
       }
     }
+
+    busy.set(false);
   }
 
-  private void performCheck(Download download) throws MalformedURLException, InternalException, BadRequestException {
-    IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
-    PropertyHandler properties = PropertyHandler.getInstance();
-    int maxPerGetStatus = properties.getMaxPerGetStatus();
-    
-    if(fileIds.get(download.getId()) == null){
-      fileIds.put(download.getId(), ids.getDatafileIds(download.getPreparedId()));
-    }
+  private void performCheck(Download download) {
+    logger.debug("performCheck");
 
-    List<List<Long>> partitionedFileIds = ListUtils.partition(fileIds.get(download.getId()), maxPerGetStatus);
+    try {
+      IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
+      PropertyHandler properties = PropertyHandler.getInstance();
+      int maxPerGetStatus = properties.getMaxPerGetStatus();
+      
+      List<List<Long>> partitionedFileIds = ListUtils.partition(ids.getDatafileIds(download.getPreparedId()), maxPerGetStatus);
 
-    boolean isComplete = true;
-    for (List<Long> currentFileIds : partitionedFileIds) {
-      DataSelection dataSelection = new DataSelection();
-      dataSelection.addDatafiles(currentFileIds);
+      boolean isComplete = true;
+      for (List<Long> currentFileIds : partitionedFileIds) {
+        DataSelection dataSelection = new DataSelection();
+        dataSelection.addDatafiles(currentFileIds);
 
-      Status status = ids.getStatus(null, dataSelection);
-      if (!status.equals(Status.ONLINE)){
-        isComplete = false;
-        break;
+        Status status = ids.getStatus(null, dataSelection);
+        if (!status.equals(Status.ONLINE)){
+          isComplete = false;
+          break;
+        }
       }
-    }
 
-    if(isComplete){
-      download.setStatus(DownloadStatus.COMPLETE);
-      download.setCompletedAt(new Date());
-      em.persist(download);
-      em.flush();
+      if(isComplete){
+        download.setStatus(DownloadStatus.COMPLETE);
+        download.setCompletedAt(new Date());
+        em.persist(download);
+        em.flush();
+        lastChecks.remove(download.getId());
+      } else {
+        lastChecks.put(download.getId(), new Date());
+      }
+    } catch(Exception e){
+      logger.debug(e.toString());
     }
-
-    lastChecks.put(download.getId(), new Date());
   }
 
 }
