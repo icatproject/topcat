@@ -73,7 +73,7 @@ public class Watchdog {
   }
 
   private void performCheck(Download download) {
-    logger.debug("performCheck");
+    logger.debug("performCheck ");
 
     try {
       IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
@@ -88,7 +88,14 @@ public class Watchdog {
         dataSelection.addDatafiles(currentFileIds);
 
         Status status = ids.getStatus(null, dataSelection);
-        if (!status.equals(Status.ONLINE)){
+        if(status.equals(Status.ARCHIVED)){
+          download.setStatus(DownloadStatus.FAILED);
+          em.persist(download);
+          em.flush();
+          lastChecks.remove(download.getId());
+        lastChecks.remove(download.getId());
+        } else if(!status.equals(Status.ONLINE)){
+          logger.debug("Status: " + status.toString());
           isComplete = false;
           break;
         }

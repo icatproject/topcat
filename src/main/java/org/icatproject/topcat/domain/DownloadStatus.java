@@ -4,5 +4,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public enum DownloadStatus {
-    RESTORING, COMPLETE
+    RESTORING, COMPLETE, FAILED, PAUSED
 }
