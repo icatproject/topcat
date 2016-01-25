@@ -389,6 +389,16 @@
                             "type": "input"
                         }
                     ]
+                },
+                {
+                    "field": "isDeleted",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.IS_DELETED",
+                    "type" : "string",
+                    "filter": {
+                        "condition": "contains",
+                        "placeholder": "Containing...",
+                        "type": "input"
+                    }
                 }
             ]
         },

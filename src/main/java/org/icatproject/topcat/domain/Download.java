@@ -120,7 +120,6 @@ public class Download implements Serializable {
         this.userName = userName;
     }
 
-    @XmlTransient
     public String getFullName() {
         return fullName;
     }
@@ -214,7 +213,6 @@ public class Download implements Serializable {
         this.createdAt = new Date();
     }
 
-    @XmlTransient
     public Boolean getIsDeleted() {
         return isDeleted;
     }
@@ -223,7 +221,6 @@ public class Download implements Serializable {
         this.isDeleted = isDeleted;
     }
 
-    @XmlTransient
     public Date getDeletedAt() {
         return deletedAt;
     }

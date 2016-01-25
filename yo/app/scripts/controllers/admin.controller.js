@@ -40,7 +40,7 @@
           enableColumnMenu: false,
           enableSorting: false,
           enableHiding: false,
-          cellTemplate : '<div class="ui-grid-cell-contents"><button ng-click="grid.appScope.pause(row.entity)" ng-show="row.entity.status == \'RESTORING\'">Pause</button><button ng-click="grid.appScope.resume(row.entity)" ng-show="row.entity.status == \'PAUSED\'">Resume</button></div>'
+          cellTemplate : '<div class="ui-grid-cell-contents"><button ng-click="grid.appScope.delete(row.entity)" ng-show="!row.entity.isDeleted">Delete</button><button ng-click="grid.appScope.restore(row.entity)" ng-show="row.entity.isDeleted">Restore</button> <button ng-click="grid.appScope.pause(row.entity)" ng-show="row.entity.status == \'RESTORING\'">Pause</button><button ng-click="grid.appScope.resume(row.entity)" ng-show="row.entity.status == \'PAUSED\'">Resume</button></div>'
       });
 
       if($state.params.facilityName == ''){
@@ -71,6 +71,18 @@
       this.resume = function(download){
         admin.setDownloadStatus(download.id, 'RESTORING').then(function(){
           download.status = 'RESTORING';
+        });
+      };
+
+      this.delete = function(download){
+        admin.deleteDownload(download.id).then(function(){
+          download.isDeleted = true;
+        });
+      };
+
+      this.restore = function(download){
+        admin.restoreDownload(download.id).then(function(){
+          download.isDeleted = false;
         });
       };
 
