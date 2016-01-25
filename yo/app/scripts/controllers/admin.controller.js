@@ -31,6 +31,18 @@
           columnDef.enableColumnMenu = false;
       });
 
+      this.gridOptions.columnDefs.push({
+          name : 'actions',
+          visible: true,
+          translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
+          enableFiltering: false,
+          enable: false,
+          enableColumnMenu: false,
+          enableSorting: false,
+          enableHiding: false,
+          cellTemplate : '<div class="ui-grid-cell-contents"><button ng-click="grid.appScope.pause(row.entity)" ng-show="row.entity.status == \'RESTORING\'">Pause</button><button ng-click="grid.appScope.resume(row.entity)" ng-show="row.entity.status == \'PAUSED\'">Resume</button></div>'
+      });
+
       if($state.params.facilityName == ''){
           $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
           return;
@@ -49,6 +61,18 @@
       function getPage(){
         return admin.downloads(_.merge({page: page, pageSize: pageSize}, filters));
       }
+
+      this.pause = function(download){
+        admin.setDownloadStatus(download.preparedId, 'PAUSED').then(function(){
+          download.status = 'PAUSED';
+        });
+      };
+
+      this.resume = function(download){
+        admin.setDownloadStatus(download.preparedId, 'RESTORING').then(function(){
+          download.status = 'RESTORING';
+        });
+      };
 
     	this.gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
