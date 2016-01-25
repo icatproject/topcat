@@ -27,6 +27,7 @@ import org.icatproject.topcat.utils.PropertyHandler;
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient;
 import org.icatproject.ids.client.IdsClient.Status;
+import org.icatproject.ids.client.NotFoundException;
 
 @Singleton
 public class Watchdog {
@@ -73,35 +74,11 @@ public class Watchdog {
   }
 
   private void performCheck(Download download) {
-    logger.debug("performCheck ");
+    logger.debug("performCheck");
 
     try {
       IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
-      PropertyHandler properties = PropertyHandler.getInstance();
-      int maxPerGetStatus = properties.getMaxPerGetStatus();
-      
-      List<List<Long>> partitionedFileIds = ListUtils.partition(ids.getDatafileIds(download.getPreparedId()), maxPerGetStatus);
-
-      boolean isComplete = true;
-      for (List<Long> currentFileIds : partitionedFileIds) {
-        DataSelection dataSelection = new DataSelection();
-        dataSelection.addDatafiles(currentFileIds);
-
-        Status status = ids.getStatus(null, dataSelection);
-        if(status.equals(Status.ARCHIVED)){
-          download.setStatus(DownloadStatus.FAILED);
-          em.persist(download);
-          em.flush();
-          lastChecks.remove(download.getId());
-        lastChecks.remove(download.getId());
-        } else if(!status.equals(Status.ONLINE)){
-          logger.debug("Status: " + status.toString());
-          isComplete = false;
-          break;
-        }
-      }
-
-      if(isComplete){
+      if(ids.isPrepared(download.getPreparedId())){
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         em.persist(download);
@@ -110,6 +87,11 @@ public class Watchdog {
       } else {
         lastChecks.put(download.getId(), new Date());
       }
+    } catch(NotFoundException e) {
+      download.setStatus(DownloadStatus.EXPIRED);
+      em.persist(download);
+      em.flush();
+      lastChecks.remove(download.getId());
     } catch(Exception e){
       logger.debug(e.toString());
     }
