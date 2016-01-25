@@ -85,7 +85,7 @@
             gridApi.core.on.filterChanged($scope, function() {
                 page = 1;
 
-                filters = [];
+                filters = ['1 = 1'];
 
                 _.each(that.gridOptions.columnDefs, function(columnDef){
                     if(columnDef.type == 'date' && columnDef.filters){

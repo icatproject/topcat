@@ -886,7 +886,7 @@
         } catch(e) {
         	console.error("can't build query", query, e)
         }
-        return query.join(' ');
+        return _query.join(' ');
 	}
 
 	String.prototype.safe = function(){
