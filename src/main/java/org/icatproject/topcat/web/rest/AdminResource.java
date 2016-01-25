@@ -24,19 +24,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.icatproject.topcat.domain.Download;
-import org.icatproject.topcat.domain.LongValue;
-import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.domain.DownloadStatus;
-import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.TopcatException;
-import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.NotFoundException;
+import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
-import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 @Stateless
 @LocalBean
@@ -46,9 +41,6 @@ public class AdminResource {
 
     @EJB
     private DownloadRepository downloadRepository;
-
-    @EJB
-    private CartRepository cartRepository;
 
     @EJB
     private ICATClientBean icatClientService;
@@ -67,48 +59,30 @@ public class AdminResource {
     }
 
     @GET
-    @Path("/downloads/facility/{facilityName}")
+    @Path("/downloads")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDownloadsByFacilityName(
-            @PathParam("facilityName") String facilityName,
-            @QueryParam("icatUrl") String icatUrl,
-            @QueryParam("sessionId") String sessionId,
-            @QueryParam("userName") String userName,
-            @QueryParam("status") String status,
-            @QueryParam("transport") String transport,
-            @QueryParam("preparedId") String preparedId,
-            @QueryParam("createdAtFrom") String createdAtFrom,
-            @QueryParam("createdAtTo") String createdAtTo,
-            @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("page") Integer page)
-            throws TopcatException, MalformedURLException, ParseException {
+    public Response getDownloads(
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId,
+        @QueryParam("queryOffset") String queryOffset)
+        throws TopcatException, MalformedURLException, ParseException {
 
         onlyAllowAdmin(icatUrl, sessionId);
 
-        logger.info("getDownloadsByFacilityName() called");
-
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("facilityName", facilityName);
-        params.put("userName", userName);
-        params.put("status", status);
-        params.put("transport", transport);
-        params.put("preparedId", preparedId);
-        params.put("createdAtFrom", createdAtFrom);
-        params.put("createdAtTo", createdAtTo);
-        params.put("pageSize", pageSize);
-        params.put("page", page);
+        params.put("queryOffset", queryOffset);
 
         List<Download> downloads = new ArrayList<Download>();
-        downloads = downloadRepository.getDownloadsByFacilityName(params);
+        downloads = downloadRepository.getDownloads(params);
 
         return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
     }
 
     @PUT
-    @Path("/download/{preparedId}/status")
+    @Path("/download/{id}/status")
     @Produces({MediaType.APPLICATION_JSON})
     public Response setDownloadStatus(
-        @PathParam("preparedId") String preparedId,
+        @PathParam("id") Long id,
         @FormParam("icatUrl") String icatUrl,
         @FormParam("sessionId") String sessionId,
         @FormParam("value") String value)
@@ -116,7 +90,7 @@ public class AdminResource {
 
         onlyAllowAdmin(icatUrl, sessionId);
 
-        Download download = downloadRepository.getDownloadByPreparedId(preparedId);
+        Download download = downloadRepository.getDownload(id);
 
         if(download == null){
             throw new NotFoundException("could not find download");
@@ -130,10 +104,10 @@ public class AdminResource {
     }
     
     @PUT
-    @Path("/download/{preparedId}/isDeleted")
+    @Path("/download/{id}/isDeleted")
     @Produces({MediaType.APPLICATION_JSON})
     public Response deleteDownload(
-        @PathParam("preparedId") String preparedId,
+        @PathParam("id") Long id,
         @FormParam("icatUrl") String icatUrl,
         @FormParam("sessionId") String sessionId,
         @FormParam("value") Boolean value)
@@ -141,7 +115,7 @@ public class AdminResource {
 
         onlyAllowAdmin(icatUrl, sessionId);
 
-        Download download = downloadRepository.getDownloadByPreparedId(preparedId);
+        Download download = downloadRepository.getDownload(id);
 
         if(download == null){
             throw new NotFoundException("could not find download");
@@ -156,116 +130,6 @@ public class AdminResource {
 
         return Response.ok().build();
     }
-    
-    /*
-    @PUT
-    @Path("/downloads/facility/{facilityName}/complete")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response setCompleteByPreparedId(
-            @PathParam("facilityName") String facilityName,
-            @QueryParam("preparedId") String preparedId) throws BadRequestException {
-        logger.info("setCompleteByPreparedId() called");
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("facilityName", facilityName);
-        params.put("preparedId", preparedId);
-
-
-        String result = downloadRepository.setCompleteByPreparedId(params);
-
-        if (result == null) {
-            throw new BadRequestException("PreparedId " + preparedId + " not found");
-        }
-
-        StringValue id = new StringValue(preparedId);
-        return Response.ok().entity(id).build();
-    }
-
-
-    @GET
-    @Path("/poll/run")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response runAllPoll() {
-        logger.info("runAllPoll() called");
-
-        int count = executePoll.run();
-
-        LongValue value = new LongValue(new Long(count));
-
-        return Response.ok().entity(value).build();
-    }
-
-    @GET
-    @Path("/poll/run/{preparedId}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response runOnePoll(@PathParam("preparedId") String preparedId) {
-        logger.info("runOnePoll() called");
-
-        int count = executePoll.runByPreparedId(preparedId);
-
-        LongValue value = new LongValue(new Long(count));
-
-        return Response.ok().entity(value).build();
-    }
-
-    @GET
-    @Path("/poll/list")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getCurrentPoll(
-        @QueryParam("icatUrl") String icatUrl,
-        @QueryParam("sessionId") String sessionId)
-        throws TopcatException, MalformedURLException, ParseException {
-
-        onlyAllowAdmin(icatUrl, sessionId);
-
-        logger.info("getCurrentPoll() called");
-
-        List<StringValue> values = new ArrayList<StringValue>();
-
-        List<String> preparedIds = pollBean.getAll();
-
-        for (String preparedId : preparedIds) {
-            logger.info("getCurrentPoll() preparedId: " + preparedId);
-            StringValue value = new StringValue(preparedId);
-
-            values.add(value);
-        }
-
-        return Response.ok().entity(new GenericEntity<List<StringValue>>(values){}).build();
-    }
-
-    @DELETE
-    @Path("/poll/run")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response removeAllPoll() {
-        logger.info("removeAllPoll() called");
-
-        int count = pollFutureBean.cancelAll();
-
-        logger.info(count + " poll task cancelled");
-
-        LongValue value = new LongValue(new Long(count));
-
-        return Response.ok().entity(value).build();
-    }
-
-
-    @DELETE
-    @Path("/poll/run/{preparedId}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response removeOnePoll(@PathParam("preparedId") String preparedId) {
-        logger.info("removeOnePoll() called");
-
-        int count = pollFutureBean.cancelByPreparedId(preparedId);
-
-        logger.info(count + " poll task cancelled for preparedId: " + preparedId);
-
-        LongValue value = new LongValue(new Long(count));
-
-        return Response.ok().entity(value).build();
-    }
-
-    */
 
     private void onlyAllowAdmin(String icatUrl, String sessionId) throws TopcatException, MalformedURLException {
         if(icatUrl == null || sessionId == null || !icatClientService.isAdmin(icatUrl, sessionId)){

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Locale;
 import java.text.ParseException;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -41,79 +43,43 @@ public class DownloadRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
 
-    public List<Download> getDownloadsByFacilityName(Map<String, Object> params) throws ParseException{
+    public List<Download> getDownloads(Map<String, Object> params) throws ParseException{
         List<Download> downloads = new ArrayList<Download>();
 
-        String facilityName = (String) params.get("facilityName");
+        String queryOffset = (String) params.get("queryOffset");
         String userName = (String) params.get("userName");
-        String status = (String) params.get("status");
-        String transport = (String) params.get("transport");
-        String preparedId = (String) params.get("preparedId");
-        String createdAtFrom = (String) params.get("createdAtFrom");
-        String createdAtTo = (String) params.get("createdAtTo");
-        Integer pageSize = (Integer) params.get("pageSize");
-        Integer page = (Integer) params.get("page");
+        Integer pageSize = null;
+        Integer page = null;
 
-        if(pageSize == null){
-            pageSize = 10;
+        queryOffset = queryOffset.replace("(?i)^\\s*WHERE\\s*", "");
+        Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d)+,\\s*(\\d+)\\s*$");
+        Matcher matches = pattern.matcher(queryOffset);
+        if(matches.find()){
+            queryOffset = matches.group(1);
+            page = Integer.parseInt(matches.group(2));
+            pageSize = Integer.parseInt(matches.group(3));
         }
 
         if (em != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false");
+            sb.append("SELECT download FROM Download download ");
 
-            if(facilityName != null) {
-                sb.append( " AND d.facilityName = :facilityName");
-            }
 
-            if(userName != null) {
-                sb.append( " AND d.userName like concat(:userName, '%')");
+            if(userName != null && queryOffset != null) {
+                sb.append("WHERE userName = :userName AND " + queryOffset + " ");
+            } else if (userName != null) {
+                sb.append("WHERE userName = :userName ");
+            } else if (queryOffset != null) {
+                sb.append(" " + queryOffset + " ");
             }
-
-            if(status != null) {
-                sb.append( " AND d.status like concat(:status, '%')");
-            }
-
-            if(transport != null) {
-                sb.append( " AND d.transport like concat(:transport, '%')");
-            }
-
-            if(preparedId != null) {
-                sb.append( " AND d.preparedId like concat(:preparedId, '%')");
-            }
-
-            if(createdAtFrom != null && createdAtTo != null) {
-                sb.append( " AND d.createdAt BETWEEN :createdAtFrom AND :createdAtTo");
-            }
+                
 
             logger.debug(sb.toString());
 
             TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
-            
-            if(facilityName != null) {
-                query.setParameter("facilityName", facilityName);
-            }
 
             if(userName != null) {
                 query.setParameter("userName", userName);
-            }
-
-            if(status != null) {
-                query.setParameter("status", status);
-            }
-
-            if(transport != null) {
-                query.setParameter("transport", transport);
-            }
-
-            if(preparedId != null) {
-                query.setParameter("preparedId", preparedId);
-            }
-
-            if(createdAtFrom != null && createdAtTo != null) {
-                DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
-                query.setParameter("createdAtFrom", format.parse(createdAtFrom), TemporalType.DATE);
-                query.setParameter("createdAtTo", format.parse(createdAtTo), TemporalType.DATE);
             }
 
             if(page != null) {
@@ -134,44 +100,9 @@ public class DownloadRepository {
         return downloads;
     }
 
-    public List<Download> getCheckDownloads(Map<String, String> params) {
-        List<Download> downloads = new ArrayList<Download>();
-
-        String status = params.get("status");
-        String transport = params.get("transport");
-        String isTwoLevel = params.get("isTwoLevel");
-
-        DownloadStatus downloadStatus = null;
-
-        if (status != null) {
-            downloadStatus = DownloadStatus.valueOf(status);
-        }
-
-        boolean isTwoLevelBool = (isTwoLevel.equals("true")) ? true : false;
-
-        if (em != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.status = :status AND d.transport = :transport AND d.isTwoLevel = :isTwoLevel");
-
-            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
-
-            query.setParameter("status", downloadStatus)
-                .setParameter("transport", transport)
-                .setParameter("isTwoLevel", isTwoLevelBool);
-
-            logger.debug(query.toString());
-
-            downloads = query.getResultList();
-
-            if (downloads != null) {
-                return downloads;
-            }
-        }
-
-        return downloads;
+    public Download getDownload(Long id){
+        return em.find(Download.class, id);
     }
-
-
 
     public List<Download> getDownloadsByFacilityNameAndUser(Map<String, String> params) {
         List<Download> downloads = new ArrayList<Download>();
@@ -331,55 +262,5 @@ public class DownloadRepository {
 
         return null;
     }
-
-    public Download getDownloadByPreparedId(String preparedId) {
-        List<Download> downloads = new ArrayList<Download>();
-
-        if (em != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.preparedId = :preparedId");
-
-            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
-            query.setParameter("preparedId", preparedId);
-
-            logger.debug(query.toString());
-
-            downloads = query.getResultList();
-
-            if (downloads.size() > 0) {
-                return downloads.get(0);
-            }
-
-        }
-
-        return null;
-    }
-
-    //todo: try and remove - a preparedId can only correspond to a single download (not a List).
-    public Download getDownloadsByPreparedId(String preparedId) {
-        List<Download> downloads = new ArrayList<Download>();
-
-        if (em != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId");
-
-
-            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
-            query.setParameter("preparedId", preparedId);
-
-            logger.debug(query.toString());
-
-            downloads = query.getResultList();
-
-            if (downloads.size() > 0) {
-                return downloads.get(0);
-            }
-
-        }
-
-        return null;
-    }
-
-
 
 }

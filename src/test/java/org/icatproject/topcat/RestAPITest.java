@@ -106,12 +106,6 @@ public class RestAPITest {
 
 
     @Test
-    public void getEmptyCart() {
-        get(restAPIUrl + "/admin/downloads/facility/sig").then().log().all().statusCode(403).body("message", equalTo("please provide a valid icatUrl and sessionId"));
-    }
-
-
-    @Test
     public void getUserDownloadWithNoSessionIdOrIcatUrl() {
         get(restAPIUrl + "/downloads/facility/sig?userName=vcf21513").then().statusCode(400).body("message", equalTo("sessionId query parameter is required"));
     }

@@ -9,7 +9,7 @@
       var page = 1;
       var gridApi;
       var pageSize = 10;
-      var filters = {};
+      var filters = ["1 = 1"];
 
     	this.facilities = tc.adminFacilities();
 
@@ -59,17 +59,17 @@
       }
 
       function getPage(){
-        return admin.downloads(_.merge({page: page, pageSize: pageSize}, filters));
+        return admin.downloads(filters);
       }
 
       this.pause = function(download){
-        admin.setDownloadStatus(download.preparedId, 'PAUSED').then(function(){
+        admin.setDownloadStatus(download.id, 'PAUSED').then(function(){
           download.status = 'PAUSED';
         });
       };
 
       this.resume = function(download){
-        admin.setDownloadStatus(download.preparedId, 'RESTORING').then(function(){
+        admin.setDownloadStatus(download.id, 'RESTORING').then(function(){
           download.status = 'RESTORING';
         });
       };
@@ -85,7 +85,7 @@
             gridApi.core.on.filterChanged($scope, function() {
                 page = 1;
 
-                filters = {};
+                filters = [];
 
                 _.each(that.gridOptions.columnDefs, function(columnDef){
                     if(columnDef.type == 'date' && columnDef.filters){
@@ -96,7 +96,7 @@
                             filters[columnDef.field + "To"] = to;
                         }
                     } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
-                        filters[columnDef.field] = columnDef.filter.term
+                        filters.push(["and download." + columnDef.name + " like concat(?, '%')", columnDef.filter.term]);
                     }
                 });
 

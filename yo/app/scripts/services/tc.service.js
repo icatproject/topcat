@@ -27,7 +27,7 @@
   			return out.promise;
 	    };
 
-		this.search = overload(this, {
+		this.search = overload({
 			'array, object, object': function(facilityNames, query, options){
 				var defered = $q.defer();
 				var promises = [];
@@ -147,7 +147,7 @@
     	function Admin(facility){
     		var that = this;
 
-    		this.isValidSession = overload(this, {
+    		this.isValidSession = overload({
     			'string, object': function(sessionId, options){
 	    			return this.get('isValidSession', {
 	    				icatUrl: facility.config().icatUrl,
@@ -168,35 +168,37 @@
 	    		}
     		});
 
-    		this.downloads = overload(this, {
+    		this.downloads = overload({
     			'object, object': function(params, options){
-    				return this.get('downloads/facility/' + facility.config().facilityName, _.merge({
+    				params.queryOffset = "where download.facilityName = " + jpqlSanitize(facility.config().facilityName) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
+
+    				return this.get('downloads', _.merge({
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId
 	    			}, params), options).then(function(downloads){
     					_.each(downloads, function(download){
 
-    						download.delete = overload(download, {
+    						download.delete = overload({
 	    						'object': function(options){
-	    							return that.deleteDownload(this.preparedId, options);
+	    							return that.deleteDownload(this.id, options);
 	    						},
 	    						'promise': function(timeout){
-	    							return this.delete(this.preparedId, {timeout: timeout});
+	    							return this.delete(this.id, {timeout: timeout});
 	    						},
 	    						'': function(){
-	    							return this.delete(this.preparedId, {});
+	    							return this.delete(this.id, {});
 	    						}
 	    					});
 
-    						download.restore = overload(download, {
+    						download.restore = overload({
 	    						'object': function(options){
-	    							return that.restoreDownload(this.preparedId, options);
+	    							return that.restoreDownload(this.idd, options);
 	    						},
 	    						'promise': function(timeout){
-	    							return this.restore(this.preparedId, {timeout: timeout});
+	    							return this.restore(this.id, {timeout: timeout});
 	    						},
 	    						'': function(){
-	    							return this.restore(this.preparedId, {});
+	    							return this.restore(this.id, {});
 	    						}
 	    					});
 
@@ -205,11 +207,17 @@
     					return downloads;
 	    			});
     			},
-    			'promise, object': function(timeout, params){
-    				return this.downloads(params, {timeout: timeout});
+    			'promise, array': function(timeout, queryOffset){
+    				return this.downloads({queryOffset: buildQuery(queryOffset)}, {timeout: timeout});
     			},
-    			'object': function(params){
-    				return this.downloads(params, {});
+    			'array': function(queryOffset){
+    				return this.downloads({queryOffset: buildQuery(queryOffset)}, {});
+    			},
+    			'promise, string': function(timeout, queryOffset){
+    				return this.downloads([queryOffset], {timeout: timeout});
+    			},
+    			'string': function(queryOffset){
+    				return this.downloads([queryOffset]);
     			},
     			'promise': function(timeout){
     				return this.downloads(params, {timeout: timeout});
@@ -219,54 +227,81 @@
 	    		}
     		});
 
-			this.deleteDownload = overload(this, {
-				'string, object': function(preparedId, options){
-					return this.put('download/' + preparedId + '/isDeleted', {
+			this.deleteDownload = overload({
+				'string, object': function(id, options){
+					return this.put('download/' + id + '/isDeleted', {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId,
-	    				preparedId: preparedId,
+	    				id: id,
 	    				value: 'true'
 	    			}, options);
 				},
-				'string, promise': function(preparedId, timeout){
-					return this.deleteDownload(preparedId, {timeout: timeout});
+				'string, promise': function(id, timeout){
+					return this.deleteDownload(id, {timeout: timeout});
 				},
-				'string': function(preparedId){
-					return this.deleteDownload(preparedId, {});
+				'string': function(id){
+					return this.deleteDownload(id, {});
+				},
+				'number, object': function(id, options){
+					return this.deleteDownload("" + id, options);
+				},
+				'number, promise': function(id, timeout){
+					return this.deleteDownload("" + id, {timeout: timeout});
+				},
+				'number': function(id){
+					return this.deleteDownload("" + id, {});
 				}
 			});
 
-			this.restoreDownload = overload(this, {
-				'string, object': function(preparedId, options){
-					return this.put('download/' + preparedId + '/isDeleted', {
+			this.restoreDownload = overload({
+				'string, object': function(id, options){
+					return this.put('download/' + id + '/isDeleted', {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId,
-	    				preparedId: preparedId,
+	    				id: id,
 	    				value: 'false'
 	    			}, options);
 				},
-				'string, promise': function(preparedId, timeout){
-					return this.restoreDownload(preparedId, {timeout: timeout});
+				'string, promise': function(id, timeout){
+					return this.restoreDownload(id, {timeout: timeout});
 				},
-				'string': function(preparedId){
-					return this.restoreDownload(preparedId, {});
+				'string': function(id){
+					return this.restoreDownload(id, {});
+				},
+				'number, object': function(id, options){
+					return this.restoreDownload("" + id, options);
+				},
+				'number, promise': function(id, timeout){
+					return this.restoreDownload("" + id, {timeout: timeout});
+				},
+				'number': function(id){
+					return this.restoreDownload("" + id, {});
 				}
 			});
 
-			this.setDownloadStatus = overload(this, {
-				'string, string, object': function(preparedId, status, options){
-					return this.put('download/' + preparedId + '/status', {
+			this.setDownloadStatus = overload({
+				'string, string, object': function(id, status, options){
+					return this.put('download/' + id + '/status', {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId,
-	    				preparedId: preparedId,
+	    				id: id,
 	    				value: status
 	    			}, options);
 				},
-				'string, string, promise': function(preparedId, status, timeout){
-					return this.setDownloadStatus(preparedId, status, {timeout: timeout});
+				'string, string, promise': function(id, status, timeout){
+					return this.setDownloadStatus(id, status, {timeout: timeout});
 				},
-				'string, string': function(preparedId, status){
-					return this.setDownloadStatus(preparedId, status, {});
+				'string, string': function(id, status){
+					return this.setDownloadStatus(id, status, {});
+				},
+				'number, string, object': function(id, status, options){
+					return this.setDownloadStatus("" + id, status, options);
+				},
+				'number, string, promise': function(id, status, timeout){
+					return this.setDownloadStatus("" + id, status, {timeout: timeout});
+				},
+				'number, string': function(id, status){
+					return this.setDownloadStatus("" + id, status, {});
 				}
 			});
 
@@ -318,44 +353,13 @@
 	            });
 	        };
 
-	        this.query = overload(this, {
-	        	'array, object': function(query, options){
-		        	while(true){
-			        	query = _.map(query, function(i){
-			        		if(typeOf(i) == 'function') i = i.call(this);
-			        		return i;
-			        	});
-			        	query = _.flatten(query);
-			        	var isFunction = _.select(query, function(i){ return typeOf(i) == 'function'; }).length > 0;
-			        	var isArray = _.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0;
-			        	if(!isFunction && !isArray) break;
-			        }
-
-			        query = _.select(query, function(i){ return i !== undefined; });
-
-			        try {
-			        	var _query = [];
-			        	for(var i = 0; i < query.length; i++){
-			        		var expression = [];
-			        		var fragments = query[i].split(/\?/);
-			        		for(var j in fragments){
-			        			expression.push(fragments[j]);
-			        			if(j < fragments.length - 1){
-			        				i++;
-			        				expression.push(jpqlSanitize(query[i]));
-			        			}
-			        		}
-			        		_query.push(expression.join(''));
-			        	}
-			        } catch(e) {
-			        	console.error("can't build query", query, e)
-			        }
-
+	        this.query = overload({
+	        	'array, object': function(query, options){    	
 		        	var defered = $q.defer();
-		        	
+		    
 		        	this.get('entityManager', {
 	                    sessionId: this.session().sessionId,
-	                    query: _query.join(' '),
+	                    query: buildQuery(query),
 	                    server: facility.config().icatUrl
 	                }, options).then(function(results){
 	                	defered.resolve(_.map(results, function(result){
@@ -387,7 +391,7 @@
 	        });
 
 
-	        this.entities = overload(this, {
+	        this.entities = overload({
 	        	'string, array, object': function(type, query, options){
 	        		return this.query([[
 	        			'select ' + instanceNameFromEntityType(type) + ' from ' + type + ' ' + instanceNameFromEntityType(type)
@@ -435,7 +439,7 @@
     			return out.promise;
     		};
 
-    		this.getSize = overload(this, {
+    		this.getSize = overload({
     			'string, number, object': function(type, id, options){
     				var idsParamName = instanceNameFromEntityType(type) + "Ids";
     				var params = {
@@ -464,7 +468,7 @@
 			defineMethod.call(this, 'put');
 
 			function defineMethod(methodName){
-				this[methodName] = overload(this, {
+				this[methodName] = overload({
 					'string, string, object': function(offset, params, options){
 						if(methodName.match(/post|put/)){
 							if(!options.headers) options.headers = {};
@@ -562,7 +566,7 @@
 				}).join("\n");
 			}
 
-			entity.getSize = overload(entity, {
+			entity.getSize = overload({
 				'object': function(options){
 					var that = this;
 					return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
@@ -667,7 +671,7 @@
 
 
 			var parent; 
-			entity.parent = overload(entity, {
+			entity.parent = overload({
 				'string, object, object': function(entityType, childEntity, options){
 					return this.parent(childEntity, options).then(function(entity){
 						if(!entity || entity.entityType == entityType){
@@ -802,8 +806,10 @@
 		return out;
 	}
 
-	function overload(_this, variations){
+	function overload(variations){
+
 		return function(){
+			var that = this;
 			var args = arguments;
 			var argTypeOfs = _.map(args,  function(arg){ return typeOf(arg); });
 			var found = false;
@@ -819,15 +825,15 @@
 				pattern = pattern.trim().split(/\s*,\s*/);
 				found = _.isEqual(argTypeOfs, pattern);
 				if(found){
-					out = fn.apply(_this, args);
+					out = fn.apply(that, args);
 					return false;
 				}
 			});
 
 			if(argTypeOfs.length == 0 && variations['']){
-				out = variations[''].apply(_this, args);
+				out = variations[''].apply(that, args);
 			} else if(!found){
-				out = variations.default.apply(_this, args);
+				out = variations.default.apply(that, args);
 			}
 
 			return out;
@@ -847,6 +853,40 @@
 			return "'" + data.replace(/'/g, "''") + "'";
 		}
 		return data;
+	}
+
+	function buildQuery(query){
+		while(true){
+        	query = _.map(query, function(i){
+        		if(typeOf(i) == 'function') i = i.call(this);
+        		return i;
+        	});
+        	query = _.flatten(query);
+        	var isFunction = _.select(query, function(i){ return typeOf(i) == 'function'; }).length > 0;
+        	var isArray = _.select(query, function(i){ return typeOf(i) == 'array'; }).length > 0;
+        	if(!isFunction && !isArray) break;
+        }
+
+        query = _.select(query, function(i){ return i !== undefined; });
+
+        try {
+        	var _query = [];
+        	for(var i = 0; i < query.length; i++){
+        		var expression = [];
+        		var fragments = query[i].split(/\?/);
+        		for(var j in fragments){
+        			expression.push(fragments[j]);
+        			if(j < fragments.length - 1){
+        				i++;
+        				expression.push(jpqlSanitize(query[i]));
+        			}
+        		}
+        		_query.push(expression.join(''));
+        	}
+        } catch(e) {
+        	console.error("can't build query", query, e)
+        }
+        return query.join(' ');
 	}
 
 	String.prototype.safe = function(){
