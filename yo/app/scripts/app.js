@@ -175,7 +175,7 @@
                 })
 
                 .state('home.search.results', {
-                    url: '^/search?text&type&startDate&endDate&parameters&samples&facilities&investigation&dataset&datafile',
+                    url: '^/search?text&startDate&endDate&parameters&samples&facilities&investigation&dataset&datafile',
                     views: {
                         '' : {
                             templateUrl: 'views/search-results.html',
