@@ -26,8 +26,18 @@
                             </span>
                         </p>
                     </div>
-
                     <div class="form-group">
+                        <div class="btn-group btn-group-justified" role="group">
+                            <div class="btn-group" role="group">
+                                <button class="form-control btn btn-default btn-sm" ng-click="searchController.openParameterModal()" translate="SEARCH.FORM.ADD_PARAMETER_BUTTON"></button>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button class="form-control btn btn-default btn-sm" ng-click="searchController.openSampleModal()" translate="SEARCH.FORM.ADD_SAMPLE_BUTTON"></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <div class="form-group">
                         <div class="input-group">
                             <label class="input-group-addon"><input type="checkbox" ng-model="searchController.investigation"></label>
                             <span class="form-control">Investigation</span>
@@ -48,16 +58,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="btn-group btn-group-justified" role="group">
-                            <div class="btn-group" role="group">
-                                <button class="form-control btn btn-default btn-sm" ng-click="searchController.openParameterModal()" translate="SEARCH.FORM.ADD_PARAMETER_BUTTON"></button>
-                            </div>
-                            <div class="btn-group" role="group">
-                                <button class="form-control btn btn-default btn-sm" ng-click="searchController.openSampleModal()" translate="SEARCH.FORM.ADD_SAMPLE_BUTTON"></button>
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group" ng-repeat="parameter in searchController.parameters">
                         <div class="input-group">
                             <div class="form-control">{{parameter.name}} = {{parameter.value}}</div>

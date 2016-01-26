@@ -61,9 +61,9 @@
      	  queryCommon.upper = endDate.replace(/-/g, '') + "2359";
       }
 
-      /*
+      
       if(parameters.length > 0){
-          query.parameters = _.map(parameters, function(parameter){
+          queryCommon.parameters = _.map(parameters, function(parameter){
               var out = {};
               out.name = parameter.name;
               if(parameter.valueType === 'text'){
@@ -79,8 +79,7 @@
               return out;
           });
       }
-      if(samples.length > 0) query.samples = samples;
-      */
+      if(samples.length > 0) queryCommon.samples = samples;
 
       _.each(entityGridOptions, function(gridOptions, type){
           if(!that[type]) return;

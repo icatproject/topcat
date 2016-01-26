@@ -24,9 +24,9 @@
         this.dateFormat = 'yyyy-MM-dd';
         this.parameters = $state.params.parameters ? JSON.parse($state.params.parameters) : [];
         this.samples = $state.params.samples ? JSON.parse($state.params.samples) : [];
-        this.investigation = true;
-        this.dataset = true;
-        this.datafile = true;
+        this.investigation = $state.params.investigation != 'false';
+        this.dataset = $state.params.dataset != 'false';
+        this.datafile = $state.params.datafile != 'false';
 
         this.openStartDate = function(){
             this.isStartDateOpen = true;
