@@ -12,10 +12,12 @@
     	var endDate = $stateParams.endDate;
       var parameters = $stateParams.parameters ? JSON.parse($stateParams.parameters) : [];
       var samples = $stateParams.samples ? JSON.parse($stateParams.samples) : [];
-      var investigation = $stateParams.investigation == 'true';
-      var dataset = $stateParams.dataset == 'true';
-      var datafile = $stateParams.datafile == 'true';
+      this.investigation = $stateParams.investigation == 'true';
+      this.dataset = $stateParams.dataset == 'true';
+      this.datafile = $stateParams.datafile == 'true';
       var gridApi;
+
+      console.log('loading controller');
 
       var timeout = $q.defer();
       $scope.$on('$destroy', function(){ timeout.resolve(); });
@@ -37,17 +39,36 @@
                 columnDef.headerCellFilter = 'translate';
             }
         });
-      });
-      this.entityGridOptions = entityGridOptions;
 
-      this.investigation = investigation;
-      this.dataset = dataset;
-      this.datafile = datafile;
-      if(investigation){
+        gridOptions.onRegisterApi = function(gridApi) {
+            gridOptions.gridApi = gridApi;
+
+            gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                    addItem(row.entity);
+                } else {
+                    removeItem(row.entity);
+                }
+            });
+
+            gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                _.each(rows, function(row){
+                    if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                        addItem(row.entity.entity);
+                    } else {
+                        removeItem(row.entity);
+                    }
+                });
+            });
+        };
+
+      });
+
+      if(this.investigation){
         this.currentTab = 'investigation';
-      } else if(dataset){
+      } else if(this.dataset){
         this.currentTab = 'dataset';
-      } else if(datafile){
+      } else if(this.datafile){
         this.currentTab = 'datafile';
       }
 
@@ -83,7 +104,7 @@
 
       _.each(entityGridOptions, function(gridOptions, type){
           if(!that[type]) return;
-          console.log('searching: ' + type);
+          gridOptions.data = [];
           var query = _.merge(queryCommon, {target: type});
           tc.search(facilities, timeout.promise, query).then(function(results){
             _.each(results, function(entity){
@@ -114,29 +135,13 @@
       function removeItem(row){
           Cart.removeItem(row.facilityName, type.toLowerCase(), row.id);
       }
-      /*
-      gridOptions.onRegisterApi = function(_gridApi) {
-          gridApi = _gridApi;
 
-          gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-              if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                  addItem(row.entity);
-              } else {
-                  removeItem(row.entity);
-              }
-          });
-
-          gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-              _.each(rows, function(row){
-                  if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                      addItem(row.entity.entity);
-                  } else {
-                      removeItem(row.entity);
-                  }
-              });
-          });
+      this.show = function(type){
+        this.currentTab = type;
+        this.gridOptions = entityGridOptions[type];
+        console.log(type, this.gridOptions);
       };
-      */
+      this.show(this.currentTab);
 
       this.browse = function(row){
         timeout.resolve();
