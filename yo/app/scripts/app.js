@@ -124,26 +124,25 @@
                     abstract: true,
                     url: '/browse',
                     views: {
-                      '': {
+                      'browse@home': {
                         templateUrl: 'views/main-browse.html'
                       }
-                    }/*,
-                    sticky: true,
-                    deepStateRedirect: true*/
+                    }
                 })
+
                 .state('home.browse.facility', {
-                    url: '/facilities',
+                    url: '/browse',
                     resolve: {
                         authenticate : ['Authenticate', function(Authenticate) {
                             return Authenticate.authenticate();
                         }]
                     },
                     views: {
-                        '' : {
-                            templateUrl: 'views/partial-browse-panel.html',
-                            controller: 'BrowseFacilitiesController'
-                        },
-                        'meta-view@home.browse' : {
+                      '': {
+                        templateUrl: 'views/browse-facilities.html',
+                        controller: 'BrowseFacilitiesController'
+                      },
+                      'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
                             controller: 'MetaPanelController as meta'
                         }

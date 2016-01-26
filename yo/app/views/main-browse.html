@@ -1,16 +1,10 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-2 sidebar">
-            <div ui-view="search-form-view"></div>
-        </div>
+    <div class="box browse-box">
+        
+        <div ui-view></div>
 
-        <div class="col-sm-10">
-            <div class="box browse-box">
-                <div ui-view></div>
-            </div>
-            <div class="box meta-box">
-                <div ui-view="meta-view"></div>
-            </div>
-        </div>
+    </div>
+    <div class="box meta-box">
+        <div ui-view="meta-view"></div>
     </div>
 </div>
