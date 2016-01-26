@@ -28,7 +28,7 @@
             "message": "This server in undergoing maintenance."
         },
         "searchGridOptions": {
-            "Investigation": {
+            "investigation": {
                 "columnDefs": [
                     {
                         "field": "title",
@@ -45,7 +45,7 @@
                     }
                 ]
             },
-            "Dataset": {
+            "dataset": {
                 "columnDefs": [
                     {
                         "field": "name",
@@ -67,7 +67,7 @@
                     }
                 ]
             },
-            "Datafile": {
+            "datafile": {
                 "columnDefs": [
                     {
                         "field": "name",

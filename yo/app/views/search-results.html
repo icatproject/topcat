@@ -1,5 +1,22 @@
 <h1>Search Results</h1>
 
+<ul class="nav nav-tabs nav-tabs-head" role="tablist">
+    <li ng-show="searchResultsController.investigation" ng-class="{active : searchResultsController.currentTab == 'investigation'}">
+    	<a ng-click="searchResultsController.currentTab = 'investigation'" role="tab" translate="SEARCH.TABS.INVESTIGATION"></a>
+    </li>
+    <li ng-show="searchResultsController.dataset" ng-class="{active : searchResultsController.currentTab == 'dataset'}">
+    	<a ng-click="searchResultsController.currentTab = 'dataset'" role="tab" translate="SEARCH.TABS.DATASET"></a>
+    </li>
+    <li ng-show="searchResultsController.datafile" ng-class="{active : searchResultsController.currentTab == 'datafile'}">
+    	<a ng-click="searchResultsController.currentTab = 'datafile'" role="tab" translate="SEARCH.TABS.DATAFILE"></a>
+    </li>
+</ul>
 
-<div ng-if="!isScroll" ui-grid="searchResultsController.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
+<div  ng-show="searchResultsController.currentTab == 'investigation'" ui-grid="searchResultsController.entityGridOptions.investigation" ui-grid-infinite-scroll ui-grid-selection ui-grid-auto-resize class="cart-grid">
+</div>
+
+<div ng-show="searchResultsController.currentTab == 'dataset'" ui-grid="searchResultsController.entityGridOptions.dataset" ui-grid-infinite-scroll ui-grid-selection ui-grid-auto-resize class="cart-grid">
+</div>
+
+<div ng-show="searchResultsController.currentTab == 'datafile'" ui-grid="searchResultsController.entityGridOptions.datafile" ui-grid-infinite-scroll ui-grid-selection ui-grid-auto-resize class="cart-grid">
 </div>

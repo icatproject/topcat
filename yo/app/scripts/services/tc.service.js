@@ -32,6 +32,7 @@
 				var defered = $q.defer();
 				var promises = [];
 				var results = [];
+				query.target = query.target.replace(/^./, function(c){ return c.toUpperCase(); });
 				var entityType = query.target;
 				var entityInstanceName = instanceNameFromEntityType(entityType);
 				_.each(facilityNames, function(facilityName){

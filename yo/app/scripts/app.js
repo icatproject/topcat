@@ -53,6 +53,7 @@
             'ui.grid.infiniteScroll',
             'ui.grid.selection',
             'ui.grid.saveState',
+            'ui.grid.autoResize',
             'bytes',
             'angularSpinner',
             'ng.deviceDetector',

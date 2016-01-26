@@ -224,6 +224,11 @@
             "MOD_TIME": "Modified Time",
             "START_DATE": "Start Date",
             "TITLE": "Title"
+        },
+        "TABS": {
+            "INVESTIGATION": "Investigation",
+            "DATASET": "Dataset",
+            "DATAFILE": "Datafile"
         }
     },
     "MY_DATA" : {
