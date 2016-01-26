@@ -15,6 +15,7 @@
         "MAIN_TAB" : {
             "MY_DATA" : "My Data",
             "BROWSE" : "Browse",
+            "SEARCH" : "Search",
             "CART" : "Cart",
             "DOWNLOAD" : "Download"
         }

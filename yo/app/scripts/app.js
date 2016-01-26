@@ -143,10 +143,6 @@
                             templateUrl: 'views/partial-browse-panel.html',
                             controller: 'BrowseFacilitiesController'
                         },
-                        'search-form-view': {
-                            templateUrl: 'views/partial-search-form.html',
-                            controller: 'SearchFormController as searchFormController'
-                        },
                         'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
                             controller: 'MetaPanelController as meta'
@@ -154,14 +150,32 @@
                     }
                 })
 
-                .state('home.browse.facility.search', {
+                .state('home.search', {
+                    url: '/search',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    },
+                    views: {
+                        'search@home': {
+                            templateUrl: 'views/main-search.html',
+                        },
+                        'meta-view@home.search' : {
+                            templateUrl: 'views/partial-meta-panel.html',
+                            controller: 'MetaPanelController as meta'
+                        }
+                    }
+                })
+
+                .state('home.search.results', {
                     url: '^/search?text&type&startDate&endDate&parameters&samples&facilities',
                     views: {
-                        '@home.browse' : {
+                        '@home.search' : {
                             templateUrl: 'views/search-results.html',
                             controller: 'SearchResultsController as searchResultsController'
                         },
-                        'meta-view@home.browse' : {
+                        'meta-view@home.search' : {
                             templateUrl: 'views/partial-meta-panel.html',
                             controller: 'MetaPanelController as meta'
                         }
