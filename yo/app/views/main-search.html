@@ -9,14 +9,7 @@
                         <input type="text" class="form-control input-sm" id="searchText" translate translate-attr-placeholder="SEARCH.FORM.SEARCH_TEXT_PLACEHOLDER" ng-model="searchController.text" on-return-click-submit-button>
                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                     </div>
-                    <div class="form-group">
-                        <select class="form-control input-sm" ng-model="searchController.type" required on-return-click-submit-button >
-                            <option style="display:none" value="" translate="SEARCH.FORM.SELECT_TYPE"></option>
-                            <option value="Investigation" translate="SEARCH.FORM.INVESTIGATION_TYPE"></option>
-                            <option value="Dataset" translate="SEARCH.FORM.DATASET_TYPE"></option>
-                            <option value="Datafile" translate="SEARCH.FORM.DATAFILE_TYPE"></option>
-                        </select>
-                    </div>
+
                     <div class="form-group">
                         <p class="input-group">
                             <input type="text" class="form-control input-sm" uib-datepicker-popup="{{searchController.dateFormat}}" ng-model="searchController.startDate" is-open="searchController.isStartDateOpen"  close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" on-return-click-submit-button />
@@ -33,6 +26,28 @@
                             </span>
                         </p>
                     </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label class="input-group-addon"><input type="checkbox" ng-model="searchController.investigation"></label>
+                            <span class="form-control">Investigation</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label class="input-group-addon"><input type="checkbox" ng-model="searchController.dataset"></label>
+                            <span class="form-control">Dataset</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label class="input-group-addon"><input type="checkbox" ng-model="searchController.datafile"></label>
+                            <span class="form-control">Datafile</span>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <div class="btn-group btn-group-justified" role="group">
                             <div class="btn-group" role="group">

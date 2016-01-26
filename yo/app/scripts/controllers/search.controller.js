@@ -24,6 +24,9 @@
         this.dateFormat = 'yyyy-MM-dd';
         this.parameters = $state.params.parameters ? JSON.parse($state.params.parameters) : [];
         this.samples = $state.params.samples ? JSON.parse($state.params.samples) : [];
+        this.investigation = true;
+        this.dataset = true;
+        this.datafile = true;
 
         this.openStartDate = function(){
             this.isStartDateOpen = true;
@@ -64,8 +67,6 @@
         };
 
         this.search = function(){
-            if(!this.type) return;
-
             var params = {
                 text: null,
                 type: this.type,
@@ -73,7 +74,10 @@
                 endDate: null,
                 facilities: null,
                 parameters: null,
-                samples: null
+                samples: null,
+                investigation: this.investigation,
+                dataset: this.dataset,
+                datafile: this.datafile
             };
 
             if(this.text !== '') params.text = this.text;
