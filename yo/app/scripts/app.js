@@ -131,7 +131,7 @@
                 })
 
                 .state('home.browse.facility', {
-                    url: '/browse',
+                    url: '/facility',
                     resolve: {
                         authenticate : ['Authenticate', function(Authenticate) {
                             return Authenticate.authenticate();
@@ -150,27 +150,34 @@
                 })
 
                 .state('home.search', {
+                    abstract: true,
                     url: '/search',
+                    views: {
+                        'search@home': {
+                            templateUrl: 'views/main-search.html',
+                            controller: 'SearchController as searchController'
+                        }
+                    }
+                })
+
+                .state('home.search.start', {
+                    url: '/start',
                     resolve: {
                         authenticate : ['Authenticate', function(Authenticate) {
                             return Authenticate.authenticate();
                         }]
                     },
                     views: {
-                        'search@home': {
-                            templateUrl: 'views/main-search.html',
+                        '' : {
+                            templateUrl: 'views/search-start.html'
                         },
-                        'meta-view@home.search' : {
-                            templateUrl: 'views/partial-meta-panel.html',
-                            controller: 'MetaPanelController as meta'
-                        }
                     }
                 })
 
                 .state('home.search.results', {
                     url: '^/search?text&type&startDate&endDate&parameters&samples&facilities',
                     views: {
-                        '@home.search' : {
+                        '' : {
                             templateUrl: 'views/search-results.html',
                             controller: 'SearchResultsController as searchResultsController'
                         },

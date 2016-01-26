@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('SearchFormController', function($sessionStorage, $state, $filter, $uibModal, APP_CONFIG){
+    app.controller('SearchController', function($sessionStorage, $state, $filter, $uibModal, APP_CONFIG){
         var that = this;
         this.text = $state.params.text || '';
         this.type = $state.params.type || '';
@@ -86,7 +86,7 @@
             if(this.parameters.length > 0) params.parameters = JSON.stringify(_.map(this.parameters, function(parameter){ return _.pick(parameter, ['name', 'valueType', 'value']); }));
             if(this.samples.length > 0) params.samples = JSON.stringify(this.samples);
 
-            $state.go('home.browse.facility.search', params);
+            $state.go('home.search.results', params);
         };
 
 
