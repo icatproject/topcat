@@ -631,6 +631,7 @@
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
+                            "excludeFuture": true,
                             "filters": [
                                 {
                                     "placeholder": "From...",

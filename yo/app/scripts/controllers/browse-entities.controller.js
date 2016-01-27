@@ -290,6 +290,19 @@
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row.entity)}}">{{row.entity.' + columnDef.field + '}}</a></div>';
             }
 
+            if(columnDef.type && columnDef.excludeFuture){
+                var date = new Date();
+                var day = date.getDate();
+                var month = "" + (date.getMonth() + 1);
+                if(month.length == 1) month = '0' + month;
+                var year = date.getFullYear();
+                var filter = year + '-' + month + '-' + day;
+                $timeout(function(){
+                    columnDef.filters[1].term = filter;
+                    saveState();
+                });
+            }
+
             if(columnDef.field == 'size'){
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
                 columnDef.enableSorting = false;
