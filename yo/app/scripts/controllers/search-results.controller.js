@@ -53,6 +53,7 @@
     }
 
     _.each(['investigation', 'dataset', 'datafile'], function(type){
+      if(!that[type]) return;
       createGridOptions.call(that, type);
     })
 
@@ -130,7 +131,6 @@
           });
         });
       }
-
 
       this[type + "GridOptions"] = gridOptions;
     }
