@@ -59,6 +59,7 @@
     this.gridOptions = {data: [], appScopeProvider: this};
     this.gridOptions.onRegisterApi = function(_gridApi) {
       gridApi = _gridApi;
+      console.log(gridApi);
       
       gridApi.selection.on.rowSelectionChanged($scope, function(row) {
           if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
@@ -83,19 +84,22 @@
       this.currentTab = type;
       var gridOptions = tc.config().searchGridOptions[type];
       if(gridOptions){
-        this.gridOptions.columnDefs = gridOptions.columnDefs;
+        this.gridOptions.columnDefs = [];
         this.gridOptions.data = data[type];
-        _.each(gridOptions.columnDefs, function(columnDef){
-          if(columnDef.field == 'size'){
-              columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
-              columnDef.enableSorting = false;
-              columnDef.enableFiltering = false;
-          }
-          if(columnDef.translateDisplayName){
-              columnDef.displayName = columnDef.translateDisplayName;
-              columnDef.headerCellFilter = 'translate';
-          }
-          updateSelections();
+        $timeout(function(){
+          that.gridOptions.columnDefs = gridOptions.columnDefs;
+          _.each(gridOptions.columnDefs, function(columnDef){
+            if(columnDef.field == 'size'){
+                columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+                columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
+            }
+            if(columnDef.translateDisplayName){
+                columnDef.displayName = columnDef.translateDisplayName;
+                columnDef.headerCellFilter = 'translate';
+            }
+            updateSelections();
+          });
         });
       }
     };
