@@ -33,7 +33,7 @@
                     {
                         "field": "title",
                         "translateDisplayName": "SEARCH.COLUMN.TITLE",
-                        "cellTemplate": "<div class=\"ui-grid-cell-contents\"><a ng-click=\"grid.appScope.browse(row.entity)\">{{row.entity.title}}</a></div>"
+                        "link": true
                     },
                     {
                         "field": "size",
@@ -50,7 +50,7 @@
                     {
                         "field": "name",
                         "translateDisplayName": "SEARCH.COLUMN.NAME",
-                        "cellTemplate": "<div class=\"ui-grid-cell-contents\"><a ng-click=\"row.entity.browse()\">{{row.entity.name}}</a></div>"
+                        "link": true
                     },
                     {
                         "field": "size",
@@ -59,7 +59,7 @@
                     {
                         "field": "investigation.title",
                         "translateDisplayName": "SEARCH.COLUMN.INVESTIGATION",
-                        "cellTemplate": "<div class=\"ui-grid-cell-contents\"><a ng-click=\"row.entity.investigation.browse()\">{{row.entity.investigation.title}}</a></div>"
+                        "link": "investigation"
                     },
                     {
                         "field": "startDate",
@@ -81,7 +81,7 @@
                     {
                         "field": "dataset.name",
                         "translateDisplayName": "SEARCH.COLUMN.DATASET",
-                        "cellTemplate": "<div class=\"ui-grid-cell-contents\"><a ng-click=\"row.entity.dataset.browse()\">{{row.entity.dataset.name}}</a></div>"
+                        "link": "dataset"
                     },
                     {
                         "field": "createTime",

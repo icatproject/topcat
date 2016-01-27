@@ -58,6 +58,7 @@
     })
 
     this.browse = function(row){
+      console.log('browse called');
       timeout.resolve();
       row.browse();
     };
@@ -66,6 +67,13 @@
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().searchGridOptions[type]);
       _.each(gridOptions.columnDefs, function(columnDef){
+        if(columnDef.link && !columnDef.cellTemplate){
+          if(typeof columnDef.link == "string"){
+            columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity.' + columnDef.link + ')">{{row.entity.' + columnDef.field + '}}</a></div>';
+          } else {
+            columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity)">{{row.entity.' + columnDef.field + '}}</a></div>';
+          }
+        }
         if(columnDef.field == 'size'){
             columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
             columnDef.enableSorting = false;
