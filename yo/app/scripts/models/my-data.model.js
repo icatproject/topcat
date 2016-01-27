@@ -560,6 +560,11 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
     this.appendPage = function() {
         ConfigUtils.getLoggedInFacilities(self.facilityObjs, self.sessions).then(function (data){
             _.each(data, function(facility) {
+                var structure = Config.getHierarchyByFacilityName(APP_CONFIG, facility.facilityName);
+                var nextRouteSegment = RouteService.getNextRouteSegmentName(structure, self.entityType);
+
+                self.paginateParams = getIncludesForRoutes(self.paginateParams, self.entityType, nextRouteSegment);
+
                 var options = _.extend(self.stateParams, self.paginateParams);
                 options.user = true;
 
@@ -575,6 +580,14 @@ function MyDataModel($rootScope, APP_CONFIG, Config, ConfigUtils, RouteService, 
                             //fill size data
                             if (self.hasSizeField) {
                                 if (self.entityType === 'investigation' || self.entityType === 'dataset') {
+                                    //inject information into row data
+                                    if (typeof row.entity.facilityName === 'undefined') {
+                                        row.entity.nextRouteSegment = nextRouteSegment;
+                                        row.entity.facilityTitle = facility.title;
+                                        row.entity.facilityName = facility.facilityName;
+                                        row.entity.nextRouteStateParam = getNextRouteStateParam(row, self.entityType, self.stateParams);
+                                    }
+
                                     if (typeof row.entity.size === 'undefined' || row.entity.size === null) {
                                         var params = {};
                                         params[self.entityType  + 'Ids'] = row.entity.id;
