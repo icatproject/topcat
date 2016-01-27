@@ -116,6 +116,63 @@
             return out;
         }
 
+        function updateFilterQuery(){
+            filterQuery = [];
+            _.each(gridOptions.columnDefs, function(columnDef){
+                if(columnDef.type == 'date' && columnDef.filters){
+                    var from = columnDef.filters[0].term || '';
+                    var to = columnDef.filters[1].term || '';
+                    if(from != '' || to != ''){
+                        from = completePartialFromDate(from);
+                        to = completePartialToDate(to);
+                        filterQuery.push([
+                            "and ? between {ts ? 00:00:00} and {ts ? 23:59:59}",
+                            columnDef.jpqlExpression.safe(),
+                            from.safe(),
+                            to.safe()
+                        ]);
+                    }
+                } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
+                    filterQuery.push([
+                        "and UPPER(?) like concat('%', ?, '%')", 
+                        columnDef.jpqlExpression.safe(),
+                        columnDef.filter.term.toUpperCase()
+                    ]);
+                }
+            });
+        }
+
+        function completePartialFromDate(date){
+            var parts = date.split(/-/);
+            var year = parts[0] || "";
+            var month = parts[1] || "";
+            var day = parts[2] || "";
+            year = year + '0000'.slice(year.length, 4);
+            month = month + '00'.slice(month.length, 2);
+            day = day + '00'.slice(day.length, 2);
+
+            if(parseInt(month) == 0) month = '01';
+            if(parseInt(day) == 0) day = '01';
+
+            return year + "-" + month + "-" + day;
+        }
+
+        function completePartialToDate(date){
+            var parts = date.split(/-/);
+            var year = parts[0] || "";
+            var month = parts[1] || "";
+            var day = parts[2] || "";
+            year = year + '9999'.slice(year.length, 4);
+            month = month + '99'.slice(month.length, 2);
+            day = day + '99'.slice(day.length, 2);
+
+            if(parseInt(month) > 12) month = '12';
+            var daysInMonth = new Date(year, day, 0).getDate();
+            if(parseInt(day) > daysInMonth) day = daysInMonth;
+
+            return year + "-" + month + "-" + day;
+        }
+
         function updateScroll(resultCount){
             if(isScroll){
                 $timeout(function(){
@@ -310,29 +367,8 @@
             gridApi.core.on.filterChanged($scope, function() {
                 canceler.resolve();
                 canceler = $q.defer();
-                filterQuery = [];
-                _.each(gridOptions.columnDefs, function(columnDef){
-                    if(columnDef.type == 'date' && columnDef.filters){
-                        var from = columnDef.filters[0].term || '';
-                        var to = columnDef.filters[1].term || '';
-                        if(from.match(/^\d\d\d\d-\d\d-\d\d$/) && to.match(/^\d\d\d\d-\d\d-\d\d$/)){
-                            filterQuery.push([
-                                "and ? between {ts ? 00:00:00} and {ts ? 23:59:59}",
-                                columnDef.jpqlExpression.safe(),
-                                from.safe(),
-                                to.safe()
-                            ]);
-                        }
-                    } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
-                        filterQuery.push([
-                            "and UPPER(?) like concat('%', ?, '%')", 
-                            columnDef.jpqlExpression.safe(),
-                            columnDef.filter.term.toUpperCase()
-                        ]);
-                    }
-                });
+                updateFilterQuery();
                 page = 1;
-                
                 gridOptions.data = [];
                 getPage().then(function(results){
                     gridOptions.data = results;
