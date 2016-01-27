@@ -2,15 +2,19 @@
 
 <ul class="nav nav-tabs nav-tabs-head" role="tablist">
     <li ng-show="searchResultsController.investigation" ng-class="{active : searchResultsController.currentTab == 'investigation'}">
-    	<a ng-click="searchResultsController.show('investigation')" role="tab" translate="SEARCH.TABS.INVESTIGATION"></a>
+    	<a ng-click="searchResultsController.currentTab = 'investigation'" role="tab" translate="SEARCH.TABS.INVESTIGATION"></a>
     </li>
     <li ng-show="searchResultsController.dataset" ng-class="{active : searchResultsController.currentTab == 'dataset'}">
-    	<a ng-click="searchResultsController.show('dataset')" role="tab" translate="SEARCH.TABS.DATASET"></a>
+    	<a ng-click="searchResultsController.currentTab = 'dataset'" role="tab" translate="SEARCH.TABS.DATASET"></a>
     </li>
     <li ng-show="searchResultsController.datafile" ng-class="{active : searchResultsController.currentTab == 'datafile'}">
-    	<a ng-click="searchResultsController.show('datafile')" role="tab" translate="SEARCH.TABS.DATAFILE"></a>
+    	<a ng-click="searchResultsController.currentTab = 'datafile'" role="tab" translate="SEARCH.TABS.DATAFILE"></a>
     </li>
 </ul>
 
-<div ui-grid="searchResultsController.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
-</div>
+
+<div ng-if="searchResultsController.currentTab == 'investigation'" ui-grid="searchResultsController.investigationGridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid"></div>
+
+<div ng-if="searchResultsController.currentTab == 'dataset'" ui-grid="searchResultsController.datasetGridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid"></div>
+
+<div ng-if="searchResultsController.currentTab == 'datafile'" ui-grid="searchResultsController.datafileGridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid"></div>

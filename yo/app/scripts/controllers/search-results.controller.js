@@ -11,11 +11,6 @@
     var endDate = $stateParams.endDate;
     var parameters = $stateParams.parameters ? JSON.parse($stateParams.parameters) : [];
     var samples = $stateParams.samples ? JSON.parse($stateParams.samples) : [];
-    var data = {
-      investigation: [],
-      dataset: [],
-      datafile: []
-    };
     var queryCommon = {};
     if(text) queryCommon.text = text;
     if(startDate && !endDate) endDate = "90000-12-31";
@@ -42,13 +37,13 @@
         });
     }
     if(samples.length > 0) queryCommon.samples = samples;
-    var gridApi;
     var timeout = $q.defer();
     $scope.$on('$destroy', function(){ timeout.resolve(); });
 
     this.investigation = $stateParams.investigation == 'true';
     this.dataset = $stateParams.dataset == 'true';
     this.datafile = $stateParams.datafile == 'true';
+    this.visable = false;
     if(this.investigation){
       this.currentTab = 'investigation';
     } else if(this.dataset){
@@ -56,83 +51,55 @@
     } else if(this.datafile){
       this.currentTab = 'datafile';
     }
-    this.gridOptions = {data: [], appScopeProvider: this};
-    this.gridOptions.onRegisterApi = function(_gridApi) {
-      gridApi = _gridApi;
-      console.log(gridApi);
-      
-      gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-          if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-              addItem(row.entity);
-          } else {
-              removeItem(row.entity);
-          }
-      });
 
-      gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-          _.each(rows, function(row){
-              if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                  addItem(row.entity.entity);
-              } else {
-                  removeItem(row.entity);
-              }
-          });
-      });
-    };
-
-    this.show = function(type){
-      this.currentTab = type;
-      var gridOptions = tc.config().searchGridOptions[type];
-      if(gridOptions){
-        this.gridOptions.columnDefs = [];
-        this.gridOptions.data = data[type];
-        $timeout(function(){
-          that.gridOptions.columnDefs = gridOptions.columnDefs;
-          _.each(gridOptions.columnDefs, function(columnDef){
-            if(columnDef.field == 'size'){
-                columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
-                columnDef.enableSorting = false;
-                columnDef.enableFiltering = false;
-            }
-            if(columnDef.translateDisplayName){
-                columnDef.displayName = columnDef.translateDisplayName;
-                columnDef.headerCellFilter = 'translate';
-            }
-            updateSelections();
-          });
-        });
-      }
-    };
-    this.show(this.currentTab);
+    _.each(['investigation', 'dataset', 'datafile'], function(type){
+      createGridOptions.call(that, type);
+    })
 
     this.browse = function(row){
       timeout.resolve();
       row.browse();
     };
 
-    function addItem(row){
-      Cart.addItem(row.facilityName, that.currentTab, row.id, row.name, []);
-    }
-
-    function removeItem(row){
-      Cart.removeItem(row.facilityName, that.currentTab, row.id);
-    }
-
-    function updateSelections(){
-      $timeout(function(){
-        _.each(that.gridOptions.data, function(row){
-          if (Cart.hasItem(row.facilityName, that.currentTab, row.id)) {
-              gridApi.selection.selectRow(row);
-          } else {
-              gridApi.selection.unSelectRow(row);
-          }
-        });
+    function createGridOptions(type){
+      var gridApi;
+      var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().searchGridOptions[type]);
+      _.each(gridOptions.columnDefs, function(columnDef){
+        if(columnDef.field == 'size'){
+            columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+            columnDef.enableSorting = false;
+            columnDef.enableFiltering = false;
+        }
+        if(columnDef.translateDisplayName){
+            columnDef.displayName = columnDef.translateDisplayName;
+            columnDef.headerCellFilter = 'translate';
+        }
       });
-    }
 
-    _.each(data, function(current, type){
-      if(!that[type]) return;
-      data[type] = [];
+      gridOptions.onRegisterApi = function(_gridApi) {
+        gridApi = _gridApi;
+        updateSelections();
+
+        
+        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+            if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                addItem(row.entity);
+            } else {
+                removeItem(row.entity);
+            }
+        });
+
+        gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+            _.each(rows, function(row){
+                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                    addItem(row.entity.entity);
+                } else {
+                    removeItem(row.entity);
+                }
+            });
+        });
+      };
+
       var query = _.merge(queryCommon, {target: type});
       tc.search(facilities, timeout.promise, query).then(function(results){
         _.each(results, function(entity){
@@ -141,11 +108,34 @@
       }, function(){
 
       }, function(results){
-        data[type] = results;
-        that.show(that.currentTab);
+        gridOptions.data = results;
       });
-    });
+
+      function addItem(row){
+        Cart.addItem(row.facilityName, that.currentTab, row.id, row.name, []);
+      }
+
+      function removeItem(row){
+        Cart.removeItem(row.facilityName, that.currentTab, row.id);
+      }
+
+      function updateSelections(){
+        $timeout(function(){
+          _.each(gridOptions.data, function(row){
+            if (Cart.hasItem(row.facilityName, that.currentTab, row.id)) {
+                gridApi.selection.selectRow(row);
+            } else {
+                gridApi.selection.unSelectRow(row);
+            }
+          });
+        });
+      }
+
+
+      this[type + "GridOptions"] = gridOptions;
+    }
 
   });
 
 })();
+
