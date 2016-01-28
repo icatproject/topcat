@@ -56,7 +56,7 @@
                                         <span class="glyphicon glyphicon-shopping-cart"></span> <span><cart-item-count singular="{{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}" plural="{{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}"></cart-item-count></span>
                                     </p>
                                 </li>
-                                <li ng-controller="LogoutController as logoutController" class="dropdown" ng-if="!vm.isSingleFacility('first')">
+                                <li class="dropdown" ng-if="!vm.isSingleFacility('first')">
                                     <a class="dropdown-toggle pointer" data-toggle="dropdown" role="button" aria-expanded="false"><span translate="MAIN_NAVIGATION.LOGIN"></span><span class="caret"></span></a>
 
                                     <ul class="dropdown-menu" role="menu">
@@ -65,10 +65,10 @@
                                         </li>
                                         <li class="divider" ng-if="vm.isLoggedIn()"></li>
                                         <li ng-repeat="facilityName in vm.facilitiesToLogout()" ng-if="vm.isLoggedIn()" >
-                                            <a ng-click="logoutController.logout(facilityName)" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{facilityName : vm.getFacilityTitleByFacilityName(facilityName), userName: vm.getUserNameByFacilityName(facilityName)}"></a>
+                                            <a ui-sref="logout.facility({facilityName: facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{facilityName : vm.getFacilityTitleByFacilityName(facilityName), userName: vm.getUserNameByFacilityName(facilityName)}"></a>
                                         </li>
                                         <li ng-if="(vm.isLoggedIn() && vm.facilitiesToLogout().length > 1)">
-                                            <a ng-click="logoutController.logout()" translate="MAIN_NAVIGATION.LOGOUT_ALL"></a>
+                                            <a ui-sref="logout" translate="MAIN_NAVIGATION.LOGOUT_ALL"></a>
                                         </li>
                                     </ul>
                                 </li>
