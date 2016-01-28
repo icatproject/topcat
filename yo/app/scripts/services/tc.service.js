@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tc', function($sessionStorage, $http, $q, $state, APP_CONFIG){
+    app.service('tc', function($sessionStorage, $http, $q, $state, $timeout, APP_CONFIG){
     	var tc = this;
     	var facilities = {};
 
@@ -349,10 +349,29 @@
     		};
 
     		this.logout = function(){
-	            return this.delete('session/' + this.config().sessionId, {
-	            	server: facility.config().icatUrl
-	            });
+	            
+	            
 	        };
+
+	        this.logout = overload({
+	        	'boolean': function(isSoft){
+	        		var promises = [];
+	        		if(!isSoft && this.session().sessionId){
+	        			promises.push(this.delete('session/' + this.session().sessionId, {
+			            	server: facility.config().icatUrl
+			            }));
+	        		}
+
+	        		delete $sessionStorage.sessions[facility.config().facilityName];
+					$sessionStorage.$apply();
+
+	        		return $q.all(promises);
+	        	},
+	        	'': function(){
+	        		return this.logout(false);
+	        	}
+	        });
+
 
 	        this.query = overload({
 	        	'array, object': function(query, options){    	
