@@ -3,15 +3,14 @@
         <h3 class="modal-title" translate="DOWNLOAD.TITLE"></h3>
     </div>
     <div class="modal-body">
-        <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
+        <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-selection ui-grid-resize-columns  class="cart-grid">
             <div class="no-rows row" ng-show="isEmpty">
                 <div class="col-md-2 col-md-offset-5 empty-message">
                     <span translate="DOWNLOAD.EMPTY"></span>
                 </div>
             </div>
         </div>
-
-        <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
+        <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection ui-grid-resize-columns  class="cart-grid">
             <div class="no-rows row" ng-show="isEmpty">
                 <div class="col-md-2 col-md-offset-5 empty-message">
                     <span translate="DOWNLOAD.EMPTY"></span>

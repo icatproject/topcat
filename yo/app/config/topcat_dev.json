@@ -259,6 +259,7 @@
         },
         "myDownloadGridOptions": {
             "enableFiltering": true,
+            "enableColumnResizing": true,
             "columnDefs": [
                 {
                     "field": "fileName",
