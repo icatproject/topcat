@@ -48,9 +48,8 @@
 							var ids = [];
 							var scores = {};
 							_.each(data, function(result){
-								var entity = result[entityType];
-								ids.push(entity.id);
-								scores[entity.id] = result.score;
+								ids.push(result.id);
+								scores[result.id] = result.score;
 							});
 
 							var promises = [];
