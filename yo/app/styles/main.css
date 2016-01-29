@@ -237,3 +237,14 @@ a[ng-click]{
   border-color: #FB6F6F;
   border-style: solid;
 }
+
+.modal-lg {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+  margin: 0;
+}
+
+.modal-lg .modal-content {
+  height: 100%;
+}
