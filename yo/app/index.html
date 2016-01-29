@@ -19,6 +19,128 @@
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
         <link rel="stylesheet" href="styles/topcat.css">
+
+        <!-- build:js(.) scripts/oldieshim.js -->
+        <!--[if lt IE 9]>
+        <script src="bower_components/es5-shim/es5-shim.js"></script>
+        <script src="bower_components/json3/lib/json3.min.js"></script>
+        <![endif]-->
+        <!-- endbuild -->
+        <!-- build:js(.) scripts/vendor.js -->
+        <!-- bower:js -->
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/json3/lib/json3.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.js"></script>
+        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="bower_components/angular-deferred-bootstrap/angular-deferred-bootstrap.js"></script>
+        <script src="bower_components/angularjs-truncate/src/truncate.js"></script>
+        <script src="bower_components/ui-router-extras/release/ct-ui-router-extras.js"></script>
+        <script src="bower_components/angular-inform/dist/angular-inform.js"></script>
+        <script src="bower_components/lodash/lodash.js"></script>
+        <script src="bower_components/pretty-bytes/pretty-bytes.js"></script>
+        <script src="bower_components/angular-pretty-bytes/angular-pretty-bytes.js"></script>
+        <script src="bower_components/ngstorage/ngStorage.js"></script>
+        <script src="bower_components/angular-translate/angular-translate.js"></script>
+        <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+        <script src="bower_components/squel/squel.js"></script>
+        <script src="bower_components/angular-ui-grid/ui-grid.js"></script>
+        <script src="bower_components/spin.js/spin.js"></script>
+        <script src="bower_components/angular-spinner/angular-spinner.js"></script>
+        <script src="bower_components/re-tree/re-tree.js"></script>
+        <script src="bower_components/ng-device-detector/ng-device-detector.js"></script>
+        <script src="bower_components/moment/moment.js"></script>
+        <script src="bower_components/angular-moment/angular-moment.js"></script>
+        <script src="bower_components/angularpoller/angular-poller.min.js"></script>
+        <script src="bower_components/angular-bind-html-compile/angular-bind-html-compile.js"></script>
+        <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+        <script src="bower_components/angular-cookie/angular-cookie.js"></script>
+        <!-- endbower -->
+        <!-- endbuild -->
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/encode-uri-component.js"></script>
+        <script src="scripts/app.js"></script>
+        <!-- interceptors -->
+        <script src="scripts/services/http-error.interceptor.js"></script>
+        <script src="scripts/services/icat-request.interceptor.js"></script>
+        <!-- services -->
+        <script src="scripts/services/squel-custom-query.service.js"></script>
+        <script src="scripts/services/runtime-states.provider.js"></script>
+        <script src="scripts/services/route.service.js"></script>
+        <script src="scripts/services/page-creator.service.js"></script>
+        <script src="scripts/services/route-creator.service.js"></script>
+        <script src="scripts/services/data-manager.service.js"></script>
+        <script src="scripts/services/icat.service.js"></script>
+        <script src="scripts/services/icat-alias.service.js"></script>
+        <script src="scripts/services/icat-query-builder.js"></script>
+        <script src="scripts/services/config.service.js"></script>
+        <script src="scripts/services/config-utils.service.js"></script>
+        <script src="scripts/services/route-utils.service.js"></script>
+        <script src="scripts/services/authenticate.service.js"></script>
+        <script src="scripts/services/meta-data-manager.service.js"></script>
+        <script src="scripts/services/cart.service.js"></script>
+        <script src="scripts/services/cart-item.factory.js"></script>
+        <script src="scripts/services/ids.service.js"></script>
+        <script src="scripts/services/ids-manager.service.js"></script>
+        <script src="scripts/services/remote-storage-manager.factory.js"></script>
+        <script src="scripts/services/facility-cart.factory.js"></script>
+        <script src="scripts/services/cart-request.factory.js"></script>
+        <script src="scripts/services/topcat.service.js"></script>
+        <script src="scripts/services/topcat-manager.service.js"></script>
+        <script src="scripts/services/smart-client.service.js"></script>
+        <script src="scripts/services/smart-client-manager.service.js"></script>
+        <script src="scripts/services/smart-client-poll-manager.service.js"></script>
+        <script src="scripts/services/session-manager.service.js"></script>
+        <script src="scripts/services/utils.service.js"></script>
+        <script src="scripts/services/tc.service.js"></script>
+        <!-- models -->
+        <script src="scripts/models/browse-facilities.model.js"></script>
+        <script src="scripts/models/cart.model.js"></script>
+        <script src="scripts/models/my-data.model.js"></script>
+        <script src="scripts/models/download.model.js"></script>
+        <!-- controllers -->
+        <script src="scripts/controllers/index.controller.js"></script>
+        <script src="scripts/controllers/home.controller.js"></script>
+        <script src="scripts/controllers/maintenance-mode.controller.js"></script>
+        <script src="scripts/controllers/search.controller.js"></script>
+        <script src="scripts/controllers/search-results.controller.js"></script>
+        <script src="scripts/controllers/parameter-modal.controller.js"></script>
+        <script src="scripts/controllers/sample-modal.controller.js"></script>
+        <script src="scripts/controllers/meta-panel.controller.js"></script>
+        <script src="scripts/controllers/browse-facilities.controller.js"></script>
+        <script src="scripts/controllers/modal-instance.controller.js"></script>
+        <script src="scripts/controllers/login.controller.js"></script>
+        <script src="scripts/controllers/logout.controller.js"></script>
+        <script src="scripts/controllers/browse-facilities.controller.js"></script>
+        <script src="scripts/controllers/browse-entities.controller.js"></script>
+        <script src="scripts/controllers/cart.controller.js"></script>
+        <script src="scripts/controllers/my-data.controller.js"></script>
+        <script src="scripts/controllers/download.controller.js"></script>
+        <script src="scripts/controllers/home-route.controller.js"></script>
+        <script src="scripts/controllers/admin.controller.js"></script>
+        <!-- directives -->
+        <script src="scripts/directives/eu-cookie-consent.directive.js"></script>
+        <script src="scripts/directives/breadcrumb.directive.js"></script>
+        <script src="scripts/directives/load-size.directive.js"></script>
+        <script src="scripts/directives/load-availability.directive.js"></script>
+        <script src="scripts/directives/download-cart.directive.js"></script>
+        <script src="scripts/directives/download-datafile.directive.js"></script>
+        <script src="scripts/directives/load-download-size.directive.js"></script>
+        <script src="scripts/directives/load-download-status.directive.js"></script>
+        <script src="scripts/directives/filter-datepicker.directive.js"></script>
+        <script src="scripts/directives/cart-item-count.directive.js"></script>
+        <script src="scripts/directives/service-status.directive.js"></script>
+        <script src="scripts/directives/on-return-click-submit-button.directive.js"></script>
+        <!-- filters -->
+        <script src="scripts/filters/bytes.filter.js"></script>
+        <script src="scripts/filters/facility-title.filter.js"></script>
+        <!-- endbuild -->
+
+
     </head>
     <body ng-cloak ng-controller="IndexController as vm">
         <!-- Begin page content -->
@@ -51,12 +173,27 @@
                                 <li ng-repeat="item in vm.rightLinks" ng-class="{active: vm.isActive(item)}">
                                     <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
                                 </li>
+                                <li ng-if="vm.isLoggedIn() && vm.cartItemCount">
+                                    <p class="navbar-text">
+                                        <span ng-click="vm.showCart()">
+                                            <span class="glyphicon glyphicon-shopping-cart"></span>
+                                            {{vm.cartItemCount}}
+
+                                            <span ng-if="vm.cartItemCount == 1">
+                                                {{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}
+                                            </span>
+                                            <span ng-if="vm.cartItemCount != 1">
+                                                {{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}
+                                            </span>
+                                        </span>
+                                    </p>
+                                </li>
                                 <li ng-if="vm.isLoggedIn()">
                                     <p class="navbar-text">
-                                        <a ng-click="vm.showCart()">
-                                            <span class="glyphicon glyphicon-shopping-cart"></span>
-                                            <span><cart-item-count singular="{{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}" plural="{{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}"></cart-item-count></span>
-                                        </a>
+                                        <span ng-click="vm.showDownloads()">
+                                            <span class="glyphicon glyphicon-download-alt"></span>
+                                            Downloads
+                                        </span>
                                     </p>
                                 </li>
                                 <li class="dropdown" ng-if="!vm.isSingleFacility('first')">

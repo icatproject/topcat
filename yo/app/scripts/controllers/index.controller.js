@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('IndexController', IndexController);
 
-    IndexController.$inject = ['$scope', '$translate', '$uibModal', 'APP_CONFIG', 'Config', '$sessionStorage', '$state', 'tc'];
+    IndexController.$inject = ['$scope', '$translate', '$uibModal', 'APP_CONFIG', 'Config', '$sessionStorage', '$state', 'tc', 'Cart'];
 
-    function IndexController($scope, $translate, $uibModal, APP_CONFIG, Config, $sessionStorage, $state, tc) {
+    function IndexController($scope, $translate, $uibModal, APP_CONFIG, Config, $sessionStorage, $state, tc, Cart) {
         var vm = this;
 
         var pages = Config.getPages(APP_CONFIG);
@@ -30,6 +30,15 @@
         vm.facilities = facilities;
 
         vm.euCookieLaw = Config.getEuCookieLaw(APP_CONFIG);
+
+        vm.cartItemCount = 0;
+        $scope.$watch(function () {
+            return Cart._cart.items.length;
+        }, function (newValue, oldValue) {
+            if ( newValue !== oldValue ) {
+                vm.cartItemCount = Cart._cart.items.length;
+            }
+        });
 
         var maintenanceMode = APP_CONFIG.site.maintenanceMode;
         if(maintenanceMode){
@@ -93,5 +102,22 @@
                 });
             });
         };
+
+        vm.showDownloads = function() {
+            $uibModal.open({
+                templateUrl: 'views/main-download.html',
+                controller: 'DownloadController',
+                size : 'lg'
+            }).opened.catch(function (error) {
+                inform.add(error, {
+                    'ttl': 0,
+                    'type': 'danger'
+                });
+            });
+        };
+
+
+        
+
     }
 })();
