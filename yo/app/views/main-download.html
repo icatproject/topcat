@@ -1,23 +1,25 @@
-<h1 translate="DOWNLOAD.TITLE"></h1>
+<div class="modal-content">
+    <div class="modal-header">
+        <h3 class="modal-title" translate="DOWNLOAD.TITLE"></h3>
+    </div>
+    <div class="modal-body">
+        <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
+            <div class="no-rows row" ng-show="isEmpty">
+                <div class="col-md-2 col-md-offset-5 empty-message">
+                    <span translate="DOWNLOAD.EMPTY"></span>
+                </div>
+            </div>
+        </div>
 
-<div class="cart-container">
-    <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="DOWNLOAD.EMPTY"></span>
+        <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
+            <div class="no-rows row" ng-show="isEmpty">
+                <div class="col-md-2 col-md-offset-5 empty-message">
+                    <span translate="DOWNLOAD.EMPTY"></span>
+                </div>
             </div>
         </div>
     </div>
-
-    <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="DOWNLOAD.EMPTY"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="cart-buttom-section">
+    <div class="modal-footer">
         <button ng-click="refresh()" type="button" class="btn btn-primary pull-right" translate="DOWNLOAD.BUTTON.REFRESH.TEXT" uib-tooltip="{{'DOWNLOAD.BUTTON.REFRESH.TOOLTIP.TEXT' | translate}}" tooltip-placement="left" tooltip-append-to-body="true"></button>
     </div>
 </div>

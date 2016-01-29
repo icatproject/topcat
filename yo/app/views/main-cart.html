@@ -1,34 +1,30 @@
-<h1 translate="CART.TITLE"></h1>
+<div class="modal-content">
+    <div class="modal-header">
+        <h3 class="modal-title" translate="CART.TITLE"></h3>
+    </div>
+    <div class="modal-body">
+        <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
+            <div class="no-rows row" ng-show="isEmpty">
+                <div class="col-md-2 col-md-offset-5 empty-message">
+                    <span translate="CART.EMPTY"></span>
+                </div>
+            </div>
+        </div>
 
-<!-- <ul>
-    <li ng-repeat="item in ct.cart">
-        Id: {{ item.getId() }}, Name: {{ item.getName() }}, Entity: {{ item.getEntityType() }}, Facility: {{ item.getFacilityName() }}, Size: {{ item.getSize()}}, Availability: {{ item.getAvalability() }}
-    </li>
-</ul> -->
-
-<div class="cart-container">
-    <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="CART.EMPTY"></span>
+        <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
+            <div class="no-rows row" ng-show="isEmpty">
+                <div class="col-md-2 col-md-offset-5 empty-message">
+                    <span translate="CART.EMPTY"></span>
+                </div>
             </div>
         </div>
     </div>
-
-    <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="CART.EMPTY"></span>
-            </div>
-        </div>
-    </div>
-    <div class="cart-buttom-section">
+    <div class="modal-footer">
         <div>
             <b>Total size: {{totalSize|bytes}}</b>
         </div>
         <br>
-        <button ng-click="removeAllItems()" type="button" class="btn btn-primary pull-right" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="left"></button>
-
+        <button ng-click="removeAllItems()" type="button" class="btn btn-primary" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="left"></button>
         <download-cart></download-cart>
     </div>
 </div>
