@@ -5,9 +5,9 @@
         .module('angularApp')
         .controller('IndexController', IndexController);
 
-    IndexController.$inject = ['$scope', '$translate', 'APP_CONFIG', 'Config', '$sessionStorage', '$state', 'tc'];
+    IndexController.$inject = ['$scope', '$translate', '$uibModal', 'APP_CONFIG', 'Config', '$sessionStorage', '$state', 'tc'];
 
-    function IndexController($scope, $translate, APP_CONFIG, Config, $sessionStorage, $state, tc) {
+    function IndexController($scope, $translate, $uibModal, APP_CONFIG, Config, $sessionStorage, $state, tc) {
         var vm = this;
 
         var pages = Config.getPages(APP_CONFIG);
@@ -79,6 +79,19 @@
 
         vm.getSingleFacility = function () {
             return facilities[Object.keys(facilities)[0]];
+        };
+
+        vm.showCart = function() {
+            $uibModal.open({
+                templateUrl: 'views/main-cart.html',
+                controller: 'CartController',
+                size : 'lg'
+            }).opened.catch(function (error) {
+                inform.add(error, {
+                    'ttl': 0,
+                    'type': 'danger'
+                });
+            });
         };
     }
 })();

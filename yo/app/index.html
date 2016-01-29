@@ -53,7 +53,10 @@
                                 </li>
                                 <li ng-if="vm.isLoggedIn()">
                                     <p class="navbar-text">
-                                        <span class="glyphicon glyphicon-shopping-cart"></span> <span><cart-item-count singular="{{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}" plural="{{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}"></cart-item-count></span>
+                                        <a ng-click="vm.showCart()">
+                                            <span class="glyphicon glyphicon-shopping-cart"></span>
+                                            <span><cart-item-count singular="{{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}" plural="{{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}"></cart-item-count></span>
+                                        </a>
                                     </p>
                                 </li>
                                 <li class="dropdown" ng-if="!vm.isSingleFacility('first')">
