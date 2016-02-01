@@ -116,14 +116,21 @@
 
 		this.admin = function(facilityName){ return this.facility(facilityName).admin(); };
 
+		this.user = function(facilityName){ return this.facility(facilityName).user(); };
+
 		this.adminFacilities = function(){
 			return _.select(this.facilities(), function(facility){ return facility.icat().session().isAdmin; });
+		};
+
+		this.userFacilities = function(){
+			return _.select(this.facilities(), function(facility){ return facility.icat().session().sessionId !== undefined; });
 		};
 
     	function Facility(facilityName){
     		var icat;
     		var ids;
     		var admin;
+    		var user;
     		
     		this.config = function(){ return APP_CONFIG.facilities[facilityName]; }
 
@@ -140,6 +147,11 @@
     		this.admin = function(){
     			if(!admin) admin = new Admin(this);
     			return admin;
+    		}
+
+    		this.user = function(){
+    			if(!user) user = new User(this);
+    			return user;
     		}
 
     	}
@@ -183,10 +195,10 @@
 	    							return that.deleteDownload(this.id, options);
 	    						},
 	    						'promise': function(timeout){
-	    							return this.delete(this.id, {timeout: timeout});
+	    							return this.delete({timeout: timeout});
 	    						},
 	    						'': function(){
-	    							return this.delete(this.id, {});
+	    							return this.delete({});
 	    						}
 	    					});
 
@@ -306,6 +318,85 @@
 			});
 
 			generateRestMethods.call(this, topcatApiPath + 'admin/');
+		}
+
+		function User(facility){
+			var that = this;
+
+			this.downloads = overload({
+    			'object, object': function(params, options){
+    				params.queryOffset = "where download.facilityName = " + jpqlSanitize(facility.config().facilityName) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
+
+    				return this.get('downloads', _.merge({
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId
+	    			}, params), options).then(function(downloads){
+    					_.each(downloads, function(download){
+
+    						download.delete = overload({
+	    						'object': function(options){
+	    							return that.deleteDownload(this.id, options);
+	    						},
+	    						'promise': function(timeout){
+	    							return this.delete({timeout: timeout});
+	    						},
+	    						'': function(){
+	    							return this.delete({});
+	    						}
+	    					});
+
+    					});
+
+    					return downloads;
+	    			});
+    			},
+    			'promise, array': function(timeout, queryOffset){
+    				return this.downloads({queryOffset: buildQuery(queryOffset)}, {timeout: timeout});
+    			},
+    			'array': function(queryOffset){
+    				return this.downloads({queryOffset: buildQuery(queryOffset)}, {});
+    			},
+    			'promise, string': function(timeout, queryOffset){
+    				return this.downloads([queryOffset], {timeout: timeout});
+    			},
+    			'string': function(queryOffset){
+    				return this.downloads([queryOffset]);
+    			},
+    			'promise': function(timeout){
+    				return this.downloads(params, {timeout: timeout});
+    			},
+	    		'': function(){
+	    			return this.downloads({}, {});
+	    		}
+    		});
+
+			this.deleteDownload = overload({
+				'string, object': function(id, options){
+					return this.put('download/' + id + '/isDeleted', {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId,
+	    				id: id,
+	    				value: 'true'
+	    			}, options);
+				},
+				'string, promise': function(id, timeout){
+					return this.deleteDownload(id, {timeout: timeout});
+				},
+				'string': function(id){
+					return this.deleteDownload(id, {});
+				},
+				'number, object': function(id, options){
+					return this.deleteDownload("" + id, options);
+				},
+				'number, promise': function(id, timeout){
+					return this.deleteDownload("" + id, {timeout: timeout});
+				},
+				'number': function(id){
+					return this.deleteDownload("" + id, {});
+				}
+			});
+
+			generateRestMethods.call(this, topcatApiPath);
 		}
 
     	function Icat(facility){

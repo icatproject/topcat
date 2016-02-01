@@ -51,7 +51,7 @@ public class DownloadRepository {
         Integer pageSize = null;
         Integer page = null;
 
-        queryOffset = queryOffset.replace("(?i)^\\s*WHERE\\s*", "");
+        queryOffset = queryOffset.replaceAll("(?i)^\\s*WHERE\\s+", "");
         Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d)+,\\s*(\\d+)\\s*$");
         Matcher matches = pattern.matcher(queryOffset);
         if(matches.find()){
@@ -66,9 +66,9 @@ public class DownloadRepository {
 
 
             if(userName != null && queryOffset != null) {
-                sb.append("WHERE userName = :userName AND " + queryOffset + " ");
+                sb.append("WHERE download.userName = :userName AND " + queryOffset + " ");
             } else if (userName != null) {
-                sb.append("WHERE userName = :userName ");
+                sb.append("WHERE download.userName = :userName ");
             } else if (queryOffset != null) {
                 sb.append(" " + queryOffset + " ");
             }

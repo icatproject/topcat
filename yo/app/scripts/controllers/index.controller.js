@@ -105,8 +105,8 @@
 
         vm.showDownloads = function() {
             $uibModal.open({
-                templateUrl: 'views/main-download.html',
-                controller: 'DownloadController',
+                templateUrl: 'views/downloads.html',
+                controller: 'DownloadsController as downloadsController',
                 size : 'lg'
             }).opened.catch(function (error) {
                 inform.add(error, {

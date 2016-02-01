@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.ParseException;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -19,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,6 +41,7 @@ import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.TopcatException;
+import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.idsclient.IdsClientBean;
 import org.icatproject.topcat.repository.CartRepository;
@@ -65,6 +68,54 @@ public class UserResource {
     @EJB
     private IdsClientBean idsClientService;
 
+    @GET
+    @Path("/downloads")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getDownloads(
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId,
+        @QueryParam("queryOffset") String queryOffset)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("userName", icatClientService.getUserName(icatUrl, sessionId));
+        params.put("queryOffset", queryOffset);
+
+        List<Download> downloads = new ArrayList<Download>();
+        downloads = downloadRepository.getDownloads(params);
+
+        return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
+    }
+
+    @PUT
+    @Path("/download/{id}/isDeleted")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response deleteDownload(
+        @PathParam("id") Long id,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("value") Boolean value)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        Download download = downloadRepository.getDownload(id);
+        if(download == null){
+            throw new NotFoundException("could not find download");
+        }
+
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        if(!download.getUserName().equals(userName)){
+            throw new ForbiddenException("You do not have permission to delete this download");
+        }
+
+        download.setIsDeleted(value);
+        if(value){
+            download.setDeletedAt(new Date());
+        }
+
+        downloadRepository.save(download);
+
+        return Response.ok().build();
+    }
 
     @GET
     @Path("/downloads/facility/{facilityName}")
