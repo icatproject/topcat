@@ -118,6 +118,27 @@ public class UserResource {
     }
 
     @GET
+    @Path("/cart/items")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getDownloads(
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId,
+        @QueryParam("queryOffset") String queryOffset)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("userName", icatClientService.getUserName(icatUrl, sessionId));
+        params.put("queryOffset", queryOffset);
+
+        List<Download> downloads = new ArrayList<Download>();
+        downloads = downloadRepository.getDownloads(params);
+
+        return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
+    }
+
+
+
+    @GET
     @Path("/downloads/facility/{facilityName}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})

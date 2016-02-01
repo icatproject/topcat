@@ -92,8 +92,8 @@
 
         vm.showCart = function() {
             $uibModal.open({
-                templateUrl: 'views/main-cart.html',
-                controller: 'CartController',
+                templateUrl: 'views/cart.html',
+                controller: 'CartController as cartController',
                 size : 'lg'
             }).opened.catch(function (error) {
                 inform.add(error, {

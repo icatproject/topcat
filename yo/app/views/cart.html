@@ -2,8 +2,8 @@
     <div class="modal-header">
         <h3 class="modal-title" translate="CART.TITLE"></h3>
     </div>
-    <div class="modal-body">
-        <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid">
+    <div class="modal-body" take-up-remaining-height>
+        <div ng-if="cartController.isScroll" ui-grid="cartController.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="cart-grid" style="height: 100%">
             <div class="no-rows row" ng-show="isEmpty">
                 <div class="col-md-2 col-md-offset-5 empty-message">
                     <span translate="CART.EMPTY"></span>
@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid">
+        <div ng-if="!cartController.isScroll" ui-grid="cartController.gridOptions" ui-grid-pagination ui-grid-selection class="cart-grid" style="height: 100%">
             <div class="no-rows row" ng-show="isEmpty">
                 <div class="col-md-2 col-md-offset-5 empty-message">
                     <span translate="CART.EMPTY"></span>
@@ -26,6 +26,6 @@
         <br>
         <button ng-click="removeAllItems()" type="button" class="btn btn-primary" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="left"></button>
         <download-cart></download-cart>
-        <button class="btn btn-warning" ng-click="sampleModalController.cancel()">Cancel</button>
+        <button class="btn btn-warning" ng-click="cartController.cancel()">Cancel</button>
     </div>
 </div>

@@ -1,3 +1,49 @@
+
+
+(function(){
+    'use strict';
+
+    var app = angular.module('angularApp');
+
+    app.controller('CartController', function($translate, $uibModalInstance, tc, uiGridConstants){
+        var that = this;
+        var pagingConfig = tc.config().paging;
+        this.isScroll = pagingConfig.pagingType == 'scroll';
+        this.gridOptions = _.merge({
+            data: [],
+            appScopeProvider: this,
+            enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
+            enableRowSelection: false,
+            enableRowHeaderSelection: false,
+            gridMenuShowHideColumns: false,
+            pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
+            paginationPageSizes: pagingConfig.paginationPageSizes
+        }, tc.config().cartGridOptions);
+        _.each(this.gridOptions.columnDefs, function(columnDef){
+            if (columnDef.filter.condition) {
+                columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
+            }
+        });
+        this.gridOptions.columnDefs.push({
+            name : 'actions',
+            translateDisplayName: 'CART.COLUMN.ACTIONS',
+            enableFiltering: false,
+            enable: false,
+            enableSorting: false,
+            cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
+        });
+
+
+        this.cancel = function() {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+    });
+
+})();
+
+
+/*
 (function() {
     'use strict';
 
@@ -55,3 +101,4 @@
         };
     }
 })();
+*/
