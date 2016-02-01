@@ -20,7 +20,6 @@
         }, tc.config().myDownloadGridOptions);
         _.each(this.gridOptions.columnDefs, function(columnDef){
             if (columnDef.filter.condition) {
-                console.log(uiGridConstants.filter[columnDef.filter.condition.toUpperCase()]);
                 columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
             }
         });
