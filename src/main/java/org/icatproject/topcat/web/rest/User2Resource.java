@@ -126,8 +126,7 @@ public class User2Resource {
     public Response getCart(
         @PathParam("facilityName") String facilityName,
         @QueryParam("icatUrl") String icatUrl,
-        @QueryParam("sessionId") String sessionId,
-        @QueryParam("queryOffset") String queryOffset)
+        @QueryParam("sessionId") String sessionId)
         throws TopcatException, MalformedURLException, ParseException {
 
         String userName = icatClientService.getUserName(icatUrl, sessionId);
@@ -143,6 +142,25 @@ public class User2Resource {
                 .build();
             return Response.ok().entity(emptyCart.toString()).build();
         }
+    }
+
+    @POST
+    @Path("/cart/{facilityName}/cartItem")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response addCartItem(
+        @PathParam("facilityName") String facilityName,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("entityType") String entityType,
+        @FormParam("entityId") Long entityId)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        Cart cart = cartRepository.getCart(userName, facilityName);
+
+
+
+        return Response.ok().build();
     }
     
 

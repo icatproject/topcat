@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartItem;
@@ -33,7 +34,11 @@ public class CartRepository {
         TypedQuery<Cart> query = em.createQuery("select cart from Cart cart where cart.userName = :userName and cart.facilityName = :facilityName", Cart.class)
             .setParameter("userName", userName)
             .setParameter("facilityName", facilityName);
-        return query.getResultList().get(0);
+        try {
+            return query.getSingleResult();
+        } catch(NoResultException e){
+            return null;
+        }
     }
 
     public Cart getCartByFacilityNameAndUser(Map<String, String> params) {
