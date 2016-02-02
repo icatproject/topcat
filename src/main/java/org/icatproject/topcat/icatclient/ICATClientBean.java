@@ -62,6 +62,12 @@ public class ICATClientBean {
         return service.isAdmin(icatSessionId);
     }
 
+   public String getEntityName(String icatUrl, String icatSessionId, String entityType, Long entityId) throws MalformedURLException, TopcatException {
+        ICATClientInterface service = getIcatService(icatUrl);
+
+        return service.getEntityName(icatSessionId, entityType, entityId);
+    }
+
     /**
      * get fullName buy userName
      * @param icatUrl

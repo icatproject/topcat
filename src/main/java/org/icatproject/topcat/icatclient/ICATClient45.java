@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
@@ -21,6 +22,9 @@ import org.icatproject_4_5_0.IcatException_Exception;
 import org.icatproject_4_5_0.Login.Credentials;
 import org.icatproject_4_5_0.Login.Credentials.Entry;
 import org.icatproject_4_5_0.User;
+import org.icatproject_4_5_0.Investigation;
+import org.icatproject_4_5_0.Dataset;
+import org.icatproject_4_5_0.Datafile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,6 +139,39 @@ public class ICATClient45 implements ICATClientInterface {
         return false;
     }
 
+    @Override
+    public String getEntityName(String icatSessionId, String entityType, Long entityId) throws TopcatException {
+        List<Object> result = new ArrayList<Object>();
+
+        if(!(entityType.equals("investigation") || entityType.equals("dataset") || entityType.equals("datafile"))){
+            throw new BadRequestException("The entity type can only be either 'investigation', 'dataset' or 'datafile' got instead '" + entityType + "'");
+        }
+
+        String capitalizedEntityType = entityType.substring(0, 1).toUpperCase() + entityType.substring(1);
+
+        String name = null;
+
+        try {
+            result = service.search(icatSessionId, "SELECT " + entityType + " FROM " + capitalizedEntityType + " " + entityType + " WHERE " + entityType + ".id = " + entityId);
+        } catch (IcatException_Exception e) {
+            throwNewICATException(e);
+        }
+
+        if (!result.isEmpty()) {
+            if(entityType == "investigation"){
+                name = ((Investigation) result.get(0)).getName();
+            } else if(entityType == "dataset"){
+                name = ((Dataset) result.get(0)).getName();
+            } else {
+                name = ((Datafile) result.get(0)).getName();
+            }
+            
+        } else {
+            throw new BadRequestException("No such entity exists i.e. " + entityType + " with id " + entityId);
+        }
+
+        return name;
+    }
 
     @Override
     public String getFullName(String icatSessionId) throws TopcatException {

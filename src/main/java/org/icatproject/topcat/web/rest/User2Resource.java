@@ -157,9 +157,10 @@ public class User2Resource {
 
         String userName = icatClientService.getUserName(icatUrl, sessionId);
         Cart cart = cartRepository.getCart(userName, facilityName);
+        String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
 
-
-
+        logger.debug("name: " + name);
+            
         return Response.ok().build();
     }
     

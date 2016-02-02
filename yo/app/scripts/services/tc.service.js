@@ -411,6 +411,23 @@
 				}
 			});
 
+			this.addCartItem = overload({
+				'string, number, object': function(entityType, entityId, options){
+					return this.post('cart/' + facility.config().facilityName + '/cartItem', {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId,
+	    				entityType: entityType,
+	    				entityId: entityId
+	    			}, options);
+				},
+				'string, number, promise': function(entityType, entityId, timeout){
+					return this.addCartItem(entityType, entityId, {timeout: timeout})
+				},
+				'string, number': function(entityType, entityId){
+					return this.addCartItem(entityType, entityId, {});
+				}
+			});
+
 			generateRestMethods.call(this, topcatApiPath + 'user/');
 		}
 
