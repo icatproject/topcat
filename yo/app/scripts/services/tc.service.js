@@ -396,7 +396,22 @@
 				}
 			});
 
-			generateRestMethods.call(this, topcatApiPath);
+			this.cart = overload({
+				'object': function(options){
+					return this.get('cart/' + facility.config().facilityName, {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId
+	    			}, options);
+				},
+				'promise': function(timeout){
+					return this.cart({timeout: timeout})
+				},
+				'': function(){
+					return this.cart({});
+				}
+			});
+
+			generateRestMethods.call(this, topcatApiPath + 'user/');
 		}
 
     	function Icat(facility){

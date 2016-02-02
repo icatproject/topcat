@@ -29,6 +29,13 @@ public class CartRepository {
     @PersistenceContext(unitName="topcatv2")
     EntityManager em;
 
+    public Cart getCart(String userName, String facilityName){
+        TypedQuery<Cart> query = em.createQuery("select cart from Cart cart where cart.userName = :userName and cart.facilityName = :facilityName", Cart.class)
+            .setParameter("userName", userName)
+            .setParameter("facilityName", facilityName);
+        return query.getResultList().get(0);
+    }
+
     public Cart getCartByFacilityNameAndUser(Map<String, String> params) {
         List<Cart> carts = new ArrayList<Cart>();
 
