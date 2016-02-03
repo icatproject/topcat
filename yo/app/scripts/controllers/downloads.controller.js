@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('DownloadsController', function($translate, $uibModalInstance, tc, uiGridConstants){
+    app.controller('DownloadsController', function($translate, $uibModalInstance, $q, tc, uiGridConstants){
         var that = this;
         var pagingConfig = tc.config().paging;
         this.isScroll = pagingConfig.pagingType == 'scroll';
@@ -36,14 +36,21 @@
 
 
         this.refresh = function(){
+            var promises = [];
+            that.gridOptions.data = [];
             _.each(tc.userFacilities(), function(facility){
-                that.gridOptions.data = [];
-                facility.user().downloads("where download.isDeleted = false").then(function(results){
+                promises.push(facility.user().downloads("where download.isDeleted = false").then(function(results){
                     _.each(results, function(download){
                         download.downloadLink = getDownloadUrl(download);
                     });
                     that.gridOptions.data = _.flatten([that.gridOptions.data, results]);
-                });
+                }));
+            });
+
+            $q.all(promises).then(function(){
+                if(that.gridOptions.data.length == 0){
+                    $uibModalInstance.dismiss('cancel');
+                }
             });
         };
         this.refresh();
@@ -54,7 +61,11 @@
                 if(currentDownload.id != download.id) data.push(currentDownload);
             });
             that.gridOptions.data = data;
-            download.delete();
+            download.delete().then(function(){
+                if(that.gridOptions.data.length == 0){
+                    $uibModalInstance.dismiss('cancel');
+                }
+            });
         };
 
         this.cancel = function() {

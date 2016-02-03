@@ -189,7 +189,7 @@
                                         </span>
                                     </p>
                                 </li>
-                                <li ng-if="vm.isLoggedIn()">
+                                <li ng-if="vm.isLoggedIn() && vm.downloadCount">
                                     <p class="navbar-text">
                                         <span ng-click="vm.showDownloads()">
                                             <span class="glyphicon glyphicon-download-alt"></span>

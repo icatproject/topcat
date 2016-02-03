@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tc', function($sessionStorage, $http, $q, $state, $timeout, APP_CONFIG){
+    app.service('tc', function($sessionStorage, $http, $q, $state, $timeout, $rootScope, APP_CONFIG){
     	var tc = this;
     	var facilities = {};
 
@@ -377,7 +377,9 @@
 	    				sessionId: facility.icat().session().sessionId,
 	    				id: id,
 	    				value: 'true'
-	    			}, options);
+	    			}, options).then(function(){
+	    				$rootScope.$broadcast('download:change');
+	    			});
 				},
 				'string, promise': function(id, timeout){
 					return this.deleteDownload(id, {timeout: timeout});
@@ -435,7 +437,10 @@
 	    				sessionId: facility.icat().session().sessionId,
 	    				entityType: entityType,
 	    				entityId: entityId
-	    			}, options);
+	    			}, options).then(function(cart){
+	    				$rootScope.$broadcast('cart:change');
+	    				return cart;
+	    			});
 				},
 				'string, number, promise': function(entityType, entityId, timeout){
 					return this.addCartItem(entityType, entityId, {timeout: timeout})
@@ -450,7 +455,10 @@
 					return this.delete('cart/' + facility.config().facilityName + '/cartItem/' + id, {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId
-	    			}, options);
+	    			}, options).then(function(cart){
+	    				$rootScope.$broadcast('cart:change');
+	    				return cart;
+	    			});
 				},
 				'string, promise': function(id, timeout){
 					return this.deleteCartItem(id, {timeout: timeout});
@@ -507,7 +515,11 @@
 	    				email: email,
 	    				zipType: transportType.zipType ? transportType.zipType : '',
 	    				transportUrl: transportType.url
-	    			}, options);
+	    			}, options).then(function(cart){
+	    				$rootScope.$broadcast('download:change');
+	    				$rootScope.$broadcast('cart:change');
+	    				return cart;
+	    			});
 				},
 				'string, string, string, promise': function(fileName, transport, email, timeout){
 					return this.submitCart(fileName, transport, email, {timeout: timeout});
@@ -558,11 +570,6 @@
     			});
 
     		};
-
-    		this.logout = function(){
-	            
-	            
-	        };
 
 	        this.logout = overload({
 	        	'boolean': function(isSoft){
