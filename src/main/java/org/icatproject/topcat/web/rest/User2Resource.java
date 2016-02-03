@@ -172,6 +172,15 @@ public class User2Resource {
             em.persist(cart);
         }
 
+        em.refresh(cart);
+
+        for(CartItem cartItem : cart.getCartItems()){
+            logger.debug(cartItem.getEntityType() + ", " + EntityType.valueOf(entityType) + ", " + cartItem.getEntityId() + ", " + entityId);
+            if(cartItem.getEntityType() == EntityType.valueOf(entityType) && cartItem.getEntityId() == entityId){
+                return Response.ok().entity(cart).build();
+            }
+        }
+
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setEntityType(EntityType.valueOf(entityType));
