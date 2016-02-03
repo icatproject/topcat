@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+import org.icatproject.topcat.domain.ParentEntity;
+import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
@@ -25,6 +26,7 @@ import org.icatproject_4_5_0.User;
 import org.icatproject_4_5_0.Investigation;
 import org.icatproject_4_5_0.Dataset;
 import org.icatproject_4_5_0.Datafile;
+import org.icatproject_4_5_0.EntityBaseBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,6 +173,53 @@ public class ICATClient45 implements ICATClientInterface {
         }
 
         return name;
+    }
+
+    public List<ParentEntity> getParentEntities(String icatSessionId, String entityType, Long entityId) throws TopcatException {
+        List<ParentEntity> out = new ArrayList<ParentEntity>();
+        
+        if(entityType.equals("dataset") || entityType.equals("datafile")){
+            try {
+                Object entity;
+                String query;
+
+                if(entityType.equals("datafile")){
+                    query = "SELECT datafile from Datafile datafile where datafile.id=" + entityId + " include datafile.dataset.investigation";
+                } else {
+                    query = "SELECT dataset from Dataset dataset where dataset.id=" + entityId + " include dataset.investigation";
+                }
+
+                List<Object> result  = service.search(icatSessionId, query);
+                if (!result.isEmpty()) {
+                    entity = result.get(0);
+                } else {
+                    throw new BadRequestException("No such entity exists i.e. " + entityType + " with id " + entityId);
+                }
+
+                if(entityType.equals("datafile")){
+                    ParentEntity parentEntity = new ParentEntity();
+                    parentEntity.setEntityType(EntityType.valueOf("dataset"));
+                    parentEntity.setEntityId(((Datafile) entity).getDataset().getId());
+                    out.add(parentEntity);
+
+                    parentEntity = new ParentEntity();
+                    parentEntity.setEntityType(EntityType.valueOf("investigation"));
+                    parentEntity.setEntityId(((Datafile) entity).getDataset().getInvestigation().getId());
+                    out.add(parentEntity);
+
+                } else {
+                    ParentEntity parentEntity = new ParentEntity();
+                    parentEntity.setEntityType(EntityType.valueOf("investigation"));
+                    parentEntity.setEntityId(((Dataset) entity).getInvestigation().getId());
+                    out.add(parentEntity);
+                } 
+                
+            } catch (IcatException_Exception e) {
+                throwNewICATException(e);
+            }
+        }
+
+        return out;
     }
 
     @Override

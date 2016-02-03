@@ -2,6 +2,7 @@ package org.icatproject.topcat.icatclient;
 
 import java.net.MalformedURLException;
 import java.util.Map;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -11,6 +12,7 @@ import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.domain.ParentEntity;
 
 @Stateless
 public class ICATClientBean {
@@ -62,10 +64,16 @@ public class ICATClientBean {
         return service.isAdmin(icatSessionId);
     }
 
-   public String getEntityName(String icatUrl, String icatSessionId, String entityType, Long entityId) throws MalformedURLException, TopcatException {
+    public String getEntityName(String icatUrl, String icatSessionId, String entityType, Long entityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(icatUrl);
 
         return service.getEntityName(icatSessionId, entityType, entityId);
+    }
+
+    public List<ParentEntity> getParentEntities(String icatUrl, String icatSessionId, String entityType, Long entityId) throws MalformedURLException, TopcatException {
+        ICATClientInterface service = getIcatService(icatUrl);
+
+        return service.getParentEntities(icatSessionId, entityType, entityId);
     }
 
     /**

@@ -26,6 +26,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient.Flag;
@@ -37,6 +39,7 @@ import org.icatproject.topcat.domain.CartSubmitDTO;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadItem;
 import org.icatproject.topcat.domain.DownloadStatus;
+import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.LongValue;
 import org.icatproject.topcat.domain.ParentEntity;
 import org.icatproject.topcat.domain.StringValue;
@@ -69,6 +72,9 @@ public class User2Resource {
 
     @EJB
     private IdsClientBean idsClientService;
+
+    @PersistenceContext(unitName="topcatv2")
+    EntityManager em;
 
     @GET
     @Path("/downloads")
@@ -159,9 +165,31 @@ public class User2Resource {
         Cart cart = cartRepository.getCart(userName, facilityName);
         String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
 
-        logger.debug("name: " + name);
-            
-        return Response.ok().build();
+        if(cart == null){
+            cart = new Cart();
+            cart.setFacilityName(facilityName);
+            cart.setUserName(userName);
+            em.persist(cart);
+        }
+
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setEntityType(EntityType.valueOf(entityType));
+        cartItem.setEntityId(entityId);
+        cartItem.setName(name);
+        em.persist(cartItem);
+        
+
+        List<ParentEntity> parentEntities = icatClientService.getParentEntities(icatUrl, sessionId, entityType, entityId);
+        for(ParentEntity parentEntity : parentEntities){
+            parentEntity.setCartItem(cartItem);
+            em.persist(parentEntity);
+        }
+
+        em.flush();
+        em.refresh(cart);
+        
+        return Response.ok().entity(cart).build();
     }
     
 
