@@ -137,16 +137,12 @@ public class User2Resource {
 
         String userName = icatClientService.getUserName(icatUrl, sessionId);
         Cart cart = cartRepository.getCart(userName, facilityName);
-
+        
         if(cart != null){
+            em.refresh(cart);
             return Response.ok().entity(cart).build();
         } else {
-            JsonObject emptyCart = Json.createObjectBuilder()
-                .add("facilityName", facilityName)
-                .add("userName", userName)
-                .add("cartItems", Json.createArrayBuilder().build())
-                .build();
-            return Response.ok().entity(emptyCart.toString()).build();
+            return emptyCart(facilityName, userName);
         }
     }
 
@@ -170,12 +166,12 @@ public class User2Resource {
             cart.setFacilityName(facilityName);
             cart.setUserName(userName);
             em.persist(cart);
+            em.flush();
         }
 
         em.refresh(cart);
 
         for(CartItem cartItem : cart.getCartItems()){
-            logger.debug(cartItem.getEntityType() + ", " + EntityType.valueOf(entityType) + ", " + cartItem.getEntityId() + ", " + entityId);
             if(cartItem.getEntityType() == EntityType.valueOf(entityType) && cartItem.getEntityId() == entityId){
                 return Response.ok().entity(cart).build();
             }
@@ -199,6 +195,48 @@ public class User2Resource {
         em.refresh(cart);
         
         return Response.ok().entity(cart).build();
+    }
+
+
+    @DELETE
+    @Path("/cart/{facilityName}/cartItem/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response deleteCartItem(
+        @PathParam("facilityName") String facilityName,
+        @PathParam("id") Long id,
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        Cart cart = cartRepository.getCart(userName, facilityName);
+        if(cart == null){
+            return emptyCart(facilityName, userName);
+        }
+
+        CartItem cartItem = em.find(CartItem.class, id);
+        if(cartItem != null){
+            em.remove(cartItem);
+            em.flush();
+        }
+
+        em.refresh(cart);
+        if(cart.getCartItems().size() == 0){
+            em.remove(cart);
+            em.flush();
+            return emptyCart(facilityName, userName);
+        }
+
+        return Response.ok().entity(cart).build();
+    }
+
+    private Response emptyCart(String facilityName, String userName){
+        JsonObject emptyCart = Json.createObjectBuilder()
+            .add("facilityName", facilityName)
+            .add("userName", userName)
+            .add("cartItems", Json.createArrayBuilder().build())
+            .build();
+        return Response.ok().entity(emptyCart.toString()).build();
     }
     
 

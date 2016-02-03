@@ -160,9 +160,9 @@ public class ICATClient45 implements ICATClientInterface {
         }
 
         if (!result.isEmpty()) {
-            if(entityType == "investigation"){
+            if(entityType.equals("investigation")){
                 name = ((Investigation) result.get(0)).getName();
-            } else if(entityType == "dataset"){
+            } else if(entityType.equals("dataset")){
                 name = ((Dataset) result.get(0)).getName();
             } else {
                 name = ((Datafile) result.get(0)).getName();

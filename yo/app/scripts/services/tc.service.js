@@ -401,7 +401,24 @@
 					return this.get('cart/' + facility.config().facilityName, {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId
-	    			}, options);
+	    			}, options).then(function(cart){
+
+	    				_.each(cart.cartItems, function(cartItem){
+	    					cartItem.delete = overload({
+	    						'object': function(options){
+	    							return that.deleteCartItem(this.id, options);
+	    						},
+	    						'promise': function(timeout){
+	    							return this.delete({timeout: timeout});
+	    						},
+	    						'': function(){
+	    							return this.delete({});
+	    						}
+	    					});
+	    				});
+
+	    				return cart;
+	    			});
 				},
 				'promise': function(timeout){
 					return this.cart({timeout: timeout})
@@ -425,6 +442,52 @@
 				},
 				'string, number': function(entityType, entityId){
 					return this.addCartItem(entityType, entityId, {});
+				}
+			});
+
+			this.deleteCartItem = overload({
+				'string, object': function(id, options){
+					return this.delete('cart/' + facility.config().facilityName + '/cartItem/' + id, {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId
+	    			}, options);
+				},
+				'string, promise': function(id, timeout){
+					return this.deleteCartItem(id, {timeout: timeout});
+				},
+				'string': function(id){
+					return this.deleteCartItem(id, {});
+				},
+				'number, object': function(id, options){
+					return this.deleteCartItem("" + id, options);
+				},
+				'number, promise': function(id, timeout){
+					return this.deleteCartItem("" + id, {timeout: timeout});
+				},
+				'number': function(id){
+					return this.deleteCartItem("" + id, {});
+				}
+			});
+
+			this.deleteAllCartItems = overload({
+				'object': function(options){
+					return this.cart(options).then(function(cart){
+						var promises = [];
+
+						_.each(cart.cartItems, function(cartItem){
+							promises.push(cartItem.delete(options));
+						});
+
+						return $q.all(promises).then(function(){
+							return that.cart(options);
+						});
+					});
+				},
+				'promise': function(timeout){
+					return this.deleteAllCartItems({timeout: timeout})
+				},
+				'': function(){
+					return this.deleteAllCartItems({});
 				}
 			});
 
