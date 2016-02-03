@@ -491,6 +491,32 @@
 				}
 			});
 
+			this.submitCart = overload({
+				'string, string, string, object': function(fileName, transport, email, options){
+					var transportTypeIndex = {};
+					_.each(facility.config().downloadTransportType, function(downloadTransportType){
+						transportTypeIndex[downloadTransportType.type] = downloadTransportType
+					})
+					var transportType = transportTypeIndex[transport];
+
+					return this.post('cart/' + facility.config().facilityName + '/submit', {
+	    				icatUrl: facility.config().icatUrl,
+	    				sessionId: facility.icat().session().sessionId,
+	    				fileName: fileName,
+	    				transport: transport,
+	    				email: email,
+	    				zipType: transportType.zipType ? transportType.zipType : '',
+	    				transportUrl: transportType.url
+	    			}, options);
+				},
+				'string, string, string, promise': function(fileName, transport, email, timeout){
+					return this.submitCart(fileName, transport, email, {timeout: timeout});
+				},
+				'string, string, string': function(fileName, transport, email){
+					return this.submitCart(fileName, transport, email, {});
+				}
+			});
+
 			generateRestMethods.call(this, topcatApiPath + 'user/');
 		}
 

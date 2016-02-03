@@ -230,6 +230,87 @@ public class User2Resource {
         return Response.ok().entity(cart).build();
     }
 
+    @POST
+    @Path("/cart/{facilityName}/submit")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response submitCart(
+        @PathParam("facilityName") String facilityName,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("transport") String transport,
+        @FormParam("transportUrl") String transportUrl,
+        @FormParam("email") String email,
+        @FormParam("fileName") String fileName,
+        @FormParam("zipType") String zipType)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        if (fileName == null || fileName.trim().isEmpty()) {
+            throw new BadRequestException("fileName is required");
+        }
+
+        if (transport == null || transport.trim().isEmpty()) {
+            throw new BadRequestException("transport is required");
+        }
+
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        Cart cart = cartRepository.getCart(userName, facilityName);
+        String fullName = icatClientService.getFullName(icatUrl, sessionId);
+        
+        if(cart != null){
+            em.refresh(cart);
+
+            String preparedId = idsClientService.prepareData(transportUrl, sessionId, cartToDataSelection(cart), getZipFlag(zipType));
+
+            if (preparedId != null) {
+                Download download = new Download();
+                download.setPreparedId(preparedId);
+                download.setFacilityName(cart.getFacilityName());
+                download.setFileName(fileName);
+                download.setUserName(cart.getUserName());
+                download.setFullName(fullName);
+                download.setTransport(transport);
+                download.setTransportUrl(transportUrl);
+                download.setIcatUrl(icatUrl);
+                download.setEmail(email);
+                boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
+                download.setIsTwoLevel(isTwoLevel);
+                if (isTwoLevel == true) {
+                    download.setStatus(DownloadStatus.RESTORING);
+                } else {
+                    download.setStatus(DownloadStatus.COMPLETE);
+                    download.setCompletedAt(new Date());
+                }
+
+                List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
+
+                for(CartItem cartItem : cart.getCartItems()) {
+                    DownloadItem downloadItem = new DownloadItem();
+                    downloadItem.setEntityId(cartItem.getEntityId());
+                    downloadItem.setEntityType(cartItem.getEntityType());
+                    downloadItem.setDownload(download);
+                    downloadItems.add(downloadItem);
+                }
+
+                download.setDownloadItems(downloadItems);
+
+                try {
+                    em.persist(download);
+                    em.remove(cart);
+                    em.flush();
+                } catch (Exception e) {
+                    logger.debug(e.getMessage());
+                    throw new BadRequestException("Unable to submit for cart for download");
+                }
+
+            } else {
+                throw new BadRequestException("Unable to submit for cart for download");
+            }
+           
+        }
+
+        return emptyCart(facilityName, userName);
+    }
+
     private Response emptyCart(String facilityName, String userName){
         JsonObject emptyCart = Json.createObjectBuilder()
             .add("facilityName", facilityName)
@@ -237,6 +318,38 @@ public class User2Resource {
             .add("cartItems", Json.createArrayBuilder().build())
             .build();
         return Response.ok().entity(emptyCart.toString()).build();
+    }
+
+    private Flag getZipFlag(String zip) {
+        if (zip == null ) {
+            return Flag.ZIP;
+        }
+        zip = zip.toUpperCase();
+        if(zip.equals("ZIP_AND_COMPRESS")) {
+            return Flag.ZIP_AND_COMPRESS;
+        } else {
+            return Flag.ZIP;
+        }
+    }
+
+    private DataSelection cartToDataSelection(Cart cart) {
+        DataSelection dataSelection = new DataSelection();
+
+        for (CartItem cartItem : cart.getCartItems()) {
+            if (cartItem.getEntityType() == EntityType.investigation) {
+                dataSelection.addInvestigation(cartItem.getEntityId());
+            }
+
+            if (cartItem.getEntityType() == EntityType.dataset) {
+                dataSelection.addDataset(cartItem.getEntityId());
+            }
+
+            if (cartItem.getEntityType() == EntityType.datafile) {
+                dataSelection.addDatafile(cartItem.getEntityId());
+            }
+        }
+
+        return dataSelection;
     }
     
 
