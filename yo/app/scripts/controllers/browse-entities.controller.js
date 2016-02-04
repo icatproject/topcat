@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc, Cart){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc){
 
         //e.g. 'facility-instrument' i.e. from 'facility' to 'instrument'
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
@@ -193,51 +193,34 @@
         }
 
         function isAncestorInCart(){
-            var out = false;
-            _.each(Cart.getItems(), function(item){
+            return tc.user(facilityName).cart(canceler.promise).then(function(cart){
+                var out = false;
                 _.each(['investigation', 'dataset'], function(entityType){
                     var entityId = $state.params[entityType + "Id"];
-                    if(item.facilityName == facilityName && item.entityType == entityType && item.entityId == entityId){
+                    if(cart.isCartItem(entityType, entityId)){
                         out = true;
                         return false;
                     }
-                    return !out;
                 });
+                return out;
             });
-            return out;
         }
 
         function updateSelections(){
             var timeout = $timeout(function(){
-                _.each(gridOptions.data, function(row){
-                    if (isAncestorInCart() || Cart.hasItem(facilityName, entityInstanceName.toLowerCase(), row.id)) {
-                        gridApi.selection.selectRow(row);
-                    } else {
-                        gridApi.selection.unSelectRow(row);
-                    }
+                tc.user(facilityName).cart(canceler.promise).then(function(cart){
+                    isAncestorInCart().then(function(isAncestorInCart){
+                        _.each(gridOptions.data, function(row){
+                            if (isAncestorInCart || cart.isCartItem(entityInstanceName.toLowerCase(), row.id)) {
+                                gridApi.selection.selectRow(row);
+                            } else {
+                                gridApi.selection.unSelectRow(row);
+                            }
+                        });
+                    });
                 });
             });
             canceler.promise.then(function(){ $timeout.cancel(timeout); });
-        }
-
-        function removeRedundantItemsFromCart(){
-            var itemsToRemove = [];
-            _.each(Cart.getItems(), function(item){
-                _.each(item.parentEntities, function(parentEntity){
-                    var parentInCart = false;
-                    _.each(Cart.getItems(), function(_item){
-                        parentInCart = item.facilityName == _item.facilityName && parentEntity.entityType == _item.entityType && parentEntity.entityId == _item.entityId;
-                        return !parentInCart;
-                    });
-                    if(parentInCart){
-                        itemsToRemove.push(item);
-                        return false;
-                    }
-                });
-            });
-            _.each(itemsToRemove, function(item){
-                Cart.removeItem(item.facilityName, item.entityType, item.entityId);
-            });
         }
 
         function saveState(){
@@ -355,7 +338,6 @@
                 updateTotalItems();
                 updateSelections();
                 updateScroll(results.length);
-                removeRedundantItemsFromCart();
             });
 
             //sort change callback
@@ -392,47 +374,21 @@
                 });
             });
 
-            function addItem(row){
-                if(!isAncestorInCart()){
-                    var parentEntities = [];
-                    _.each(['investigation', 'dataset', 'datafile'], function(entityType){
-                        var id = entityType + "Id";
-                        if($state.params[id]) parentEntities.push({
-                            entityType: entityType,
-                            entityId: $state.params[id]
-                        });
-                    });
-                    Cart.addItem(facilityName, entityInstanceName.toLowerCase(), row.id, row.name, parentEntities);
-                }
-            }
-
-            function removeItem(row){
-                if(!isAncestorInCart()){
-                    Cart.removeItem(facilityName, entityInstanceName.toLowerCase(), row.id);
-                }
-            }
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                    addItem(row.entity);
-                } else {
-                    removeItem(row.entity);
-                }
-                updateSelections();
-                removeRedundantItemsFromCart();
-            });
-
-            gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                _.each(rows, function(row){
-                    if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                        addItem(row.entity.entity);
+                isAncestorInCart().then(function(isAncestorInCart){
+                    if(!isAncestorInCart){
+                        if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                            row.entity.addToCart(canceler);
+                        } else {
+                            row.entity.deleteFromCart(canceler);
+                        }
                     } else {
-                        removeItem(row.entity);
+                        updateSelections();
                     }
                 });
-                updateSelections();
-                removeRedundantItemsFromCart();
             });
+
 
             if(isScroll){
                 //scroll down more data callback (append data)

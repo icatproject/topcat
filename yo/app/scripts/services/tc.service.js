@@ -398,27 +398,21 @@
 				}
 			});
 
+			var cartCache;
 			this.cart = overload({
 				'object': function(options){
+					if(cartCache){
+						var defered = $q.defer();
+						defered.resolve(cartCache);
+						return defered.promise;
+					}
+
 					return this.get('cart/' + facility.config().facilityName, {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId
 	    			}, options).then(function(cart){
-
-	    				_.each(cart.cartItems, function(cartItem){
-	    					cartItem.delete = overload({
-	    						'object': function(options){
-	    							return that.deleteCartItem(this.id, options);
-	    						},
-	    						'promise': function(timeout){
-	    							return this.delete({timeout: timeout});
-	    						},
-	    						'': function(){
-	    							return this.delete({});
-	    						}
-	    					});
-	    				});
-
+	    				extendCart(cart);
+	    				cartCache = cart;
 	    				return cart;
 	    			});
 				},
@@ -432,15 +426,23 @@
 
 			this.addCartItem = overload({
 				'string, number, object': function(entityType, entityId, options){
-					return this.post('cart/' + facility.config().facilityName + '/cartItem', {
-	    				icatUrl: facility.config().icatUrl,
-	    				sessionId: facility.icat().session().sessionId,
-	    				entityType: entityType,
-	    				entityId: entityId
-	    			}, options).then(function(cart){
-	    				$rootScope.$broadcast('cart:change');
-	    				return cart;
-	    			});
+					return this.cart(options).then(function(cart){
+						if(cart.isCartItem(entityType, entityId)){
+							return cart;
+						} else {
+							return that.post('cart/' + facility.config().facilityName + '/cartItem', {
+			    				icatUrl: facility.config().icatUrl,
+			    				sessionId: facility.icat().session().sessionId,
+			    				entityType: entityType,
+			    				entityId: entityId
+			    			}, options).then(function(cart){
+			    				extendCart(cart);
+			    				cartCache = cart;
+			    				$rootScope.$broadcast('cart:change');
+			    				return cart;
+			    			});
+			    		}
+					});
 				},
 				'string, number, promise': function(entityType, entityId, timeout){
 					return this.addCartItem(entityType, entityId, {timeout: timeout})
@@ -451,29 +453,41 @@
 			});
 
 			this.deleteCartItem = overload({
-				'string, object': function(id, options){
+				'number, object': function(id, options){
 					return this.delete('cart/' + facility.config().facilityName + '/cartItem/' + id, {
 	    				icatUrl: facility.config().icatUrl,
 	    				sessionId: facility.icat().session().sessionId
 	    			}, options).then(function(cart){
+	    				extendCart(cart);
+	    				cartCache = cart;
 	    				$rootScope.$broadcast('cart:change');
 	    				return cart;
 	    			});
 				},
-				'string, promise': function(id, timeout){
+				'number, promise': function(id, timeout){
 					return this.deleteCartItem(id, {timeout: timeout});
 				},
-				'string': function(id){
+				'number': function(id){
 					return this.deleteCartItem(id, {});
 				},
-				'number, object': function(id, options){
-					return this.deleteCartItem("" + id, options);
+				'string, number, object': function(entityType, entityId, options){
+					return this.cart(options).then(function(cart){
+						var promises = [];
+						_.each(cart.cartItems, function(cartItem){
+							if(cartItem.entityType == entityType && cartItem.entityId == entityId){
+								promises.push(that.deleteCartItem(cartItem.id, options));
+							}
+						});
+						return $q.all(promises).then(function(){
+							return cart;
+						});
+					});
 				},
-				'number, promise': function(id, timeout){
-					return this.deleteCartItem("" + id, {timeout: timeout});
+				'string, number, promise': function(entityType, entityId, timeout){
+					return this.deleteCartItem(entityType, entityId, {timeout: timeout});
 				},
-				'number': function(id){
-					return this.deleteCartItem("" + id, {});
+				'string, number': function(entityType, entityId){
+					return this.deleteCartItem(entityType, entityId, {});
 				}
 			});
 
@@ -516,6 +530,8 @@
 	    				zipType: transportType.zipType ? transportType.zipType : '',
 	    				transportUrl: transportType.url
 	    			}, options).then(function(cart){
+	    				extendCart(cart);
+	    				cartCache = cart;
 	    				$rootScope.$broadcast('download:change');
 	    				$rootScope.$broadcast('cart:change');
 	    				return cart;
@@ -528,6 +544,34 @@
 					return this.submitCart(fileName, transport, email, {});
 				}
 			});
+
+			function extendCart(cart){
+
+				cart.isCartItem = function(entityType, entityId){
+					var out = false;
+					_.each(cart.cartItems, function(cartItem){
+						if(cartItem.entityType == entityType && cartItem.entityId == entityId){
+							out = true;
+							return false;
+						}
+					});
+					return out;
+				};
+
+				_.each(cart.cartItems, function(cartItem){
+					cartItem.delete = overload({
+						'object': function(options){
+							return that.deleteCartItem(this.id, options);
+						},
+						'promise': function(timeout){
+							return this.delete({timeout: timeout});
+						},
+						'': function(){
+							return this.delete({});
+						}
+					});
+				});
+			}
 
 			generateRestMethods.call(this, topcatApiPath + 'user/');
 		}
@@ -708,6 +752,7 @@
 			function defineMethod(methodName){
 				this[methodName] = overload({
 					'string, string, object': function(offset, params, options){
+						options = _.clone(options);
 						if(methodName.match(/post|put/)){
 							if(!options.headers) options.headers = {};
 							if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -1025,6 +1070,31 @@
 				entity.investigation.entityType = "Investigation";
 				extendEntity(entity.investigation, facility, options);
 			}
+
+			entity.addToCart = overload({
+				'object': function(options){
+					return facility.user().addCartItem(this.entityType.toLowerCase(), this.id, options);
+				},
+				'promise': function(timeout){
+					return this.addToCart({timeout: timeout});
+				},
+				'': function(){
+					return this.addToCart({});
+				}
+			});
+
+			entity.deleteFromCart = overload({
+				'object': function(options){
+					return facility.user().deleteCartItem(this.entityType.toLowerCase(), this.id, options);
+				},
+				'promise': function(timeout){
+					return this.deleteFromCart({timeout: timeout});
+				},
+				'': function(){
+					return this.deleteFromCart({});
+				}
+			});
+
 		}
 
 		function resolvedPromise(value){
