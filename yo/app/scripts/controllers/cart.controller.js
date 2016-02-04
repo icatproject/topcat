@@ -41,12 +41,12 @@
             enableFiltering: false,
             enable: false,
             enableSorting: false,
-            cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
+            cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.remove(row.entity)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
         });
         this.totalSize = 0;
 
         _.each(tc.userFacilities(), function(facility){
-            facility.user().cart(timeout).then(function(cart){
+            facility.user().cart(timeout.promise).then(function(cart){
                 that.gridOptions.data = _.flatten([that.gridOptions.data, cart.cartItems]);
                 _.each(cart.cartItems, function(cartItem){
                     cartItem.getSize(timeout.promise).then(function(size){
@@ -59,6 +59,29 @@
 
         this.cancel = function() {
             $uibModalInstance.dismiss('cancel');
+        };
+
+        this.remove = function(cartItem){
+            var data = [];
+            _.each(that.gridOptions.data, function(currentCartItem){
+                if(currentCartItem.id != cartItem.id) data.push(currentCartItem);
+            });
+            that.gridOptions.data = data;
+            cartItem.delete().then(function(){
+                if(that.gridOptions.data.length == 0){
+                    $uibModalInstance.dismiss('cancel');
+                }
+            });
+        };
+
+        this.removeAll = function(){
+            var promises = [];
+            _.each(tc.userFacilities(), function(facility){
+                promises.push(facility.user().deleteAllCartItems(timeout.promise));
+            });
+            $q.all(promises).then(function(){
+                $uibModalInstance.dismiss('cancel');
+            });
         };
 
     });
