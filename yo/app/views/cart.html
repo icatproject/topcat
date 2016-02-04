@@ -21,7 +21,7 @@
     </div>
     <div class="modal-footer">
         <div>
-            <b>Total size: {{totalSize|bytes}}</b>
+            <b>Total size: {{cartController.totalSize|bytes}}</b>
         </div>
         <br>
         <button ng-click="removeAllItems()" type="button" class="btn btn-primary" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="left"></button>

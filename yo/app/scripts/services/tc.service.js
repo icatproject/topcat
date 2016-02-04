@@ -559,6 +559,8 @@
 				};
 
 				_.each(cart.cartItems, function(cartItem){
+					cartItem.facilityName = facility.config().facilityName;
+
 					cartItem.delete = overload({
 						'object': function(options){
 							return that.deleteCartItem(this.id, options);
@@ -570,6 +572,56 @@
 							return this.delete({});
 						}
 					});
+
+
+					cartItem.entity = overload({
+						'object': function(options){
+							return facility.icat().entity(entityTypeFromInstanceName(this.entityType), ["where ?.id = ?", this.entityType.safe(), this.entityId], options);
+						},
+						'promise': function(timeout){
+							return this.entity({timeout: timeout});
+						},
+						'': function(){
+							return this.entity({});
+						}
+					});
+
+					cartItem.getSize = overload({
+						'object': function(options){
+							var that = this;
+							return this.entity(options).then(function(entity){
+								return entity.getSize(options).then(function(size){
+									that.size = size;
+									return size;
+								});
+							});
+						},
+						'promise': function(timeout){
+							return this.getSize({timeout: timeout});
+						},
+						'': function(){
+							return this.getSize({});
+						}
+					});
+
+					cartItem.getStatus = overload({
+						'object': function(options){
+							var that = this;
+							return this.entity(options).then(function(entity){
+								return entity.getStatus(options).then(function(status){
+									that.status = status;
+									return status;
+								});
+							});
+						},
+						'promise': function(timeout){
+							return this.getStatus({timeout: timeout});
+						},
+						'': function(){
+							return this.getStatus({});
+						}
+					});
+
 				});
 			}
 
@@ -729,7 +781,9 @@
     					sessionId: facility.icat().session().sessionId
     				};
     				params[idsParamName] = id;
-    				return this.get('getSize', params,  options);
+    				return this.get('getSize', params,  options).then(function(size){
+    					return parseInt('' + size);
+    				});
     			},
     			'string, number, promise': function(type, id, timeout){
     				return this.getSize(type, id, {timeout: timeout});
@@ -738,6 +792,27 @@
     				return this.getSize(type, id, {});
     			}
     		});
+
+    		this.getStatus = overload({
+    			'string, number, object': function(type, id, options){
+    				var idsParamName = instanceNameFromEntityType(type) + "Ids";
+    				var params = {
+    					server: facility.config().icatUrl,
+    					sessionId: facility.icat().session().sessionId
+    				};
+    				params[idsParamName] = id;
+    				return this.get('getStatus', params,  options).then(function(status){
+    					return status;
+    				});
+    			},
+    			'string, number, promise': function(type, id, timeout){
+    				return this.getStatus(type, id, {timeout: timeout});
+    			},
+    			'string, number': function(type, id){
+    				return this.getStatus(type, id, {});
+    			}
+    		});
+
 
     		generateRestMethods.call(this, facility.config().idsUrl + '/ids/');
     	}
@@ -862,6 +937,22 @@
 				},
 				'': function(){
 					return this.getSize({});
+				}
+			});
+
+			entity.getStatus = overload({
+				'object': function(options){
+					var that = this;
+					return facility.ids().getStatus(this.entityType, this.id, options).then(function(status){
+						that.status = status;
+						return status;
+					});
+				},
+				'promise': function(timeout){
+					return this.getStatus({timeout: timeout});
+				},
+				'': function(){
+					return this.getStatus({});
 				}
 			});
 
@@ -1211,6 +1302,10 @@
 
 	function instanceNameFromEntityType(entityType){
 		return entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
+	}
+
+	function entityTypeFromInstanceName(instanceName){
+		return instanceName.replace(/^(.)/, function(s){ return s.toUpperCase(); });
 	}
 
 })();

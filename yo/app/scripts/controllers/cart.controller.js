@@ -5,9 +5,11 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('CartController', function($translate, $uibModalInstance, tc, uiGridConstants){
+    app.controller('CartController', function($translate, $uibModalInstance, $q, $scope, tc, uiGridConstants){
         var that = this;
         var pagingConfig = tc.config().paging;
+        var timeout = $q.defer();
+        $scope.$on('$destroy', function(){ timeout.resolve(); });
         this.isScroll = pagingConfig.pagingType == 'scroll';
         this.gridOptions = _.merge({
             data: [],
@@ -23,6 +25,15 @@
             if (columnDef.filter.condition) {
                 columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
             }
+
+            if(columnDef.field === 'size') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+            }
+
+            if(columnDef.field === 'availability') {
+               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span>{{row.entity.status}}</span></div>';
+            }
+
         });
         this.gridOptions.columnDefs.push({
             name : 'actions',
@@ -32,7 +43,19 @@
             enableSorting: false,
             cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.removeItem(row)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
         });
+        this.totalSize = 0;
 
+        _.each(tc.userFacilities(), function(facility){
+            facility.user().cart(timeout).then(function(cart){
+                that.gridOptions.data = _.flatten([that.gridOptions.data, cart.cartItems]);
+                _.each(cart.cartItems, function(cartItem){
+                    cartItem.getSize(timeout.promise).then(function(size){
+                        that.totalSize = that.totalSize + size;
+                    });
+                    cartItem.getStatus(timeout.promise);
+                });
+            });
+        });
 
         this.cancel = function() {
             $uibModalInstance.dismiss('cancel');
