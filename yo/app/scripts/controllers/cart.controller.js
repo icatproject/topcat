@@ -87,7 +87,7 @@
         this.download = function(){
             $uibModal.open({
                 templateUrl : 'views/download-cart.html',
-                controller : function($uibModalInstance, $scope){
+                controller : function($uibModalInstance, $scope, $uibModalStack){
                     var that = this;
                     var timeout = $q.defer();
                     $scope.$on('$destroy', function(){ timeout.resolve(); });
@@ -123,6 +123,7 @@
 
                                 var download = {
                                     fileName: fileName,
+                                    facility: facility,
                                     facilityName: facility.config().facilityName,
                                     transportTypes: transportTypes,
                                     transportType: transportType
@@ -148,6 +149,22 @@
                             }
                         });
                     });
+
+                    this.ok = function() {
+                        _.each(this.downloads, function(download){
+                            if(!download.fileName){
+                                throw "A download file name must be provided.";
+                            }
+                        });
+
+                        var promises = [];
+                        _.each(this.downloads, function(download){
+                            promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email));
+                        });
+                        $q.all(promises).then(function(){
+                            $uibModalStack.dismissAll();
+                        });
+                    };
 
                     this.cancel = function() {
                         $uibModalInstance.dismiss('cancel');

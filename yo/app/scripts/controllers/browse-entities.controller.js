@@ -22,13 +22,20 @@
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
         var page = 1;
         var canceler = $q.defer();
-        $scope.$on('$destroy', function(){ canceler.resolve(); });
         var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field; });
         var isSize = _.includes(columnNames, 'size');
         var sortQuery = [];
         var filterQuery = [];
         var totalItems;
         var gridApi;
+
+        var stopListeningForCartChanges =  $rootScope.$on('cart:change', function(){
+            updateSelections();
+        });
+        $scope.$on('$destroy', function(){
+            canceler.resolve();
+            stopListeningForCartChanges();
+        });
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;

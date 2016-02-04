@@ -3,7 +3,7 @@
 
   var app = angular.module('angularApp');
 
-  app.controller('SearchResultsController', function($stateParams, $scope, $q, $timeout, tc, Cart){
+  app.controller('SearchResultsController', function($stateParams, $scope, $rootScope, $q, $timeout, tc, Cart){
     var that = this;
     var facilities = $stateParams.facilities ? JSON.parse($stateParams.facilities) : [];
     var text = $stateParams.text;
@@ -38,7 +38,15 @@
     }
     if(samples.length > 0) queryCommon.samples = samples;
     var timeout = $q.defer();
-    $scope.$on('$destroy', function(){ timeout.resolve(); });
+    var _updateSelections;
+
+    var stopListeningForCartChanges =  $rootScope.$on('cart:change', function(){
+      if(_updateSelections) _updateSelections();
+    });
+    $scope.$on('$destroy', function(){
+        timeout.resolve();
+        stopListeningForCartChanges();
+    });
 
     this.investigation = $stateParams.investigation == 'true';
     this.dataset = $stateParams.dataset == 'true';
@@ -98,6 +106,8 @@
             }
         });
 
+        _updateSelections = updateSelections;
+
       };
 
       var query = _.merge(queryCommon, {target: type});
@@ -114,7 +124,9 @@
       });
 
 
+
       function updateSelections(){
+        console.log('updateSelections');
         var _timeout = $timeout(function(){
           _.each(gridOptions.data, function(row){
               tc.user(row.facilityName).cart(timeout.promise).then(function(cart){
