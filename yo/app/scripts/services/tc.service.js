@@ -34,7 +34,7 @@
 				var results = [];
 				query.target = query.target.replace(/^./, function(c){ return c.toUpperCase(); });
 				var entityType = query.target;
-				var entityInstanceName = instanceNameFromEntityType(entityType);
+				var entityInstanceName = uncapitalize(entityType);
 				_.each(facilityNames, function(facilityName){
 					var facility = tc.facility(facilityName);
 					var icat = facility.icat();
@@ -576,7 +576,7 @@
 
 					cartItem.entity = overload({
 						'object': function(options){
-							return facility.icat().entity(entityTypeFromInstanceName(this.entityType), ["where ?.id = ?", this.entityType.safe(), this.entityId], options);
+							return facility.icat().entity(capitalize(this.entityType), ["where ?.id = ?", this.entityType.safe(), this.entityId], options);
 						},
 						'promise': function(timeout){
 							return this.entity({timeout: timeout});
@@ -728,7 +728,7 @@
 	        this.entities = overload({
 	        	'string, array, object': function(type, query, options){
 	        		return this.query([[
-	        			'select ' + instanceNameFromEntityType(type) + ' from ' + type + ' ' + instanceNameFromEntityType(type)
+	        			'select ' + uncapitalize(type) + ' from ' + type + ' ' + uncapitalize(type)
 	        		], query], options);
 	        	},
 	        	'string, promise, array': function(type, timeout, query){
@@ -775,7 +775,7 @@
 
     		this.getSize = overload({
     			'string, number, object': function(type, id, options){
-    				var idsParamName = instanceNameFromEntityType(type) + "Ids";
+    				var idsParamName = uncapitalize(type) + "Ids";
     				var params = {
     					server: facility.config().icatUrl,
     					sessionId: facility.icat().session().sessionId
@@ -795,7 +795,7 @@
 
     		this.getStatus = overload({
     			'string, number, object': function(type, id, options){
-    				var idsParamName = instanceNameFromEntityType(type) + "Ids";
+    				var idsParamName = uncapitalize(type) + "Ids";
     				var params = {
     					server: facility.config().icatUrl,
     					sessionId: facility.icat().session().sessionId
@@ -1131,7 +1131,7 @@
 				return this.thisAndAncestors().then(function(thisAndAncestors){
 					var out = {};
 					_.each(thisAndAncestors, function(entity){
-						out[instanceNameFromEntityType(entity.entityType) + "Id"] = entity.id;
+						out[uncapitalize(entity.entityType) + "Id"] = entity.id;
 						if(entity.entityType == 'Investigation') out['proposalId'] = entity.name;
 					});
 					return _.merge(out, {facilityName: facilityName});
@@ -1300,12 +1300,12 @@
 		return this.value;
 	};
 
-	function instanceNameFromEntityType(entityType){
-		return entityType.replace(/^(.)/, function(s){ return s.toLowerCase(); });
+	function uncapitalize(text){
+		return text.replace(/^(.)/, function(s){ return s.toLowerCase(); });
 	}
 
-	function entityTypeFromInstanceName(instanceName){
-		return instanceName.replace(/^(.)/, function(s){ return s.toUpperCase(); });
+	function capitalize(text){
+		return text.replace(/^(.)/, function(s){ return s.toUpperCase(); });
 	}
 
 })();

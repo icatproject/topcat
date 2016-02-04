@@ -24,8 +24,10 @@
             <b>Total size: {{cartController.totalSize|bytes}}</b>
         </div>
         <br>
-        <button ng-click="cartController.removeAll()" type="button" class="btn btn-primary" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="left"></button>
-        <download-cart></download-cart>
+        <button ng-click="cartController.removeAll()" type="button" class="btn btn-primary" translate="CART.BUTTON.REMOVE_ALL.TEXT" ng-class="{'disabled' : items.length === 0 }" tooltip="Click to remove all items from cart" tooltip-append-to-body="true" tooltip-placement="top"></button>
+
+        <button type="button" class="btn btn-primary" ng-click="cartController.download()" translate="CART.BUTTON.DOWNLOAD_CART.TEXT" uib-tooltip="{{'CART.BUTTON.DOWNLOAD_CART.TOOLTIP.TEXT' | translate}}" tooltip-placement="top" tooltip-append-to-body="true"></button>
+
         <button class="btn btn-warning" ng-click="cartController.cancel()">Cancel</button>
     </div>
 </div>
