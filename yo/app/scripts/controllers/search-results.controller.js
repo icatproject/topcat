@@ -65,7 +65,7 @@
 
     function createGridOptions(type){
       var gridApi;
-      var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().searchGridOptions[type]);
+      var gridOptions = _.merge({data: [], appScopeProvider: this, enableSelectAll: false}, tc.config().searchGridOptions[type]);
       _.each(gridOptions.columnDefs, function(columnDef){
         if(columnDef.link && !columnDef.cellTemplate){
           if(typeof columnDef.link == "string"){
@@ -92,21 +92,12 @@
         
         gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                addItem(row.entity);
+                row.entity.addToCart(timeout.promise);
             } else {
-                removeItem(row.entity);
+                row.entity.deleteFromCart(timeout.promise);
             }
         });
 
-        gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-            _.each(rows, function(row){
-                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                    addItem(row.entity.entity);
-                } else {
-                    removeItem(row.entity);
-                }
-            });
-        });
       };
 
       var query = _.merge(queryCommon, {target: type});
@@ -114,30 +105,30 @@
         _.each(results, function(entity){
             entity.getSize(timeout.promise);
         });
+        updateSelections();
       }, function(){
 
       }, function(results){
         gridOptions.data = results;
+        updateSelections();
       });
 
-      function addItem(row){
-        Cart.addItem(row.facilityName, that.currentTab, row.id, row.name, []);
-      }
-
-      function removeItem(row){
-        Cart.removeItem(row.facilityName, that.currentTab, row.id);
-      }
 
       function updateSelections(){
-        $timeout(function(){
+        var _timeout = $timeout(function(){
           _.each(gridOptions.data, function(row){
-            if (Cart.hasItem(row.facilityName, that.currentTab, row.id)) {
-                gridApi.selection.selectRow(row);
-            } else {
-                gridApi.selection.unSelectRow(row);
-            }
+              tc.user(row.facilityName).cart(timeout.promise).then(function(cart){
+                if(gridApi){
+                  if (cart.isCartItem(that.currentTab, row.id)) {
+                      gridApi.selection.selectRow(row);
+                  } else {
+                      gridApi.selection.unSelectRow(row);
+                  }
+                }
+              });
           });
         });
+        timeout.promise.then(function(){ $timeout.cancel(_timeout); });
       }
 
       this[type + "GridOptions"] = gridOptions;

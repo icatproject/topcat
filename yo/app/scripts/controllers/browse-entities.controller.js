@@ -324,7 +324,7 @@
         gridOptions.useExternalSorting = true;
         gridOptions.useExternalFiltering = true;
         var enableSelection = gridOptions.enableSelection === true && entityInstanceName.match(/^investigation|dataset|datafile$/) !== null;
-        gridOptions.enableSelectAll = enableSelection && gridOptions.enableSelectAll === true;
+        gridOptions.enableSelectAll = false;
         gridOptions.enableRowSelection = enableSelection;
         gridOptions.enableRowHeaderSelection = enableSelection;
 
@@ -379,9 +379,9 @@
                 isAncestorInCart().then(function(isAncestorInCart){
                     if(!isAncestorInCart){
                         if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                            row.entity.addToCart(canceler);
+                            row.entity.addToCart(canceler.promise);
                         } else {
-                            row.entity.deleteFromCart(canceler);
+                            row.entity.deleteFromCart(canceler.promise);
                         }
                     } else {
                         updateSelections();
