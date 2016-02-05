@@ -1,131 +1,329 @@
-(function() {
+
+(function(){
     'use strict';
 
-    /*jshint -W083 */
-    angular
-        .module('angularApp')
-        .controller('MyDataController', MyDataController);
+    var app = angular.module('angularApp');
 
-    MyDataController.$inject = ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$compile', 'APP_CONFIG', 'Config', '$translate', 'ConfigUtils', 'RouteService', 'DataManager', '$q', 'inform', '$sessionStorage', 'MyDataModel', 'Utils', '$templateCache'];
-
-    function MyDataController($rootScope, $scope, $state, $stateParams, $filter, $compile, APP_CONFIG, Config, $translate, ConfigUtils, RouteService, DataManager, $q, inform, $sessionStorage, MyDataModel, Utils, $templateCache) {
-        var pagingType = Config.getSitePagingType(APP_CONFIG); //the pagination type. 'scroll' or 'page'
-        var entityType = Config.getSiteMyDataGridEntityType(APP_CONFIG);
-        var facilities = Config.getFacilities(APP_CONFIG);
-        var currentRouteSegment = RouteService.getCurrentRouteSegmentName($state);
-        var sessions = $sessionStorage.sessions;
-
-        $scope.isScroll = (pagingType === 'scroll') ? true : false;
-        $scope.isEmpty = false;
-
-        $scope.gridOptions = {
-            appScopeProvider: $scope
-        };
-
-        MyDataModel.init(facilities, $scope, entityType, currentRouteSegment, sessions, $stateParams);
-
-        $templateCache.put('ui-grid/selectionRowHeaderButtons',
-            '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" uib-tooltip="' + $translate.instant('MY_DATA.SELECTOR.TOOLTIP.TEXT') + '" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
-        );
-
-        if (pagingType === 'page') {
-            $scope.gridOptions.onRegisterApi = function(gridApi) {
-                $scope.gridApi = gridApi;
-
-                //sort callback
-                $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-                    MyDataModel.sortChanged(grid, sortColumns);
-                });
-
-                //pagination callback
-                $scope.gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
-                    MyDataModel.paginationChanged(newPage, pageSize);
-                });
-
-                $scope.gridApi.core.on.filterChanged($scope, function() {
-                    MyDataModel.filterChanged(this.grid.columns);
-                });
-
-                $scope.gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-                    MyDataModel.rowSelectionChanged(row);
-                });
-
-                $scope.gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                    MyDataModel.rowSelectionChangedBatch(rows);
-                });
-            };
-
-            MyDataModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
-        } else {
-            $scope.firstPage = 1;
-            $scope.lastPage = null;
-            $scope.currentPage = 1;
-
-            $scope.gridOptions.onRegisterApi = function(gridApi) {
-                $scope.gridApi = gridApi;
-
-                //sort callback
-                $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-                    MyDataModel.sortChanged(grid, sortColumns);
-                });
-
-                $scope.gridApi.infiniteScroll.on.needLoadMoreData($scope, function() {
-                    MyDataModel.needLoadMoreData();
-                });
-
-                $scope.gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, function() {
-                    MyDataModel.needLoadMoreDataTop();
-                });
-
-                $scope.gridApi.core.on.filterChanged($scope, function () {
-                    MyDataModel.filterChanged(this.grid.columns);
-                });
-
-                $scope.gridApi.selection.on.rowSelectionChanged($scope, function(row){
-                    MyDataModel.rowSelectionChanged(row);
-                });
-
-                $scope.gridApi.selection.on.rowSelectionChangedBatch ($scope, function(rows){
-                    MyDataModel.rowSelectionChangedBatch(rows);
-                });
-            };
-
-            MyDataModel.applyFilterAndGetPage($scope.gridOptions.columnDefs);
-        }
-
-        $scope.$watchCollection(function() {
-            return $scope.gridOptions.data;
-        }, function(newCollection) {
-            if (typeof newCollection === 'undefined') {
-                $scope.isEmpty = true;
-            } else {
-                if(newCollection.length === 0) {
-                    $scope.isEmpty = true;
-                } else {
-                    $scope.isEmpty = false;
-                }
-            }
+    app.controller('MyDataController', function($translate, $q, $scope, $rootScope, $timeout, $state, tc, uiGridConstants){
+        var that = this;
+        var pagingConfig = tc.config().paging;
+        var entityType = tc.config().myDataGridOptions.entityType;
+        var pagingConfig = tc.config().paging;
+        var isScroll = pagingConfig.pagingType == 'scroll';
+        var page = 1;
+        var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
+        var sortQuery = [];
+        var filterQuery = [];
+        var totalItems;
+        var gridApi;
+        var canceler = $q.defer();
+        var stopListeningForCartChanges =  $rootScope.$on('cart:change', function(){
+            updateSelections();
+        });
+        $scope.$on('$destroy', function(){
+            canceler.resolve();
+            stopListeningForCartChanges();
         });
 
-        /**
-         * Function required by view expression to get the next route segment
-         *
-         * Note: we have to use $scope here rather than vm (AS syntax) to make it work
-         * with ui-grid cellTemplate grid.appScope
-         *
-         * @return {[type]}     [description]
-         */
-        $scope.getNextRouteUrl = function(row) {
-            return MyDataModel.getNextRouteUrl(row);
+        this.isScroll = isScroll;
+        var gridOptions = _.merge({
+            data: [],
+            appScopeProvider: this,
+            pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
+            paginationPageSizes: pagingConfig.paginationPageSizes
+        }, tc.config().myDataGridOptions[entityType]);
+
+        _.each(gridOptions.columnDefs, function(columnDef){
+            
+            if(columnDef.link) {
+                if(typeof columnDef.link == "string"){
+                    columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity.' + columnDef.link + ')">{{row.entity.' + columnDef.field + '}}</a></div>';
+                } else {
+                    columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity)">{{row.entity.' + columnDef.field + '}}</a></div>';
+                }
+            }
+
+            if(columnDef.type && columnDef.excludeFuture){
+                var date = new Date();
+                var day = date.getDate();
+                var month = "" + (date.getMonth() + 1);
+                if(month.length == 1) month = '0' + month;
+                var year = date.getFullYear();
+                var filter = year + '-' + month + '-' + day;
+                $timeout(function(){
+                    columnDef.filters[1].term = filter;
+                    saveState();
+                });
+            }
+
+            if(columnDef.field == 'size'){
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+                columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
+            }
+
+            if(columnDef.translateDisplayName){
+                columnDef.displayName = columnDef.translateDisplayName;
+                columnDef.headerCellFilter = 'translate';
+            }
+
+            if(columnDef.field == 'instrumentNames'){
+                columnDef.cellTemplate = '<div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length > 1"><span class="glyphicon glyphicon-th-list" tooltip="{{row.entity.instrumentNames}}" tooltip-placement="top" tooltip-append-to-body="true"></span> {{row.entity.firstInstrumentName}}</div><div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length <= 1">{{row.entity.firstInstrumentName}}</div>';
+            }
+            
+
+            columnDef.jpqlExpression = columnDef.jpqlExpression || entityType + '.' + columnDef.field;
+        });
+        this.gridOptions = gridOptions;
+
+        var includes = gridOptions.includes;
+        this.facilities = tc.userFacilities();
+
+        if($state.params.facilityName == ''){
+          $state.go('home.my-data', {facilityName: this.facilities[0].config().facilityName});
+          return;
+        }
+
+        var facility = tc.facility($state.params.facilityName);
+        var icat = facility.icat();
+
+       
+        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>',
+        this.showTabs = function(row) {
+            $rootScope.$broadcast('rowclick', {
+                'type': row.entity.entityType.toLowerCase(),
+                'id' : row.entity.id,
+                facilityName: facility.config().facilityName
+            });
+        };
+        
+        this.browse = function(row) {
+            row.browse(canceler);
+        };
+        
+
+        function generateQuery(){
+            var out = [];
+
+            if(entityType == "investigation"){
+                out.push([
+                    "SELECT investigation", 
+                    "FROM Investigation investigation"
+                ]);
+            } else if(entityType == "dataset"){
+                return out.push([
+                    "SELECT dataset",
+                    "from Dataset dataset, dataset.investigation investigation"
+                ]);
+            } else {
+                throw "Entity type '" + entityType + "' is not supported";
+            }
+
+            out.push([
+                ", investigation.facility facility, investigation.investigationUsers investigationUser",
+                "WHERE facility.id = ?", facility.config().facilityId,
+                "AND investigationUser.user.name = :user",
+                filterQuery,
+                includes && includes.length > 0 ? "INCLUDE " + includes.join(', ') : "",
+                "LIMIT ?, ?", (page - 1) * pageSize, pageSize
+            ]);
+            return out;
+
+        }
+
+        function updateFilterQuery(){
+            filterQuery = [];
+            _.each(that.gridOptions.columnDefs, function(columnDef){
+                if(columnDef.type == 'date' && columnDef.filters){
+                    var from = columnDef.filters[0].term || '';
+                    var to = columnDef.filters[1].term || '';
+                    if(from != '' || to != ''){
+                        from = completePartialFromDate(from);
+                        to = completePartialToDate(to);
+                        filterQuery.push([
+                            "and ? between {ts ? 00:00:00} and {ts ? 23:59:59}",
+                            columnDef.jpqlExpression.safe(),
+                            from.safe(),
+                            to.safe()
+                        ]);
+                    }
+                } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
+                    filterQuery.push([
+                        "and UPPER(?) like concat('%', ?, '%')", 
+                        columnDef.jpqlExpression.safe(),
+                        columnDef.filter.term.toUpperCase()
+                    ]);
+                }
+            });
+        }
+
+        function completePartialFromDate(date){
+            var parts = date.split(/-/);
+            var year = parts[0] || "";
+            var month = parts[1] || "";
+            var day = parts[2] || "";
+            year = year + '0000'.slice(year.length, 4);
+            month = month + '00'.slice(month.length, 2);
+            day = day + '00'.slice(day.length, 2);
+
+            if(parseInt(month) == 0) month = '01';
+            if(parseInt(day) == 0) day = '01';
+
+            return year + "-" + month + "-" + day;
+        }
+
+        function completePartialToDate(date){
+            var parts = date.split(/-/);
+            var year = parts[0] || "";
+            var month = parts[1] || "";
+            var day = parts[2] || "";
+            year = year + '9999'.slice(year.length, 4);
+            month = month + '99'.slice(month.length, 2);
+            day = day + '99'.slice(day.length, 2);
+
+            if(parseInt(month) > 12) month = '12';
+            var daysInMonth = new Date(year, day, 0).getDate();
+            if(parseInt(day) > daysInMonth) day = daysInMonth;
+
+            return year + "-" + month + "-" + day;
+        }
+
+        function updateScroll(resultCount){
+            if(isScroll){
+                $timeout(function(){
+                    var isMore = resultCount == pageSize;
+                    if(page == 1) gridApi.infiniteScroll.resetScroll(false, isMore);
+                    gridApi.infiniteScroll.dataLoaded(false, isMore);
+                });
+            }
+        }
+
+
+        function updateTotalItems(){
+            if(!isScroll){
+                icat.query(canceler.promise, generateQuery(stateFromTo, true)).then(function(_totalItems){
+                    gridOptions.totalItems = _totalItems;
+                    totalItems = _totalItems;
+                });
+            }
+        }
+
+        function updateSelections(){
+            var timeout = $timeout(function(){
+              _.each(gridOptions.data, function(row){
+                  facility.user().cart(canceler.promise).then(function(cart){
+                    if(gridApi){
+                      if (cart.isCartItem(entityType, row.id)) {
+                          gridApi.selection.selectRow(row);
+                      } else {
+                          gridApi.selection.unSelectRow(row);
+                      }
+                    }
+                  });
+              });
+            });
+            canceler.promise.then(function(){ $timeout.cancel(timeout); });
+        }
+
+        function getPage(){
+            var out = icat.query(canceler.promise, generateQuery());
+            out.then(function(results){
+                _.each(results, function(result){ result.getSize(canceler.promise); });
+            });
+            return out;
+        }
+
+        gridOptions.onRegisterApi = function(_gridApi) {
+            gridApi = _gridApi;
+
+            getPage().then(function(results){
+                gridOptions.data = results;
+                updateTotalItems();
+                updateSelections();
+                updateScroll(results.length);
+            });
+
+            //sort change callback
+            gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
+                sortQuery = [];
+                if(sortColumns.length > 0){
+                    sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
+                        console.log(sortColumn);
+                        return sortColumn.colDef.jpqlExpression + ' ' + sortColumn.sort.direction;
+                    }).join(', '));
+                }
+                page = 1;
+                getPage().then(function(results){
+                    updateScroll(results.length);
+                    gridOptions.data = results;
+                    updateSelections();
+                });
+            });
+
+            //filter change calkback
+            gridApi.core.on.filterChanged($scope, function() {
+                canceler.resolve();
+                canceler = $q.defer();
+                updateFilterQuery();
+                page = 1;
+                gridOptions.data = [];
+                getPage().then(function(results){
+                    gridOptions.data = results;
+                    updateSelections();
+                    updateScroll(results.length);
+                    updateTotalItems();
+                });
+            });
+
+
+            gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+                    row.entity.addToCart(canceler.promise);
+                } else {
+                    row.entity.deleteFromCart(canceler.promise);
+                }
+            });
+
+
+            if(isScroll){
+                //scroll down more data callback (append data)
+                gridApi.infiniteScroll.on.needLoadMoreData($scope, function() {
+                    page++;
+                    getPage().then(function(results){
+                        _.each(results, function(result){ gridOptions.data.push(result); });
+                        if(results.length == 0) page--;
+                        updateSelections();
+                        updateScroll(results.length);
+                    });
+                });
+
+                //scoll up more data at top callback (prepend data)
+                gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, function() {
+                    page--;
+                    getPage().then(function(results){
+                        _.each(results.reverse(), function(result){ gridOptions.data.unshift(result); });
+                        if(results.length == 0) page++;
+                        updateSelections();
+                        updateScroll(results.length);
+                    });
+                });
+            } else {
+                //pagination callback
+                gridApi.pagination.on.paginationChanged($scope, function(_page, _pageSize) {
+                    page = _page;
+                    pageSize = _pageSize;
+                    getPage().then(function(results){
+                        gridOptions.data = results;
+                        updateSelections();
+                    });
+                });
+            }
+
         };
 
-        $scope.showTabs = function(row) {
-            var data = {'type' : entityType, 'id' : row.entity.id, facilityName: row.entity.facilityName};
-            $rootScope.$broadcast('rowclick', data);
-        };
 
-        $scope.getFieldValuesAsHtmlList = function(row, field) {
-            return Utils.getFieldValuesAsHtmlList(row, field);
-        };
-    }
+
+    });
+
 })();
+

@@ -1,19 +1,25 @@
 <h1 translate="MY_DATA.TITLE"></h1>
 
-<div class="my-data-container">
-    <div ng-if="isScroll" ui-grid="gridOptions" ui-grid-infinite-scroll ui-grid-selection class="my-data-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="MY_DATA.EMPTY"></span>
-            </div>
+
+<div ng-show="myDataController.facilities.length > 1">
+    <ul class="nav nav-tabs nav-tabs-head">
+        <li ng-repeat="facility in myDataController.facilities" ng-class="{active: facility.config().facilityName == $state.params.facilityName}">
+            <a ui-sref="home.my-data({facilityName: facility.config().facilityName})">{{facility.config().title}}</a>
+        </li>
+    </ul>
+    <br>
+</div>
+<div ng-if="myDataController.isScroll" ui-grid="myDataController.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="my-data-grid">
+    <div class="no-rows row" ng-show="isEmpty">
+        <div class="col-md-2 col-md-offset-5 empty-message">
+            <span translate="MY_DATA.EMPTY"></span>
         </div>
     </div>
-
-    <div ng-if="!isScroll" ui-grid="gridOptions" ui-grid-pagination ui-grid-selection class="my-data-grid">
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="MY_DATA.EMPTY"></span>
-            </div>
+</div>
+<div ng-if="!myDataController.isScroll" ui-grid="myDataController.gridOptions" ui-grid-pagination ui-grid-selection class="my-data-grid">
+    <div class="no-rows row" ng-show="isEmpty">
+        <div class="col-md-2 col-md-offset-5 empty-message">
+            <span translate="MY_DATA.EMPTY"></span>
         </div>
     </div>
 </div>

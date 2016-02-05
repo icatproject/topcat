@@ -199,7 +199,7 @@
                     }
                 })*/
                 .state('home.my-data', {
-                    url: '/my-data', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    url: '/my-data/:facilityName', //?data&meta&pagingType&query&type&facility&startDate&endDate',
                     resolve: {
                         authenticate : ['Authenticate', function(Authenticate) {
                             return Authenticate.authenticate();
@@ -211,7 +211,7 @@
                         },
                         '@home.my-data': {
                             templateUrl: 'views/partial-my-data-panel.html',
-                            controller: 'MyDataController as md'
+                            controller: 'MyDataController as myDataController'
                         },
                         'meta-view@home.my-data' : {
                             templateUrl: 'views/partial-meta-panel.html',

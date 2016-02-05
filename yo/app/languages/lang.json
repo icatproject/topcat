@@ -233,7 +233,7 @@
     },
     "MY_DATA" : {
         "TITLE" : "My Data",
-        "EMPTY" : "You no not have any data",
+        "EMPTY" : "You do not have any data",
         "SELECTOR" : {
             "TOOLTIP" : {
                 "TEXT" : "@:BROWSE.SELECTOR.TOOLTIP.TEXT"
