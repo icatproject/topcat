@@ -66,7 +66,6 @@
     })
 
     this.browse = function(row){
-      console.log('browse called');
       timeout.resolve();
       row.browse();
     };
@@ -126,7 +125,6 @@
 
 
       function updateSelections(){
-        console.log('updateSelections');
         var _timeout = $timeout(function(){
           _.each(gridOptions.data, function(row){
               tc.user(row.facilityName).cart(timeout.promise).then(function(cart){
