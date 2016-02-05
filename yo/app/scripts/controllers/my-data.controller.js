@@ -120,7 +120,7 @@
             }
 
             out.push([
-                ", investigation.facility facility, investigation.investigationUsers investigationUser",
+                ", investigation.facility facility, investigation.investigationUsers investigationUser, investigation.investigationInstruments investigationInstrument, investigationInstrument.instrument instrument",
                 "WHERE facility.id = ?", facility.config().facilityId,
                 "AND investigationUser.user.name = :user",
                 filterQuery,

@@ -208,6 +208,7 @@
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
                         "type": "string",
                         "visible": true,
+                        "jpqlExpression": "instrument.fullName",
                         "filter": {
                             "condition": "starts_with",
                             "placeholder": "Containing...",
