@@ -1,0 +1,16 @@
+<form role="form" novalidate>
+    <div class="modal-header">
+        <h3 class="modal-title">Add a Sample Filter</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group has-feedback">
+            <label class="control-label sr-only" for="searchText"></label>
+            <input type="text" class="form-control input-sm" id="searchText" placeholder="Sample Text" ng-model="sampleModalController.value" required>
+            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="submit" ng-click="sampleModalController.submit()">OK</button>
+        <button class="btn btn-warning" ng-click="sampleModalController.cancel()">Cancel</button>
+    </div>
+</form>

@@ -1,0 +1,250 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+
+.browse-box {
+  height: 470px;
+  /*overflow: auto;*/
+
+}
+
+.my-data-box {
+  height: 470px;
+  /*overflow: auto;*/
+
+}
+
+.search-form {
+  margin: 10px 0;
+}
+
+/* make notification message go above the top navigation bar */
+.inform-fixed {
+  top: 60px;
+  z-index: 2002;
+}
+
+.current {
+   font-weight: bold;
+   color: red;
+}
+
+
+[ng-click], .pointer {
+    cursor: pointer;
+}
+
+/* nav bar split button */
+.navbar-nav > li.dropdown-split-right > a {
+  padding-left: 7px;
+}
+.navbar-nav > li.dropdown-split-left > a {
+  padding-right: 0;
+}
+
+.browse-grid {
+    width: 100%;
+    height: 400px;
+}
+
+.tab-content {
+  margin: 0px;
+  padding: 5px;
+}
+
+.param-title {
+  font-weight: bold;
+}
+
+.param-title::after {
+    content: ": ";
+}
+
+.param-value {
+
+}
+
+.no-rows {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: -10;
+}
+
+.no-rows .empty-message {
+  position: absolute;
+  top: 30%;
+  font-size: 20px;
+  width: 400px;
+}
+
+.cart-container {
+  padding: 0 10px;
+}
+
+.cart-grid {
+  width: 100%;
+  height: 500px;
+  margin-bottom: 10px;
+}
+
+.my-data-container {
+  padding: 0 10px;
+}
+
+.my-data-grid {
+  width: 100%;
+  height: 400px;
+}
+
+.element-spinner {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+}
+
+.grid-cell-spinner {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  float: none;
+}
+
+.has-archived {
+  margin-top: 20px;
+}
+
+.grid-cell-spinner .spinner {
+  top: 10px !important;
+}
+
+/* Fix ui-grid-cell border color issue when css is concat/minified */
+.ui-grid-cell {
+  border-color: #d4d4d4;
+}
+
+.cart-buttom-section {
+  margin-top: 50px;
+}
+
+/* disable a link */
+.not-active {
+  color: #AAAAAA;
+  cursor: default;
+  pointer-events: none;
+  text-decoration: none;
+}
+
+/* make ng-click a pointer on rollover */
+a[ng-click]{
+    cursor: pointer;
+}
+
+/* cart trolly item count icon*/
+.glyphicon.glyphicon-shopping-cart {
+    font-size: 16px;
+    color: #5e5e5e;
+}
+
+/* pager page input box width */
+.ui-grid-pager-control input {
+  width: 80px;
+}
+
+/* pager row count select width */
+.ui-grid-pager-row-count-picker select {
+  width: 80px;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+/* nav bar logo */
+.navbar-brand {
+    padding-top: 0;
+    padding-left: 0;
+}
+
+/* help */
+#globus_help .dl-horizontal dt{
+    text-align: left;
+    margin-left: 10px;
+    margin-bottom: 1em;
+    width: auto;
+    padding-right: 1em;
+}
+
+#globus_help .dl-horizontal dd{
+    margin-left: 10px;
+    margin-bottom: 1em;
+}
+
+/* loading bar spinner */
+#loading-bar-spinner {
+  display: block;
+  position: fixed;
+  z-index: 10002;
+  right: 10px;
+  left: auto;
+  top: 70px;
+}
+
+
+.eu-cookie-law-consent {
+  position: relative;
+  z-index: 1000;
+  height: 40px;
+}
+
+.eu-cookie-law-consent-message {
+  background: #e7e7e7;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+}
+
+.eu-cookie-law-consent-button {
+  float: right;
+}
+
+.list-noindent {
+  list-style-position: inside;
+  padding-left:0;
+}
+
+.ng-submitted .ng-invalid {
+  border-width: 2px;
+  border-color: #FB6F6F;
+  border-style: solid;
+}
+
+.modal-lg {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+  margin: 0;
+}
+
+.modal-lg .modal-content {
+  height: 100%;
+}

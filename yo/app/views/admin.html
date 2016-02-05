@@ -1,0 +1,25 @@
+
+
+
+<h1 translate="ADMIN.PAGE_TITLE"></h1>
+
+<div ng-show="adminController.facilities.length > 1">
+	<ul class="nav nav-tabs nav-tabs-head">
+		<li ng-repeat="facility in adminController.facilities" ng-class="{active: facility.config().facilityName == $state.params.facilityName}">
+			<a ui-sref="admin({facilityName: facility.config().facilityName})">{{facility.config().title}}</a>
+		</li>
+	</ul>
+	<br>
+</div>
+
+<div class="col-md-12">
+    <div ui-grid="adminController.gridOptions" ui-grid-infinite-scroll class="browse-grid">
+        <div class="no-rows row" ng-show="isEmpty">
+            <div class="col-md-2 col-md-offset-5 empty-message">
+                <span translate="BROWSE.EMPTY"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+from setup_utils import *
+import os
+
+# TopCATv2
+
+def uninstall():
+    if not actions.isInstalled(): return
+    app = actions.getAppName("topcat")
+    if app: actions.asadmin("undeploy " + app)
+
+    actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
+    actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
+    actions.asadmin("delete-javamail-resource mail/topcatv2", tolerant=True)
+    actions.deleteFileRealmUser(props["adminUsername"]);
+
+actions, options, arg = getActions()
+props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot", "adminUsername", "adminPassword"])
+
+prop_name = "topcat.properties"
+
+if arg == "INSTALL":
+    actions.installFile(prop_name)
+
+    try:
+        uninstall()
+
+        actions.addFileRealmUser(props["adminUsername"], props["adminPassword"], "topcatAdmin");
+
+        topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "mail.enable", "ids.getStatus.max", "poll.delay", "poll.interval.wait", "poll.isprepared.wait"])
+
+        if not os.path.isfile("topcat.json"):
+            abort("topcat.json not found.")
+
+        if not os.path.isfile("lang.json"):
+            abort("lang.json not found")
+
+        if not os.path.isfile("topcat.css"):
+            abort("topcat.css not found")
+
+        if not actions.configFileExists(topcatProperties.get("file.directory")):
+            abort("Please create directory " + topcatProperties.get("file.directory") + ". If the path is relative, the directory will be relative to the glassfish domain config directory as specified in topcat-setup.properties")
+
+        actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
+        actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
+
+        actions.asadmin('create-jdbc-connection-pool --datasourceclassname ' + props["driver"] +
+                ' --restype javax.sql.DataSource --failconnection=true --steadypoolsize 2' +
+                ' --ping --property ' + props["dbProperties"] + ' topcatv2', printOutput=True)
+
+        actions.asadmin("create-jdbc-resource --connectionpoolid topcatv2 jdbc/topcatv2")
+
+        if topcatProperties["mail.enable"].lower() == 'true':
+            actions.asadmin("create-javamail-resource --mailhost " + props["mail.host"] + " --mailuser " + props["mail.user"] + " --fromaddress " + props["mail.from"] + " --property " + props["mail.property"] + " mail/topcatv2")
+
+        actions.deploy("topcat-*.war", contextroot=props["topcatUrlRoot"], deploymentorder=140)
+
+        actions.installToAppWeb("topcat.json", "topcat", "config")
+        actions.installToAppWeb("lang.json", "topcat", "languages")
+        actions.installToAppWeb("topcat.css", "topcat", "styles")
+
+    except Exception, e:
+        abort(str(e))
+
+else:  # UNINSTALL
+    actions.removeFile(prop_name)
+
+    try:
+        uninstall();
+
+    except Exception, e:
+        abort(str(e))

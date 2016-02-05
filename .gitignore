@@ -1,5 +1,12 @@
-target/
-.gwt/
-.settings/
+
+/bin
+/target
+
 .classpath
 .project
+.settings
+.externalToolBuilders/
+derby.log
+npm-debug.log
+.vagrant
+.DS_Store

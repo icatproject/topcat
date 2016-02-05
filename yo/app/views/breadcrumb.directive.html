@@ -1,0 +1,18 @@
+<ul class="breadcrumb">
+	<li ng-repeat="item in bc.items">
+		<span ng-show="!$last">
+			<a ui-sref="{{item.route}}" translate="{{item.translate}}" ng-if="item.translate"></a>
+			<a 
+				ui-sref="{{item.route}}"
+				ng-if="!item.translate && item.title.length > bc.maxTitleLength"
+				uib-tooltip="{{item.title}}"
+				tooltip-placement="bottom"
+			>{{item.title | limitTo : bc.maxTitleLength}}...</a>
+			<a
+				ui-sref="{{item.route}}"
+				ng-if="!(!item.translate && item.title.length > bc.maxTitleLength)"
+			>{{item.title}}</a>
+		</span>
+		<i ng-show="$last" translate="{{item.translate}}"></i>
+	</li>
+</ul>

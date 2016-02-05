@@ -1,0 +1,99 @@
+{
+    "Download": [
+        {
+            "id": 10000,
+            "email": "wayne.chung@stfc.c.uk"
+            "facility_name": "dls",
+            "file_name" : "file1.txt",
+            "prepared_id" : "11111111-1111-1111-1111-111111111111",
+            "status": "ARCHIVED",
+            "transport": "globus",
+            "user_name": "vcf21513"
+        },
+        {
+            "id": 10001,
+            "email": "wayne.chung@stfc.c.uk"
+            "facility_name": "dls",
+            "file_name" : "file10001.txt",
+            "prepared_id" : "11111111-1111-1111-1111-111111111112",
+            "status": "ARCHIVED",
+            "transport": "globus",
+            "user_name": "vcf21513"
+        },
+        {
+            "id": 10002,
+            "email": "wayne.chung@stfc.c.uk"
+            "facility_name": "sig",
+            "file_name" : "file10002.txt",
+            "prepared_id" : "11111111-1111-1111-1111-111111111113",
+            "status": "ARCHIVED",
+            "transport": "globus",
+            "user_name": "guest"
+        }
+    ],
+    "DownloadItem" : [
+        {
+            "id": 20000,
+            "entity_id": 910034178,
+            "entity_type": "investigation",
+            "name": "CM12170",
+            "download_id": 10000
+        },
+        {
+            "id": 20001,
+            "entity_id": 910034179,
+            "entity_type": "investigation",
+            "name": "CM12170",
+            "download_id": 10000
+        },
+        {
+            "id": 20002,
+            "entity_id": 910034180,
+            "entity_type": "investigation",
+            "name": "CM12170",
+            "download_id": 10000
+        },
+        {
+            "id": 20003,
+            "entity_id": 1000001,
+            "entity_type": "investigation",
+            "name": "INV_01",
+            "download_id": 10001
+        },
+        {
+            "id": 20004,
+            "entity_id": 1000002,
+            "entity_type": "investigation",
+            "name": "INV_01",
+            "download_id": 10001
+        },
+        {
+            "id": 20005,
+            "entity_id": 800010,
+            "entity_type": "dataset",
+            "name": "ISIS_01",
+            "download_id": 10002
+        },
+        {
+            "id": 20006,
+            "entity_id": 800011,
+            "entity_type": "dataset",
+            "name": "ISIS_01",
+            "download_id": 10002
+        },
+        {
+            "id": 20007,
+            "entity_id": 800012,
+            "entity_type": "dataset",
+            "name": "ISIS_01",
+            "download_id": 10002
+        },
+        {
+            "id": 20008,
+            "entity_id": 800013,
+            "entity_type": "dataset",
+            "name": "ISIS_01",
+            "download_id": 10002
+        }
+    ]
+}

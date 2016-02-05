@@ -1,0 +1,546 @@
+#set($h1 = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+#set($h4 = '####')
+
+$h1 Configuration Quick Start Guide
+
+The guide provides the changes required to the topcat.json.example file that comes with the distribution to get a working TopCAT.
+
+It also provides some of the common TopCAT customisation you would want to do and how to do them.
+
+$h2 Configure topcat.json
+
+The following are the minimum changes required to the topcat.json example file that comes with the distribution to get a working TopCAT installation.
+
+It is recommended you first make the following changes then customise TopCAT to your requirement.
+
+
+  1. Start your configuration using the topcat.json.example in the distribution root directory. Rename this file to topcat.json.
+
+  2. Leave everything as default under the **site** property. You can customise this later.
+
+  3. Go to the facilities property further down the file.
+
+  4. Change the existing property named **mysite** directly under facilities to something more suitable for your facility (avoid special characters or spaces. This is used as an identifier and appears in the url). e.g. `dls`
+
+  5. Change the **facilityName** property to exactly the name used above for the property name. e.g. `dls`
+
+  6. Change the **title** property to your full facility name  e.g. `Diamond Light Source`
+
+  7. Change the **icatUrl** to that of your icat servers e.g. `https://icat.server.ac.uk` (the icat REST api is expected to be at `https://icat.server.ac.uk/icat`)
+
+  8. Change the **idsUrl** to that of your ids servers e.g. `https://ids.server.ac.uk` (the ids REST api is expected to be at `https://ids.server.ac.uk/ids`)
+
+  9. Change the **facilityId** property value to the id number of your facility in icat. You can retrieve this from your database or try the method [here](facility.html#Property:_facilityId_required).
+
+  10. Change the **hierarchy** property array. Add/remove items from the array depending on the hierarchy you want to browse your data. If you're not sure, leave it as it is and change it later.
+
+  11. Add or remove any of the authenticationType objects already listed in the array of the **authenticationType** property. These should match the authentication plugins you have installed for your icat.
+
+  12. The **downloadTransportType** property has one existing downloadTransportType object in the array. Change the url property of this object to that of your ids.
+
+  13. Your topcat.json now has the minimum configuration to install and get a working topcat
+
+
+
+$h2 Customise TopCAT
+
+The easiest way to customise TopCAT is to do it live by editing the `config/topcat.json` and `languages/lang.json` in the glassfish application directory once you have installed topCAT. You will see the change with a browser refresh.
+
+Please note that files in the glassfish application are deleted on redeployment (i.e. on glassfish re-installation). Once you are happy with your configuration, you should copy the files back to where you extracted the TopCAT distribution or else you will lose your configuration on redeployment.
+
+
+$h3 Changing the home page
+
+When you first login or click on a Home page link, you will be taken to the My Data tab. If you want the users to be taken to a different tab, you can change this by changing the [site.home](site.html#Property:_home_Required) property. The value can be cart, browse or download.
+
+
+$h3 Changing pagination type
+
+The example TopCAT site is configured to use mouse scrolling to paginate results on all grids. You can change this to standard page pagination where you have a page navigation bar along the bottom of the grid as shown below:
+
+![page navigation](images/page-navigation.png)
+
+
+To make this change, change the [site.paging.pagingType](paging.html#Property:_pagingType_Required) property to scroll.
+
+You can also set the default number of items per row for the page using the [site.paging.paginationNumberOfRows](paging.html#Property:_paginationNumberOfRows_Required_only_for_pagingType_of_page) property.
+
+The page navigation allows users to set the number of rows per page. You can change these pre-sets in the [site.paging.paginationPageSizes](paging.html#Property:_paginationPageSizes_Optional_for_pagingType_of_page) property.
+
+
+$h3 Change the page size when using scroll paging type
+
+You can change how many rows are fetched when a page scroll is performed by changing the property [site.paging.scrollPageSize](paging.html#Property:_scrollPageSize_Required_for_pagingType_of_scroll). You should also change the [site.paging.scrollRowFromEnd](paging.html#Property:_scrollRowFromEnd_Required_for_pagingType_of_scroll) property to a suitable value. The scrollRowFromEnd property is the number of rows remaining on a page before a fetch for the next data is performed.
+
+
+$h3 Add a new column to My Data grid
+
+You wish to add an investigation doi column to the My Data grid. The doi column should be added between the existing size and start date column. Users should be able to filter this column.
+
+
+The first thing you want to do is look at the [icat schema for investigation](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Investigation) and find out the field name and type for doi.
+
+
+Once you know this information you can add a new [columnDef](columndefs.html) object to the site.myDataGridOptions.investigation.columnDefs array in between the existing size and start_date object as shown below:
+
+```
+{
+    "site": {
+        ...
+        ...
+        "myDataGridOptions": {
+            ...
+            ...
+            "investigation": {
+                "columnDefs": [
+                    {
+                        "field": "title",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        },
+                        "cellTooltip": true,
+                        "link": true
+                    },
+                    {
+                        "field": "visitId",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        },
+                        "link": true
+                    },
+                    {
+                        "field": "investigationInstruments[0].instrument.fullName",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
+                        "type": "string",
+                        "visible": true,
+                        "filter": {
+                            "condition": "starts_with",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
+                    },
+                    {
+                        "field": "size",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                        "type": "number"
+                    },
+                    {
+                        "field": "doi",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.DOI",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
+                    },
+                    {
+                        "field": "startDate",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd'",
+                        "filters": [
+                            {
+                                "placeholder": "From...",
+                                "type": "input"
+                            },
+                            {
+                                "placeholder": "To...",
+                                "type": "input"
+                            }
+                        ],
+                        "sort": {
+                            "direction": "desc"
+                        }
+                    },
+                    {
+                        "field": "endDate",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                        "type": "date",
+                        "cellFilter": "date: 'yyyy-MM-dd'",
+                        "filters": [
+                            {
+                                "placeholder": "From...",
+                                "type": "input"
+                            },
+                            {
+                                "placeholder": "To...",
+                                "type": "input"
+                            }
+                        ]
+                    }
+                ]
+
+```
+
+In order to keep all the site text in one location, the translateDisplayName property was used instead of displayName for the column title. We must add the corresponding BROWSE.COLUMN.INVESTIGATION.DOI property in the lang.json file.
+
+
+```
+"BROWSE": {
+        "COLUMN": {
+            ...
+            ...
+            "INVESTIGATION":{
+                "ID": "Id",
+                "NAME": "Name",
+                "TITLE": "Title",
+                "SUMMARY": "Summary",
+                "VISIT_ID": "Visit Id",
+                "START_DATE": "Start Date",
+                "END_DATE": "End Date",
+                "DOI": "Doi",
+                "RELEASE_DATE": "Release Date",
+                "SIZE" : "Size",
+                "FACILITY" : "Facility",
+                "INSTRUMENT" : {
+                    "NAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME"
+                }
+            },
+            ...
+            ...
+```
+
+$h3 Change the title of a column
+
+You wish to change the column title of the first column named "Title" in My Data to "Investigation Title".
+
+To do this, first find the site.myDataGridOptions.columnDefs columnDef object for field title:
+
+```
+{
+    "site": {
+        ...
+        ...
+        "myDataGridOptions": {
+                    {
+                        "field": "title",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        },
+                        "cellTooltip": true,
+                        "link": true
+                    },
+                    ...
+                    ...
+
+```
+
+Get the translateDisplayName value and change the corresponding BROWSE.COLUMN.INVESTIGATION.TITLE property in lang.json:
+
+```
+    "BROWSE": {
+        "COLUMN": {
+            ...
+            "INVESTIGATION":{
+                "ID": "Id",
+                "NAME": "Name",
+                "TITLE": "Investigation Title",
+                "SUMMARY": "Summary",
+                "VISIT_ID": "Visit Id",
+                "START_DATE": "Start Date",
+                "END_DATE": "End Date",
+                "DOI": "Doi",
+                "RELEASE_DATE": "Release Date",
+                "SIZE" : "Size",
+                "FACILITY" : "Facility",
+                "INSTRUMENT" : {
+                    "NAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME"
+                }
+            },
+            ...
+            ...
+
+```
+
+Note that other grids may also be using this property in which case their column title will also change to "Investigation Title".
+
+
+If you only want the title column in My Data grid to change. You must add a new property in lang.json and use that property as the translateDisplayName value e.g.
+
+
+```
+{
+    "MY_DATA": {
+            "COLUMN": {
+                "INVESTIGATION":{
+                    "TITLE": "Investigation Title",
+                }
+            }
+    }
+}
+
+```
+
+And in topcat.json:
+
+```
+                    ...
+                    ...
+                    {
+                        "field": "title",
+                        "translateDisplayName": "MY_DATA.COLUMN.INVESTIGATION.TITLE",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        },
+                        "cellTooltip": true,
+                        "link": true
+                    },
+                    ...
+                    ...
+
+```
+
+
+$h3 Change the site logo
+
+
+Change the html value of the SITE_NAME_LOGO property in lang.json. You may want to copy the image to the glassfish application web images directory.
+
+
+
+$h3 Prevent investigations from being added to cart
+
+
+You may want to prevent users from downloading entire investigations. Items are added to the cart using the selection boxes on the very first column of grids. What we must do is remove this selection column when the user is browsing a list of investigations.
+
+![selection column](images/selection-column.png)
+
+There are 2 places where investigations can be listed. On the My Data grid and on the Browse grid. We can disable the selection column using the [enableSelection](gridoption.html#Property:_enableSelection_Optional) property and setting it to false for the 2 grids.
+
+
+```
+{
+    "site": {
+        ...
+        ...
+        "myDataGridOptions": {
+            "entityType" : "investigation",
+            "investigation": {
+                "enableFiltering": true,
+                "enableSelection": false,
+                "includes" : [
+                    "investigation.investigationInstruments.instrument"
+                ],
+                ...
+                ...
+```
+
+
+```
+{
+    "facilities": {
+        "dls": {
+            ...
+            ...
+        "browseGridOptions": {
+            ...
+            ...
+            "investigation": {
+                    "enableFiltering": true,
+                    "enableSelection": false,
+                    "includes" : [
+                        "investigation.investigationInstruments.instrument"
+                    ],
+                    ...
+                    ...
+
+```
+
+The remove selection column will look as below:
+
+![no selection column](images/no-selection-column.png)
+
+
+It is also possible to disable the selection column for datasets and datafiles.
+
+
+$h3 Change my data to list datasets instead of investigations
+
+You may want to list datasets instead of investigations on My Data. To do this, change the [site.myDataGridOptions.entityType](site.html#Property:_myDataGridOptions_Required) to **dataset** and define the columnDefs array for the dataset.
+
+
+```
+{
+    "site" : {
+        ...
+        ...
+        "myDataGridOptions": {
+            "entityType" : "dataset",
+            "dataset": {
+                "enableFiltering": true,
+                "enableSelection": true,
+                "columnDefs": [
+                    {
+                        "field": "name",
+                        "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
+                        "type": "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        },
+                        "cellTooltip": true,
+                        "link": true
+                    },
+                    ...
+                    ...
+
+```
+
+
+
+$h3 Add the name of the investigation type (a relationship) as a column to the browse investigation grid
+
+First refer to the [icat schema](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Investigation). You can see that InvestigationType is a relationship (one to one) with its field named **type**. The field we want to display from the InvestigationType class is **name**. The field we use for the columnDef is thus **type.name**.
+
+We have to add the columnDef object for investigation for browseGridOptions as below:
+
+
+```
+{
+    ...
+    ...
+    "facilities": {
+        "dls": {
+            "browseGridOptions": {
+                ...
+                ...
+                "investigation": {
+                    ...
+                    ...
+                    "columnDefs": [
+                        ...
+                        ...
+                        {
+                            "field": "type.name",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TYPE.NAME",
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+
+```
+
+Also add the BROWSE.COLUMN.INVESTIGATION.TYPE.NAME text in lang.json:
+
+```
+{
+    "BROWSE": {
+        ...
+        ...
+        "COLUMN": {
+            ...
+            ...
+            "INVESTIGATION":{
+                ...
+                ...
+                "TYPE" : {
+                    "NAME" : "Investigation Type"
+                }
+
+```
+
+
+The icat server by default does not return relationship data. We must specifically ask to include the data. We can do this using the includes property and add the include in the array for the investigation grid:
+
+```
+{
+    ...
+    ...
+    "facilities": {
+        "dls": {
+            "browseGridOptions": {
+                ...
+                ...
+                "investigation": {
+                    ...
+                    ...
+                    "includes" : [
+                        "investigation.investigationInstruments.instrument",
+                        "investigation.type"
+                    ],
+                    ...
+                    ...
+
+```
+
+
+$h3 Disable the EU cookie law consent bar
+
+If your site is not used within the EU, you may want to disable the EU cookie law consent bar. To do this, change the site.enableEuCookieLaw property to false:
+
+```
+    "site": {
+        ...
+        ...
+        "enableEuCookieLaw" : false,
+        ...
+        ...
+}
+```
+
+
+$h3 Display investigation publications in a metatab
+
+You want to show the list of publications for an investigation in a metatab. To do this, first look at the [icat schema for Investigation](http://icatproject.org/mvn/site/icat/server/${icatSchemaVersionDoc}/schema.html#Investigation).
+
+From investigation to publication, the [field](metatab.html#Property:_field_required) property is the entity whose information we want to display. i.e. publications. The [queryParams](metatab.html#Property:_queryParams_optional) property is an array of the entity class name to the relationship we want to display. In this case, the class name is **Publication**. The data property is an array of the fields values we want to show on the tab.
+
+```
+                   {
+                        "translateDisplayName": "METATABS.INVESTIGATION_PUBLICATIONS.TABTITLE",
+                        "field": "publications",
+                        "queryParams": [
+                            "Publication"
+                        ],
+                        "default": "false",
+                        "data": [
+                            {
+                                "translateDisplayName": "METATABS.INVESTIGATION_PUBLICATIONS.REFERENCE",
+                                "field": "fullReference"
+                            }
+                        ]
+                    }
+```
+
+In lang.json, we add the tab title and text label
+
+```
+{
+    "METATABS" : {
+        "INVESTIGATION_PUBLICATIONS" : {
+            "TABTITLE" : "Publication",
+            "REFERENCE" : "Reference"
+        },
+
+
+}
+
+
+```
+
+The added publication tab will appear as below:
+
+![publication metatab](images/metatab-publication.png)
+

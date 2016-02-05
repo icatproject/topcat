@@ -2,6 +2,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <body>
+<<<<<<< HEAD
   
     <breadcrumbs>
       <item name="TopCAT" href="index.html"/>
@@ -18,5 +19,26 @@
       
     <menu ref="reports"/>
  
+=======
+    <menu name="Contents">
+        <item name="TopCAT Installation" href="installation.html"/>
+        <item name="Configuration Quick Start Guide" href="configuration-quick-start-guide.html"/>
+        <item name="Configuration" href="configuration.html"/>
+        <item name="-topcat.json configuration" href="topcat-json-configuration.html"/>
+        <item name="--columnDefs object" href="columndefs.html"/>
+        <item name="--facility object" href="facility.html"/>
+        <item name="--filter object" href="filter.html"/>
+        <item name="--gridOption object" href="gridoption.html"/>
+        <item name="--metatab Object" href="metatab.html"/>
+        <item name="--page Object" href="page.html"/>
+        <item name="--paging Object" href="paging.html"/>
+        <item name="--site Object" href="site.html"/>
+        <item name="Release Notes" href="release-notes.html"/>
+    </menu>
+
+    <menu ref="reports"/>
+    <menu ref="parent"/>
+
+>>>>>>> topcatv2
   </body>
 </project>
