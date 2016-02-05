@@ -1,7 +1,49 @@
+
+
 (function() {
     'use strict';
 
-    /*jshint -W083 */
+    var app = angular.module('angularApp');
+
+    app.controller('BrowseFacilitiesController', function($state, $q, $scope, $rootScope, $timeout, tc){
+        var pagingConfig = tc.config().paging;
+        var isScroll = pagingConfig.pagingType == 'scroll';
+        var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
+        var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().facilitiesGridOptions);
+        this.gridOptions = gridOptions;
+        this.isScroll = isScroll;
+        gridOptions.data = [];
+
+        _.map(tc.userFacilities(), function(facility){
+            facility.icat().entity("Facility", ["where facility.id = ?", facility.config().facilityId]).then(function(facility){
+                gridOptions.data.push(facility);
+            });
+        });
+
+
+        this.getNextRouteUrl = function(facility){
+            var hierarchy = facility.config().hierarchy
+            var stateSuffixes = {};
+            _.each(hierarchy, function(currentEntityType, i){
+                stateSuffixes[currentEntityType] = _.slice(hierarchy, 0, i + 2).join('-');
+            });
+            var params = _.clone($state.params);
+            delete params.uiGridState;
+            params[entityInstanceName + 'Id'] = row.id || row.name;
+            return $state.href('home.browse.facility.' + stateSuffixes[entityInstanceName], params);
+        };
+
+
+    });
+
+})();
+
+
+/*
+(function() {
+    'use strict';
+
+
     angular
         .module('angularApp')
         .controller('BrowseFacilitiesController', BrowseFacilitiesController);
@@ -41,13 +83,6 @@
         BrowseFacilitiesModel.init(facilities, $scope);
         BrowseFacilitiesModel.getPage();
 
-
-        /**
-         * Function required by view expression to get the next route segment
-         *
-         * @param  {[type]} row [description]
-         * @return {[type]}     [description]
-         */
         $scope.getNextRouteSegment = function(row) {
             return BrowseFacilitiesModel.getNextRouteSegment(row, currentEntityType);
         };
@@ -59,3 +94,4 @@
         };
     }
 })();
+*/

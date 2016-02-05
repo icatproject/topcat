@@ -142,7 +142,7 @@
                     views: {
                       '': {
                         templateUrl: 'views/browse-facilities.html',
-                        controller: 'BrowseFacilitiesController'
+                        controller: 'BrowseFacilitiesController as browseFacilitiesController'
                       },
                       'meta-view@home.browse' : {
                             templateUrl: 'views/partial-meta-panel.html',
