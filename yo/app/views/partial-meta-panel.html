@@ -1,11 +1,11 @@
-<uibTabset>
-    	<uibTab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
+<uib-tabset>
+    	<uib-tab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
       		<div class="tab-content">
 				<div class="param-item" ng-repeat="content in tab.content">
 					<span ng-show="content.value" class="param-title">{{content.title}}</span>
 					<span ng-show="content.value" class="param-value">{{content.value}}</span>
 				</div>
 			</div>
-    	</uibTab>
-</uibTabset>
+    	</uib-tab>
+</uib-tabset>
 

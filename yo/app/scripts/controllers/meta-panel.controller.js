@@ -1,3 +1,5 @@
+
+
 (function() {
     'use strict';
 
@@ -30,13 +32,6 @@
                 vm.tabs = [];
 
                 var facility = Config.getFacilityByName(APP_CONFIG, data.facilityName);
-
-                /*//deal with special case where entity type is a proposal
-                var entityType = data.type;
-
-                if (data.type === 'propropal') {
-                    entityType = 'investigation';
-                }*/
 
                 DataManager.getEntityById(sessions, facility, data.type, data.id, options)
                 .then(function(data) {
