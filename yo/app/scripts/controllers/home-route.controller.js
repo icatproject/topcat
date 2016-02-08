@@ -1,13 +1,10 @@
 (function() {
-    'use strict';
+	'use strict';
 
-    angular
-        .module('angularApp')
-        .controller('HomeRouteController', HomeRouteController);
+    var app = angular.module('angularApp');
 
-    HomeRouteController.$inject = ['$state', 'RouteUtils'];
-
-    function HomeRouteController($state, RouteUtils) {
-        $state.go(RouteUtils.getHomeRouteName());
-    }
+    app.controller('HomeRouteController', function ($state, tc){
+    	var state = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
+        $state.go(state);
+    });
 })();
