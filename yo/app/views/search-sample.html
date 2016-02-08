@@ -5,12 +5,12 @@
     <div class="modal-body">
         <div class="form-group has-feedback">
             <label class="control-label sr-only" for="searchText"></label>
-            <input type="text" class="form-control input-sm" id="searchText" placeholder="Sample Text" ng-model="sampleModalController.value" required>
+            <input type="text" class="form-control input-sm" id="searchText" placeholder="Sample Text" ng-model="searchSampleController.value" required>
             <span class="glyphicon glyphicon-search form-control-feedback"></span>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="submit" ng-click="sampleModalController.submit()">OK</button>
-        <button class="btn btn-warning" ng-click="sampleModalController.cancel()">Cancel</button>
+        <button class="btn btn-primary" type="submit" ng-click="searchSampleController.submit()">OK</button>
+        <button class="btn btn-warning" ng-click="searchSampleController.cancel()">Cancel</button>
     </div>
 </form>

@@ -40,9 +40,9 @@
 
         this.openParameterModal = function(){
             var modal = $uibModal.open({
-                templateUrl : 'views/search/parameter-modal.html',
+                templateUrl : 'views/search-parameter.html',
                 size : 'sm',
-                controller: 'ParameterModalController as parameterModalController'
+                controller: 'SearchParameterController as searchParameterController'
             }).result.then(function(parameter){
                 that.parameters.push(parameter);
             });
@@ -54,9 +54,9 @@
 
         this.openSampleModal = function(){
             var modal = $uibModal.open({
-                templateUrl : 'views/search/sample-modal.html',
+                templateUrl : 'views/search-sample.html',
                 size : 'sm',
-                controller: 'SampleModalController as sampleModalController'
+                controller: 'SearchSampleController as searchSampleController'
             }).result.then(function(sample){
                 that.samples.push(sample);
             });

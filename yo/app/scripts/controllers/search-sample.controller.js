@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('SampleModalController', function($uibModalInstance){
+    app.controller('SearchSampleController', function($uibModalInstance){
         this.value = "";
 
         this.submit = function(){

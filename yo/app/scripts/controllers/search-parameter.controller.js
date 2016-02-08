@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('ParameterModalController', function($uibModalInstance, $filter){
+    app.controller('SearchParameterController', function($uibModalInstance, $filter){
 
         this.name = "";
         this.valueType = "";
