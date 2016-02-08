@@ -279,8 +279,11 @@
             var url = facility.icatUrl + '/icat/entityManager';
             var entityIcatName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
             var query = entityIcatName ;
+            console.log(query);
             query = appendConciseInclude(options, query);
+            console.log(query);
             query += ' [id=' + entityId + ']';
+            console.log(query);
 
             var params = {
                 params : {

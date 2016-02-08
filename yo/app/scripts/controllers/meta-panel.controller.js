@@ -36,6 +36,7 @@
                 DataManager.getEntityById(sessions, facility, data.type, data.id, options)
                 .then(function(data) {
                     vm.tabs = MetaDataManager.updateTabs(data, tabs);
+                    console.log(vm.tabs);
                 }, function(error) {
                     inform.add(error, {
                         'ttl': 4000,
