@@ -136,10 +136,10 @@
 
 
     </head>
-    <body ng-cloak ng-controller="IndexController as vm">
+    <body ng-cloak ng-controller="IndexController as indexController">
         <!-- Begin page content -->
         <div class="container-fluid">
-            <div class="page-header"  ng-hide="vm.showMaintenanceMode">
+            <div class="page-header"  ng-hide="indexController.showMaintenanceMode">
                 <!-- Fixed navbar -->
                 <div class="navbar navbar-default navbar-fixed-top">
                     <div class="container-fluid">
@@ -156,61 +156,61 @@
                                 <li ng-class="{active: $state.includes('home')}">
                                     <a ui-sref="homeRoute" translate="MAIN_NAVIGATION.HOME"></a>
                                 </li>
-                                <li ng-repeat="item in vm.leftLinks" ng-class="{active: vm.isActive(item)}">
+                                <li ng-repeat="item in indexController.leftLinks" ng-class="{active: indexController.isActive(item)}">
                                     <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
                                 </li>
-                                <li ng-show="vm.isAdmin()" ng-class="{active: $state.includes('admin')}">
+                                <li ng-show="indexController.adminFacilities.length > 0" ng-class="{active: $state.includes('admin')}">
                                     <a ui-sref="admin" translate="MAIN_NAVIGATION.ADMIN"></a>
                                 </li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
-                                <li ng-repeat="item in vm.rightLinks" ng-class="{active: vm.isActive(item)}">
+                                <li ng-repeat="item in indexController.rightLinks" ng-class="{active: indexController.isActive(item)}">
                                     <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
                                 </li>
-                                <li ng-if="vm.isLoggedIn() && vm.cartItemCount">
+                                <li ng-if="indexController.userFacilities.length > 0 && indexController.cartItemCount">
                                     <p class="navbar-text">
-                                        <span ng-click="vm.showCart()">
+                                        <span ng-click="indexController.showCart()">
                                             <span class="glyphicon glyphicon-shopping-cart"></span>
-                                            {{vm.cartItemCount}}
+                                            {{indexController.cartItemCount}}
 
-                                            <span ng-if="vm.cartItemCount == 1">
+                                            <span ng-if="indexController.cartItemCount == 1">
                                                 {{'CART.BASKET.ITEMS.TEXT.SINGULAR' | translate}}
                                             </span>
-                                            <span ng-if="vm.cartItemCount != 1">
+                                            <span ng-if="indexController.cartItemCount != 1">
                                                 {{'CART.BASKET.ITEMS.TEXT.PLURAL' | translate}}
                                             </span>
                                         </span>
                                     </p>
                                 </li>
-                                <li ng-if="vm.isLoggedIn() && vm.downloadCount">
+                                <li ng-if="indexController.userFacilities.length > 0 && indexController.downloadCount">
                                     <p class="navbar-text">
-                                        <span ng-click="vm.showDownloads()">
+                                        <span ng-click="indexController.showDownloads()">
                                             <span class="glyphicon glyphicon-download-alt"></span>
                                             Downloads
                                         </span>
                                     </p>
                                 </li>
-                                <li class="dropdown" ng-if="!vm.isSingleFacility('first')">
+                                <li class="dropdown" ng-if="indexController.facilities.length > 1">
                                     <a class="dropdown-toggle pointer" data-toggle="dropdown" role="button" aria-expanded="false"><span translate="MAIN_NAVIGATION.LOGIN"></span><span class="caret"></span></a>
 
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
                                             <a ui-sref="login" translate="MAIN_NAVIGATION.LOGIN"></a>
                                         </li>
-                                        <li class="divider" ng-if="vm.isLoggedIn()"></li>
-                                        <li ng-repeat="facilityName in vm.facilitiesToLogout()" ng-if="vm.isLoggedIn()" >
-                                            <a ui-sref="logout.facility({facilityName: facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{facilityName : vm.getFacilityTitleByFacilityName(facilityName), userName: vm.getUserNameByFacilityName(facilityName)}"></a>
+                                        <li class="divider" ng-if=""></li>
+                                        <li ng-repeat="facility in indexController.userFacilities">
+                                            <a ui-sref="logout.facility({facilityName: facility.config().facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{facilityName : facility.config().facilityName, userName: facility.icat().session().userName}"></a>
                                         </li>
-                                        <li ng-if="(vm.isLoggedIn() && vm.facilitiesToLogout().length > 1)">
+                                        <li ng-if="indexController.userFacilities.length > 1">
                                             <a ui-sref="logout" translate="MAIN_NAVIGATION.LOGOUT_ALL"></a>
                                         </li>
                                     </ul>
                                 </li>
-                                <li ng-if="! vm.isLoggedIn() && vm.isSingleFacility()">
+                                <li ng-if="indexController.userFacilities.length == 0 && indexController.facilities.length == 1">
                                     <a ui-sref="login" translate="MAIN_NAVIGATION.LOGIN"></a>
                                 </li>
-                                <li ng-if="vm.isLoggedIn() && vm.isSingleFacility()">
-                                    <a ui-sref="logout.facility({facilityName: vm.getSingleFacility().facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{userName: vm.getUserNameByFacilityName(vm.getSingleFacility().facilityName)}"></a>
+                                <li ng-if="indexController.userFacilities.length > 0 && indexController.facilities.length == 1">
+                                    <a ui-sref="logout.facility({facilityName: indexController.getSingleFacility().facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{userName: indexController.getUserNameByFacilityName(indexController.getSingleFacility().facilityName)}"></a>
                                 </li>
                             </ul>
                         </div>
@@ -223,14 +223,14 @@
             <div ui-view></div>
             <!-- /content -->
         </div>
-        <footer class="footer"  ng-hide="vm.showMaintenanceMode">
+        <footer class="footer"  ng-hide="indexController.showMaintenanceMode">
             <div class="container-fluid">
                 <div class="row-fluid">
                     <div class="col-md-12 col-centered text-center" translate="FOOTER.HTML" translate-compile></div>
                 </div>
             </div>
         </footer>
-        <div ng-if="vm.euCookieLaw">
+        <div ng-if="indexController.enableEuCookieLaw">
             <div class="container-fluid" consent></div>
         </div>
     </body>

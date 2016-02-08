@@ -126,6 +126,10 @@
 			return _.select(this.facilities(), function(facility){ return facility.icat().session().sessionId !== undefined; });
 		};
 
+		this.nonUserFacilities = function(){
+			return _.select(this.facilities(), function(facility){ return facility.icat().session().sessionId === undefined; });
+		};
+
     	function Facility(facilityName){
     		var icat;
     		var ids;

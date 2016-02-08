@@ -7,4 +7,5 @@
     	var state = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
         $state.go(state);
     });
+    
 })();

@@ -1,111 +1,67 @@
+
 (function() {
     'use strict';
 
-    angular
-        .module('angularApp')
-        .controller('IndexController', IndexController);
+    var app = angular.module('angularApp');
 
-    IndexController.$inject = ['$scope', '$rootScope', '$translate', '$uibModal', 'APP_CONFIG', 'Config', '$sessionStorage', '$state', 'tc', 'Cart'];
+    app.controller('IndexController', function($rootScope, $translate, $uibModal, tc){
+        var that = this;
 
-    function IndexController($scope, $rootScope, $translate, $uibModal, APP_CONFIG, Config, $sessionStorage, $state, tc, Cart) {
-        var vm = this;
 
-        var pages = Config.getPages(APP_CONFIG);
+        this.facilities = tc.facilities();
 
-        var leftLinks = [];
-        var rightLinks = [];
+        function refreshUserFacilities(){
+            that.userFacilities = tc.userFacilities();
+            that.nonUserFacilities = tc.nonUserFacilities();
+            that.adminFacilities = tc.adminFacilities();
+        }
+        $rootScope.$on('session:change', refreshUserFacilities);
+        refreshUserFacilities();
 
-        _.each(pages, function(page) {
-            if (typeof page.addToNavBar !== 'undefined') {
-                if (typeof page.addToNavBar.align === 'undefined' || page.addToNavBar.align === 'left') {
-                    leftLinks.push(page);
-                } else if (page.addToNavBar.align === 'right'){
-                    rightLinks.push(page);
+
+        this.enableEuCookieLaw = tc.config().enableEuCookieLaw;
+        this.leftLinks = [];
+        this.rightLinks = [];
+
+        _.each(tc.config().pages, function(page) {
+            if (page.addToNavBar){
+                if(page.addToNavBar.align == 'right'){
+                    that.rightLinks.push(page);
+                } else {
+                    that.leftLinks.push(page);
                 }
             }
         });
 
-        var facilities = Config.getFacilities(APP_CONFIG);
-
-        vm.facilities = facilities;
-
-        vm.euCookieLaw = Config.getEuCookieLaw(APP_CONFIG);
-
-        vm.cartItemCount = 0;
-        $rootScope.$on('cart:change', function(){
-            vm.cartItemCount = 0;
+        this.cartItemCount = 0;
+        function refreshCartItemCount(){
+            that.cartItemCount = 0;
             _.each(tc.userFacilities(), function(facility){
                 facility.user().cart().then(function(cart){
-                    vm.cartItemCount = vm.cartItemCount + cart.cartItems.length;
+                    that.cartItemCount = that.cartItemCount + cart.cartItems.length;
                 });
             });
-        });
+        }
+        $rootScope.$on('cart:change', refreshCartItemCount);
+        refreshCartItemCount();
 
-        $rootScope.$broadcast('cart:change');
-
-        vm.downloadCount = 0;
-        $rootScope.$on('download:change', function(){
-            vm.downloadCount = 0;
+        that.downloadCount = 0;
+        function refreshDownloadCount(){
+            that.downloadCount = 0;
             _.each(tc.userFacilities(), function(facility){
                 facility.user().downloads("where download.isDeleted = false").then(function(downloads){
-                    vm.downloadCount = downloads.length;
+                    that.downloadCount = downloads.length;
                 });
             });
-        });
+        };
+        $rootScope.$on('download:change', refreshDownloadCount);
+        refreshDownloadCount();
 
-        $rootScope.$broadcast('download:change');
-
-        var maintenanceMode = APP_CONFIG.site.maintenanceMode;
-        if(maintenanceMode){
-            this.showMaintenanceMode = maintenanceMode.show;
-        }
-
-        vm.changeLanguage = function (langKey) {
+        this.changeLanguage = function(langKey) {
             $translate.use(langKey);
         };
 
-        vm.facilitiesToLogout = function(){
-            return _.keys($sessionStorage.sessions);
-        };
-
-        vm.isLoggedIn = function(){
-            return ! (_.isEmpty($sessionStorage.sessions));
-        };
-
-        vm.getUserNameByFacilityName = function(facilityName) {
-            if (typeof $sessionStorage.sessions[facilityName] !== 'undefined') {
-                return $sessionStorage.sessions[facilityName].userName;
-            }
-        };
-
-        vm.getFacilityTitleByFacilityName = function(facilityName) {
-            return Config.getFacilityTitleByFacilityName(APP_CONFIG, facilityName);
-        };
-
-        vm.leftLinks = leftLinks;
-        vm.rightLinks = rightLinks;
-
-        vm.isActive = function(page) {
-            return $state.includes(page.stateName);
-        };
-
-        vm.isSingleFacility = function () {
-            if (_.size(facilities) === 1) {
-                return true;
-            }
-
-            return false;
-        };
-
-        vm.isAdmin = function(){
-            return tc.adminFacilities().length > 0;
-        };
-
-        vm.getSingleFacility = function () {
-            return facilities[Object.keys(facilities)[0]];
-        };
-
-        vm.showCart = function() {
+        this.showCart = function() {
             $uibModal.open({
                 templateUrl: 'views/cart.html',
                 controller: 'CartController as cartController',
@@ -118,7 +74,7 @@
             });
         };
 
-        vm.showDownloads = function() {
+        this.showDownloads = function() {
             $uibModal.open({
                 templateUrl: 'views/downloads.html',
                 controller: 'DownloadsController as downloadsController',
@@ -131,8 +87,6 @@
             });
         };
 
+    });
 
-        
-
-    }
 })();
