@@ -470,7 +470,7 @@
         },
         "INVESTIGATION_USERS" : {
             "TABTITLE" : "Investigation Users",
-            "USERS_NAME" : "Name"
+            "NAME" : "Investigator"
         },
         "INVESTIGATION_SAMPLES" : {
             "TABTITLE" : "Investigation Samples",
