@@ -1,6 +1,46 @@
 (function() {
     'use strict';
 
+    var app = angular.module('angularApp');
+
+    app.controller('LoginController', function($translate, $state, inform, deviceDetector, tc){
+        var that = this;
+        this.isFirefox = deviceDetector.browser == 'firefox'
+        this.isIE9 = deviceDetector.browser == 'ie' && deviceDetector.browser_version <= 9; 
+        this.facilities = tc.facilities();
+        this.userFacilities = tc.userFacilities();
+        this.nonUserFacilities = tc.nonUserFacilities();
+        if(this.nonUserFacilities[0]) this.facilityName = this.nonUserFacilities[0].config().facilityName;
+        this.authenticationTypes = [];
+        var facility;
+
+        this.facilityChanged = function(){
+            facility = tc.facility(this.facilityName);
+            this.plugin = facility.config().authenticationType[0].plugin;
+            this.authenticationTypes = facility.config().authenticationType;
+        };
+        if(this.nonUserFacilities.length > 0) this.facilityChanged();
+
+        this.login = function(){
+            facility.icat().login(this.plugin, this.userName, this.password).then(function(){
+                var state = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
+                $state.go(state);
+            }, function(response){
+                inform.add(response.message != null ? response.message : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {
+                    'ttl': 4000,
+                    'type': 'danger'
+                });
+            });
+        };
+
+    });
+
+})();
+
+/*
+(function() {
+    'use strict';
+
     angular
         .module('angularApp')
         .controller('LoginController', LoginController);
@@ -43,10 +83,6 @@
         //load previous remembered login
         loadRememberMe();
 
-        /**
-         * Save the user's last selected facility and authentication type to localstorage
-         * @return {[type]} [description]
-         */
         function loadRememberMe() {
             if (typeof $localStorage.login !== 'undefined') {
                 var rememberedFacility = _.find(vm.facilities, function(facility) {
@@ -76,10 +112,6 @@
             }
         }
 
-        /**
-         * Determine if a user has logged into all the congifured facilities
-         * @return {Boolean} [description]
-         */
         function isLoggedInAll() {
             if (notLoggedInFacilities.length === 0) {
                 return true;
@@ -88,10 +120,6 @@
             return false;
         }
 
-        /**
-         * Determine if only one facility is configured
-         * @return {Boolean} [description]
-         */
         function isSingleFacility() {
             if (ConfigUtils.getAllFacilityNames(Config.getFacilities(APP_CONFIG)).length === 1) {
                 return true;
@@ -100,10 +128,6 @@
             return false;
         }
 
-        /**
-         * Determine if only one authentication type is configured for the current selected facility
-         * @return {Boolean} [description]
-         */
         function isSingleAuthenticationType() {
             if (Config.getFacilityByName(APP_CONFIG, vm.user.facilityName).authenticationType.length === 1) {
                 return true;
@@ -112,10 +136,6 @@
             return false;
         }
 
-        /**
-         * Check if the authentication type in anonymous
-         * @return {Boolean} [description]
-         */
         function isAnonymous() {
             if (angular.isDefined(vm.user.plugin)) {
                 if (vm.user.plugin === 'anon') {
@@ -126,35 +146,17 @@
             return false;
         }
 
-        /**
-         * Updates the authenticationTypes when a facility is selected and set the type
-         * to the first one on the list
-         * @param  {[type]} facilityName [description]
-         * @return {[type]}              [description]
-         */
         function updateAuthenticationTypes(facilityName) {
             vm.authenticationTypes = Config.getFacilityByName(APP_CONFIG, facilityName).authenticationType;
             vm.user.plugin = vm.authenticationTypes[0].plugin;
         }
 
 
-        /**
-         * Get the authentication type for login form dropdown
-         * @param  {[type]} facilityName [description]
-         * @return {[type]}              [description]
-         */
         function getAuthenticationTypes(facilityName) {
             var facility = Config.getFacilityByName(APP_CONFIG, facilityName);
             return facility.authenticationType;
         }
 
-
-        /**
-         * Perform a login. Go to facilities list if success and display a notification
-         *
-         * @param  {[type]} form [description]
-         * @return {[type]}      [description]
-         */
         function login(form) {
             //remember selected facility and authentication type for multiple facilities
             $localStorage.login = {
@@ -278,3 +280,5 @@
         }
     }
 })();
+
+*/

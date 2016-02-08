@@ -256,7 +256,7 @@
                 .state('login', {
                     url: '/login',
                     templateUrl: 'views/login.html',
-                    controller: 'LoginController as vm',
+                    controller: 'LoginController as loginController',
                     resolve: {
                         SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
                             return SmartClientManager.ping();

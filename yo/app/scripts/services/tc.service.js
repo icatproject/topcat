@@ -667,6 +667,7 @@
     					sessionId: response.sessionId,
     					userName: plugin + '/' + username
     				}
+    				$rootScope.$broadcast('session:change');
     			});
 
     		};
@@ -683,7 +684,9 @@
 	        		delete $sessionStorage.sessions[facility.config().facilityName];
 					$sessionStorage.$apply();
 
-	        		return $q.all(promises);
+	        		return $q.all(promises).then(function(){
+	        			$rootScope.$broadcast('session:change');
+	        		});
 	        	},
 	        	'': function(){
 	        		return this.logout(false);
