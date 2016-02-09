@@ -42,7 +42,7 @@
         this.maxBreadcrumbTitleLength = maxBreadcrumbTitleLength;
         this.breadcrumbItems = [];
 
-        $timeout(function(){
+        var breadcrumbTimeout = $timeout(function(){
             var path = window.location.hash.replace(/^#\/browse\/facility\/[^\/]*\//, '').replace(/\/[^\/]*$/, '').split(/\//);
             var pathPairs = _.chunk(path, 2);
             var breadcrumbEntities = {};       
@@ -98,6 +98,9 @@
             });
 
         });
+
+
+        canceler.promise.then(function(){ $timeout.cancel(breadcrumbTimeout); });
         
 
         function generateQuery(stateFromTo, isCount){
