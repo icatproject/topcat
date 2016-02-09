@@ -3,7 +3,7 @@
 
   var app = angular.module('angularApp');
 
-  app.controller('SearchResultsController', function($stateParams, $scope, $rootScope, $q, $timeout, tc, Cart){
+  app.controller('SearchResultsController', function($stateParams, $scope, $rootScope, $q, $timeout, tc){
     var that = this;
     var facilities = $stateParams.facilities ? JSON.parse($stateParams.facilities) : [];
     var text = $stateParams.text;
