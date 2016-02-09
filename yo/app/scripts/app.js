@@ -102,14 +102,6 @@
                 return;
             }
 
-            //workaround https://github.com/angular-ui/ui-router/issues/1022
-            $urlRouterProvider.otherwise(function($injector) {
-                var $state = $injector.get('$state');
-                var RouteUtils = $injector.get('RouteUtils');
-                var routeName = RouteUtils.getHomeRouteName();
-                $state.go(routeName);
-            });
-
             $stateProvider
                 .state('home', {
                     abstract: true,
