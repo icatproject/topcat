@@ -130,6 +130,22 @@
 			return _.select(this.facilities(), function(facility){ return facility.icat().session().sessionId === undefined; });
 		};
 
+		this.purgeSessions = function(){
+	    	var promises = [];
+
+	    	_.each(this.userFacilities(), function(facility){
+	    		var icat = facility.icat();
+	    		promises.push(icat.get('session/' + icat.session().sessionId).then(function(){}, function(response){
+	    			console.log(response);
+	    			if(response.code == "SESSION"){
+	    				return icat.logout();
+	    			}
+	    		}));
+	    	});
+
+	    	return $q.all(promises);
+	    };
+
     	function Facility(facilityName){
     		var icat;
     		var ids;
@@ -688,6 +704,8 @@
 					$sessionStorage.$apply();
 
 	        		return $q.all(promises).then(function(){
+	        			$rootScope.$broadcast('session:change');
+	        		}, function(){
 	        			$rootScope.$broadcast('session:change');
 	        		});
 	        	},

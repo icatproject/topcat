@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('IndexController', function($rootScope, $translate, $uibModal, tc, ipCookie){
+    app.controller('IndexController', function($rootScope, $translate, $state, $uibModal, tc, ipCookie){
         var that = this;
 
         this.facilities = tc.facilities();
@@ -16,6 +16,14 @@
         }
         $rootScope.$on('session:change', refreshUserFacilities);
         refreshUserFacilities();
+
+        $rootScope.$on('http:error', function(){
+            tc.purgeSessions().then(function(){
+                if(tc.userFacilities().length == 0){
+                    $state.go("login");
+                }
+            });
+        });
 
         this.leftLinks = [];
         this.rightLinks = [];

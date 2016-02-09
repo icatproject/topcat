@@ -81,7 +81,6 @@
          }])
         .config(['$httpProvider', function($httpProvider) {
             $httpProvider.interceptors.push('HttpErrorInterceptor');
-            $httpProvider.interceptors.push('ICATRequestInterceptor');
         }])
         .config(['$logProvider', function($logProvider){
             $logProvider.debugEnabled(true);
