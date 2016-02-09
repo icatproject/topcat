@@ -5,8 +5,7 @@
     var app = angular.module('angularApp');
 
     app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc){
-
-        //e.g. 'facility-instrument' i.e. from 'facility' to 'instrument'
+        var that = this; 
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
         var entityInstanceName = stateFromTo.replace(/^.*-/, '');
         var realEntityInstanceName = entityInstanceName;
@@ -28,7 +27,8 @@
         var filterQuery = [];
         var totalItems;
         var gridApi;
-
+        var breadcrumb = tc.config().breadcrumb;
+        var maxBreadcrumbTitleLength = breadcrumb && breadcrumb.maxTitleLength ? breadcrumb.maxTitleLength : 1000000;
         var stopListeningForCartChanges =  $rootScope.$on('cart:change', function(){
             updateSelections();
         });
@@ -39,6 +39,66 @@
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
+        this.maxBreadcrumbTitleLength = maxBreadcrumbTitleLength;
+        this.breadcrumbItems = [];
+
+        $timeout(function(){
+            var path = window.location.hash.replace(/^#\/browse\/facility\/[^\/]*\//, '').replace(/\/[^\/]*$/, '').split(/\//);
+            var pathPairs = _.chunk(path, 2);
+            var breadcrumbEntities = {};       
+            var breadcrumbPromises = []
+            _.each(pathPairs, function(pathPair){
+                var entityType = pathPair[0];
+                var uppercaseEntityType = entityType.replace(/^(.)/, function(s){ return s.toUpperCase(); });
+                var entityId = pathPair[1];
+                if(uppercaseEntityType != 'Proposal'){
+                    breadcrumbPromises.push(icat.entity(uppercaseEntityType, ["where ?.id = ?", entityType.safe(), entityId], canceler).then(function(entity){
+                        breadcrumbEntities[entityType] = entity;
+                    }));
+                }
+            });
+            $q.all(breadcrumbPromises).then(function(){
+                var currentHref = window.location.hash.replace(/\?.*$/, '');
+                var path = window.location.hash.replace(/^#\/browse\/facility\/[^\/]*\//, '').replace(/\?.*$/, '').replace(/\/[^\/]*$/, '').split(/\//);
+                if(path.length > 1){
+                    var pathPairs = _.chunk(path, 2);
+                    _.each(pathPairs.reverse(), function(pathPair){
+                        var entityType = pathPair[0];
+                        var entityId = pathPair[1];
+                        if(entityType == 'proposal'){
+                            that.breadcrumbItems.unshift({
+                                title: entityId,
+                                href: currentHref
+                            });
+                        } else {
+                            that.breadcrumbItems.unshift({
+                                title: breadcrumbEntities[entityType].title || breadcrumbEntities[entityType].name,
+                                href: currentHref
+                            });
+                        }
+
+                        currentHref = currentHref.replace(/\/[^\/]*\/[^\/]*$/, '');
+                    });
+                }
+
+                that.breadcrumbItems.unshift({
+                    title: facility.config().title,
+                    href: currentHref
+                });
+
+                that.breadcrumbItems.unshift({
+                    translate: "BROWSE.BREADCRUMB.ROOT.NAME",
+                    href: '#/browse/facility'
+                });
+
+                that.breadcrumbItems.push({
+                    translate: 'ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME'
+                });
+
+            });
+
+        });
+        
 
         function generateQuery(stateFromTo, isCount){
             var queries = {

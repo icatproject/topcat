@@ -36,23 +36,18 @@
             }
         });
 
-        _.map(tc.userFacilities(), function(facility){
-            facility.icat().entity("Facility", ["where facility.id = ?", facility.config().facilityId]).then(function(facility){
-                gridOptions.data.push(facility);
+        _.each(tc.userFacilities(), function(facility){
+            facility.icat().entity("Facility", ["where facility.id = ?", facility.config().facilityId]).then(function(_facility){
+                gridOptions.data.push(_.merge(_facility, facility));
             });
         });
 
 
         this.getNextRouteUrl = function(facility){
-            facility = _.select(tc.facilities(), function(_facility){
-                return _facility.config().facilityId == facility.id;
-            })[0];
-            if(facility){
-                var hierarchy = facility.config().hierarchy;
-                return $state.href('home.browse.facility.' + _.slice(hierarchy, 0, 2).join('-'), {
-                    facilityName: facility.config().facilityName
-                });
-            }
+            var hierarchy = facility.config().hierarchy;
+            return $state.href('home.browse.facility.' + _.slice(hierarchy, 0, 2).join('-'), {
+                facilityName: facility.config().facilityName
+            });
         };
 
 
