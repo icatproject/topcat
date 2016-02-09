@@ -74,7 +74,6 @@
         <script src="scripts/services/route-creator.service.js"></script>
         <script src="scripts/services/config.service.js"></script>
         <script src="scripts/services/config-utils.service.js"></script>
-        <script src="scripts/services/route-utils.service.js"></script>
         <script src="scripts/services/authenticate.service.js"></script>
         <script src="scripts/services/meta-data-manager.service.js"></script>
         <script src="scripts/services/smart-client.service.js"></script>
@@ -103,7 +102,6 @@
         <!-- directives -->
         <script src="scripts/directives/eu-cookie-consent.directive.js"></script>
         <script src="scripts/directives/download-datafile.directive.js"></script>
-        <script src="scripts/directives/service-status.directive.js"></script>
         <script src="scripts/directives/on-return-click-submit-button.directive.js"></script>
         <script src="scripts/directives/take-up-remaining-height.directive.js"></script>
         <!-- filters -->
@@ -194,7 +192,22 @@
                     </div>
                 </div>
             </div>
-            <service-status></service-status>
+
+            <div ng-show="indexController.serviceStatus.show">
+                <div class="row">
+                    <div class="col-sm-4 col-sm-push-4">
+                        <div class="alert alert-info">
+                            <button 
+                                type="button" class="close"
+                                aria-label="Close"
+                                ng-click="indexController.serviceStatus.show = false">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <span ng-bind-html="indexController.serviceStatus.message"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- content -->
             <div inform class="inform-fixed inform-shadow"></div>
             <div ui-view></div>

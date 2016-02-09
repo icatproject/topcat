@@ -7,7 +7,6 @@
     app.controller('IndexController', function($rootScope, $translate, $uibModal, tc){
         var that = this;
 
-
         this.facilities = tc.facilities();
 
         function refreshUserFacilities(){
@@ -86,6 +85,8 @@
                 });
             });
         };
+
+        this.serviceStatus = tc.config().serviceStatus
 
     });
 

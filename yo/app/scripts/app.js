@@ -175,17 +175,8 @@
                         }
                     }
                 })
-                /*.state('home.my-data', {
-                    abstract: true,
-                    //url: '/my-data',
-                    views: {
-                      '': {
-                        templateUrl: 'views/main-my-data.html'
-                      }
-                    }
-                })*/
                 .state('home.my-data', {
-                    url: '/my-data/:facilityName', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    url: '/my-data/:facilityName',
                     resolve: {
                         authenticate : ['Authenticate', function(Authenticate) {
                             return Authenticate.authenticate();
@@ -203,12 +194,10 @@
                             templateUrl: 'views/partial-meta-panel.html',
                             controller: 'MetaPanelController as meta'
                         }
-                    },
-                    /*sticky: true,
-                    deepStateRedirect: true*/
+                    }
                 })
                 .state('home.cart', {
-                    url: '/cart', //?data&meta&pagingType&query&type&facility&startDate&endDate',
+                    url: '/cart',
                     resolve: {
                         authenticate : ['Authenticate', function(Authenticate) {
                             return Authenticate.authenticate();
@@ -219,9 +208,7 @@
                         templateUrl: 'views/main-cart.html',
                         controller: 'CartController'
                       }
-                    },
-                    /*sticky: true,
-                    deepStateRedirect: true*/
+                    }
                 })
                 .state('home.download', {
                     url: '/download',
