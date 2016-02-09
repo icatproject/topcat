@@ -113,12 +113,6 @@
             $stateProvider
                 .state('home', {
                     abstract: true,
-                    resolve: {
-                        cartInit : ['Cart', function(Cart) {
-                            return Cart.restore();
-                        }]
-                    },
-                    //url: '',
                     templateUrl: 'views/abstract-home.html',
                     controller: 'HomeController'
                 })
@@ -333,10 +327,5 @@
         .run(['RouteCreatorService', 'PageCreatorService', function(RouteCreatorService, PageCreatorService) {
             PageCreatorService.createStates();
             RouteCreatorService.createStates();
-        }])
-        //TODO controller is run before restore completes as it is an ajax call
-        .run(['$rootScope', 'Cart', function($rootScope, Cart) {
-            //init and restore cart when user refresh page
-            Cart.init();
         }]);
 })();
