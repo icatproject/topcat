@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('IndexController', function($rootScope, $translate, $state, $uibModal, tc, ipCookie){
+    app.controller('IndexController', function($rootScope, $scope, $translate, $state, $uibModal, $timeout, tc, ipCookie){
         var that = this;
 
         this.facilities = tc.facilities();
@@ -101,6 +101,16 @@
                 this.enableEuCookieLaw = false;
             };
         }
+
+        this.isCartPopoverOpen = false;
+        $rootScope.$on('cart:add', function(){
+            that.isCartPopoverOpen = true;
+            $timeout(function(){
+                $timeout(function(){
+                    that.isCartPopoverOpen = false;
+                });
+            });
+        });
 
     });
 

@@ -68,6 +68,9 @@
         .constant('APP_CONSTANT', {
             smartClientUrl: 'https://localhost:8888'
         })
+        .config(function($uibTooltipProvider){
+            $uibTooltipProvider.setTriggers({'show': 'show'});
+        })
         .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
             $translateProvider.translations('en', LANG);
 

@@ -1192,7 +1192,15 @@
 
 			entity.addToCart = overload({
 				'object': function(options){
-					return facility.user().addCartItem(this.entityType.toLowerCase(), this.id, options);
+					return facility.user().cart(options).then().then(function(_cart){
+						return facility.user().addCartItem(entity.entityType.toLowerCase(), entity.id, options).then(function(cart){
+							if(cart.cartItems.length > _cart.cartItems.length){
+								$rootScope.$broadcast('cart:add');
+							}
+							return cart;
+						});
+					});
+					
 				},
 				'promise': function(timeout){
 					return this.addToCart({timeout: timeout});
@@ -1204,6 +1212,7 @@
 
 			entity.deleteFromCart = overload({
 				'object': function(options){
+					$rootScope.$broadcast('cart:delete');
 					return facility.user().deleteCartItem(this.entityType.toLowerCase(), this.id, options);
 				},
 				'promise': function(timeout){

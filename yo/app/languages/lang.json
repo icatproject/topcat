@@ -242,6 +242,7 @@
     },
     "CART" : {
         "TITLE" : "Cart",
+        "NEW_MESSAGE": "A new item has been added to the cart",
         "COLUMN" : {
             "ID" : "Id",
             "NAME" : "Name",
