@@ -3,47 +3,45 @@
 (function() {
     'use strict';
 
-    angular
-    .module('angularApp')
-    .controller('MetaPanelController', MetaPanelController);
+    var app = angular.module('angularApp');
 
-    MetaPanelController.$inject = ['$rootScope', '$scope', '$state', '$stateParams','DataManager', 'APP_CONFIG', 'Config', 'RouteUtils', '$sessionStorage', 'MetaDataManager', 'inform'];
+    app.controller('MetaPanelController', function($scope, tc, MetaDataManager){
+        var that = this;
 
-    function MetaPanelController($rootScope, $scope, $state, $stateParams, DataManager, APP_CONFIG, Config, RouteUtils, $sessionStorage, MetaDataManager, inform){
-        var vm = this;
-
-        var tabs = [];
-        $scope.data = null;
-
-        $scope.$on('rowclick', function(event, data){
-            //if facility then get the facility meta tab config from site, else get config from facility config
-            if (data.type === 'facility') {
-                tabs = Config.getSiteFacilitiesMetaTabs(APP_CONFIG);
+        $scope.$on('rowclick', function(event, entity){
+            
+            var facility = tc.facility(entity.facilityName);
+            var tabs;
+            if(entity.type == 'facility'){
+                tabs = tc.config().metaTabs[entity.type];
             } else {
-                tabs = Config.getMetaTabsByEntityType(APP_CONFIG, data.facilityName, data.type);
+                tabs = facility.config().metaTabs[entity.type];
             }
 
-            var options = MetaDataManager.getTabQueryOptions(tabs);
-            var sessions = $sessionStorage.sessions;
+            var capitalizedEntityType = entity.type.replace(/^(.)/, function(s){ return s.toUpperCase(); });
+            var query = [capitalizedEntityType];
+            var includes = [];
+            _.each(tabs, function(tab){
 
-            $scope.data = data;
-
-            if(typeof tabs !== 'undefined') {
-                vm.tabs = [];
-
-                var facility = Config.getFacilityByName(APP_CONFIG, data.facilityName);
-
-                DataManager.getEntityById(sessions, facility, data.type, data.id, options)
-                .then(function(data) {
-                    vm.tabs = MetaDataManager.updateTabs(data, tabs);
-                    console.log(vm.tabs);
-                }, function(error) {
-                    inform.add(error, {
-                        'ttl': 4000,
-                        'type': 'danger'
+                if(tab.queryParams){
+                    _.each(tab.queryParams, function(queryParam){
+                        includes.push(queryParam);
                     });
-                });
+                }
+            });
+
+            if(includes.length > 0){
+                query.push("INCLUDE " + includes.join(','))
             }
+
+            query.push(['[id=?]', entity.id]);
+
+            facility.icat().query(query).then(function(data){
+                that.tabs = MetaDataManager.updateTabs(data, tabs);
+            });
+
         });
-    }
+    });
+
 })();
+
