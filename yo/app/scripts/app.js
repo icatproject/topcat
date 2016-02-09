@@ -288,15 +288,6 @@
         .config(function (pollerConfig) {
             pollerConfig.neverOverwrite = true;
         })
-    /*.config(function($stickyStateProvider) {
-      $stickyStateProvider.enableDebug(true);
-    })*/
-        .run(['SessionManager', function(SessionManager){
-            SessionManager.cleanup();
-        }])
-        .run(['SquelCustomQuery', function(SquelCustomQuery){
-            SquelCustomQuery.init();
-        }])
         .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
             //make $state and $stateParams available at rootscope.
             $rootScope.$state = $state;

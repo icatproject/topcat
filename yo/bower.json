@@ -22,7 +22,6 @@
     "ngstorage": "0.3.10",
     "angular-translate": "2.8.1",
     "angular-translate-loader-static-files": "2.8.1",
-    "squel": "4.0.0",
     "angular-ui-grid": "3.0.7",
     "angular-spinner": "0.8.0",
     "ng-device-detector": "1.1.8",

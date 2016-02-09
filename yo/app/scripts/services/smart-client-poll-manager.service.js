@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('SmartClientPollManager', SmartClientPollManager);
 
-    SmartClientPollManager.$inject = ['APP_CONFIG', 'Config', 'SmartClientManager', '$sessionStorage', 'TopcatManager', 'poller', 'inform'];
+    SmartClientPollManager.$inject = ['APP_CONFIG', 'Config', 'SmartClientManager', '$sessionStorage', 'poller', 'inform', 'tc'];
 
-    function SmartClientPollManager(APP_CONFIG, Config, SmartClientManager, $sessionStorage, TopcatManager, poller, inform) {
+    function SmartClientPollManager(APP_CONFIG, Config, SmartClientManager, $sessionStorage,  poller, inform) {
         var self = this;
 
         this.createPoller = function(facility, userName, preparedId) {
@@ -36,12 +36,14 @@
                 if (result.status === 200) {
                     _.each(result.data, function(data) {
                         if (data.toGet === 0) {
+                            /*
                             TopcatManager.completeDownloadByPreparedId(facility, userName, preparedId).then(function(completeData) {
                                 if (typeof completeData.value !== 'undefined' && completeData.value === preparedId) {
                                     smartClientPoller.stop();
                                     smartClientPoller.remove();
                                 }
                             });
+                            */
                         }
                     });
                 }
