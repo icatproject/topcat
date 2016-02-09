@@ -381,9 +381,24 @@
                 enableColumnMenu: false,
                 enableSorting: false,
                 enableHiding: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><download-datafile></download-datafile></div>'
+                cellTemplate : '<div class="ui-grid-cell-contents"><a type="button" class="btn btn-primary btn-xs" translate="BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TEXT" uib-tooltip="{{\'BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="right" tooltip-append-to-body="true" href="{{grid.appScope.downloadUrl(row.entity)}}" target="_blank"></a></div>'
             });
         }
+
+        
+
+        this.downloadUrl = function(datafile){
+            var idsUrl = facility.config().idsUrl;
+            var sessionId = icat.session().sessionId;
+            var id = datafile.id;
+            var name = datafile.location.replace(/^.*\//, '');
+            return idsUrl + 
+                '/ids/getData?sessionId=' + encodeURIComponent(sessionId) +
+                '&datafileIds=' + id +
+                '&compress=false' +
+                '&zip=false' +
+                '&outfile=' + encodeURIComponent(name);
+        };
 
         gridOptions.paginationPageSizes = pagingConfig.paginationPageSizes;
         gridOptions.paginationNumberOfRows = pagingConfig.paginationNumberOfRows;

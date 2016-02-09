@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('IndexController', function($rootScope, $translate, $uibModal, tc){
+    app.controller('IndexController', function($rootScope, $translate, $uibModal, tc, ipCookie){
         var that = this;
 
         this.facilities = tc.facilities();
@@ -17,8 +17,6 @@
         $rootScope.$on('session:change', refreshUserFacilities);
         refreshUserFacilities();
 
-
-        this.enableEuCookieLaw = tc.config().enableEuCookieLaw;
         this.leftLinks = [];
         this.rightLinks = [];
 
@@ -87,6 +85,14 @@
         };
 
         this.serviceStatus = tc.config().serviceStatus
+
+        if(!ipCookie('hideCookieMessage')){
+            this.enableEuCookieLaw =  tc.config().enableEuCookieLaw;
+            this.hideCookieMessage = function(){
+                ipCookie('hideCookieMessage', true, { expires: 365 });
+                this.enableEuCookieLaw = false;
+            };
+        }
 
     });
 

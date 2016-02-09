@@ -221,7 +221,17 @@
             </div>
         </footer>
         <div ng-if="indexController.enableEuCookieLaw">
-            <div class="container-fluid" consent></div>
+            <div class="container-fluid">
+                <div class="eu-cookie-law-consent">
+                    <div class="eu-cookie-law-consent-message">
+                        <p class="pull-left">
+                            <span translate="EU_COOKIE_LAW.HTML.MESSAGE"></span>
+                            <a ui-sref="{{'EU_COOKIE_LAW.COOKIE_POLICY_STATENAME' | translate}}" translate="EU_COOKIE_LAW.HTML.MORE_INFO"></a>
+                        </p>
+                        <button type="button" class="btn btn-success eu-cookie-law-consent-button" ng-click="indexController.hideCookieMessage()" translate="EU_COOKIE_LAW.HTML.CONSENT_BUTTON"></button>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>
