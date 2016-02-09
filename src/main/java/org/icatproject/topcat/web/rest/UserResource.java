@@ -24,6 +24,10 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient.Flag;
@@ -35,6 +39,7 @@ import org.icatproject.topcat.domain.CartSubmitDTO;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadItem;
 import org.icatproject.topcat.domain.DownloadStatus;
+import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.LongValue;
 import org.icatproject.topcat.domain.ParentEntity;
 import org.icatproject.topcat.domain.StringValue;
@@ -52,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean
-@Path("v1")
+@Path("v1/user")
 public class UserResource {
     private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
@@ -67,6 +72,9 @@ public class UserResource {
 
     @EJB
     private IdsClientBean idsClientService;
+
+    @PersistenceContext(unitName="topcatv2")
+    EntityManager em;
 
     @GET
     @Path("/downloads")
@@ -117,481 +125,232 @@ public class UserResource {
         return Response.ok().build();
     }
 
-
-
+    
     @GET
-    @Path("/downloads/facility/{facilityName}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/cart/{facilityName}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDownloadsByFacilityNameAndUser(
-            @PathParam("facilityName") String facilityName,
-            @QueryParam("userName") String userName,
-            @QueryParam("sessionId") String sessionId,
-            @QueryParam("icatUrl") String icatUrl,
-            @QueryParam("status") String status,
-            @QueryParam("transport") String transport,
-            @QueryParam("preparedId") String preparedId) throws MalformedURLException, TopcatException {
-        logger.info("getDownloadsByFacilityNameAndUser() called");
+    public Response getCart(
+        @PathParam("facilityName") String facilityName,
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId)
+        throws TopcatException, MalformedURLException, ParseException {
 
-        if (sessionId == null) {
-            throw new BadRequestException("sessionId query parameter is required");
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        Cart cart = cartRepository.getCart(userName, facilityName);
+        
+        if(cart != null){
+            em.refresh(cart);
+            return Response.ok().entity(cart).build();
+        } else {
+            return emptyCart(facilityName, userName);
+        }
+    }
+
+    @POST
+    @Path("/cart/{facilityName}/cartItem")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response addCartItem(
+        @PathParam("facilityName") String facilityName,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("entityType") String entityType,
+        @FormParam("entityId") Long entityId)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        Cart cart = cartRepository.getCart(userName, facilityName);
+        String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
+
+        if(cart == null){
+            cart = new Cart();
+            cart.setFacilityName(facilityName);
+            cart.setUserName(userName);
+            em.persist(cart);
+            em.flush();
         }
 
-        if (icatUrl == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
-        }
+        em.refresh(cart);
 
-        if (userName == null) {
-            throw new BadRequestException("userName query parameter is required");
-        }
-
-        //validate status
-        if (status != null) {
-            DownloadStatus downloadStatus = DownloadStatus.valueOf(status);
-
-            if (downloadStatus == null) {
-                throw new BadRequestException("Status must be RESTORING or COMPLETE");
+        for(CartItem cartItem : cart.getCartItems()){
+            if(cartItem.getEntityType() == EntityType.valueOf(entityType) && cartItem.getEntityId() == entityId){
+                return Response.ok().entity(cart).build();
             }
         }
 
-        //check user is authorised
-        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setEntityType(EntityType.valueOf(entityType));
+        cartItem.setEntityId(entityId);
+        cartItem.setName(name);
+        em.persist(cartItem);
+        
 
-        if (! auth) {
-            throw new ForbiddenException("sessionId not valid");
+        List<ParentEntity> parentEntities = icatClientService.getParentEntities(icatUrl, sessionId, entityType, entityId);
+        for(ParentEntity parentEntity : parentEntities){
+            parentEntity.setCartItem(cartItem);
+            em.persist(parentEntity);
         }
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("facilityName", facilityName);
-        params.put("userName", userName);
-        params.put("sessionId", sessionId);
-        params.put("icatUrl", icatUrl);
-        params.put("status", status);
-        params.put("transport", transport);
-        params.put("preparedId", preparedId);
-
-
-        List<Download> downloads = new ArrayList<Download>();
-        downloads = downloadRepository.getDownloadsByFacilityNameAndUser(params);
-
-        return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
+        em.flush();
+        em.refresh(cart);
+        
+        return Response.ok().entity(cart).build();
     }
 
 
     @DELETE
-    @Path("/downloads/{preparedId}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/cart/{facilityName}/cartItem/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteDownloadsByPreparedId(
-            @PathParam("preparedId") String preparedId,
-            @QueryParam("sessionId") String sessionId,
-            @QueryParam("icatUrl") String icatUrl,
-            @QueryParam("userName") String userName) throws MalformedURLException, TopcatException {
-        logger.info("deleteDownloadsByPreparedId() called");
+    public Response deleteCartItem(
+        @PathParam("facilityName") String facilityName,
+        @PathParam("id") Long id,
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId)
+        throws TopcatException, MalformedURLException, ParseException {
 
-        if (sessionId == null) {
-            throw new BadRequestException("sessionId query parameter is required");
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        Cart cart = cartRepository.getCart(userName, facilityName);
+        if(cart == null){
+            return emptyCart(facilityName, userName);
         }
 
-        if (icatUrl == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
+        CartItem cartItem = em.find(CartItem.class, id);
+        if(cartItem != null){
+            em.remove(cartItem);
+            em.flush();
         }
 
-        if (userName == null) {
-            throw new BadRequestException("userName query parameter is required");
+        em.refresh(cart);
+        if(cart.getCartItems().size() == 0){
+            em.remove(cart);
+            em.flush();
+            return emptyCart(facilityName, userName);
         }
-
-        //check user is authorised
-        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
-
-        if (! auth) {
-            throw new ForbiddenException("sessionId not valid");
-        }
-
-        if (! isUserValid(icatUrl, sessionId, userName)) {
-            throw new ForbiddenException("You do not have permission to remove this download");
-        }
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("preparedId", preparedId);
-        params.put("userName", userName);
-
-
-        String deletedPreparedId = downloadRepository.deleteDownloadByPreparedIdAndUserName(params);
-
-        if (deletedPreparedId != null) {
-            StringValue value = new StringValue(deletedPreparedId);
-            //return preparedId value if success
-            return Response.ok().entity(value).build();
-        }
-
-        //return empty object if delete fails
-        return Response.ok().entity("{}").build();
-    }
-
-
-    @GET
-    @Path("/cart/facility/{facilityName}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getCartByFacilityNameAndUser(
-            @PathParam("facilityName") String facilityName,
-            @QueryParam("userName") String userName,
-            @QueryParam("sessionId") String sessionId,
-            @QueryParam("icatUrl") String icatUrl) throws MalformedURLException, TopcatException {
-        logger.info("getDownloadsByFacilityNameAndUser() called");
-
-        if (sessionId == null) {
-            throw new BadRequestException("sessionId query parameter is required");
-        }
-
-        if (icatUrl == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
-        }
-
-        if (userName == null) {
-            throw new BadRequestException("userName query parameter is required");
-        }
-
-        //check user is authorised
-        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
-
-        if (! auth) {
-            throw new ForbiddenException("sessionId not valid");
-        }
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("facilityName", facilityName);
-        params.put("userName", userName);
-        params.put("sessionId", sessionId);
-        params.put("icatUrl", icatUrl);
-
-        Cart cart = cartRepository.getCartByFacilityNameAndUser(params);
-
-        if (cart == null) {
-            logger.debug("cart is null");
-            return Response.ok().entity("{}").build();
-        }
-
-        logger.debug("cart:" + cart.toString());
 
         return Response.ok().entity(cart).build();
     }
 
-    @DELETE
-    @Path("/cart/facility/{facilityName}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response removeCartByFacilityNameAndUser(
-            @PathParam("facilityName") String facilityName,
-            @QueryParam("userName") String userName,
-            @QueryParam("sessionId") String sessionId,
-            @QueryParam("icatUrl") String icatUrl) throws MalformedURLException, TopcatException {
-        logger.info("removeCartByFacilityNameAndUser() called");
-
-        if (sessionId == null) {
-            throw new BadRequestException("sessionId query parameter is required");
-        }
-
-        if (icatUrl == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
-        }
-
-        if (userName == null) {
-            throw new BadRequestException("userName query parameter is required");
-        }
-
-        //check user is authorised
-        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
-
-        if (! auth) {
-            throw new ForbiddenException("sessionId not valid");
-        }
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("facilityName", facilityName);
-        params.put("userName", userName);
-        params.put("sessionId", sessionId);
-        params.put("icatUrl", icatUrl);
-
-        int deletedCount = cartRepository.removeCartByFacilityNameAndUser(params);
-
-        LongValue result = new LongValue(new Long(deletedCount));
-
-        logger.debug(deletedCount + " cart belonging to " + userName + " on facility " + facilityName + " was removed");
-
-        return Response.ok().entity(result).build();
-    }
-
-
     @POST
-    @Path("/cart/submit")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/cart/{facilityName}/submit")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response submitCart(CartSubmitDTO cartSubmitDTO) throws MalformedURLException, TopcatException {
-        logger.info("submitCart() called");
+    public Response submitCart(
+        @PathParam("facilityName") String facilityName,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("transport") String transport,
+        @FormParam("transportUrl") String transportUrl,
+        @FormParam("email") String email,
+        @FormParam("fileName") String fileName,
+        @FormParam("zipType") String zipType)
+        throws TopcatException, MalformedURLException, ParseException {
 
-        //validate. Sould use bean validation but don't know how to return json error messages
-        if (cartSubmitDTO.getSessionId() == null) {
-            throw new BadRequestException("sessionId is required");
-        }
-
-        if (cartSubmitDTO.getIcatUrl() == null) {
-            throw new BadRequestException("icatUrl is required");
-        }
-
-        if (cartSubmitDTO.getFacilityName() == null || cartSubmitDTO.getFacilityName().isEmpty()) {
-            throw new BadRequestException("facilityName is required");
-        }
-
-        if (cartSubmitDTO.getFileName() == null || cartSubmitDTO.getFileName().trim().isEmpty()) {
+        if (fileName == null || fileName.trim().isEmpty()) {
             throw new BadRequestException("fileName is required");
         }
 
-        if (cartSubmitDTO.getTransport() == null || cartSubmitDTO.getTransport().trim().isEmpty()) {
+        if (transport == null || transport.trim().isEmpty()) {
             throw new BadRequestException("transport is required");
         }
 
-        //check user is authorised
-        logger.info("check user is authorised");
-        boolean auth = icatClientService.isSessionValid(cartSubmitDTO.getIcatUrl(), cartSubmitDTO.getSessionId());
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        Cart cart = cartRepository.getCart(userName, facilityName);
+        String fullName = icatClientService.getFullName(icatUrl, sessionId);
+        
+        if(cart != null){
+            em.refresh(cart);
 
-        if (! auth) {
-            throw new ForbiddenException("sessionId not valid");
-        }
+            String preparedId = idsClientService.prepareData(transportUrl, sessionId, cartToDataSelection(cart), getZipFlag(zipType));
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("facilityName", cartSubmitDTO.getFacilityName());
-        params.put("userName", cartSubmitDTO.getUserName());
-        params.put("sessionId", cartSubmitDTO.getSessionId());
-        params.put("icatUrl", cartSubmitDTO.getIcatUrl());
+            if (preparedId != null) {
+                Download download = new Download();
+                download.setPreparedId(preparedId);
+                download.setFacilityName(cart.getFacilityName());
+                download.setFileName(fileName);
+                download.setUserName(cart.getUserName());
+                download.setFullName(fullName);
+                download.setTransport(transport);
+                download.setTransportUrl(transportUrl);
+                download.setIcatUrl(icatUrl);
+                download.setEmail(email);
+                boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
+                download.setIsTwoLevel(isTwoLevel);
+                if (isTwoLevel == true) {
+                    download.setStatus(DownloadStatus.RESTORING);
+                } else {
+                    download.setStatus(DownloadStatus.COMPLETE);
+                    download.setCompletedAt(new Date());
+                }
 
-        Cart cart = cartRepository.getCartByFacilityNameAndUser(params);
+                List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
 
-        if (cart == null) {
-            throw new BadRequestException("There is no cart found for " + cartSubmitDTO.getUserName() + " on the facility " + cartSubmitDTO.getFacilityName());
-        }
+                for(CartItem cartItem : cart.getCartItems()) {
+                    DownloadItem downloadItem = new DownloadItem();
+                    downloadItem.setEntityId(cartItem.getEntityId());
+                    downloadItem.setEntityType(cartItem.getEntityType());
+                    downloadItem.setDownload(download);
+                    downloadItems.add(downloadItem);
+                }
 
-        //get user full
-        String fullName = icatClientService.getFullName(cartSubmitDTO.getIcatUrl(), cartSubmitDTO.getSessionId());
+                download.setDownloadItems(downloadItems);
 
-        Download download = new Download();
-        download.setFacilityName(cartSubmitDTO.getFacilityName());
-        download.setFileName(cartSubmitDTO.getFileName());
-        download.setUserName(cartSubmitDTO.getUserName());
-        download.setFullName(fullName);
-        download.setTransport(cartSubmitDTO.getTransport());
-        download.setTransportUrl(cartSubmitDTO.getTransportUrl());
-        download.setIcatUrl(cartSubmitDTO.getIcatUrl());
-        download.setEmail(cartSubmitDTO.getEmail());
+                try {
+                    em.persist(download);
+                    em.remove(cart);
+                    em.flush();
+                } catch (Exception e) {
+                    logger.debug(e.getMessage());
+                    throw new BadRequestException("Unable to submit for cart for download");
+                }
 
-        List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
-
-        for(CartItem cartItem : cart.getCartItems()) {
-            DownloadItem downloadItem = new DownloadItem();
-            downloadItem.setEntityId(cartItem.getEntityId());
-            downloadItem.setEntityType(cartItem.getEntityType());
-            downloadItem.setDownload(download);
-
-            downloadItems.add(downloadItem);
-        }
-
-        download.setDownloadItems(downloadItems);
-
-        DataSelection dataSelection =  CartUtils.cartToDataSelection(cart);
-
-        Flag zipType = CartUtils.getZipFlag(cartSubmitDTO.getZipType());
-
-        logger.info("Send prepareData request to " + cartSubmitDTO.getTransportUrl() + " for zipType " + zipType.toString());
-        String preparedId = idsClientService.prepareData(cartSubmitDTO.getTransportUrl(), cartSubmitDTO.getSessionId(), dataSelection, zipType);
-        logger.info("Returned prepareId " + preparedId);
-
-        boolean isTwoLevel = idsClientService.isTwoLevel(cartSubmitDTO.getTransportUrl());
-        download.setIsTwoLevel(isTwoLevel);
-
-        if (preparedId != null) {
-            download.setPreparedId(preparedId);
-            download.setStatus(DownloadStatus.RESTORING);
-
-            // if isTwoLevel storage start a check status thread
-            if (isTwoLevel == true) {
-                download.setStatus(DownloadStatus.RESTORING);
             } else {
-                download.setStatus(DownloadStatus.COMPLETE);
-                download.setCompletedAt(new Date());
-            }
-
-            try {
-                downloadRepository.save(download);
-            } catch (Exception e) {
-                logger.debug(e.getMessage());
-
                 throw new BadRequestException("Unable to submit for cart for download");
             }
-
-        } else {
-            throw new BadRequestException("Unable to submit for cart for download");
+           
         }
 
-        StringValue value = new StringValue(preparedId);
-
-        return Response.ok().entity(value).build();
+        return emptyCart(facilityName, userName);
     }
 
+    private Response emptyCart(String facilityName, String userName){
+        JsonObject emptyCart = Json.createObjectBuilder()
+            .add("facilityName", facilityName)
+            .add("userName", userName)
+            .add("cartItems", Json.createArrayBuilder().build())
+            .build();
+        return Response.ok().entity(emptyCart.toString()).build();
+    }
 
-
-
-
-    @POST
-    @Path("/cart")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response createCart(CartDTO cartDTO) throws MalformedURLException, TopcatException {
-        logger.info("getDownloadsByFacilityNameAndUser() called");
-
-        if (cartDTO.getSessionId() == null) {
-            throw new BadRequestException("sessionId query parameter is required");
+    private Flag getZipFlag(String zip) {
+        if (zip == null ) {
+            return Flag.ZIP;
         }
-
-        if (cartDTO.getIcatUrl() == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
+        zip = zip.toUpperCase();
+        if(zip.equals("ZIP_AND_COMPRESS")) {
+            return Flag.ZIP_AND_COMPRESS;
+        } else {
+            return Flag.ZIP;
         }
+    }
 
-        //check user is authorised
-        boolean auth = icatClientService.isSessionValid(cartDTO.getIcatUrl(), cartDTO.getSessionId());
+    private DataSelection cartToDataSelection(Cart cart) {
+        DataSelection dataSelection = new DataSelection();
 
-        if (! auth) {
-            throw new ForbiddenException("sessionId not valid");
-        }
-
-        Cart cart = new Cart();
-        cart.setFacilityName(cartDTO.getFacilityName());
-        cart.setUserName(cartDTO.getUserName());
-
-        List<CartItem> cartItems = new ArrayList<CartItem>();
-
-        for(CartItem cartItem : cartDTO.getCartItems()) {
-            CartItem newCartItem = new CartItem();
-            newCartItem.setEntityId(cartItem.getEntityId());
-            newCartItem.setName(cartItem.getName());
-            newCartItem.setEntityType(cartItem.getEntityType());
-            newCartItem.setCart(cart);
-
-            List<ParentEntity> newParentEntities = new ArrayList<ParentEntity>();
-            //parent entities
-            for(ParentEntity parentEntity : cartItem.getParentEntities()) {
-                ParentEntity newParentEnity = new ParentEntity();
-                newParentEnity.setEntityId(parentEntity.getEntityId());
-                newParentEnity.setEntityType(parentEntity.getEntityType());
-                newParentEnity.setCartItem(newCartItem);
-
-                newParentEntities.add(newParentEnity);
+        for (CartItem cartItem : cart.getCartItems()) {
+            if (cartItem.getEntityType() == EntityType.investigation) {
+                dataSelection.addInvestigation(cartItem.getEntityId());
             }
 
-            newCartItem.setParentEntities(newParentEntities);
+            if (cartItem.getEntityType() == EntityType.dataset) {
+                dataSelection.addDataset(cartItem.getEntityId());
+            }
 
-            cartItems.add(newCartItem);
+            if (cartItem.getEntityType() == EntityType.datafile) {
+                dataSelection.addDatafile(cartItem.getEntityId());
+            }
         }
 
-        cart.setCartItems(cartItems);
-
-        cart = cartRepository.save(cart);
-
-        LongValue preparedId = new LongValue(cart.getId());
-
-        return Response.ok().entity(preparedId).build();
+        return dataSelection;
     }
-
-    /*
-    @PUT
-    @Path("/downloads/{preparedId}/complete")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response setCompleteByPreparedId(
-            @PathParam("preparedId") String preparedId,
-            @QueryParam("icatUrl") String icatUrl,
-            @QueryParam("userName") String userName,
-            @QueryParam("sessionId") String sessionId) throws MalformedURLException, TopcatException {
-        logger.info("setCompleteByPreparedId() called");
-
-        if (sessionId == null) {
-            throw new BadRequestException("sessionId query parameter is required");
-        }
-
-        if (icatUrl == null) {
-            throw new BadRequestException("icatUrl query parameter is required");
-        }
-
-        if (userName == null) {
-            throw new BadRequestException("userName query parameter is required");
-        }
-
-        //check user is authorised
-        boolean auth = icatClientService.isSessionValid(icatUrl, sessionId);
-
-        if (! auth) {
-            throw new ForbiddenException("sessionId not valid");
-        }
-
-        if (! isUserValid(icatUrl, sessionId, userName)) {
-            throw new ForbiddenException("You do not have permission to mark this download as complete");
-        }
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("preparedId", preparedId);
-
-        String result = downloadRepository.setCompleteByPreparedId(params);
-
-        if (result == null) {
-            throw new BadRequestException("PreparedId " + preparedId + " not found");
-        }
-
-        StringValue id = new StringValue(preparedId);
-        return Response.ok().entity(id).build();
-    }
-    */
-
-
-
-    @GET
-    @Path("/ping")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response ping() {
-        logger.info("ping() called");
-
-        StringValue value = new StringValue("ok");
-
-        return Response.ok().entity(value).build();
-    }
-
-
-    @GET
-    @Path("/version")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getVersion() {
-        logger.info("getVersion() called");
-
-        StringValue value = new StringValue(Constants.API_VERSION);
-
-        return Response.ok().entity(value).build();
-    }
-
-
-
-    /**
-     * Check userName matches session
-     * @param icatUrl
-     * @param sessionId
-     * @param userName
-     * @return
-     * @throws MalformedURLException
-     * @throws TopcatException
-     */
-    private boolean isUserValid(String icatUrl, String sessionId, String userName) throws MalformedURLException, TopcatException {
-        logger.info("isUserValid() called");
-        String icatUserName = icatClientService.getUserName(icatUrl, sessionId);
-
-        return userName.equals(icatUserName);
-    }
-
-
+    
 
 }
