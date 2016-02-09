@@ -667,9 +667,12 @@
     					sessionId: response.sessionId,
     					userName: plugin + '/' + username
     				}
-    				$rootScope.$broadcast('session:change');
-    			});
 
+    				return facility.admin().isValidSession(response.sessionId).then(function(isAdmin){
+	                    $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
+	                    $rootScope.$broadcast('session:change');
+	                });
+    			});
     		};
 
 	        this.logout = overload({
