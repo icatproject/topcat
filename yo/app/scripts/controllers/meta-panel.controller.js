@@ -7,7 +7,6 @@
 
     app.controller('MetaPanelController', function($scope, tc, MetaDataManager){
         var that = this;
-
         $scope.$on('rowclick', function(event, entity){
             
             var facility = tc.facility(entity.facilityName);
@@ -39,7 +38,7 @@
             facility.icat().query(query).then(function(data){
                 that.tabs = MetaDataManager.updateTabs(data, tabs);
             });
-
+            
         });
     });
 

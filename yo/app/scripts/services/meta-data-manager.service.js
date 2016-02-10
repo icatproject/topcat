@@ -39,12 +39,14 @@
                         if (angular.isDefined(dataV.translateDisplayName)) {
                             content.push({
                                 'title': $translate.instant(dataV.translateDisplayName),
-                                'value': icatDataCurrent[dataV.field]
+                                'value': icatDataCurrent[dataV.field],
+                                'template': dataV.template
                             });
                         } else {
                             content.push({
                                 'title': dataV.displayName,
-                                'value': icatDataCurrent[dataV.field]
+                                'value': icatDataCurrent[dataV.field],
+                                'template': dataV.template
                             });
                         }
                     }
