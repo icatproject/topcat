@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('CartController', function($translate, $uibModalInstance, $uibModal, $q, $scope, tc, uiGridConstants){
+    app.controller('CartController', function($translate, $uibModalInstance, $uibModal, $q, $scope, $rootScope, tc, uiGridConstants){
         var that = this;
         var pagingConfig = tc.config().paging;
         var timeout = $q.defer();
@@ -163,6 +163,7 @@
                         });
                         $q.all(promises).then(function(){
                             $uibModalStack.dismissAll();
+                            $rootScope.$broadcast('cart:submit');
                         });
                     };
 

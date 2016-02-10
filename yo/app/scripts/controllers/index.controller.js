@@ -39,11 +39,20 @@
         });
 
         this.cartItemCount = 0;
+        this.isCartPopoverOpen = false;
+        $rootScope.$on('cart:add', function(){
+            that.isCartPopoverOpen = true;
+        });
         function refreshCartItemCount(){
             that.cartItemCount = 0;
             _.each(tc.userFacilities(), function(facility){
                 facility.user().cart().then(function(cart){
                     that.cartItemCount = that.cartItemCount + cart.cartItems.length;
+                    $timeout(function(){
+                        $timeout(function(){
+                            that.isCartPopoverOpen = false;
+                        });
+                    });
                 });
             });
         }
@@ -51,11 +60,20 @@
         refreshCartItemCount();
 
         that.downloadCount = 0;
+        this.isDownloadsPopoverOpen = false;
+        $rootScope.$on('cart:submit', function(){
+            that.isDownloadsPopoverOpen = true;
+        });
         function refreshDownloadCount(){
             that.downloadCount = 0;
             _.each(tc.userFacilities(), function(facility){
                 facility.user().downloads("where download.isDeleted = false").then(function(downloads){
                     that.downloadCount = downloads.length;
+                    $timeout(function(){
+                        $timeout(function(){
+                            that.isDownloadsPopoverOpen = false;
+                        });
+                    });
                 });
             });
         };
@@ -101,16 +119,6 @@
                 this.enableEuCookieLaw = false;
             };
         }
-
-        this.isCartPopoverOpen = false;
-        $rootScope.$on('cart:add', function(){
-            that.isCartPopoverOpen = true;
-            $timeout(function(){
-                $timeout(function(){
-                    that.isCartPopoverOpen = false;
-                });
-            });
-        });
 
     });
 

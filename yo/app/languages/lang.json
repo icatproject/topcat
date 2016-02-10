@@ -319,6 +319,7 @@
     },
     "DOWNLOAD" : {
         "TITLE" : "Download Orders",
+        "NEW_MESSAGE": "A new download has been added",
         "COLUMN" : {
             "FILE_NAME" : "Download Name",
             "TRANSPORT" : "Transport",
