@@ -1049,7 +1049,8 @@
                                 "type": "input"
                             },
                             "cellTooltip": true,
-                            "link": true
+                            "link": true,
+                            "breadcrumb": true
                         }
                     ]
                 },
@@ -1062,22 +1063,6 @@
                     ],
                     "columnDefs": [
                         {
-                            "field": "title",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
-                            "type": "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            },
-                            "sort": {
-                                "direction": "asc"
-                            },
-                            "cellTooltip": true,
-                            "link": true,
-                            "minWidth": 350
-                        },
-                        {
                             "field": "visitId",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                             "type": "string",
@@ -1087,7 +1072,8 @@
                                 "type": "input"
                             },
                             "cellTooltip": true,
-                            "link": true
+                            "link": true,
+                            "breadcrumb": true
                         },
                         {
                             "field": "name",

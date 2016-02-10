@@ -36,6 +36,17 @@
             canceler.resolve();
             stopListeningForCartChanges();
         });
+        var breadcrumbTitleMap = {};
+        _.each(facility.config().browseGridOptions, function(gridOptions, entityType){
+            var field = "";
+            _.each(gridOptions.columnDefs, function(columnDef){
+                if(columnDef.breadcrumb){
+                    field = columnDef.field;
+                    return false;
+                }
+            });
+            breadcrumbTitleMap[entityType] = field;
+        });
 
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
@@ -48,35 +59,34 @@
             var breadcrumbEntities = {};       
             var breadcrumbPromises = []
             _.each(pathPairs, function(pathPair){
-                var entityType = pathPair[0];
-                var uppercaseEntityType = entityType.replace(/^(.)/, function(s){ return s.toUpperCase(); });
-                var entityId = pathPair[1];
-                if(uppercaseEntityType != 'Proposal'){
-                    breadcrumbPromises.push(icat.entity(uppercaseEntityType, ["where ?.id = ?", entityType.safe(), entityId], canceler).then(function(entity){
-                        breadcrumbEntities[entityType] = entity;
-                    }));
+                if(pathPair.length == 2){
+                    var entityType = pathPair[0];
+                    var uppercaseEntityType = entityType.replace(/^(.)/, function(s){ return s.toUpperCase(); });
+                    var entityId = pathPair[1];
+                    if(uppercaseEntityType == 'Proposal'){
+                        breadcrumbPromises.push(icat.entity("Investigation", ["where investigation.name = ?", entityId], canceler).then(function(entity){
+                            breadcrumbEntities[entityType] = entity;
+                        }));
+                    } else {
+                        breadcrumbPromises.push(icat.entity(uppercaseEntityType, ["where ?.id = ?", entityType.safe(), entityId], canceler).then(function(entity){
+                            breadcrumbEntities[entityType] = entity;
+                        }));
+                    }
                 }
             });
             $q.all(breadcrumbPromises).then(function(){
                 var currentHref = window.location.hash.replace(/\?.*$/, '');
                 var path = window.location.hash.replace(/^#\/browse\/facility\/[^\/]*\//, '').replace(/\?.*$/, '').replace(/\/[^\/]*$/, '').split(/\//);
+                
                 if(path.length > 1){
                     var pathPairs = _.chunk(path, 2);
                     _.each(pathPairs.reverse(), function(pathPair){
                         var entityType = pathPair[0];
                         var entityId = pathPair[1];
-                        if(entityType == 'proposal'){
-                            that.breadcrumbItems.unshift({
-                                title: entityId,
-                                href: currentHref
-                            });
-                        } else {
-                            that.breadcrumbItems.unshift({
-                                title: breadcrumbEntities[entityType].title || breadcrumbEntities[entityType].name,
-                                href: currentHref
-                            });
-                        }
-
+                        that.breadcrumbItems.unshift({
+                            title: breadcrumbEntities[entityType][breadcrumbTitleMap[entityType]] || breadcrumbEntities[entityType].title || breadcrumbEntities[entityType].name,
+                            href: currentHref
+                        });
                         currentHref = currentHref.replace(/\/[^\/]*\/[^\/]*$/, '');
                     });
                 }
