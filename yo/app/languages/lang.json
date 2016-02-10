@@ -266,6 +266,9 @@
                 "TOOLTIP" : {
                     "TEXT" : "Click to submit this cart for download"
                 }
+            },
+            "CANCEL" : {
+                "TEXT" : "Close"
             }
         },
         "ACTIONS" : {
@@ -388,6 +391,9 @@
                 "TOOLTIP" : {
                     "TEXT" : "Refresh download order"
                 }
+            },
+            "CANCEL" : {
+                "TEXT" : "Close"
             }
         },
         "SMARTCLIENT_DOWNLOAD" : {
