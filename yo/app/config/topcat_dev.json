@@ -695,7 +695,7 @@
                             "field": "createTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -711,7 +711,7 @@
                             "field": "modTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -767,7 +767,7 @@
                             "field": "modTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1163,7 +1163,7 @@
                             "field": "createTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1179,7 +1179,7 @@
                             "field": "modTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1234,7 +1234,7 @@
                             "field": "modTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1316,11 +1316,13 @@
                             },
                             {
                                 "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
-                                "field": "startDate"
+                                "field": "startDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             },
                             {
                                 "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
-                                "field": "endDate"
+                                "field": "endDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             }
                         ]
                     },
@@ -1390,11 +1392,13 @@
                             },
                             {
                                 "translateDisplayName": "METATABS.DATASET.START_DATE",
-                                "field": "startDate"
+                                "field": "startDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             },
                             {
                                 "translateDisplayName": "METATABS.DATASET.END_DATE",
-                                "field": "endDate"
+                                "field": "endDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             }
                         ]
                     },
@@ -1433,7 +1437,8 @@
                             },
                             {
                                 "translateDisplayName": "METATABS.DATAFILE.SIZE",
-                                "field": "fileSize"
+                                "field": "fileSize",
+                                "template": "{{content.value | bytes}}"
                             },
                             {
                                 "translateDisplayName": "METATABS.DATAFILE.LOCATION",
@@ -1687,7 +1692,7 @@
                             "field": "createTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1703,7 +1708,7 @@
                             "field": "modTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1759,7 +1764,7 @@
                             "field": "modTime",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "filters": [
                                 {
                                     "placeholder": "From...",
