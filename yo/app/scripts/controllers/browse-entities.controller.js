@@ -172,9 +172,21 @@
             if(entityInstanceName == 'proposal'){
                 var defered = $q.defer();
                 out.then(function(names){
-                    defered.resolve(_.map(names, function(name){ return {name: name, entityType: 'proposal'}; }));
-                }, function(response){
-                    defered.reject(response);
+                    if(names.length > 0){
+                        return icat.query(canceler.promise, [
+                            "select investigation from Investigation investigation",
+                            "where investigation.name in (" + _.map(names, function(){ return '?'}).join(',') + ")", names,
+                            filterQuery, sortQuery
+                        ]).then(function(proposals){
+                            _.each(proposals, function(proposal){
+                                proposal.entityType = "Proposal";
+                                proposal.id = proposal.name;
+                            });
+                            return defered.resolve(proposals);
+                        });
+                    } else {
+                        return defered.resolve(names);
+                    }
                 });
                 out = defered.promise;
             }

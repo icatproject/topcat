@@ -465,6 +465,10 @@
                 {
                     "title": "Simple",
                     "plugin": "simple"
+                },
+                {
+                    "title": "DB",
+                    "plugin": "db"
                 }
             ],
             "downloadTransportType": [
@@ -992,16 +996,8 @@
                     "plugin": "ldap"
                 },
                 {
-                    "title": "DB",
-                    "plugin": "db"
-                },
-                {
                     "title": "Anonymous",
                     "plugin": "anon"
-                },
-                {
-                    "title": "Simple",
-                    "plugin": "simple"
                 }
             ],
             "downloadTransportType": [
@@ -1041,7 +1037,7 @@
                     "enableFiltering": true,
                     "columnDefs": [
                         {
-                            "field": "name",
+                            "field": "title",
                             "translateDisplayName": "BROWSE.COLUMN.PROPOSAL.NAME",
                             "type": "string",
                             "sort": {
