@@ -32,6 +32,9 @@
             pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
             paginationPageSizes: pagingConfig.paginationPageSizes
         }, tc.config().myDataGridOptions[entityType]);
+        gridOptions.useExternalPagination = true;
+        gridOptions.useExternalSorting = true;
+        gridOptions.useExternalFiltering = true;
 
         var sortColumns = [];
         _.each(gridOptions.columnDefs, function(columnDef){
@@ -282,6 +285,7 @@
                 page = 1;
                 gridOptions.data = [];
                 getPage().then(function(results){
+                    console.log(gridOptions);
                     gridOptions.data = results;
                     updateSelections();
                     updateScroll(results.length);
