@@ -33,6 +33,7 @@
             paginationPageSizes: pagingConfig.paginationPageSizes
         }, tc.config().myDataGridOptions[entityType]);
 
+        var sortColumns = [];
         _.each(gridOptions.columnDefs, function(columnDef){
             
             if(columnDef.link) {
@@ -70,11 +71,25 @@
             if(columnDef.field == 'instrumentNames'){
                 columnDef.cellTemplate = '<div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length > 1"><span class="glyphicon glyphicon-th-list" tooltip="{{row.entity.instrumentNames}}" tooltip-placement="top" tooltip-append-to-body="true"></span> {{row.entity.firstInstrumentName}}</div><div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length <= 1">{{row.entity.firstInstrumentName}}</div>';
             }
-            
+
+            if(columnDef.sort){
+                if(columnDef.sort.direction.toLowerCase() == 'desc'){
+                    columnDef.sort.direction = uiGridConstants.DESC;
+                } else {
+                    columnDef.sort.direction = uiGridConstants.ASC;
+                }
+            }
 
             columnDef.jpqlExpression = columnDef.jpqlExpression || entityType + '.' + columnDef.field;
+            if(columnDef.sort) sortColumns.push(columnDef);
         });
         this.gridOptions = gridOptions;
+
+        if(sortColumns.length > 0){
+            sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
+                return sortColumn.jpqlExpression + ' ' + sortColumn.sort.direction;
+            }).join(', '));
+        }
 
         var includes = gridOptions.includes;
         this.facilities = tc.userFacilities();
@@ -124,6 +139,7 @@
                 "WHERE facility.id = ?", facility.config().facilityId,
                 "AND investigationUser.user.name = :user",
                 filterQuery,
+                sortQuery,
                 includes && includes.length > 0 ? "INCLUDE " + includes.join(', ') : "",
                 "LIMIT ?, ?", (page - 1) * pageSize, pageSize
             ]);
@@ -248,7 +264,6 @@
                 sortQuery = [];
                 if(sortColumns.length > 0){
                     sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
-                        console.log(sortColumn);
                         return sortColumn.colDef.jpqlExpression + ' ' + sortColumn.sort.direction;
                     }).join(', '));
                 }

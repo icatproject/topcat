@@ -117,9 +117,6 @@
                                 "placeholder": "Containing...",
                                 "type": "input"
                             },
-                            "sort": {
-                                "direction": "asc"
-                            },
                             "cellTooltip": true,
                             "link": true
                         },
@@ -362,6 +359,10 @@
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd'",
+                        "sort": {
+                          "direction": "desc",
+                          "priority": 1
+                        },
                         "filters": [
                             {
                                 "placeholder": "From...",
@@ -371,10 +372,7 @@
                                 "placeholder": "To...",
                                 "type": "input"
                             }
-                        ],
-                        "sort": {
-                            "direction": "desc"
-                        }
+                        ]
                     },
                     {
                         "field": "endDate",
@@ -439,7 +437,8 @@
                         "type": "input"
                     },
                     "sort": {
-                        "direction": "desc"
+                        "direction": "desc",
+                        "priority": 1
                     }
                 }
             ]
@@ -633,9 +632,6 @@
                                 "condition": "contains",
                                 "placeholder": "Containing...",
                                 "type": "input"
-                            },
-                            "sort": {
-                                "direction": "asc"
                             },
                             "link": true
                         }
@@ -1163,9 +1159,6 @@
                                 "placeholder": "Containing...",
                                 "type": "input"
                             },
-                            "sort": {
-                                "direction": "asc"
-                            },
                             "link": true
                         }
                     ]
@@ -1177,9 +1170,6 @@
                             "field": "title",
                             "translateDisplayName": "BROWSE.COLUMN.PROPOSAL.NAME",
                             "type": "string",
-                            "sort": {
-                                "direction": "asc"
-                            },
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -1243,6 +1233,10 @@
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1285,9 +1279,6 @@
                                 "placeholder": "Containing...",
                                 "type": "input"
                             },
-                            "sort": {
-                                "direction": "asc"
-                            },
                             "cellTooltip": true,
                             "link": true
                         },
@@ -1301,6 +1292,10 @@
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1372,6 +1367,10 @@
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1628,9 +1627,6 @@
                                 "placeholder": "Containing...",
                                 "type": "input"
                             },
-                            "sort": {
-                                "direction": "asc"
-                            },
                             "link": true
                         }
                     ]
@@ -1642,9 +1638,6 @@
                             "field": "name",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
                             "type": "string",
-                            "sort": {
-                                "direction": "asc"
-                            },
                             "filter": {
                                 "condition": "contains",
                                 "placeholder": "Containing...",
@@ -1691,9 +1684,6 @@
                             "field": "name",
                             "translateDisplayName": "BROWSE.COLUMN.PROPOSAL.NAME",
                             "type": "string",
-                            "sort": {
-                                "direction": "asc"
-                            },
                             "filter": {
                                 "condition": "starts_with",
                                 "placeholder": "Containing...",
@@ -1719,9 +1709,6 @@
                                 "condition": "contains",
                                 "placeholder": "Containing...",
                                 "type": "input"
-                            },
-                            "sort": {
-                                "direction": "asc"
                             },
                             "cellTooltip": true,
                             "link": true,
@@ -1813,9 +1800,6 @@
                                 "condition": "contains",
                                 "placeholder": "Containing...",
                                 "type": "input"
-                            },
-                            "sort": {
-                                "direction": "asc"
                             },
                             "cellTooltip": true,
                             "link": true

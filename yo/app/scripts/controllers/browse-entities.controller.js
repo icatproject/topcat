@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc, uiGridConstants){
         var that = this; 
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
         var entityInstanceName = stateFromTo.replace(/^.*-/, '');
@@ -360,6 +360,7 @@
             });
         };
 
+        var sortColumns = [];
         _.each(gridOptions.columnDefs, function(columnDef){
             if(columnDef.link) {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row.entity)}}">{{row.entity.' + columnDef.field + '}}</a></div>';
@@ -393,8 +394,23 @@
                 columnDef.cellTemplate = '<div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length > 1"><span class="glyphicon glyphicon-th-list" tooltip="{{row.entity.instrumentNames}}" tooltip-placement="top" tooltip-append-to-body="true"></span> {{row.entity.firstInstrumentName}}</div><div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length <= 1">{{row.entity.firstInstrumentName}}</div>';
             }
 
+            if(columnDef.sort){
+                if(columnDef.sort.direction.toLowerCase() == 'desc'){
+                    columnDef.sort.direction = uiGridConstants.DESC;
+                } else {
+                    columnDef.sort.direction = uiGridConstants.ASC;
+                }
+            }
+
             columnDef.jpqlExpression = columnDef.jpqlExpression || realEntityInstanceName + '.' + columnDef.field;
+            if(columnDef.sort) sortColumns.push(columnDef);
         });
+
+        if(sortColumns.length > 0){
+            sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
+                return sortColumn.jpqlExpression + ' ' + sortColumn.sort.direction;
+            }).join(', '));
+        }
 
         if(gridOptions.enableDownload){
             gridOptions.columnDefs.push({
@@ -452,7 +468,6 @@
                 sortQuery = [];
                 if(sortColumns.length > 0){
                     sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
-                        console.log(sortColumn);
                         return sortColumn.colDef.jpqlExpression + ' ' + sortColumn.sort.direction;
                     }).join(', '));
                 }
