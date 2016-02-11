@@ -66,7 +66,9 @@
 									},
 									'where ?.id in (?)', entityInstanceName.safe(), ids.join(', ').safe(),
 									function(){
-										if(entityType == 'Dataset'){
+										if(entityType == 'Investigation'){
+											return 'include investigation.investigationInstruments.instrument';
+										} else if(entityType == 'Dataset'){
 											return 'include dataset.investigation';
 										} else if(entityType == 'Datafile') {
 											return 'include datafile.dataset.investigation';
