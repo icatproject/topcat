@@ -4,16 +4,16 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('SearchController', function($sessionStorage, $state, $filter, $uibModal, APP_CONFIG){
+    app.controller('SearchController', function($sessionStorage, $state, $filter, $uibModal, tc){
         var that = this;
         this.text = $state.params.text || '';
         this.type = $state.params.type || '';
         var facilities = [];
-        _.each($sessionStorage.sessions, function(session, name){
+        _.each(tc.userFacilities(), function(facility){
             facilities.push({
-                name: name,
-                title: APP_CONFIG.facilities[name].facilityName,
-                selected: $state.params.facilities ? _.include(JSON.parse($state.params.facilities), name) : true
+                name: facility.config().facilityName,
+                title: facility.config().title,
+                selected: $state.params.facilities ? _.include(JSON.parse($state.params.facilities), facility.config().facilityName) : true
             });
         });
         this.facilities = facilities;
@@ -27,6 +27,8 @@
         this.investigation = $state.params.investigation != 'false';
         this.dataset = $state.params.dataset != 'false';
         this.datafile = $state.params.datafile != 'false';
+        this.enableParameters = tc.config().search.enableParameters;
+        this.enableSamples = tc.config().search.enableSamples;
 
         this.openStartDate = function(){
             this.isStartDateOpen = true;

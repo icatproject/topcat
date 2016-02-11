@@ -72,7 +72,7 @@
 
     function createGridOptions(type){
       var gridApi;
-      var gridOptions = _.merge({data: [], appScopeProvider: this, enableSelectAll: false}, tc.config().searchGridOptions[type]);
+      var gridOptions = _.merge({data: [], appScopeProvider: this, enableSelectAll: false}, tc.config().search.gridOptions[type]);
       _.each(gridOptions.columnDefs, function(columnDef){
         if(columnDef.link && !columnDef.cellTemplate){
           if(typeof columnDef.link == "string"){
