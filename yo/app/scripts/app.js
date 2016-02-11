@@ -264,6 +264,7 @@
                     templateUrl: 'views/admin.html',
                     controller: 'AdminController as adminController'
                 });
+                $urlRouterProvider.otherwise('/');
 
         })
         .config(function (pollerConfig) {
