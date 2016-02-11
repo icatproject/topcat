@@ -70,7 +70,7 @@ public class DownloadRepository {
             } else if (userName != null) {
                 sb.append("WHERE download.userName = :userName ");
             } else if (queryOffset != null) {
-                sb.append(" " + queryOffset + " ");
+                sb.append("WHERE " + queryOffset + " ");
             }
                 
 

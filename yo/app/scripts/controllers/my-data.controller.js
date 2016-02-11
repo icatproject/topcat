@@ -53,7 +53,6 @@
                 var filter = year + '-' + month + '-' + day;
                 $timeout(function(){
                     columnDef.filters[1].term = filter;
-                    saveState();
                 });
             }
 

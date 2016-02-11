@@ -359,6 +359,7 @@
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd'",
+                        "excludeFuture": true,
                         "sort": {
                           "direction": "desc",
                           "priority": 1
@@ -1168,7 +1169,6 @@
                     "columnDefs": [
                         {
                             "field": "title",
-                            "translateDisplayName": "BROWSE.COLUMN.PROPOSAL.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "starts_with",
@@ -1178,6 +1178,17 @@
                             "cellTooltip": true,
                             "link": true,
                             "breadcrumb": true
+                        },
+                        {
+                            "field": "name",
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "cellTooltip": true,
+                            "link": true
                         }
                     ]
                 },
@@ -1233,6 +1244,7 @@
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
+                            "excludeFuture": true,
                             "sort": {
                               "direction": "desc",
                               "priority": 1
