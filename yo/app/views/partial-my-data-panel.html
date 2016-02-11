@@ -9,14 +9,14 @@
     </ul>
     <br>
 </div>
-<div ng-if="myDataController.isScroll" ui-grid="myDataController.gridOptions" ui-grid-infinite-scroll ui-grid-selection class="my-data-grid">
+<div ng-if="myDataController.isScroll" ui-grid="myDataController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-selection ui-grid-resize-columns  class="my-data-grid">
     <div class="no-rows row" ng-show="isEmpty">
         <div class="col-md-2 col-md-offset-5 empty-message">
             <span translate="MY_DATA.EMPTY"></span>
         </div>
     </div>
 </div>
-<div ng-if="!myDataController.isScroll" ui-grid="myDataController.gridOptions" ui-grid-pagination ui-grid-selection class="my-data-grid">
+<div ng-if="!myDataController.isScroll" ui-grid="myDataController.gridOptions" ui-grid-pagination ui-grid-selection ui-grid-selection ui-grid-resize-columns  class="my-data-grid">
     <div class="no-rows row" ng-show="isEmpty">
         <div class="col-md-2 col-md-offset-5 empty-message">
             <span translate="MY_DATA.EMPTY"></span>

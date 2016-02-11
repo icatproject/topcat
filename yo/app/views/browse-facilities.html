@@ -9,7 +9,7 @@
 </ul>
 
 <div>
-    <div ng-if="browseFacilitiesController.isScroll" ui-grid="browseFacilitiesController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-save-state class="browse-grid">
+    <div ng-if="browseFacilitiesController.isScroll" ui-grid="browseFacilitiesController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-save-state ui-grid-selection ui-grid-resize-columns  class="browse-grid">
         <div class="no-rows row" ng-show="isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
                 <span translate="BROWSE.EMPTY"></span>
@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div ng-if="!browseFacilitiesController.isScroll" ui-grid="browseFacilitiesController.gridOptions" ui-grid-pagination ui-grid-selection ui-grid-save-state class="browse-grid">
+    <div ng-if="!browseFacilitiesController.isScroll" ui-grid="browseFacilitiesController.gridOptions" ui-grid-pagination ui-grid-selection ui-grid-save-state ui-grid-selection ui-grid-resize-columns  class="browse-grid">
         <div class="no-rows row" ng-show="isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
                 <span translate="BROWSE.EMPTY"></span>
