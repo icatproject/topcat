@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('DownloadsController', function($state, $translate, $uibModalInstance, $q, tc, uiGridConstants){
+    app.controller('DownloadsController', function($state, $scope, $translate, $uibModalInstance, $q, tc, uiGridConstants){
         var that = this;
         var pagingConfig = tc.config().paging;
         this.isScroll = pagingConfig.pagingType == 'scroll';
@@ -35,7 +35,7 @@
         });
 
 
-        this.refresh = function(){
+        function refresh(){
             var promises = [];
             that.gridOptions.data = [];
             _.each(tc.userFacilities(), function(facility){
@@ -53,7 +53,12 @@
                 }
             });
         };
-        this.refresh();
+        refresh();
+        var refreshInterval = window.setInterval(refresh, 1000 * 60);
+        $scope.$on('$destroy', function(){
+            window.clearInterval(refreshInterval);
+        });
+
 
         this.remove = function(download){
             var data = [];
