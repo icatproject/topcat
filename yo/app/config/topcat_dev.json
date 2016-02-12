@@ -47,17 +47,6 @@
                             "breadcrumb": true
                         },
                         {
-                            "field": "name",
-                            "type": "string",
-                            "filter": {
-                                "condition": "starts_with",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            },
-                            "cellTooltip": true,
-                            "link": true
-                        },
-                        {
                             "field": "size",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
                             "type": "number"
