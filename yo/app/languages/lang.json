@@ -298,6 +298,8 @@
                     "FILE_NAME" : "Download Name",
                     "TRANSPORT" : "Transport",
                     "SIZE" : "Size",
+                    "ESTIMATED_TIME": "Estimated download time",
+                    "CONNECTION": "connection",
                     "FACILITY" : "Facility",
                     "AVAILABILITY" : "Availability"
                 },
@@ -533,6 +535,15 @@
     },
     "ADMIN": {
         "PAGE_TITLE": "Admin"
+    },
+    "TIME": {
+        "DAY": "day",
+        "DAYS": "days",
+        "HOUR": "hour",
+        "HOURS": "hours",
+        "MINUTE": "minute",
+        "MINUTES": "minutes",
+        "SECOND": "second",
+        "SECONDS": "seconds"
     }
-
 }

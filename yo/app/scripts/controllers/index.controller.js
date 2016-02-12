@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('IndexController', function($rootScope, $scope, $translate, $state, $uibModal, $timeout, tc, ipCookie){
+    app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, tc, ipCookie){
         var that = this;
 
         this.facilities = tc.facilities();
@@ -45,10 +45,14 @@
         $rootScope.$on('cart:add', function(){
             that.isCartPopoverOpen = true;
         });
+
+        var refreshCartItemCountTimeout;
         function refreshCartItemCount(){
+            if(refreshCartItemCountTimeout) refreshCartItemCountTimeout.resolve();
+            refreshCartItemCountTimeout = $q.defer();
             that.cartItemCount = 0;
             _.each(tc.userFacilities(), function(facility){
-                facility.user().cart().then(function(cart){
+                facility.user().cart(refreshCartItemCountTimeout.promise).then(function(cart){
                     that.cartItemCount = that.cartItemCount + cart.cartItems.length;
                     $timeout(function(){
                         $timeout(function(){
