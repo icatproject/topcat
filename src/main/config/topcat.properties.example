@@ -25,13 +25,12 @@ mail.body.smartclient=Hi ${userName}, \n\nYour SmartClient download ${fileName} 
 # The maximum number of datafiles for a getStatus call to the IDS for two level storage
 ids.getStatus.max=100
 
-# The delay in milliseconds before polling starts. This delay is to gives the ids a chance to do its thing before we query it
-poll.delay=60000
+# The delay in seconds before polling starts. This delay is to gives the ids a chance to do its thing before we query it
+poll.delay=600
 
-# The wait time in milliseconds between each poll to the IDS.
-poll.interval.wait=600000
+# The wait time in seconds between each poll to the IDS.
+poll.interval.wait=600
 
-# the wait time in millisecond if an isPrepared call has to be made to the IDS. An isPrepared call is made if getStatus returns an ARCHIVE status. This gives the polling additional wait time for the IDS to prepare a request.
-poll.isprepared.wait=300000
+
 
 

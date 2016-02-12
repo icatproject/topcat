@@ -44,8 +44,6 @@ public class Watchdog {
       return;
     }
 
-    logger.debug("poll");
-
     PropertyHandler properties = PropertyHandler.getInstance();
     int pollDelay = properties.getPollDelay();
     int pollIntervalWait = properties.getPollIntervalWait();
@@ -74,7 +72,6 @@ public class Watchdog {
   }
 
   private void performCheck(Download download) {
-    logger.debug("performCheck");
 
     try {
       IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));

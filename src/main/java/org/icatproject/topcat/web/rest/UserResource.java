@@ -31,6 +31,7 @@ import javax.persistence.PersistenceContext;
 
 import org.icatproject.ids.client.DataSelection;
 import org.icatproject.ids.client.IdsClient.Flag;
+import org.icatproject.ids.client.IdsClient.Status;
 import org.icatproject.topcat.Constants;
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartDTO;
@@ -258,8 +259,8 @@ public class UserResource {
         
         if(cart != null){
             em.refresh(cart);
-
-            String preparedId = idsClientService.prepareData(transportUrl, sessionId, cartToDataSelection(cart), getZipFlag(zipType));
+            DataSelection dataSelection = cartToDataSelection(cart);
+            String preparedId = idsClientService.prepareData(transportUrl, sessionId, dataSelection, getZipFlag(zipType));
 
             if (preparedId != null) {
                 Download download = new Download();
@@ -274,7 +275,9 @@ public class UserResource {
                 download.setEmail(email);
                 boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
                 download.setIsTwoLevel(isTwoLevel);
-                if (isTwoLevel == true) {
+
+                Status status = idsClientService.getStatus(transportUrl, sessionId, dataSelection);
+                if(status != Status.ONLINE){
                     download.setStatus(DownloadStatus.RESTORING);
                 } else {
                     download.setStatus(DownloadStatus.COMPLETE);
