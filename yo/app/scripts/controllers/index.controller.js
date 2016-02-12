@@ -13,6 +13,8 @@
             that.userFacilities = tc.userFacilities();
             that.nonUserFacilities = tc.nonUserFacilities();
             that.adminFacilities = tc.adminFacilities();
+            refreshCartItemCount();
+            refreshDownloadCount()
         }
         $rootScope.$on('session:change', refreshUserFacilities);
         refreshUserFacilities();

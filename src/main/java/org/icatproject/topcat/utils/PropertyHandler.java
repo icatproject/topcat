@@ -50,7 +50,6 @@ public class PropertyHandler {
             maxPerGetStatus = props.getPositiveInt("ids.getStatus.max");
             pollDelay = props.getPositiveInt("poll.delay");
             pollIntervalWait = props.getPositiveInt("poll.interval.wait");
-            pollIsPreparedWait = props.getPositiveInt("poll.isprepared.wait");
             adminUserNames = props.getProperty("adminUserNames").split("[ ]*,[ ]*");
         } catch (CheckedPropertyException e) {
             logger.info("Property file topcat.properties not loaded");
