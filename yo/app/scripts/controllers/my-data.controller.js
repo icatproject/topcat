@@ -291,7 +291,6 @@
                 page = 1;
                 gridOptions.data = [];
                 getPage().then(function(results){
-                    console.log(gridOptions);
                     gridOptions.data = results;
                     updateSelections();
                     updateScroll(results.length);
