@@ -1,22 +1,35 @@
 
-<ul class="breadcrumb">
-    <li ng-repeat="item in browseEntitiesController.breadcrumbItems">
-        <span ng-show="!$last">
-            <a href="{{item.href}}" translate="{{item.translate}}" ng-if="item.translate"></a>
-            <a 
-                href="{{item.href}}"
-                ng-if="!item.translate && item.title.length > browseEntitiesController.maxBreadcrumbTitleLength"
-                uib-tooltip="{{item.title}}"
-                tooltip-placement="bottom"
-            >{{item.title | limitTo : browseEntitiesController.maxBreadcrumbTitleLength}}...</a>
-            <a
-                href="{{item.href}}"
-                ng-if="!(!item.translate && item.title.length > browseEntitiesController.maxBreadcrumbTitleLength)"
-            >{{item.title}}</a>
+<div class="row">
+    <div class="col-sm-10">
+        <ul class="breadcrumb">
+            <li ng-repeat="item in browseEntitiesController.breadcrumbItems">
+                <span ng-show="!$last">
+                    <a href="{{item.href}}" translate="{{item.translate}}" ng-if="item.translate"></a>
+                    <a 
+                        href="{{item.href}}"
+                        ng-if="!item.translate && item.title.length > browseEntitiesController.maxBreadcrumbTitleLength"
+                        uib-tooltip="{{item.title}}"
+                        tooltip-placement="bottom"
+                    >{{item.title | limitTo : browseEntitiesController.maxBreadcrumbTitleLength}}...</a>
+                    <a
+                        href="{{item.href}}"
+                        ng-if="!(!item.translate && item.title.length > browseEntitiesController.maxBreadcrumbTitleLength)"
+                    >{{item.title}}</a>
+                </span>
+                <i ng-show="$last" translate="{{item.translate}}"></i>
+            </li>
+        </ul>
+    </div>
+    <div class="col-sm-2">
+        <span class="result-count">
+            <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="browseEntitiesController.totalItems === undefined" class="grid-cell-spinner"></span>
+            <span ng-if="browseEntitiesController.totalItems !== undefined">
+                Results: {{browseEntitiesController.totalItems}}
+            </span>
+            &nbsp;
         </span>
-        <i ng-show="$last" translate="{{item.translate}}"></i>
-    </li>
-</ul>
+    </div>
+</div>
 
 <div>
     <div ng-if="browseEntitiesController.isScroll" ui-grid="browseEntitiesController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-save-state ui-grid-selection ui-grid-resize-columns  class="browse-grid">

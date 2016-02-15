@@ -248,3 +248,15 @@ a[ng-click]{
 .modal-lg .modal-content {
   height: 100%;
 }
+
+.result-count {
+    display: block;
+    padding: 8px 15px;
+    margin-bottom: 20px;
+    list-style: none;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+}
+

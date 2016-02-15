@@ -276,12 +276,12 @@
         }
 
         function updateTotalItems(){
-            if(!isScroll){
-                icat.query(canceler.promise, generateQuery(stateFromTo, true)).then(function(_totalItems){
-                    gridOptions.totalItems = _totalItems;
-                    totalItems = _totalItems;
-                });
-            }
+            that.totalItems = undefined;
+            icat.query(canceler.promise, generateQuery(stateFromTo, true)).then(function(_totalItems){
+                gridOptions.totalItems = _totalItems;
+                totalItems = _totalItems;
+                that.totalItems = totalItems[0];
+            });
         }
 
         function isAncestorInCart(){
