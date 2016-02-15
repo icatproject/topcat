@@ -283,8 +283,8 @@
                     }
                 },
                 {
-                    "field": "availability",
-                    "translateDisplayName": "CART.COLUMN.AVAILABILITY",
+                    "field": "status",
+                    "translateDisplayName": "CART.COLUMN.STATUS",
                     "type" : "string",
                     "filter": {
                         "condition": "contains",

@@ -19,7 +19,7 @@
                     </select>
                 </th>
                 <th ng-if="downloadCartController.facilityCount > 1" translate="CART.DOWNLOAD.MODAL.COLUMN.FACILITY"></th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.AVAILABILITY"></th>
+                <th translate="CART.DOWNLOAD.MODAL.COLUMN.STATUS"></th>
             </tr>
             <tr ng-repeat="download in downloadCartController.downloads">
                 <td>
@@ -37,7 +37,7 @@
                     <span>{{download.facilityName}}</span>
                 </td>
                 <td>
-                    <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.availability === undefined" class="grid-cell-spinner"></span><span>{{download.availability}}</span>
+                    <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.status === undefined" class="grid-cell-spinner"></span><span>{{"CART.STATUS." + download.status | translate}}</span>
                 </td>
             </tr>
         </table>

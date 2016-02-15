@@ -25,13 +25,17 @@
             if (columnDef.filter.condition) {
                 columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
             }
+            if(columnDef.translateDisplayName){
+                columnDef.displayName = columnDef.translateDisplayName;
+                columnDef.headerCellFilter = 'translate';
+            }
 
             if(columnDef.field === 'size') {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
             }
 
-            if(columnDef.field === 'availability') {
-               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span>{{row.entity.status}}</span></div>';
+            if(columnDef.field === 'status') {
+               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span>{{"CART.STATUS." + row.entity.status | translate}}</span></div>';
             }
 
         });

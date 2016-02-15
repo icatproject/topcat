@@ -22,6 +22,15 @@
             if (columnDef.filter.condition) {
                 columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
             }
+
+            if(columnDef.translateDisplayName){
+                columnDef.displayName = columnDef.translateDisplayName;
+                columnDef.headerCellFilter = 'translate';
+            }
+            
+            if(columnDef.field == 'status'){
+                columnDef.cellTemplate = '<div class="ui-grid-cell-contents">{{"DOWNLOAD.STATUS." + row.entity.status | translate}}</div>';
+            }
         });
         this.gridOptions.columnDefs.push({
             name : 'actions',

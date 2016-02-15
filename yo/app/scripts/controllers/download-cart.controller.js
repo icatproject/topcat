@@ -59,11 +59,9 @@
 
                         cartItem.getStatus(timeout).then(function(status){
                             if(status == "ARCHIVED"){
-                                download.availability = "ARCHIVED";
                                 that.hasArchive = true;
-                            } else if(download.availability != "ARCHIVED") {
-                                download.availability = status;
                             }
+                            download.status = status;
                         });
                     });
 

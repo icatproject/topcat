@@ -250,8 +250,13 @@
             "FACILITY" : "Facility",
             "SIZE" : "Size",
             "FACILITY_NAME" : "Facility",
-            "AVAILABILITY" : "Availability",
+            "STATUS" : "Availability",
             "ACTIONS" : "Action"
+        },
+        "STATUS": {
+            "ONLINE": "Available",
+            "RESTORING": "Restoring from Tape",
+            "ARCHIVED": "Archived on Tape"
         },
         "EMPTY" : "Cart is empty",
         "BUTTON" : {
@@ -301,7 +306,7 @@
                     "ESTIMATED_TIME": "Estimated download time",
                     "CONNECTION": "connection",
                     "FACILITY" : "Facility",
-                    "AVAILABILITY" : "Availability"
+                    "STATUS" : "Availability"
                 },
                 "BUTTON" : {
                     "OK" : {
@@ -330,8 +335,12 @@
             "TRANSPORT" : "Transport",
             "FACILITY" : "Facility" ,
             "STATUS" : "Status",
-            "CREATED_AT" : "Created At",
+            "CREATED_AT" : "Requested At",
             "ACTIONS" : "Actions"
+        },
+        "STATUS": {
+            "COMPLETE": "Available",
+            "RESTORING": "Restoring from Tape"
         },
         "EMPTY" : "No Downloads",
         "REMOVE_DOWNLOAD" : {
