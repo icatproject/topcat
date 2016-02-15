@@ -129,7 +129,7 @@
           _.each(gridOptions.data, function(row){
               tc.user(row.facilityName).cart(timeout.promise).then(function(cart){
                 if(gridApi){
-                  if (cart.isCartItem(that.currentTab, row.id)) {
+                  if (cart.isCartItem(that.currentTab, row.id)){
                       gridApi.selection.selectRow(row);
                   } else {
                       gridApi.selection.unSelectRow(row);

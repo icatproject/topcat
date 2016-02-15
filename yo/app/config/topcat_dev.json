@@ -298,7 +298,7 @@
             "entityType" : "investigation",
             "investigation": {
                 "enableFiltering": true,
-                "enableSelection": true,
+                "enableSelection": false,
                 "includes" : [
                     "investigation.investigationInstruments.instrument"
                 ],

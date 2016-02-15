@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('MyDataController', function($translate, $q, $scope, $rootScope, $timeout, $state, tc, uiGridConstants){
+    app.controller('MyDataController', function($translate, $q, $scope, $rootScope, $timeout, $templateCache, $state, tc, uiGridConstants){
         var that = this;
         var pagingConfig = tc.config().paging;
         var entityType = tc.config().myDataGridOptions.entityType;
@@ -35,6 +35,10 @@
         gridOptions.useExternalPagination = true;
         gridOptions.useExternalSorting = true;
         gridOptions.useExternalFiltering = true;
+        var enableSelection = gridOptions.enableSelection === true && entityInstanceName.match(/^investigation|dataset|datafile$/) !== null;
+        gridOptions.enableSelectAll = false;
+        gridOptions.enableRowSelection = enableSelection;
+        gridOptions.enableRowHeaderSelection = enableSelection;
 
         var sortColumns = [];
         _.each(gridOptions.columnDefs, function(columnDef){
@@ -86,6 +90,8 @@
             if(columnDef.sort) sortColumns.push(columnDef);
         });
         this.gridOptions = gridOptions;
+
+        $templateCache.put('ui-grid/selectionRowHeaderButtons', '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" tooltip="{{&quot;BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT&quot; | translate}}" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>');
 
         if(sortColumns.length > 0){
             sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
