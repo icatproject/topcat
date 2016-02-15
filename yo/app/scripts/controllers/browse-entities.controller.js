@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $timeout, tc, uiGridConstants){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $translate, $timeout, $templateCache, tc, uiGridConstants){
         var that = this; 
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
         var entityInstanceName = stateFromTo.replace(/^.*-/, '');
@@ -450,7 +450,18 @@
         gridOptions.enableSelectAll = false;
         gridOptions.enableRowSelection = enableSelection;
         gridOptions.enableRowHeaderSelection = enableSelection;
+        
+        this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');
+        $templateCache.put('ui-grid/selectionRowHeaderButtons',
+            '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" tooltip="{{grid.appScope.selectTooltip}}" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>'
+        );
+        isAncestorInCart().then(function(isAncestorInCart){
+            if(isAncestorInCart){
+                that.selectTooltip = $translate.instant('BROWSE.SELECTOR.ANCESTER_IN_CART_TOOLTIP.TEXT');
+            }
+        });
 
+        
 
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;

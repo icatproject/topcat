@@ -191,8 +191,11 @@
         },
         "EMPTY" : "Nothing to display",
         "SELECTOR" : {
-            "TOOLTIP" : {
-                "TEXT" : "Click to add/remove this item from cart"
+            "ADD_REMOVE_TOOLTIP" : {
+                "TEXT" : "Click to add/remove this item from cart."
+            },
+            "ANCESTER_IN_CART_TOOLTIP" : {
+                "TEXT" : "To remove this datafile unselect the parent dataset (that is currently in the cart)."
             }
         },
         "BREADCRUMB": {
