@@ -17,19 +17,6 @@ body {
   background-color: #f5f5f5;
 }
 
-
-.browse-box {
-  height: 470px;
-  /*overflow: auto;*/
-
-}
-
-.my-data-box {
-  height: 470px;
-  /*overflow: auto;*/
-
-}
-
 .search-form {
   margin: 10px 0;
 }
