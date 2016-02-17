@@ -5,15 +5,18 @@
     <span class="input-group-btn">
         <button type="button" class="btn btn-default input-sm" uib-dropdown-toggle><i class="glyphicon glyphicon-calendar"></i></button>
     </span>
-    <div uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body" ng-click="$event.stopPropagation();" class="datetime-picker dropdown-menu-right">
-    <uib-datepicker ng-model="datetimePickerController.datetime" min-date="minDate" show-weeks="true" class="date"></uib-datepicker>
+    <div  uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body" ng-click="$event.stopPropagation();" class="datetime-picker dropdown-menu-right">
 
-    <uib-timepicker ng-model="datetimePickerController.datetime" class="time" show-meridian="false" show-seconds="true"></uib-timepicker>
+        <uib-datepicker ng-if="datetimePickerController.isOnlyDate" ng-model="datetimePickerController.datetime" min-date="minDate" show-weeks="true" class="date" ng-change="datetimePickerController.ok()"></uib-datepicker>
 
-    <div class="buttons">
-        <button type="button" class="btn btn-danger pull-left" ng-click="datetimePickerController.clear()">Clear</button>
-        <button type="button" class="btn btn-primary" ng-click="datetimePickerController.ok()">OK</button>
-        <button type="button" class="btn btn-warning" ng-click="datetimePickerController.close()">Close</button>
+        <uib-datepicker ng-if="!datetimePickerController.isOnlyDate" ng-model="datetimePickerController.datetime" min-date="minDate" show-weeks="true" class="date"></uib-datepicker>
+
+        <uib-timepicker ng-if="!datetimePickerController.isOnlyDate" ng-model="datetimePickerController.datetime" class="time" show-meridian="false" show-seconds="true"></uib-timepicker>
+
+        <div class="buttons">
+            <button type="button" class="btn btn-danger pull-left" ng-click="datetimePickerController.clear()">Clear</button>
+            <button type="button" class="btn btn-primary" ng-click="datetimePickerController.ok()">OK</button>
+            <button type="button" class="btn btn-warning" ng-click="datetimePickerController.close()">Close</button>
+        </div>
     </div>
-  </div>
 </div>

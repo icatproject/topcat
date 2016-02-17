@@ -57,7 +57,7 @@
             var path = window.location.hash.replace(/^#\/browse\/facility\/[^\/]*\//, '').replace(/\/[^\/]*$/, '').split(/\//);
             var pathPairs = _.chunk(path, 2);
             var breadcrumbEntities = {};       
-            var breadcrumbPromises = []
+            var breadcrumbPromises = [];
             _.each(pathPairs, function(pathPair){
                 if(pathPair.length == 2){
                     var entityType = pathPair[0];
@@ -367,7 +367,11 @@
             }
 
             if(columnDef.type == 'date'){
-                columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div datetime-picker ng-model="colFilter.term"></div></div>'
+                if(columnDef.field && columnDef.field.match(/Date$/)){
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div datetime-picker only-date ng-model="colFilter.term"></div></div>';
+                } else {
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div datetime-picker ng-model="colFilter.term"></div></div>';
+                }
             }
 
             if(columnDef.excludeFuture){
