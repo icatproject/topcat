@@ -283,3 +283,7 @@ a[ng-click]{
   font-size: 12px;
 }
 
+.datetime-picker-input .ui-grid-filter-button {
+    right: 20px;
+    z-index: 3;
+}

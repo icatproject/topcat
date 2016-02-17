@@ -1,6 +1,9 @@
 
     
 <div class="input-group datetime-picker-input" uib-dropdown dropdown-append-to-body>
+    <div ng-if="!(value == undefined || value == '')" role="button" class="ui-grid-filter-button" ng-click="datetimePickerController.clear()">
+        <i class="ui-grid-icon-cancel" aria-label="Remove Filter">&nbsp;</i>
+    </div>
     <input type="text" class="form-control input-sm" ng-model="value" placeholder="{{datetimePickerController.placeholder}}">
     <span class="input-group-btn">
         <button type="button" class="btn btn-default input-sm" uib-dropdown-toggle><i class="glyphicon glyphicon-calendar"></i></button>
