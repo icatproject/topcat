@@ -1,6 +1,6 @@
 
     
-<div class="input-group" uib-dropdown dropdown-append-to-body>
+<div class="input-group datetime-picker-input" uib-dropdown dropdown-append-to-body>
     <input type="text" class="form-control input-sm" ng-model="value">
     <span class="input-group-btn">
         <button type="button" class="btn btn-default input-sm" uib-dropdown-toggle><i class="glyphicon glyphicon-calendar"></i></button>
@@ -14,9 +14,9 @@
         <uib-timepicker ng-if="!datetimePickerController.isOnlyDate" ng-model="datetimePickerController.datetime" class="time" show-meridian="false" show-seconds="true" second-step="1"></uib-timepicker>
 
         <div class="buttons">
-            <button type="button" class="btn btn-danger btn-md pull-left" ng-click="datetimePickerController.clear()">Clear</button>
-            <button type="button" class="btn btn-primary" ng-click="datetimePickerController.ok()">OK</button>
-            <button type="button" class="btn btn-warning" ng-click="datetimePickerController.close()">Close</button>
+            <button type="button" class="btn btn-danger btn-sm pull-left" ng-click="datetimePickerController.clear()">Clear</button>
+            <button type="button" class="btn btn-primary btn-sm" ng-click="datetimePickerController.ok()">OK</button>
+            <button type="button" class="btn btn-warning btn-sm" ng-click="datetimePickerController.close()">Close</button>
         </div>
     </div>
 </div>

@@ -263,5 +263,18 @@ a[ng-click]{
 
 .datetime-picker .buttons {
   text-align: right;
+  margin-top: 7px;
+}
+
+.ui-grid .datetime-picker-input input,.ui-grid .datetime-picker-input button, .ui-grid .datetime-picker-input .input-group-btn {
+  height: 22px !important;
+}
+
+.ui-grid .datetime-picker-input button {
+  padding: 0px 9px 0px 9px;
+}
+
+.ui-grid .datetime-picker-input .glyphicon {
+  font-size: 12px;
 }
 
