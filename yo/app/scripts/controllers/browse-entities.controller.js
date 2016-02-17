@@ -366,7 +366,11 @@
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row.entity)}}">{{row.entity.' + columnDef.field + '}}</a></div>';
             }
 
-            if(columnDef.type && columnDef.excludeFuture){
+            if(columnDef.type == 'date'){
+                columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div datetime-picker ng-model="colFilter.term"></div></div>'
+            }
+
+            if(columnDef.excludeFuture){
                 var date = new Date();
                 var day = date.getDate();
                 var month = "" + (date.getMonth() + 1);

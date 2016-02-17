@@ -252,3 +252,16 @@ a[ng-click]{
   height: 150px;
 }
 
+.datetime-picker {
+  padding: 7px;
+  text-align: center;
+}
+
+.datetime-picker .time {
+  display: inline-block;
+}
+
+.datetime-picker .buttons {
+  text-align: right;
+}
+
