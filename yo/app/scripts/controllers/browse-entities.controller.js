@@ -381,9 +381,9 @@
 
             if(columnDef.type == 'date'){
                 if(columnDef.field && columnDef.field.match(/Date$/)){
-                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div datetime-picker only-date ng-model="colFilter.term"></div></div>';
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
                 } else {
-                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div datetime-picker ng-model="colFilter.term"></div></div>';
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
                 }
             }
 

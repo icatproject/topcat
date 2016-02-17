@@ -22,6 +22,7 @@
         var dropdownElement = $($element).find('.datetime-picker');
         this.isOnlyDate = $attrs['onlyDate'] !== undefined;
         this.datetime = new Date();
+        this.placeholder = $attrs['placeholder'];
 
         $scope.$watch('value', function(){
             if($scope.value){
@@ -44,7 +45,7 @@
                 if(parseInt(day) == 0) day = '01';
 
                 var value = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
-                
+
                 that.datetime = new Date(Date.parse(value));
             } else {
                 that.datetime = new Date();

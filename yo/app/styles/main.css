@@ -270,6 +270,11 @@ a[ng-click]{
   height: 22px !important;
 }
 
+.ui-grid .datetime-picker-input input {
+  font-size: 14px;
+  padding: 0px;
+}
+
 .ui-grid .datetime-picker-input button {
   padding: 0px 9px 0px 9px;
 }
