@@ -247,3 +247,8 @@ a[ng-click]{
     font-weight: bold;
 }
 
+.meta-box .tab-pane {
+  overflow: auto;
+  height: 150px;
+}
+

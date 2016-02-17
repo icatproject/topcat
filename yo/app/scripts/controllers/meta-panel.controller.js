@@ -7,8 +7,17 @@
 
     app.controller('MetaPanelController', function($scope, tc, MetaDataManager){
         var that = this;
+        var previousEntityHash;
+
         $scope.$on('rowclick', function(event, entity){
-            
+            var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;
+            if(entityHash == previousEntityHash){
+                that.tabs = [];
+                previousEntityHash = undefined;
+                return;
+            }
+            previousEntityHash = entityHash;
+
             var facility = tc.facility(entity.facilityName);
             var tabs;
             if(entity.type == 'facility'){

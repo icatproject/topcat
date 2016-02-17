@@ -1,13 +1,14 @@
-<br>
-<uib-tabset>
-    	<uib-tab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
-      		<div class="tab-content">
-				<div class="param-item" ng-repeat="content in tab.content">
-					<span ng-if="content.value" class="param-title">{{content.title}}</span>
-					<span ng-if="content.template" compile="content.template"></span>
-					<span ng-if="content.value && !content.template" class="param-value">{{content.value}}</span>
+<div ng-if="meta.tabs.length > 0">
+	<br>
+	<uib-tabset>
+	    	<uib-tab ng-repeat="tab in meta.tabs" ng-show="tab.content.length" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
+	      		<div class="tab-content">
+					<div class="param-item" ng-repeat="content in tab.content">
+						<span ng-if="content.value" class="param-title">{{content.title}}</span>
+						<span ng-if="content.template" compile="content.template"></span>
+						<span ng-if="content.value && !content.template" class="param-value">{{content.value}}</span>
+					</div>
 				</div>
-			</div>
-    	</uib-tab>
-</uib-tabset>
-
+	    	</uib-tab>
+	</uib-tabset>
+</div>
