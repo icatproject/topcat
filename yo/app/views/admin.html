@@ -13,7 +13,7 @@
 </div>
 
 <div class="col-md-12">
-    <div ui-grid="adminController.gridOptions" ui-grid-infinite-scroll class="browse-grid">
+    <div ui-grid="adminController.gridOptions" ui-grid-infinite-scroll class="browse-grid" take-up-remaining-height>
         <div class="no-rows row" ng-show="isEmpty">
             <div class="col-md-2 col-md-offset-5 empty-message">
                 <span translate="BROWSE.EMPTY"></span>

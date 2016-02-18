@@ -29,6 +29,10 @@
           columnDef.enableSorting = false;
           columnDef.enableHiding = false;
           columnDef.enableColumnMenu = false;
+
+          if(columnDef.type == 'date'){
+            columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
+          }
       });
 
       this.gridOptions.columnDefs.push({
@@ -61,6 +65,76 @@
       function getPage(){
         return admin.downloads(filters);
       }
+
+      function updateFilterQuery(){
+          filters = ['1 = 1'];
+          _.each(that.gridOptions.columnDefs, function(columnDef){
+              if(columnDef.type == 'date' && columnDef.filters){
+                  var from = columnDef.filters[0].term || '';
+                  var to = columnDef.filters[1].term || '';
+                  if(from != '' || to != ''){
+                      from = completePartialFromDate(from);
+                      to = completePartialToDate(to);
+                      filters.push([
+                          "and download.? between {ts ?} and {ts ?}",
+                          columnDef.field.safe(),
+                          from,
+                          to
+                      ]);
+                  }
+              } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
+                  filters.push([
+                      "and UPPER(download.?) like concat('%', ?, '%')", 
+                      columnDef.field.safe(),
+                      columnDef.filter.term.toUpperCase()
+                  ]);
+              }
+          });
+      }
+
+      function completePartialFromDate(date){
+            var segments = date.split(/[-:\s]+/);
+            var year = segments[0];
+            var month = segments[1] || "01";
+            var day = segments[2] || "01";
+            var hours = segments[3] || "00";
+            var minutes = segments[4] || "00";
+            var seconds = segments[5] || "00";
+
+            year = year + '0000'.slice(year.length, 4);
+            month = month + '00'.slice(month.length, 2);
+            day = day + '00'.slice(day.length, 2);
+            hours = hours + '00'.slice(hours.length, 2);
+            minutes = minutes + '00'.slice(minutes.length, 2);
+            seconds = seconds + '00'.slice(seconds.length, 2);
+
+            if(parseInt(month) == 0) month = '01';
+            if(parseInt(day) == 0) day = '01';
+
+            return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+        }
+
+        function completePartialToDate(date){
+            var segments = date.split(/[-:\s]+/);
+            var year = segments[0] || "";
+            var month = segments[1] || "";
+            var day = segments[2] || "";
+            var hours = segments[3] || "23";
+            var minutes = segments[4] || "59";
+            var seconds = segments[5] || "59";
+            year = year + '9999'.slice(year.length, 4);
+            month = month + '99'.slice(month.length, 2);
+            day = day + '99'.slice(day.length, 2);
+            hours = hours + '33'.slice(hours.length, 2);
+            minutes = minutes + '99'.slice(minutes.length, 2);
+            seconds = seconds + '99'.slice(seconds.length, 2);
+
+            if(parseInt(month) > 12) month = '12';
+            var daysInMonth = new Date(year, day, 0).getDate();
+            if(parseInt(day) > daysInMonth) day = daysInMonth;
+
+            return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+        }
 
       this.pause = function(download){
         admin.setDownloadStatus(download.id, 'PAUSED').then(function(){
@@ -97,20 +171,7 @@
             gridApi.core.on.filterChanged($scope, function() {
                 page = 1;
 
-                filters = ['1 = 1'];
-
-                _.each(that.gridOptions.columnDefs, function(columnDef){
-                    if(columnDef.type == 'date' && columnDef.filters){
-                        var from = columnDef.filters[0].term || '';
-                        var to = columnDef.filters[1].term || '';
-                        if(from.match(/^\d\d\d\d-\d\d-\d\d$/) && to.match(/^\d\d\d\d-\d\d-\d\d$/)){
-                            filters[columnDef.field + "From"] = from;
-                            filters[columnDef.field + "To"] = to;
-                        }
-                    } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
-                        filters.push(["and download." + columnDef.name + " like concat(?, '%')", columnDef.filter.term]);
-                    }
-                });
+                updateFilterQuery();
 
                 getPage().then(function(downloads){
                     that.gridOptions.data = downloads;
