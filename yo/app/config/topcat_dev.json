@@ -506,7 +506,7 @@
                     "field": "createdAt",
                     "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
                     "type": "date",
-                    "cellFilter": "date: 'yyyy-MM-dd'",
+                    "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                     "filters": [
                         {
                             "placeholder": "From...",
