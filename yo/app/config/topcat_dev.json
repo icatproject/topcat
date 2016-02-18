@@ -503,6 +503,11 @@
                     }
                 },
                 {
+                    "field": "size",
+                    "translateDisplayName": "DOWNLOAD.COLUMN.SIZE",
+                    "type" : "number"
+                },
+                {
                     "field": "createdAt",
                     "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
                     "type": "date",

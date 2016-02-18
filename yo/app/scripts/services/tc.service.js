@@ -236,6 +236,28 @@
 	    						}
 	    					});
 
+	    					download.getSize = overload({
+								'object': function(options){
+									var that = this;
+
+									var investigationIds = _.map(_.select(this.downloadItems, function(item){ return item.entityType == 'investigation'}), function(item){ return item.entityId});
+									var datasetIds = _.map(_.select(this.downloadItems, function(item){ return item.entityType == 'dataset'}), function(item){ return item.entityId});
+									var datafileIds = _.map(_.select(this.downloadItems, function(item){ return item.entityType == 'datafile'}), function(item){ return item.entityId});
+
+									return facility.ids().getSize(investigationIds, datasetIds, datafileIds, options).then(function(size){
+										that.size = size;
+										return size;
+									});
+								},
+								'promise': function(timeout){
+									return this.getSize({timeout: timeout});
+								},
+								'': function(){
+									return this.getSize({});
+								}
+							});
+
+
     					});
 
     					return downloads;
@@ -820,6 +842,30 @@
     			},
     			'string, number': function(type, id){
     				return this.getSize(type, id, {});
+    			},
+    			'array, array, array, object': function(investigationIds, datasetIds, datafileIds, options){
+    				var params = {
+    					server: facility.config().icatUrl,
+    					sessionId: facility.icat().session().sessionId
+    				};
+
+    				investigationIds = investigationIds.join(',');
+    				datasetIds = datasetIds.join(',');
+    				datafileIds = datafileIds.join(',');
+
+    				if(investigationIds != '') params.investigationIds = investigationIds;
+    				if(datasetIds != '') params.datasetIds = datasetIds;
+    				if(datafileIds != '') params.datafileIds = datafileIds;
+
+    				return this.get('getSize', params,  options).then(function(size){
+    					return parseInt('' + size);
+    				});
+    			},
+    			'promise, array, array, array': function(timeout, investigationIds, datasetIds, datafileIds){
+    				return this.getSize(investigationIds, datasetIds, datafileIds, {timeout: timeout});
+    			},
+    			'array, array, array': function(investigationIds, datasetIds, datafileIds){
+    				return this.getSize(investigationIds, datasetIds, datafileIds, {});
     			}
     		});
 

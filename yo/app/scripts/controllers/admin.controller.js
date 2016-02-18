@@ -4,12 +4,16 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('AdminController', function($translate, $scope, $state, $timeout, tc){
+    app.controller('AdminController', function($translate, $scope, $state, $timeout, $q, tc){
     	var that = this;
       var page = 1;
       var gridApi;
       var pageSize = 10;
       var filters = ["1 = 1"];
+      var timeout = $q.defer();
+      $scope.$on('$destroy', function(){
+          timeout.resolve();
+      });
 
     	this.facilities = tc.adminFacilities();
 
@@ -33,6 +37,13 @@
           if(columnDef.type == 'date'){
             columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
           }
+
+          if(columnDef.field == 'size'){
+              columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+              columnDef.enableSorting = false;
+              columnDef.enableFiltering = false;
+          }
+          
       });
 
       this.gridOptions.columnDefs.push({
@@ -63,7 +74,10 @@
       }
 
       function getPage(){
-        return admin.downloads(filters);
+        return admin.downloads(filters).then(function(downloads){
+          _.each(downloads, function(download){ download.getSize(timeout.promise); });
+          return downloads;
+        });
       }
 
       function updateFilterQuery(){
