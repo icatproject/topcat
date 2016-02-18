@@ -14,7 +14,7 @@
         this.email = "";
         this.downloads = [];
         this.facilityCount = tc.facilities().length;
-        this.connectionSpeed = 31457280;
+        this.connectionSpeed = "31457280";
 
         _.each(tc.userFacilities(), function(facility){
             facility.user().cart(timeout).then(function(cart){
