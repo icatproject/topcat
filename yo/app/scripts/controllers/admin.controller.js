@@ -182,7 +182,7 @@
             gridApi.infiniteScroll.on.needLoadMoreData($scope, function() {
                 page++;
                 getPage().then(function(downloads){
-                    _.each(downloads, function(result){ that.gridOptions.data.push(download); });
+                    _.each(downloads, function(download){ that.gridOptions.data.push(download); });
                     updateScroll(downloads.length);
                 });
             });
