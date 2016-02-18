@@ -60,10 +60,22 @@
       this.currentTab = 'datafile';
     }
 
+    var promises = [];
     _.each(['investigation', 'dataset', 'datafile'], function(type){
       if(!that[type]) return;
       createGridOptions.call(that, type);
-    })
+    });
+    $q.all(promises).then(function(){
+      console.log('done');
+      _.each(['investigation', 'dataset', 'datafile'], function(type){
+        if(!that[type]) return;
+        var gridOptions = that[type + "GridOptions"];
+        _.each(gridOptions.data, function(entity){
+          entity.getSize(timeout.promise);
+        });
+      });
+    });
+
 
     this.browse = function(row){
       timeout.resolve();
@@ -110,17 +122,14 @@
       };
 
       var query = _.merge(queryCommon, {target: type});
-      tc.search(facilities, timeout.promise, query).then(function(results){
-        _.each(results, function(entity){
-            entity.getSize(timeout.promise);
-        });
+      promises.push(tc.search(facilities, timeout.promise, query).then(function(results){
         updateSelections();
       }, function(){
 
       }, function(results){
         gridOptions.data = results;
         updateSelections();
-      });
+      }));
 
 
 
