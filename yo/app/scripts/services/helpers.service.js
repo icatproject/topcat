@@ -200,6 +200,12 @@
 
 		};
 
+		this.resolvedPromise = function(value){
+			var defered = $q.defer();
+			defered.resolve(value);
+			return defered.promise;
+		};
+
 		(function(){
 			var methods = {
 	            get: $http.get,
