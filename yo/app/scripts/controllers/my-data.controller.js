@@ -321,12 +321,23 @@
             });
 
 
-            gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-                if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
+            function updateRowSelection(row){
+                var identity = _.pick(row.entity, ['facilityName', 'id']);
+                if(_.find(gridApi.selection.getSelectedRows(), identity)){
                     row.entity.addToCart(canceler.promise);
                 } else {
                     row.entity.deleteFromCart(canceler.promise);
                 }
+            }
+
+            gridApi.selection.on.rowSelectionChanged($scope, function(row) {
+                updateRowSelection(row);
+            });
+
+            gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows){
+                _.each(rows, function(row){
+                    updateRowSelection(row);
+                });
             });
 
 

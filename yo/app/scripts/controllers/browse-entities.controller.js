@@ -527,18 +527,35 @@
                 });
             });
 
+            function updateRowSelection(row){
+                var identity = _.pick(row.entity, ['facilityName', 'id']);
+                if(_.find(gridApi.selection.getSelectedRows(), identity)){
+                    row.entity.addToCart(canceler.promise);
+                } else {
+                    row.entity.deleteFromCart(canceler.promise);
+                }
+            }
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 isAncestorInCart().then(function(isAncestorInCart){
                     if(!isAncestorInCart){
-                        if(_.find(gridApi.selection.getSelectedRows(), _.pick(row.entity, ['facilityName', 'id']))){
-                            row.entity.addToCart(canceler.promise);
-                        } else {
-                            row.entity.deleteFromCart(canceler.promise);
-                        }
+                        updateRowSelection(row);
                     } else {
                         updateSelections();
                     }
+                });
+            });
+
+            gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows){
+                isAncestorInCart().then(function(isAncestorInCart){
+                    if(!isAncestorInCart){
+                        _.each(rows, function(row){
+                            updateRowSelection(row);
+                        });
+                    } else {
+                        updateSelections();
+                    }
+
                 });
             });
 
