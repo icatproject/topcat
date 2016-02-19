@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, APP_CONFIG){
+    app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, APP_CONFIG){
     	var tc = this;
     	var facilities = {};
 
