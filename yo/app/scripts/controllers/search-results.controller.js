@@ -66,7 +66,6 @@
       createGridOptions.call(that, type);
     });
     $q.all(promises).then(function(){
-      console.log('done');
       _.each(['investigation', 'dataset', 'datafile'], function(type){
         if(!that[type]) return;
         var gridOptions = that[type + "GridOptions"];
