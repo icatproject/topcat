@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcUser', function($q, helpers){
+    app.service('tcUser', function($q, $rootScope, helpers, tcUserCart){
 
     	this.create = function(facility){
     		return new User(facility);
@@ -13,6 +13,10 @@
 
         function User(facility){
             var that = this;
+
+            this.facility = function(){
+                return facility;
+            };
 
             this.downloads = helpers.overload({
                 'object, object': function(params, options){
@@ -102,7 +106,7 @@
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId
                     }, options).then(function(cart){
-                        extendCart(cart);
+                        cart = tcUserCart.create(cart, that);
                         cartCache = cart;
                         return cart;
                     });
@@ -127,7 +131,7 @@
                                 entityType: entityType,
                                 entityId: entityId
                             }, options).then(function(cart){
-                                extendCart(cart);
+                                cart = tcUserCart.create(cart, that);
                                 cartCache = cart;
                                 $rootScope.$broadcast('cart:change');
                                 return cart;
@@ -149,7 +153,7 @@
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId
                     }, options).then(function(cart){
-                        extendCart(cart);
+                        cart = tcUserCart.create(cart, that);
                         cartCache = cart;
                         $rootScope.$broadcast('cart:change');
                         return cart;
@@ -221,7 +225,7 @@
                         zipType: transportType.zipType ? transportType.zipType : '',
                         transportUrl: transportType.url
                     }, options).then(function(cart){
-                        extendCart(cart);
+                        cart = tcUserCart.create(cart, that);
                         cartCache = cart;
                         $rootScope.$broadcast('download:change');
                         $rootScope.$broadcast('cart:change');
@@ -236,89 +240,9 @@
                 }
             });
 
-            function extendCart(cart){
-
-                cart.isCartItem = function(entityType, entityId){
-                    var out = false;
-                    _.each(cart.cartItems, function(cartItem){
-                        if(cartItem.entityType == entityType && cartItem.entityId == entityId){
-                            out = true;
-                            return false;
-                        }
-                    });
-                    return out;
-                };
-
-                _.each(cart.cartItems, function(cartItem){
-                    cartItem.facilityName = facility.config().facilityName;
-
-                    cartItem.delete = helpers.overload({
-                        'object': function(options){
-                            return that.deleteCartItem(this.id, options);
-                        },
-                        'promise': function(timeout){
-                            return this.delete({timeout: timeout});
-                        },
-                        '': function(){
-                            return this.delete({});
-                        }
-                    });
-
-
-                    cartItem.entity = helpers.overload({
-                        'object': function(options){
-                            return facility.icat().entity(helpers.capitalize(this.entityType), ["where ?.id = ?", this.entityType.safe(), this.entityId], options);
-                        },
-                        'promise': function(timeout){
-                            return this.entity({timeout: timeout});
-                        },
-                        '': function(){
-                            return this.entity({});
-                        }
-                    });
-
-                    cartItem.getSize = helpers.overload({
-                        'object': function(options){
-                            var that = this;
-                            return this.entity(options).then(function(entity){
-                                return entity.getSize(options).then(function(size){
-                                    that.size = size;
-                                    return size;
-                                });
-                            });
-                        },
-                        'promise': function(timeout){
-                            return this.getSize({timeout: timeout});
-                        },
-                        '': function(){
-                            return this.getSize({});
-                        }
-                    });
-
-                    cartItem.getStatus = helpers.overload({
-                        'object': function(options){
-                            var that = this;
-                            return this.entity(options).then(function(entity){
-                                return entity.getStatus(options).then(function(status){
-                                    that.status = status;
-                                    return status;
-                                });
-                            });
-                        },
-                        'promise': function(timeout){
-                            return this.getStatus({timeout: timeout});
-                        },
-                        '': function(){
-                            return this.getStatus({});
-                        }
-                    });
-
-                });
-            }
-
             helpers.generateRestMethods(this, facility.tc.topcatApiPath + 'user/');
         }
 
-	});
+    });
 
 })();
