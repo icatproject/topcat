@@ -5,8 +5,8 @@
 
     var app = angular.module('angularApp');
 
-    app.service('icatEntityFactory', function($http, $q, $rootScope, $state, helpers){
-    	var icatEntityFactory = this;
+    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers){
+    	var tcIcatEntity = this;
 
     	this.create = function(attributes, facility){
     		return new IcatEntity(attributes, facility);
@@ -256,11 +256,11 @@
 
 			if(this.dataset){
 				this.dataset.entityType = "Dataset";
-				this.dataset = icatEntityFactory.create(this.dataset, facility);
+				this.dataset = tcIcatEntity.create(this.dataset, facility);
 			}
 			if(this.investigation){
 				this.investigation.entityType = "Investigation";
-				this.investigation = icatEntityFactory.create(this.investigation, facility);
+				this.investigation = tcIcatEntity.create(this.investigation, facility);
 			}
 
 			this.addToCart = helpers.overload({
