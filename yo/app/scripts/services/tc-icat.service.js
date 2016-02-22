@@ -30,7 +30,7 @@
     		};
 
 			this.refreshSession = function(){
-
+				return this.put('session/' + this.session().sessionId);
 			};	
 
     		this.login = function(plugin, username, password){

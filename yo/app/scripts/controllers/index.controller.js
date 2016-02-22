@@ -126,6 +126,13 @@
             };
         }
 
+        var refreshSessionInterval = setInterval(function(){
+            _.each(tc.userFacilities(), function(facility){
+                facility.icat().refreshSession();
+            });
+        }, 1000 * 60 * 5);
+        $scope.$on('$destroy', function(){ clearInterval(refreshSessionInterval); });
+
     });
 
 })();
