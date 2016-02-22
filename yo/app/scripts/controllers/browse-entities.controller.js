@@ -83,8 +83,15 @@
                     _.each(pathPairs.reverse(), function(pathPair){
                         var entityType = pathPair[0];
                         var entityId = pathPair[1];
+                        var entity = breadcrumbEntities[entityType];
+                        var title;
+                        if(entity){
+                            title = entity[breadcrumbTitleMap[entityType]] || entity.title || entity.name || 'untitled';
+                        } else {
+                            title = 'untitled';
+                        }
                         that.breadcrumbItems.unshift({
-                            title: breadcrumbEntities[entityType][breadcrumbTitleMap[entityType]] || breadcrumbEntities[entityType].title || breadcrumbEntities[entityType].name,
+                            title: title,
                             href: currentHref
                         });
                         currentHref = currentHref.replace(/\/[^\/]*\/[^\/]*$/, '');

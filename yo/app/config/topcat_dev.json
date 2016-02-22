@@ -1597,17 +1597,19 @@
             ],
             "authenticationType": [
                 {
-                    "title": "User Office",
+                    "title": "Username/Password",
                     "plugin": "uows"
                 }
+                
             ],
             "downloadTransportType": [
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
-                    "url": "https://idsdev.isis.cclrc.ac.uk"
+                    "url": "https://idsdev2.isis.cclrc.ac.uk"
                 }
+              
             ],
             "browseGridOptions": {
                 "instrument": {
@@ -1626,58 +1628,11 @@
                         }
                     ]
                 },
-                "facilityCycle": {
-                    "enableFiltering": true,
-                    "columnDefs": [
-                        {
-                            "field": "name",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
-                            "type": "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            },
-                            "link": true
-                        },
-                        {
-                            "field": "description",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
-                            "type": "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
-                        },
-                        {
-                            "field": "startDate",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
-                            "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd'",
-                            "filter": {
-                                "placeholder" : "Date...",
-                                "type": "input"
-                            }
-                        },
-                        {
-                            "field": "endDate",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
-                            "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd'",
-                            "filter": {
-                                "placeholder": "Date...",
-                                "type": "input"
-                            }
-                        }
-                    ]
-                },
                 "proposal": {
                     "enableFiltering": true,
                     "columnDefs": [
                         {
-                            "field": "name",
-                            "translateDisplayName": "BROWSE.COLUMN.PROPOSAL.NAME",
+                            "field": "title",
                             "type": "string",
                             "filter": {
                                 "condition": "starts_with",
@@ -1686,6 +1641,19 @@
                             },
                             "cellTooltip": true,
                             "link": true
+                           
+                        },
+                        {
+                            "field": "name",
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "cellTooltip": true,
+                            "link": true,
+                            "breadcrumb":true
                         }
                     ]
                 },
@@ -1694,6 +1662,7 @@
                     "enableSelection": true,
                     "includes" : [
                         "investigation.investigationInstruments.instrument"
+                        
                     ],
                     "columnDefs": [
                         {
@@ -1704,6 +1673,9 @@
                                 "condition": "contains",
                                 "placeholder": "Containing...",
                                 "type": "input"
+                            },
+                            "sort": {
+                                "direction": "asc"
                             },
                             "cellTooltip": true,
                             "link": true,
@@ -1723,7 +1695,7 @@
                         },
                         {
                             "field": "name",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "starts_with",
@@ -1809,6 +1781,10 @@
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1835,6 +1811,55 @@
                                     "type": "input"
                                 }
                             ]
+                        }
+                    ]
+                },
+                "facilityCycle": {
+                    "enableFiltering": true,
+                    "columnDefs": [
+                        {
+                            "field": "name",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
+                            "type": "number",
+                            "sort": {
+                                "direction": "asc"
+                            },
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "link": true
+                        },
+                        {
+                            "field": "description",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "startDate",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filter": {
+                                "placeholder" : "Date...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "endDate",
+                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filter": {
+                                "placeholder": "Date...",
+                                "type": "input"
+                            }
                         }
                     ]
                 },
@@ -1881,6 +1906,10 @@
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
                             "filters": [
                                 {
                                     "placeholder": "From...",
@@ -1962,11 +1991,13 @@
                             },
                             {
                                 "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
-                                "field": "startDate"
+                                "field": "startDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             },
                             {
                                 "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
-                                "field": "endDate"
+                                "field": "endDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             }
                         ]
                     },
@@ -2004,6 +2035,20 @@
                                 "field": "name"
                             }
                         ]
+                    },
+                    {
+                        "displayName": "Publications",
+                        "field": "publications",
+                        "queryParams": [
+                            "Publication"
+                        ],
+                        "default": "false",
+                        "data": [
+                            {
+                                "displayName": "Reference",
+                                "field": "fullReference"
+                            }
+                        ]
                     }
                 ],
                 "dataset": [
@@ -2022,11 +2067,13 @@
                             },
                             {
                                 "translateDisplayName": "METATABS.DATASET.START_DATE",
-                                "field": "startDate"
+                                "field": "startDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             },
                             {
                                 "translateDisplayName": "METATABS.DATASET.END_DATE",
-                                "field": "endDate"
+                                "field": "endDate",
+                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
                             }
                         ]
                     },
@@ -2065,7 +2112,8 @@
                             },
                             {
                                 "translateDisplayName": "METATABS.DATAFILE.SIZE",
-                                "field": "fileSize"
+                                "field": "fileSize",
+                                "template": "{{content.value | bytes}}"
                             },
                             {
                                 "translateDisplayName": "METATABS.DATAFILE.LOCATION",
