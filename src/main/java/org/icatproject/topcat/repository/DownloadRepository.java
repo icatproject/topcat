@@ -51,13 +51,15 @@ public class DownloadRepository {
         Integer pageSize = null;
         Integer page = null;
 
-        queryOffset = queryOffset.replaceAll("(?i)^\\s*WHERE\\s+", "");
-        Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d)+,\\s*(\\d+)\\s*$");
-        Matcher matches = pattern.matcher(queryOffset);
-        if(matches.find()){
-            queryOffset = matches.group(1);
-            page = Integer.parseInt(matches.group(2));
-            pageSize = Integer.parseInt(matches.group(3));
+        if(queryOffset != null){
+            queryOffset = queryOffset.replaceAll("(?i)^\\s*WHERE\\s+", "");
+            Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d)+,\\s*(\\d+)\\s*$");
+            Matcher matches = pattern.matcher(queryOffset);
+            if(matches.find()){
+                queryOffset = matches.group(1);
+                page = Integer.parseInt(matches.group(2));
+                pageSize = Integer.parseInt(matches.group(3));
+            }
         }
 
         if (em != null) {
