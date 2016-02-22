@@ -29,6 +29,10 @@
     			return {};
     		};
 
+			this.refreshSession = function(){
+
+			};	
+
     		this.login = function(plugin, username, password){
     			var params = {
     				json: JSON.stringify({
@@ -81,7 +85,6 @@
 	        this.query = helpers.overload({
 	        	'array, object': function(query, options){    	
 		        	var defered = $q.defer();
-		    
 		        	this.get('entityManager', {
 	                    sessionId: this.session().sessionId,
 	                    query: helpers.buildQuery(query),

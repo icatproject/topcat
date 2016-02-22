@@ -182,21 +182,30 @@
             if(entityInstanceName == 'proposal'){
                 var defered = $q.defer();
                 out.then(function(names){
-                    if(names.length > 0){
-                        return icat.query(canceler.promise, [
+                    var promises = [];
+                    var proposals = [];
+
+                    _.each(names, function(name){
+                        promises.push(icat.query(canceler.promise, [
                             "select investigation from Investigation investigation",
-                            "where investigation.name in (" + _.map(names, function(){ return '?'}).join(',') + ")", names,
-                            filterQuery, sortQuery
-                        ]).then(function(proposals){
-                            _.each(proposals, function(proposal){
-                                proposal.entityType = "Proposal";
-                                proposal.id = proposal.name;
-                            });
-                            return defered.resolve(proposals);
+                            "where investigation.name = ?", name,
+                            "limit 0, 1"
+                        ]).then(function(proposal){
+                            proposal = proposal[0];
+                            proposal.entityType = "Proposal";
+                            proposal.id = proposal.name;
+                            proposals.push(proposal);
+                        }));
+                    });
+                    
+                    $q.all(promises).then(function(){
+                        var proposalIndex = {};
+                        _.each(proposals, function(proposal){
+                            proposalIndex[proposal.name] = proposal
                         });
-                    } else {
-                        return defered.resolve(names);
-                    }
+                        defered.resolve(_.map(names, function(name){ return proposalIndex[name]; }));
+                    });
+                    
                 });
                 out = defered.promise;
             }
