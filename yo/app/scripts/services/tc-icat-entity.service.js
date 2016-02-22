@@ -156,11 +156,11 @@
 						}
 					});
 				},
-				'string, promise': function(entityType, timeout){
-					return this.parent(entityType, entity, {timeout: timeout});	
+				'string, object, promise': function(entityType, childEntity, timeout){
+					return this.parent(entityType, childEntity, {timeout: timeout});	
 				},
-				'string': function(entityType){
-					return this.parent(entityType, entity, {});	
+				'string, object': function(entityType, childEntity){
+					return this.parent(entityType, childEntity, {});
 				},
 				'object, object': function(childEntity, options){
 					var defered = $q.defer();
@@ -198,7 +198,7 @@
 				if(this.entityType == entityType){
 					return helpers.resolvedPromise(this);
 				} else {
-					return this.parent(entityType);
+					return this.parent(entityType, this);
 				}
 			};
 				
@@ -217,6 +217,7 @@
 						}
 					});
 				}
+
 				parent.call(this);
 				return defered.promise;
 			};
