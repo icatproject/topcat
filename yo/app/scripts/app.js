@@ -277,7 +277,7 @@
         }])
         .run(['$rootScope', '$state', '$sessionStorage', function ($rootScope, $state, $sessionStorage) {
             //store the last state
-            $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams){
+            $rootScope.$on('$stateChangeStart', function(event, toState, toParams){
                 if(!toState.name.match(/^(login|logout)/)){
                     $sessionStorage.lastState = {
                         name: toState.name,
