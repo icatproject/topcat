@@ -1101,6 +1101,19 @@
                                 "field": "location"
                             }
                         ]
+                    },
+                    {
+                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                        "field": "parameters",
+                        "queryParams": ["DatafileParameter", "ParameterType"],
+                        "default": false,
+                        "data": [
+                            {
+                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                "field": "stringValue",
+                                "default": false
+                            }
+                        ]
                     }
                 ]
             }

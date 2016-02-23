@@ -6,6 +6,7 @@
 
     app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, APP_CONFIG){
     	var tc = this;
+    	window.tc = this;
     	var facilities = {};
 
     	this.facility = function(facilityName){
