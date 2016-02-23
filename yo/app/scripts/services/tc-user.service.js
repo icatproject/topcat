@@ -119,17 +119,23 @@
                 }
             });
 
-            this.addCartItem = helpers.overload({
-                'string, number, object': function(entityType, entityId, options){
+            this.addCartItems = helpers.overload({
+                'array, object': function(items, options){
                     return this.cart(options).then(function(cart){
-                        if(cart.isCartItem(entityType, entityId)){
-                            return cart;
-                        } else {
-                            return that.post('cart/' + facility.config().facilityName + '/cartItem', {
+                        var filteredItems = [];
+                        _.each(items, function(item){
+                            if(!cart.isCartItem(item.entityType, item.entityId)){
+                                filteredItems.push(item);
+                            }
+                        });
+
+                        items = _.map(filteredItems, function(item){ return item.entityType + " " + item.entityId; }).join(',');
+                        
+                        if(items != ''){
+                            return that.post('cart/' + facility.config().facilityName + '/cartItems', {
                                 icatUrl: facility.config().icatUrl,
                                 sessionId: facility.icat().session().sessionId,
-                                entityType: entityType,
-                                entityId: entityId
+                                items: items
                             }, options).then(function(cart){
                                 cart = tcUserCart.create(cart, that);
                                 cartCache = cart;
@@ -137,7 +143,21 @@
                                 return cart;
                             });
                         }
+
+                        return cart;
                     });
+                },
+                'promise, array': function(timeout, items){
+                    return this.addCartItems(items, {timeout: timeout});
+                },
+                'array': function(items){
+                    return this.addCartItems(items, {});
+                }
+            });
+
+            this.addCartItem = helpers.overload({
+                'string, number, object': function(entityType, entityId, options){
+                    return this.addCartItems([{entityType: entityType, entityId: entityId}], options);
                 },
                 'string, number, promise': function(entityType, entityId, timeout){
                     return this.addCartItem(entityType, entityId, {timeout: timeout})
@@ -147,17 +167,35 @@
                 }
             });
 
-            this.deleteCartItem = helpers.overload({
-                'number, object': function(id, options){
-                    return this.delete('cart/' + facility.config().facilityName + '/cartItem/' + id, {
+            this.deleteCartItems = helpers.overload({
+                'array, object': function(items, options){
+                    if(typeof items[0] == 'object'){
+                        items = _.map(items, function(item){ return item.entityType + " " + item.entityId; });
+                    }
+                    items = items.join(',');
+
+                    return this.delete('cart/' + facility.config().facilityName + '/cartItems', {
                         icatUrl: facility.config().icatUrl,
-                        sessionId: facility.icat().session().sessionId
+                        sessionId: facility.icat().session().sessionId,
+                        items: items
                     }, options).then(function(cart){
                         cart = tcUserCart.create(cart, that);
                         cartCache = cart;
                         $rootScope.$broadcast('cart:change');
                         return cart;
                     });
+                },
+                'promise, array': function(timeout, items){
+                    return this.deleteCartItems(items, {timeout: timeout});
+                },
+                'array': function(items){
+                    return this.deleteCartItems(items, {});
+                }
+            });
+
+            this.deleteCartItem = helpers.overload({
+                'number, object': function(id, options){
+                    return this.deleteCartItems([id], options);
                 },
                 'number, promise': function(id, timeout){
                     return this.deleteCartItem(id, {timeout: timeout});
@@ -166,17 +204,7 @@
                     return this.deleteCartItem(id, {});
                 },
                 'string, number, object': function(entityType, entityId, options){
-                    return this.cart(options).then(function(cart){
-                        var promises = [];
-                        _.each(cart.cartItems, function(cartItem){
-                            if(cartItem.entityType == entityType && cartItem.entityId == entityId){
-                                promises.push(that.deleteCartItem(cartItem.id, options));
-                            }
-                        });
-                        return $q.all(promises).then(function(){
-                            return cart;
-                        });
-                    });
+                    return this.deleteCartItems([{entityType: entityType, entityId: entityId}], options);
                 },
                 'string, number, promise': function(entityType, entityId, timeout){
                     return this.deleteCartItem(entityType, entityId, {timeout: timeout});

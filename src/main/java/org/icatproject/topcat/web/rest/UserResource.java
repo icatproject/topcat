@@ -2,6 +2,7 @@ package org.icatproject.topcat.web.rest;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -148,19 +149,17 @@ public class UserResource {
     }
 
     @POST
-    @Path("/cart/{facilityName}/cartItem")
+    @Path("/cart/{facilityName}/cartItems")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response addCartItem(
+    public Response addCartItems(
         @PathParam("facilityName") String facilityName,
         @FormParam("icatUrl") String icatUrl,
         @FormParam("sessionId") String sessionId,
-        @FormParam("entityType") String entityType,
-        @FormParam("entityId") Long entityId)
+        @FormParam("items") String items)
         throws TopcatException, MalformedURLException, ParseException {
 
         String userName = icatClientService.getUserName(icatUrl, sessionId);
         Cart cart = cartRepository.getCart(userName, facilityName);
-        String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
 
         if(cart == null){
             cart = new Cart();
@@ -172,24 +171,36 @@ public class UserResource {
 
         em.refresh(cart);
 
-        for(CartItem cartItem : cart.getCartItems()){
-            if(cartItem.getEntityType() == EntityType.valueOf(entityType) && cartItem.getEntityId() == entityId){
-                return Response.ok().entity(cart).build();
+        for(String item : items.split("\\s*,\\s*")){
+            String[] pair = item.split("\\s+");
+            if(pair.length == 2){
+                String entityType = pair[0];
+                Long entityId = Long.parseLong(pair[1]);
+                boolean isAlreadyInCart = false;
+
+                for(CartItem cartItem : cart.getCartItems()){
+                    if(cartItem.getEntityType().equals(EntityType.valueOf(entityType)) && cartItem.getEntityId().equals(entityId)){
+                        isAlreadyInCart = true;
+                        break;
+                    }
+                }
+
+                if(!isAlreadyInCart){
+                    String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
+                    CartItem cartItem = new CartItem();
+                    cartItem.setCart(cart);
+                    cartItem.setEntityType(EntityType.valueOf(entityType));
+                    cartItem.setEntityId(entityId);
+                    cartItem.setName(name);
+                    em.persist(cartItem);
+
+                    List<ParentEntity> parentEntities = icatClientService.getParentEntities(icatUrl, sessionId, entityType, entityId);
+                    for(ParentEntity parentEntity : parentEntities){
+                        parentEntity.setCartItem(cartItem);
+                        em.persist(parentEntity);
+                    }
+                }
             }
-        }
-
-        CartItem cartItem = new CartItem();
-        cartItem.setCart(cart);
-        cartItem.setEntityType(EntityType.valueOf(entityType));
-        cartItem.setEntityId(entityId);
-        cartItem.setName(name);
-        em.persist(cartItem);
-        
-
-        List<ParentEntity> parentEntities = icatClientService.getParentEntities(icatUrl, sessionId, entityType, entityId);
-        for(ParentEntity parentEntity : parentEntities){
-            parentEntity.setCartItem(cartItem);
-            em.persist(parentEntity);
         }
 
         em.flush();
@@ -200,13 +211,13 @@ public class UserResource {
 
 
     @DELETE
-    @Path("/cart/{facilityName}/cartItem/{id}")
+    @Path("/cart/{facilityName}/cartItems")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteCartItem(
+    public Response deleteCartItems(
         @PathParam("facilityName") String facilityName,
-        @PathParam("id") Long id,
         @QueryParam("icatUrl") String icatUrl,
-        @QueryParam("sessionId") String sessionId)
+        @QueryParam("sessionId") String sessionId,
+        @QueryParam("items") String items)
         throws TopcatException, MalformedURLException, ParseException {
 
         String userName = icatClientService.getUserName(icatUrl, sessionId);
@@ -215,10 +226,27 @@ public class UserResource {
             return emptyCart(facilityName, userName);
         }
 
-        CartItem cartItem = em.find(CartItem.class, id);
-        if(cartItem != null){
-            em.remove(cartItem);
-            em.flush();
+        for(String item : items.split("\\s*,\\s*")){
+            String[] pair = item.split("\\s+");
+            CartItem cartItem = null;
+            if(pair.length > 1){
+                String entityType = pair[0];
+                Long entityId = Long.parseLong(pair[1]);
+                for(CartItem _cartItem : cart.getCartItems()){
+                    if(_cartItem.getEntityType().equals(EntityType.valueOf(entityType)) && _cartItem.getEntityId().equals(entityId)){
+                        cartItem = _cartItem;
+                        break;
+                    }
+                }
+            } else {
+                Long id = Long.parseLong(pair[0]);
+                cartItem = em.find(CartItem.class, id);
+            }
+            if(cartItem != null){
+                logger.debug("remove: " + cartItem);
+                em.remove(cartItem);
+                em.flush();
+            }
         }
 
         em.refresh(cart);
@@ -227,6 +255,8 @@ public class UserResource {
             em.flush();
             return emptyCart(facilityName, userName);
         }
+        em.persist(cart);
+        em.flush();
 
         return Response.ok().entity(cart).build();
     }
