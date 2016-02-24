@@ -249,6 +249,17 @@
                         cartCache = cart;
                         $rootScope.$broadcast('download:change');
                         $rootScope.$broadcast('cart:change');
+
+                        console.log(cart);
+                        that.downloads(["where download.id = ?", cart.downloadId]).then(function(downloads){
+                            var download = downloads[0];
+                            console.log(download);
+
+                            if(download.transport === 'https' && download.status == 'COMPLETE'){
+                                window.location.href = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                            }
+                        });
+
                         return cart;
                     });
                 },

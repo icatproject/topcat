@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -291,6 +292,7 @@ public class UserResource {
         String userName = icatClientService.getUserName(icatUrl, sessionId);
         Cart cart = cartRepository.getCart(userName, facilityName);
         String fullName = icatClientService.getFullName(icatUrl, sessionId);
+        Long downloadId = null;
         
         if(cart != null){
             em.refresh(cart);
@@ -333,6 +335,9 @@ public class UserResource {
 
                 try {
                     em.persist(download);
+                    em.flush();
+                    em.refresh(download);
+                    downloadId = download.getId();
                     em.remove(cart);
                     em.flush();
                 } catch (Exception e) {
@@ -346,17 +351,27 @@ public class UserResource {
            
         }
 
-        return emptyCart(facilityName, userName);
+        return emptyCart(facilityName, userName, downloadId);
+    }
+
+    private Response emptyCart(String facilityName, String userName, Long downloadId){
+        JsonObjectBuilder emptyCart = Json.createObjectBuilder()
+            .add("facilityName", facilityName)
+            .add("userName", userName)
+            .add("cartItems", Json.createArrayBuilder().build());
+            
+            if(downloadId != null){
+                emptyCart.add("downloadId", downloadId);
+            }
+
+        return Response.ok().entity(emptyCart.build().toString()).build();
     }
 
     private Response emptyCart(String facilityName, String userName){
-        JsonObject emptyCart = Json.createObjectBuilder()
-            .add("facilityName", facilityName)
-            .add("userName", userName)
-            .add("cartItems", Json.createArrayBuilder().build())
-            .build();
-        return Response.ok().entity(emptyCart.toString()).build();
+        return emptyCart(facilityName, userName, null);
     }
+
+
 
     private Flag getZipFlag(String zip) {
         if (zip == null ) {
