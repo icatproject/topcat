@@ -217,15 +217,7 @@
             this.deleteAllCartItems = helpers.overload({
                 'object': function(options){
                     return this.cart(options).then(function(cart){
-                        var promises = [];
-
-                        _.each(cart.cartItems, function(cartItem){
-                            promises.push(cartItem.delete(options));
-                        });
-
-                        return $q.all(promises).then(function(){
-                            return that.cart(options);
-                        });
+                        return that.deleteCartItems(cart.cartItems, options);
                     });
                 },
                 'promise': function(timeout){

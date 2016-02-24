@@ -499,19 +499,16 @@
                 });
             });
 
-            function updateRowSelection(row){
-                var identity = _.pick(row.entity, ['facilityName', 'id']);
-                if(_.find(gridApi.selection.getSelectedRows(), identity)){
-                    row.entity.addToCart(canceler.promise);
-                } else {
-                    row.entity.deleteFromCart(canceler.promise);
-                }
-            }
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 isAncestorInCart().then(function(isAncestorInCart){
                     if(!isAncestorInCart){
-                        updateRowSelection(row);
+                        var identity = _.pick(row.entity, ['facilityName', 'id']);
+                        if(_.find(gridApi.selection.getSelectedRows(), identity)){
+                            row.entity.addToCart(canceler.promise);
+                        } else {
+                            row.entity.deleteFromCart(canceler.promise);
+                        }
                     } else {
                         updateSelections();
                     }
@@ -521,9 +518,24 @@
             gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows){
                 isAncestorInCart().then(function(isAncestorInCart){
                     if(!isAncestorInCart){
+                        var entitiesToAdd = [];
+                        var entitiesToRemove = [];
                         _.each(rows, function(row){
-                            updateRowSelection(row);
+                            var identity = _.pick(row.entity, ['facilityName', 'id']);
+                            if(_.find(gridApi.selection.getSelectedRows(), identity)){
+                                entitiesToAdd.push({
+                                    entityType: row.entity.entityType.toLowerCase(),
+                                    entityId: row.entity.id
+                                });
+                            } else {
+                                entitiesToRemove.push({
+                                    entityType: row.entity.entityType.toLowerCase(),
+                                    entityId: row.entity.id
+                                });
+                            }
                         });
+                        if(entitiesToAdd.length > 0) tc.user(facilityName).addCartItems(entitiesToAdd);
+                        if(entitiesToRemove.length > 0) tc.user(facilityName).removeCartItems(entitiesToRemove);
                     } else {
                         updateSelections();
                     }
