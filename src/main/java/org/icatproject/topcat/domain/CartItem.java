@@ -40,7 +40,7 @@ public class CartItem implements Serializable {
     @Column(name = "NAME", nullable = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cartItem")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cartItem", orphanRemoval = true)
     private List<ParentEntity> parentEntities = new ArrayList<ParentEntity>();
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

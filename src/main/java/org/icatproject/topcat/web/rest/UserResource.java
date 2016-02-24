@@ -1,6 +1,7 @@
 package org.icatproject.topcat.web.rest;
 
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.text.ParseException;
+
+import javax.transaction.Transactional;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -228,35 +231,37 @@ public class UserResource {
 
         for(String item : items.split("\\s*,\\s*")){
             String[] pair = item.split("\\s+");
-            CartItem cartItem = null;
+            
             if(pair.length > 1){
                 String entityType = pair[0];
                 Long entityId = Long.parseLong(pair[1]);
-                for(CartItem _cartItem : cart.getCartItems()){
-                    if(_cartItem.getEntityType().equals(EntityType.valueOf(entityType)) && _cartItem.getEntityId().equals(entityId)){
-                        cartItem = _cartItem;
-                        break;
+
+                for(CartItem cartItem : cart.getCartItems()){
+                    boolean entityTypesMatch = cartItem.getEntityType().equals(EntityType.valueOf(entityType));
+                    boolean entityIdsMatch = cartItem.getEntityId().equals(entityId);
+                    if(entityTypesMatch && entityIdsMatch){
+                        em.remove(cartItem);
                     }
                 }
             } else {
                 Long id = Long.parseLong(pair[0]);
-                cartItem = em.find(CartItem.class, id);
-            }
-            if(cartItem != null){
-                logger.debug("remove: " + cartItem);
-                em.remove(cartItem);
-                em.flush();
+                for(CartItem cartItem : cart.getCartItems()){
+                    if(cartItem.getId().equals(id)){
+                        em.remove(cartItem);
+                        break;
+                    }
+                }
             }
         }
 
+        em.flush();
         em.refresh(cart);
+
         if(cart.getCartItems().size() == 0){
             em.remove(cart);
             em.flush();
             return emptyCart(facilityName, userName);
         }
-        em.persist(cart);
-        em.flush();
 
         return Response.ok().entity(cart).build();
     }
