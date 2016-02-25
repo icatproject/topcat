@@ -1371,8 +1371,8 @@
                             }
                         },
                         {
-                            "field": "modTime",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
+                            "field": "datafileCreateTime",
+                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_CREATE_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                             "sort": {
