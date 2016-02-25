@@ -260,7 +260,15 @@
                         that.downloads(["where download.id = ?", cart.downloadId]).then(function(downloads){
                             var download = downloads[0];
                             if(download.transport === 'https' && download.status == 'COMPLETE'){
-                                window.location.href = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                                var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                                var iframe = $('<iframe>').attr('src', url).css({
+                                    position: 'absolute',
+                                    left: '-1000000px',
+                                    height: '1px',
+                                    width: '1px'
+                                });
+
+                                $('body').append(iframe);
                             }
                         });
 
