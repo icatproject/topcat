@@ -539,11 +539,10 @@
                             }
                         });
                         if(entitiesToAdd.length > 0) tc.user(facilityName).addCartItems(entitiesToAdd);
-                        if(entitiesToRemove.length > 0) tc.user(facilityName).removeCartItems(entitiesToRemove);
+                        if(entitiesToRemove.length > 0) tc.user(facilityName).deleteCartItems(entitiesToRemove);
                     } else {
                         updateSelections();
                     }
-
                 });
             });
 

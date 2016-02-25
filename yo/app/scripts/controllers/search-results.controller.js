@@ -107,23 +107,48 @@
         gridApi = _gridApi;
         updateSelections();
 
-        function updateRowSelection(row){
+
+        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
             var identity = _.pick(row.entity, ['facilityName', 'id']);
             if(_.find(gridApi.selection.getSelectedRows(), identity)){
                 row.entity.addToCart(timeout.promise);
             } else {
-                row.entity.deleteFromCart(timeout.promise);
+                tc.user(facilityName).cart(timeout.promise).then(function(cart){
+                    if(cart.isCartItem(row.entity.entityType, row.entity.id)){
+                        row.entity.deleteFromCart(timeout.promise);
+                    }
+                });
             }
-        }
-
-        gridApi.selection.on.rowSelectionChanged($scope, function(row) {
-            updateRowSelection(row);
         });
 
         gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows){
-            _.each(rows, function(row){
-                updateRowSelection(row);
-            });
+          var entitiesToAdd = {};
+          var entitiesToRemove = {};
+
+          _.each(rows, function(row){
+              var identity = _.pick(row.entity, ['facilityName', 'id']);
+              var facilityName = row.entity.facilityName;
+              if(_.find(gridApi.selection.getSelectedRows(), identity)){
+                  if(!entitiesToAdd[facilityName]) entitiesToAdd[facilityName] = [];
+                  entitiesToAdd[facilityName].push({
+                      entityType: row.entity.entityType.toLowerCase(),
+                      entityId: row.entity.id
+                  });
+              } else {
+                  if(!entitiesToRemove[facilityName]) entitiesToRemove[facilityName] = [];
+                  entitiesToRemove[facilityName].push({
+                      entityType: row.entity.entityType.toLowerCase(),
+                      entityId: row.entity.id
+                  });
+              }
+          });
+
+          _.each(entitiesToAdd, function(entities, facilityName){
+            if(entities.length > 0) tc.user(facilityName).addCartItems(entities);
+          });
+          _.each(entitiesToRemove, function(entities, facilityName){
+            if(entities.length > 0) tc.user(facilityName).deleteCartItems(entities);
+          });
         });
 
         _updateSelections = updateSelections;
