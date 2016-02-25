@@ -304,7 +304,7 @@
                 "EMAIL_ME_MESSAGE" : "Email me when download is ready",
                 "COLUMN" : {
                     "FILE_NAME" : "Download Name",
-                    "TRANSPORT" : "Transport",
+                    "TRANSPORT" : "Access Method",
                     "SIZE" : "Size",
                     "ESTIMATED_TIME": "Estimated download time",
                     "CONNECTION": "connection",
@@ -335,7 +335,7 @@
         "NEW_MESSAGE": "A new download has been added",
         "COLUMN" : {
             "FILE_NAME" : "Download Name",
-            "TRANSPORT" : "Transport",
+            "TRANSPORT" : "Access Method",
             "FACILITY" : "Facility" ,
             "STATUS" : "Status",
             "CREATED_AT" : "Requested At",
