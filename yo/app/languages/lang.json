@@ -484,7 +484,8 @@
         },
         "INVESTIGATION" : {
             "TABTITLE" : "Investigation Details",
-            "NAME" : "Name",
+            "NAME" : "Proposal",
+            "VISIT_ID" : "Visit Id",
             "TITLE" : "Title",
             "SUMMARY" : "Summary",
             "START_DATE" : "Start Date",

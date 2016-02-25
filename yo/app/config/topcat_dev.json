@@ -1451,6 +1451,10 @@
                                 "field": "name"
                             },
                             {
+                                "translateDisplayName": "METATABS.INVESTIGATION.VISIT_ID",
+                                "field": "visitId"
+                            },
+                            {
                                 "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
                                 "field": "title"
                             },
