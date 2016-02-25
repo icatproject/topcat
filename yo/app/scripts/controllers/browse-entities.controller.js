@@ -507,7 +507,11 @@
                         if(_.find(gridApi.selection.getSelectedRows(), identity)){
                             row.entity.addToCart(canceler.promise);
                         } else {
-                            row.entity.deleteFromCart(canceler.promise);
+                            tc.user(facilityName).cart(canceler.promise).then(function(cart){
+                                if(cart.isCartItem(row.entity.entityType, row.entity.id)){
+                                    row.entity.deleteFromCart(canceler.promise);
+                                }
+                            });
                         }
                     } else {
                         updateSelections();

@@ -216,8 +216,15 @@
 
             this.deleteAllCartItems = helpers.overload({
                 'object': function(options){
-                    return this.cart(options).then(function(cart){
-                        return that.deleteCartItems(cart.cartItems, options);
+                    return this.delete('cart/' + facility.config().facilityName + '/cartItems', {
+                        icatUrl: facility.config().icatUrl,
+                        sessionId: facility.icat().session().sessionId,
+                        items: "*"
+                    }, options).then(function(cart){
+                        cart = tcUserCart.create(cart, that);
+                        cartCache = cart;
+                        $rootScope.$broadcast('cart:change');
+                        return cart;
                     });
                 },
                 'promise': function(timeout){

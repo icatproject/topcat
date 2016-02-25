@@ -230,26 +230,32 @@ public class UserResource {
             return emptyCart(facilityName, userName);
         }
 
-        for(String item : items.split("\\s*,\\s*")){
-            String[] pair = item.split("\\s+");
-            
-            if(pair.length > 1){
-                String entityType = pair[0];
-                Long entityId = Long.parseLong(pair[1]);
+        if(items.equals("*")){
+            for(CartItem cartItem : cart.getCartItems()){
+                em.remove(cartItem);
+            }
+        } else {
+            for(String item : items.split("\\s*,\\s*")){
+                String[] pair = item.split("\\s+");
+                
+                if(pair.length > 1){
+                    String entityType = pair[0];
+                    Long entityId = Long.parseLong(pair[1]);
 
-                for(CartItem cartItem : cart.getCartItems()){
-                    boolean entityTypesMatch = cartItem.getEntityType().equals(EntityType.valueOf(entityType));
-                    boolean entityIdsMatch = cartItem.getEntityId().equals(entityId);
-                    if(entityTypesMatch && entityIdsMatch){
-                        em.remove(cartItem);
+                    for(CartItem cartItem : cart.getCartItems()){
+                        boolean entityTypesMatch = cartItem.getEntityType().equals(EntityType.valueOf(entityType));
+                        boolean entityIdsMatch = cartItem.getEntityId().equals(entityId);
+                        if(entityTypesMatch && entityIdsMatch){
+                            em.remove(cartItem);
+                        }
                     }
-                }
-            } else {
-                Long id = Long.parseLong(pair[0]);
-                for(CartItem cartItem : cart.getCartItems()){
-                    if(cartItem.getId().equals(id)){
-                        em.remove(cartItem);
-                        break;
+                } else {
+                    Long id = Long.parseLong(pair[0]);
+                    for(CartItem cartItem : cart.getCartItems()){
+                        if(cartItem.getId().equals(id)){
+                            em.remove(cartItem);
+                            break;
+                        }
                     }
                 }
             }

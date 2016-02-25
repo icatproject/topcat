@@ -17,6 +17,7 @@
 
             this.isCartItem = function(entityType, entityId){
                 var out = false;
+                entityType = entityType.toLowerCase();
                 _.each(this.cartItems, function(cartItem){
                     if(cartItem.entityType == entityType && cartItem.entityId == entityId){
                         out = true;
