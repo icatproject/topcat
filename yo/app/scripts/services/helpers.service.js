@@ -8,7 +8,7 @@
     	var helpers = this;
 
     	this.completePartialFromDate = function(date){
-            var segments = date.split(/[-:\s]+/);
+            var segments = date.split(/[-:\s\/]+/);
             var year = segments[0];
             var month = segments[1] || "01";
             var day = segments[2] || "01";
@@ -30,7 +30,7 @@
         };
 
         this.completePartialToDate = function(date){
-            var segments = date.split(/[-:\s]+/);
+            var segments = date.split(/[-:\s\/]+/);
             var year = segments[0] || "";
             var month = segments[1] || "";
             var day = segments[2] || "";
