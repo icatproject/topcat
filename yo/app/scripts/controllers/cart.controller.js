@@ -5,13 +5,16 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('CartController', function($translate, $uibModalInstance, $uibModal, $q, $scope, $rootScope, tc, uiGridConstants){
+    app.controller('CartController', function($translate, $uibModalInstance, $uibModal, $q, $timeout, $scope, $rootScope, tc, uiGridConstants){
         var that = this;
         var pagingConfig = tc.config().paging;
         var timeout = $q.defer();
+        var gridApi;
         $scope.$on('$destroy', function(){ timeout.resolve(); });
-        this.isScroll = pagingConfig.pagingType == 'scroll';
-        this.gridOptions = _.merge({
+        var isScroll = pagingConfig.pagingType == 'scroll';
+        this.isScroll = isScroll;
+        var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
+        var gridOptions = _.merge({
             data: [],
             appScopeProvider: this,
             enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
@@ -19,9 +22,13 @@
             enableRowHeaderSelection: false,
             gridMenuShowHideColumns: false,
             pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
-            paginationPageSizes: pagingConfig.paginationPageSizes
+            paginationPageSizes: pagingConfig.paginationPageSizes,
+            paginationNumberOfRows: pagingConfig.paginationNumberOfRows,
+            useExternalPagination: true,
+            useExternalSorting: true,
+            useExternalFiltering: true
         }, tc.config().cartGridOptions);
-        _.each(this.gridOptions.columnDefs, function(columnDef){
+        _.each(gridOptions.columnDefs, function(columnDef){
             if (columnDef.filter.condition) {
                 columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
             }
@@ -39,7 +46,7 @@
             }
 
         });
-        this.gridOptions.columnDefs.push({
+        gridOptions.columnDefs.push({
             name : 'actions',
             translateDisplayName: 'CART.COLUMN.ACTIONS',
             enableFiltering: false,
@@ -47,18 +54,21 @@
             enableSorting: false,
             cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.remove(row.entity)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
         });
+        this.gridOptions = gridOptions;
         this.totalSize = 0;
 
+        var promises = [$timeout(1000)];
+        var cartItems = [];
         _.each(tc.userFacilities(), function(facility){
-            facility.user().cart(timeout.promise).then(function(cart){
-                that.gridOptions.data = _.flatten([that.gridOptions.data, cart.cartItems]);
-                _.each(cart.cartItems, function(cartItem){
-                    cartItem.getSize(timeout.promise).then(function(size){
-                        that.totalSize = that.totalSize + size;
-                    });
-                    cartItem.getStatus(timeout.promise);
-                });
-            });
+            promises.push(facility.user().cart(timeout.promise).then(function(cart){
+                cartItems = _.flatten([cartItems, cart.cartItems]);
+            }));
+        });
+
+        var page = 1;
+        var pages = [];
+        var pagesPromise = $q.all(promises).then(function(){
+            pages = _.chunk(cartItems, pageSize);
         });
 
         this.cancel = function() {
@@ -94,6 +104,82 @@
                 controller: "DownloadCartController as downloadCartController",
                 size : 'lg'
             })
+        };
+
+        function getPage(){
+            var defered = $q.defer();
+            pagesPromise.then(function(){
+                var out = pages[page - 1];
+                if(!out) out = [];
+                _.each(out, function(cartItem){
+                    cartItem.getSize(timeout.promise);
+                    cartItem.getStatus(timeout.promise);
+                });
+                defered.resolve(out);
+            });
+            return defered.promise;
+        }
+
+        function updateScroll(resultCount){
+            if(isScroll){
+                $timeout(function(){
+                    var isMore = resultCount == pageSize;
+                    if(page == 1) gridApi.infiniteScroll.resetScroll(false, isMore);
+                    gridApi.infiniteScroll.dataLoaded(false, isMore);
+                });
+            }
+        }
+
+        gridOptions.onRegisterApi = function(_gridApi) {
+            gridApi = _gridApi;
+
+            getPage().then(function(results){
+                gridOptions.data = results;
+                updateScroll(results.length);
+            });
+
+            //sort change callback
+            gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
+                
+            });
+
+            //filter change calkback
+            gridApi.core.on.filterChanged($scope, function() {
+                
+            });
+
+
+            if(isScroll){
+                //scroll down more data callback (append data)
+                gridApi.infiniteScroll.on.needLoadMoreData($scope, function() {
+                    page++;
+                    getPage().then(function(results){
+                        _.each(results, function(result){ gridOptions.data.push(result); });
+                        if(results.length == 0) page--;
+                        updateScroll(results.length);
+                    });
+                });
+
+                //scoll up more data at top callback (prepend data)
+                gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, function() {
+                    page--;
+                    getPage().then(function(results){
+                        _.each(results.reverse(), function(result){ gridOptions.data.unshift(result); });
+                        if(results.length == 0) page++;
+                        updateScroll(results.length);
+                    });
+                });
+            } else {
+                //pagination callback
+                gridApi.pagination.on.paginationChanged($scope, function(_page, _pageSize) {
+                    page = _page;
+                    pageSize = pageSize;
+                    getPage().then(function(results){
+                        gridOptions.data = results;
+                    });
+                });
+            }
+
         };
 
     });
