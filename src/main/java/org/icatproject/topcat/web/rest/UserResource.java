@@ -175,11 +175,17 @@ public class UserResource {
 
         em.refresh(cart);
 
+        Map<String, List<Long>> entityTypeEntityIds = new HashMap<String, List<Long>>();
+        entityTypeEntityIds.put("investigation", new ArrayList<Long>());
+        entityTypeEntityIds.put("dataset", new ArrayList<Long>());
+        entityTypeEntityIds.put("datafile", new ArrayList<Long>());
+
         for(String item : items.split("\\s*,\\s*")){
             String[] pair = item.split("\\s+");
             if(pair.length == 2){
                 String entityType = pair[0];
                 Long entityId = Long.parseLong(pair[1]);
+                List<Long> entityIds = entityTypeEntityIds.get(entityType);
                 boolean isAlreadyInCart = false;
 
                 for(CartItem cartItem : cart.getCartItems()){
@@ -190,15 +196,31 @@ public class UserResource {
                 }
 
                 if(!isAlreadyInCart){
-                    String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
-                    CartItem cartItem = new CartItem();
-                    cartItem.setCart(cart);
-                    cartItem.setEntityType(EntityType.valueOf(entityType));
-                    cartItem.setEntityId(entityId);
-                    cartItem.setName(name);
-                    em.persist(cartItem);
+                    entityIds.add(entityId);
+                }
+            }
+        }
 
-                    List<ParentEntity> parentEntities = icatClientService.getParentEntities(icatUrl, sessionId, entityType, entityId);
+        Map<String, Map<Long, List<ParentEntity>>> entityTypeParentEntities = new HashMap<String, Map<Long, List<ParentEntity>>>();
+        for(String entityType : entityTypeEntityIds.keySet()){
+            List<Long> entityIds = entityTypeEntityIds.get(entityType);
+            entityTypeParentEntities.put(entityType, icatClientService.getParentEntities(icatUrl, sessionId, entityType, entityIds));
+        }
+
+        for(String entityType : entityTypeEntityIds.keySet()){
+            List<Long> entityIds = entityTypeEntityIds.get(entityType);
+            for(Long entityId : entityIds){
+
+                String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
+                CartItem cartItem = new CartItem();
+                cartItem.setCart(cart);
+                cartItem.setEntityType(EntityType.valueOf(entityType));
+                cartItem.setEntityId(entityId);
+                cartItem.setName(name);
+                em.persist(cartItem);
+
+                List<ParentEntity> parentEntities = entityTypeParentEntities.get(entityType).get(entityId);
+                if(parentEntities != null){
                     for(ParentEntity parentEntity : parentEntities){
                         parentEntity.setCartItem(cartItem);
                         em.persist(parentEntity);

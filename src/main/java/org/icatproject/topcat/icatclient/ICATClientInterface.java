@@ -13,7 +13,7 @@ public interface ICATClientInterface {
     public String getUserName(String icatSessionId) throws TopcatException;
     public Boolean isAdmin(String icatSessionId);
     public String getEntityName(String icatSessionId, String entityType, Long entityId) throws TopcatException;
-    public List<ParentEntity> getParentEntities(String icatSessionId, String entityType, Long entityId) throws TopcatException;
+    public Map<Long, List<ParentEntity>> getParentEntities(String icatSessionId, String entityType, List<Long> entityIds) throws TopcatException;
     public String getFullName(String icatSessionId) throws TopcatException;
     public Boolean isSessionValid(String icatSessionId) throws TopcatException;
     public Long getRemainingMinutes(String icatSessionId) throws TopcatException;

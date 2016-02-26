@@ -5,7 +5,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
+import org.icatproject.topcat.domain.CartItem;
 import org.icatproject.topcat.domain.ParentEntity;
 import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.exceptions.AuthenticationException;
@@ -175,45 +178,62 @@ public class ICATClient45 implements ICATClientInterface {
         return name;
     }
 
-    public List<ParentEntity> getParentEntities(String icatSessionId, String entityType, Long entityId) throws TopcatException {
-        List<ParentEntity> out = new ArrayList<ParentEntity>();
-        
+    public Map<Long, List<ParentEntity>> getParentEntities(String icatSessionId, String entityType, List<Long> entityIds) throws TopcatException {
+        Map<Long, List<ParentEntity>> out = new HashMap<Long, List<ParentEntity>>();
+
         if(entityType.equals("dataset") || entityType.equals("datafile")){
             try {
-                Object entity;
-                String query;
+                int i = 0;
+                for(i = i; i < entityIds.size();){
+                    StringBuffer currentEntityIds = new StringBuffer();
 
-                if(entityType.equals("datafile")){
-                    query = "SELECT datafile from Datafile datafile where datafile.id=" + entityId + " include datafile.dataset.investigation";
-                } else {
-                    query = "SELECT dataset from Dataset dataset where dataset.id=" + entityId + " include dataset.investigation";
+                    for(; i < entityIds.size() && currentEntityIds.length() <= 2000; i++){
+                        if(currentEntityIds.length() != 0){
+                            currentEntityIds.append(",");
+                        }
+                        currentEntityIds.append(entityIds.get(i));
+                    }
+
+                    String query;
+
+                    if(entityType.equals("datafile")){
+                        query = "SELECT datafile from Datafile datafile where datafile.id in (" + currentEntityIds.toString() + ") include datafile.dataset.investigation";
+                    } else {
+                        query = "SELECT dataset from Dataset dataset where dataset.id in (" + currentEntityIds.toString() + ") include dataset.investigation";
+                    }
+
+
+                    List<Object> entities  = service.search(icatSessionId, query);
+                    if (entities.isEmpty()) {
+                        throw new BadRequestException("The following query failed: " + query);
+                    }
+
+                    for(Object entity : entities){
+                        ArrayList<ParentEntity> parentEntities = new ArrayList<ParentEntity>();
+
+                        if(entityType.equals("datafile")){
+                            ParentEntity parentEntity = new ParentEntity();
+                            parentEntity.setEntityType(EntityType.valueOf("dataset"));
+                            parentEntity.setEntityId(((Datafile) entity).getDataset().getId());
+                            parentEntities.add(parentEntity);
+
+                            parentEntity = new ParentEntity();
+                            parentEntity.setEntityType(EntityType.valueOf("investigation"));
+                            parentEntity.setEntityId(((Datafile) entity).getDataset().getInvestigation().getId());
+                            parentEntities.add(parentEntity);
+
+                            out.put(((Datafile) entity).getId(), parentEntities);
+                        } else {
+                            ParentEntity parentEntity = new ParentEntity();
+                            parentEntity.setEntityType(EntityType.valueOf("investigation"));
+                            parentEntity.setEntityId(((Dataset) entity).getInvestigation().getId());
+                            parentEntities.add(parentEntity);
+
+                            out.put(((Dataset) entity).getId(), parentEntities);
+                        }
+                    }
+
                 }
-
-                List<Object> result  = service.search(icatSessionId, query);
-                if (!result.isEmpty()) {
-                    entity = result.get(0);
-                } else {
-                    throw new BadRequestException("No such entity exists i.e. " + entityType + " with id " + entityId);
-                }
-
-                if(entityType.equals("datafile")){
-                    ParentEntity parentEntity = new ParentEntity();
-                    parentEntity.setEntityType(EntityType.valueOf("dataset"));
-                    parentEntity.setEntityId(((Datafile) entity).getDataset().getId());
-                    out.add(parentEntity);
-
-                    parentEntity = new ParentEntity();
-                    parentEntity.setEntityType(EntityType.valueOf("investigation"));
-                    parentEntity.setEntityId(((Datafile) entity).getDataset().getInvestigation().getId());
-                    out.add(parentEntity);
-
-                } else {
-                    ParentEntity parentEntity = new ParentEntity();
-                    parentEntity.setEntityType(EntityType.valueOf("investigation"));
-                    parentEntity.setEntityId(((Dataset) entity).getInvestigation().getId());
-                    out.add(parentEntity);
-                } 
-                
             } catch (IcatException_Exception e) {
                 throwNewICATException(e);
             }

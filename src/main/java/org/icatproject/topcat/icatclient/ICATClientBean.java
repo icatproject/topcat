@@ -70,10 +70,10 @@ public class ICATClientBean {
         return service.getEntityName(icatSessionId, entityType, entityId);
     }
 
-    public List<ParentEntity> getParentEntities(String icatUrl, String icatSessionId, String entityType, Long entityId) throws MalformedURLException, TopcatException {
+    public Map<Long, List<ParentEntity>> getParentEntities(String icatUrl, String icatSessionId, String entityType, List<Long> entityIds) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(icatUrl);
 
-        return service.getParentEntities(icatSessionId, entityType, entityId);
+        return service.getParentEntities(icatSessionId, entityType, entityIds);
     }
 
     /**
