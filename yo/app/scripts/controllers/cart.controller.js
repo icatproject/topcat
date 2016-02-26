@@ -55,13 +55,17 @@
             cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.remove(row.entity)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
         });
         this.gridOptions = gridOptions;
-        this.totalSize = 0;
+        this.totalSize = undefined;
 
         var promises = [$timeout(1000)];
         var cartItems = [];
         _.each(tc.userFacilities(), function(facility){
             promises.push(facility.user().cart(timeout.promise).then(function(cart){
                 cartItems = _.flatten([cartItems, cart.cartItems]);
+                cart.getSize(timeout.promise).then(function(size){
+                    if(that.totalSize === undefined) that.totalSize = 0;
+                    that.totalSize = that.totalSize + size;
+                });
             }));
         });
 

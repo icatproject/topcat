@@ -27,6 +27,28 @@
                 return out;
             };
 
+            this.getSize = helpers.overload({
+                'object': function(options){
+                    var investigationIds = [];
+                    var datasetIds = [];
+                    var datafileIds = [];
+
+                    _.each(this.cartItems, function(cartItem){
+                        if(cartItem.entityType == 'investigation') investigationIds.push(cartItem.entityId);
+                        if(cartItem.entityType == 'dataset') datasetIds.push(cartItem.entityId);
+                        if(cartItem.entityType == 'datafile') datafileIds.push(cartItem.entityId);
+                    });
+
+                    return user.facility().ids().getSize(investigationIds, datasetIds, datafileIds, options);
+                },
+                'promise': function(timeout){
+                    return this.getSize({timeout: timeout});
+                },
+                '': function(){
+                    return this.getSize({});
+                }
+            });
+
             _.each(this.cartItems, function(cartItem){
                 cartItem.facilityName = facility.config().facilityName;
 
