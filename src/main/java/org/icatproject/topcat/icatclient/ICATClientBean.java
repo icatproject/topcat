@@ -12,7 +12,7 @@ import org.icatproject.topcat.exceptions.AuthenticationException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.repository.DownloadRepository;
-import org.icatproject.topcat.domain.ParentEntity;
+import org.icatproject.topcat.domain.CartItem;
 
 @Stateless
 public class ICATClientBean {
@@ -70,10 +70,10 @@ public class ICATClientBean {
         return service.getEntityName(icatSessionId, entityType, entityId);
     }
 
-    public Map<Long, List<ParentEntity>> getParentEntities(String icatUrl, String icatSessionId, String entityType, List<Long> entityIds) throws MalformedURLException, TopcatException {
+    public List<CartItem> getCartItems(String icatUrl, String icatSessionId, Map<String, List<Long>> entityTypeEntityIds) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(icatUrl);
 
-        return service.getParentEntities(icatSessionId, entityType, entityIds);
+        return service.getCartItems(icatSessionId, entityTypeEntityIds);
     }
 
     /**

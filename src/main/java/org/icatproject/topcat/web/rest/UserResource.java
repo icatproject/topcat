@@ -173,8 +173,6 @@ public class UserResource {
             em.flush();
         }
 
-        em.refresh(cart);
-
         Map<String, List<Long>> entityTypeEntityIds = new HashMap<String, List<Long>>();
         entityTypeEntityIds.put("investigation", new ArrayList<Long>());
         entityTypeEntityIds.put("dataset", new ArrayList<Long>());
@@ -201,31 +199,12 @@ public class UserResource {
             }
         }
 
-        Map<String, Map<Long, List<ParentEntity>>> entityTypeParentEntities = new HashMap<String, Map<Long, List<ParentEntity>>>();
-        for(String entityType : entityTypeEntityIds.keySet()){
-            List<Long> entityIds = entityTypeEntityIds.get(entityType);
-            entityTypeParentEntities.put(entityType, icatClientService.getParentEntities(icatUrl, sessionId, entityType, entityIds));
-        }
-
-        for(String entityType : entityTypeEntityIds.keySet()){
-            List<Long> entityIds = entityTypeEntityIds.get(entityType);
-            for(Long entityId : entityIds){
-
-                String name = icatClientService.getEntityName(icatUrl, sessionId, entityType, entityId);
-                CartItem cartItem = new CartItem();
-                cartItem.setCart(cart);
-                cartItem.setEntityType(EntityType.valueOf(entityType));
-                cartItem.setEntityId(entityId);
-                cartItem.setName(name);
-                em.persist(cartItem);
-
-                List<ParentEntity> parentEntities = entityTypeParentEntities.get(entityType).get(entityId);
-                if(parentEntities != null){
-                    for(ParentEntity parentEntity : parentEntities){
-                        parentEntity.setCartItem(cartItem);
-                        em.persist(parentEntity);
-                    }
-                }
+        for(CartItem cartItem : icatClientService.getCartItems(icatUrl, sessionId, entityTypeEntityIds)){
+            cartItem.setCart(cart);
+            em.persist(cartItem);
+            for(ParentEntity parentEntity : cartItem.getParentEntities()){
+                parentEntity.setCartItem(cartItem);
+                em.persist(parentEntity);
             }
         }
 

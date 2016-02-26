@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartItem;
 import org.icatproject.topcat.domain.ParentEntity;
 import org.icatproject.topcat.domain.EntityType;
@@ -178,64 +179,87 @@ public class ICATClient45 implements ICATClientInterface {
         return name;
     }
 
-    public Map<Long, List<ParentEntity>> getParentEntities(String icatSessionId, String entityType, List<Long> entityIds) throws TopcatException {
-        Map<Long, List<ParentEntity>> out = new HashMap<Long, List<ParentEntity>>();
+    public List<Object> getEntities(String icatSessionId, String entityType, List<Long> entityIds) throws TopcatException {
+        List<Object> out = new ArrayList<Object>();
+        try {
+            int i = 0;
+            for(i = i; i < entityIds.size();){
+                StringBuffer currentEntityIds = new StringBuffer();
 
-        if(entityType.equals("dataset") || entityType.equals("datafile")){
-            try {
-                int i = 0;
-                for(i = i; i < entityIds.size();){
-                    StringBuffer currentEntityIds = new StringBuffer();
-
-                    for(; i < entityIds.size() && currentEntityIds.length() <= 2000; i++){
-                        if(currentEntityIds.length() != 0){
-                            currentEntityIds.append(",");
-                        }
-                        currentEntityIds.append(entityIds.get(i));
+                for(; i < entityIds.size() && currentEntityIds.length() <= 2000; i++){
+                    if(currentEntityIds.length() != 0){
+                        currentEntityIds.append(",");
                     }
-
-                    String query;
-
-                    if(entityType.equals("datafile")){
-                        query = "SELECT datafile from Datafile datafile where datafile.id in (" + currentEntityIds.toString() + ") include datafile.dataset.investigation";
-                    } else {
-                        query = "SELECT dataset from Dataset dataset where dataset.id in (" + currentEntityIds.toString() + ") include dataset.investigation";
-                    }
-
-
-                    List<Object> entities  = service.search(icatSessionId, query);
-                    if (entities.isEmpty()) {
-                        throw new BadRequestException("The following query failed: " + query);
-                    }
-
-                    for(Object entity : entities){
-                        ArrayList<ParentEntity> parentEntities = new ArrayList<ParentEntity>();
-
-                        if(entityType.equals("datafile")){
-                            ParentEntity parentEntity = new ParentEntity();
-                            parentEntity.setEntityType(EntityType.valueOf("dataset"));
-                            parentEntity.setEntityId(((Datafile) entity).getDataset().getId());
-                            parentEntities.add(parentEntity);
-
-                            parentEntity = new ParentEntity();
-                            parentEntity.setEntityType(EntityType.valueOf("investigation"));
-                            parentEntity.setEntityId(((Datafile) entity).getDataset().getInvestigation().getId());
-                            parentEntities.add(parentEntity);
-
-                            out.put(((Datafile) entity).getId(), parentEntities);
-                        } else {
-                            ParentEntity parentEntity = new ParentEntity();
-                            parentEntity.setEntityType(EntityType.valueOf("investigation"));
-                            parentEntity.setEntityId(((Dataset) entity).getInvestigation().getId());
-                            parentEntities.add(parentEntity);
-
-                            out.put(((Dataset) entity).getId(), parentEntities);
-                        }
-                    }
-
+                    currentEntityIds.append(entityIds.get(i));
                 }
-            } catch (IcatException_Exception e) {
-                throwNewICATException(e);
+
+                String query;
+
+                if(entityType.equals("datafile")){
+                    query = "SELECT datafile from Datafile datafile where datafile.id in (" + currentEntityIds.toString() + ") include datafile.dataset.investigation";
+                } else if(entityType.equals("dataset")) {
+                    query = "SELECT dataset from Dataset dataset where dataset.id in (" + currentEntityIds.toString() + ") include dataset.investigation";
+                } else {
+                    query = "SELECT investigation from Investigation investigation where investigation.id in (" + currentEntityIds.toString() + ")";
+                }
+
+                out = service.search(icatSessionId, query);
+            }
+        } catch (IcatException_Exception e) {
+            throwNewICATException(e);
+        }
+
+        return out;
+    }
+
+    public List<CartItem> getCartItems(String icatSessionId, Map<String, List<Long>> entityTypeEntityIds)  throws TopcatException {
+        List<CartItem> out = new ArrayList<CartItem>();
+
+        for(String entityType : entityTypeEntityIds.keySet()){
+            List<Long> entityIds = entityTypeEntityIds.get(entityType);
+            List<Object> entities = getEntities(icatSessionId, entityType, entityIds);
+            for(Object entity : entities){
+                String name;
+                Long entityId;
+
+                if(entityType.equals("investigation")){
+                    Investigation investigation = (Investigation) entity;
+                    entityId = investigation.getId();
+                    name = investigation.getName();
+                } else if(entityType.equals("dataset")){
+                    Dataset dataset = (Dataset) entity;
+                    entityId = dataset.getId();
+                    name = dataset.getName();
+                } else {
+                    Datafile datafile = (Datafile) entity;
+                    entityId = datafile.getId();
+                    name = datafile.getName();
+                }
+
+                CartItem cartItem = new CartItem();
+                cartItem.setEntityType(EntityType.valueOf(entityType));
+                cartItem.setEntityId(entityId);
+                cartItem.setName(name);
+
+                if(entityType.equals("datafile")){
+                    ParentEntity parentEntity = new ParentEntity();
+                    parentEntity.setEntityType(EntityType.valueOf("dataset"));
+                    parentEntity.setEntityId(((Datafile) entity).getDataset().getId());
+                    cartItem.getParentEntities().add(parentEntity);
+
+                    parentEntity = new ParentEntity();
+                    parentEntity.setEntityType(EntityType.valueOf("investigation"));
+                    parentEntity.setEntityId(((Datafile) entity).getDataset().getInvestigation().getId());
+                    cartItem.getParentEntities().add(parentEntity);
+                } else if(entityType.equals("dataset")) {
+                    ParentEntity parentEntity = new ParentEntity();
+                    parentEntity.setEntityType(EntityType.valueOf("investigation"));
+                    parentEntity.setEntityId(((Dataset) entity).getInvestigation().getId());
+                    cartItem.getParentEntities().add(parentEntity);
+                }
+
+                out.add(cartItem);
+
             }
         }
 
