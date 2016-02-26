@@ -183,7 +183,7 @@ public class ICATClient45 implements ICATClientInterface {
         List<Object> out = new ArrayList<Object>();
         try {
             int i = 0;
-            for(i = i; i < entityIds.size();){
+            for(; i < entityIds.size();){
                 StringBuffer currentEntityIds = new StringBuffer();
 
                 for(; i < entityIds.size() && currentEntityIds.length() <= 2000; i++){
@@ -203,7 +203,7 @@ public class ICATClient45 implements ICATClientInterface {
                     query = "SELECT investigation from Investigation investigation where investigation.id in (" + currentEntityIds.toString() + ")";
                 }
 
-                out = service.search(icatSessionId, query);
+                out.addAll(service.search(icatSessionId, query));
             }
         } catch (IcatException_Exception e) {
             throwNewICATException(e);
