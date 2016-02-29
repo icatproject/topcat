@@ -19,7 +19,9 @@
             
             this.config = function(){ return APP_CONFIG.facilities[facilityName]; }
 
-            this.tc = tc;
+            this.tc = function(){
+                return tc;
+            };
 
             this.icat = function(){
                 if(!icat) icat = tcIcat.create(this);

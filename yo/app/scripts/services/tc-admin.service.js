@@ -194,7 +194,7 @@
                 }
             });
 
-            helpers.generateRestMethods(this, facility.tc.topcatApiPath + 'admin/');
+            helpers.generateRestMethods(this, facility.tc().topcatApiPath + 'admin/');
         }
 
 	});
