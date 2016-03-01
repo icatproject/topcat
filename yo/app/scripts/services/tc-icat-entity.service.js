@@ -312,16 +312,22 @@
 					entityType = matches[1];
 					entityField = matches[2];
 				} else {
-					throw "Unknown expression for find(): " + expression;
+					entityType = helpers.uncapitalize(this.entityType);
+					entityField = expression;
 				}
 
-				var entityPaths = icatEntityPaths[helpers.uncapitalize(this.entityType)];
-				if(!entityPaths) throw "Unknown expression for find(): " + expression;
+				var fieldNames = [];
+				
+				if(entityType != helpers.uncapitalize(this.entityType)){
+					var entityPaths = icatEntityPaths[helpers.uncapitalize(this.entityType)];
+					if(!entityPaths) throw "Unknown expression for find(): " + expression;
 
-				var entityPath = entityPaths[entityType];
-				if(!entityPath) throw "Unknown expression for find(): " + expression;
+					var entityPath = entityPaths[entityType];
+					if(!entityPath) throw "Unknown expression for find(): " + expression;
 
-				var fieldNames = entityPath.split(/\./).reverse();
+					fieldNames = entityPath.split(/\./).reverse();
+				}
+
 				fieldNames.pop();
 				traverse(this)
 
