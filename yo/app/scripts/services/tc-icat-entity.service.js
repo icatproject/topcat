@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers){
+    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers, icatEntityPaths){
     	var tcIcatEntity = this;
 
     	this.create = function(attributes, facility){
@@ -296,6 +296,57 @@
 					return this.deleteFromCart({});
 				}
 			});
+
+			this.find = function(expression){
+				var out = [];
+				var matches;
+				var entityType;
+				var predicate;
+				var entityField;
+
+				if(matches = expression.match(/^([^\[]+)\[(.+)\]\.([^\.]+)$/)){
+					entityType = matches[1];
+					predicate = matches[2];
+					entityField = matches[3];
+				} else if(matches = expression.match(/^([^\.]+)\.([^\.]+)$/)){
+					entityType = matches[1];
+					entityField = matches[2];
+				} else {
+					throw "Unknown expression for find(): " + expression;
+				}
+
+				var entityPaths = icatEntityPaths[helpers.uncapitalize(this.entityType)];
+				if(!entityPaths) throw "Unknown expression for find(): " + expression;
+
+				var entityPath = entityPaths[entityType];
+				if(!entityPath) throw "Unknown expression for find(): " + expression;
+
+				var fieldNames = entityPath.split(/\./).reverse();
+				fieldNames.pop();
+				traverse(this)
+
+				function traverse(current){
+					if(fieldNames.length == 0){
+						if(!predicate || eval("current." + predicate)){
+							out.push(current[entityField]);
+						}
+					} else {
+						var fieldName = fieldNames.pop();
+						current = current[fieldName];
+						if(current instanceof Array){
+							_.each(current, function(current){
+								traverse(current);
+							});
+						} else {
+							traverse(current);
+						}
+
+						fieldNames.push(fieldName);
+					}
+				}
+
+				return out;
+			};
 
 		}
 
