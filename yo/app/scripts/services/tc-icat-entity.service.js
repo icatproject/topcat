@@ -317,7 +317,7 @@
 				}
 
 				var fieldNames = [];
-				
+
 				if(entityType != helpers.uncapitalize(this.entityType)){
 					var entityPaths = icatEntityPaths[helpers.uncapitalize(this.entityType)];
 					if(!entityPaths) throw "Unknown expression for find(): " + expression;
@@ -334,7 +334,10 @@
 				function traverse(current){
 					if(fieldNames.length == 0){
 						if(!predicate || eval("current." + predicate)){
-							out.push(current[entityField]);
+							var value = current[entityField];
+							if(value !== undefined){
+								out.push(value);
+							}
 						}
 					} else {
 						var fieldName = fieldNames.pop();
@@ -346,7 +349,6 @@
 						} else {
 							traverse(current);
 						}
-
 						fieldNames.push(fieldName);
 					}
 				}

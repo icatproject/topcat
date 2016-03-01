@@ -10,8 +10,9 @@
         var steps = {};
         _.each(icatEntityPaths, function(entityPaths, entityType){
             _.each(entityPaths, function(path, name){
-                if(path.match(/^[^\.]+\.[^\.]+$/)){
-                    steps[path] = name;
+                var matches;
+                if(matches = path.match(/^[^\.]+\.([^\.]+)$/)){
+                    steps[entityType + '.' + matches[1]] = name;
                 }
             });
         });
@@ -84,7 +85,6 @@
 
                 _.each(orderByList, function(orderBy){
                     var name = orderBy.replace(/\.[^\.]+$/, '');
-                    console.log(name);
                     if(name !=  entityType){
                         impliedPaths[name] = entityPaths[name];
                     }
@@ -103,7 +103,10 @@
                     var segments = path.split(/\./);
                     var currentEntity = entityType;
                     for(var i = 0; i < segments.length - 1; i++){
-                        var pair = segments[i] + '.' + segments[i + 1];
+                        var pair = currentEntity + '.' + segments[i + 1];
+                        if(!steps[pair]){
+                            throw "could not work out step " + pair + " for " + currentEntity + '.' + segments[i + 1];
+                        }
                         impliedVars[currentEntity + '.' + segments[i + 1]] = steps[pair];
                         currentEntity = steps[pair];
                     }

@@ -124,6 +124,7 @@
                 "RELEASE_DATE": "Release Date",
                 "SIZE" : "Size",
                 "FACILITY" : "Facility",
+                "RUN_NUMBER_RANGE" : "Run Numbers",
                 "INSTRUMENT" : {
                     "NAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME",
                     "FULLNAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME"
@@ -141,6 +142,7 @@
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
                 "SIZE" : "Size",
+                "RUN_NUMBER_RANGE" : "Run Numbers",
                 "FACILITY" : "Facility"
             },
             "DATAFILE":{
@@ -148,6 +150,7 @@
                 "NAME": "Name",
                 "DESCRIPTION": "Description",
                 "LOCATION": "Location",
+                "RUN_NUMBER" : "Run Number",
                 "DOI": "Doi",
                 "FILE_SIZE": "File Size",
                 "CHECKSUM": "Checksum",

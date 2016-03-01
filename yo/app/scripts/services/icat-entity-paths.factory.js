@@ -75,6 +75,15 @@
 	    		facilityCycle: 'datafile.dataset.investigation.facility.facilityCycles',
 	            investigationInstrument: 'datafile.dataset.investigation.investigationInstruments',
 	    		instrument: 'datafile.dataset.investigation.investigationInstruments.instrument'
+	    	},
+	    	investigationParameter: {
+	    		investigationParameterType: 'investigationParameter.type'
+	    	},
+	    	datafileParameter: {
+	    		datasetParameterType: 'datasetParameter.type'
+	    	},
+	    	datafileParameter: {
+	    		datafileParameterType: 'datafileParameter.type'
 	    	}
 	    };
     });

@@ -21,7 +21,7 @@
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
         var page = 1;
         var canceler = $q.defer();
-        var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field; });
+        var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field.replace(/\|[^\.\[\]]*$/, ''); });
         var isSize = _.includes(columnNames, 'size');
         var sortQuery = [];
         var filterQuery = [];
@@ -196,7 +196,7 @@
                         promises.push(icat.query(canceler.promise, [
                             "select investigation from Investigation investigation",
                             "where investigation.name = ?", name,
-                            "limit 0, 1"
+                            "limit 0, 1 include investigation.parameters.type"
                         ]).then(function(proposal){
                             proposal = proposal[0];
                             proposal.entityType = "Proposal";
@@ -347,6 +347,14 @@
 
         var sortColumns = [];
         _.each(gridOptions.columnDefs, function(columnDef){
+
+            var filters = "";
+            var matches;
+            if(matches = columnDef.field.match(/^(.*?)(\|[^\.\[\]]*)$/)){
+                columnDef.field = matches[1];
+                filters = matches[2];
+            }
+
             if(columnDef.link) {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row.entity)}}">{{row.entity.' + columnDef.field + '}}</a></div>';
             }
@@ -354,8 +362,10 @@
             if(columnDef.type == 'date'){
                 if(columnDef.field && columnDef.field.match(/Date$/)){
                     columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
+                    filters = filters + "|date:'yyyy-MM-dd'"
                 } else {
                     columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
+                    filters = filters + "|date:'yyyy-MM-dd HH:mm:ss'"
                 }
             }
 
@@ -373,7 +383,6 @@
             }
 
             if(columnDef.field == 'size'){
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
                 columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
@@ -381,10 +390,6 @@
             if(columnDef.translateDisplayName){
                 columnDef.displayName = columnDef.translateDisplayName;
                 columnDef.headerCellFilter = 'translate';
-            }
-
-            if(columnDef.field == 'instrumentNames'){
-                columnDef.cellTemplate = '<div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length > 1"><span class="glyphicon glyphicon-th-list" uib-tooltip="{{row.entity.instrumentNames}}" tooltip-placement="top" tooltip-append-to-body="true"></span> {{row.entity.firstInstrumentName}}</div><div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length <= 1">{{row.entity.firstInstrumentName}}</div>';
             }
 
             if(columnDef.sort){
@@ -397,6 +402,17 @@
 
             columnDef.jpqlExpression = columnDef.jpqlExpression || realEntityInstanceName + '.' + columnDef.field;
             if(columnDef.sort) sortColumns.push(columnDef);
+
+            var defaultTemplate = [
+                '<div class="ui-grid-cell-contents">',
+                    '<span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.find(&quot;' + columnDef.field + '&quot;).length == 0" class="grid-cell-spinner"></span>',
+                    '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" class="glyphicon glyphicon-th-list" uib-tooltip="{{row.entity.find(&quot;' + columnDef.field + '&quot;).join(&quot;\n&quot;)}}" tooltip-placement="top" tooltip-append-to-body="true"></span> ',
+                    '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 0">{{row.entity.find(&quot;' + columnDef.field + '&quot;)[0]' + filters + '}}</span>',
+                '</div>'
+            ].join('');
+
+            columnDef.cellTemplate = columnDef.cellTemplate || defaultTemplate;
+
         });
 
         if(sortColumns.length > 0){

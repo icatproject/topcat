@@ -1678,7 +1678,8 @@
                     "enableFiltering": true,
                     "enableSelection": true,
                     "includes" : [
-                        "investigation.investigationInstruments.instrument"
+                        "investigation.investigationInstruments.instrument",
+                        "investigation.parameters.type"
                         
                     ],
                     "columnDefs": [
@@ -1723,12 +1724,12 @@
                             "link": true
                         },
                         {
-                            "field": "size",
+                            "field": "size|bytes",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
                         {
-                            "field": "investigationInstruments[0].instrument.fullName",
+                            "field": "instrument.fullName",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "visible": true,
@@ -1737,6 +1738,17 @@
                                 "placeholder": "Containing...",
                                 "type": "input"
                             }
+                        },
+                        {
+                            "field": "investigationParameter[type.name=='run_number_range'].stringValue",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER_RANGE",
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "cellTooltip": true
                         },
                         {
                             "field": "startDate",
@@ -1789,7 +1801,7 @@
                             "link": true
                         },
                         {
-                            "field": "size",
+                            "field": "size|bytes",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
@@ -1884,6 +1896,9 @@
                     "enableFiltering": true,
                     "enableSelection": true,
                     "enableDownload": true,
+                    "includes" : [
+                        "datafile.parameters.type"
+                    ],
                     "columnDefs": [
                         {
                             "field": "name",
@@ -1908,7 +1923,18 @@
                             }
                         },
                         {
-                            "field": "fileSize",
+                            "field": "name|parseInt",
+                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.RUN_NUMBER",
+                            "type": "string",
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "cellTooltip": true
+                        },
+                        {
+                            "field": "fileSize|bytes",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
                             "type": "number",
                             "cellFilter": "bytes",
