@@ -36,6 +36,7 @@
             var limitCount;
 
     		this.where = function(where){
+                if(whereList.length > 0) whereList.push('and');
     			whereList.push(where);
     			return this;
     		};
@@ -58,7 +59,10 @@
             };
 
             this.include = function(include){
-                includeList.push(entityPaths[include] || include);
+                var path = entityPaths[include];
+                if(!_.contains(includeList, path) && entityType != include && !(entityType == 'proposal' && include == 'investigation')){
+                    includeList.push(path);
+                }
                 return this;
             };
 
@@ -74,9 +78,9 @@
                         }
                     } else {
                         if(isCount){
-                            out.push("select count(distinct investigation)");
+                            out.push("select count(distinct investigation.name)");
                         } else {
-                            out.push(["select distinct investigation"]);
+                            out.push(["select distinct investigation.name"]);
                         }
                     }
 
@@ -112,14 +116,17 @@
                 });
 
 
+
     			if(impliedPaths.facilityCycle || entityType == 'facilityCycle'){
-    				whereQuery.push('and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate')
+                    if(whereQuery.length > 0) whereQuery.push('and');
+    				whereQuery.push('investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate')
     				if(entityType != 'investigation' && entityType != 'proposal'){
     					impliedPaths['investigation'] = entityPaths['investigation'];
     				}
     			}
 
                 if(investigationName){
+                    if(whereQuery.length > 0) whereQuery.push('and');
                     whereQuery.push(["investigation.name = ?", investigationName]);
                 }
 
@@ -131,6 +138,8 @@
                     impliedPaths = alteredImpliedPaths;
                 }
 
+                console.log(impliedPaths);
+
                 var impliedVars = {};
                 _.each(impliedPaths, function(path, name){
                     var segments = path.split(/\./);
@@ -139,7 +148,7 @@
                     for(var i = 0; i < segments.length - 1; i++){
                         var pair = currentEntity + '.' + segments[i + 1];
                         if(!steps[pair]){
-                            throw "could not work out step " + pair + " for " + currentEntity + '.' + segments[i + 1];
+                            throw "could not work out step " + pair + " for " + path;
                         }
                         impliedVars[currentEntity + '.' + segments[i + 1]] = steps[pair];
                         currentEntity = steps[pair];
@@ -160,15 +169,15 @@
     			}
 
                 if(orderByList.length > 0){
-                    out.push(['order by', orderByList.join(', ')]);
+                    out.push(['ORDER BY', orderByList.join(', ')]);
                 }
 
-                if(limitCount && !investigationName){
+                if(!isCount && limitCount && !investigationName){
                     out.push(['limit ?, ?', limitOffset, limitCount]);
                 }
 
                 if(!isCount && includeList.length > 0 && !investigationName){
-                    out.push(['include ', includeList.join(', ')]);
+                    out.push(['include', includeList.join(', ')]);
                 }
 
     			return helpers.buildQuery(out);
@@ -184,7 +193,6 @@
                             var proposals = [];
 
                             _.each(names, function(name){
-                                name = name[0];
                                 promises.push(icat.query([that.build(false, name)], options).then(function(investigations){
                                     var proposal = {};
                                     proposal.entityType = "Proposal";

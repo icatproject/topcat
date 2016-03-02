@@ -6,11 +6,25 @@
 
     app.factory('icatEntityPaths', function(){
     	return {
+    		facility: {
+	    		investigation: 'facility.investigations',
+	    		dataset: 'facility.investigations.datasets',
+	    		datafile: 'facility.investigations.datafiles',
+	    		investigationParameter: 'facility.investigations.parameters',
+	    		investigationParameterType: 'facility.investigations.parameters.type',
+	    		datasetParameter: 'facility.investigations.datasets.parameters',
+	    		datasetParameterType: 'facility.investigations.datasets.parameters.type',
+	    		datafileParameter: 'facility.investigations.datasets.datafiles.parameters',
+	    		datafileParameterType: 'facility.investigations.datasets.datafiles.parameters.type',
+	    		investigationInstrument: 'facility.instruments.investigationInstruments',
+	            instrument: 'facility.instruments',
+	            facilityCycle: 'facility.facilityCycles'
+	    	},
 	    	facilityCycle: {
 	    		facility: 'facilityCycle.facility',
 	    		investigation: 'facilityCycle.facility.investigations',
 	    		dataset: 'facilityCycle.facility.investigations.datasets',
-	    		datafile: 'facilityCycle.facility.investigations.datafiles',
+	    		datafile: 'facilityCycle.facility.investigations.datasets.datafiles',
 	    		investigationParameter: 'facilityCycle.facility.investigations.parameters',
 	    		investigationParameterType: 'facilityCycle.facility.investigations.parameters.type',
 	    		datasetParameter: 'facilityCycle.facility.investigations.datasets.parameters',
@@ -99,6 +113,9 @@
 	    	},
 	    	datafileParameter: {
 	    		datafileParameterType: 'datafileParameter.type'
+	    	},
+	    	investigationInstrument: {
+	    		instrument: 'investigationInstrument.instrument'
 	    	}
 	    };
     });

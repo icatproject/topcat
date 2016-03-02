@@ -1740,17 +1740,6 @@
                             }
                         },
                         {
-                            "field": "investigationParameter[type.name=='run_number_range'].stringValue",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER_RANGE",
-                            "type": "string",
-                            "filter": {
-                                "condition": "starts_with",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            },
-                            "cellTooltip": true
-                        },
-                        {
                             "field": "startDate",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
@@ -1921,17 +1910,6 @@
                                 "placeholder": "Containing...",
                                 "type": "input"
                             }
-                        },
-                        {
-                            "field": "name|parseInt",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.RUN_NUMBER",
-                            "type": "string",
-                            "filter": {
-                                "condition": "starts_with",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            },
-                            "cellTooltip": true
                         },
                         {
                             "field": "fileSize|bytes",
