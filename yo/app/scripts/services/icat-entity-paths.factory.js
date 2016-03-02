@@ -34,6 +34,21 @@
 	            investigationInstrument: 'investigation.investigationInstruments',
 	    		facilityCycle: 'instrument.facility.facilityCycles'
 	    	},
+	    	proposal: {
+	    		facility: 'proposal.investigations.facility',
+	    		dataset: 'proposal.investigations.datasets',
+	    		datafile: 'proposal.investigations.datasets.datafiles',
+	    		investigationParameter: 'proposal.investigations.parameters',
+	    		investigationParameterType: 'proposal.investigations.parameters.type',
+	    		datasetParameter: 'proposal.investigations.dataset.parameters',
+	    		datasetParameterType: 'proposal.investigations.dataset.parameters.type',
+	    		datafileParameter: 'proposal.investigations.datasets.datafiles.parameters',
+	    		datafileParameterType: 'proposal.investigations.datasets.datafiles.parameters.type',
+	    		facilityCycle: 'proposal.investigations.facility.facilityCycles',
+	            investigationInstrument: 'proposal.investigations.investigationInstruments',
+	    		instrument: 'proposal.investigations.investigationInstruments.instrument',
+	    		investigation: 'proposal.investigations'
+	    	},
 	    	investigation: {
 	    		facility: 'investigation.facility',
 	    		dataset: 'investigation.datasets',
