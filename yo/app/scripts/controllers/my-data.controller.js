@@ -32,71 +32,11 @@
             pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
             paginationPageSizes: pagingConfig.paginationPageSizes
         }, tc.config().myDataGridOptions[entityType]);
-        gridOptions.useExternalPagination = true;
-        gridOptions.useExternalSorting = true;
-        gridOptions.useExternalFiltering = true;
-        var enableSelection = gridOptions.enableSelection === true && entityInstanceName.match(/^investigation|dataset|datafile$/) !== null;
-        gridOptions.enableSelectAll = false;
-        gridOptions.enableRowSelection = enableSelection;
-        gridOptions.enableRowHeaderSelection = enableSelection;
+        helpers.setupGridOptions(gridOptions, entityType);
+        this.gridOptions = gridOptions;
 
         var sortColumns = [];
-        
         _.each(gridOptions.columnDefs, function(columnDef){
-            
-            if(columnDef.link) {
-                if(typeof columnDef.link == "string"){
-                    columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity.' + columnDef.link + ')">{{row.entity.' + columnDef.field + '}}</a></div>';
-                } else {
-                    columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity)">{{row.entity.' + columnDef.field + '}}</a></div>';
-                }
-            }
-
-
-            if(columnDef.type == 'date'){
-                if(columnDef.field && columnDef.field.match(/Date$/)){
-                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
-                } else {
-                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
-                }
-            }
-
-            if(columnDef.excludeFuture){
-                var date = new Date();
-                var day = date.getDate();
-                var month = "" + (date.getMonth() + 1);
-                if(month.length == 1) month = '0' + month;
-                var year = date.getFullYear();
-                var filter = year + '-' + month + '-' + day;
-                $timeout(function(){
-                    columnDef.filters[1].term = filter;
-                });
-            }
-
-            if(columnDef.field == 'size'){
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
-                columnDef.enableSorting = false;
-                columnDef.enableFiltering = false;
-            }
-
-            if(columnDef.translateDisplayName){
-                columnDef.displayName = columnDef.translateDisplayName;
-                columnDef.headerCellFilter = 'translate';
-            }
-
-            if(columnDef.field == 'instrumentNames'){
-                columnDef.cellTemplate = '<div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length > 1"><span class="glyphicon glyphicon-th-list" uib-tooltip="{{row.entity.instrumentNames}}" tooltip-placement="top" tooltip-append-to-body="true"></span> {{row.entity.firstInstrumentName}}</div><div class="ui-grid-cell-contents" ng-if="row.entity.investigationInstruments.length <= 1">{{row.entity.firstInstrumentName}}</div>';
-            }
-
-            if(columnDef.sort){
-                if(columnDef.sort.direction.toLowerCase() == 'desc'){
-                    columnDef.sort.direction = uiGridConstants.DESC;
-                } else {
-                    columnDef.sort.direction = uiGridConstants.ASC;
-                }
-            }
-
-            columnDef.jpqlExpression = columnDef.jpqlExpression || entityType + '.' + columnDef.field;
             if(columnDef.sort){
                 sortColumns.push({
                     colDef: columnDef,
@@ -104,7 +44,6 @@
                 });
             }
         });
-        this.gridOptions = gridOptions;
 
         $templateCache.put('ui-grid/selectionRowHeaderButtons', '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" uib-tooltip="{{&quot;BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT&quot; | translate}}" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>');
 
@@ -125,8 +64,6 @@
         var facility = tc.facility($state.params.facilityName);
         var icat = facility.icat();
 
-       
-        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>',
         this.showTabs = function(row) {
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
@@ -165,14 +102,14 @@
                     var to = columnDef.filters[1].term || '';
                     if(from != '' || to != ''){
                         from = parseInt(from || '0');
-                        to = parseInt(to || '1000000000');
+                        to = parseInt(to || '1000000000000');
                         out.where([
                             "? between ? and ?",
                             columnDef.jpqlExpression.safe(),
                             from,
                             to
                         ]);
-                        out.where("datafileParameterType.name = 'run_number'")
+                        if(columnDef.where) out.where(columnDef.where);
                     }
                 } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
                     out.where([
@@ -182,7 +119,7 @@
                     ]);
                 }
 
-                if(columnDef.field.match(/\./)){
+                if(columnDef.field.match(/\./) && !(columnDef.type == 'number' && columnDef.filters)){
                     var entityType =  columnDef.field.replace(/\[([^\.=>\[\]\s]+)/, function(match){ 
                         return helpers.capitalize(match.replace(/^\[/, ''));
                     }).replace(/^([^\.\[]+).*$/, '$1');
@@ -201,63 +138,6 @@
             out.limit((page - 1) * pageSize, pageSize);
 
             return out; 
-        }
-        
-
-        function generateQuery(){
-            var out = [];
-
-            if(entityType == "investigation"){
-                out.push([
-                    "SELECT investigation", 
-                    "FROM Investigation investigation"
-                ]);
-            } else if(entityType == "dataset"){
-                return out.push([
-                    "SELECT dataset",
-                    "from Dataset dataset, dataset.investigation investigation"
-                ]);
-            } else {
-                throw "Entity type '" + entityType + "' is not supported";
-            }
-
-            out.push([
-                ", investigation.facility facility, investigation.investigationUsers investigationUser, investigation.investigationInstruments investigationInstrument, investigationInstrument.instrument instrument",
-                "WHERE facility.id = ?", facility.config().facilityId,
-                "AND investigationUser.user.name = :user",
-                filterQuery,
-                sortQuery,
-                includes && includes.length > 0 ? "INCLUDE " + includes.join(', ') : "",
-                "LIMIT ?, ?", (page - 1) * pageSize, pageSize
-            ]);
-            return out;
-
-        }
-
-        function updateFilterQuery(){
-            filterQuery = [];
-            _.each(that.gridOptions.columnDefs, function(columnDef){
-                if(columnDef.type == 'date' && columnDef.filters){
-                    var from = columnDef.filters[0].term || '';
-                    var to = columnDef.filters[1].term || '';
-                    if(from != '' || to != ''){
-                        from = helpers.completePartialFromDate(from);
-                        to = helpers.completePartialToDate(to);
-                        filterQuery.push([
-                            "and ? between {ts ?} and {ts ?}",
-                            columnDef.jpqlExpression.safe(),
-                            from.safe(),
-                            to.safe()
-                        ]);
-                    }
-                } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
-                    filterQuery.push([
-                        "and UPPER(?) like concat('%', ?, '%')", 
-                        columnDef.jpqlExpression.safe(),
-                        columnDef.filter.term.toUpperCase()
-                    ]);
-                }
-            });
         }
 
         function updateScroll(resultCount){
@@ -304,18 +184,36 @@
                         entity.getSize(canceler.promise);
                     }
 
-                    icat.queryBuilder('datafileParameter').where([
-                        "investigation.id = ?", entity.id,
-                        "and datafileParameterType.name = 'run_number'"
-                    ]).orderBy('datafileParameter.numericValue').limit(1).run(canceler.promise).then(function(results){
-                        entity.minRunNumber = results[0];
-                    });
+                    _.each(gridOptions.columnDefs, function(columnDef){
+                        if(columnDef.type == 'number' && columnDef.filters){
+                            var pair = columnDef.jpqlExpression.split(/\./);
+                            var entityType = pair[0];
+                            var entityField = pair[1];
 
-                    icat.queryBuilder('datafileParameter').where([
-                        "investigation.id = ?", entity.id,
-                        "and datafileParameterType.name = 'run_number'"
-                    ]).orderBy('datafileParameter.numericValue', 'desc').limit(1).run(canceler.promise).then(function(results){
-                        entity.maxRunNumber = results[0];
+                            icat.queryBuilder(entityType).where([
+                                "investigation.id = ?", entity.id,
+                                "and datafileParameterType.name = 'run_number'"
+                            ]).orderBy('datafileParameter.numericValue').limit(1).run(canceler.promise).then(function(results){
+                                var fieldNameSuffix = helpers.capitalize(entityType) + entityField;
+                                if(results.length > 0){
+                                    entity['min' + fieldNameSuffix] = results[0].numericValue;
+                                } else {
+                                    entity['min' + fieldNameSuffix] = "";
+                                }
+                            });
+
+                            icat.queryBuilder('datafileParameter').where([
+                                "investigation.id = ?", entity.id,
+                                "and datafileParameterType.name = 'run_number'"
+                            ]).orderBy('datafileParameter.numericValue', 'desc').limit(1).run(canceler.promise).then(function(results){
+                                var fieldNameSuffix = helpers.capitalize(entityType) + entityField;
+                                if(results.length > 0){
+                                    entity['max' + fieldNameSuffix]  = results[0].numericValue;
+                                } else {
+                                    entity['max' + fieldNameSuffix] = "";
+                                }
+                            });
+                        }
                     });
 
                 });
@@ -348,7 +246,6 @@
             gridApi.core.on.filterChanged($scope, function() {
                 canceler.resolve();
                 canceler = $q.defer();
-                updateFilterQuery();
                 page = 1;
                 gridOptions.data = [];
                 getPage().then(function(results){

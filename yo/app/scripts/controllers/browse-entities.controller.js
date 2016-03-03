@@ -49,6 +49,7 @@
             breadcrumbTitleMap[entityType] = field;
         });
 
+        helpers.setupGridOptions(gridOptions, entityInstanceName);
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
         this.maxBreadcrumbTitleLength = maxBreadcrumbTitleLength;
@@ -297,7 +298,7 @@
             return $state.href('home.browse.facility.' + stateSuffixes[entityInstanceName], params);
         };
 
-        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>',
+        //gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>',
         this.showTabs = function(row) {
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
@@ -306,6 +307,7 @@
             });
         };
 
+        /*
         _.each(gridOptions.columnDefs, function(columnDef){
 
             var filters = "";
@@ -379,6 +381,7 @@
             columnDef.cellTemplate = columnDef.cellTemplate || defaultTemplate;
 
         });
+        
 
 
         if(gridOptions.enableDownload){
@@ -395,6 +398,8 @@
             });
         }
 
+        */
+
         
 
         this.downloadUrl = function(datafile){
@@ -410,6 +415,7 @@
                 '&outfile=' + encodeURIComponent(name);
         };
 
+        /*
         gridOptions.paginationPageSizes = pagingConfig.paginationPageSizes;
         gridOptions.paginationNumberOfRows = pagingConfig.paginationNumberOfRows;
         gridOptions.useExternalPagination = true;
@@ -419,6 +425,7 @@
         gridOptions.enableSelectAll = false;
         gridOptions.enableRowSelection = enableSelection;
         gridOptions.enableRowHeaderSelection = enableSelection;
+        */
         
         this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');
 

@@ -4,8 +4,112 @@
 
     var app = angular.module('angularApp');
 
-    app.service('helpers', function($http, $q){
+    app.service('helpers', function($http, $q, $timeout, uiGridConstants){
     	var helpers = this;
+
+    	this.setupGridOptions = function(gridOptions, entityType){
+
+    		gridOptions.useExternalPagination = true;
+	        gridOptions.useExternalSorting = true;
+	        gridOptions.useExternalFiltering = true;
+	        var enableSelection = gridOptions.enableSelection === true && entityType.match(/^investigation|dataset|datafile$/) !== null;
+	        gridOptions.enableSelectAll = false;
+	        gridOptions.enableRowSelection = enableSelection;
+	        gridOptions.enableRowHeaderSelection = enableSelection;
+	        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
+
+    		_.each(gridOptions.columnDefs, function(columnDef){
+
+	            var filters = "";
+	            var matches;
+	            if(matches = columnDef.field.match(/^(.*?)(\|[^\.\[\]]*)$/)){
+	                columnDef.field = matches[1];
+	                filters = matches[2];
+	            }
+
+	            if(columnDef.type == 'date'){
+	                if(columnDef.field && columnDef.field.match(/Date$/)){
+	                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
+	                    filters = filters + "|date:'yyyy-MM-dd'"
+	                } else {
+	                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
+	                    filters = filters + "|date:'yyyy-MM-dd HH:mm:ss'"
+	                }
+	            }
+
+	            if(columnDef.excludeFuture){
+	                var date = new Date();
+	                var day = date.getDate();
+	                var month = "" + (date.getMonth() + 1);
+	                if(month.length == 1) month = '0' + month;
+	                var year = date.getFullYear();
+	                var filter = year + '-' + month + '-' + day;
+	                $timeout(function(){
+	                    columnDef.filters[1].term = filter;
+	                });
+	            }
+
+	            if(columnDef.field == 'size'){
+	                columnDef.enableSorting = false;
+	                columnDef.enableFiltering = false;
+	            }
+
+	            if(columnDef.translateDisplayName){
+	                columnDef.displayName = columnDef.translateDisplayName;
+	                columnDef.headerCellFilter = 'translate';
+	            }
+
+	            if(columnDef.sort){
+	                if(columnDef.sort.direction.toLowerCase() == 'desc'){
+	                    columnDef.sort.direction = uiGridConstants.DESC;
+	                } else {
+	                    columnDef.sort.direction = uiGridConstants.ASC;
+	                }
+	            }
+
+	            if(!columnDef.jpqlExpression){
+	                if(!columnDef.field.match(/\./)){
+	                    columnDef.jpqlExpression =  entityType + '.' + columnDef.field;
+	                } else {
+	                    columnDef.jpqlExpression = columnDef.field;
+	                }
+	            }
+
+	            var titleTemplate = '{{row.entity.find(&quot;' + columnDef.field + '&quot;)[0]' + filters + '}}';
+	            if(columnDef.link) {
+	                if(typeof columnDef.link == "string"){
+	                    titleTemplate = '<a ng-click="grid.appScope.browse(row.entity.' + columnDef.link + ')">' + titleTemplate + '</a></div>';
+	                } else {
+	                    titleTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity)">' + titleTemplate + '</a>';
+	                }
+	            }
+
+	            columnDef.cellTemplate = columnDef.cellTemplate || [
+	                '<div class="ui-grid-cell-contents">',
+	                    '<span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.find(&quot;' + columnDef.field + '&quot;).length == 0" class="grid-cell-spinner"></span>',
+	                    '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" class="glyphicon glyphicon-th-list" uib-tooltip="{{row.entity.find(&quot;' + columnDef.field + '&quot;).join(&quot;\n&quot;)}}" tooltip-placement="top" tooltip-append-to-body="true"></span> ',
+	                    '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 0">',
+	                    	titleTemplate,
+						'</span>',                    
+	                '</div>'
+	            ].join('');
+	        });
+
+
+	        if(gridOptions.enableDownload){
+	            gridOptions.columnDefs.push({
+	                name : 'actions',
+	                visible: true,
+	                translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
+	                enableFiltering: false,
+	                enable: false,
+	                enableColumnMenu: false,
+	                enableSorting: false,
+	                enableHiding: false,
+	                cellTemplate : '<div class="ui-grid-cell-contents"><a type="button" class="btn btn-primary btn-xs" translate="BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TEXT" uib-tooltip="{{\'BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="right" tooltip-append-to-body="true" href="{{grid.appScope.downloadUrl(row.entity)}}" target="_blank"></a></div>'
+	            });
+	        }
+    	};
 
     	this.completePartialFromDate = function(date){
             var segments = date.split(/[-:\s\/]+/);

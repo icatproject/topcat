@@ -124,7 +124,7 @@
                 "RELEASE_DATE": "Release Date",
                 "SIZE" : "Size",
                 "FACILITY" : "Facility",
-                "RUN_NUMBER_RANGE" : "Run Numbers",
+                "RUN_NUMBER" : "Run Number",
                 "INSTRUMENT" : {
                     "NAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME",
                     "FULLNAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME"

@@ -327,10 +327,11 @@
                         "link": true
                     },
                     {
-                        "field": "runNumber",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
+                        "field": "datafileParameter.numericValue",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
                         "type": "number",
-                        "jpqlExpression": "datafileParameter.numericValue",
+                        "cellTemplate": "<div class=ui-grid-cell-contents'><span us-spinner='{radius:2, width:2, length: 2}'  spinner-on='row.entity.maxRunNumber === undefined || row.entity.minRunNumber === undefined' class='grid-cell-spinner'></span><span>{{row.entity.minRunNumber}} - {{row.entity.maxRunNumber}}</span></div>",
+                        "where": "datafileParameterType.name = 'run_number'",
                         "filters": [
                             {
                                 "placeholder": "From...",
