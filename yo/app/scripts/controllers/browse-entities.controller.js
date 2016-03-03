@@ -180,7 +180,7 @@
                 }
 
                 if(columnDef.field.match(/\./)){
-                    entityType =  columnDef.field.replace(/\[([^\.=>\[\]\s]+)/, function(match){ 
+                    var entityType =  columnDef.field.replace(/\[([^\.=>\[\]\s]+)/, function(match){ 
                         return helpers.capitalize(match.replace(/^\[/, ''));
                     }).replace(/^([^\.\[]+).*$/, '$1');
                     out.include(entityType);

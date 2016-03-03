@@ -41,6 +41,7 @@
         gridOptions.enableRowHeaderSelection = enableSelection;
 
         var sortColumns = [];
+        
         _.each(gridOptions.columnDefs, function(columnDef){
             
             if(columnDef.link) {
@@ -96,7 +97,12 @@
             }
 
             columnDef.jpqlExpression = columnDef.jpqlExpression || entityType + '.' + columnDef.field;
-            if(columnDef.sort) sortColumns.push(columnDef);
+            if(columnDef.sort){
+                sortColumns.push({
+                    colDef: columnDef,
+                    sort: columnDef.sort
+                });
+            }
         });
         this.gridOptions = gridOptions;
 
@@ -132,6 +138,70 @@
         this.browse = function(row) {
             row.browse(canceler);
         };
+
+        function generateQueryBuilder(){
+            var out = icat.queryBuilder(entityType);
+
+            out.where("user.name = :user");
+
+            _.each(gridOptions.columnDefs, function(columnDef){
+                if(!columnDef.field) return;
+
+                if(columnDef.type == 'date' && columnDef.filters){
+                    var from = columnDef.filters[0].term || '';
+                    var to = columnDef.filters[1].term || '';
+                    if(from != '' || to != ''){
+                        from = helpers.completePartialFromDate(from);
+                        to = helpers.completePartialToDate(to);
+                        out.where([
+                            "? between {ts ?} and {ts ?}",
+                            columnDef.jpqlExpression.safe(),
+                            from.safe(),
+                            to.safe()
+                        ]);
+                    }
+                } if(columnDef.type == 'number' && columnDef.filters){
+                    var from = columnDef.filters[0].term || '';
+                    var to = columnDef.filters[1].term || '';
+                    if(from != '' || to != ''){
+                        from = parseInt(from || '0');
+                        to = parseInt(to || '1000000000');
+                        out.where([
+                            "? between ? and ?",
+                            columnDef.jpqlExpression.safe(),
+                            from,
+                            to
+                        ]);
+                        out.where("datafileParameterType.name = 'run_number'")
+                    }
+                } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
+                    out.where([
+                        "UPPER(?) like concat('%', ?, '%')", 
+                        columnDef.jpqlExpression.safe(),
+                        columnDef.filter.term.toUpperCase()
+                    ]);
+                }
+
+                if(columnDef.field.match(/\./)){
+                    var entityType =  columnDef.field.replace(/\[([^\.=>\[\]\s]+)/, function(match){ 
+                        return helpers.capitalize(match.replace(/^\[/, ''));
+                    }).replace(/^([^\.\[]+).*$/, '$1');
+                    out.include(entityType);
+                }
+                
+            });
+        
+            
+            _.each(sortColumns, function(sortColumn){
+                if(sortColumn.colDef){
+                    out.orderBy(sortColumn.colDef.jpqlExpression, sortColumn.sort.direction);
+                }
+            });
+
+            out.limit((page - 1) * pageSize, pageSize);
+
+            return out; 
+        }
         
 
         function generateQuery(){
@@ -202,12 +272,12 @@
 
 
         function updateTotalItems(){
-            if(!isScroll){
-                icat.query(canceler.promise, generateQuery(stateFromTo, true)).then(function(_totalItems){
-                    gridOptions.totalItems = _totalItems;
-                    totalItems = _totalItems;
-                });
-            }
+            that.totalItems = undefined;
+            return generateQueryBuilder().count(canceler.promise).then(function(_totalItems){
+                gridOptions.totalItems = _totalItems;
+                totalItems = _totalItems;
+                that.totalItems = _totalItems;
+            });
         }
 
         function updateSelections(){
@@ -228,11 +298,29 @@
         }
 
         function getPage(){
-            var out = icat.query(canceler.promise, generateQuery());
-            out.then(function(results){
-                _.each(results, function(result){ result.getSize(canceler.promise); });
+            return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                _.each(entities, function(entity){
+                    if(entity.getSize){
+                        entity.getSize(canceler.promise);
+                    }
+
+                    icat.queryBuilder('datafileParameter').where([
+                        "investigation.id = ?", entity.id,
+                        "and datafileParameterType.name = 'run_number'"
+                    ]).orderBy('datafileParameter.numericValue').limit(1).run(canceler.promise).then(function(results){
+                        entity.minRunNumber = results[0];
+                    });
+
+                    icat.queryBuilder('datafileParameter').where([
+                        "investigation.id = ?", entity.id,
+                        "and datafileParameterType.name = 'run_number'"
+                    ]).orderBy('datafileParameter.numericValue', 'desc').limit(1).run(canceler.promise).then(function(results){
+                        entity.maxRunNumber = results[0];
+                    });
+
+                });
+                return entities;
             });
-            return out;
         }
 
         gridOptions.onRegisterApi = function(_gridApi) {
@@ -246,13 +334,8 @@
             });
 
             //sort change callback
-            gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
-                sortQuery = [];
-                if(sortColumns.length > 0){
-                    sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
-                        return sortColumn.colDef.jpqlExpression + ' ' + sortColumn.sort.direction;
-                    }).join(', '));
-                }
+            gridApi.core.on.sortChanged($scope, function(grid, _sortColumns){
+                var sortColumns = _sortColumns;
                 page = 1;
                 getPage().then(function(results){
                     updateScroll(results.length);

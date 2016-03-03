@@ -75,7 +75,9 @@
 	    		datafileParameterType: 'investigation.datasets.datafiles.parameters.type',
 	    		facilityCycle: 'investigation.facility.facilityCycles',
 	            investigationInstrument: 'investigation.investigationInstruments',
-	    		instrument: 'investigation.investigationInstruments.instrument'
+	    		instrument: 'investigation.investigationInstruments.instrument',
+	    		investigationUser: 'investigation.investigationUsers',
+	    		user: 'investigation.investigationUsers.user'
 	    	},
 	    	dataset: {
 	    		facility: 'dataset.investigation.facility',
@@ -89,7 +91,9 @@
 	    		datafileParameterType: 'dataset.datafiles.parameters.type',
 	    		facilityCycle: 'dataset.investigation.facility.facilityCycles',
 	            investigationInstrument: 'dataset.investigation.investigationInstruments',
-	    		instrument: 'dataset.investigation.investigationInstruments.instrument'
+	    		instrument: 'dataset.investigation.investigationInstruments.instrument',
+	    		investigationUser: 'dataset.investigation.investigationUsers',
+	    		user: 'dataset.investigation.investigationUsers.user'
 	    	},
 	    	datafile: {
 	    		facility: 'datafile.dataset.investigation.facility',
@@ -108,14 +112,17 @@
 	    	investigationParameter: {
 	    		investigationParameterType: 'investigationParameter.type'
 	    	},
-	    	datafileParameter: {
-	    		datasetParameterType: 'datasetParameter.type'
-	    	},
-	    	datafileParameter: {
-	    		datafileParameterType: 'datafileParameter.type'
-	    	},
 	    	investigationInstrument: {
-	    		instrument: 'investigationInstrument.instrument'
+	    		instrument: 'investigationInstrument.instrument',
+	    		investigation: 'investigationInstrument.investigation'
+	    	},
+	    	investigationUser: {
+	    		user: 'investigationUser.user'
+	    	},
+	    	datafileParameter: {
+				datafileParameterType: 'datafileParameter.type',
+				datafile: 'datafileParameter.datafile',
+				investigation: 'datafileParameter.datafile.dataset.investigation'
 	    	}
 	    };
     });

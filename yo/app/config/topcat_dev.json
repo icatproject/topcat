@@ -327,11 +327,26 @@
                         "link": true
                     },
                     {
-                        "field": "investigationInstruments[0].instrument.fullName",
+                        "field": "runNumber",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
+                        "type": "number",
+                        "jpqlExpression": "datafileParameter.numericValue",
+                        "filters": [
+                            {
+                                "placeholder": "From...",
+                                "type": "input"
+                            },
+                            {
+                                "placeholder": "To...",
+                                "type": "input"
+                            }
+                        ]
+                    },
+                    {
+                        "field": "instrument.fullName",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
                         "type": "string",
                         "visible": true,
-                        "jpqlExpression": "instrument.fullName",
                         "filter": {
                             "condition": "starts_with",
                             "placeholder": "Containing...",

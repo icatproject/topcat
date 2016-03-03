@@ -103,7 +103,7 @@
     			var whereQueryFragment = helpers.buildQuery(whereQuery);
     			var impliedPaths = {};
     			_.each(entityPaths, function(path, name){
-    				if(whereQueryFragment.indexOf(name) >= 0){
+    				if(name != entityType && whereQueryFragment.indexOf(name) >= 0){
     					impliedPaths[name] = path;
     				}
     			});
@@ -114,7 +114,6 @@
                         impliedPaths[name] = entityPaths[name];
                     }
                 });
-
 
 
     			if(impliedPaths.facilityCycle || entityType == 'facilityCycle'){
@@ -138,8 +137,6 @@
                     impliedPaths = alteredImpliedPaths;
                 }
 
-                console.log(impliedPaths);
-
                 var impliedVars = {};
                 _.each(impliedPaths, function(path, name){
                     var segments = path.split(/\./);
@@ -148,9 +145,9 @@
                     for(var i = 0; i < segments.length - 1; i++){
                         var pair = currentEntity + '.' + segments[i + 1];
                         if(!steps[pair]){
-                            throw "could not work out step " + pair + " for " + path;
+                            throw "could not work out step " + pair;
                         }
-                        impliedVars[currentEntity + '.' + segments[i + 1]] = steps[pair];
+                        impliedVars[pair] = steps[pair];
                         currentEntity = steps[pair];
                     }
                 });
