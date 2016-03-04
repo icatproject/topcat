@@ -283,7 +283,7 @@
                 }
             });
 
-            helpers.generateRestMethods(this, facility.tc.topcatApiPath + 'user/');
+            helpers.generateRestMethods(this, facility.tc().topcatApiPath + 'user/');
         }
 
     });

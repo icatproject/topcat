@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers){
+    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers, icatEntityPaths){
     	var tcIcatEntity = this;
 
     	this.create = function(attributes, facility){
@@ -25,37 +25,39 @@
 				}).join("\n");
 			}
 
-			this.getSize = helpers.overload({
-				'object': function(options){
-					var that = this;
-					return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
-						that.size = size;
-						return size;
-					});
-				},
-				'promise': function(timeout){
-					return this.getSize({timeout: timeout});
-				},
-				'': function(){
-					return this.getSize({});
-				}
-			});
+			if(this.entityType.match(/^(Investigation|Dataset|Datafile)$/)){
+				this.getSize = helpers.overload({
+					'object': function(options){
+						var that = this;
+						return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+							that.size = size;
+							return size;
+						});
+					},
+					'promise': function(timeout){
+						return this.getSize({timeout: timeout});
+					},
+					'': function(){
+						return this.getSize({});
+					}
+				});
 
-			this.getStatus = helpers.overload({
-				'object': function(options){
-					var that = this;
-					return facility.ids().getStatus(this.entityType, this.id, options).then(function(status){
-						that.status = status;
-						return status;
-					});
-				},
-				'promise': function(timeout){
-					return this.getStatus({timeout: timeout});
-				},
-				'': function(){
-					return this.getStatus({});
-				}
-			});
+				this.getStatus = helpers.overload({
+					'object': function(options){
+						var that = this;
+						return facility.ids().getStatus(this.entityType, this.id, options).then(function(status){
+							that.status = status;
+							return status;
+						});
+					},
+					'promise': function(timeout){
+						return this.getStatus({timeout: timeout});
+					},
+					'': function(){
+						return this.getStatus({});
+					}
+				});
+			}
 
 			var parentFunctions = {
 				Datafile: function(datafile, options){
@@ -230,15 +232,21 @@
 			};
 
 			this.stateParams = function(){
-				return this.thisAndAncestors().then(function(thisAndAncestors){
-					var out = {};
-					_.each(thisAndAncestors, function(entity){
-						out[helpers.uncapitalize(entity.entityType) + "Id"] = entity.id;
-						if(entity.entityType == 'Investigation') out['proposalId'] = entity.name;
+				if($state.current.name.match(/^home\.browse\.facility\./)){
+					var out = _.clone($state.params);
+					delete out.uiGridState;
+					out[helpers.uncapitalize(this.entityType) + "Id"] = this.id;
+					return helpers.resolvedPromise(out);
+				} else {
+					return this.thisAndAncestors().then(function(thisAndAncestors){
+						var out = {};
+						_.each(thisAndAncestors, function(entity){
+							out[helpers.uncapitalize(entity.entityType) + "Id"] = entity.id;
+							if(entity.entityType == 'Investigation') out['proposalId'] = entity.name;
+						});
+						return _.merge(out, {facilityName: facilityName});
 					});
-					return _.merge(out, {facilityName: facilityName});
-				});
-
+				}
 			};
 
 			this.browse = function(){
@@ -296,6 +304,65 @@
 					return this.deleteFromCart({});
 				}
 			});
+
+			this.find = function(expression){
+				var out = [];
+				var matches;
+				var entityType;
+				var predicate;
+				var entityField;
+
+				if(matches = expression.match(/^([^\[]+)\[(.+)\]\.([^\.]+)$/)){
+					entityType = matches[1];
+					predicate = matches[2];
+					entityField = matches[3];
+				} else if(matches = expression.match(/^([^\.]+)\.([^\.]+)$/)){
+					entityType = matches[1];
+					entityField = matches[2];
+				} else {
+					entityType = helpers.uncapitalize(this.entityType);
+					entityField = expression;
+				}
+
+				var fieldNames = [];
+
+				if(entityType != helpers.uncapitalize(this.entityType)){
+					var entityPaths = icatEntityPaths[helpers.uncapitalize(this.entityType)];
+					if(!entityPaths) throw "Unknown expression for find(): " + expression;
+
+					var entityPath = entityPaths[entityType];
+					if(!entityPath) throw "Unknown expression for find(): " + expression;
+
+					fieldNames = entityPath.split(/\./).reverse();
+				}
+
+				fieldNames.pop();
+				traverse(this)
+
+				function traverse(current){
+					if(fieldNames.length == 0){
+						if(!predicate || eval("current." + predicate)){
+							var value = current[entityField];
+							if(value !== undefined){
+								out.push(value);
+							}
+						}
+					} else {
+						var fieldName = fieldNames.pop();
+						current = current[fieldName];
+						if(current instanceof Array){
+							_.each(current, function(current){
+								traverse(current);
+							});
+						} else {
+							traverse(current);
+						}
+						fieldNames.push(fieldName);
+					}
+				}
+
+				return out;
+			};
 
 		}
 

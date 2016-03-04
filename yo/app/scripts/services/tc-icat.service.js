@@ -5,13 +5,17 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIcat', function($sessionStorage, $rootScope, $q, helpers, tcIcatEntity){
+    app.service('tcIcat', function($sessionStorage, $rootScope, $q, helpers, tcIcatEntity, tcIcatQueryBuilder){
 
     	this.create = function(facility){
     		return new Icat(facility);
     	};
 
     	function Icat(facility){
+
+    		this.facility = function(){
+    			return facility;
+    		};
 
     		this.version = function(){
     			var out = $q.defer();
@@ -155,8 +159,13 @@
         		return out.promise;
         	};
 
+        	this.queryBuilder = function(entityType){
+	    		return tcIcatQueryBuilder.create(this, entityType);
+	    	};
+
     		helpers.generateRestMethods(this, facility.config().icatUrl + '/icat/');
     	}
+
 
 	});
 

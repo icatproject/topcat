@@ -327,11 +327,26 @@
                         "link": true
                     },
                     {
-                        "field": "investigationInstruments[0].instrument.fullName",
+                        "field": "datafileParameter.numericValue",
+                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
+                        "type": "number",
+                        "where": "datafileParameterType.name = 'run_number'",
+                        "filters": [
+                            {
+                                "placeholder": "From...",
+                                "type": "input"
+                            },
+                            {
+                                "placeholder": "To...",
+                                "type": "input"
+                            }
+                        ]
+                    },
+                    {
+                        "field": "instrument.fullName",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
                         "type": "string",
                         "visible": true,
-                        "jpqlExpression": "instrument.fullName",
                         "filter": {
                             "condition": "starts_with",
                             "placeholder": "Containing...",
@@ -1202,10 +1217,6 @@
                 "investigation": {
                     "enableFiltering": true,
                     "enableSelection": false,
-                    "includes" : [
-                        "investigation.investigationInstruments.instrument",
-                        "investigation.type"
-                    ],
                     "columnDefs": [
                         {
                             "field": "visitId",
@@ -1226,7 +1237,7 @@
                             "type": "number"
                         },
                         {
-                            "field": "investigationInstruments[0].instrument.fullName",
+                            "field": "instrument.fullName",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "filter": {
@@ -1678,7 +1689,8 @@
                     "enableFiltering": true,
                     "enableSelection": true,
                     "includes" : [
-                        "investigation.investigationInstruments.instrument"
+                        "investigation.investigationInstruments.instrument",
+                        "investigation.parameters.type"
                         
                     ],
                     "columnDefs": [
@@ -1723,12 +1735,12 @@
                             "link": true
                         },
                         {
-                            "field": "size",
+                            "field": "size|bytes",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
                         {
-                            "field": "investigationInstruments[0].instrument.fullName",
+                            "field": "instrument.fullName",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "visible": true,
@@ -1789,7 +1801,7 @@
                             "link": true
                         },
                         {
-                            "field": "size",
+                            "field": "size|bytes",
                             "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
@@ -1884,6 +1896,9 @@
                     "enableFiltering": true,
                     "enableSelection": true,
                     "enableDownload": true,
+                    "includes" : [
+                        "datafile.parameters.type"
+                    ],
                     "columnDefs": [
                         {
                             "field": "name",
@@ -1908,7 +1923,7 @@
                             }
                         },
                         {
-                            "field": "fileSize",
+                            "field": "fileSize|bytes",
                             "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
                             "type": "number",
                             "cellFilter": "bytes",
