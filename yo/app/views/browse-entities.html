@@ -1,19 +1,19 @@
 
 <div class="row">
-    <div class="col-sm-10">
+    <div class="col-sm-10" ng-controller="BreadcrumbController as breadcrumbController">
         <ul class="breadcrumb">
-            <li ng-repeat="item in browseEntitiesController.breadcrumbItems">
+            <li ng-repeat="item in breadcrumbController.breadcrumbItems">
                 <span ng-show="!$last">
                     <a href="{{item.href}}" translate="{{item.translate}}" ng-if="item.translate"></a>
                     <a 
                         href="{{item.href}}"
-                        ng-if="!item.translate && item.title.length > browseEntitiesController.maxBreadcrumbTitleLength"
+                        ng-if="!item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength"
                         uib-tooltip="{{item.title}}"
                         tooltip-placement="bottom"
-                    >{{item.title | limitTo : browseEntitiesController.maxBreadcrumbTitleLength}}...</a>
+                    >{{item.title | limitTo : breadcrumbController.maxBreadcrumbTitleLength}}...</a>
                     <a
                         href="{{item.href}}"
-                        ng-if="!(!item.translate && item.title.length > browseEntitiesController.maxBreadcrumbTitleLength)"
+                        ng-if="!(!item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength)"
                     >{{item.title}}</a>
                 </span>
                 <i ng-show="$last" translate="{{item.translate}}"></i>
