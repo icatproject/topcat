@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIcatQueryBuilder', function($q, helpers, icatEntityPaths){
+    app.service('tcIcatQueryBuilder', function($q, helpers, icatEntityPaths, tcIcatEntity){
 
         var steps = {};
         _.each(icatEntityPaths, function(entityPaths, entityType){
@@ -196,7 +196,7 @@
                                     proposal.id = investigations[0].name;
                                     proposal.name = investigations[0].name;
                                     proposal.investigations = investigations;
-                                    proposal.find = investigations[0].find;
+                                    proposal = tcIcatEntity.create(proposal, icat.facility());
                                     proposals.push(proposal);
                                 }));
                             });

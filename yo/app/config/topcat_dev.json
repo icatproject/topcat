@@ -330,7 +330,6 @@
                         "field": "datafileParameter.numericValue",
                         "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
                         "type": "number",
-                        "cellTemplate": "<div class=ui-grid-cell-contents'><span us-spinner='{radius:2, width:2, length: 2}'  spinner-on='row.entity.maxRunNumber === undefined || row.entity.minRunNumber === undefined' class='grid-cell-spinner'></span><span>{{row.entity.minRunNumber}} - {{row.entity.maxRunNumber}}</span></div>",
                         "where": "datafileParameterType.name = 'run_number'",
                         "filters": [
                             {
@@ -1218,10 +1217,6 @@
                 "investigation": {
                     "enableFiltering": true,
                     "enableSelection": false,
-                    "includes" : [
-                        "investigation.investigationInstruments.instrument",
-                        "investigation.type"
-                    ],
                     "columnDefs": [
                         {
                             "field": "visitId",
@@ -1242,7 +1237,7 @@
                             "type": "number"
                         },
                         {
-                            "field": "investigationInstruments[0].instrument.fullName",
+                            "field": "instrument.fullName",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "filter": {

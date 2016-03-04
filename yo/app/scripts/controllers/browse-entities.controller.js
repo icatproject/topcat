@@ -285,20 +285,6 @@
             });
         }
 
-
-        this.getNextRouteUrl = function(row){
-            var hierarchy = facility.config().hierarchy
-            var stateSuffixes = {};
-            _.each(hierarchy, function(currentEntityType, i){
-                stateSuffixes[currentEntityType] = _.slice(hierarchy, 0, i + 2).join('-');
-            });
-            var params = _.clone($state.params);
-            delete params.uiGridState;
-            params[entityInstanceName + 'Id'] = row.id || row.name;
-            return $state.href('home.browse.facility.' + stateSuffixes[entityInstanceName], params);
-        };
-
-        //gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>',
         this.showTabs = function(row) {
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
@@ -307,100 +293,9 @@
             });
         };
 
-        /*
-        _.each(gridOptions.columnDefs, function(columnDef){
-
-            var filters = "";
-            var matches;
-            if(matches = columnDef.field.match(/^(.*?)(\|[^\.\[\]]*)$/)){
-                columnDef.field = matches[1];
-                filters = matches[2];
-            }
-
-            if(columnDef.link) {
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents" title="TOOLTIP"><a ng-click="$event.stopPropagation();" href="{{grid.appScope.getNextRouteUrl(row.entity)}}">{{row.entity.' + columnDef.field + '}}</a></div>';
-            }
-
-            if(columnDef.type == 'date'){
-                if(columnDef.field && columnDef.field.match(/Date$/)){
-                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
-                    filters = filters + "|date:'yyyy-MM-dd'"
-                } else {
-                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
-                    filters = filters + "|date:'yyyy-MM-dd HH:mm:ss'"
-                }
-            }
-
-            if(columnDef.excludeFuture){
-                var date = new Date();
-                var day = date.getDate();
-                var month = "" + (date.getMonth() + 1);
-                if(month.length == 1) month = '0' + month;
-                var year = date.getFullYear();
-                var filter = year + '-' + month + '-' + day;
-                $timeout(function(){
-                    columnDef.filters[1].term = filter;
-                    saveState();
-                });
-            }
-
-            if(columnDef.field == 'size'){
-                columnDef.enableSorting = false;
-                columnDef.enableFiltering = false;
-            }
-
-            if(columnDef.translateDisplayName){
-                columnDef.displayName = columnDef.translateDisplayName;
-                columnDef.headerCellFilter = 'translate';
-            }
-
-            if(columnDef.sort){
-                if(columnDef.sort.direction.toLowerCase() == 'desc'){
-                    columnDef.sort.direction = uiGridConstants.DESC;
-                } else {
-                    columnDef.sort.direction = uiGridConstants.ASC;
-                }
-            }
-
-            columnDef.jpqlExpression = columnDef.jpqlExpression || realEntityInstanceName + '.' + columnDef.field;
-            if(columnDef.sort){
-                sortColumns.push({
-                    colDef: columnDef,
-                    sort: columnDef.sort
-                });
-            }
-
-            var defaultTemplate = [
-                '<div class="ui-grid-cell-contents">',
-                    '<span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.find(&quot;' + columnDef.field + '&quot;).length == 0" class="grid-cell-spinner"></span>',
-                    '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" class="glyphicon glyphicon-th-list" uib-tooltip="{{row.entity.find(&quot;' + columnDef.field + '&quot;).join(&quot;\n&quot;)}}" tooltip-placement="top" tooltip-append-to-body="true"></span> ',
-                    '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 0">{{row.entity.find(&quot;' + columnDef.field + '&quot;)[0]' + filters + '}}</span>',
-                '</div>'
-            ].join('');
-
-            columnDef.cellTemplate = columnDef.cellTemplate || defaultTemplate;
-
-        });
-        
-
-
-        if(gridOptions.enableDownload){
-            gridOptions.columnDefs.push({
-                name : 'actions',
-                visible: true,
-                translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
-                enableFiltering: false,
-                enable: false,
-                enableColumnMenu: false,
-                enableSorting: false,
-                enableHiding: false,
-                cellTemplate : '<div class="ui-grid-cell-contents"><a type="button" class="btn btn-primary btn-xs" translate="BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TEXT" uib-tooltip="{{\'BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="right" tooltip-append-to-body="true" href="{{grid.appScope.downloadUrl(row.entity)}}" target="_blank"></a></div>'
-            });
-        }
-
-        */
-
-        
+        this.browse = function(row) {
+            row.browse(canceler);
+        };
 
         this.downloadUrl = function(datafile){
             var idsUrl = facility.config().idsUrl;
@@ -414,18 +309,6 @@
                 '&zip=false' +
                 '&outfile=' + encodeURIComponent(name);
         };
-
-        /*
-        gridOptions.paginationPageSizes = pagingConfig.paginationPageSizes;
-        gridOptions.paginationNumberOfRows = pagingConfig.paginationNumberOfRows;
-        gridOptions.useExternalPagination = true;
-        gridOptions.useExternalSorting = true;
-        gridOptions.useExternalFiltering = true;
-        var enableSelection = gridOptions.enableSelection === true && entityInstanceName.match(/^investigation|dataset|datafile$/) !== null;
-        gridOptions.enableSelectAll = false;
-        gridOptions.enableRowSelection = enableSelection;
-        gridOptions.enableRowHeaderSelection = enableSelection;
-        */
         
         this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');
 

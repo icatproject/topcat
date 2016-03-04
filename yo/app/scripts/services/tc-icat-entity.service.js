@@ -25,37 +25,39 @@
 				}).join("\n");
 			}
 
-			this.getSize = helpers.overload({
-				'object': function(options){
-					var that = this;
-					return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
-						that.size = size;
-						return size;
-					});
-				},
-				'promise': function(timeout){
-					return this.getSize({timeout: timeout});
-				},
-				'': function(){
-					return this.getSize({});
-				}
-			});
+			if(this.entityType.match(/^(Investigation|Dataset|Datafile)$/)){
+				this.getSize = helpers.overload({
+					'object': function(options){
+						var that = this;
+						return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+							that.size = size;
+							return size;
+						});
+					},
+					'promise': function(timeout){
+						return this.getSize({timeout: timeout});
+					},
+					'': function(){
+						return this.getSize({});
+					}
+				});
 
-			this.getStatus = helpers.overload({
-				'object': function(options){
-					var that = this;
-					return facility.ids().getStatus(this.entityType, this.id, options).then(function(status){
-						that.status = status;
-						return status;
-					});
-				},
-				'promise': function(timeout){
-					return this.getStatus({timeout: timeout});
-				},
-				'': function(){
-					return this.getStatus({});
-				}
-			});
+				this.getStatus = helpers.overload({
+					'object': function(options){
+						var that = this;
+						return facility.ids().getStatus(this.entityType, this.id, options).then(function(status){
+							that.status = status;
+							return status;
+						});
+					},
+					'promise': function(timeout){
+						return this.getStatus({timeout: timeout});
+					},
+					'': function(){
+						return this.getStatus({});
+					}
+				});
+			}
 
 			var parentFunctions = {
 				Datafile: function(datafile, options){
@@ -230,15 +232,21 @@
 			};
 
 			this.stateParams = function(){
-				return this.thisAndAncestors().then(function(thisAndAncestors){
-					var out = {};
-					_.each(thisAndAncestors, function(entity){
-						out[helpers.uncapitalize(entity.entityType) + "Id"] = entity.id;
-						if(entity.entityType == 'Investigation') out['proposalId'] = entity.name;
+				if($state.current.name.match(/^home\.browse\.facility\./)){
+					var out = _.clone($state.params);
+					delete out.uiGridState;
+					out[helpers.uncapitalize(this.entityType) + "Id"] = this.id;
+					return helpers.resolvedPromise(out);
+				} else {
+					return this.thisAndAncestors().then(function(thisAndAncestors){
+						var out = {};
+						_.each(thisAndAncestors, function(entity){
+							out[helpers.uncapitalize(entity.entityType) + "Id"] = entity.id;
+							if(entity.entityType == 'Investigation') out['proposalId'] = entity.name;
+						});
+						return _.merge(out, {facilityName: facilityName});
 					});
-					return _.merge(out, {facilityName: facilityName});
-				});
-
+				}
 			};
 
 			this.browse = function(){
