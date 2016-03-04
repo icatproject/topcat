@@ -60,8 +60,6 @@
             var pathPairs = _.chunk(path, 2);
             var breadcrumbEntities = {};       
             var breadcrumbPromises = [];
-            console.log('call');
-
 
             _.each(pathPairs, function(pathPair){
                 if(pathPair.length == 2){
@@ -116,8 +114,6 @@
                 that.breadcrumbItems.push({
                     translate: 'ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME'
                 });
-
-                console.log('that.breadcrumbItems', that.breadcrumbItems);
 
             });
 
