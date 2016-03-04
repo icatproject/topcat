@@ -1190,7 +1190,7 @@
                     "enableFiltering": true,
                     "columnDefs": [
                         {
-                            "field": "title",
+                            "field": "investigation.title",
                             "type": "string",
                             "filter": {
                                 "condition": "starts_with",

@@ -60,6 +60,9 @@
             var pathPairs = _.chunk(path, 2);
             var breadcrumbEntities = {};       
             var breadcrumbPromises = [];
+            console.log('call');
+
+
             _.each(pathPairs, function(pathPair){
                 if(pathPair.length == 2){
                     var entityType = pathPair[0];
@@ -88,7 +91,7 @@
                         var entity = breadcrumbEntities[entityType];
                         var title;
                         if(entity){
-                            title = entity[breadcrumbTitleMap[entityType]] || entity.title || entity.name || 'untitled';
+                            title = entity.find(breadcrumbTitleMap[entityType])[0] || entity.title || entity.name || 'untitled';
                         } else {
                             title = 'untitled';
                         }
@@ -114,12 +117,13 @@
                     translate: 'ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME'
                 });
 
+                console.log('that.breadcrumbItems', that.breadcrumbItems);
+
             });
 
+            canceler.promise.then(function(){ $timeout.cancel(breadcrumbTimeout); });
+
         });
-
-
-        canceler.promise.then(function(){ $timeout.cancel(breadcrumbTimeout); });
 
         function generateQueryBuilder(){
             var entityType = stateFromTo.replace(/^.*-/, '');
