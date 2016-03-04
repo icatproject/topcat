@@ -19,8 +19,6 @@
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
         var page = 1;
         var canceler = $q.defer();
-        var columnNames = _.map(gridOptions.columnDefs, function(columnDef){ return columnDef.field.replace(/\|[^\.\[\]]*$/, ''); });
-        var totalItems;
         var gridApi;
         var sortColumns = [];
         var stopListeningForCartChanges =  $rootScope.$on('cart:change', function(){
@@ -138,10 +136,9 @@
 
         function updateTotalItems(){
             that.totalItems = undefined;
-            return generateQueryBuilder().count(canceler.promise).then(function(_totalItems){
-                gridOptions.totalItems = _totalItems;
-                totalItems = _totalItems;
-                that.totalItems = _totalItems;
+            return generateQueryBuilder().count(canceler.promise).then(function(totalItems){
+                gridOptions.totalItems = totalItems;
+                that.totalItems = totalItems;
             });
         }
 
