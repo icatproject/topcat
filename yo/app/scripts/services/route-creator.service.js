@@ -4,10 +4,10 @@
     angular.
         module('angularApp').factory('RouteCreatorService', RouteCreatorService);
 
-    RouteCreatorService.$inject = ['APP_CONFIG', 'Config', 'RouteService', 'RuntimeStatesProvider'];
+    RouteCreatorService.$inject = ['APP_CONFIG', 'RouteService', 'RuntimeStatesProvider'];
 
     /*jshint -W098 */
-    function RouteCreatorService(APP_CONFIG, Config, RouteService, RuntimeStatesProvider) {
+    function RouteCreatorService(APP_CONFIG, RouteService, RuntimeStatesProvider) {
         var route = {};
 
         route.createStates = function() {

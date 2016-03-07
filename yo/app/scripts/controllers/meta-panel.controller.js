@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('MetaPanelController', function($scope, $translate, tc, helpers, MetaDataManager){
+    app.controller('MetaPanelController', function($scope, $translate, tc, helpers){
         var that = this;
         var previousEntityHash;
 

@@ -5,9 +5,9 @@
         .module('angularApp')
         .service('SmartClientPollManager', SmartClientPollManager);
 
-    SmartClientPollManager.$inject = ['APP_CONFIG', 'Config', 'SmartClientManager', '$sessionStorage', 'poller', 'inform', 'tc'];
+    SmartClientPollManager.$inject = ['APP_CONFIG', 'SmartClientManager', '$sessionStorage', 'poller', 'inform', 'tc'];
 
-    function SmartClientPollManager(APP_CONFIG, Config, SmartClientManager, $sessionStorage,  poller, inform) {
+    function SmartClientPollManager(APP_CONFIG, SmartClientManager, $sessionStorage,  poller, inform, tc) {
         var self = this;
 
         this.createPoller = function(facility, userName, preparedId) {
@@ -54,7 +54,7 @@
             _.each($sessionStorage.sessions, function(session, key) {
                 var facility = null;
                 try {
-                    facility = Config.getFacilityByName(APP_CONFIG, key);
+                    facility = tc.facility(key).config();
                 } catch (error){
 
                 }
