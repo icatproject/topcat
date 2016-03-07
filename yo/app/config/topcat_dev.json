@@ -1959,197 +1959,179 @@
             "metaTabs": {
                 "instrument": [
                     {
-                        "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
-                        "field": "instrument",
-                        "default": true,
-                        "data": [
+                        "title": "METATABS.INSTRUMENT.TABTITLE",
+                        "items": [
                             {
-                                "translateDisplayName": "METATABS.INSTRUMENT.NAME",
-                                "field": "fullName"
+                                "label": "METATABS.INSTRUMENT.NAME",
+                                "value": "fullName"
                             },
                             {
-                                "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
-                                "field": "description"
+                                "label": "METATABS.INSTRUMENT.DESCRIPTION",
+                                "value": "description"
                             },
                             {
-                                "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
-                                "field": "type"
+                                "label": "METATABS.INSTRUMENT.TYPE",
+                                "value": "type"
                             },
                             {
-                                "translateDisplayName": "METATABS.INSTRUMENT.URL",
-                                "field": "url"
+                                "label": "METATABS.INSTRUMENT.URL",
+                                "value": "url"
                             }
                         ]
                     },
                     {
-                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                        "field": "instrumentScientists",
-                        "queryParams": [
-                            "InstrumentScientist",
-                            "User"
-                        ],
-                        "default": false,
-                        "data": [
+                        "title": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                        "items": [
                             {
-                                "field": "user",
-                                "default": false,
-                                "data": [
-                                    {
-                                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                        "field": "fullName"
-                                    }
-                                ]
+                                "find": "instrumentScientistUser",
+                                "label": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                "value": "fullName"
                             }
                         ]
                     }
                 ],
                 "investigation": [
                     {
-                        "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
-                        "field": "investigation",
+                        "title": "METATABS.INVESTIGATION.TABTITLE",
                         "default": true,
-                        "data": [
+                        "items": [
                             {
-                                "translateDisplayName": "METATABS.INVESTIGATION.NAME",
-                                "field": "name"
+                                "label": "METATABS.INVESTIGATION.NAME",
+                                "value": "name"
                             },
                             {
-                                "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
-                                "field": "title"
+                                "label": "METATABS.INVESTIGATION.TITLE",
+                                "value": "title"
                             },
                             {
-                                "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
-                                "field": "summary"
+                                "label": "METATABS.INVESTIGATION.SUMMARY",
+                                "value": "summary"
                             },
                             {
-                                "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
-                                "field": "startDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                "label": "METATABS.INVESTIGATION.START_DATE",
+                                "value": "startDate",
+                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
                             },
                             {
-                                "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
-                                "field": "endDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                "label": "METATABS.INVESTIGATION.END_DATE",
+                                "value": "endDate",
+                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
                             }
                         ]
                     },
                     {
-                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
-                        "field": "investigationUsers",
-                        "queryParams": [
-                            "InvestigationUser",
-                            "User"
-                        ],
-                        "default": false,
-                        "data": [
+                        "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                        "items": [
                             {
-                                "field": "user",
-                                "default": false,
-                                "data": [
-                                    {
-                                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
-                                        "field": "fullName"
-                                    }
-                                ]
+                                "find": "user",
+                                "label": "METATABS.INVESTIGATION_USERS.NAME",
+                                "value": "fullName"
+                            }
+                            
+                        ]
+                    },
+                    {
+                        "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                        "items": [
+                            {
+                                "find": "sample",
+                                "label": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                "value": "name"
                             }
                         ]
                     },
                     {
-                        "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
-                        "field": "samples",
-                        "queryParams": [
-                            "Sample"
-                        ],
-                        "default": "false",
-                        "data": [
+                        "title": "Publications",
+                        "items": [
                             {
-                                "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
-                                "field": "name"
-                            }
-                        ]
-                    },
-                    {
-                        "displayName": "Publications",
-                        "field": "publications",
-                        "queryParams": [
-                            "Publication"
-                        ],
-                        "default": "false",
-                        "data": [
-                            {
-                                "displayName": "Reference",
-                                "field": "fullReference"
+                                "find": "publication",
+                                "label": "Reference",
+                                "value": "fullReference"
                             }
                         ]
                     }
                 ],
                 "dataset": [
                     {
-                        "translateDisplayName": "METATABS.DATASET.TABTITLE",
-                        "field": "dataset",
+                        "title": "METATABS.DATASET.TABTITLE",
                         "default": true,
-                        "data": [
+                        "items": [
                             {
-                                "translateDisplayName": "METATABS.DATASET.NAME",
-                                "field": "name"
+                                "label": "METATABS.DATASET.NAME",
+                                "value": "name"
                             },
                             {
-                                "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
-                                "field": "description"
+                                "label": "METATABS.DATASET.DESCRIPTION",
+                                "value": "description"
                             },
                             {
-                                "translateDisplayName": "METATABS.DATASET.START_DATE",
-                                "field": "startDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                "label": "METATABS.DATASET.START_DATE",
+                                "value": "startDate",
+                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
                             },
                             {
-                                "translateDisplayName": "METATABS.DATASET.END_DATE",
-                                "field": "endDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                "label": "METATABS.DATASET.END_DATE",
+                                "value": "endDate",
+                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
                             }
                         ]
                     },
                     {
-                        "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
-                        "field": "type",
-                        "queryParams": [
-                            "DatasetType"
-                        ],
-                        "default": false,
-                        "data": [
+                        "title": "METATABS.DATASET_TYPE.TABTITLE",
+                        "items": [
                             {
-                                "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
-                                "field": "name"
+                                "find": "datasetType",
+                                "label": "METATABS.DATASET_TYPE.NAME",
+                                "value": "name"
                             },
                             {
-                                "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
-                                "field": "description"
+                                "find": "datasetType",
+                                "label": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                "value": "description"
                             }
                         ]
                     }
                 ],
                 "datafile": [
                     {
-                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
-                        "field": "datafile",
-                        "default": true,
-                        "data": [
+                        "title": "METATABS.DATAFILE.TABTITLE",
+                        "items": [
                             {
-                                "translateDisplayName": "METATABS.DATAFILE.NAME",
-                                "field": "name"
+                                "label": "METATABS.DATAFILE.NAME",
+                                "value": "name"
                             },
                             {
-                                "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
-                                "field": "description"
+                                "label": "METATABS.DATAFILE.DESCRIPTION",
+                                "value": "description"
                             },
                             {
-                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
-                                "field": "fileSize",
-                                "template": "{{content.value | bytes}}"
+                                "label": "METATABS.DATAFILE.SIZE",
+                                "value": "fileSize",
+                                "template": "{{item.value | bytes}}"
                             },
                             {
-                                "translateDisplayName": "METATABS.DATAFILE.LOCATION",
-                                "field": "location"
+                                "label": "METATABS.DATAFILE.LOCATION",
+                                "value": "location"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "METATABS.DATAFILE.PARAMETERS",
+                        "items": [
+                            {
+                                "find": "datafileParameter[type.valueType=='STRING']",
+                                "value": "stringValue",
+                                "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
+                            },
+                            {
+                                "find": "datafileParameter[type.valueType=='NUMERIC']",
+                                "value": "numericValue",
+                                "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
+                            },
+                            {
+                                "find": "datafileParameter[type.valueType=='DATE_AND_TIME']",
+                                "value": "datetimeValue",
+                                "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value | date:'yyyy-MM-dd'}}</span>"
                             }
                         ]
                     }

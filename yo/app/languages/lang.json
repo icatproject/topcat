@@ -526,7 +526,8 @@
             "NAME" : "Name",
             "DESCRIPTION" : "Description",
             "SIZE" : "File Size",
-            "LOCATION" : "Location"
+            "LOCATION" : "Location",
+            "PARAMETERS" : "Parameters"
         }
     },
     "FOOTER" : {

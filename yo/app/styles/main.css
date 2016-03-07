@@ -50,23 +50,6 @@ body {
     height: 400px;
 }
 
-.tab-content {
-  margin: 0px;
-  padding: 5px;
-}
-
-.param-title {
-  font-weight: bold;
-}
-
-.param-title::after {
-    content: ": ";
-}
-
-.param-value {
-
-}
-
 .no-rows {
   position: absolute;
   top: 0;
@@ -251,6 +234,23 @@ a[ng-click]{
   overflow: auto;
   height: 150px;
 }
+
+.meta-box {
+  margin: 0px;
+  padding: 5px;
+}
+
+.meta-box .label {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+  padding-left: 0px;
+}
+
+.meta-box .label::after {
+    content: ": ";
+}
+
 
 .datetime-picker {
   padding: 7px;

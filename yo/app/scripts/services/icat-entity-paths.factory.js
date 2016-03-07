@@ -46,7 +46,9 @@
 	    		datafileParameter: 'instrument.investigationInstruments.investigation.datasets.datafiles.parameters',
 	    		datafileParameterType: 'instrument.investigationInstruments.investigation.datasets.datafiles.parameters.type',
 	            investigationInstrument: 'investigation.investigationInstruments',
-	    		facilityCycle: 'instrument.facility.facilityCycles'
+	    		facilityCycle: 'instrument.facility.facilityCycles',
+	    		instrumentScientist: 'instrument.instrumentScientists',
+	    		instrumentScientistUser: 'instrument.instrumentScientists.user'
 	    	},
 	    	proposal: {
 	    		facility: 'proposal.investigations.facility',
@@ -77,7 +79,9 @@
 	            investigationInstrument: 'investigation.investigationInstruments',
 	    		instrument: 'investigation.investigationInstruments.instrument',
 	    		investigationUser: 'investigation.investigationUsers',
-	    		user: 'investigation.investigationUsers.user'
+	    		user: 'investigation.investigationUsers.user',
+	    		sample: 'investigation.samples',
+	    		publication: 'investigation.publications'
 	    	},
 	    	dataset: {
 	    		facility: 'dataset.investigation.facility',
@@ -93,7 +97,9 @@
 	            investigationInstrument: 'dataset.investigation.investigationInstruments',
 	    		instrument: 'dataset.investigation.investigationInstruments.instrument',
 	    		investigationUser: 'dataset.investigation.investigationUsers',
-	    		user: 'dataset.investigation.investigationUsers.user'
+	    		user: 'dataset.investigation.investigationUsers.user',
+	    		sample: 'dataset.sample',
+	    		datasetType: 'dataset.type'
 	    	},
 	    	datafile: {
 	    		facility: 'datafile.dataset.investigation.facility',
@@ -123,6 +129,9 @@
 				datafileParameterType: 'datafileParameter.type',
 				datafile: 'datafileParameter.datafile',
 				investigation: 'datafileParameter.datafile.dataset.investigation'
+	    	},
+	    	instrumentScientist:{
+	    		instrumentScientistUser: 'instrumentScientist.user'
 	    	}
 	    };
     });

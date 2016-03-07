@@ -15,9 +15,7 @@
                     template = template[path.shift()];
                     if(template === undefined) return;
                 }
-                if(!template.match(/^\s*</)){
-                    template = '<span>' + template + '</span>';
-                }
+                template = '<span>' + template + '</span>';
                 return $(element).html($compile(template)(scope));
             }
         };

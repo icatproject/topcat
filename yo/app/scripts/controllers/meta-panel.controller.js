@@ -5,11 +5,15 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('MetaPanelController', function($scope, tc, MetaDataManager){
+    app.controller('MetaPanelController', function($scope, $translate, tc, helpers, MetaDataManager){
         var that = this;
         var previousEntityHash;
 
         $scope.$on('rowclick', function(event, entity){
+            var facility = tc.facility(entity.facilityName);
+            var config = facility.config().metaTabs[entity.type];
+            if(!config) return;
+
             var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;
             if(entityHash == previousEntityHash){
                 that.tabs = [];
@@ -17,37 +21,57 @@
                 return;
             }
             previousEntityHash = entityHash;
-
-            var facility = tc.facility(entity.facilityName);
-            var tabs;
-            if(entity.type == 'facility'){
-                tabs = tc.config().metaTabs[entity.type];
-            } else {
-                tabs = facility.config().metaTabs[entity.type];
-            }
-
-            var capitalizedEntityType = entity.type.replace(/^(.)/, function(s){ return s.toUpperCase(); });
-            var query = [capitalizedEntityType];
-            var includes = [];
-            _.each(tabs, function(tab){
-
-                if(tab.queryParams){
-                    _.each(tab.queryParams, function(queryParam){
-                        includes.push(queryParam);
-                    });
-                }
-            });
-
-            if(includes.length > 0){
-                query.push("INCLUDE " + includes.join(','))
-            }
-
-            query.push(['[id=?]', entity.id]);
-
-            facility.icat().query(query).then(function(data){
-                that.tabs = MetaDataManager.updateTabs(data, tabs);
-            });
             
+            var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
+
+            if(entity.type == 'instrument'){
+                queryBuilder.include('instrumentScientistUser');
+            }
+
+            if(entity.type == 'investigation'){
+                queryBuilder.include('user');
+                queryBuilder.include('investigationParameterType');
+                queryBuilder.include('sample');
+                queryBuilder.include('publication');
+            }
+
+            if(entity.type == 'dataset'){
+                queryBuilder.include('datasetParameterType');
+                queryBuilder.include('sample');
+                queryBuilder.include('datasetType');
+            }
+
+            if(entity.type == 'datafile'){
+                queryBuilder.include('datafileParameterType');
+            }
+
+            queryBuilder.run().then(function(entity){
+                entity = entity[0];
+
+                var tabs = [];
+                _.each(config, function(tabConfig){
+                    var tab = {
+                        title: $translate.instant(tabConfig.title),
+                        items: []
+                    };
+                    _.each(tabConfig.items, function(itemConfig){
+                        var find = itemConfig.find || helpers.uncapitalize(entity.entityType);
+                        if(!find.match(/\]$/)) find = find + '[]'
+                        _.each(entity.find(find), function(entity){
+                            tab.items.push({
+                                label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
+                                template: itemConfig.template,
+                                value: itemConfig.value ? entity.find(itemConfig.value)[0] : null,
+                                entity: entity
+                            });
+                        });
+                    });
+
+                    tabs.push(tab);
+                });
+
+                that.tabs = tabs;
+            });
         });
     });
 

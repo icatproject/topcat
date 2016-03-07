@@ -306,16 +306,21 @@
 			});
 
 			this.find = function(expression){
+				if(expression == '') return [];
+
 				var out = [];
 				var matches;
 				var entityType;
 				var predicate;
 				var entityField;
 
-				if(matches = expression.match(/^([^\[]+)\[(.+)\]\.([^\.]+)$/)){
+				if(matches = expression.match(/^([^\[]+)\[(.*)\]\.([^\.]+)$/)){
 					entityType = matches[1];
 					predicate = matches[2];
 					entityField = matches[3];
+				} if(matches = expression.match(/^([^\[]+)\[(.*)\]$/)){
+					entityType = matches[1];
+					predicate = matches[2];
 				} else if(matches = expression.match(/^([^\.]+)\.([^\.]+)$/)){
 					entityType = matches[1];
 					entityField = matches[2];
@@ -337,14 +342,17 @@
 				}
 
 				fieldNames.pop();
-				traverse(this)
-
+				traverse(this);
 				function traverse(current){
 					if(fieldNames.length == 0){
 						if(!predicate || eval("current." + predicate)){
-							var value = current[entityField];
-							if(value !== undefined){
-								out.push(value);
+							if(entityField){
+								var value = current[entityField];
+								if(value !== undefined){
+									out.push(value);
+								}
+							} else {
+								out.push(current);
 							}
 						}
 					} else {
@@ -363,6 +371,27 @@
 
 				return out;
 			};
+
+			var children = {};
+			_.each(icatEntityPaths[helpers.uncapitalize(this.entityType)], function(path, entityType){
+				entityType = helpers.capitalize(entityType);
+				var matches = path.match(/^[^\.]+\.([^\.]+)$/);
+				if(matches){
+					children[entityType] = matches[1];
+				}
+			});
+
+			_.each(children, function(name, entityType){
+				if(that[name] instanceof Array){
+					that[name] = _.map(that[name], function(child){
+						child.entityType = entityType;
+						return tcIcatEntity.create(child, facility);
+					});
+				} else if(typeof that[name] == 'object') {
+					that[name].entityType = entityType;
+					that[name] = tcIcatEntity.create(that[name], facility);
+				}
+			});
 
 		}
 
