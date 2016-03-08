@@ -22,6 +22,17 @@ exec %{
   wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
   cp ./ids.storage_file-1.3.2.jar ./glassfish4/glassfish/domains/domain1/lib/applibs
 
+  ./glassfish4/bin/asadmin start-domain
+  ./opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
+  ./opt/glassfish4/bin/asadmin set server.http-service.access-logging-enabled=true
+  ./opt/glassfish4/bin/asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
+  ./opt/glassfish4/bin/asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+  ./opt/glassfish4/bin/asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
+  ./opt/glassfish4/bin/asadmin delete-ssl --type http-listener http-listener-2
+  ./opt/glassfish4/bin/asadmin delete-network-listener http-listener-2
+  ./opt/glassfish4/bin/asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
+  ./opt/glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
+  ./opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
 
 }.strip.split(/\s*\n\s*/).join(' && ')
 
