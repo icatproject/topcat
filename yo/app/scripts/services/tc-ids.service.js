@@ -85,9 +85,14 @@
     					sessionId: facility.icat().session().sessionId
     				};
     				params[idsParamName] = id;
-    				return this.get('getStatus', params,  options).then(function(status){
-    					return status;
-    				});
+
+            var key = 'getStatus:' + type + ":" + id;
+
+            return this.cache().getPromise(key, 10 * 60 * 60, function(){
+              return that.get('getStatus', params,  options).then(function(status){
+                return status;
+              });
+            });
     			},
     			'string, number, promise': function(type, id, timeout){
     				return this.getStatus(type, id, {timeout: timeout});

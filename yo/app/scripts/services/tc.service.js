@@ -1,38 +1,38 @@
 
 (function() {
-    'use strict';
+  'use strict';
 
-    var app = angular.module('angularApp');
+  var app = angular.module('angularApp');
 
-    app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, APP_CONFIG){
-    	var tc = this;
-    	window.tc = this;
-    	var facilities = {};
-      var cache;
+  app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, APP_CONFIG){
+  	var tc = this;
+  	window.tc = this;
+  	var facilities = {};
+    var cache;
 
-    	this.facility = function(facilityName){
-    		if(!facilities[facilityName]) facilities[facilityName] = tcFacility.create(tc, facilityName);
-    		return facilities[facilityName];
-    	};
+  	this.facility = function(facilityName){
+  		if(!facilities[facilityName]) facilities[facilityName] = tcFacility.create(tc, facilityName);
+  		return facilities[facilityName];
+  	};
 
-    	this.facilities = function(){
-    		return _.map(APP_CONFIG.facilities, function(facility){ return tc.facility(facility.facilityName); });
-    	};
+  	this.facilities = function(){
+  		return _.map(APP_CONFIG.facilities, function(facility){ return tc.facility(facility.facilityName); });
+  	};
 
-    	this.config = function(){ return APP_CONFIG.site; }
+  	this.config = function(){ return APP_CONFIG.site; }
 
-      this.cache = function(){
-        if(!cache) cache = tcCache.create('topcat');
-        return cache;
-      };
+    this.cache = function(){
+      if(!cache) cache = tcCache.create('topcat');
+      return cache;
+    };
 
-    	this.version = function(){
-  			var out = $q.defer();
-  			this.get('version').then(function(data){
-  				out.resolve(data.value);
-  			}, function(){ out.reject(); });
-  			return out.promise;
-	    };
+  	this.version = function(){
+			var out = $q.defer();
+			this.get('version').then(function(data){
+				out.resolve(data.value);
+			}, function(){ out.reject(); });
+			return out.promise;
+    };
 
 		this.search = helpers.overload({
 			'array, object, object': function(facilityNames, query, options){
@@ -45,59 +45,62 @@
 				_.each(facilityNames, function(facilityName){
 					var facility = tc.facility(facilityName);
 					var icat = facility.icat();
+          var key = "search:" + JSON.stringify(query);
 
-					promises.push(icat.get('lucene/data', {
-					    sessionId: icat.session().sessionId,
-					    query: JSON.stringify(query),
-					    maxCount: 300
-					}, options).then(function(data){
-						if(data.length > 0){
-							var ids = [];
-							var scores = {};
-							_.each(data, function(result){
-								ids.push(result.id);
-								scores[result.id] = result.score;
-							});
+          promises.push(icat.cache().getPromise(key, 10 * 60 * 60, function(){
+            return icat.get('lucene/data', {
+              sessionId: icat.session().sessionId,
+              query: JSON.stringify(query),
+              maxCount: 300
+            }, options);
+          }).then(function(data){
+            if(data.length > 0){
+              var ids = [];
+              var scores = {};
+              _.each(data, function(result){
+                ids.push(result.id);
+                scores[result.id] = result.score;
+              });
 
-							var promises = [];
-							_.each(_.chunk(ids, 100), function(ids){
-								var query = [
-									function(){
-										if(entityType == 'Investigation'){
-											return 'select investigation from Investigation investigation';
-										} else if(entityType == 'Dataset') {
-											return 'select dataset from Dataset dataset';
-										} else {
-											return 'select datafile from Datafile datafile';
-										}
-									},
-									'where ?.id in (?)', entityInstanceName.safe(), ids.join(', ').safe(),
-									function(){
-										if(entityType == 'Investigation'){
-											return 'include investigation.investigationInstruments.instrument';
-										} else if(entityType == 'Dataset'){
-											return 'include dataset.investigation';
-										} else if(entityType == 'Datafile') {
-											return 'include datafile.dataset.investigation';
-										}
-									}
-								];
-								promises.push(icat.query(query, options).then(function(_results){
-									var _results = _.map(_results, function(result){
-										result.facilityName = facilityName;
-										result.score = scores[result.id];
-										result = tcIcatEntity.create(result, facility);
-										return result;
-									});
+              var promises = [];
+              _.each(_.chunk(ids, 100), function(ids){
+                var query = [
+                  function(){
+                    if(entityType == 'Investigation'){
+                      return 'select investigation from Investigation investigation';
+                    } else if(entityType == 'Dataset') {
+                      return 'select dataset from Dataset dataset';
+                    } else {
+                      return 'select datafile from Datafile datafile';
+                    }
+                  },
+                  'where ?.id in (?)', entityInstanceName.safe(), ids.join(', ').safe(),
+                  function(){
+                    if(entityType == 'Investigation'){
+                      return 'include investigation.investigationInstruments.instrument';
+                    } else if(entityType == 'Dataset'){
+                      return 'include dataset.investigation';
+                    } else if(entityType == 'Datafile') {
+                      return 'include datafile.dataset.investigation';
+                    }
+                  }
+                ];
+                promises.push(icat.query(query, options).then(function(_results){
+                  var _results = _.map(_results, function(result){
+                    result.facilityName = facilityName;
+                    result.score = scores[result.id];
+                    result = tcIcatEntity.create(result, facility);
+                    return result;
+                  });
 
-									results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
-									defered.notify(results);
-								}));
-							})
-							return $q.all(promises);
-						}
+                  results = _.sortBy(_.flatten([results, _results]), 'score').reverse();
+                  defered.notify(results);
+                }));
+              })
+              return $q.all(promises);
+            }
+          }));
 
-					}));
 				});
 
 				$q.all(promises).then(function(){
@@ -140,19 +143,19 @@
 		};
 
 		this.purgeSessions = function(){
-	    	var promises = [];
+    	var promises = [];
 
-	    	_.each(this.userFacilities(), function(facility){
-	    		var icat = facility.icat();
-	    		promises.push(icat.get('session/' + icat.session().sessionId).then(function(){}, function(response){
-	    			if(response.code == "SESSION"){
-	    				return icat.logout();
-	    			}
-	    		}));
-	    	});
+    	_.each(this.userFacilities(), function(facility){
+    		var icat = facility.icat();
+    		promises.push(icat.get('session/' + icat.session().sessionId).then(function(){}, function(response){
+    			if(response.code == "SESSION"){
+    				return icat.logout();
+    			}
+    		}));
+    	});
 
-	    	return $q.all(promises);
-	    };
+    	return $q.all(promises);
+    };
 
 		var topcatApiPath = this.config().topcatApiPath;
 		if(!topcatApiPath.match(/^https:\/\//)) topcatApiPath = '/' + topcatApiPath;
@@ -160,6 +163,6 @@
 		this.topcatApiPath = topcatApiPath;
 		helpers.generateRestMethods(this, topcatApiPath);
 
-  	});
+  });
 
 })();
