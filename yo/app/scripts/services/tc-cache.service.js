@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcCache', function($cacheFactory, $q, helpers){
+    app.service('tcCache', function($cacheFactory, $q, $timeout, helpers){
 
       this.create = function(name){
         return new Cache(name);
@@ -72,7 +72,9 @@
                 defered.notify(results);
               });
             } else {
-              defered.resolve(out);
+              $timeout(function(){
+                defered.resolve(out);
+              });
             }
             
             return defered.promise;
