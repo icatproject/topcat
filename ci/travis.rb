@@ -4,45 +4,47 @@ exec %{
   echo "create database icat;" | mysql -u root
   echo "create database topcat;" | mysql -u root
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
-  mkdir "install"
-  cd install
+  
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
-  unzip glassfish-4.0.zip -d ./
+  sudo unzip glassfish-4.0.zip -d /opt
+
+  mkdir install
+  cd install
 
   wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
   unzip mysql-connector-java-5.1.37.zip
-  cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar ./glassfish4/glassfish/domains/domain1/lib/ext
+  sudo cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.plugin/1.3.0/ids.plugin-1.3.0.jar
-  cp ./ids.plugin-1.3.0.jar ./glassfish4/glassfish/domains/domain1/lib/applibs
+  sudo cp ./ids.plugin-1.3.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
   wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.client/4.5.0/icat.client-4.5.0.jar
-  cp ./icat.client-4.5.0.jar ./glassfish4/glassfish/domains/domain1/lib/applibs
+  sudo cp ./icat.client-4.5.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
   wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.utils/4.11.0/icat.utils-4.11.0.jar
-  cp ./icat.utils-4.11.0.jar ./glassfish4/glassfish/domains/domain1/lib/applibs
+  sudo cp ./icat.utils-4.11.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
   wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
-  cp ./ids.storage_file-1.3.2.jar ./glassfish4/glassfish/domains/domain1/lib/applibs
+  sudo cp ./ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
 
-  ./glassfish4/bin/asadmin start-domain
-  ./glassfish4/bin/asadmin set server.http-service.access-log.format="common"
-  ./glassfish4/bin/asadmin set server.http-service.access-logging-enabled=true
-  ./glassfish4/bin/asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
-  ./glassfish4/bin/asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
-  ./glassfish4/bin/asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
-  ./glassfish4/bin/asadmin delete-ssl --type http-listener http-listener-2
-  ./glassfish4/bin/asadmin delete-network-listener http-listener-2
-  ./glassfish4/bin/asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
-  ./glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
-  ./glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
+  sudo /opt/glassfish4/bin/asadmin start-domain
+  sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
+  sudo /opt/glassfish4/bin/asadmin set server.http-service.access-logging-enabled=true
+  sudo /opt/glassfish4/bin/asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
+  sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+  sudo /opt/glassfish4/bin/asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
+  sudo /opt/glassfish4/bin/asadmin delete-ssl --type http-listener http-listener-2
+  sudo /opt/glassfish4/bin/asadmin delete-network-listener http-listener-2
+  sudo /opt/glassfish4/bin/asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
+  sudo /opt/glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
+  sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/authn_simple/1.0.1/authn_simple-1.0.1-distro.zip
   unzip authn_simple-1.0.1-distro.zip
   cp ../provision/authn_simple.properties ./authn_simple/authn_simple.properties
   cp ../provision/authn_simple-setup.properties ./authn_simple/authn_simple-setup.properties
-  cd authn_simple
-  ./setup configure
-  ./setup install
+  cd ./authn_simple
+  sudo ./setup configure
+  sudo ./setup install
   cd ../
-  sudo ./glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
+  sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
 }.strip.split(/\s*\n\s*/).join(' && ')
 
