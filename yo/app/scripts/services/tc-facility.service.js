@@ -18,7 +18,8 @@
             var user;
             
             this.config = function(){
-              var facilityId = ($sessionStorage.sessions[facilityName] || {}).facilityId;
+              var sessions = $sessionStorage.sessions || {};
+              var facilityId = (sessions[facilityName] || {}).facilityId;
               if(facilityId) APP_CONFIG.facilities[facilityName].facilityId = facilityId;
               return APP_CONFIG.facilities[facilityName]; 
             }
