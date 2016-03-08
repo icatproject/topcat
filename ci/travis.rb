@@ -13,7 +13,7 @@ exec %{
   unzip mysql-connector-java-5.1.37.zip
   cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar ./glassfish4/glassfish/domains/domain1/lib/ext
 
-  https://www.icatproject.org/mvn/repo/org/icatproject/ids.plugin/1.3.0/ids.plugin-1.3.0.jar
+  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.plugin/1.3.0/ids.plugin-1.3.0.jar
   cp ./ids.plugin-1.3.0.jar ./glassfish4/glassfish/domains/domain1/lib/applibs
   wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.client/4.5.0/icat.client-4.5.0.jar
   cp ./icat.client-4.5.0.jar ./glassfish4/glassfish/domains/domain1/lib/applibs
