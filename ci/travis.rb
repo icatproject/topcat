@@ -3,7 +3,7 @@
 exec %{
   echo "create database icat;" | mysql -u root
   echo "create database topcat;" | mysql -u root
-  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u
+  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
   mkdir "install"
   cd install
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
