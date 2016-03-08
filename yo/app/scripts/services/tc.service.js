@@ -4,10 +4,11 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, APP_CONFIG){
+    app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, APP_CONFIG){
     	var tc = this;
     	window.tc = this;
     	var facilities = {};
+      var cache;
 
     	this.facility = function(facilityName){
     		if(!facilities[facilityName]) facilities[facilityName] = tcFacility.create(tc, facilityName);
@@ -19,6 +20,11 @@
     	};
 
     	this.config = function(){ return APP_CONFIG.site; }
+
+      this.cache = function(){
+        if(!cache) cache = tcCache.create('topcat');
+        return cache;
+      };
 
     	this.version = function(){
   			var out = $q.defer();

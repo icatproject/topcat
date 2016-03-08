@@ -5,13 +5,19 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIcat', function($sessionStorage, $rootScope, $q, helpers, tcIcatEntity, tcIcatQueryBuilder){
+    app.service('tcIcat', function($sessionStorage, $rootScope, $q, helpers, tcIcatEntity, tcIcatQueryBuilder, tcCache){
 
     	this.create = function(facility){
     		return new Icat(facility);
     	};
 
     	function Icat(facility){
+        var cache;
+
+        this.cache = function(){
+          if(!cache) cache = tcCache.create('icat:' + facility.config().facilityName);
+          return cache;
+        };
 
     		this.facility = function(){
     			return facility;

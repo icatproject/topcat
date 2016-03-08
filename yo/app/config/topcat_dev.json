@@ -254,7 +254,6 @@
                 {
                     "field": "entityType",
                     "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
-                    "cellFilter": "entityTypeTitle",
                     "type" : "string",
                     "filter": {
                         "condition": "starts_with",

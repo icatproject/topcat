@@ -5,13 +5,21 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIds', function(helpers){
+    app.service('tcIds', function(helpers, tcCache){
 
     	this.create = function(facility){
     		return new Ids(facility);
     	};
 
     	function Ids(facility){
+        var that = this;
+        var cache;
+
+        this.cache = function(){
+          if(!cache) cache = tcCache.create('ids:' + facility.config().facilityName);
+          return cache;
+        };
+
     		this.version = function(){
     			var out = $q.defer();
     			this.get('getApiVersion').then(function(version){
@@ -22,15 +30,18 @@
 
     		this.getSize = helpers.overload({
     			'string, number, object': function(type, id, options){
-    				var idsParamName = helpers.uncapitalize(type) + "Ids";
-    				var params = {
-    					server: facility.config().icatUrl,
-    					sessionId: facility.icat().session().sessionId
-    				};
-    				params[idsParamName] = id;
-    				return this.get('getSize', params,  options).then(function(size){
-    					return parseInt('' + size);
-    				});
+            var key = 'getSize:' + type + ":" + id;
+            return this.cache().getPromise(key, function(){
+              var idsParamName = helpers.uncapitalize(type) + "Ids";
+              var params = {
+                server: facility.config().icatUrl,
+                sessionId: facility.icat().session().sessionId
+              };
+              params[idsParamName] = id;
+              return that.get('getSize', params,  options).then(function(size){
+                return parseInt('' + size);
+              });
+            });
     			},
     			'string, number, promise': function(type, id, timeout){
     				return this.getSize(type, id, {timeout: timeout});
@@ -39,22 +50,24 @@
     				return this.getSize(type, id, {});
     			},
     			'array, array, array, object': function(investigationIds, datasetIds, datafileIds, options){
-    				var params = {
-    					server: facility.config().icatUrl,
-    					sessionId: facility.icat().session().sessionId
-    				};
+            investigationIds = investigationIds.join(',');
+            datasetIds = datasetIds.join(',');
+            datafileIds = datafileIds.join(',');
+            var key = 'getSize:investigationIds:' + investigationIds + 'datasetIds:' + datasetIds + 'datafileIds:' + datafileIds;
+            return this.cache().getPromise(key, function(){
+      				var params = {
+      					server: facility.config().icatUrl,
+      					sessionId: facility.icat().session().sessionId
+      				};
 
-    				investigationIds = investigationIds.join(',');
-    				datasetIds = datasetIds.join(',');
-    				datafileIds = datafileIds.join(',');
+      				if(investigationIds != '') params.investigationIds = investigationIds;
+      				if(datasetIds != '') params.datasetIds = datasetIds;
+      				if(datafileIds != '') params.datafileIds = datafileIds;
 
-    				if(investigationIds != '') params.investigationIds = investigationIds;
-    				if(datasetIds != '') params.datasetIds = datasetIds;
-    				if(datafileIds != '') params.datafileIds = datafileIds;
-
-    				return this.get('getSize', params,  options).then(function(size){
-    					return parseInt('' + size);
-    				});
+      				return that.get('getSize', params,  options).then(function(size){
+      					return parseInt('' + size);
+      				});
+            });
     			},
     			'promise, array, array, array': function(timeout, investigationIds, datasetIds, datafileIds){
     				return this.getSize(investigationIds, datasetIds, datafileIds, {timeout: timeout});
