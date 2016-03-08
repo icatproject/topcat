@@ -99,6 +99,8 @@
             var query = helpers.buildQuery(query);
             var key = "query:" + query;
 
+            console.log(key);
+
 	        	this.cache().getPromise(key, 10 * 60 * 60, function(){
               return that.get('entityManager', {
                 sessionId: that.session().sessionId,

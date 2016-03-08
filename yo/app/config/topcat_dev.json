@@ -1848,7 +1848,7 @@
                         {
                             "field": "name",
                             "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
-                            "type": "number",
+                            "type": "string",
                             "sort": {
                                 "direction": "asc"
                             },
