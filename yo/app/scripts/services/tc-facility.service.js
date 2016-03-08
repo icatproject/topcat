@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcFacility', function(helpers, tcIcat, tcIds, tcUser, tcAdmin, APP_CONFIG){
+    app.service('tcFacility', function($sessionStorage, helpers, tcIcat, tcIds, tcUser, tcAdmin, APP_CONFIG){
 
     	this.create = function(tc, facilityName, APP_CONFIG){
     		return new Facility(tc, facilityName);
@@ -17,7 +17,11 @@
             var admin;
             var user;
             
-            this.config = function(){ return APP_CONFIG.facilities[facilityName]; }
+            this.config = function(){
+              var facilityId = ($sessionStorage.sessions[facilityName] || {}).facilityId;
+              if(facilityId) APP_CONFIG.facilities[facilityName].facilityId = facilityId;
+              return APP_CONFIG.facilities[facilityName]; 
+            }
 
             this.tc = function(){
                 return tc;

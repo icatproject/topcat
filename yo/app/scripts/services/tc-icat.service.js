@@ -57,15 +57,36 @@
     			return this.post('session', params).then(function(response){
     				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
     				var facilityName = facility.config().facilityName;
+
     				$sessionStorage.sessions[facilityName] = {
     					sessionId: response.sessionId,
     					userName: plugin + '/' + username
     				}
 
-    				return facility.admin().isValidSession(response.sessionId).then(function(isAdmin){
-	                    $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
-	                    $rootScope.$broadcast('session:change');
-	                });
+            var promises = [];
+
+            var facilityDatabaseName = facility.config().facilityDatabaseName;
+            if(facilityDatabaseName){
+              promises.push(that.query([
+                "SELECT facility FROM Facility facility WHERE facility.name = ?", facilityDatabaseName
+              ]).then(function(results){
+                var facility = results[0];
+                if(facility){
+                  $sessionStorage.sessions[facilityName].facilityId = facility.id;
+                } else {
+                  throw "Could not find facility by name '" + facilityDatabaseName + "'";
+                }
+              }));
+            }
+
+    				promises.push(facility.admin().isValidSession(response.sessionId).then(function(isAdmin){
+                $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
+            }));
+
+            return $q.all(promises).then(function(){
+              $rootScope.$broadcast('session:change');
+            });
+
     			});
     		};
 
