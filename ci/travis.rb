@@ -22,11 +22,14 @@ exec %{
 
   cd install
 
-  echo "create database icat;" | mysql -u root
-  echo "create database topcat;" | mysql -u root
-  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
-  echo "USE mysql; UPDATE user SET password=PASSWORD('secret') WHERE user='root'; FLUSH PRIVILEGES;" | mysql -u root
-  
+  sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
+  sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password secret"
+  sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential 
+
+  echo "create database icat;" | mysql -u root --password=secret
+  echo "create database topcat;" | mysql -u root --password=secret
+  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root --password=secret
+
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
   sudo unzip -q glassfish-4.0.zip -d /opt
 

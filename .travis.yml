@@ -3,8 +3,6 @@ sudo: true
 dist: trusty
 rvm:
   - 2.0.0
-jdk:
-  - oraclejdk8
 before_script:
   - chmod 0755 ci/travis.rb
 script:
