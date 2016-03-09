@@ -13,7 +13,7 @@ Dir.open(provision_dir).each do |name|
   next if !File.file?(current_file)
   data = File.read(current_file)
   data.gsub!(/\/home\/vagrant/, install_dir)
-  puts data if name.match(/\.sql\z/)
+  puts data if !name.match(/\.sql\z/)
   File.write("#{install_provision_dir}/#{name}", data)
 end
 
