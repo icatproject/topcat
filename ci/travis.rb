@@ -90,6 +90,7 @@ exec %{
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
 
+  chmod 0755 ./provision/topcat_build_install
   ./provision/topcat_build_install
 
 
