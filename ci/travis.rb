@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 travis_home_dir = ENV['HOME']
-provision_dir = "#{travis_home_dir}/provision"
-install_dir = "#{travis_home_dir}/install"
-install_provision_dir = "#{travis_home_dir}/install/provision"
+provision_dir = "#{travis_home_dir}/topcat/provision"
+install_dir = "#{travis_home_dir}/topcat/install"
+install_provision_dir = "#{install_dir}/provision"
 
 Dir.mkdir(install_dir)
 Dir.mkdir(install_provision_dir)
@@ -26,10 +26,10 @@ exec %{
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
   
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
-  sudo unzip glassfish-4.0.zip -d /opt
+  sudo -q unzip glassfish-4.0.zip -d /opt
 
   wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
-  unzip mysql-connector-java-5.1.37.zip
+  unzip -q mysql-connector-java-5.1.37.zip
   sudo cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.plugin/1.3.0/ids.plugin-1.3.0.jar
