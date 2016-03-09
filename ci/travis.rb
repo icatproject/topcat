@@ -22,7 +22,8 @@ exec %{
 
   echo "create database icat;" | mysql -u root
   echo "create database topcat;" | mysql -u root
-  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root mysql
+  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
+  echo "USE mysql; UPDATE user SET password=PASSWORD('secret') WHERE user='root'; FLUSH PRIVILEGES;" | mysql -u root
   
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
   sudo unzip -q glassfish-4.0.zip -d /opt
