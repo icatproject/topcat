@@ -13,6 +13,7 @@ Dir.open(provision_dir).each do |name|
   next if !File.file?(current_file)
   data = File.read(current_file)
   data.gsub!(/\/home\/vagrant/, install_dir)
+  data.gsub!(/\/vagrant/, travis_build_dir)
   File.write("#{install_provision_dir}/#{name}", data)
 end
 
@@ -86,7 +87,11 @@ exec %{
   cd ./ids.server
   sudo ./setup configure
   sudo ./setup install
+  cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
+
+  ./provision/topcat_build_install
+
 
 }.strip.split(/\s*\n\s*/).join(' && ')
 
