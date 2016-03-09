@@ -22,7 +22,7 @@ exec %{
 
   echo "create database icat;" | mysql -u root
   echo "create database topcat;" | mysql -u root
-  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root
+  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root mysql
   
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
   sudo unzip -q glassfish-4.0.zip -d /opt
@@ -74,8 +74,8 @@ exec %{
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
   unzip -q ids.server-1.5.0-distro.zip
-  sudo cp ./provision/ids.properties ./ids.server/ids.properties
-  sudo cp ./provision/ids-setup.properties ./ids.server/ids-setup.properties
+  cp ./provision/ids.properties ./ids.server/ids.properties
+  cp ./provision/ids-setup.properties ./ids.server/ids-setup.properties
   sudo cp ./provision/ids.storage_file.main.properties /opt/glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
   sudo cp ./provision/ids.storage_file-setup.properties /opt/glassfish4/glassfish/domains/domain1/config/ids.storage_file-setup.properties
   mkdir data
