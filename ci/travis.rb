@@ -1,15 +1,32 @@
 #!/usr/bin/env ruby
 
+travis_home_dir = ENV['HOME']
+provision_dir = "#{travis_home_dir}/provision"
+install_dir = "#{travis_home_dir}/install"
+install_provision_dir = "#{travis_home_dir}/install/provision"
+
+Dir.mkdir(install_dir)
+Dir.mkdir(install_provision_dir)
+
+Dir.open(provision_dir).each do |name|
+  current_file = "#{from}/#{name}"
+  next if !File.file?(current_file)
+  data = File.read(current_file)
+  data.gsub!(/\A\/home\/vagrant/, install_dir)
+  puts data
+  File.write("#{install_provision_dir}/#{name}", data)
+end
+
+if false
 exec %{
+  cd install
+
   echo "create database icat;" | mysql -u root
   echo "create database topcat;" | mysql -u root
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
   
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
   sudo unzip glassfish-4.0.zip -d /opt
-
-  mkdir install
-  cd install
 
   wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
   unzip mysql-connector-java-5.1.37.zip
@@ -38,8 +55,8 @@ exec %{
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/authn_simple/1.0.1/authn_simple-1.0.1-distro.zip
   unzip authn_simple-1.0.1-distro.zip
-  cp ../provision/authn_simple.properties ./authn_simple/authn_simple.properties
-  cp ../provision/authn_simple-setup.properties ./authn_simple/authn_simple-setup.properties
+  cp ../travis/authn_simple.properties ./authn_simple/authn_simple.properties
+  cp ../travis/authn_simple-setup.properties ./authn_simple/authn_simple-setup.properties
   cd ./authn_simple
   sudo ./setup configure
   sudo ./setup install
@@ -47,4 +64,5 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
 }.strip.split(/\s*\n\s*/).join(' && ')
+end
 
