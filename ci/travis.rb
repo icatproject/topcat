@@ -20,6 +20,8 @@ end
 
 exec %{
 
+  chsh -s /bin/bash
+
   cd install
 
   sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
