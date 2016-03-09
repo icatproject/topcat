@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ENV.each do |k, v|
-  put "#{k} => #{v}"
+  puts "#{k} => #{v}"
 end
 
 
