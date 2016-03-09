@@ -21,7 +21,7 @@ end
 exec %{
   cd install
 
-  sudo add-apt-repository ppa:openjdk-r/ppa
+  sudo add-apt-repository --assume-yes ppa:openjdk-r/ppa
   sudo apt-get update
   sudo apt-get --assume-yes install openjdk-8-jdk
 
