@@ -103,6 +103,8 @@ exec %{
   
   cd ../
 
+  rm -rf ~/.m2
+
   mvn -X install
 
 
