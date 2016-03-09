@@ -62,15 +62,14 @@ exec %{
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
-  wget http://www.icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.1/icat.server-4.6.1-distro.zip
+  wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.1/icat.server-4.6.1-distro.zip
   unzip -q icat.server-4.6.1-distro.zip
-  cp ./provision/icat.properties /home/vagrant/icat.server/icat.properties
-  cp ./provision/icat-setup.properties /home/vagrant/icat.server/icat-setup.properties
+  cp ./provision/icat.properties ./icat.server/icat.properties
+  cp ./provision/icat-setup.properties ./icat.server/icat-setup.properties
   cd ./icat.server
   sudo ./setup configure
   sudo ./setup install
   cd ../
-
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
 
 
