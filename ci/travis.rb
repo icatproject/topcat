@@ -22,7 +22,7 @@ exec %{
 
   echo "create database icat;" | mysql -u root
   echo "create database topcat;" | mysql -u root
-  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
+  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root
   
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
   sudo unzip -q glassfish-4.0.zip -d /opt
@@ -72,6 +72,20 @@ exec %{
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
 
+  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
+  unzip -q ids.server-1.5.0-distro.zip
+  sudo cp ./provision/ids.properties ./ids.server/ids.properties
+  sudo cp ./provision/ids-setup.properties ./ids.server/ids-setup.properties
+  sudo cp ./provision/ids.storage_file.main.properties /opt/glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
+  sudo cp ./provision/ids.storage_file-setup.properties /opt/glassfish4/glassfish/domains/domain1/config/ids.storage_file-setup.properties
+  mkdir data
+  mkdir data/ids
+  mkdir data/ids/cache
+  mkdir data/preparedfiles
+  cd ./ids.server
+  sudo ./setup configure
+  sudo ./setup install
+  sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
 
 }.strip.split(/\s*\n\s*/).join(' && ')
 
