@@ -1,15 +1,8 @@
 #!/usr/bin/env ruby
 
-puts Dir.pwd
-
-ENV.each do |k,v|
-  puts "#{k}: #{v}"
-end
-
-
-travis_home_dir = ENV['HOME']
-provision_dir = "#{travis_home_dir}/topcat/provision"
-install_dir = "#{travis_home_dir}/topcat/install"
+travis_build_dir = ENV['TRAVIS_BUILD_DIR']
+provision_dir = "#{travis_build_dir}/provision"
+install_dir = "#{travis_build_dir}/install"
 install_provision_dir = "#{install_dir}/provision"
 
 Dir.mkdir(install_dir)
