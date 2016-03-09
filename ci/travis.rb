@@ -13,7 +13,6 @@ Dir.open(provision_dir).each do |name|
   next if !File.file?(current_file)
   data = File.read(current_file)
   data.gsub!(/\/home\/vagrant/, install_dir)
-  puts data if !name.match(/\.sql\z/)
   File.write("#{install_provision_dir}/#{name}", data)
 end
 
@@ -26,7 +25,7 @@ exec %{
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
   
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
-  sudo -q unzip glassfish-4.0.zip -d /opt
+  sudo unzip -q glassfish-4.0.zip -d /opt
 
   wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
   unzip -q mysql-connector-java-5.1.37.zip
@@ -62,6 +61,18 @@ exec %{
   sudo ./setup install
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
+
+  wget http://www.icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.1/icat.server-4.6.1-distro.zip
+  unzip -q icat.server-4.6.1-distro.zip
+  cp ./provision/icat.properties /home/vagrant/icat.server/icat.properties
+  cp ./provision/icat-setup.properties /home/vagrant/icat.server/icat-setup.properties
+  cd ./icat.server
+  sudo ./setup configure
+  sudo ./setup install
+  cd ../
+
+  sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
+
 
 }.strip.split(/\s*\n\s*/).join(' && ')
 
