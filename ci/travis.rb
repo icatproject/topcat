@@ -103,7 +103,7 @@ exec %{
   
   cd ../
 
-  mvn clean install
+  mvn -X install
 
 
 }.strip.split(/\s*\n\s*/).join(' && ')
