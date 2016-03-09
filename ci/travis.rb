@@ -17,7 +17,7 @@ Dir.open(provision_dir).each do |name|
   File.write("#{install_provision_dir}/#{name}", data)
 end
 
-if false
+
 exec %{
   cd install
 
@@ -54,9 +54,9 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/authn_simple/1.0.1/authn_simple-1.0.1-distro.zip
-  unzip authn_simple-1.0.1-distro.zip
-  cp ../travis/authn_simple.properties ./authn_simple/authn_simple.properties
-  cp ../travis/authn_simple-setup.properties ./authn_simple/authn_simple-setup.properties
+  unzip -q authn_simple-1.0.1-distro.zip
+  cp ./provision/authn_simple.properties ./authn_simple/authn_simple.properties
+  cp ./provision/authn_simple-setup.properties ./authn_simple/authn_simple-setup.properties
   cd ./authn_simple
   sudo ./setup configure
   sudo ./setup install
@@ -64,5 +64,5 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
 
 }.strip.split(/\s*\n\s*/).join(' && ')
-end
+
 
