@@ -13,7 +13,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", privileged: false, inline: %{
   
-    sudo add-apt-repository ppa:openjdk-r/ppa
+    sudo add-apt-repository --assume-yes ppa:openjdk-r/ppa
     sudo apt-get update
 
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
