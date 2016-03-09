@@ -20,12 +20,10 @@ end
 
 exec %{
 
-  chsh -s /bin/bash
-
   cd install
 
-  sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
-  sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password secret"
+  echo "mysql-server mysql-server/root_password password secret" | sudo debconf-set-selections 
+  echo "mysql-server mysql-server/root_password_again password secret" | sudo debconf-set-selections
   sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential 
 
   echo "create database icat;" | mysql -u root --password=secret
