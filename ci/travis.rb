@@ -103,7 +103,8 @@ exec %{
   
   cd ../
 
-  rm -rf ~/.m2
+  sudo apt-get update
+  sudo apt-get --assume-yes install nodejs maven phantomjs
 
   mvn -X install
 
