@@ -9,7 +9,7 @@ Dir.mkdir(install_dir)
 Dir.mkdir(install_provision_dir)
 
 Dir.open(provision_dir).each do |name|
-  current_file = "#{from}/#{name}"
+  current_file = "#{provision_dir}/#{name}"
   next if !File.file?(current_file)
   data = File.read(current_file)
   data.gsub!(/\A\/home\/vagrant/, install_dir)
