@@ -21,6 +21,8 @@ end
 exec %{
   cd install
 
+  sudo apt-get --assume-yes install openjdk-8-jdk
+
   echo "create database icat;" | mysql -u root
   echo "create database topcat;" | mysql -u root
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root
