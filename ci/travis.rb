@@ -20,10 +20,6 @@ end
 
 exec %{
 
-  sudo add-apt-repository ppa:openjdk-r/ppa -y
-  sudo apt-get update
-  sudo apt-get --assume-yes install openjdk-8-jdk
-
   cd install
 
   echo "create database icat;" | mysql -u root

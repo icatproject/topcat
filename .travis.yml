@@ -3,7 +3,7 @@ sudo: true
 rvm:
   - 2.0.0
 jdk:
-  - oraclejdk8
+  - openjdk7
 before_script:
   - chmod 0755 ci/travis.rb
 script:
