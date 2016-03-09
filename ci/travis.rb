@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+ENV.each do |k, v|
+  put "#{k} => #{v}"
+end
+
+
 travis_build_dir = ENV['TRAVIS_BUILD_DIR']
 provision_dir = "#{travis_build_dir}/provision"
 install_dir = "#{travis_build_dir}/install"
@@ -95,7 +100,10 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
 
   chmod 0755 ./provision/topcat_build_install
-  ./provision/topcat_build_install
+  
+  cd ../
+
+  mvn build install
 
 
 }.strip.split(/\s*\n\s*/).join(' && ')
