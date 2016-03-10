@@ -106,9 +106,7 @@ exec %{
   sudo npm install -g bower
   sudo npm install -g grunt-cli
 
-  cd ../
-
-  mvn clean install
+  ./provision/topcat_build_install
 
 
 }.strip.split(/\s*\n\s*/).join(' && ')
