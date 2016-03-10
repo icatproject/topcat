@@ -101,10 +101,12 @@ exec %{
 
   chmod 0755 ./provision/topcat_build_install
   
-  cd ../
-
-  sudo apt-get update
+  curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
   sudo apt-get --assume-yes install nodejs maven phantomjs
+  sudo npm install -g bower
+  sudo npm install -g grunt-cli
+
+  cd ../
 
   mvn clean install
 
