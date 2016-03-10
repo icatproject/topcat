@@ -116,7 +116,8 @@ exec %{
   sudo pip install requests[security]
   sudo pip install suds
   cd ./icat.server
-  ./icatadmin https://localhost:8181 simple username root password root -- populate
+
+  python -W ignore icatadmin https://localhost:8181 simple username root password root -- populate
 
   cd ../../yo
 
