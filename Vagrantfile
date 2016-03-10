@@ -93,7 +93,6 @@ Vagrant.configure(2) do |config|
     mkdir data
     mkdir data/ids
     mkdir data/ids/cache
-    mkdir data/preparedfiles
     cd /home/vagrant/ids.server
     sudo ./setup configure
     sudo ./setup install

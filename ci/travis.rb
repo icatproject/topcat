@@ -18,6 +18,7 @@ Dir.open(provision_dir).each do |name|
   next if !File.file?(current_file)
   data = File.read(current_file)
   data.gsub!(/\/home\/vagrant/, install_dir)
+  data.gsub!(/\/vagrant\/provision/, install_provision_dir)
   data.gsub!(/\/vagrant/, travis_build_dir)
   File.write("#{install_provision_dir}/#{name}", data)
 end

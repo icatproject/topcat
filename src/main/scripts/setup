@@ -27,7 +27,7 @@ if arg == "INSTALL":
 
         actions.addFileRealmUser(props["adminUsername"], props["adminPassword"], "topcatAdmin");
 
-        topcatProperties = actions.getProperties("topcat.properties", ["file.directory", "mail.enable", "ids.getStatus.max", "poll.delay", "poll.interval.wait"])
+        topcatProperties = actions.getProperties("topcat.properties", ["mail.enable", "ids.getStatus.max", "poll.delay", "poll.interval.wait"])
 
         if not os.path.isfile("topcat.json"):
             abort("topcat.json not found.")
@@ -37,9 +37,6 @@ if arg == "INSTALL":
 
         if not os.path.isfile("topcat.css"):
             abort("topcat.css not found")
-
-        if not actions.configFileExists(topcatProperties.get("file.directory")):
-            abort("Please create directory " + topcatProperties.get("file.directory") + ". If the path is relative, the directory will be relative to the glassfish domain config directory as specified in topcat-setup.properties")
 
         actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
         actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
