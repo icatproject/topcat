@@ -4,17 +4,16 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 
-
-
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
 import org.icatproject.topcat.domain.ErrorMessage;
 import org.icatproject.topcat.exceptions.InternalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This exception mapper handles runtime and exceptions thrown by jersey
@@ -24,7 +23,7 @@ import org.icatproject.topcat.exceptions.InternalException;
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<RuntimeException> {
 
-    static final Logger logger = Logger.getLogger(GenericExceptionMapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenericExceptionMapper.class);
 
     @Override
     public Response toResponse(RuntimeException runtime) {
