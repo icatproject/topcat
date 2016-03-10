@@ -1,10 +1,5 @@
 #!/usr/bin/env ruby
 
-ENV.each do |k, v|
-  puts "#{k} => #{v}"
-end
-
-
 travis_build_dir = ENV['TRAVIS_BUILD_DIR']
 provision_dir = "#{travis_build_dir}/provision"
 install_dir = "#{travis_build_dir}/install"
@@ -102,14 +97,21 @@ exec %{
 
   chmod 0755 ./provision/topcat_build_install
   
-  curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
   sudo apt-get --assume-yes install nodejs maven phantomjs
   sudo npm install -g bower
   sudo npm install -g grunt-cli
 
   ./provision/topcat_build_install
 
-  cd ../yo
+  sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=140
+
+  mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
+  sudo apt-get --assume-yes  install python-pip
+  sudo pip install suds
+  cd ./icat.server
+  ./icatadmin https://localhost:8181 simple username root password root -- populate
+
+  cd ../../yo
 
   grunt test
 

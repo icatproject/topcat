@@ -32,6 +32,9 @@
                 <groupId>com.github.trecloux</groupId>
                 <artifactId>yeoman-maven-plugin</artifactId>
                 <version>0.5</version>
+                <configuration>
+		          <yo.test.skip>true</yo.test.skip>
+		        </configuration>
                 <executions>
                     <execution>
                         <goals>
