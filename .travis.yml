@@ -4,7 +4,7 @@ dist: trusty
 rvm:
   - 2.0.0
 python:
-  - "3.5"
+  - "3.1"
 before_script:
   - chmod 0755 ci/travis.rb
 script:
