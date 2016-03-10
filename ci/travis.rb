@@ -108,6 +108,10 @@ exec %{
 
   ./provision/topcat_build_install
 
+  cd ../yo
+
+  grunt test
+
 
 }.strip.split(/\s*\n\s*/).join(' && ')
 
