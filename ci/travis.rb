@@ -31,6 +31,10 @@ exec %{
   echo "create database topcat;" | mysql -u root --password=secret
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root --password=secret
 
+  sudo cp ./provision/000-default.conf /etc/apache2/sites-available
+  sudo a2enmod headers
+  sudo /etc/init.d/apache2 restart
+
   wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
   sudo unzip -q glassfish-4.0.zip -d /opt
 
@@ -108,7 +112,7 @@ exec %{
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
   sudo apt-get --assume-yes  install python-pip
-  pip install suds
+  sudo pip install suds
   cd ./icat.server
   ./icatadmin https://localhost:8181 simple username root password root -- populate
 

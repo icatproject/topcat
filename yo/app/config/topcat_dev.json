@@ -1,6 +1,5 @@
-{
-    "site": {
-        "topcatApiPath": "https://localhost:18181/api/v1",
+{    "site": {
+        "topcatApiPath": "https://localhost:8181/api/v1",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "paging" : {
@@ -592,12 +591,11 @@
 
         ]
     },
-    "facilities": {
-        "test": {
+    "facilities": {        "test": {
             "facilityName": "test",
             "title": "TEST",
-            "icatUrl": "https://localhost:18181",
-            "idsUrl": "https://localhost:18181",
+            "icatUrl": "https://localhost:8181",
+            "idsUrl": "https://localhost:8181",
             "facilityId": 1,
             "hierarchy": [
                 "facility",
