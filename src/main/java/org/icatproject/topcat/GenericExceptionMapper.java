@@ -22,8 +22,7 @@ import org.icatproject.topcat.exceptions.InternalException;
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<RuntimeException> {
 
-    static final Logger logger = Logger
-            .getLogger(GenericExceptionMapper.class);
+    static final Logger logger = Logger.getLogger(GenericExceptionMapper.class);
 
     @Override
     public Response toResponse(RuntimeException runtime) {
