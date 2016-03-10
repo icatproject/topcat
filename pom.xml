@@ -33,7 +33,7 @@
                 <artifactId>yeoman-maven-plugin</artifactId>
                 <version>0.5</version>
                 <configuration>
-		          <yo.test.skip>true</yo.test.skip>
+		          <skipTests>true</skipTests>
 		        </configuration>
                 <executions>
                     <execution>
