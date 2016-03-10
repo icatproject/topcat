@@ -134,9 +134,7 @@ Vagrant.configure(2) do |config|
 
     mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 
-    sudo apt-get --assume-yes  install python-pip apt-get libffi-dev libssl-dev
-    sudo pip install --upgrade pip
-    sudo pip install requests[security]
+    sudo apt-get --assume-yes  install python-pip
     sudo pip install suds
     cd /home/vagrant/icat.server
     ./icatadmin https://localhost:8181 simple username root password root -- populate
