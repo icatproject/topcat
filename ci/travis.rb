@@ -112,9 +112,10 @@ exec %{
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
   sudo apt-get --assume-yes  install python-pip
-  sudo pip install --upgrade ndg-httpsclient
-  sudo pip install requests --upgrade
+  sudo pip install --upgrade pyopenssl ndg-httpsclient pyasn1
+  sudo pip install --upgrade requests 
   sudo pip install suds
+  cp ./provision/__init__.py ./icat.server
   cd ./icat.server
 
   ./icatadmin https://localhost:8181 simple username root password root -- populate
