@@ -111,13 +111,13 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=140
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
-  sudo apt-get --assume-yes  install python-pip libffi-dev libssl-dev
+  sudo apt-get --assume-yes  install python-pip
   sudo pip install --upgrade pip
-  sudo pip install --upgrade pyopenssl ndg-httpsclient pyasn1
+  sudo pip install requests --upgrade
   sudo pip install suds
   cd ./icat.server
 
-  python -W ignore icatadmin https://localhost:8181 simple username root password root -- populate
+  ./icatadmin https://localhost:8181 simple username root password root -- populate
 
   cd ../../yo
 
