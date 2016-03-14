@@ -112,8 +112,8 @@ exec %{
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
   sudo apt-get --assume-yes install ruby-dev
-  gem install rest-client
-  ruby ./provision/populate_lucene.rb
+  sudo gem install rest-client
+  sudo ruby ./provision/populate_lucene.rb
 
   cd ../../yo
 
