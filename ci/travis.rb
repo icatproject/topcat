@@ -114,8 +114,6 @@ exec %{
   sudo gem install rest-client
   ruby ./provision/populate_lucene.rb
 
-  ./icatadmin https://localhost:8181 simple username root password root -- populate
-
   cd ../../yo
 
   grunt test
