@@ -9,3 +9,5 @@ before_script:
   - chmod 0755 ci/travis.rb
 script:
   - ci/travis.rb
+addons:
+  - firefox: "44.0.2"
