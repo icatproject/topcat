@@ -11,7 +11,12 @@
 
         $scope.$on('rowclick', function(event, entity){
             var facility = tc.facility(entity.facilityName);
-            var config = facility.config().metaTabs[entity.type];
+            var config;
+            if(entity.type == 'facility'){
+                config = tc.config().metaTabs;
+            } else {
+                config = facility.config().metaTabs[entity.type];
+            }
             if(!config) return;
 
             var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;

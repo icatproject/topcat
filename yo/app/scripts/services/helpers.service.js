@@ -8,10 +8,11 @@
     	var helpers = this;
 
     	this.setupGridOptions = function(gridOptions, entityType){
-
-    		gridOptions.useExternalPagination = true;
-	        gridOptions.useExternalSorting = true;
-	        gridOptions.useExternalFiltering = true;
+    		if(entityType != 'facility'){
+    			gridOptions.useExternalPagination = true;
+	        	gridOptions.useExternalSorting = true;
+	        	gridOptions.useExternalFiltering = true;
+	    	}
 	        var enableSelection = gridOptions.enableSelection === true && entityType.match(/^investigation|dataset|datafile$/) !== null;
 	        gridOptions.enableSelectAll = false;
 	        gridOptions.enableRowSelection = enableSelection;
@@ -25,6 +26,10 @@
 	            if(matches = columnDef.field.match(/^(.*?)(\|[^\.\[\]]*)$/)){
 	                columnDef.field = matches[1];
 	                filters = matches[2];
+	            }
+
+	            if(entityType == 'facility' && columnDef.filter){
+	            	columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
 	            }
 
 	            if(columnDef.type == 'date'){

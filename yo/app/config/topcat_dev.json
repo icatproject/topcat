@@ -222,8 +222,7 @@
                         "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
                         "filter": {
                             "condition": "starts_with",
-                            "placeholder": "Containing...",
-                            "type": "input"
+                            "placeholder": "Containing..."
                         },
                         "link": true
                     },
@@ -232,8 +231,7 @@
                         "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
                         "filter": {
                             "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
+                            "placeholder": "Containing..."
                         }
                     }
                 ]
@@ -349,33 +347,29 @@
                 ]
             }
         },
-        "metaTabs": {
-            "facility": [
-                {
-                    "translateDisplayName": "METATABS.FACILITY.TABTITLE",
-                    "field": "facility",
-                    "default": true,
-                    "data": [
-                        {
-                            "translateDisplayName": "METATABS.FACILITY.FULLNAME",
-                            "field": "fullName"
-                        },
-                        {
-                            "translateDisplayName": "METATABS.FACILITY.DESCRIPTION",
-                            "field": "description"
-                        },
-                        {
-                            "translateDisplayName": "METATABS.FACILITY.NAME",
-                            "field": "name"
-                        },
-                        {
-                            "translateDisplayName": "METATABS.FACILITY.URL",
-                            "field": "url"
-                        }
-                    ]
-                }
-            ]
-        },
+        "metaTabs": [
+            {
+                "title": "METATABS.FACILITY.TABTITLE",
+                "items": [
+                    {
+                        "label": "METATABS.FACILITY.FULLNAME",
+                        "value": "fullName"
+                    },
+                    {
+                        "label": "METATABS.FACILITY.DESCRIPTION",
+                        "value": "description"
+                    },
+                    {
+                        "label": "METATABS.FACILITY.NAME",
+                        "value": "name"
+                    },
+                    {
+                        "label": "METATABS.FACILITY.URL",
+                        "value": "url"
+                    }
+                ]
+            }
+        ],
         "admin":{
             "gridOptions": {
                 "columnDefs": [

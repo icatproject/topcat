@@ -196,7 +196,7 @@
             });
         }
 
-        this.showTabs = function(row) {
+        this.showTabs = function(row){
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
                 'id' : row.entity.id,
