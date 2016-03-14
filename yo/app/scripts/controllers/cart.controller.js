@@ -27,7 +27,7 @@
             useExternalPagination: true,
             useExternalSorting: true,
             useExternalFiltering: true
-        }, tc.config().cartGridOptions);
+        }, tc.config().cart.gridOptions);
         _.each(gridOptions.columnDefs, function(columnDef){
             if (columnDef.filter.condition) {
                 columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];

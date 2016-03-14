@@ -239,61 +239,63 @@
                 ]
             }
         },
-        "cartGridOptions": {
-            "enableFiltering": true,
-            "columnDefs": [
-                {
-                    "field": "name",
-                    "translateDisplayName": "CART.COLUMN.NAME",
-                    "type" : "string",
-                    "filter": {
-                        "condition": "starts_with",
-                        "placeholder": "Containing...",
-                        "type": "input"
+        "cart":{
+            "gridOptions": {
+                "enableFiltering": true,
+                "columnDefs": [
+                    {
+                        "field": "name",
+                        "translateDisplayName": "CART.COLUMN.NAME",
+                        "type" : "string",
+                        "filter": {
+                            "condition": "starts_with",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        },
+                        "cellTooltip": true
                     },
-                    "cellTooltip": true
-                },
-                {
-                    "field": "entityType",
-                    "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
-                    "type" : "string",
-                    "filter": {
-                        "condition": "starts_with",
-                        "placeholder": "Containing...",
-                        "type": "input"
+                    {
+                        "field": "entityType",
+                        "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
+                        "type" : "string",
+                        "filter": {
+                            "condition": "starts_with",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
+                    },
+                    {
+                        "field": "size",
+                        "translateDisplayName": "CART.COLUMN.SIZE",
+                        "type" : "number",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
+                    },
+                    {
+                        "field": "facilityName",
+                        "translateDisplayName": "CART.COLUMN.FACILITY_NAME",
+                        "type" : "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
+                    },
+                    {
+                        "field": "status",
+                        "translateDisplayName": "CART.COLUMN.STATUS",
+                        "type" : "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
                     }
-                },
-                {
-                    "field": "size",
-                    "translateDisplayName": "CART.COLUMN.SIZE",
-                    "type" : "number",
-                    "filter": {
-                        "condition": "contains",
-                        "placeholder": "Containing...",
-                        "type": "input"
-                    }
-                },
-                {
-                    "field": "facilityName",
-                    "translateDisplayName": "CART.COLUMN.FACILITY_NAME",
-                    "type" : "string",
-                    "filter": {
-                        "condition": "contains",
-                        "placeholder": "Containing...",
-                        "type": "input"
-                    }
-                },
-                {
-                    "field": "status",
-                    "translateDisplayName": "CART.COLUMN.STATUS",
-                    "type" : "string",
-                    "filter": {
-                        "condition": "contains",
-                        "placeholder": "Containing...",
-                        "type": "input"
-                    }
-                }
-            ]
+                ]
+            }
         },
         "myDataGridOptions": {
             "entityType" : "investigation",
