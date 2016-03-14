@@ -213,29 +213,31 @@
                 }
             }
         },
-        "facilitiesGridOptions": {
-            "enableFiltering": true,
-            "columnDefs": [
-                {
-                    "field": "fullName",
-                    "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
-                    "filter": {
-                        "condition": "starts_with",
-                        "placeholder": "Containing...",
-                        "type": "input"
+        "browse":{
+            "gridOptions": {
+                "enableFiltering": true,
+                "columnDefs": [
+                    {
+                        "field": "fullName",
+                        "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
+                        "filter": {
+                            "condition": "starts_with",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        },
+                        "link": true
                     },
-                    "link": true
-                },
-                {
-                    "field": "name",
-                    "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
-                    "filter": {
-                        "condition": "contains",
-                        "placeholder": "Containing...",
-                        "type": "input"
+                    {
+                        "field": "name",
+                        "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
                     }
-                }
-            ]
+                ]
+            }
         },
         "cartGridOptions": {
             "enableFiltering": true,

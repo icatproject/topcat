@@ -9,7 +9,7 @@
         var pagingConfig = tc.config().paging;
         var isScroll = pagingConfig.pagingType == 'scroll';
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
-        var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().facilitiesGridOptions);
+        var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().browse.gridOptions);
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
         gridOptions.data = [];
