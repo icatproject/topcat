@@ -1,5 +1,5 @@
 
-require 'rest-client'
+require 'rest_client'
 require 'json'
 
 sessionId = JSON.parse(RestClient.post 'https://localhost:8181/icat/session/', :json => JSON.generate({
