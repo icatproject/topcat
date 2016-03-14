@@ -297,55 +297,57 @@
                 ]
             }
         },
-        "myDownloadGridOptions": {
-            "enableFiltering": true,
-            "enableColumnResizing": true,
-            "columnDefs": [
-                {
-                    "field": "fileName",
-                    "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
-                    "type" : "string",
-                    "filter": {
-                        "condition": "contains",
-                        "placeholder": "Containing...",
-                        "type": "input"
-                    }
-                },
-                {
-                    "field": "transport",
-                    "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
-                    "type" : "string",
-                    "filter": {
-                        "condition": "contains",
-                        "placeholder": "Containing...",
-                        "type": "input"
-                    }
-                },
-                {
-                    "field": "status",
-                    "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
-                    "type" : "string",
-                    "filter": {
-                        "condition": "contains",
-                        "placeholder": "Containing...",
-                        "type": "input"
-                    }
-                },
-                {
-                    "field": "createdAt",
-                    "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
-                    "type" : "date",
-                    "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
-                    "filter": {
-                        "placeholder": "Date...",
-                        "type": "input"
+        "myDownloads":{
+            "gridOptions": {
+                "enableFiltering": true,
+                "enableColumnResizing": true,
+                "columnDefs": [
+                    {
+                        "field": "fileName",
+                        "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                        "type" : "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
                     },
-                    "sort": {
-                        "direction": "desc",
-                        "priority": 1
+                    {
+                        "field": "transport",
+                        "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
+                        "type" : "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
+                    },
+                    {
+                        "field": "status",
+                        "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
+                        "type" : "string",
+                        "filter": {
+                            "condition": "contains",
+                            "placeholder": "Containing...",
+                            "type": "input"
+                        }
+                    },
+                    {
+                        "field": "createdAt",
+                        "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
+                        "type" : "date",
+                        "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                        "filter": {
+                            "placeholder": "Date...",
+                            "type": "input"
+                        },
+                        "sort": {
+                            "direction": "desc",
+                            "priority": 1
+                        }
                     }
-                }
-            ]
+                ]
+            }
         },
         "metaTabs": {
             "facility": [

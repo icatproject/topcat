@@ -17,7 +17,7 @@
             gridMenuShowHideColumns: false,
             pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
             paginationPageSizes: pagingConfig.paginationPageSizes
-        }, tc.config().myDownloadGridOptions);
+        }, tc.config().myDownloads.gridOptions);
         _.each(this.gridOptions.columnDefs, function(columnDef){
             if (columnDef.filter.condition) {
                 columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
