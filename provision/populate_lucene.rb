@@ -1,5 +1,6 @@
 
 require 'rest-client'
+require 'openssl'
 require 'json'
 
 sessionId = JSON.parse(RestClient.post 'https://localhost:8181/icat/session/', :json => JSON.generate({
@@ -9,7 +10,7 @@ sessionId = JSON.parse(RestClient.post 'https://localhost:8181/icat/session/', :
 		{:password => "root"}
 	]
 }, {
-	:verify_ssl => false
+	:verify_ssl => OpenSSL::SSL::VERIFY_NONE
 }))['sessionId']
 
 
@@ -17,6 +18,6 @@ sessionId = JSON.parse(RestClient.post 'https://localhost:8181/icat/session/', :
 	RestClient.post("https://localhost:8181/icat/lucene/db/#{entityName}/", {
 		:sessionId => sessionId
 	}, {
-		:verify_ssl => false
+		:verify_ssl => OpenSSL::SSL::VERIFY_NONE
 	})
 end
