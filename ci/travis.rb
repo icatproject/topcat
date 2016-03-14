@@ -115,7 +115,7 @@ exec %{
   sudo gem install rest-client
   sudo ruby ./provision/populate_lucene.rb
 
-  cd ../../yo
+  cd ../yo
 
   grunt test
 
