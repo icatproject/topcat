@@ -297,110 +297,6 @@
                 ]
             }
         },
-        "myDataGridOptions": {
-            "entityType" : "investigation",
-            "investigation": {
-                "enableFiltering": true,
-                "enableSelection": false,
-                "includes" : [
-                    "investigation.investigationInstruments.instrument"
-                ],
-                "columnDefs": [
-                    {
-                        "field": "title",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
-                        "type": "string",
-                        "filter": {
-                            "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        },
-                        "cellTooltip": true,
-                        "link": true
-                    },
-                    {
-                        "field": "visitId",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
-                        "type": "string",
-                        "filter": {
-                            "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        },
-                        "link": true
-                    },
-                    {
-                        "field": "datafileParameter.numericValue",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
-                        "type": "number",
-                        "where": "datafileParameterType.name = 'run_number'",
-                        "filters": [
-                            {
-                                "placeholder": "From...",
-                                "type": "input"
-                            },
-                            {
-                                "placeholder": "To...",
-                                "type": "input"
-                            }
-                        ]
-                    },
-                    {
-                        "field": "instrument.fullName",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
-                        "type": "string",
-                        "visible": true,
-                        "filter": {
-                            "condition": "starts_with",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        }
-                    },
-                    {
-                        "field": "size",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
-                        "type": "number"
-                    },
-                    {
-                        "field": "startDate",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
-                        "type": "date",
-                        "cellFilter": "date: 'yyyy-MM-dd'",
-                        "excludeFuture": true,
-                        "sort": {
-                          "direction": "desc",
-                          "priority": 1
-                        },
-                        "filters": [
-                            {
-                                "placeholder": "From...",
-                                "type": "input"
-                            },
-                            {
-                                "placeholder": "To...",
-                                "type": "input"
-                            }
-                        ]
-                    },
-                    {
-                        "field": "endDate",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
-                        "type": "date",
-                        "cellFilter": "date: 'yyyy-MM-dd'",
-                        "filters": [
-                            {
-                                "placeholder": "From...",
-                                "type": "input"
-                            },
-                            {
-                                "placeholder": "To...",
-                                "type": "input"
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
         "myDownloadGridOptions": {
             "enableFiltering": true,
             "enableColumnResizing": true,
@@ -635,6 +531,110 @@
                     "url": "https://localhost:18181"
                 }
             ],
+            "myData": {
+                "entityType" : "investigation",
+                "gridOptions": {
+                    "enableFiltering": true,
+                    "enableSelection": false,
+                    "includes" : [
+                        "investigation.investigationInstruments.instrument"
+                    ],
+                    "columnDefs": [
+                        {
+                            "field": "title",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "cellTooltip": true,
+                            "link": true
+                        },
+                        {
+                            "field": "visitId",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "link": true
+                        },
+                        {
+                            "field": "datafileParameter.numericValue",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
+                            "type": "number",
+                            "where": "datafileParameterType.name = 'run_number'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "instrument.fullName",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
+                            "type": "string",
+                            "visible": true,
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "size",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                            "type": "number"
+                        },
+                        {
+                            "field": "startDate",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "excludeFuture": true,
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "endDate",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
             "browse":{
                 "gridOptions": {
                     "instrument": {
@@ -1176,6 +1176,110 @@
                     "url": "https://fdsgos11.fds.rl.ac.uk"
                 }
             ],
+            "myData": {
+                "entityType" : "investigation",
+                "gridOptions": {
+                    "enableFiltering": true,
+                    "enableSelection": false,
+                    "includes" : [
+                        "investigation.investigationInstruments.instrument"
+                    ],
+                    "columnDefs": [
+                        {
+                            "field": "title",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "cellTooltip": true,
+                            "link": true
+                        },
+                        {
+                            "field": "visitId",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "link": true
+                        },
+                        {
+                            "field": "datafileParameter.numericValue",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
+                            "type": "number",
+                            "where": "datafileParameterType.name = 'run_number'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "instrument.fullName",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
+                            "type": "string",
+                            "visible": true,
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "size",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                            "type": "number"
+                        },
+                        {
+                            "field": "startDate",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "excludeFuture": true,
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "endDate",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
             "browse": {
                 "gridOptions": {
                     "instrument": {
@@ -1648,6 +1752,110 @@
                 }
               
             ],
+            "myData": {
+                "entityType" : "investigation",
+                "gridOptions": {
+                    "enableFiltering": true,
+                    "enableSelection": false,
+                    "includes" : [
+                        "investigation.investigationInstruments.instrument"
+                    ],
+                    "columnDefs": [
+                        {
+                            "field": "title",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "cellTooltip": true,
+                            "link": true
+                        },
+                        {
+                            "field": "visitId",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "type": "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            },
+                            "link": true
+                        },
+                        {
+                            "field": "datafileParameter.numericValue",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
+                            "type": "number",
+                            "where": "datafileParameterType.name = 'run_number'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "instrument.fullName",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
+                            "type": "string",
+                            "visible": true,
+                            "filter": {
+                                "condition": "starts_with",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "size",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                            "type": "number"
+                        },
+                        {
+                            "field": "startDate",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "excludeFuture": true,
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            },
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "endDate",
+                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
             "browse":{
                 "gridOptions": {
                     "instrument": {
