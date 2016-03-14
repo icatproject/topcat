@@ -202,6 +202,13 @@
                             });
                             
                             $q.all(promises).then(function(){
+                                var proposalIndex = {};
+                                _.each(proposals, function(proposal){
+                                    proposalIndex[proposal.name] = proposal; 
+                                });
+                                proposals = _.map(names, function(name){
+                                    return proposalIndex[name]
+                                });
                                 defered.resolve(proposals);
                             });
                             

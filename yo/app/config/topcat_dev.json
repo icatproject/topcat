@@ -532,9 +532,6 @@
                 "gridOptions": {
                     "enableFiltering": true,
                     "enableSelection": false,
-                    "includes" : [
-                        "investigation.investigationInstruments.instrument"
-                    ],
                     "columnDefs": [
                         {
                             "field": "title",
@@ -709,7 +706,7 @@
                                     "direction": "asc"
                                 },
                                 "filter": {
-                                    "condition": "starts_with",
+                                    "condition": "contains",
                                     "placeholder": "Containing...",
                                     "type": "input"
                                 },

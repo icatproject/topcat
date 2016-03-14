@@ -73,8 +73,10 @@
 	            }
 
 	            if(!columnDef.jpqlExpression){
+	            	var _entityType = entityType;
+	            	if(_entityType == 'proposal') _entityType = 'investigation';
 	                if(!columnDef.field.match(/\./)){
-	                    columnDef.jpqlExpression =  entityType + '.' + columnDef.field;
+	                    columnDef.jpqlExpression =  _entityType + '.' + columnDef.field;
 	                } else {
 	                    columnDef.jpqlExpression = columnDef.field;
 	                }
