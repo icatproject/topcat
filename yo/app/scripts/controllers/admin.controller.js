@@ -27,7 +27,7 @@
           infiniteScrollDown: true,
           useExternalPagination: true,
           useExternalFiltering: true
-      }, tc.config().adminGridOptions);
+      }, tc.config().admin.gridOptions);
 
       _.each(this.gridOptions.columnDefs, function(columnDef){
           columnDef.enableSorting = false;

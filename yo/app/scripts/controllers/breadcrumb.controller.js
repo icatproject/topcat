@@ -19,7 +19,7 @@
             canceler.resolve();
         });
         var breadcrumbTitleMap = {};
-        _.each(facility.config().browseGridOptions, function(gridOptions, entityType){
+        _.each(facility.config().browse.gridOptions, function(gridOptions, entityType){
             var field = "";
             _.each(gridOptions.columnDefs, function(columnDef){
                 if(columnDef.breadcrumb){
