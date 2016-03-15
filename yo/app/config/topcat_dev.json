@@ -235,7 +235,30 @@
                         }
                     }
                 ]
-            }
+            },
+            "metaTabs": [
+                {
+                    "title": "METATABS.FACILITY.TABTITLE",
+                    "items": [
+                        {
+                            "label": "METATABS.FACILITY.FULLNAME",
+                            "value": "fullName"
+                        },
+                        {
+                            "label": "METATABS.FACILITY.DESCRIPTION",
+                            "value": "description"
+                        },
+                        {
+                            "label": "METATABS.FACILITY.NAME",
+                            "value": "name"
+                        },
+                        {
+                            "label": "METATABS.FACILITY.URL",
+                            "value": "url"
+                        }
+                    ]
+                }
+            ]
         },
         "cart":{
             "gridOptions": {
@@ -347,106 +370,6 @@
                 ]
             }
         },
-        "metaTabs": [
-            {
-                "title": "METATABS.FACILITY.TABTITLE",
-                "items": [
-                    {
-                        "label": "METATABS.FACILITY.FULLNAME",
-                        "value": "fullName"
-                    },
-                    {
-                        "label": "METATABS.FACILITY.DESCRIPTION",
-                        "value": "description"
-                    },
-                    {
-                        "label": "METATABS.FACILITY.NAME",
-                        "value": "name"
-                    },
-                    {
-                        "label": "METATABS.FACILITY.URL",
-                        "value": "url"
-                    }
-                ]
-            }
-        ],
-        "admin":{
-            "gridOptions": {
-                "columnDefs": [
-                    {
-                        "field": "userName",
-                        "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
-                        "type" : "string",
-                        "filter": {
-                            "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        }
-                    },
-                    {
-                        "field": "preparedId",
-                        "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
-                        "type" : "string",
-                        "filter": {
-                            "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        }
-                    },
-                    {
-                        "field": "transport",
-                        "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
-                        "type" : "string",
-                        "filter": {
-                            "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        }
-                    },
-                    {
-                        "field": "status",
-                        "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
-                        "type" : "string",
-                        "filter": {
-                            "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        }
-                    },
-                    {
-                        "field": "size",
-                        "translateDisplayName": "DOWNLOAD.COLUMN.SIZE",
-                        "type" : "number"
-                    },
-                    {
-                        "field": "createdAt",
-                        "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
-                        "type": "date",
-                        "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
-                        "filters": [
-                            {
-                                "placeholder": "From...",
-                                "type": "input"
-                            },
-                            {
-                                "placeholder": "To...",
-                                "type": "input"
-                            }
-                        ]
-                    },
-                    {
-                        "field": "isDeleted",
-                        "translateDisplayName": "DOWNLOAD.COLUMN.IS_DELETED",
-                        "type" : "string",
-                        "filter": {
-                            "condition": "contains",
-                            "placeholder": "Containing...",
-                            "type": "input"
-                        }
-                    }
-                ]
-            }
-        },
         "pages" : [
             {
                 "url" : "/about",
@@ -504,7 +427,7 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType": [
+            "authenticationTypes": [
                 {
                     "title": "Simple",
                     "plugin": "simple"
@@ -514,7 +437,7 @@
                     "plugin": "db"
                 }
             ],
-            "downloadTransportType": [
+            "downloadTransportTypes": [
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
@@ -527,6 +450,83 @@
                     "url": "https://localhost:18181"
                 }
             ],
+            "admin":{
+                "gridOptions": {
+                    "columnDefs": [
+                        {
+                            "field": "userName",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "preparedId",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "transport",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "status",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "size",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.SIZE",
+                            "type" : "number"
+                        },
+                        {
+                            "field": "createdAt",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "isDeleted",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.IS_DELETED",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        }
+                    ]
+                }
+            },
             "myData": {
                 "entityType" : "investigation",
                 "gridOptions": {
@@ -1151,7 +1151,7 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType": [
+            "authenticationTypes": [
                 {
                     "title": "Username/Password",
                     "plugin": "ldap"
@@ -1161,7 +1161,7 @@
                     "plugin": "anon"
                 }
             ],
-            "downloadTransportType": [
+            "downloadTransportTypes": [
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
@@ -1174,6 +1174,83 @@
                     "url": "https://fdsgos11.fds.rl.ac.uk"
                 }
             ],
+            "admin":{
+                "gridOptions": {
+                    "columnDefs": [
+                        {
+                            "field": "userName",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "preparedId",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "transport",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "status",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "size",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.SIZE",
+                            "type" : "number"
+                        },
+                        {
+                            "field": "createdAt",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "isDeleted",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.IS_DELETED",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        }
+                    ]
+                }
+            },
             "myData": {
                 "entityType" : "investigation",
                 "gridOptions": {
@@ -1740,14 +1817,14 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType": [
+            "authenticationTypes": [
                 {
                     "title": "Username/Password",
                     "plugin": "uows"
                 }
                 
             ],
-            "downloadTransportType": [
+            "downloadTransportTypes": [
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
@@ -1756,6 +1833,83 @@
                 }
               
             ],
+            "admin":{
+                "gridOptions": {
+                    "columnDefs": [
+                        {
+                            "field": "userName",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "preparedId",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "transport",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "status",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        },
+                        {
+                            "field": "size",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.SIZE",
+                            "type" : "number"
+                        },
+                        {
+                            "field": "createdAt",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
+                            "type": "date",
+                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
+                            "filters": [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "isDeleted",
+                            "translateDisplayName": "DOWNLOAD.COLUMN.IS_DELETED",
+                            "type" : "string",
+                            "filter": {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        }
+                    ]
+                }
+            },
             "myData": {
                 "entityType" : "investigation",
                 "gridOptions": {

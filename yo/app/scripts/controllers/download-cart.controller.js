@@ -22,7 +22,7 @@
                     var transportTypes = [];
                     var transportType = "";
 
-                    _.each(facility.config().downloadTransportType, function(current){
+                    _.each(facility.config().downloadTransportTypes, function(current){
                         transportTypes.push(current.type);
                         if(current.default){
                             transportType = current.type;

@@ -13,7 +13,7 @@
             var facility = tc.facility(entity.facilityName);
             var config;
             if(entity.type == 'facility'){
-                config = tc.config().metaTabs;
+                config = tc.config().browse.metaTabs;
             } else if(facility.config().browse[entity.type]) {
                 config = facility.config().browse[entity.type].metaTabs;
             }

@@ -16,6 +16,11 @@
       });
 
     	this.facilities = tc.adminFacilities();
+      if($state.params.facilityName == ''){
+          $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
+          return;
+      }
+      var admin = tc.admin($state.params.facilityName);
 
       this.gridOptions = _.merge({
           data: [],
@@ -27,7 +32,7 @@
           infiniteScrollDown: true,
           useExternalPagination: true,
           useExternalFiltering: true
-      }, tc.config().admin.gridOptions);
+      }, admin.facility().config().admin.gridOptions);
 
       _.each(this.gridOptions.columnDefs, function(columnDef){
           columnDef.enableSorting = false;
@@ -57,13 +62,6 @@
           enableHiding: false,
           cellTemplate : '<div class="ui-grid-cell-contents"><button ng-click="grid.appScope.delete(row.entity)" ng-show="!row.entity.isDeleted">Delete</button><button ng-click="grid.appScope.restore(row.entity)" ng-show="row.entity.isDeleted">Restore</button> <button ng-click="grid.appScope.pause(row.entity)" ng-show="row.entity.status == \'RESTORING\'">Pause</button><button ng-click="grid.appScope.resume(row.entity)" ng-show="row.entity.status == \'PAUSED\'">Resume</button></div>'
       });
-
-      if($state.params.facilityName == ''){
-          $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
-          return;
-      }
-
-      var admin = tc.admin($state.params.facilityName);
 
       function updateScroll(resultCount){
           $timeout(function(){
