@@ -645,7 +645,53 @@
                                 "link": true
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
+                            "field": "instrument",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.NAME",
+                                    "field": "fullName"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
+                                    "field": "description"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
+                                    "field": "type"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.URL",
+                                    "field": "url"
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                            "field": "instrumentScientists",
+                            "queryParams": [
+                                "InstrumentScientist",
+                                "User"
+                            ],
+                            "default": false,
+                            "data": [
+                                {
+                                    "field": "user",
+                                    "default": false,
+                                    "data": [
+                                        {
+                                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                            "field": "fullName"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "facilityCycle": {
                     "gridOptions": {
@@ -811,7 +857,85 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
+                            "field": "investigation",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
+                                    "field": "title"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
+                                    "field": "summary"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+                                    "field": "startDate"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+                                    "field": "endDate"
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                            "field": "investigationUsers",
+                            "queryParams": [
+                                "InvestigationUser",
+                                "User"
+                            ],
+                            "default": false,
+                            "data": [
+                                {
+                                    "field": "user",
+                                    "default": false,
+                                    "data": [
+                                        {
+                                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
+                                            "field": "fullName"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                            "field": "samples",
+                            "queryParams": [
+                                "Sample"
+                            ],
+                            "default": "false",
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                    "field": "name"
+                                }
+                            ]
+                        },
+                        {
+                            "displayName": "Publications",
+                            "field": "publications",
+                            "queryParams": [
+                                "Publication"
+                            ],
+                            "default": "false",
+                            "data": [
+                                {
+                                    "displayName": "Reference",
+                                    "field": "fullReference"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "dataset": {
                     "gridOptions": {
@@ -871,7 +995,50 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.DATASET.TABTITLE",
+                            "field": "dataset",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
+                                    "field": "description"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.START_DATE",
+                                    "field": "startDate"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.END_DATE",
+                                    "field": "endDate"
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
+                            "field": "type",
+                            "queryParams": [
+                                "DatasetType"
+                            ],
+                            "default": false,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                    "field": "description"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "datafile": {
                     "gridOptions": {
@@ -929,215 +1096,46 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                            "field": "datafile",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
+                                    "field": "description"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                    "field": "fileSize"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.LOCATION",
+                                    "field": "location"
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                            "field": "parameters",
+                            "queryParams": ["DatafileParameter", "ParameterType"],
+                            "default": false,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                    "field": "stringValue",
+                                    "default": false
+                                }
+                            ]
+                        }
+                    ]
                 }
-            },
-            "metaTabs": {
-                "instrument": [
-                    {
-                        "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
-                        "field": "instrument",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.NAME",
-                                "field": "fullName"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
-                                "field": "description"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
-                                "field": "type"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.URL",
-                                "field": "url"
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                        "field": "instrumentScientists",
-                        "queryParams": [
-                            "InstrumentScientist",
-                            "User"
-                        ],
-                        "default": false,
-                        "data": [
-                            {
-                                "field": "user",
-                                "default": false,
-                                "data": [
-                                    {
-                                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                        "field": "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                "investigation": [
-                    {
-                        "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
-                        "field": "investigation",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
-                                "field": "title"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
-                                "field": "summary"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
-                                "field": "startDate"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
-                                "field": "endDate"
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
-                        "field": "investigationUsers",
-                        "queryParams": [
-                            "InvestigationUser",
-                            "User"
-                        ],
-                        "default": false,
-                        "data": [
-                            {
-                                "field": "user",
-                                "default": false,
-                                "data": [
-                                    {
-                                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
-                                        "field": "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
-                        "field": "samples",
-                        "queryParams": [
-                            "Sample"
-                        ],
-                        "default": "false",
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
-                                "field": "name"
-                            }
-                        ]
-                    },
-                    {
-                        "displayName": "Publications",
-                        "field": "publications",
-                        "queryParams": [
-                            "Publication"
-                        ],
-                        "default": "false",
-                        "data": [
-                            {
-                                "displayName": "Reference",
-                                "field": "fullReference"
-                            }
-                        ]
-                    }
-                ],
-                "dataset": [
-                    {
-                        "translateDisplayName": "METATABS.DATASET.TABTITLE",
-                        "field": "dataset",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.DATASET.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
-                                "field": "description"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET.START_DATE",
-                                "field": "startDate"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET.END_DATE",
-                                "field": "endDate"
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
-                        "field": "type",
-                        "queryParams": [
-                            "DatasetType"
-                        ],
-                        "default": false,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
-                                "field": "description"
-                            }
-                        ]
-                    }
-                ],
-                "datafile": [
-                    {
-                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
-                        "field": "datafile",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
-                                "field": "description"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
-                                "field": "fileSize"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.LOCATION",
-                                "field": "location"
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
-                        "field": "parameters",
-                        "queryParams": ["DatafileParameter", "ParameterType"],
-                        "default": false,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
-                                "field": "stringValue",
-                                "default": false
-                            }
-                        ]
-                    }
-                ]
             }
         },
         "dls": {
@@ -1297,7 +1295,53 @@
                                 "link": true
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
+                            "field": "instrument",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.NAME",
+                                    "field": "fullName"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
+                                    "field": "description"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
+                                    "field": "type"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INSTRUMENT.URL",
+                                    "field": "url"
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                            "field": "instrumentScientists",
+                            "queryParams": [
+                                "InstrumentScientist",
+                                "User"
+                            ],
+                            "default": false,
+                            "data": [
+                                {
+                                    "field": "user",
+                                    "default": false,
+                                    "data": [
+                                        {
+                                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                            "field": "fullName"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "proposal": {
                     "gridOptions": {
@@ -1400,7 +1444,91 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
+                            "field": "investigation",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.VISIT_ID",
+                                    "field": "visitId"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
+                                    "field": "title"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
+                                    "field": "summary"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+                                    "field": "startDate",
+                                    "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+                                    "field": "endDate",
+                                    "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                            "field": "investigationUsers",
+                            "queryParams": [
+                                "InvestigationUser",
+                                "User"
+                            ],
+                            "default": false,
+                            "data": [
+                                {
+                                    "field": "user",
+                                    "default": false,
+                                    "data": [
+                                        {
+                                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
+                                            "field": "fullName"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                            "field": "samples",
+                            "queryParams": [
+                                "Sample"
+                            ],
+                            "default": "false",
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                    "field": "name"
+                                }
+                            ]
+                        },
+                        {
+                            "displayName": "Publications",
+                            "field": "publications",
+                            "queryParams": [
+                                "Publication"
+                            ],
+                            "default": "false",
+                            "data": [
+                                {
+                                    "displayName": "Reference",
+                                    "field": "fullReference"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "dataset": {
                     "gridOptions": {
@@ -1461,7 +1589,52 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.DATASET.TABTITLE",
+                            "field": "dataset",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
+                                    "field": "description"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.START_DATE",
+                                    "field": "startDate",
+                                    "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET.END_DATE",
+                                    "field": "endDate",
+                                    "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                }
+                            ]
+                        },
+                        {
+                            "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
+                            "field": "type",
+                            "queryParams": [
+                                "DatasetType"
+                            ],
+                            "default": false,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                    "field": "description"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "datafile": {
                     "gridOptions": {
@@ -1522,211 +1695,34 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                            "field": "datafile",
+                            "default": true,
+                            "data": [
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.NAME",
+                                    "field": "name"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
+                                    "field": "description"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                    "field": "fileSize",
+                                    "template": "{{content.value | bytes}}"
+                                },
+                                {
+                                    "translateDisplayName": "METATABS.DATAFILE.LOCATION",
+                                    "field": "location"
+                                }
+                            ]
+                        }
+                    ]
                 }
-            },
-            "metaTabs": {
-                "instrument": [
-                    {
-                        "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
-                        "field": "instrument",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.NAME",
-                                "field": "fullName"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
-                                "field": "description"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
-                                "field": "type"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INSTRUMENT.URL",
-                                "field": "url"
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                        "field": "instrumentScientists",
-                        "queryParams": [
-                            "InstrumentScientist",
-                            "User"
-                        ],
-                        "default": false,
-                        "data": [
-                            {
-                                "field": "user",
-                                "default": false,
-                                "data": [
-                                    {
-                                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                        "field": "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                "investigation": [
-                    {
-                        "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
-                        "field": "investigation",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.VISIT_ID",
-                                "field": "visitId"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
-                                "field": "title"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
-                                "field": "summary"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
-                                "field": "startDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
-                                "field": "endDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
-                        "field": "investigationUsers",
-                        "queryParams": [
-                            "InvestigationUser",
-                            "User"
-                        ],
-                        "default": false,
-                        "data": [
-                            {
-                                "field": "user",
-                                "default": false,
-                                "data": [
-                                    {
-                                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
-                                        "field": "fullName"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
-                        "field": "samples",
-                        "queryParams": [
-                            "Sample"
-                        ],
-                        "default": "false",
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
-                                "field": "name"
-                            }
-                        ]
-                    },
-                    {
-                        "displayName": "Publications",
-                        "field": "publications",
-                        "queryParams": [
-                            "Publication"
-                        ],
-                        "default": "false",
-                        "data": [
-                            {
-                                "displayName": "Reference",
-                                "field": "fullReference"
-                            }
-                        ]
-                    }
-                ],
-                "dataset": [
-                    {
-                        "translateDisplayName": "METATABS.DATASET.TABTITLE",
-                        "field": "dataset",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.DATASET.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
-                                "field": "description"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET.START_DATE",
-                                "field": "startDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET.END_DATE",
-                                "field": "endDate",
-                                "template": "{{content.value | date:'yyyy-MM-dd'}}"
-                            }
-                        ]
-                    },
-                    {
-                        "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
-                        "field": "type",
-                        "queryParams": [
-                            "DatasetType"
-                        ],
-                        "default": false,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
-                                "field": "description"
-                            }
-                        ]
-                    }
-                ],
-                "datafile": [
-                    {
-                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
-                        "field": "datafile",
-                        "default": true,
-                        "data": [
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.NAME",
-                                "field": "name"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
-                                "field": "description"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
-                                "field": "fileSize",
-                                "template": "{{content.value | bytes}}"
-                            },
-                            {
-                                "translateDisplayName": "METATABS.DATAFILE.LOCATION",
-                                "field": "location"
-                            }
-                        ]
-                    }
-                ]
             }
         },
         "isis": {
@@ -1881,7 +1877,40 @@
                                 "link": true
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "title": "METATABS.INSTRUMENT.TABTITLE",
+                            "items": [
+                                {
+                                    "label": "METATABS.INSTRUMENT.NAME",
+                                    "value": "fullName"
+                                },
+                                {
+                                    "label": "METATABS.INSTRUMENT.DESCRIPTION",
+                                    "value": "description"
+                                },
+                                {
+                                    "label": "METATABS.INSTRUMENT.TYPE",
+                                    "value": "type"
+                                },
+                                {
+                                    "label": "METATABS.INSTRUMENT.URL",
+                                    "value": "url"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                            "items": [
+                                {
+                                    "find": "instrumentScientistUser",
+                                    "label": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                    "value": "fullName"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "proposal": {
                     "gridOptions": {
@@ -2013,7 +2042,68 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "title": "METATABS.INVESTIGATION.TABTITLE",
+                            "default": true,
+                            "items": [
+                                {
+                                    "label": "METATABS.INVESTIGATION.NAME",
+                                    "value": "name"
+                                },
+                                {
+                                    "label": "METATABS.INVESTIGATION.TITLE",
+                                    "value": "title"
+                                },
+                                {
+                                    "label": "METATABS.INVESTIGATION.SUMMARY",
+                                    "value": "summary"
+                                },
+                                {
+                                    "label": "METATABS.INVESTIGATION.START_DATE",
+                                    "value": "startDate",
+                                    "template": "{{item.value | date:'yyyy-MM-dd'}}"
+                                },
+                                {
+                                    "label": "METATABS.INVESTIGATION.END_DATE",
+                                    "value": "endDate",
+                                    "template": "{{item.value | date:'yyyy-MM-dd'}}"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                            "items": [
+                                {
+                                    "find": "user",
+                                    "label": "METATABS.INVESTIGATION_USERS.NAME",
+                                    "value": "fullName"
+                                }
+                                
+                            ]
+                        },
+                        {
+                            "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                            "items": [
+                                {
+                                    "find": "sample",
+                                    "label": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                    "value": "name"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "Publications",
+                            "items": [
+                                {
+                                    "find": "publication",
+                                    "label": "Reference",
+                                    "value": "fullReference"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "dataset": {
                     "gridOptions": {
@@ -2074,7 +2164,48 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "title": "METATABS.DATASET.TABTITLE",
+                            "default": true,
+                            "items": [
+                                {
+                                    "label": "METATABS.DATASET.NAME",
+                                    "value": "name"
+                                },
+                                {
+                                    "label": "METATABS.DATASET.DESCRIPTION",
+                                    "value": "description"
+                                },
+                                {
+                                    "label": "METATABS.DATASET.START_DATE",
+                                    "value": "startDate",
+                                    "template": "{{item.value | date:'yyyy-MM-dd'}}"
+                                },
+                                {
+                                    "label": "METATABS.DATASET.END_DATE",
+                                    "value": "endDate",
+                                    "template": "{{item.value | date:'yyyy-MM-dd'}}"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "METATABS.DATASET_TYPE.TABTITLE",
+                            "items": [
+                                {
+                                    "find": "datasetType",
+                                    "label": "METATABS.DATASET_TYPE.NAME",
+                                    "value": "name"
+                                },
+                                {
+                                    "find": "datasetType",
+                                    "label": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                    "value": "description"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "facilityCycle": {
                     "gridOptions": {
@@ -2190,189 +2321,52 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "metaTabs": [
+                        {
+                            "title": "METATABS.DATAFILE.TABTITLE",
+                            "items": [
+                                {
+                                    "label": "METATABS.DATAFILE.NAME",
+                                    "value": "name"
+                                },
+                                {
+                                    "label": "METATABS.DATAFILE.DESCRIPTION",
+                                    "value": "description"
+                                },
+                                {
+                                    "label": "METATABS.DATAFILE.SIZE",
+                                    "value": "fileSize",
+                                    "template": "{{item.value | bytes}}"
+                                },
+                                {
+                                    "label": "METATABS.DATAFILE.LOCATION",
+                                    "value": "location"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "METATABS.DATAFILE.PARAMETERS",
+                            "items": [
+                                {
+                                    "find": "datafileParameter[type.valueType=='STRING']",
+                                    "value": "stringValue",
+                                    "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
+                                },
+                                {
+                                    "find": "datafileParameter[type.valueType=='NUMERIC']",
+                                    "value": "numericValue",
+                                    "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
+                                },
+                                {
+                                    "find": "datafileParameter[type.valueType=='DATE_AND_TIME']",
+                                    "value": "datetimeValue",
+                                    "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value | date:'yyyy-MM-dd'}}</span>"
+                                }
+                            ]
+                        }
+                    ]
                 }
-            },
-            "metaTabs": {
-                "instrument": [
-                    {
-                        "title": "METATABS.INSTRUMENT.TABTITLE",
-                        "items": [
-                            {
-                                "label": "METATABS.INSTRUMENT.NAME",
-                                "value": "fullName"
-                            },
-                            {
-                                "label": "METATABS.INSTRUMENT.DESCRIPTION",
-                                "value": "description"
-                            },
-                            {
-                                "label": "METATABS.INSTRUMENT.TYPE",
-                                "value": "type"
-                            },
-                            {
-                                "label": "METATABS.INSTRUMENT.URL",
-                                "value": "url"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                        "items": [
-                            {
-                                "find": "instrumentScientistUser",
-                                "label": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                "value": "fullName"
-                            }
-                        ]
-                    }
-                ],
-                "investigation": [
-                    {
-                        "title": "METATABS.INVESTIGATION.TABTITLE",
-                        "default": true,
-                        "items": [
-                            {
-                                "label": "METATABS.INVESTIGATION.NAME",
-                                "value": "name"
-                            },
-                            {
-                                "label": "METATABS.INVESTIGATION.TITLE",
-                                "value": "title"
-                            },
-                            {
-                                "label": "METATABS.INVESTIGATION.SUMMARY",
-                                "value": "summary"
-                            },
-                            {
-                                "label": "METATABS.INVESTIGATION.START_DATE",
-                                "value": "startDate",
-                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
-                            },
-                            {
-                                "label": "METATABS.INVESTIGATION.END_DATE",
-                                "value": "endDate",
-                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
-                        "items": [
-                            {
-                                "find": "user",
-                                "label": "METATABS.INVESTIGATION_USERS.NAME",
-                                "value": "fullName"
-                            }
-                            
-                        ]
-                    },
-                    {
-                        "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
-                        "items": [
-                            {
-                                "find": "sample",
-                                "label": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
-                                "value": "name"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Publications",
-                        "items": [
-                            {
-                                "find": "publication",
-                                "label": "Reference",
-                                "value": "fullReference"
-                            }
-                        ]
-                    }
-                ],
-                "dataset": [
-                    {
-                        "title": "METATABS.DATASET.TABTITLE",
-                        "default": true,
-                        "items": [
-                            {
-                                "label": "METATABS.DATASET.NAME",
-                                "value": "name"
-                            },
-                            {
-                                "label": "METATABS.DATASET.DESCRIPTION",
-                                "value": "description"
-                            },
-                            {
-                                "label": "METATABS.DATASET.START_DATE",
-                                "value": "startDate",
-                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
-                            },
-                            {
-                                "label": "METATABS.DATASET.END_DATE",
-                                "value": "endDate",
-                                "template": "{{item.value | date:'yyyy-MM-dd'}}"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "METATABS.DATASET_TYPE.TABTITLE",
-                        "items": [
-                            {
-                                "find": "datasetType",
-                                "label": "METATABS.DATASET_TYPE.NAME",
-                                "value": "name"
-                            },
-                            {
-                                "find": "datasetType",
-                                "label": "METATABS.DATASET_TYPE.DESCRIPTION",
-                                "value": "description"
-                            }
-                        ]
-                    }
-                ],
-                "datafile": [
-                    {
-                        "title": "METATABS.DATAFILE.TABTITLE",
-                        "items": [
-                            {
-                                "label": "METATABS.DATAFILE.NAME",
-                                "value": "name"
-                            },
-                            {
-                                "label": "METATABS.DATAFILE.DESCRIPTION",
-                                "value": "description"
-                            },
-                            {
-                                "label": "METATABS.DATAFILE.SIZE",
-                                "value": "fileSize",
-                                "template": "{{item.value | bytes}}"
-                            },
-                            {
-                                "label": "METATABS.DATAFILE.LOCATION",
-                                "value": "location"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "METATABS.DATAFILE.PARAMETERS",
-                        "items": [
-                            {
-                                "find": "datafileParameter[type.valueType=='STRING']",
-                                "value": "stringValue",
-                                "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
-                            },
-                            {
-                                "find": "datafileParameter[type.valueType=='NUMERIC']",
-                                "value": "numericValue",
-                                "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
-                            },
-                            {
-                                "find": "datafileParameter[type.valueType=='DATE_AND_TIME']",
-                                "value": "datetimeValue",
-                                "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value | date:'yyyy-MM-dd'}}</span>"
-                            }
-                        ]
-                    }
-                ]
             }
         }
     }

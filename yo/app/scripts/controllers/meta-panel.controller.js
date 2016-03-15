@@ -14,8 +14,8 @@
             var config;
             if(entity.type == 'facility'){
                 config = tc.config().metaTabs;
-            } else {
-                config = facility.config().metaTabs[entity.type];
+            } else if(facility.config().browse[entity.type]) {
+                config = facility.config().browse[entity.type].metaTabs;
             }
             if(!config) return;
 
