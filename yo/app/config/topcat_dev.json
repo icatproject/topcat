@@ -629,8 +629,8 @@
                 }
             },
             "browse":{
-                "gridOptions": {
-                    "instrument": {
+                "instrument": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -645,8 +645,10 @@
                                 "link": true
                             }
                         ]
-                    },
-                    "facilityCycle": {
+                    }
+                },
+                "facilityCycle": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -694,8 +696,10 @@
                                 }
                             }
                         ]
-                    },
-                    "proposal": {
+                    }
+                },
+                "proposal": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -714,13 +718,12 @@
                                 "link": true
                             }
                         ]
-                    },
-                    "investigation": {
+                    }
+                },
+                "investigation": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
-                        "includes" : [
-                            "investigation.investigationInstruments.instrument"
-                        ],
                         "columnDefs": [
                             {
                                 "field": "title",
@@ -808,8 +811,10 @@
                                 ]
                             }
                         ]
-                    },
-                    "dataset": {
+                    }
+                },
+                "dataset": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
                         "columnDefs": [
@@ -866,8 +871,10 @@
                                 ]
                             }
                         ]
-                    },
-                    "datafile": {
+                    }
+                },
+                "datafile": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
                         "enableDownload": true,
@@ -1274,8 +1281,8 @@
                 }
             },
             "browse": {
-                "gridOptions": {
-                    "instrument": {
+                "instrument": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -1290,8 +1297,10 @@
                                 "link": true
                             }
                         ]
-                    },
-                    "proposal": {
+                    }
+                },
+                "proposal": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -1318,8 +1327,10 @@
                                 "link": true
                             }
                         ]
-                    },
-                    "investigation": {
+                    }
+                },
+                "investigation": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": false,
                         "columnDefs": [
@@ -1389,8 +1400,10 @@
                                 ]
                             }
                         ]
-                    },
-                    "dataset": {
+                    }
+                },
+                "dataset": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
                         "columnDefs": [
@@ -1448,8 +1461,10 @@
                                 ]
                             }
                         ]
-                    },
-                    "datafile": {
+                    }
+                },
+                "datafile": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
                         "columnDefs": [
@@ -1850,8 +1865,8 @@
                 }
             },
             "browse":{
-                "gridOptions": {
-                    "instrument": {
+                "instrument": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -1866,8 +1881,10 @@
                                 "link": true
                             }
                         ]
-                    },
-                    "proposal": {
+                    }
+                },
+                "proposal": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -1895,8 +1912,10 @@
                                 "breadcrumb":true
                             }
                         ]
-                    },
-                    "investigation": {
+                    }
+                },
+                "investigation": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
                         "includes" : [
@@ -1994,8 +2013,10 @@
                                 ]
                             }
                         ]
-                    },
-                    "dataset": {
+                    }
+                },
+                "dataset": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
                         "columnDefs": [
@@ -2053,8 +2074,10 @@
                                 ]
                             }
                         ]
-                    },
-                    "facilityCycle": {
+                    }
+                },
+                "facilityCycle": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "columnDefs": [
                             {
@@ -2102,8 +2125,10 @@
                                 }
                             }
                         ]
-                    },
-                    "datafile": {
+                    }
+                },
+                "datafile": {
+                    "gridOptions": {
                         "enableFiltering": true,
                         "enableSelection": true,
                         "enableDownload": true,

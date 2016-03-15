@@ -12,7 +12,7 @@
         var facility = tc.facility(facilityName);
         var facilityId = facility.config().facilityId;
         var icat = tc.icat(facilityName);
-        var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browse.gridOptions[entityType]);
+        var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browse[entityType].gridOptions);
         var uiGridState = $state.params.uiGridState ? JSON.parse($state.params.uiGridState) : null;
         var pagingConfig = tc.config().paging;
         var isScroll = pagingConfig.pagingType == 'scroll';

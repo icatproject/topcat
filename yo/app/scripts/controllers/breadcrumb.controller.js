@@ -19,9 +19,9 @@
             canceler.resolve();
         });
         var breadcrumbTitleMap = {};
-        _.each(facility.config().browse.gridOptions, function(gridOptions, entityType){
+        _.each(facility.config().browse, function(config, entityType){
             var field = "";
-            _.each(gridOptions.columnDefs, function(columnDef){
+            _.each(config.gridOptions.columnDefs, function(columnDef){
                 if(columnDef.breadcrumb){
                     field = columnDef.field;
                     return false;
