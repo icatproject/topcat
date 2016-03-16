@@ -40,19 +40,19 @@
     			return {};
     		};
 
-  			this.refreshSession = function(){
-  				return this.put('session/' + this.session().sessionId);
-  			};	
+    			this.refreshSession = function(){
+    				return this.put('session/' + this.session().sessionId);
+    			};	
 
     		this.login = function(plugin, username, password){
     			var params = {
     				json: JSON.stringify({
-                plugin: plugin,
-                credentials: [
-                    {username: username},
-                    {password: password}
-                ]
-            })
+                        plugin: plugin,
+                        credentials: [
+                            {username: username},
+                            {password: password}
+                        ]
+                    })
     			};
     			return this.post('session', params).then(function(response){
     				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
@@ -63,29 +63,29 @@
     					userName: plugin + '/' + username
     				}
 
-            var promises = [];
+                    var promises = [];
 
-            var facilityDatabaseName = facility.config().facilityDatabaseName;
-            if(facilityDatabaseName){
-              promises.push(that.query([
-                "SELECT facility FROM Facility facility WHERE facility.name = ?", facilityDatabaseName
-              ]).then(function(results){
-                var facility = results[0];
-                if(facility){
-                  $sessionStorage.sessions[facilityName].facilityId = facility.id;
-                } else {
-                  throw "Could not find facility by name '" + facilityDatabaseName + "'";
-                }
-              }));
-            }
+                    var facilityDatabaseName = facility.config().facilityDatabaseName;
+                    if(facilityDatabaseName){
+                      promises.push(that.query([
+                        "SELECT facility FROM Facility facility WHERE facility.name = ?", facilityDatabaseName
+                      ]).then(function(results){
+                        var facility = results[0];
+                        if(facility){
+                          $sessionStorage.sessions[facilityName].facilityId = facility.id;
+                        } else {
+                          throw "Could not find facility by name '" + facilityDatabaseName + "'";
+                        }
+                      }));
+                    }
 
     				promises.push(facility.admin().isValidSession(response.sessionId).then(function(isAdmin){
-                $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
-            }));
+                        $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
+                    }));
 
-            return $q.all(promises).then(function(){
-              $rootScope.$broadcast('session:change');
-            });
+                    return $q.all(promises).then(function(){
+                      $rootScope.$broadcast('session:change');
+                    });
 
     			});
     		};
@@ -117,15 +117,15 @@
         this.query = helpers.overload({
         	'array, object': function(query, options){    	
 	        	var defered = $q.defer();
-            var query = helpers.buildQuery(query);
-            var key = "query:" + query;
+                var query = helpers.buildQuery(query);
+                var key = "query:" + query;
 
 	        	this.cache().getPromise(key, 10 * 60 * 60, function(){
-              return that.get('entityManager', {
-                sessionId: that.session().sessionId,
-                query: query,
-                server: facility.config().icatUrl
-              }, options);
+                return that.get('entityManager', {
+                    sessionId: that.session().sessionId,
+                    query: query,
+                    server: facility.config().icatUrl
+                }, options);
             }).then(function(results){
             	defered.resolve(_.map(results, function(result){
             		var type = _.keys(result)[0];
