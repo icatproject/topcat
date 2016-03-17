@@ -59,8 +59,8 @@
 	                columnDef.enableFiltering = false;
 	            }
 
-	            if(columnDef.translateDisplayName){
-	                columnDef.displayName = columnDef.translateDisplayName;
+	            if(columnDef.title){
+	                columnDef.displayName = columnDef.title;
 	                columnDef.headerCellFilter = 'translate';
 	            }
 
