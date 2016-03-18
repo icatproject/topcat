@@ -61,7 +61,7 @@
             this.include = function(variableName){
                 var variablePath = variablePaths[variableName] || [];
                 var path = _.flatten([[entityType], variablePath]).join('.');
-                if(!_.contains(includeList, path) && entityType != path && !(entityType == 'proposal' && include == 'investigation')){
+                if(!_.contains(includeList, path) && entityType != path && !(entityType == 'proposal' && variableName == 'investigation')){
                     includeList.push(path);
                 }
                 return this;

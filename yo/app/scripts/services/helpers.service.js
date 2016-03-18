@@ -57,6 +57,8 @@
                     entityType = entityType;
                     field = matches[2];
                 }
+
+                if(!variableEntityType) return;
                 
                 var entitySchema = icatSchema.entityTypes[variableEntityType];
                 var type = entitySchema.fields[field];
