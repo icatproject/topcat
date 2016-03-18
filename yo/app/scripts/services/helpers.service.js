@@ -19,7 +19,7 @@
                         if(!entityType){
                             console.error("Unknown variableName: " + variableName, item)
                         }
-                        entityType = helpers.uncapitalize(entityType);
+                        entityType = entityType;
                         field = matches[2];
                     }
 
@@ -53,10 +53,11 @@
                     if(!entityType){
                         console.error("Unknown variableName: " + variableName, columnDef)
                     }
-                    entityType = helpers.uncapitalize(entityType);
+                    entityType = entityType;
                     field = matches[2];
                 }
-                var entitySchema = icatSchema.entities[helpers.capitalize(entityType)];
+                var entitySchema = icatSchema.entityTypes[entityType];
+                console.log(entityType);
                 var type = entitySchema.fields[field];
                 if(type){
                     if(!columnDef.type) columnDef.type = type;

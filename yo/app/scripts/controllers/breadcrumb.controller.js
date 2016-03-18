@@ -44,12 +44,12 @@
                     var entityType = pathPair[0];
                     var uppercaseEntityType = entityType.replace(/^(.)/, function(s){ return s.toUpperCase(); });
                     var entityId = pathPair[1];
-                    if(uppercaseEntityType == 'Proposal'){
-                        breadcrumbPromises.push(icat.entity("Investigation", ["where investigation.name = ?", entityId, "limit 0, 1"], canceler).then(function(entity){
+                    if(entityType == 'proposal'){
+                        breadcrumbPromises.push(icat.entity("investigation", ["where investigation.name = ?", entityId, "limit 0, 1"], canceler).then(function(entity){
                             breadcrumbEntities[entityType] = entity;
                         }));
                     } else {
-                        breadcrumbPromises.push(icat.entity(uppercaseEntityType, ["where ?.id = ?", entityType.safe(), entityId, "limit 0, 1"], canceler).then(function(entity){
+                        breadcrumbPromises.push(icat.entity(entityType, ["where ?.id = ?", entityType.safe(), entityId, "limit 0, 1"], canceler).then(function(entity){
                             breadcrumbEntities[entityType] = entity;
                         }));
                     }

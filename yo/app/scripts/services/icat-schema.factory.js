@@ -6,974 +6,974 @@
 
     app.factory('icatSchema', function(){
     	var out = {
-    		'entities': {
-				'Application': {
+			'entityTypes': {
+				'application': {
 					'fields':{
-						'modId': 'string',
-						'name': 'string',
-						'createId': 'string',
-						'version': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'name': 'string',
+					'createId': 'string',
+					'version': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'jobs': {
-							'entity': 'Job',
+							'entityType': 'job',
 							'cardinality': '0,*'
 						},
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'DataCollection': {
+				'dataCollection': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'dataCollectionDatasets': {
-							'entity': 'DataCollectionDataset',
+							'entityType': 'dataCollectionDataset',
 							'cardinality': '0,*'
 						},
 						'jobsAsInput': {
-							'entity': 'Job',
+							'entityType': 'job',
 							'cardinality': '0,*'
 						},
 						'jobsAsOutput': {
-							'entity': 'Job',
+							'entityType': 'job',
 							'cardinality': '0,*'
 						},
 						'dataCollectionDatafiles': {
-							'entity': 'DataCollectionDatafile',
+							'entityType': 'dataCollectionDatafile',
 							'cardinality': '0,*'
 						},
 						'parameters': {
-							'entity': 'DataCollectionParameter',
+							'entityType': 'dataCollectionParameter',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'DataCollectionDatafile': {
+				'dataCollectionDatafile': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'dataCollection': {
-							'entity': 'DataCollection',
+							'entityType': 'dataCollection',
 							'cardinality': '1,1'
 						},
 						'datafile': {
-							'entity': 'Datafile',
+							'entityType': 'datafile',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'DataCollectionDataset': {
+				'dataCollectionDataset': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'dataCollection': {
-							'entity': 'DataCollection',
+							'entityType': 'dataCollection',
 							'cardinality': '1,1'
 						},
 						'dataset': {
-							'entity': 'Dataset',
+							'entityType': 'dataset',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'DataCollectionParameter': {
+				'dataCollectionParameter': {
 					'fields':{
-						'stringValue': 'string',
-						'rangeBottom': 'number',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'dateTimeValue': 'date',
-						'modId': 'string',
-						'error': 'number',
-						'numericValue': 'number',
-						'rangeTop': 'number'
+					'stringValue': 'string',
+					'rangeBottom': 'number',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'dateTimeValue': 'date',
+					'modId': 'string',
+					'error': 'number',
+					'numericValue': 'number',
+					'rangeTop': 'number'
 					},
 					'relationships':{
 						'dataCollection': {
-							'entity': 'DataCollection',
+							'entityType': 'dataCollection',
 							'cardinality': '1,1'
 						},
 						'type': {
-							'entity': 'ParameterType',
+							'entityType': 'parameterType',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Datafile': {
+				'datafile': {
 					'fields':{
-						'fileSize': 'number',
-						'location': 'string',
-						'checksum': 'string',
-						'name': 'string',
-						'createId': 'string',
-						'doi': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'datafileModTime': 'date',
-						'modId': 'string',
-						'datafileCreateTime': 'date',
-						'description': 'string'
+					'fileSize': 'number',
+					'location': 'string',
+					'checksum': 'string',
+					'name': 'string',
+					'createId': 'string',
+					'doi': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'datafileModTime': 'date',
+					'modId': 'string',
+					'datafileCreateTime': 'date',
+					'description': 'string'
 					},
 					'relationships':{
 						'dataCollectionDatafiles': {
-							'entity': 'DataCollectionDatafile',
+							'entityType': 'dataCollectionDatafile',
 							'cardinality': '0,*'
 						},
 						'datafileFormat': {
-							'entity': 'DatafileFormat',
+							'entityType': 'datafileFormat',
 							'cardinality': '0,1'
 						},
 						'sourceDatafiles': {
-							'entity': 'RelatedDatafile',
+							'entityType': 'relatedDatafile',
 							'cardinality': '0,*'
 						},
 						'parameters': {
-							'entity': 'DatafileParameter',
+							'entityType': 'datafileParameter',
 							'cardinality': '0,*'
 						},
 						'dataset': {
-							'entity': 'Dataset',
+							'entityType': 'dataset',
 							'cardinality': '1,1',
 							'variableName': 'dataset'
 						},
 						'destDatafiles': {
-							'entity': 'RelatedDatafile',
+							'entityType': 'relatedDatafile',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'DatafileFormat': {
+				'datafileFormat': {
 					'fields':{
-						'modId': 'string',
-						'description': 'string',
-						'name': 'string',
-						'version': 'string',
-						'createId': 'string',
-						'type': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'description': 'string',
+					'name': 'string',
+					'version': 'string',
+					'createId': 'string',
+					'type': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1'
 						},
 						'datafiles': {
-							'entity': 'Datafile',
+							'entityType': 'datafile',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'DatafileParameter': {
+				'datafileParameter': {
 					'fields':{
-						'stringValue': 'string',
-						'rangeBottom': 'number',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'dateTimeValue': 'date',
-						'modId': 'string',
-						'error': 'number',
-						'numericValue': 'number',
-						'rangeTop': 'number'
+					'stringValue': 'string',
+					'rangeBottom': 'number',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'dateTimeValue': 'date',
+					'modId': 'string',
+					'error': 'number',
+					'numericValue': 'number',
+					'rangeTop': 'number'
 					},
 					'relationships':{
 						'type': {
-							'entity': 'ParameterType',
+							'entityType': 'parameterType',
 							'cardinality': '1,1'
 						},
 						'datafile': {
-							'entity': 'Datafile',
+							'entityType': 'datafile',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Dataset': {
+				'dataset': {
 					'fields':{
-						'name': 'string',
-						'location': 'string',
-						'complete': 'boolean',
-						'startDate': 'date',
-						'doi': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'description': 'string',
-						'modId': 'string',
-						'endDate': 'date'
+					'name': 'string',
+					'location': 'string',
+					'complete': 'boolean',
+					'startDate': 'date',
+					'doi': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'description': 'string',
+					'modId': 'string',
+					'endDate': 'date'
 					},
 					'relationships':{
 						'sample': {
-							'entity': 'Sample',
+							'entityType': 'sample',
 							'cardinality': '0,1'
 						},
 						'dataCollectionDatasets': {
-							'entity': 'DataCollectionDataset',
+							'entityType': 'dataCollectionDataset',
 							'cardinality': '0,*'
 						},
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1',
 							'variableName': 'investigation'
 						},
 						'datafiles': {
-							'entity': 'Datafile',
+							'entityType': 'datafile',
 							'cardinality': '0,*',
 							'variableName': 'datafile'
 						},
 						'type': {
-							'entity': 'DatasetType',
+							'entityType': 'datasetType',
 							'cardinality': '1,1'
 						},
 						'parameters': {
-							'entity': 'DatasetParameter',
+							'entityType': 'datasetParameter',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'DatasetParameter': {
+				'datasetParameter': {
 					'fields':{
-						'stringValue': 'string',
-						'rangeBottom': 'number',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'dateTimeValue': 'date',
-						'modId': 'string',
-						'error': 'number',
-						'numericValue': 'number',
-						'rangeTop': 'number'
+					'stringValue': 'string',
+					'rangeBottom': 'number',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'dateTimeValue': 'date',
+					'modId': 'string',
+					'error': 'number',
+					'numericValue': 'number',
+					'rangeTop': 'number'
 					},
 					'relationships':{
 						'type': {
-							'entity': 'ParameterType',
+							'entityType': 'parameterType',
 							'cardinality': '1,1'
 						},
 						'dataset': {
-							'entity': 'Dataset',
+							'entityType': 'dataset',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'DatasetType': {
+				'datasetType': {
 					'fields':{
-						'description': 'string',
-						'name': 'string',
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'description': 'string',
+					'name': 'string',
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'datasets': {
-							'entity': 'Dataset',
+							'entityType': 'dataset',
 							'cardinality': '0,*'
 						},
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Facility': {
+				'facility': {
 					'fields':{
-						'daysUntilRelease': 'string',
-						'url': 'string',
-						'createId': 'string',
-						'description': 'string',
-						'fullName': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'modId': 'string',
-						'name': 'string'
+					'daysUntilRelease': 'string',
+					'url': 'string',
+					'createId': 'string',
+					'description': 'string',
+					'fullName': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'modId': 'string',
+					'name': 'string'
 					},
 					'relationships':{
 						'instruments': {
-							'entity': 'Instrument',
+							'entityType': 'instrument',
 							'cardinality': '0,*'
 						},
 						'facilityCycles': {
-							'entity': 'FacilityCycle',
+							'entityType': 'facilityCycle',
 							'cardinality': '0,*',
 							'variableName': 'facilityCycle'
 						},
 						'investigationTypes': {
-							'entity': 'InvestigationType',
+							'entityType': 'investigationType',
 							'cardinality': '0,*'
 						},
 						'datafileFormats': {
-							'entity': 'DatafileFormat',
+							'entityType': 'datafileFormat',
 							'cardinality': '0,*'
 						},
 						'investigations': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '0,*',
 							'variableName': 'investigation'
 						},
 						'sampleTypes': {
-							'entity': 'SampleType',
+							'entityType': 'sampleType',
 							'cardinality': '0,*'
 						},
 						'parameterTypes': {
-							'entity': 'ParameterType',
+							'entityType': 'parameterType',
 							'cardinality': '0,*'
 						},
 						'datasetTypes': {
-							'entity': 'DatasetType',
+							'entityType': 'datasetType',
 							'cardinality': '0,*'
 						},
 						'applications': {
-							'entity': 'Application',
+							'entityType': 'application',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'FacilityCycle': {
+				'facilityCycle': {
 					'fields':{
-						'name': 'string',
-						'description': 'string',
-						'modId': 'string',
-						'startDate': 'date',
-						'createId': 'string',
-						'endDate': 'date',
-						'createTime': 'date',
-						'modTime': 'date'
+					'name': 'string',
+					'description': 'string',
+					'modId': 'string',
+					'startDate': 'date',
+					'createId': 'string',
+					'endDate': 'date',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1',
 							'variableName': 'facility'
 						}
 					}
 				},
-				'Grouping': {
+				'grouping': {
 					'fields':{
-						'modId': 'string',
-						'name': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'name': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'investigationGroups': {
-							'entity': 'InvestigationGroup',
+							'entityType': 'investigationGroup',
 							'cardinality': '0,*'
 						},
 						'rules': {
-							'entity': 'Rule',
+							'entityType': 'rule',
 							'cardinality': '0,*'
 						},
 						'userGroups': {
-							'entity': 'UserGroup',
+							'entityType': 'userGroup',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'Instrument': {
+				'instrument': {
 					'fields':{
-						'name': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'url': 'string',
-						'type': 'string',
-						'modId': 'string',
-						'description': 'string',
-						'fullName': 'string'
+					'name': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'url': 'string',
+					'type': 'string',
+					'modId': 'string',
+					'description': 'string',
+					'fullName': 'string'
 					},
 					'relationships':{
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1'
 						},
 						'instrumentScientists': {
-							'entity': 'InstrumentScientist',
+							'entityType': 'instrumentScientist',
 							'cardinality': '0,*'
 						},
 						'investigationInstruments': {
-							'entity': 'InvestigationInstrument',
+							'entityType': 'investigationInstrument',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'InstrumentScientist': {
+				'instrumentScientist': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'instrument': {
-							'entity': 'Instrument',
+							'entityType': 'instrument',
 							'cardinality': '1,1'
 						},
 						'user': {
-							'entity': 'User',
+							'entityType': 'user',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Investigation': {
+				'investigation': {
 					'fields':{
-						'name': 'string',
-						'startDate': 'date',
-						'doi': 'string',
-						'summary': 'string',
-						'modId': 'string',
-						'releaseDate': 'date',
-						'visitId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'endDate': 'date',
-						'title': 'string'
+					'name': 'string',
+					'startDate': 'date',
+					'doi': 'string',
+					'summary': 'string',
+					'modId': 'string',
+					'releaseDate': 'date',
+					'visitId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'endDate': 'date',
+					'title': 'string'
 					},
 					'relationships':{
 						'keywords': {
-							'entity': 'Keyword',
+							'entityType': 'keyword',
 							'cardinality': '0,*'
 						},
 						'shifts': {
-							'entity': 'Shift',
+							'entityType': 'shift',
 							'cardinality': '0,*'
 						},
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1',
 							'variableName': 'facility'
 						},
 						'datasets': {
-							'entity': 'Dataset',
+							'entityType': 'dataset',
 							'cardinality': '0,*',
 							'variableName': 'dataset'
 						},
 						'investigationGroups': {
-							'entity': 'InvestigationGroup',
+							'entityType': 'investigationGroup',
 							'cardinality': '0,*'
 						},
 						'publications': {
-							'entity': 'Publication',
+							'entityType': 'publication',
 							'cardinality': '0,*'
 						},
 						'type': {
-							'entity': 'InvestigationType',
+							'entityType': 'investigationType',
 							'cardinality': '1,1'
 						},
 						'investigationInstruments': {
-							'entity': 'InvestigationInstrument',
+							'entityType': 'investigationInstrument',
 							'cardinality': '0,*',
 							'variableName': 'investigationInstrument'
 						},
 						'parameters': {
-							'entity': 'InvestigationParameter',
+							'entityType': 'investigationParameter',
 							'cardinality': '0,*'
 						},
 						'studyInvestigations': {
-							'entity': 'StudyInvestigation',
+							'entityType': 'studyInvestigation',
 							'cardinality': '0,*'
 						},
 						'samples': {
-							'entity': 'Sample',
+							'entityType': 'sample',
 							'cardinality': '0,*'
 						},
 						'investigationUsers': {
-							'entity': 'InvestigationUser',
+							'entityType': 'investigationUser',
 							'cardinality': '0,*',
 							'variableName': 'investigationUser'
 						}
 					}
 				},
-				'InvestigationGroup': {
+				'investigationGroup': {
 					'fields':{
-						'role': 'string',
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'role': 'string',
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						},
 						'grouping': {
-							'entity': 'Grouping',
+							'entityType': 'grouping',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'InvestigationInstrument': {
+				'investigationInstrument': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						},
 						'instrument': {
-							'entity': 'Instrument',
+							'entityType': 'instrument',
 							'cardinality': '1,1',
 							'variableName': 'investigationInstrumentInstrument'
 						}
 					}
 				},
-				'InvestigationParameter': {
+				'investigationParameter': {
 					'fields':{
-						'stringValue': 'string',
-						'rangeBottom': 'number',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'dateTimeValue': 'date',
-						'modId': 'string',
-						'error': 'number',
-						'numericValue': 'number',
-						'rangeTop': 'number'
+					'stringValue': 'string',
+					'rangeBottom': 'number',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'dateTimeValue': 'date',
+					'modId': 'string',
+					'error': 'number',
+					'numericValue': 'number',
+					'rangeTop': 'number'
 					},
 					'relationships':{
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						},
 						'type': {
-							'entity': 'ParameterType',
+							'entityType': 'parameterType',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'InvestigationType': {
+				'investigationType': {
 					'fields':{
-						'modId': 'string',
-						'description': 'string',
-						'name': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'description': 'string',
+					'name': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'investigations': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '0,*'
 						},
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'InvestigationUser': {
+				'investigationUser': {
 					'fields':{
-						'modId': 'string',
-						'role': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'role': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'user': {
-							'entity': 'User',
+							'entityType': 'user',
 							'cardinality': '1,1',
 							'variableName': 'investigationUserUser'
 						},
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Job': {
+				'job': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'arguments': 'string'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'arguments': 'string'
 					},
 					'relationships':{
 						'inputDataCollection': {
-							'entity': 'DataCollection',
+							'entityType': 'dataCollection',
 							'cardinality': '0,1'
 						},
 						'outputDataCollection': {
-							'entity': 'DataCollection',
+							'entityType': 'dataCollection',
 							'cardinality': '0,1'
 						},
 						'application': {
-							'entity': 'Application',
+							'entityType': 'application',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Keyword': {
+				'keyword': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'name': 'string'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'name': 'string'
 					},
 					'relationships':{
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Log': {
+				'log': {
 					'fields':{
-						'operation': 'string',
-						'modId': 'string',
-						'entityId': 'number',
-						'entityName': 'string',
-						'query': 'string',
-						'duration': 'number',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'operation': 'string',
+					'modId': 'string',
+					'entityId': 'number',
+					'entityType': 'string',
+					'query': 'string',
+					'duration': 'number',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 					}
 				},
-				'ParameterType': {
+				'parameterType': {
 					'fields':{
-						'units': 'string',
-						'description': 'string',
-						'modId': 'string',
-						'applicableToSample': 'boolean',
-						'valueType': 'string',
-						'verified': 'boolean',
-						'applicableToDataset': 'boolean',
-						'applicableToDataCollection': 'boolean',
-						'minimumNumericValue': 'number',
-						'enforced': 'boolean',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'applicableToInvestigation': 'boolean',
-						'name': 'string',
-						'unitsFullName': 'string',
-						'applicableToDatafile': 'boolean',
-						'maximumNumericValue': 'number'
+					'units': 'string',
+					'description': 'string',
+					'modId': 'string',
+					'applicableToSample': 'boolean',
+					'valueType': 'string',
+					'verified': 'boolean',
+					'applicableToDataset': 'boolean',
+					'applicableToDataCollection': 'boolean',
+					'minimumNumericValue': 'number',
+					'enforced': 'boolean',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'applicableToInvestigation': 'boolean',
+					'name': 'string',
+					'unitsFullName': 'string',
+					'applicableToDatafile': 'boolean',
+					'maximumNumericValue': 'number'
 					},
 					'relationships':{
 						'investigationParameters': {
-							'entity': 'InvestigationParameter',
+							'entityType': 'investigationParameter',
 							'cardinality': '0,*'
 						},
 						'permissibleStringValues': {
-							'entity': 'PermissibleStringValue',
+							'entityType': 'permissibleStringValue',
 							'cardinality': '0,*'
 						},
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1'
 						},
 						'dataCollectionParameters': {
-							'entity': 'DataCollectionParameter',
+							'entityType': 'dataCollectionParameter',
 							'cardinality': '0,*'
 						},
 						'sampleParameters': {
-							'entity': 'SampleParameter',
+							'entityType': 'sampleParameter',
 							'cardinality': '0,*'
 						},
 						'datasetParameters': {
-							'entity': 'DatasetParameter',
+							'entityType': 'datasetParameter',
 							'cardinality': '0,*'
 						},
 						'datafileParameters': {
-							'entity': 'DatafileParameter',
+							'entityType': 'datafileParameter',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'PermissibleStringValue': {
+				'permissibleStringValue': {
 					'fields':{
-						'modId': 'string',
-						'value': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'value': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'type': {
-							'entity': 'ParameterType',
+							'entityType': 'parameterType',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Proposal': {
-					'fields': {
-						'name': 'string'
+				'proposal': {
+					'fields':{
+					'name': 'string'
 					},
 					'relationships':{
 						'investigations': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,*',
 							'variableName': 'investigation'
 						}
 					}
 				},
-				'PublicStep': {
+				'publicStep': {
 					'fields':{
-						'field': 'string',
-						'origin': 'string',
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'field': 'string',
+					'origin': 'string',
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 					}
 				},
-				'Publication': {
+				'publication': {
 					'fields':{
-						'fullReference': 'string',
-						'modId': 'string',
-						'repository': 'string',
-						'url': 'string',
-						'doi': 'string',
-						'repositoryId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'fullReference': 'string',
+					'modId': 'string',
+					'repository': 'string',
+					'url': 'string',
+					'doi': 'string',
+					'repositoryId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'RelatedDatafile': {
+				'relatedDatafile': {
 					'fields':{
-						'modId': 'string',
-						'relation': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'relation': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'destDatafile': {
-							'entity': 'Datafile',
+							'entityType': 'datafile',
 							'cardinality': '1,1'
 						},
 						'sourceDatafile': {
-							'entity': 'Datafile',
+							'entityType': 'datafile',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Rule': {
+				'rule': {
 					'fields':{
-						'crudFlags': 'string',
-						'modId': 'string',
-						'what': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'crudFlags': 'string',
+					'modId': 'string',
+					'what': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'grouping': {
-							'entity': 'Grouping',
+							'entityType': 'grouping',
 							'cardinality': '0,1'
 						}
 					}
 				},
-				'Sample': {
+				'sample': {
 					'fields':{
-						'name': 'string',
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'name': 'string',
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'parameters': {
-							'entity': 'SampleParameter',
+							'entityType': 'sampleParameter',
 							'cardinality': '0,*'
 						},
 						'datasets': {
-							'entity': 'Dataset',
+							'entityType': 'dataset',
 							'cardinality': '0,*'
 						},
 						'type': {
-							'entity': 'SampleType',
+							'entityType': 'sampleType',
 							'cardinality': '0,1'
 						},
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'SampleParameter': {
+				'sampleParameter': {
 					'fields':{
-						'stringValue': 'string',
-						'rangeBottom': 'number',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'dateTimeValue': 'date',
-						'modId': 'string',
-						'error': 'number',
-						'numericValue': 'number',
-						'rangeTop': 'number'
+					'stringValue': 'string',
+					'rangeBottom': 'number',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'dateTimeValue': 'date',
+					'modId': 'string',
+					'error': 'number',
+					'numericValue': 'number',
+					'rangeTop': 'number'
 					},
 					'relationships':{
 						'sample': {
-							'entity': 'Sample',
+							'entityType': 'sample',
 							'cardinality': '1,1'
 						},
 						'type': {
-							'entity': 'ParameterType',
+							'entityType': 'parameterType',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'SampleType': {
+				'sampleType': {
 					'fields':{
-						'modId': 'string',
-						'molecularFormula': 'string',
-						'name': 'string',
-						'safetyInformation': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'molecularFormula': 'string',
+					'name': 'string',
+					'safetyInformation': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'samples': {
-							'entity': 'Sample',
+							'entityType': 'sample',
 							'cardinality': '0,*'
 						},
 						'facility': {
-							'entity': 'Facility',
+							'entityType': 'facility',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Shift': {
+				'shift': {
 					'fields':{
-						'comment': 'string',
-						'startDate': 'date',
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date',
-						'endDate': 'date'
+					'comment': 'string',
+					'startDate': 'date',
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date',
+					'endDate': 'date'
 					},
 					'relationships':{
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'Study': {
+				'study': {
 					'fields':{
-						'modId': 'string',
-						'startDate': 'date',
-						'status': 'string',
-						'name': 'string',
-						'createId': 'string',
-						'description': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'startDate': 'date',
+					'status': 'string',
+					'name': 'string',
+					'createId': 'string',
+					'description': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'user': {
-							'entity': 'User',
+							'entityType': 'user',
 							'cardinality': '0,1'
 						},
 						'studyInvestigations': {
-							'entity': 'StudyInvestigation',
+							'entityType': 'studyInvestigation',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'StudyInvestigation': {
+				'studyInvestigation': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'study': {
-							'entity': 'Study',
+							'entityType': 'study',
 							'cardinality': '1,1'
 						},
 						'investigation': {
-							'entity': 'Investigation',
+							'entityType': 'investigation',
 							'cardinality': '1,1'
 						}
 					}
 				},
-				'User': {
+				'user': {
 					'fields':{
-						'name': 'string',
-						'fullName': 'string',
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'name': 'string',
+					'fullName': 'string',
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'userGroups': {
-							'entity': 'UserGroup',
+							'entityType': 'userGroup',
 							'cardinality': '0,*'
 						},
 						'studies': {
-							'entity': 'Study',
+							'entityType': 'study',
 							'cardinality': '0,*'
 						},
 						'investigationUsers': {
-							'entity': 'InvestigationUser',
+							'entityType': 'investigationUser',
 							'cardinality': '0,*'
 						},
 						'instrumentScientists': {
-							'entity': 'InstrumentScientist',
+							'entityType': 'instrumentScientist',
 							'cardinality': '0,*'
 						}
 					}
 				},
-				'UserGroup': {
+				'userGroup': {
 					'fields':{
-						'modId': 'string',
-						'createId': 'string',
-						'createTime': 'date',
-						'modTime': 'date'
+					'modId': 'string',
+					'createId': 'string',
+					'createTime': 'date',
+					'modTime': 'date'
 					},
 					'relationships':{
 						'grouping': {
-							'entity': 'Grouping',
+							'entityType': 'grouping',
 							'cardinality': '1,1'
 						},
 						'user': {
-							'entity': 'User',
+							'entityType': 'user',
 							'cardinality': '1,1'
 						}
 					}
@@ -981,23 +981,23 @@
 			}
 		};
 
-		function findPossibleVariablePaths(entityName, path, visited, paths){
+		function findPossibleVariablePaths(entityType, path, visited, paths){
 			if(!path){
 				path = [];
 				visited = [];
 				paths = {};
 			}
-			if(out.entities[entityName]){
-				_.each(out.entities[entityName]['relationships'], function(relationship, relationshipName){
+			if(out.entityTypes[entityType]){
+				_.each(out.entityTypes[entityType]['relationships'], function(relationship, relationshipName){
 					if(!relationship['variableName']) return;
 					var currentPath = _.clone(path);
 					var currentVisited = _.clone(visited);
 					currentPath.push(relationshipName);
 					if(!paths[relationship['variableName']]) paths[relationship['variableName']] = [];
 					paths[relationship['variableName']].push(currentPath);
-					if(!_.include(visited, relationship['entity'])){
-						currentVisited.push(relationship['entity']);
-						findPossibleVariablePaths(relationship['entity'], currentPath, currentVisited, paths);
+					if(!_.include(visited, relationship['entityType'])){
+						currentVisited.push(relationship['entityType']);
+						findPossibleVariablePaths(relationship['entityType'], currentPath, currentVisited, paths);
 					}
 				});
 			}
@@ -1005,9 +1005,9 @@
 			return paths;
 		}
 
-		function findVariablePaths(entityName){
+		function findVariablePaths(entityType){
 			var out = {}
-			_.each(findPossibleVariablePaths(entityName), function(paths, variableName){
+			_.each(findPossibleVariablePaths(entityType), function(paths, variableName){
 				paths = _.sortBy(paths, function(path){
 					return path.length;
 				});
@@ -1016,16 +1016,16 @@
 			return out;
 		}
 
-		_.each(out.entities, function(entitySchema, entityName){
-			entitySchema['variablePaths'] = findVariablePaths(entityName);
+		_.each(out.entityTypes, function(entitySchema, entityType){
+			entitySchema['variablePaths'] = findVariablePaths(entityType);
 		});
 
 		out.variables = {};
 
-		_.each(out.entities, function(entityTypeSchema){
+		_.each(out.entityTypes, function(entityTypeSchema){
 			_.each(entityTypeSchema.relationships, function(relationship){
 				if(relationship.variableName){
-					out.variables[relationship.variableName] = relationship.entity;
+					out.variables[relationship.variableName] = relationship.entityType;
 				}
 			});
 		});

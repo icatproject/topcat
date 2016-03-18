@@ -22,7 +22,7 @@
         }
         
         _.each(tc.userFacilities(), function(facility){
-            facility.icat().entity("Facility", ["where facility.id = ?", facility.config().facilityId]).then(function(_facility){
+            facility.icat().entity("facility", ["where facility.id = ?", facility.config().facilityId]).then(function(_facility){
                 _facility.facilityName = facility.config().facilityName;
                 gridOptions.data.push(_facility);
             });

@@ -65,7 +65,7 @@
                         items: []
                     };
                     _.each(tabConfig.items, function(itemConfig){
-                        var find = itemConfig.find || helpers.uncapitalize(entity.entityType);
+                        var find = itemConfig.find || entity.entityType;
                         if(!find.match(/\]$/)) find = find + '[]'
                         _.each(entity.find(find), function(entity){
                             tab.items.push({
