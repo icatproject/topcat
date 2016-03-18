@@ -81,7 +81,7 @@
         function generateQueryBuilder(){
             var out = icat.queryBuilder(entityType);
 
-            out.where("user.name = :user");
+            out.where("investigationUserUser.name = :user");
 
             _.each(gridOptions.columnDefs, function(columnDef){
                 if(!columnDef.field) return;

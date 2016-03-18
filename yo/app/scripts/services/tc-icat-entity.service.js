@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers, icatEntityPaths){
+    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers, icatSchema){
     	var tcIcatEntity = this;
 
     	this.create = function(attributes, facility){
@@ -329,22 +329,19 @@
 					entityField = expression;
 				}
 
-				var fieldNames = [];
+				var variablePath = [];
 
-				if(entityType != helpers.uncapitalize(this.entityType)){
-					var entityPaths = icatEntityPaths[helpers.uncapitalize(this.entityType)];
-					if(!entityPaths) throw "Unknown expression for find(): " + expression;
+				if(entityType != this.entityType){
+					var variablePaths = icatSchema.entityTypes[this.entityType].variablePaths;
+					if(!variablePaths) throw "Unknown expression for find(): " + expression;
 
-					var entityPath = entityPaths[entityType];
-					if(!entityPath) throw "Unknown expression for find(): " + expression;
-
-					fieldNames = entityPath.split(/\./).reverse();
+					var variablePath = _.clone(variablePaths[entityType]);
+					if(!variablePath) throw "Unknown expression for find(): " + expression;
 				}
 
-				fieldNames.pop();
 				traverse(this);
 				function traverse(current){
-					if(fieldNames.length == 0){
+					if(variablePath.length == 0){
 						if(!predicate || eval("current." + predicate)){
 							if(entityField){
 								var value = current[entityField];
@@ -356,7 +353,7 @@
 							}
 						}
 					} else {
-						var fieldName = fieldNames.pop();
+						var fieldName = variablePath.pop();
 						current = current[fieldName];
 						if(current instanceof Array){
 							_.each(current, function(current){
@@ -365,7 +362,7 @@
 						} else {
 							traverse(current);
 						}
-						fieldNames.push(fieldName);
+						variablePath.push(fieldName);
 					}
 				}
 
@@ -373,11 +370,10 @@
 			};
 
 			var children = {};
-			_.each(icatEntityPaths[helpers.uncapitalize(this.entityType)], function(path, entityType){
-				entityType = helpers.capitalize(entityType);
-				var matches = path.match(/^[^\.]+\.([^\.]+)$/);
-				if(matches){
-					children[entityType] = matches[1];
+			_.each(icatSchema.entityTypes[this.entityType].variablePaths, function(path, variableName){
+				var entityType = icatSchema.variables[variableName];
+				if(path.length == 2){
+					children[entityType] = path[0];
 				}
 			});
 

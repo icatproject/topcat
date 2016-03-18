@@ -47,17 +47,18 @@
     		_.each(gridOptions.columnDefs, function(columnDef){
     			var matches;
                 var field = columnDef.field;
+                var variableEntityType = entityType;
                 if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
                     var variableName = matches[1];
-                    entityType = icatSchema.variables[variableName];
+                    variableEntityType = icatSchema.variables[variableName];
                     if(!entityType){
                         console.error("Unknown variableName: " + variableName, columnDef)
                     }
                     entityType = entityType;
                     field = matches[2];
                 }
-                var entitySchema = icatSchema.entityTypes[entityType];
-                console.log(entityType);
+                
+                var entitySchema = icatSchema.entityTypes[variableEntityType];
                 var type = entitySchema.fields[field];
                 if(type){
                     if(!columnDef.type) columnDef.type = type;

@@ -147,7 +147,8 @@
 						},
 						'parameters': {
 							'entityType': 'datafileParameter',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'datafileParameter'
 						},
 						'dataset': {
 							'entityType': 'dataset',
@@ -198,7 +199,8 @@
 					'relationships':{
 						'type': {
 							'entityType': 'parameterType',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'datafileParameterType'
 						},
 						'datafile': {
 							'entityType': 'datafile',
@@ -411,7 +413,8 @@
 						},
 						'investigationInstruments': {
 							'entityType': 'investigationInstrument',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'investigationInstrument'
 						}
 					}
 				},

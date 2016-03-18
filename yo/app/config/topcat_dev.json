@@ -573,7 +573,7 @@
                             ]
                         },
                         {
-                            "field": "instrument.fullName",
+                            "field": "investigationInstrumentInstrument.fullName",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
                             "type": "string",
                             "visible": true,
