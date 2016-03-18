@@ -10,6 +10,7 @@
         var previousEntityHash;
 
         $scope.$on('rowclick', function(event, entity){
+
             var facility = tc.facility(entity.facilityName);
             var config;
             if(entity.type == 'facility'){
@@ -17,7 +18,10 @@
             } else if(facility.config().browse[entity.type]) {
                 config = facility.config().browse[entity.type].metaTabs;
             }
+
             if(!config) return;
+
+            helpers.setupMetatabs(config, entity.type);
 
             var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;
             if(entityHash == previousEntityHash){
@@ -50,9 +54,10 @@
                 queryBuilder.include('datafileParameterType');
             }
 
+
+
             queryBuilder.run().then(function(entity){
                 entity = entity[0];
-
                 var tabs = [];
                 _.each(config, function(tabConfig){
                     var tab = {
@@ -64,9 +69,9 @@
                         if(!find.match(/\]$/)) find = find + '[]'
                         _.each(entity.find(find), function(entity){
                             tab.items.push({
-                                label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
+                                title: itemConfig.title ? $translate.instant(itemConfig.title) : null,
                                 template: itemConfig.template,
-                                value: itemConfig.value ? entity.find(itemConfig.value)[0] : null,
+                                value: itemConfig.field ? entity.find(itemConfig.field)[0] : null,
                                 entity: entity
                             });
                         });

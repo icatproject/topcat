@@ -498,7 +498,8 @@
 						},
 						'investigationUsers': {
 							'entity': 'InvestigationUser',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'investigationUser'
 						}
 					}
 				},
@@ -595,7 +596,8 @@
 					'relationships':{
 						'user': {
 							'entity': 'User',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'investigationUserUser'
 						},
 						'investigation': {
 							'entity': 'Investigation',
@@ -1014,7 +1016,7 @@
 			return out;
 		}
 
-		_.each(out, function(entitySchema, entityName){
+		_.each(out.entities, function(entitySchema, entityName){
 			entitySchema['variablePaths'] = findVariablePaths(entityName);
 		});
 

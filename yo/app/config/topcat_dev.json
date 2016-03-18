@@ -641,43 +641,29 @@
                     },
                     "metaTabs": [
                         {
-                            "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
-                            "field": "instrument",
-                            "default": true,
-                            "data": [
+                            "title": "METATABS.INSTRUMENT.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.NAME",
                                     "field": "fullName"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
                                     "field": "description"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
                                     "field": "type"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.URL",
                                     "field": "url"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                            "field": "instrumentScientists",
-                            "queryParams": [
-                                "InstrumentScientist",
-                                "User"
-                            ],
-                            "default": false,
-                            "data": [
+                            "title": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                            "items": [
                                 {
                                     "field": "user",
-                                    "default": false,
                                     "data": [
                                         {
-                                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
                                             "field": "fullName"
                                         }
                                     ]
@@ -756,77 +742,45 @@
                     },
                     "metaTabs": [
                         {
-                            "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
-                            "field": "investigation",
-                            "default": true,
-                            "data": [
+                            "title": "METATABS.INVESTIGATION.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.NAME",
                                     "field": "name"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
                                     "field": "title"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
                                     "field": "summary"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
                                     "field": "startDate"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
                                     "field": "endDate"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
-                            "field": "investigationUsers",
-                            "queryParams": [
-                                "InvestigationUser",
-                                "User"
-                            ],
-                            "default": false,
-                            "data": [
+                            "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                            "items": [
                                 {
-                                    "field": "user",
-                                    "default": false,
-                                    "data": [
-                                        {
-                                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
-                                            "field": "fullName"
-                                        }
-                                    ]
+                                    "field": "investigationUserUser.name"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
-                            "field": "samples",
-                            "queryParams": [
-                                "Sample"
-                            ],
-                            "default": "false",
-                            "data": [
+                            "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
                                     "field": "name"
                                 }
                             ]
                         },
                         {
-                            "displayName": "Publications",
-                            "field": "publications",
-                            "queryParams": [
-                                "Publication"
-                            ],
-                            "default": "false",
-                            "data": [
+                            "title": "METATABS.PUBLICATIONS.TABTITLE",
+                            "items": [
                                 {
-                                    "displayName": "Reference",
                                     "field": "fullReference"
                                 }
                             ]
@@ -855,42 +809,29 @@
                     },
                     "metaTabs": [
                         {
-                            "translateDisplayName": "METATABS.DATASET.TABTITLE",
-                            "field": "dataset",
-                            "default": true,
-                            "data": [
+                            "title": "METATABS.DATASET.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.NAME",
                                     "field": "name"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
                                     "field": "description"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.START_DATE",
                                     "field": "startDate"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.END_DATE",
                                     "field": "endDate"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
-                            "field": "type",
-                            "queryParams": [
-                                "DatasetType"
-                            ],
-                            "default": false,
-                            "data": [
+                            "title": "METATABS.DATASET_TYPE.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
                                     "field": "name"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
                                     "field": "description"
                                 }
                             ]
@@ -919,38 +860,27 @@
                     },
                     "metaTabs": [
                         {
-                            "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
-                            "field": "datafile",
-                            "default": true,
-                            "data": [
+                            "title": "METATABS.DATAFILE.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.DATAFILE.NAME",
                                     "field": "name"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
                                     "field": "description"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATAFILE.SIZE",
                                     "field": "fileSize"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATAFILE.LOCATION",
                                     "field": "location"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
-                            "field": "parameters",
-                            "queryParams": ["DatafileParameter", "ParameterType"],
-                            "default": false,
-                            "data": [
+                            "title": "METATABS.DATAFILE.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.DATAFILE.SIZE",
-                                    "field": "stringValue",
-                                    "default": false
+                                    "field": "stringValue"
                                 }
                             ]
                         }

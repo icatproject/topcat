@@ -4,8 +4,33 @@
 
     var app = angular.module('angularApp');
 
-    app.service('helpers', function($http, $q, $timeout, uiGridConstants){
+    app.service('helpers', function($http, $q, $timeout, uiGridConstants, icatSchema){
     	var helpers = this;
+
+    	this.setupMetatabs = function(metaTabs, entityType){
+    		_.each(metaTabs, function(metaTab){
+                _.each(metaTab.items, function(item){
+                    var field = item.field;
+                    if(!field) return;
+                    var matches;
+                    if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
+                        var variableName = matches[1];
+                        entityType = icatSchema.variables[variableName];
+                        if(!entityType){
+                            console.error("Unknown variableName: " + variableName, item)
+                        }
+                        entityType = helpers.uncapitalize(entityType);
+                        field = matches[2];
+                    }
+
+                    if(!item.title){
+                        var entityTypeNamespace = helpers.constantify(entityType);
+                        var fieldNamespace = helpers.constantify(field);
+                        item.title = "METATABS." + entityTypeNamespace + "." + fieldNamespace;
+                    }
+                });
+            });
+    	};
 
     	this.setupGridOptions = function(gridOptions, entityType){
     		if(entityType != 'facility'){
@@ -20,6 +45,60 @@
 	        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
 
     		_.each(gridOptions.columnDefs, function(columnDef){
+    			var matches;
+                var field = columnDef.field;
+                if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
+                    var variableName = matches[1];
+                    entityType = icatSchema.variables[variableName];
+                    if(!entityType){
+                        console.error("Unknown variableName: " + variableName, columnDef)
+                    }
+                    entityType = helpers.uncapitalize(entityType);
+                    field = matches[2];
+                }
+                var entitySchema = icatSchema.entities[helpers.capitalize(entityType)];
+                var type = entitySchema.fields[field];
+                if(type){
+                    if(!columnDef.type) columnDef.type = type;
+                    type = columnDef.type;
+
+                    if(!columnDef.filter){
+                        if(type == 'string'){
+                            columnDef.filter = {
+                                "condition": "contains",
+                                "placeholder": "Containing...",
+                                "type": "input"
+                            }
+                        }
+                    }
+                    if(!columnDef.filters){
+                        if(type == 'date'){
+                            columnDef.filters = [
+                                {
+                                    "placeholder": "From...",
+                                    "type": "input"
+                                },
+                                {
+                                    "placeholder": "To...",
+                                    "type": "input"
+                                }
+                            ];
+                        }
+                    }
+                    if(!columnDef.cellFilter){
+                        if(field.match(/Date$/)){
+                            columnDef.cellFilter = "date: 'yyyy-MM-dd'"
+                        } else {
+                            columnDef.cellFilter = "date: 'yyyy-MM-dd HH:mm:ss'"
+                        }
+                    }
+
+                    if(!columnDef.title){
+                        var entityTypeNamespace = helpers.constantify(entityType);
+                        var fieldNamespace = helpers.constantify(field);
+                        columnDef.title = 'BROWSE.COLUMN.' + entityTypeNamespace + '.' + fieldNamespace;
+                    }
+                }
 
 	            var filters = "";
 	            var matches;
@@ -271,12 +350,16 @@
 		};
 
 		this.uncapitalize = function(text){
-			return text.replace(/^(.)/, function(s){ return s.toLowerCase(); });
+			return ('' + text).replace(/^(.)/, function(s){ return s.toLowerCase(); });
 		}
 
 		this.capitalize = function(text){
-			return text.replace(/^(.)/, function(s){ return s.toUpperCase(); });
+			return ('' + text).replace(/^(.)/, function(s){ return s.toUpperCase(); });
 		}
+
+		this.constantify = function(text){
+			return ('' + text).replace(/([A-Z])/, '_$1').replace(/^_/, '').toUpperCase();
+		};
 
 		this.generateRestMethods = function(that, prefix){
 			
