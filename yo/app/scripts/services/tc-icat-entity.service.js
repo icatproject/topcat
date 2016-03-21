@@ -372,7 +372,7 @@
 			var children = {};
 			_.each(icatSchema.entityTypes[this.entityType].variablePaths, function(path, variableName){
 				var entityType = icatSchema.variables[variableName];
-				if(path.length == 2){
+				if(path.length == 1){
 					children[entityType] = path[0];
 				}
 			});

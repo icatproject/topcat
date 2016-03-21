@@ -42,6 +42,7 @@
                 queryBuilder.include('investigationParameterType');
                 queryBuilder.include('sample');
                 queryBuilder.include('publication');
+                queryBuilder.include('investigationUserUser');
             }
 
             if(entity.type == 'dataset'){
@@ -65,13 +66,19 @@
                         items: []
                     };
                     _.each(tabConfig.items, function(itemConfig){
-                        var find = itemConfig.find || entity.entityType;
-                        if(!find.match(/\]$/)) find = find + '[]'
+                        var find = entity.entityType;
+                        var field = itemConfig.field;
+                        var matches;
+                        if(matches = itemConfig.field.replace(/\|.+$/, '').match(/^(.*)?\.([^\.\[\]]+)$/)){
+                            find = matches[1];
+                            field = matches[2]
+                        }
+                        if(!find.match(/\]$/)) find = find + '[]';
                         _.each(entity.find(find), function(entity){
                             tab.items.push({
                                 title: itemConfig.title ? $translate.instant(itemConfig.title) : null,
                                 template: itemConfig.template,
-                                value: itemConfig.field ? entity.find(itemConfig.field)[0] : null,
+                                value: entity.find(field)[0],
                                 entity: entity
                             });
                         });

@@ -1055,46 +1055,27 @@
                     },
                     "metaTabs": [
                         {
-                            "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
-                            "field": "instrument",
-                            "default": true,
-                            "data": [
+                            "title": "METATABS.INSTRUMENT.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.NAME",
                                     "field": "fullName"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
                                     "field": "description"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
                                     "field": "type"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INSTRUMENT.URL",
                                     "field": "url"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
-                            "field": "instrumentScientists",
-                            "queryParams": [
-                                "InstrumentScientist",
-                                "User"
-                            ],
-                            "default": false,
-                            "data": [
+                            "title": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                            "items": [
                                 {
-                                    "field": "user",
-                                    "default": false,
-                                    "data": [
-                                        {
-                                            "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                            "field": "fullName"
-                                        }
-                                    ]
+                                    "field": "user"
                                 }
                             ]
                         }
@@ -1147,56 +1128,38 @@
                     },
                     "metaTabs": [
                         {
-                            "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
-                            "field": "investigation",
-                            "default": true,
-                            "data": [
+                            "title": "METATABS.INVESTIGATION.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.NAME",
                                     "field": "name"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.VISIT_ID",
                                     "field": "visitId"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
                                     "field": "title"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
                                     "field": "summary"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+                                    "title": "METATABS.INVESTIGATION.START_DATE",
                                     "field": "startDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+                                    "title": "METATABS.INVESTIGATION.END_DATE",
                                     "field": "endDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
-                            "field": "investigationUsers",
-                            "queryParams": [
-                                "InvestigationUser",
-                                "User"
-                            ],
-                            "default": false,
-                            "data": [
+                            "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                            "items": [
                                 {
-                                    "field": "user",
-                                    "default": false,
-                                    "data": [
-                                        {
-                                            "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
-                                            "field": "fullName"
-                                        }
-                                    ]
+                                    "title": "METATABS.INVESTIGATION_USERS.NAME",
+                                    "field": "investigationUserUser.fullName"
                                 }
                             ]
                         },
