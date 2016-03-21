@@ -98,7 +98,7 @@
                     }
 
                     if(!columnDef.title){
-                        var entityTypeNamespace = helpers.constantify(entityType);
+                        var entityTypeNamespace = helpers.constantify(variableEntityType);
                         var fieldNamespace = helpers.constantify(field);
                         columnDef.title = 'BROWSE.COLUMN.' + entityTypeNamespace + '.' + fieldNamespace;
                     }

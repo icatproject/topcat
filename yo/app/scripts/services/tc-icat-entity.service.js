@@ -353,7 +353,7 @@
 							}
 						}
 					} else {
-						var fieldName = variablePath.pop();
+						var fieldName = variablePath.shift();
 						current = current[fieldName];
 						if(current instanceof Array){
 							_.each(current, function(current){

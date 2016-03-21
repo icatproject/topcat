@@ -97,7 +97,7 @@
             "INSTRUMENT":{
                 "ID": "Id",
                 "NAME": "Beamline",
-                "FULLNAME": "Beamline",
+                "FULL_NAME": "Beamline",
                 "TYPE": "Type",
                 "URL": "Website"
             },
@@ -124,11 +124,7 @@
                 "RELEASE_DATE": "Release Date",
                 "SIZE" : "Size",
                 "FACILITY" : "Facility",
-                "RUN_NUMBER" : "Run Number",
-                "INSTRUMENT" : {
-                    "NAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME",
-                    "FULLNAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME"
-                }
+                "RUN_NUMBER" : "Run Number"
             },
             "DATASET":{
                 "ID": "Id",
