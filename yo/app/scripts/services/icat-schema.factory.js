@@ -225,7 +225,8 @@
 					'relationships':{
 						'sample': {
 							'entityType': 'sample',
-							'cardinality': '0,1'
+							'cardinality': '0,1',
+							'variableName': 'datasetSample'
 						},
 						'dataCollectionDatasets': {
 							'entityType': 'dataCollectionDataset',
@@ -248,7 +249,8 @@
 						},
 						'parameters': {
 							'entityType': 'datasetParameter',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'datasetParameter'
 						}
 					}
 				},
@@ -268,7 +270,8 @@
 					'relationships':{
 						'type': {
 							'entityType': 'parameterType',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'datasetParameterType'
 						},
 						'dataset': {
 							'entityType': 'dataset',
@@ -311,7 +314,8 @@
 					'relationships':{
 						'instruments': {
 							'entityType': 'instrument',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'instrument'
 						},
 						'facilityCycles': {
 							'entityType': 'facilityCycle',
