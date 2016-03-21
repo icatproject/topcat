@@ -243,7 +243,8 @@
 						},
 						'type': {
 							'entityType': 'datasetType',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'datasetType'
 						},
 						'parameters': {
 							'entityType': 'datasetParameter',

@@ -1219,45 +1219,34 @@
                     },
                     "metaTabs": [
                         {
-                            "translateDisplayName": "METATABS.DATASET.TABTITLE",
-                            "field": "dataset",
-                            "default": true,
-                            "data": [
+                            "title": "METATABS.DATASET.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.NAME",
                                     "field": "name"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
                                     "field": "description"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.START_DATE",
+                                    "title": "METATABS.DATASET.START_DATE",
                                     "field": "startDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET.END_DATE",
+                                    "title": "METATABS.DATASET.END_DATE",
                                     "field": "endDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
                                 }
                             ]
                         },
                         {
-                            "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
-                            "field": "type",
-                            "queryParams": [
-                                "DatasetType"
-                            ],
-                            "default": false,
-                            "data": [
+                            "title": "METATABS.DATASET_TYPE.TABTITLE",
+                            "items": [
                                 {
-                                    "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
-                                    "field": "name"
+                                    "field": "datasetType.name"
                                 },
                                 {
-                                    "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
-                                    "field": "description"
+                                    "field": "datasetType.description"
                                 }
                             ]
                         }

@@ -75,12 +75,15 @@
                         }
                         if(!find.match(/\]$/)) find = find + '[]';
                         _.each(entity.find(find), function(entity){
-                            tab.items.push({
-                                title: itemConfig.title ? $translate.instant(itemConfig.title) : null,
-                                template: itemConfig.template,
-                                value: entity.find(field)[0],
-                                entity: entity
-                            });
+                            var value = entity.find(field)[0];
+                            if(value !== undefined){
+                                tab.items.push({
+                                    title: itemConfig.title ? $translate.instant(itemConfig.title) : null,
+                                    template: itemConfig.template,
+                                    value: entity.find(field)[0],
+                                    entity: entity
+                                });
+                            }
                         });
                     });
 
