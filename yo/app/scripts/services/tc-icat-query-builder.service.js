@@ -103,6 +103,7 @@
     			var whereQuery = _.clone(whereList);
     			var whereQueryFragment = helpers.buildQuery(whereQuery);
     			var impliedPaths = {};
+
     			_.each(variablePaths, function(path, name){
     				if(name != entityType && whereQueryFragment.indexOf(name) >= 0){
     					impliedPaths[name] = path;
@@ -146,10 +147,12 @@
                     for(var i = 0; i < path.length; i++){
                         var pair = currentEntity + '.' + path[i];
                         if(!steps[pair]){
+                            console.log(steps)
                             throw "could not work out step " + pair;
                         }
-                        impliedVars[pair] = steps[pair];
-                        currentEntity = steps[pair];
+                        var variableName = steps[pair]
+                        impliedVars[pair] = variableName;
+                        currentEntity = icatSchema.variables[steps[pair]];
                     }
                 });
 

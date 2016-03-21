@@ -472,12 +472,13 @@
 							'variableName': 'dataset'
 						},
 						'investigationGroups': {
-							'entityType': 'investigationGroup',
+							'entityType': 'investigationGroupPivot',
 							'cardinality': '0,*'
 						},
 						'publications': {
 							'entityType': 'publication',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'publication'
 						},
 						'type': {
 							'entityType': 'investigationType',
@@ -486,11 +487,12 @@
 						'investigationInstruments': {
 							'entityType': 'investigationInstrument',
 							'cardinality': '0,*',
-							'variableName': 'investigationInstrument'
+							'variableName': 'investigationInstrumentPivot'
 						},
 						'parameters': {
 							'entityType': 'investigationParameter',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'investigationParameterPivot'
 						},
 						'studyInvestigations': {
 							'entityType': 'studyInvestigation',
@@ -498,12 +500,13 @@
 						},
 						'samples': {
 							'entityType': 'sample',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'investigationSample'
 						},
 						'investigationUsers': {
 							'entityType': 'investigationUser',
 							'cardinality': '0,*',
-							'variableName': 'investigationUser'
+							'variableName': 'investigationUserPivot'
 						}
 					}
 				},
@@ -522,7 +525,8 @@
 						},
 						'grouping': {
 							'entityType': 'grouping',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'investigationGroup'
 						}
 					}
 				},
@@ -541,7 +545,7 @@
 						'instrument': {
 							'entityType': 'instrument',
 							'cardinality': '1,1',
-							'variableName': 'investigationInstrumentInstrument'
+							'variableName': 'investigationInstrument'
 						}
 					}
 				},
@@ -565,7 +569,8 @@
 						},
 						'type': {
 							'entityType': 'parameterType',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'investigationParameterType'
 						}
 					}
 				},
@@ -601,7 +606,7 @@
 						'user': {
 							'entityType': 'user',
 							'cardinality': '1,1',
-							'variableName': 'investigationUserUser'
+							'variableName': 'investigationUser'
 						},
 						'investigation': {
 							'entityType': 'investigation',

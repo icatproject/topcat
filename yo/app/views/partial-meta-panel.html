@@ -4,12 +4,9 @@
     	<uib-tab ng-repeat="tab in meta.tabs" ng-show="tab.items.length" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
       		<div class="tab-content">
 				<div class="item" ng-repeat="item in tab.items">
-					<div ng-if="item.title">
-						<span class="title">{{item.title}}</span>
-						<span ng-if="!item.template" class="value">{{item.value}}</span>
-						<span ng-if="item.template" compile="item.template"></span>
-					</div>
-					<div ng-if="!item.title && item.template" compile="item.template"></div>
+					<span class="title" ng-if="item.title != ''">{{item.title}}</span>
+					<span ng-if="!item.template" class="value">{{item.value}}</span>
+					<span ng-if="item.template" compile="item.template"></span>
 				</div>
 			</div>
     	</uib-tab>

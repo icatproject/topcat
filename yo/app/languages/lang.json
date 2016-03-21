@@ -89,7 +89,7 @@
             "FACILITY":{
                 "ID": "Id",
                 "NAME": "Name",
-                "FULLNAME": "Full Name",
+                "FULL_NAME": "Full Name",
                 "DESCRIPTION": "Description",
                 "URL": "Web Site",
                 "DAYS_UNTIL_RELEASE": "Days Until Release"
@@ -458,7 +458,7 @@
     "METATABS" : {
         "FACILITY" : {
             "TABTITLE" : "Facility",
-            "FULLNAME" : "Full Name",
+            "FULL_NAME" : "Full Name",
             "NAME" : "Name",
             "DESCRIPTION" : "Description",
             "URL" : "URL"
