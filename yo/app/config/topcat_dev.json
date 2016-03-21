@@ -1106,25 +1106,11 @@
                         "columnDefs": [
                             {
                                 "field": "investigation.title",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "starts_with",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                },
-                                "cellTooltip": true,
                                 "link": true,
                                 "breadcrumb": true
                             },
                             {
                                 "field": "name",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "starts_with",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                },
-                                "cellTooltip": true,
                                 "link": true
                             }
                         ]
@@ -1137,68 +1123,25 @@
                         "columnDefs": [
                             {
                                 "field": "visitId",
-                                "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "contains",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                },
-                                "cellTooltip": true,
                                 "link": true,
                                 "breadcrumb": true
                             },
                             {
-                                "field": "size",
-                                "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
-                                "type": "number"
+                                "field": "size|bytes"
                             },
                             {
-                                "field": "investigationInstrumentInstrument.fullName",
-                                "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.FULLNAME",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "starts_with",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                }
+                                "field": "investigationInstrumentInstrument.fullName"
                             },
                             {
                                 "field": "startDate",
-                                "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
-                                "type": "date",
-                                "cellFilter": "date: 'yyyy-MM-dd'",
                                 "excludeFuture": true,
                                 "sort": {
                                   "direction": "desc",
                                   "priority": 1
-                                },
-                                "filters": [
-                                    {
-                                        "placeholder": "From...",
-                                        "type": "input"
-                                    },
-                                    {
-                                        "placeholder": "To...",
-                                        "type": "input"
-                                    }
-                                ]
+                                }
                             },
                             {
-                                "field": "endDate",
-                                "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
-                                "type": "date",
-                                "cellFilter": "date: 'yyyy-MM-dd'",
-                                "filters": [
-                                    {
-                                        "placeholder": "From...",
-                                        "type": "input"
-                                    },
-                                    {
-                                        "placeholder": "To...",
-                                        "type": "input"
-                                    }
-                                ]
+                                "field": "endDate"
                             }
                         ]
                     },
@@ -1294,56 +1237,20 @@
                         "columnDefs": [
                             {
                                 "field": "name",
-                                "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "contains",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                },
-                                "cellTooltip": true,
                                 "link": true
                             },
                             {
-                                "field": "size",
-                                "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
-                                "type": "number"
+                                "field": "size|bytes"
                             },
                             {
                                 "field": "createTime",
-                                "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
-                                "type": "date",
-                                "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                                 "sort": {
                                   "direction": "desc",
                                   "priority": 1
-                                },
-                                "filters": [
-                                    {
-                                        "placeholder": "From...",
-                                        "type": "input"
-                                    },
-                                    {
-                                        "placeholder": "To...",
-                                        "type": "input"
-                                    }
-                                ]
+                                }
                             },
                             {
-                                "field": "modTime",
-                                "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
-                                "type": "date",
-                                "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
-                                "filters": [
-                                    {
-                                        "placeholder": "From...",
-                                        "type": "input"
-                                    },
-                                    {
-                                        "placeholder": "To...",
-                                        "type": "input"
-                                    }
-                                ]
+                                "field": "modTime"
                             }
                         ]
                     },

@@ -33,6 +33,21 @@
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
 
+
+        _.each(this.gridOptions.columnDefs, function(columnDef){
+            if(columnDef.sort){
+                sortColumns.push({
+                    colDef: {jpqlExpression: columnDef.jpqlExpression},
+                    sort: columnDef.sort
+                })
+            }
+        });
+
+        sortColumns = _.sortBy(sortColumns, function(sortColumn){
+            return sortColumn.sort.priority;
+        });
+
+
         function generateQueryBuilder(){
             var entityType = stateFromTo.replace(/^.*-/, '');
             var out = icat.queryBuilder(entityType);
