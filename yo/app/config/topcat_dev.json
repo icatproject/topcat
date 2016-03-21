@@ -1306,57 +1306,20 @@
                         "enableSelection": true,
                         "columnDefs": [
                             {
-                                "field": "name",
-                                "translateDisplayName": "BROWSE.COLUMN.DATAFILE.NAME",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "contains",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                },
-                                "cellTooltip": true
+                                "field": "name"
                             },
                             {
-                                "field": "location",
-                                "translateDisplayName": "BROWSE.COLUMN.DATAFILE.LOCATION",
-                                "type": "string",
-                                "cellTooltip" :true,
-                                "filter": {
-                                    "condition": "contains",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                }
+                                "field": "location"
                             },
                             {
-                                "field": "fileSize",
-                                "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
-                                "type": "number",
-                                "cellFilter": "bytes",
-                                "filter": {
-                                    "condition": "contains",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                }
+                                "field": "fileSize|bytes"
                             },
                             {
                                 "field": "datafileCreateTime",
-                                "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_CREATE_TIME",
-                                "type": "date",
-                                "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                                 "sort": {
                                   "direction": "desc",
                                   "priority": 1
-                                },
-                                "filters": [
-                                    {
-                                        "placeholder": "From...",
-                                        "type": "input"
-                                    },
-                                    {
-                                        "placeholder": "To...",
-                                        "type": "input"
-                                    }
-                                ]
+                                }
                             }
                         ]
                     },
