@@ -60,6 +60,50 @@
             'out': {
               'dataset.investigation': 'investigation'
             }
+          },
+          {
+            'in': {
+              'datasetParameter': ['parameters']
+            },
+            'out': {
+              'dataset.parameters': 'datasetParameter'
+            }
+          },
+          {
+            'in': {
+              'datasetParameterType': ['parameters', 'type']
+            },
+            'out': {
+              'dataset.parameters': 'datasetParameter',
+              'datasetParameter.type': 'datasetParameterType'
+            }
+          },
+        ],
+        'datafile': [
+          {
+            'in': {
+              'dataset': ['dataset']
+            },
+            'out': {
+              'datafile.dataset': 'dataset'
+            }
+          },
+          {
+            'in': {
+              'datafileParameter': ['parameters']
+            },
+            'out': {
+              'datafile.parameters': 'datafileParameter'
+            }
+          },
+          {
+            'in': {
+              'datafileParameterType': ['parameters', 'type']
+            },
+            'out': {
+              'datafile.parameters': 'datafileParameter',
+              'datafileParameter.type': 'datafileParameterType'
+            }
           }
         ]
       };
