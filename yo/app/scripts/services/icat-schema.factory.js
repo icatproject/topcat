@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.factory('icatSchema', function(){
+    app.factory('icatSchema', [function(){
     	var out = {
 			'entityTypes': {
 				'application': {
@@ -410,7 +410,8 @@
 					'relationships':{
 						'facility': {
 							'entityType': 'facility',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'facility'
 						},
 						'instrumentScientists': {
 							'entityType': 'instrumentScientist',
@@ -1033,18 +1034,18 @@
 			entitySchema['variablePaths'] = findVariablePaths(entityType);
 		});
 
-		out.variables = {};
+		out.variableEntityTypes = {};
 
 		_.each(out.entityTypes, function(entityTypeSchema){
 			_.each(entityTypeSchema.relationships, function(relationship){
 				if(relationship.variableName){
-					out.variables[relationship.variableName] = relationship.entityType;
+					out.variableEntityTypes[relationship.variableName] = relationship.entityType;
 				}
 			});
 		});
 
 		return out;
-    });
+    }]);
     	
 
 })();

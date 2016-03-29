@@ -15,7 +15,7 @@
                     var matches;
                     if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
                         var variableName = matches[1];
-                        entityType = icatSchema.variables[variableName];
+                        entityType = icatSchema.variableEntityTypes[variableName];
                         if(!entityType){
                             console.error("Unknown variableName: " + variableName, item)
                         }
@@ -50,7 +50,7 @@
                 var variableEntityType = entityType;
                 if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
                     var variableName = matches[1];
-                    variableEntityType = icatSchema.variables[variableName];
+                    variableEntityType = icatSchema.variableEntityTypes[variableName];
                     if(!entityType){
                         console.error("Unknown variableName: " + variableName, columnDef)
                     }

@@ -9,10 +9,10 @@
 
         var steps = {};
         _.each(icatSchema.entityTypes, function(entitySchema, entityType){
-            _.each(entitySchema.variablePaths, function(path, name){
+            _.each(entitySchema.variablePaths, function(path, variableName){
                 var matches;
                 if(path.length == 1){
-                    steps[entityType + '.' + path[0]] = name;
+                    steps[entityType + '.' + path[0]] = variableName;
                 }
             });
         });
@@ -139,22 +139,29 @@
                     impliedPaths = alteredImpliedPaths;
                 }
 
+
+                
                 var impliedVars = {};
+                console.log('impliedPaths', impliedPaths);
                 _.each(impliedPaths, function(path, name){
                     var currentEntity = entityType;
                     if(currentEntity == 'proposal') currentEntity = 'investigation';
 
-                    for(var i = 0; i < path.length; i++){
-                        var pair = currentEntity + '.' + path[i];
+                    path = _.flatten([currentEntity, path]);
+                    var nextVariableName = currentEntity;
+                    for(var i = 0; i < path.length - 1; i++){
+                        var pair = path[i] + '.' + path[i + 1];
+                        var variableName = steps[pair];
                         if(!steps[pair]){
                             console.log(steps)
                             throw "could not work out step " + pair;
                         }
-                        var variableName = steps[pair]
-                        impliedVars[pair] = variableName;
-                        currentEntity = icatSchema.variables[steps[pair]];
+                        var joinPair = nextVariableName + '.' + path[i + 1];
+                        impliedVars[joinPair] = variableName;
+                        nextVariableName = variableName;
                     }
                 });
+
 
     			var joins = [];
     			_.each(impliedVars, function(name, pair){
@@ -183,6 +190,10 @@
 
     			return helpers.buildQuery(out);
     		}
+
+            this.impliedPathsToImpliedSteps = function(impliedPaths){
+                
+            };
 
     		this.run = helpers.overload({
     			'object': function(options){

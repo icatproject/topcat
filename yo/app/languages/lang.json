@@ -101,7 +101,7 @@
                 "TYPE": "Type",
                 "URL": "Website"
             },
-            "FACILITYCYCLE":{
+            "FACILITY_CYCLE":{
                 "ID": "Id",
                 "NAME": "Name",
                 "DESCRIPTION": "Description",
