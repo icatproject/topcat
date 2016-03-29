@@ -45,10 +45,13 @@
           },
           {
             'in': {
-              'facility': ['facility']
+              'datafileParameterType': ['datasets', 'datafiles', 'parameters', 'type']
             },
             'out': {
-              'investigation.facility': 'facility'
+              'investigation.datasets': 'dataset',
+              'dataset.datafiles': 'datafile',
+              'datafile.parameters': 'datafileParameter',
+              'datafileParameter.type': 'datafileParameterType'
             }
           }
         ],
