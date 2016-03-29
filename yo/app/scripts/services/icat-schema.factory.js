@@ -497,7 +497,7 @@
 						'parameters': {
 							'entityType': 'investigationParameter',
 							'cardinality': '0,*',
-							'variableName': 'investigationParameterPivot'
+							'variableName': 'investigationParameter'
 						},
 						'studyInvestigations': {
 							'entityType': 'studyInvestigation',
