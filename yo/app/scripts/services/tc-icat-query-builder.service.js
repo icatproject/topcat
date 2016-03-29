@@ -139,29 +139,7 @@
                     impliedPaths = alteredImpliedPaths;
                 }
 
-
-                
-                var impliedVars = {};
-                console.log('impliedPaths', impliedPaths);
-                _.each(impliedPaths, function(path, name){
-                    var currentEntity = entityType;
-                    if(currentEntity == 'proposal') currentEntity = 'investigation';
-
-                    path = _.flatten([currentEntity, path]);
-                    var nextVariableName = currentEntity;
-                    for(var i = 0; i < path.length - 1; i++){
-                        var pair = path[i] + '.' + path[i + 1];
-                        var variableName = steps[pair];
-                        if(!steps[pair]){
-                            console.log(steps)
-                            throw "could not work out step " + pair;
-                        }
-                        var joinPair = nextVariableName + '.' + path[i + 1];
-                        impliedVars[joinPair] = variableName;
-                        nextVariableName = variableName;
-                    }
-                });
-
+                var impliedVars = this.impliedPathsToImpliedSteps(impliedPaths);
 
     			var joins = [];
     			_.each(impliedVars, function(name, pair){
@@ -192,7 +170,21 @@
     		}
 
             this.impliedPathsToImpliedSteps = function(impliedPaths){
-                
+                var out = {};
+                _.each(impliedPaths, function(path, variableName){
+                    var currentVariableName = entityType;
+                    var currentEntityType = entityType;
+                    _.each(path, function(relationship){
+                        if(currentEntityType == 'proposal') currentEntityType = 'investigation';
+                        if(currentVariableName == 'proposal') currentVariableName = 'investigation';
+                        var stepPair = currentVariableName + "." + relationship;
+                        var entityPair = currentEntityType + "." + relationship;
+                        currentVariableName = steps[entityPair];
+                        out[stepPair] = currentVariableName;
+                        currentEntityType = icatSchema['variableEntityTypes'][currentVariableName];
+                    });
+                });
+                return out;
             };
 
     		this.run = helpers.overload({
