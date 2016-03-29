@@ -108,9 +108,20 @@
               'datafileParameter.type': 'datafileParameterType'
             }
           }
+        ],
+        'datafileParameter': [
+          {
+            'in': {
+              'investigation': ['datafile', 'dataset', 'investigation']
+            },
+            'out': {
+              'datafileParameter.datafile': 'datafile',
+              'datafile.dataset': 'dataset',
+              'dataset.investigation': 'investigation'
+            }
+          }
         ]
       };
-
 
       _.each(entityTypeExpectations, function(expectations, entityType){
         var queryBuilder = tc.icat('test').queryBuilder(entityType);

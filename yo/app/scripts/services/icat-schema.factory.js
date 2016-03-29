@@ -204,7 +204,8 @@
 						},
 						'datafile': {
 							'entityType': 'datafile',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'datafile'
 						}
 					}
 				},
