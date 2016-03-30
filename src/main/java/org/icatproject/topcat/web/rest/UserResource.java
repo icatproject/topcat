@@ -82,6 +82,24 @@ public class UserResource {
     @PersistenceContext(unitName="topcatv2")
     EntityManager em;
 
+    /**
+     * Returns a list of downloads associated with a particular sessionId filtered by a partial JPQL expression.
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param queryOffset
+     *  any JPQL expression that can be appended to "SELECT download from Download download",
+     *  e.g. "where download.isDeleted = false". Note that like ICAT the syntax has been extended
+     *  allowing (sql like) limit clauses in the form "limit [offset], [row count]" e.g. "limit 10, 20".
+     *  Note the "status" attribute is an enum (not a string) i.e. org.icatproject.topcat.domain.Status
+     *  with the following possible states: ONLINE, ARCHIVE or RESTORING. So an example query involving
+     *  the status attribute could be "where download.status = org.icatproject.topcat.domain.Status.ARCHIVE limit 0, 10"
+     *
+     * @return returns an array of downloads in the form
+     * [{"completedAt":"2016-03-18T16:02:36","createdAt":"2016-03-18T16:02:36","deletedAt":"2016-03-18T16:02:47","downloadItems":[{"entityId":18064,"entityType":"datafile","id":2},{"entityId":18061,"entityType":"datafile","id":3}],"email":"","facilityName":"test","fileName":"test_2016-3-18_16-05-59","icatUrl":"https://example.com","id":2,"isDeleted":false,"isTwoLevel":false,"preparedId":"6d3aaca5-da9f-4e6a-922d-eceeefcc07e0","status":"COMPLETE","transport":"https","transportUrl":"https://example.com","userName":"simple/root"}]
+     */
     @GET
     @Path("/downloads")
     @Produces({MediaType.APPLICATION_JSON})
@@ -101,6 +119,17 @@ public class UserResource {
         return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
     }
 
+    /**
+     * Sets whether or not a download is deleted associated with a particular sessionId.
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param id the download id in the database.
+     *
+     * @param value either true or false.
+     */
     @PUT
     @Path("/download/{id}/isDeleted")
     @Produces({MediaType.APPLICATION_JSON})
@@ -131,7 +160,18 @@ public class UserResource {
         return Response.ok().build();
     }
 
-    
+    /**
+     * Returns the cart object associated with a particular sessionId and facility.
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param facilityName the name of the facility e.g. 'dls'.
+     *
+     * @return returns the cart object in the form:
+     * {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,"name":"tenenvironment.rhy","parentEntities":[{"entityId":182,"entityType":"investigation","id":1},{"entityId":1818,"entityType":"dataset","id":2}]},{"entityId":181,"entityType":"investigation","id":2,"name":"APPLIEDAHEAD","parentEntities":[]}],"createdAt":"2016-03-30T10:52:32","facilityName":"example","id":1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
+     */
     @GET
     @Path("/cart/{facilityName}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -152,6 +192,21 @@ public class UserResource {
         }
     }
 
+    /*
+     * Adds items to the cart.
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param facilityName the name of the facility e.g. 'dls'.
+     *
+     * @param items a list of entity type (i.e. datafile, dataset or investigation) and id pairs in the form:
+     * investigation 2, datafile 1
+     *
+     * @return returns the cart object in the form:
+     * {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,"name":"tenenvironment.rhy","parentEntities":[{"entityId":182,"entityType":"investigation","id":1},{"entityId":1818,"entityType":"dataset","id":2}]},{"entityId":181,"entityType":"investigation","id":2,"name":"APPLIEDAHEAD","parentEntities":[]}],"createdAt":"2016-03-30T10:52:32","facilityName":"example","id":1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
+     */
     @POST
     @Path("/cart/{facilityName}/cartItems")
     @Produces({MediaType.APPLICATION_JSON})
