@@ -94,7 +94,7 @@ public class UserResource {
      *  e.g. "where download.isDeleted = false". Note that like ICAT the syntax has been extended
      *  allowing (sql like) limit clauses in the form "limit [offset], [row count]" e.g. "limit 10, 20".
      *  Note the "status" attribute is an enum (not a string) i.e. org.icatproject.topcat.domain.Status
-     *  with the following possible states: ONLINE, ARCHIVE or RESTORING. So an example query involving
+     *  with the following possible states: 'ONLINE', 'ARCHIVE' or 'RESTORING'. So an example query involving
      *  the status attribute could be "where download.status = org.icatproject.topcat.domain.Status.ARCHIVE limit 0, 10"
      *
      * @return returns an array of downloads in the form
@@ -192,8 +192,8 @@ public class UserResource {
         }
     }
 
-    /*
-     * Adds items to the cart.
+    /**
+     * Adds items to the cart associated with a particular sessionId and facility.
      *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
@@ -201,7 +201,7 @@ public class UserResource {
      *
      * @param facilityName the name of the facility e.g. 'dls'.
      *
-     * @param items a list of entity type (i.e. datafile, dataset or investigation) and id pairs in the form:
+     * @param items a list of entity type (i.e. datafile, dataset or investigation) and entity id pairs in the form:
      * investigation 2, datafile 1
      *
      * @return returns the cart object in the form:
@@ -269,7 +269,21 @@ public class UserResource {
         return Response.ok().entity(cart).build();
     }
 
-
+    /**
+     * Deletes items from the cart associated with a particular sessionId and facility.
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param facilityName the name of the facility e.g. 'dls'.
+     *
+     * @param items a list of entity type (i.e. datafile, dataset or investigation) and entity id pairs, in the form:
+     * investigation 2, datafile 1. Or a list cart item ids in the form: 45, 56.
+     * 
+     * @return returns the cart object in the form:
+     * {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,"name":"tenenvironment.rhy","parentEntities":[{"entityId":182,"entityType":"investigation","id":1},{"entityId":1818,"entityType":"dataset","id":2}]},{"entityId":181,"entityType":"investigation","id":2,"name":"APPLIEDAHEAD","parentEntities":[]}],"createdAt":"2016-03-30T10:52:32","facilityName":"example","id":1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
+     */
     @DELETE
     @Path("/cart/{facilityName}/cartItems")
     @Produces({MediaType.APPLICATION_JSON})
@@ -329,6 +343,25 @@ public class UserResource {
         return Response.ok().entity(cart).build();
     }
 
+    /**
+     * Submits a cart which creates a download.
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param facilityName the name of the facility e.g. 'dls'.
+     *
+     * @param transport the type of delivery method e.g. 'https' or 'globus' etc...
+     *
+     * @param transportUrl a url to a valid IDS REST api.
+     *
+     * @email an optional email to send download status messages to e.g. if the download is prepared
+     *
+     * @fileName the name of the zip file containing the downloads.
+     *
+     * @zipType packaging options can be 'ZIP' (default) or 'ZIP_AND_COMPRESS'
+     */
     @POST
     @Path("/cart/{facilityName}/submit")
     @Produces({MediaType.APPLICATION_JSON})

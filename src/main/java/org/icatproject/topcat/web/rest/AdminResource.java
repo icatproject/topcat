@@ -80,7 +80,7 @@ public class AdminResource {
      *  e.g. "where download.isDeleted = false". Note that like ICAT the syntax has been extended
      *  allowing (sql like) limit clauses in the form "limit [offset], [row count]" e.g. "limit 10, 20".
      *  Note the "status" attribute is an enum (not a string) i.e. org.icatproject.topcat.domain.Status
-     *  with the following possible states: ONLINE, ARCHIVE or RESTORING. So an example query involving
+     *  with the following possible states: 'ONLINE', 'ARCHIVE' or 'RESTORING'. So an example query involving
      *  the status attribute could be "where download.status = org.icatproject.topcat.domain.Status.ARCHIVE limit 0, 10"
      *
      * @return returns an array of downloads in the form
@@ -115,7 +115,7 @@ public class AdminResource {
      *
      * @param id the download id in the database.
      *
-     * @param value the status value i.e. ONLINE, ARCHIVE or RESTORING.
+     * @param value the status value i.e. 'ONLINE', 'ARCHIVE' or 'RESTORING'.
      */
     @PUT
     @Path("/download/{id}/status")
