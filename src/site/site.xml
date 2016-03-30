@@ -16,6 +16,7 @@
         <item name="--paging Object" href="paging.html"/>
         <item name="--site Object" href="site.html"/>
         <item name="Release Notes" href="release-notes.html"/>
+        <item name="RESTful interface (in new window)" href="miredot/index.html" target="_blank"/>
     </menu>
 
     <menu ref="reports"/>
