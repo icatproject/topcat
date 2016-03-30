@@ -45,6 +45,16 @@ public class AdminResource {
     @EJB
     private ICATClientBean icatClientService;
 
+
+    /**
+     * Returns whether or not the session provided has admin access - i.e. can use this "v1/admin/* api."
+     *   
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @return "true" or "false" if the session has admin access or not.
+    */
     @GET
     @Path("/isValidSession")
     @Produces({MediaType.APPLICATION_JSON})
@@ -58,6 +68,21 @@ public class AdminResource {
         return Response.ok().entity(isAdmin).build();
     }
 
+    /**
+     * Returns a list of downloads filtered by a partial JPQL expression.
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param queryOffset
+     *  any JPQL expression that can be appended to "SELECT download from Download download",
+     *  e.g. "where dowload.isDeleted = false". Note that like ICAT the syntax has been extended
+     *  allowing (sql like) limit clauses in the form "limit [offset], [row count]" e.g. "limit 10, 20".
+     *  
+     * @return returns an array of downloads in the form
+     * [{"completedAt":"2016-03-18T16:02:36","createdAt":"2016-03-18T16:02:36","deletedAt":"2016-03-18T16:02:47","downloadItems":[{"entityId":18064,"entityType":"datafile","id":2},{"entityId":18061,"entityType":"datafile","id":3}],"email":"","facilityName":"test","fileName":"test_2016-3-18_16-05-59","icatUrl":"https://example.com","id":2,"isDeleted":false,"isTwoLevel":false,"preparedId":"6d3aaca5-da9f-4e6a-922d-eceeefcc07e0","status":"COMPLETE","transport":"https","transportUrl":"https://example.com","userName":"simple/root"}]
+     */
     @GET
     @Path("/downloads")
     @Produces({MediaType.APPLICATION_JSON})
@@ -78,6 +103,9 @@ public class AdminResource {
         return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
     }
 
+    /**
+     * 
+     */
     @PUT
     @Path("/download/{id}/status")
     @Produces({MediaType.APPLICATION_JSON})
