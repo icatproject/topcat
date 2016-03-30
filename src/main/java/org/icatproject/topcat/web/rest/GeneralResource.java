@@ -23,6 +23,8 @@ public class GeneralResource {
     /**
      * Used to detect whether Topcat is running or not.
      *
+     * @summary ping
+     *
      * @return a string "ok" if all is well
     */
     @GET
@@ -38,6 +40,8 @@ public class GeneralResource {
 
     /**
      * Provides the current version of the Topcat instance.
+     *
+     * @summary getVersion
      *
      * @return a version number as a string e.g. "2.0.0"
     */

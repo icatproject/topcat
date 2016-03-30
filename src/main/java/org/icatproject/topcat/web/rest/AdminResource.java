@@ -48,6 +48,8 @@ public class AdminResource {
 
     /**
      * Returns whether or not the session provided has admin access - i.e. can use this "v1/admin/* api."
+     *
+     * @summary isValidSession
      *   
      * @param icatUrl a url to a valid ICAT REST api.
      * 
@@ -70,6 +72,8 @@ public class AdminResource {
 
     /**
      * Returns a list of downloads filtered by a partial JPQL expression.
+     *
+     * @summary getDownloads
      *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
@@ -109,6 +113,8 @@ public class AdminResource {
     /**
      * Sets the download status.
      *
+     * @summary setDownloadStatus
+     *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
@@ -144,6 +150,8 @@ public class AdminResource {
     
     /**
      * Sets whether or not a download is deleted.
+     *
+     * @summary deleteDownload
      *
      * @param icatUrl a url to a valid ICAT REST api.
      * 

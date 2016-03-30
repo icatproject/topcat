@@ -85,6 +85,8 @@ public class UserResource {
     /**
      * Returns a list of downloads associated with a particular sessionId filtered by a partial JPQL expression.
      *
+     * @summary getDownloads
+     *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
@@ -121,6 +123,8 @@ public class UserResource {
 
     /**
      * Sets whether or not a download is deleted associated with a particular sessionId.
+     *
+     * @summary deleteDownload
      *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
@@ -163,6 +167,8 @@ public class UserResource {
     /**
      * Returns the cart object associated with a particular sessionId and facility.
      *
+     * @summary getCart
+     *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
@@ -194,6 +200,8 @@ public class UserResource {
 
     /**
      * Adds items to the cart associated with a particular sessionId and facility.
+     *
+     * @summary addCartItems
      *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
@@ -272,6 +280,8 @@ public class UserResource {
     /**
      * Deletes items from the cart associated with a particular sessionId and facility.
      *
+     * @summary deleteCartItems
+     *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
@@ -346,6 +356,8 @@ public class UserResource {
     /**
      * Submits a cart which creates a download.
      *
+     * @summary submitCart
+     *
      * @param icatUrl a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
@@ -356,11 +368,14 @@ public class UserResource {
      *
      * @param transportUrl a url to a valid IDS REST api.
      *
-     * @email an optional email to send download status messages to e.g. if the download is prepared
+     * @param email an optional email to send download status messages to e.g. if the download is prepared
      *
-     * @fileName the name of the zip file containing the downloads.
+     * @param fileName the name of the zip file containing the downloads.
      *
-     * @zipType packaging options can be 'ZIP' (default) or 'ZIP_AND_COMPRESS'
+     * @param zipType zip compressing options can be 'ZIP' (default) or 'ZIP_AND_COMPRESS'
+     *
+     * @return returns the (empty) cart object (with downloadId) in the form:
+     * {"facilityName":"test","userName":"simple/root","cartItems":[],"downloadId":3}
      */
     @POST
     @Path("/cart/{facilityName}/submit")
