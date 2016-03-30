@@ -101,6 +101,12 @@ public class UserResource {
      *
      * @return returns an array of downloads in the form
      * [{"completedAt":"2016-03-18T16:02:36","createdAt":"2016-03-18T16:02:36","deletedAt":"2016-03-18T16:02:47","downloadItems":[{"entityId":18064,"entityType":"datafile","id":2},{"entityId":18061,"entityType":"datafile","id":3}],"email":"","facilityName":"test","fileName":"test_2016-3-18_16-05-59","icatUrl":"https://example.com","id":2,"isDeleted":false,"isTwoLevel":false,"preparedId":"6d3aaca5-da9f-4e6a-922d-eceeefcc07e0","status":"COMPLETE","transport":"https","transportUrl":"https://example.com","userName":"simple/root"}]
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @GET
     @Path("/downloads")
@@ -133,6 +139,12 @@ public class UserResource {
      * @param id the download id in the database.
      *
      * @param value either true or false.
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @PUT
     @Path("/download/{id}/isDeleted")
@@ -177,6 +189,12 @@ public class UserResource {
      *
      * @return returns the cart object in the form:
      * {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,"name":"tenenvironment.rhy","parentEntities":[{"entityId":182,"entityType":"investigation","id":1},{"entityId":1818,"entityType":"dataset","id":2}]},{"entityId":181,"entityType":"investigation","id":2,"name":"APPLIEDAHEAD","parentEntities":[]}],"createdAt":"2016-03-30T10:52:32","facilityName":"example","id":1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @GET
     @Path("/cart/{facilityName}")
@@ -214,6 +232,12 @@ public class UserResource {
      *
      * @return returns the cart object in the form:
      * {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,"name":"tenenvironment.rhy","parentEntities":[{"entityId":182,"entityType":"investigation","id":1},{"entityId":1818,"entityType":"dataset","id":2}]},{"entityId":181,"entityType":"investigation","id":2,"name":"APPLIEDAHEAD","parentEntities":[]}],"createdAt":"2016-03-30T10:52:32","facilityName":"example","id":1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @POST
     @Path("/cart/{facilityName}/cartItems")
@@ -293,6 +317,12 @@ public class UserResource {
      * 
      * @return returns the cart object in the form:
      * {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,"name":"tenenvironment.rhy","parentEntities":[{"entityId":182,"entityType":"investigation","id":1},{"entityId":1818,"entityType":"dataset","id":2}]},{"entityId":181,"entityType":"investigation","id":2,"name":"APPLIEDAHEAD","parentEntities":[]}],"createdAt":"2016-03-30T10:52:32","facilityName":"example","id":1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @DELETE
     @Path("/cart/{facilityName}/cartItems")
@@ -376,6 +406,12 @@ public class UserResource {
      *
      * @return returns the (empty) cart object (with downloadId) in the form:
      * {"facilityName":"test","userName":"simple/root","cartItems":[],"downloadId":3}
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @POST
     @Path("/cart/{facilityName}/submit")

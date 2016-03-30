@@ -56,7 +56,11 @@ public class AdminResource {
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
      * @return "true" or "false" if the session has admin access or not.
-    */
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws TopcatException if anything else goes wrong.
+     */
     @GET
     @Path("/isValidSession")
     @Produces({MediaType.APPLICATION_JSON})
@@ -122,6 +126,12 @@ public class AdminResource {
      * @param id the download id in the database.
      *
      * @param value the status value i.e. 'ONLINE', 'ARCHIVE' or 'RESTORING'.
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @PUT
     @Path("/download/{id}/status")
@@ -160,6 +170,12 @@ public class AdminResource {
      * @param id the download id in the database.
      *
      * @param value either true or false.
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
      */
     @PUT
     @Path("/download/{id}/isDeleted")
