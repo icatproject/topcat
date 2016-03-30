@@ -4,6 +4,7 @@
   <body>
     <menu name="Contents">
         <item name="TopCAT Installation" href="installation.html"/>
+        <item name="Configuration New" href="configuration-new.html"/>
         <item name="Configuration Quick Start Guide" href="configuration-quick-start-guide.html"/>
         <item name="Configuration" href="configuration.html"/>
         <item name="-topcat.json configuration" href="topcat-json-configuration.html"/>

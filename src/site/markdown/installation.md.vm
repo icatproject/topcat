@@ -1,29 +1,24 @@
-#set($h1 = '#')
-#set($h2 = '##')
-#set($h3 = '###')
-#set($h4 = '####')
 
-$h1 TopCAT Installation Guide
 
-$h2 Compatibility
+# TopCAT Installation Guide
 
-TopCAT requires icat.server 4.6-SNAPSHOT  and ids.server 1.5.0.
+## Compatibility
 
-icat.server 4.5 also works but you will [not be able to login using Firefox](https://github.com/icatproject/icat.server/issues/149).
+TopCAT requires icat.server 4.6+  and ids.server 1.5.0.+
 
-$h2 Prerequisites
+## Prerequisites
 
   - The TopCAT distribution: [topcat-${project.version}-distro.zip](${repoUrl}/org/icatproject/topcat/${project.version}/topcat-${project.version}-distro.zip)
   - A suitable deployed container (here assumed to be glassfish) to support a web application. Testing has been carried out with Glassfish 4.0. [Glassfish installation instructions](http://icatproject.org/installation/glassfish/) are available.
   -  A database as described in [Database installation instructions]http://icatproject.org/installation/database/) installed on the server.
   - Python (version 2.4 to 2.7) installed on the server.
 
-$h2 Configure
+## Configure
 
 See [Configuration Quick Start Guide](configuration-quick-start-guide.html) and [configuration page](configuration.html)
 
 
-$h2 Install
+## Install
 
   1. Extract the topcat distro zip file and change directory to the unpacked distribution
   2. Rename all the *.example files by removing the .example extensions. The directory must have 5 files named:
@@ -42,6 +37,6 @@ $h2 Install
   7. Run install
     `./setup install`
 
-$h2 Uninstall
+## Uninstall
   1. Run uninstall
     `./setup uninstall`
