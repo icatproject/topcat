@@ -23,35 +23,9 @@
       }
       var admin = tc.admin($state.params.facilityName);
 
-      this.gridOptions = _.merge({
-          data: [],
-          appScopeProvider: this,
-          enableFiltering: true,
-          enableSelectAll: false,
-          enableRowSelection: false,
-          enableRowHeaderSelection: false,
-          infiniteScrollDown: true,
-          useExternalPagination: true,
-          useExternalFiltering: true
-      }, admin.facility().config().admin.gridOptions);
-
-      _.each(this.gridOptions.columnDefs, function(columnDef){
-          columnDef.enableSorting = false;
-          columnDef.enableHiding = false;
-          columnDef.enableColumnMenu = false;
-
-          if(columnDef.type == 'date'){
-            columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
-          }
-
-          if(columnDef.field == 'size'){
-              columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
-              columnDef.enableSorting = false;
-              columnDef.enableFiltering = false;
-          }
-          
-      });
-
+      this.gridOptions = _.merge({data: [], appScopeProvider: this}, admin.facility().config().admin.gridOptions);
+      helpers.setupTopcatGridOptions(this.gridOptions, 'download');
+    
       this.gridOptions.columnDefs.push({
           name : 'actions',
           visible: true,

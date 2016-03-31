@@ -333,6 +333,10 @@
         "TITLE" : "Downloads",
         "NEW_MESSAGE": "A new download has been added",
         "COLUMN" : {
+            "USER_NAME": "Username",
+            "PREPARED_ID": "Prepared Id",
+            "SIZE": "Size",
+            "IS_DELETED": "Deleted?",
             "FILE_NAME" : "Download Name",
             "TRANSPORT" : "Access Method",
             "FACILITY" : "Facility" ,

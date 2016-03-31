@@ -39,9 +39,7 @@
         this.isScroll = isScroll;
         var gridOptions = _.merge({
             data: [],
-            appScopeProvider: this,
-            pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
-            paginationPageSizes: pagingConfig.paginationPageSizes
+            appScopeProvider: this
         }, facility.config().myData.gridOptions);
         helpers.setupIcatGridOptions(gridOptions, entityType);
         this.gridOptions = gridOptions;

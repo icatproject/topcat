@@ -75,14 +75,16 @@
                 columnDef.title = translateNameSpace + '.' + fieldNamespace;
             }
 
-            if(columnDef.field === 'size') {
+            var entityTypeNamespace = helpers.constantify(entityType);
+
+            if(field === 'size' || field === 'fileSize') {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
             	columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
 
-            if(columnDef.field === 'status') {
-               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span>{{"CART.STATUS." + row.entity.status | translate}}</span></div>';
+            if(field === 'status') {
+               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span ng-if="row.entity.status">{{"' + entityTypeNamespace + '.STATUS." + row.entity.status | translate}}</span></div>';
             }
 
 
@@ -128,6 +130,8 @@
             gridOptions.useExternalPagination =  true;
             gridOptions.useExternalSorting =  true;
             gridOptions.useExternalFiltering =  true;
+            gridOptions.enableFiltering = true;
+            gridOptions.enableSelection = false;
 
             var entitySchema = topcatSchema.entityTypes[entityType];
 
@@ -149,6 +153,7 @@
 	        gridOptions.enableSelectAll = false;
 	        gridOptions.enableRowSelection = enableSelection;
 	        gridOptions.enableRowHeaderSelection = enableSelection;
+	        gridOptions.enableFiltering = true;
 	        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
 
     		_.each(gridOptions.columnDefs, function(columnDef){

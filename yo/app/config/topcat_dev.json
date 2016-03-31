@@ -96,7 +96,6 @@
         },
         "browse":{
             "gridOptions": {
-                "enableFiltering": true,
                 "columnDefs": [
                     {
                         "field": "fullName",
@@ -129,7 +128,6 @@
         },
         "cart":{
             "gridOptions": {
-                "enableFiltering": true,
                 "columnDefs": [
                     {
                         "field": "name"
@@ -151,8 +149,6 @@
         },
         "myDownloads":{
             "gridOptions": {
-                "enableFiltering": true,
-                "enableColumnResizing": true,
                 "columnDefs": [
                     {
                         "field": "fileName"
@@ -727,75 +723,25 @@
                 "gridOptions": {
                     "columnDefs": [
                         {
-                            "field": "userName",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "userName"
                         },
                         {
-                            "field": "preparedId",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "preparedId"
                         },
                         {
-                            "field": "transport",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "transport"
                         },
                         {
-                            "field": "status",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "status"
                         },
                         {
-                            "field": "size",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.SIZE",
-                            "type" : "number"
+                            "field": "size"
                         },
                         {
-                            "field": "createdAt",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
-                            "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
-                            "filters": [
-                                {
-                                    "placeholder": "From...",
-                                    "type": "input"
-                                },
-                                {
-                                    "placeholder": "To...",
-                                    "type": "input"
-                                }
-                            ]
+                            "field": "createdAt"
                         },
                         {
-                            "field": "isDeleted",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.IS_DELETED",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "isDeleted"
                         }
                     ]
                 }
@@ -803,8 +749,6 @@
             "myData": {
                 "entityType" : "investigation",
                 "gridOptions": {
-                    "enableFiltering": true,
-                    "enableSelection": false,
                     "columnDefs": [
                         {
                             "field": "title",
@@ -853,8 +797,6 @@
                 },
                 "investigation": {
                     "gridOptions": {
-                        "enableFiltering": true,
-                        "enableSelection": false,
                         "columnDefs": [
                             {
                                 "field": "visitId",
@@ -936,7 +878,6 @@
                 },
                 "dataset": {
                     "gridOptions": {
-                        "enableFiltering": true,
                         "enableSelection": true,
                         "columnDefs": [
                             {
@@ -995,7 +936,6 @@
                 },
                 "datafile": {
                     "gridOptions": {
-                        "enableFiltering": true,
                         "enableSelection": true,
                         "columnDefs": [
                             {
