@@ -267,6 +267,91 @@ An example breadcrumb configuration:
 ```
   * "maxTitleLength" - the maximum length after which it will get truncated with ellipses.
 
+$h3 topcat.json: "site" > "serviceStatus"
+
+Allows the displaying of a message that the user can dismiss and then carry on using the system
+
+An example configuration:
+
+```
+{
+  "site": {
+    "serviceStatus": {
+        "show": true,
+        "message": "<strong>Service status:</strong> Site is down for maintenance"
+    }
+  }
+}
+```
+  * "show" - specifies whether the message should be shown or not. Can be true or false.
+  * "message" - the actual message to be displayed as a html string.
+
+$h3 topcat.json: "site" > "maintenanceMode"
+
+Allows the displaying of a message that the user can't dismiss, and disables the frontend interface i.e. the user can't do anything
+
+An example configuration:
+
+```
+{
+  "site": {
+    "maintenanceMode": {
+        "show": false,
+        "message": "This server in undergoing maintenance."
+    }
+  }
+}
+```
+  * "show" - specifies whether the message should be shown or not. Can be true or false.
+  * "message" - the actual message to be displayed as a html string.
+
+$h3 topcat.json: "site" > "search"
+
+Specifies the structure of the search results and search fields for searching across facilities.
+
+An example (partial) configuration:
+
+```
+{
+  "site": {
+    "search": {
+        "enableParameters": false,
+        "enableSamples": false,
+        "gridOptions": {
+            "investigation": {...},
+            "dataset": {...},
+            "datafile": {...}
+        }
+    }
+  }
+}
+```
+  * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false.
+  * "enableSamples" - specifies whether the sample search feature should be enabled or not. Can be true or false.
+  * gridOptions
+      * investigation - the grid options for the "investigation" Icat entity type. See "Icat entity gridOptions configuration" for more information.
+      * dataset - the grid options for the "dataset" Icat entity type. See "Icat entity gridOptions configuration" for more information.
+      * datafile - the grid options for the "datafile" Icat entity type. See "Icat entity gridOptions configuration" for more information.
+
+$h3 topcat.json: "site" > "browse"
+
+Specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
+
+An example (partial) configuration:
+
+```
+{
+  "site": {
+    "browse":{
+        "gridOptions": {...},
+        "metaTabs": [...]
+    }
+  }
+}
+```
+  * the grid options for the "facility" Icat entity type. See "Icat entity gridOptions configuration" for more information.
+  * the meta tabs for the "facility" Icat entity type. See "Icat entity metaTabs configuration" for more information.
+
 $h2 lang.json 
 
 $h2 topcat.css
