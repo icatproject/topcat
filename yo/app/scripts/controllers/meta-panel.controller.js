@@ -42,7 +42,7 @@
                 queryBuilder.include('investigationParameterType');
                 queryBuilder.include('sample');
                 queryBuilder.include('publication');
-                queryBuilder.include('investigationUserUser');
+                queryBuilder.include('investigationUser');
             }
 
             if(entity.type == 'dataset'){

@@ -173,22 +173,99 @@ from the above following namespaces defined:
       * "breadcrumb" - specifies global breadcrumb options
       * "serviceStatus" - allows the displaying of a message that the user can dismiss and then carry on using the system.
       * "maintenanceMode" - allows the displaying of a message that the user can't dismiss, and disables the frontend interface i.e. the user can't do anything.
-      * "search" - 
-      * "browse"
-      * "cart"
-      * "pages"
+      * "search" - specifies the structure of the search results and search fields for searching across facilities.
+      * "browse" - specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
+      * "cart" - specifies the structure of the cart.
+      * "pages" - allows you to define information pages e.g. "About Us" or "Contact" etc...
   * "facilities"
-      * "dls"
-          * "facilityDatabaseName"
-          * "facilityName"
-          * "title"
-          * "icatUrl"
-          * "idsUrl"
-          * "authenticationTypes"
-          * "downloadTransportTypes"
-          * "admin"
-          * "myData"
-          * "browse"
+      * "dls" - the facility name. This is used as namespace throughout topcat e.g. in the url or in the sessions.
+          * "facilityDatabaseName" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
+          * "title" - A user friendly title that will appear in the tabs etc...
+          * "icatUrl" - A URL to a valid Icat REST API
+          * "idsUrl" - A URL to a valid IDS REST API
+          * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP
+          * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
+          * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
+          * "myData" - specifies the structure of 'downloads' dialog box.
+          * "browse" - specifies the structure of the hierachical browse section.
+
+$h3 topcat.json: "site" > "paging"
+
+Specifies the paging type configuration i.e. for either paged or infinite scroll.
+
+An example configuration for infinite scrolling:
+
+```
+{
+  "site": {
+    "paging" : {
+        "pagingType": "scroll",
+        "scrollPageSize": 50,
+        "scrollRowFromEnd": 10
+    }
+  }
+}
+```
+  * "pagingType" - can be either "page" or "scroll".
+  * "scrollPageSize" - the number rows to return with each request.
+  * "scrollRowFromEnd" - the row from the end which after scrolling past will trigger another page request to load more rows.
+
+An example configuration for standard page based pagination:
+
+```
+{
+  "site": {
+    "paging" : {
+        "pagingType": "page",
+        "paginationNumberOfRows": 10,
+        "paginationPageSizes": [
+            10,
+            25,
+            50,
+            100,
+            1000
+        ]
+    }
+  }
+}
+```
+  * "pagingType" - can be either "page" or "scroll".
+  * "paginationNumberOfRows" - the default number of rows per page
+  * "paginationPageSizes" - the possible page sizes the user can select.
+
+$h3 topcat.json: "site" > "breadcrumb"
+
+Specifies global breadcrumb options.
+
+An example breadcrumb configuration:
+
+```
+{
+  "site": {
+    "breadcrumb": {
+        "maxTitleLength": 30
+    }
+  }
+}
+```
+  * "maxTitleLength" - the maximum length after which it will get truncated with ellipses.
+
+$h3 topcat.json: "site" > "breadcrumb"
+
+Specifies global breadcrumb options.
+
+An example breadcrumb configuration:
+
+```
+{
+  "site": {
+    "breadcrumb": {
+        "maxTitleLength": 30
+    }
+  }
+}
+```
+  * "maxTitleLength" - the maximum length after which it will get truncated with ellipses.
 
 $h2 lang.json 
 
