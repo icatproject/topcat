@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.factory('icatSchema', [function(){
+    app.factory('icatSchema', function(){
     	var out = {
 			'entityTypes': {
 				'application': {
@@ -1046,7 +1046,7 @@
 		});
 
 		return out;
-    }]);
+    });
     	
 
 })();
