@@ -84,7 +84,7 @@
     function createGridOptions(type){
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: this, enableSelectAll: false}, tc.config().search.gridOptions[type]);
-      helpers.setupGridOptions(gridOptions, type);
+      helpers.setupIcatGridOptions(gridOptions, type);
 
       gridOptions.onRegisterApi = function(_gridApi) {
         gridApi = _gridApi;

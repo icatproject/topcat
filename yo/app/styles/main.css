@@ -255,6 +255,7 @@ a[ng-click]{
 .datetime-picker {
   padding: 7px;
   text-align: center;
+  z-index: 1000000;
 }
 
 .datetime-picker .time {

@@ -10,7 +10,7 @@
         this.isScroll = pagingConfig.pagingType == 'scroll';
         var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().browse.gridOptions);
         this.gridOptions = gridOptions;
-        helpers.setupGridOptions(gridOptions, 'facility');
+        helpers.setupIcatGridOptions(gridOptions, 'facility');
 
         if(tc.userFacilities().length == 1){
             var facility = tc.userFacilities()[0];

@@ -43,7 +43,7 @@
             pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
             paginationPageSizes: pagingConfig.paginationPageSizes
         }, facility.config().myData.gridOptions);
-        helpers.setupGridOptions(gridOptions, entityType);
+        helpers.setupIcatGridOptions(gridOptions, entityType);
         this.gridOptions = gridOptions;
         var includes = gridOptions.includes;
 

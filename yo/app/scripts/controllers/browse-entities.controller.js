@@ -29,7 +29,7 @@
             stopListeningForCartChanges();
         });
 
-        helpers.setupGridOptions(gridOptions, entityType);
+        helpers.setupIcatGridOptions(gridOptions, entityType);
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
 

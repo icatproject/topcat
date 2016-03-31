@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('helpers', function($http, $q, $timeout, uiGridConstants, icatSchema){
+    app.service('helpers', function($http, $q, $timeout, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
@@ -32,7 +32,114 @@
             });
     	};
 
-    	this.setupGridOptions = function(gridOptions, entityType){
+    	this.setupColumnDef = function(columnDef, entityType, translateNameSpace){
+            var type = columnDef.type;
+            var field = columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '');
+
+
+            if(!columnDef.filter){
+                if(type == 'string'){
+                    columnDef.filter = {
+                        "condition": uiGridConstants.filter.CONTAINS,
+                        "placeholder": "Containing...",
+                        "type": "input",
+                    }
+                }
+            }
+            if(!columnDef.filters){
+                if(type == 'date'){
+                    columnDef.filters = [
+                        {
+                        	"condition": 'GREATER_THAN_OR_EQUAL',
+                            "placeholder": "From...",
+                            "type": "input"
+                        },
+                        {
+                        	"condition": 'LESS_THAN_OR_EQUAL',
+                            "placeholder": "To...",
+                            "type": "input"
+                        }
+                    ];
+                }
+            }
+            if(!columnDef.cellFilter){
+                if(field.match(/Date$/)){
+                    columnDef.cellFilter = "date: 'yyyy-MM-dd'"
+                } else {
+                    columnDef.cellFilter = "date: 'yyyy-MM-dd HH:mm:ss'"
+                }
+            }
+
+            if(!columnDef.title){
+                var fieldNamespace = helpers.constantify(field);
+                columnDef.title = translateNameSpace + '.' + fieldNamespace;
+            }
+
+            if(columnDef.field === 'size') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+            	columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
+            }
+
+            if(columnDef.field === 'status') {
+               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span>{{"CART.STATUS." + row.entity.status | translate}}</span></div>';
+            }
+
+
+            if(columnDef.title){
+                columnDef.displayName = columnDef.title;
+                columnDef.headerCellFilter = 'translate';
+            }
+
+            if(columnDef.sort){
+                if(columnDef.sort.direction.toLowerCase() == 'desc'){
+                    columnDef.sort.direction = uiGridConstants.DESC;
+                } else {
+                    columnDef.sort.direction = uiGridConstants.ASC;
+                }
+            }
+
+            if(columnDef.type == 'date'){
+                if(columnDef.field && columnDef.field.match(/Date$/)){
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
+                } else {
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
+                }
+            }
+
+
+            if(columnDef.filter && typeof columnDef.filter.condition == 'string'){
+            	columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
+            }
+    	};
+
+    	this.setupTopcatGridOptions = function(gridOptions, entityType){
+    		var pagingConfig = tc.config().paging;
+	        var isScroll = pagingConfig.pagingType == 'scroll';
+	        var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
+
+	        gridOptions.enableHorizontalScrollbar = uiGridConstants.scrollbars.NEVER;
+            gridOptions.enableRowSelection =  false;
+            gridOptions.enableRowHeaderSelection =  false;
+            gridOptions.gridMenuShowHideColumns =  false;
+            gridOptions.pageSize =  !this.isScroll ? pagingConfig.paginationNumberOfRows : null;
+            gridOptions.paginationPageSizes =  pagingConfig.paginationPageSizes;
+            gridOptions.paginationNumberOfRows =  pagingConfig.paginationNumberOfRows;
+            gridOptions.useExternalPagination =  true;
+            gridOptions.useExternalSorting =  true;
+            gridOptions.useExternalFiltering =  true;
+
+            var entitySchema = topcatSchema.entityTypes[entityType];
+
+            _.each(gridOptions.columnDefs, function(columnDef){
+            	var field = columnDef.field;
+            	var type = entitySchema.fields[field];
+            	if(!columnDef.type) columnDef.type = type;
+            	helpers.setupColumnDef(columnDef, entityType, helpers.constantify(entityType) + '.COLUMN');
+	        });
+    	};
+
+    	this.setupIcatGridOptions = function(gridOptions, entityType){
     		if(entityType != 'facility'){
     			gridOptions.useExternalPagination = true;
 	        	gridOptions.useExternalSorting = true;
@@ -62,47 +169,9 @@
                 
                 var entitySchema = icatSchema.entityTypes[variableEntityType];
                 var type = entitySchema.fields[field];
-                if(type){
-                    if(!columnDef.type) columnDef.type = type;
-                    type = columnDef.type;
-
-                    if(!columnDef.filter){
-                        if(type == 'string'){
-                            columnDef.filter = {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
-                        }
-                    }
-                    if(!columnDef.filters){
-                        if(type == 'date'){
-                            columnDef.filters = [
-                                {
-                                    "placeholder": "From...",
-                                    "type": "input"
-                                },
-                                {
-                                    "placeholder": "To...",
-                                    "type": "input"
-                                }
-                            ];
-                        }
-                    }
-                    if(!columnDef.cellFilter){
-                        if(field.match(/Date$/)){
-                            columnDef.cellFilter = "date: 'yyyy-MM-dd'"
-                        } else {
-                            columnDef.cellFilter = "date: 'yyyy-MM-dd HH:mm:ss'"
-                        }
-                    }
-
-                    if(!columnDef.title){
-                        var entityTypeNamespace = helpers.constantify(variableEntityType);
-                        var fieldNamespace = helpers.constantify(field);
-                        columnDef.title = 'BROWSE.COLUMN.' + entityTypeNamespace + '.' + fieldNamespace;
-                    }
-                }
+                if(!columnDef.type) columnDef.type = type;
+                var entityTypeNamespace = helpers.constantify(variableEntityType);
+                helpers.setupColumnDef(columnDef, entityType, 'BROWSE.COLUMN.' + entityTypeNamespace);
 
 	            var filters = "";
 	            var matches;
@@ -111,16 +180,10 @@
 	                filters = matches[2];
 	            }
 
-	            if(entityType == 'facility' && columnDef.filter){
-	            	columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
-	            }
-
 	            if(columnDef.type == 'date'){
 	                if(columnDef.field && columnDef.field.match(/Date$/)){
-	                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
 	                    filters = filters + "|date:'yyyy-MM-dd'"
 	                } else {
-	                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
 	                    filters = filters + "|date:'yyyy-MM-dd HH:mm:ss'"
 	                }
 	            }
@@ -135,24 +198,6 @@
 	                $timeout(function(){
 	                    columnDef.filters[1].term = filter;
 	                });
-	            }
-
-	            if(columnDef.field == 'size'){
-	                columnDef.enableSorting = false;
-	                columnDef.enableFiltering = false;
-	            }
-
-	            if(columnDef.title){
-	                columnDef.displayName = columnDef.title;
-	                columnDef.headerCellFilter = 'translate';
-	            }
-
-	            if(columnDef.sort){
-	                if(columnDef.sort.direction.toLowerCase() == 'desc'){
-	                    columnDef.sort.direction = uiGridConstants.DESC;
-	                } else {
-	                    columnDef.sort.direction = uiGridConstants.ASC;
-	                }
 	            }
 
 	            if(!columnDef.jpqlExpression){
