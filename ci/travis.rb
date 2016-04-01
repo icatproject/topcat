@@ -119,6 +119,7 @@ exec %{
   chmod 0755 ./setup
   sudo ./setup configure
   sudo ./setup install
+  cd ../
 
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=140
 
