@@ -12,7 +12,6 @@ def uninstall():
     actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
     actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
     actions.asadmin("delete-javamail-resource mail/topcatv2", tolerant=True)
-    actions.deleteFileRealmUser(props["adminUsername"]);
 
 actions, options, arg = getActions()
 props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot"])
