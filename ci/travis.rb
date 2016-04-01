@@ -111,9 +111,9 @@ exec %{
   unzip -o topcat-*.zip
   sudo cp ./provision/topcat.properties ./topcatv2
   sudo cp ./provision/topcat-setup.properties ./topcatv2
-  sudo cp ./yo/app/config/topcat_dev.json ./topcatv2
-  sudo cp ./yo/app/languages/lang.json ./topcatv2
-  sudo cp ./yo/app/styles/topcat.css ./topcatv2
+  sudo cp ../yo/app/config/topcat_dev.json ./topcatv2/topcat.json
+  sudo cp ../yo/app/languages/lang.json ./topcatv2
+  sudo cp .../yo/app/styles/topcat.css ./topcatv2
   cd topcatv2
   dos2unix ./setup
   chmod 0755 ./setup
