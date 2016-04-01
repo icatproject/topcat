@@ -98,16 +98,16 @@ exec %{
   sudo ./setup install
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
-
-  chmod 0755 ./provision/topcat_build_install
   
   curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
   sudo apt-get --assume-yes install nodejs maven phantomjs
   sudo npm install -g bower
   sudo npm install -g grunt-cli
 
+  cd ../
   mvn clean install
-  cp ./target/topcat-*.zip ./
+  cp ./target/topcat-*.zip ./install
+  cd install
   unzip -o topcat-*.zip
   sudo cp ./provision/topcat.properties ./topcatv2
   sudo cp ./provision/topcat-setup.properties ./topcatv2
