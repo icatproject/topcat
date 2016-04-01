@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
 
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password secret"
-    sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential openjdk-8-jdk
+    sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential openjdk-8-jdk dos2unix ruby-dev
     echo "create database icat;" | mysql -u root --password=secret
     echo "create database topcat;" | mysql -u root --password=secret
     echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root --password=secret
@@ -114,9 +114,12 @@ Vagrant.configure(2) do |config|
     sudo apt-get --assume-yes install nodejs maven phantomjs
     sudo npm install -g bower
     sudo npm install -g grunt-cli
+    cd /vagrant/yo
+    bower install
     sudo chown -R vagrant:vagrant /home/vagrant/.npm
     sudo cp /vagrant/provision/phantomjs_bin.sh /etc/profile.d
-    source /vagrant/provision/phantomjs_bin.sh
+    source /etc/profile.d/phantomjs_bin.sh
+    sudo dos2unix /etc/profile.d/phantomjs_bin.sh
 
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
@@ -127,6 +130,7 @@ Vagrant.configure(2) do |config|
 
     sudo cp /vagrant/provision/topcat_build_install /usr/bin/topcat_build_install
     sudo chmod 755 /usr/bin/topcat_build_install
+    sudo dos2unix /usr/bin/topcat_build_install
     topcat_build_install
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=140
 
@@ -136,7 +140,7 @@ Vagrant.configure(2) do |config|
 
     sudo gem install rest-client
 
-    ruby /vagrant/populate_lucene.rb
+    ruby /vagrant/provision/populate_lucene.rb
 
   }
 end

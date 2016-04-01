@@ -1,16 +1,19 @@
 #!/bin/sh
 
-cd /vagrant
+rm -rf ~/topcat_tmp
+cp -r /vagrant ~/topcat_tmp
+cd ~/topcat_tmp
 mvn clean install
-cp /vagrant/target/topcat-*.zip /home/vagrant/
-cd /home/vagrant/
+cp ~/topcat_tmp/target/topcat-*.zip ~/
+cd ~/
 unzip -o topcat-*.zip
 cd topcatv2
-sudo cp /vagrant/provision/topcat.properties /home/vagrant/topcatv2/topcat.properties
-sudo cp /vagrant/provision/topcat-setup.properties /home/vagrant/topcatv2/topcat-setup.properties
-sudo cp /vagrant/yo/app/config/topcat_dev.json /home/vagrant/topcatv2/topcat.json
-sudo cp /vagrant/yo/app/languages/lang.json /home/vagrant/topcatv2/lang.json
-sudo cp /vagrant/yo/app/styles/topcat.css /home/vagrant/topcatv2/topcat.css
+sudo cp ~/topcat_tmp/provision/topcat.properties /home/vagrant/topcatv2/topcat.properties
+sudo cp ~/topcat_tmp/provision/topcat-setup.properties /home/vagrant/topcatv2/topcat-setup.properties
+sudo cp ~/topcat_tmp/yo/app/config/topcat_dev.json /home/vagrant/topcatv2/topcat.json
+sudo cp ~/topcat_tmp/yo/app/languages/lang.json /home/vagrant/topcatv2/lang.json
+sudo cp ~/topcat_tmp/yo/app/styles/topcat.css /home/vagrant/topcatv2/topcat.css
+dos2unix ./setup
 chmod 0755 ./setup
 sudo ./setup configure
 sudo ./setup install
