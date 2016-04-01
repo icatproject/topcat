@@ -15,7 +15,7 @@ def uninstall():
     actions.deleteFileRealmUser(props["adminUsername"]);
 
 actions, options, arg = getActions()
-props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot", "adminUsername", "adminPassword"])
+props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot"])
 
 prop_name = "topcat.properties"
 
@@ -24,8 +24,6 @@ if arg == "INSTALL":
 
     try:
         uninstall()
-
-        actions.addFileRealmUser(props["adminUsername"], props["adminPassword"], "topcatAdmin");
 
         topcatProperties = actions.getProperties("topcat.properties", ["mail.enable", "ids.getStatus.max", "poll.delay", "poll.interval.wait"])
 

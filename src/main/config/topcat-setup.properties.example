@@ -32,7 +32,3 @@ mail.from=no-reply@example.com
 #see https://javamail.java.net/nonav/docs/api/ for list of properties
 mail.property=mail.smtp.port="25":mail.smtp.from="no-reply@example.com"
 
-
-# A Glassfish file user to access the topcat admin service
-adminUsername topcatadmin
-adminPassword changeMe1
