@@ -14,6 +14,10 @@
         function Admin(facility){
             var that = this;
 
+            this.facility = function(){
+                return facility;
+            };
+
             this.isValidSession = helpers.overload({
                 'string, object': function(sessionId, options){
                     return this.get('isValidSession', {

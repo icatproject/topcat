@@ -7,7 +7,6 @@
     app.controller('MyDataController', function($translate, $q, $scope, $rootScope, $timeout, $templateCache, $state, tc, helpers, uiGridConstants){
         var that = this;
         var pagingConfig = tc.config().paging;
-        var entityType = tc.config().myDataGridOptions.entityType;
         var pagingConfig = tc.config().paging;
         var isScroll = pagingConfig.pagingType == 'scroll';
         var page = 1;
@@ -25,15 +24,26 @@
             stopListeningForCartChanges();
         });
 
+
+        this.facilities = tc.userFacilities();
+        if($state.params.facilityName == ''){
+          $state.go('home.my-data', {facilityName: this.facilities[0].config().facilityName});
+          return;
+        }
+
+
+        var facility = tc.facility($state.params.facilityName);
+        var icat = facility.icat();
+        var entityType = facility.config().myData.entityType;
+
         this.isScroll = isScroll;
         var gridOptions = _.merge({
             data: [],
-            appScopeProvider: this,
-            pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
-            paginationPageSizes: pagingConfig.paginationPageSizes
-        }, tc.config().myDataGridOptions[entityType]);
-        helpers.setupGridOptions(gridOptions, entityType);
+            appScopeProvider: this
+        }, facility.config().myData.gridOptions);
+        helpers.setupIcatGridOptions(gridOptions, entityType);
         this.gridOptions = gridOptions;
+        var includes = gridOptions.includes;
 
         var sortColumns = [];
         _.each(gridOptions.columnDefs, function(columnDef){
@@ -53,17 +63,7 @@
             }).join(', '));
         }
 
-        var includes = gridOptions.includes;
-        this.facilities = tc.userFacilities();
-
-        if($state.params.facilityName == ''){
-          $state.go('home.my-data', {facilityName: this.facilities[0].config().facilityName});
-          return;
-        }
-
-        var facility = tc.facility($state.params.facilityName);
-        var icat = facility.icat();
-
+        
         this.showTabs = function(row) {
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
@@ -79,7 +79,7 @@
         function generateQueryBuilder(){
             var out = icat.queryBuilder(entityType);
 
-            out.where("user.name = :user");
+            out.where("investigationUser.name = :user");
 
             _.each(gridOptions.columnDefs, function(columnDef){
                 if(!columnDef.field) return;

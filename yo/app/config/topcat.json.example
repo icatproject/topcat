@@ -307,7 +307,7 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType": [
+            "authenticationTypes": [
                 {
                     "title": "Username/Password",
                     "plugin": "ldap"
@@ -321,7 +321,7 @@
                     "plugin": "anon"
                 }
             ],
-            "downloadTransportType": [
+            "downloadTransportTypes": [
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",

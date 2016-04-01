@@ -69,6 +69,10 @@ module.exports = function(config) {
       {
         pattern: 'test/mock/**/*.json',
         included: false
+      },
+      {
+        pattern: 'app/config/*.json',
+        included: false
       }
     ],
 

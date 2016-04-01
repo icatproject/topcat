@@ -17,35 +17,15 @@
 
     	this.facilities = tc.adminFacilities();
 
-      this.gridOptions = _.merge({
-          data: [],
-          appScopeProvider: this,
-          enableFiltering: true,
-          enableSelectAll: false,
-          enableRowSelection: false,
-          enableRowHeaderSelection: false,
-          infiniteScrollDown: true,
-          useExternalPagination: true,
-          useExternalFiltering: true
-      }, tc.config().adminGridOptions);
+      if($state.params.facilityName == ''){
+          $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
+          return;
+      }
+      var admin = tc.admin($state.params.facilityName);
 
-      _.each(this.gridOptions.columnDefs, function(columnDef){
-          columnDef.enableSorting = false;
-          columnDef.enableHiding = false;
-          columnDef.enableColumnMenu = false;
-
-          if(columnDef.type == 'date'){
-            columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
-          }
-
-          if(columnDef.field == 'size'){
-              columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
-              columnDef.enableSorting = false;
-              columnDef.enableFiltering = false;
-          }
-          
-      });
-
+      this.gridOptions = _.merge({data: [], appScopeProvider: this}, admin.facility().config().admin.gridOptions);
+      helpers.setupTopcatGridOptions(this.gridOptions, 'download');
+    
       this.gridOptions.columnDefs.push({
           name : 'actions',
           visible: true,
@@ -57,13 +37,6 @@
           enableHiding: false,
           cellTemplate : '<div class="ui-grid-cell-contents"><button ng-click="grid.appScope.delete(row.entity)" ng-show="!row.entity.isDeleted">Delete</button><button ng-click="grid.appScope.restore(row.entity)" ng-show="row.entity.isDeleted">Restore</button> <button ng-click="grid.appScope.pause(row.entity)" ng-show="row.entity.status == \'RESTORING\'">Pause</button><button ng-click="grid.appScope.resume(row.entity)" ng-show="row.entity.status == \'PAUSED\'">Resume</button></div>'
       });
-
-      if($state.params.facilityName == ''){
-          $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
-          return;
-      }
-
-      var admin = tc.admin($state.params.facilityName);
 
       function updateScroll(resultCount){
           $timeout(function(){

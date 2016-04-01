@@ -12,7 +12,7 @@
         var facility = tc.facility(facilityName);
         var facilityId = facility.config().facilityId;
         var icat = tc.icat(facilityName);
-        var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browseGridOptions[entityType]);
+        var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browse[entityType].gridOptions);
         var uiGridState = $state.params.uiGridState ? JSON.parse($state.params.uiGridState) : null;
         var pagingConfig = tc.config().paging;
         var isScroll = pagingConfig.pagingType == 'scroll';
@@ -29,9 +29,24 @@
             stopListeningForCartChanges();
         });
 
-        helpers.setupGridOptions(gridOptions, entityType);
+        helpers.setupIcatGridOptions(gridOptions, entityType);
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
+
+
+        _.each(this.gridOptions.columnDefs, function(columnDef){
+            if(columnDef.sort){
+                sortColumns.push({
+                    colDef: {jpqlExpression: columnDef.jpqlExpression},
+                    sort: columnDef.sort
+                })
+            }
+        });
+
+        sortColumns = _.sortBy(sortColumns, function(sortColumn){
+            return sortColumn.sort.priority;
+        });
+
 
         function generateQueryBuilder(){
             var entityType = stateFromTo.replace(/^.*-/, '');
@@ -196,7 +211,7 @@
             });
         }
 
-        this.showTabs = function(row) {
+        this.showTabs = function(row){
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
                 'id' : row.entity.id,

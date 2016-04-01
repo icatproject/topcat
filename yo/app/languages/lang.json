@@ -89,7 +89,7 @@
             "FACILITY":{
                 "ID": "Id",
                 "NAME": "Name",
-                "FULLNAME": "Full Name",
+                "FULL_NAME": "Full Name",
                 "DESCRIPTION": "Description",
                 "URL": "Web Site",
                 "DAYS_UNTIL_RELEASE": "Days Until Release"
@@ -97,11 +97,11 @@
             "INSTRUMENT":{
                 "ID": "Id",
                 "NAME": "Beamline",
-                "FULLNAME": "Beamline",
+                "FULL_NAME": "Beamline",
                 "TYPE": "Type",
                 "URL": "Website"
             },
-            "FACILITYCYCLE":{
+            "FACILITY_CYCLE":{
                 "ID": "Id",
                 "NAME": "Name",
                 "DESCRIPTION": "Description",
@@ -124,11 +124,7 @@
                 "RELEASE_DATE": "Release Date",
                 "SIZE" : "Size",
                 "FACILITY" : "Facility",
-                "RUN_NUMBER" : "Run Number",
-                "INSTRUMENT" : {
-                    "NAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME",
-                    "FULLNAME" : "@:BROWSE.COLUMN.INSTRUMENT.NAME"
-                }
+                "RUN_NUMBER" : "Run Number"
             },
             "DATASET":{
                 "ID": "Id",
@@ -337,6 +333,10 @@
         "TITLE" : "Downloads",
         "NEW_MESSAGE": "A new download has been added",
         "COLUMN" : {
+            "USER_NAME": "Username",
+            "PREPARED_ID": "Prepared Id",
+            "SIZE": "Size",
+            "IS_DELETED": "Deleted?",
             "FILE_NAME" : "Download Name",
             "TRANSPORT" : "Access Method",
             "FACILITY" : "Facility" ,
@@ -462,7 +462,7 @@
     "METATABS" : {
         "FACILITY" : {
             "TABTITLE" : "Facility",
-            "FULLNAME" : "Full Name",
+            "FULL_NAME" : "Full Name",
             "NAME" : "Name",
             "DESCRIPTION" : "Description",
             "URL" : "URL"

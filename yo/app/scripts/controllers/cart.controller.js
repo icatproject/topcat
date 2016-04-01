@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('CartController', function($translate, $uibModalInstance, $uibModal, $q, $timeout, $scope, $rootScope, tc, uiGridConstants){
+    app.controller('CartController', function($translate, $uibModalInstance, $uibModal, $q, $timeout, $scope, $rootScope, tc, uiGridConstants, helpers){
         var that = this;
         var pagingConfig = tc.config().paging;
         var timeout = $q.defer();
@@ -14,38 +14,8 @@
         var isScroll = pagingConfig.pagingType == 'scroll';
         this.isScroll = isScroll;
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
-        var gridOptions = _.merge({
-            data: [],
-            appScopeProvider: this,
-            enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
-            enableRowSelection: false,
-            enableRowHeaderSelection: false,
-            gridMenuShowHideColumns: false,
-            pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
-            paginationPageSizes: pagingConfig.paginationPageSizes,
-            paginationNumberOfRows: pagingConfig.paginationNumberOfRows,
-            useExternalPagination: true,
-            useExternalSorting: true,
-            useExternalFiltering: true
-        }, tc.config().cartGridOptions);
-        _.each(gridOptions.columnDefs, function(columnDef){
-            if (columnDef.filter.condition) {
-                columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
-            }
-            if(columnDef.translateDisplayName){
-                columnDef.displayName = columnDef.translateDisplayName;
-                columnDef.headerCellFilter = 'translate';
-            }
-
-            if(columnDef.field === 'size') {
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
-            }
-
-            if(columnDef.field === 'status') {
-               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span>{{"CART.STATUS." + row.entity.status | translate}}</span></div>';
-            }
-
-        });
+        var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().cart.gridOptions);
+        helpers.setupTopcatGridOptions(gridOptions, 'cart');
         gridOptions.columnDefs.push({
             name : 'actions',
             translateDisplayName: 'CART.COLUMN.ACTIONS',

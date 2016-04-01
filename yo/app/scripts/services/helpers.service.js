@@ -4,21 +4,179 @@
 
     var app = angular.module('angularApp');
 
-    app.service('helpers', function($http, $q, $timeout, uiGridConstants){
+    app.service('helpers', function($http, $q, $timeout, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
-    	this.setupGridOptions = function(gridOptions, entityType){
+    	this.setupMetatabs = function(metaTabs, entityType){
+    		_.each(metaTabs, function(metaTab){
+                _.each(metaTab.items, function(item){
+                    var field = item.field;
+                    if(!field) return;
+                    var matches;
+                    if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
+                        var variableName = matches[1];
+                        entityType = icatSchema.variableEntityTypes[variableName];
+                        if(!entityType){
+                            console.error("Unknown variableName: " + variableName, item)
+                        }
+                        entityType = entityType;
+                        field = matches[2];
+                    }
 
-    		gridOptions.useExternalPagination = true;
-	        gridOptions.useExternalSorting = true;
-	        gridOptions.useExternalFiltering = true;
+                    if(!item.title){
+                        var entityTypeNamespace = helpers.constantify(entityType);
+                        var fieldNamespace = helpers.constantify(field);
+                        item.title = "METATABS." + entityTypeNamespace + "." + fieldNamespace;
+                    }
+                });
+            });
+    	};
+
+    	this.setupColumnDef = function(columnDef, entityType, translateNameSpace){
+            var type = columnDef.type;
+            var field = columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '');
+
+
+            if(!columnDef.filter){
+                if(type == 'string'){
+                    columnDef.filter = {
+                        "condition": uiGridConstants.filter.CONTAINS,
+                        "placeholder": "Containing...",
+                        "type": "input",
+                    }
+                }
+            }
+            if(!columnDef.filters){
+                if(type == 'date'){
+                    columnDef.filters = [
+                        {
+                        	"condition": 'GREATER_THAN_OR_EQUAL',
+                            "placeholder": "From...",
+                            "type": "input"
+                        },
+                        {
+                        	"condition": 'LESS_THAN_OR_EQUAL',
+                            "placeholder": "To...",
+                            "type": "input"
+                        }
+                    ];
+                }
+            }
+            if(!columnDef.cellFilter){
+                if(field.match(/Date$/)){
+                    columnDef.cellFilter = "date: 'yyyy-MM-dd'"
+                } else {
+                    columnDef.cellFilter = "date: 'yyyy-MM-dd HH:mm:ss'"
+                }
+            }
+
+            if(!columnDef.title){
+                var fieldNamespace = helpers.constantify(field);
+                columnDef.title = translateNameSpace + '.' + fieldNamespace;
+            }
+
+            var entityTypeNamespace = helpers.constantify(entityType);
+
+            if(field === 'size' || field === 'fileSize') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
+            	columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
+            }
+
+            if(field === 'status') {
+               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.status === undefined" class="grid-cell-spinner"></span><span ng-if="row.entity.status">{{"' + entityTypeNamespace + '.STATUS." + row.entity.status | translate}}</span></div>';
+            }
+
+
+            if(columnDef.title){
+                columnDef.displayName = columnDef.title;
+                columnDef.headerCellFilter = 'translate';
+            }
+
+            if(columnDef.sort){
+                if(columnDef.sort.direction.toLowerCase() == 'desc'){
+                    columnDef.sort.direction = uiGridConstants.DESC;
+                } else {
+                    columnDef.sort.direction = uiGridConstants.ASC;
+                }
+            }
+
+            if(columnDef.type == 'date'){
+                if(columnDef.field && columnDef.field.match(/Date$/)){
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
+                } else {
+                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
+                }
+            }
+
+
+            if(columnDef.filter && typeof columnDef.filter.condition == 'string'){
+            	columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
+            }
+    	};
+
+    	this.setupTopcatGridOptions = function(gridOptions, entityType){
+    		var pagingConfig = tc.config().paging;
+	        var isScroll = pagingConfig.pagingType == 'scroll';
+	        var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
+
+	        gridOptions.enableHorizontalScrollbar = uiGridConstants.scrollbars.NEVER;
+            gridOptions.enableRowSelection =  false;
+            gridOptions.enableRowHeaderSelection =  false;
+            gridOptions.gridMenuShowHideColumns =  false;
+            gridOptions.pageSize =  !this.isScroll ? pagingConfig.paginationNumberOfRows : null;
+            gridOptions.paginationPageSizes =  pagingConfig.paginationPageSizes;
+            gridOptions.paginationNumberOfRows =  pagingConfig.paginationNumberOfRows;
+            gridOptions.useExternalPagination =  true;
+            gridOptions.useExternalSorting =  true;
+            gridOptions.useExternalFiltering =  true;
+            gridOptions.enableFiltering = true;
+            gridOptions.enableSelection = false;
+
+            var entitySchema = topcatSchema.entityTypes[entityType];
+
+            _.each(gridOptions.columnDefs, function(columnDef){
+            	var field = columnDef.field;
+            	var type = entitySchema.fields[field];
+            	if(!columnDef.type) columnDef.type = type;
+            	helpers.setupColumnDef(columnDef, entityType, helpers.constantify(entityType) + '.COLUMN');
+	        });
+    	};
+
+    	this.setupIcatGridOptions = function(gridOptions, entityType){
+    		if(entityType != 'facility'){
+    			gridOptions.useExternalPagination = true;
+	        	gridOptions.useExternalSorting = true;
+	        	gridOptions.useExternalFiltering = true;
+	    	}
 	        var enableSelection = gridOptions.enableSelection === true && entityType.match(/^investigation|dataset|datafile$/) !== null;
 	        gridOptions.enableSelectAll = false;
 	        gridOptions.enableRowSelection = enableSelection;
 	        gridOptions.enableRowHeaderSelection = enableSelection;
+	        gridOptions.enableFiltering = true;
 	        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
 
     		_.each(gridOptions.columnDefs, function(columnDef){
+    			var matches;
+                var field = columnDef.field;
+                var variableEntityType = entityType;
+                if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
+                    var variableName = matches[1];
+                    variableEntityType = icatSchema.variableEntityTypes[variableName];
+                    if(!entityType){
+                        console.error("Unknown variableName: " + variableName, columnDef)
+                    }
+                    entityType = entityType;
+                    field = matches[2];
+                }
+
+                if(!variableEntityType) return;
+                
+                var entitySchema = icatSchema.entityTypes[variableEntityType];
+                var type = entitySchema.fields[field];
+                if(!columnDef.type) columnDef.type = type;
+                var entityTypeNamespace = helpers.constantify(variableEntityType);
+                helpers.setupColumnDef(columnDef, entityType, 'BROWSE.COLUMN.' + entityTypeNamespace);
 
 	            var filters = "";
 	            var matches;
@@ -29,10 +187,8 @@
 
 	            if(columnDef.type == 'date'){
 	                if(columnDef.field && columnDef.field.match(/Date$/)){
-	                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker only-date ng-model="col.filters[1].term" placeholder="To..."></div>';
 	                    filters = filters + "|date:'yyyy-MM-dd'"
 	                } else {
-	                    columnDef.filterHeaderTemplate = '<div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[0].term" placeholder="From..."></div><div class="ui-grid-filter-container" datetime-picker ng-model="col.filters[1].term" placeholder="To..."></div>';
 	                    filters = filters + "|date:'yyyy-MM-dd HH:mm:ss'"
 	                }
 	            }
@@ -49,27 +205,11 @@
 	                });
 	            }
 
-	            if(columnDef.field == 'size'){
-	                columnDef.enableSorting = false;
-	                columnDef.enableFiltering = false;
-	            }
-
-	            if(columnDef.translateDisplayName){
-	                columnDef.displayName = columnDef.translateDisplayName;
-	                columnDef.headerCellFilter = 'translate';
-	            }
-
-	            if(columnDef.sort){
-	                if(columnDef.sort.direction.toLowerCase() == 'desc'){
-	                    columnDef.sort.direction = uiGridConstants.DESC;
-	                } else {
-	                    columnDef.sort.direction = uiGridConstants.ASC;
-	                }
-	            }
-
 	            if(!columnDef.jpqlExpression){
+	            	var _entityType = entityType;
+	            	if(_entityType == 'proposal') _entityType = 'investigation';
 	                if(!columnDef.field.match(/\./)){
-	                    columnDef.jpqlExpression =  entityType + '.' + columnDef.field;
+	                    columnDef.jpqlExpression =  _entityType + '.' + columnDef.field;
 	                } else {
 	                    columnDef.jpqlExpression = columnDef.field;
 	                }
@@ -264,12 +404,16 @@
 		};
 
 		this.uncapitalize = function(text){
-			return text.replace(/^(.)/, function(s){ return s.toLowerCase(); });
+			return ('' + text).replace(/^(.)/, function(s){ return s.toLowerCase(); });
 		}
 
 		this.capitalize = function(text){
-			return text.replace(/^(.)/, function(s){ return s.toUpperCase(); });
+			return ('' + text).replace(/^(.)/, function(s){ return s.toUpperCase(); });
 		}
+
+		this.constantify = function(text){
+			return ('' + text).replace(/([A-Z])/g, '_$1').replace(/^_/, '').toUpperCase();
+		};
 
 		this.generateRestMethods = function(that, prefix){
 			
