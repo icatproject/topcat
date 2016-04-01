@@ -125,7 +125,6 @@
                     return this.put('download/' + id + '/isDeleted', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
-                        id: id,
                         value: 'true'
                     }, options);
                 },
@@ -151,7 +150,6 @@
                     return this.put('download/' + id + '/isDeleted', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
-                        id: id,
                         value: 'false'
                     }, options);
                 },
@@ -177,7 +175,6 @@
                     return this.put('download/' + id + '/status', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
-                        id: id,
                         value: status
                     }, options);
                 },
