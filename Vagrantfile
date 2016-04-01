@@ -118,8 +118,8 @@ Vagrant.configure(2) do |config|
     bower install
     sudo chown -R vagrant:vagrant /home/vagrant/.npm
     sudo cp /vagrant/provision/phantomjs_bin.sh /etc/profile.d
-    source /etc/profile.d/phantomjs_bin.sh
     sudo dos2unix /etc/profile.d/phantomjs_bin.sh
+    source /etc/profile.d/phantomjs_bin.sh
 
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
