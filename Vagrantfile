@@ -42,7 +42,7 @@ Vagrant.configure(2) do |config|
     sudo cp /home/vagrant/ids.plugin-1.3.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
     wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.client/4.5.0/icat.client-4.5.0.jar
     sudo cp /home/vagrant/icat.client-4.5.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
-    wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.utils/4.11.0/icat.utils-4.13.0-20160307.151912-1.jar
+    wget https://icatproject.org/mvn/repo/org/icatproject/icat.utils/4.13.0-SNAPSHOT/icat.utils-4.13.0-20160307.151912-1.jar
     sudo cp /home/vagrant/icat.utils-4.13.0-20160307.151912-1.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
     wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
     sudo cp /home/vagrant/ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
