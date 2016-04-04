@@ -708,18 +708,15 @@
             ],
             "downloadTransportTypes": [
                 {
-                    "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
                     "default" : true,
                     "url": "https://fdsgos11.fds.rl.ac.uk"
                 },
                 {
-                    "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
                     "type" : "globus",
                     "url": "https://fdsgos11.fds.rl.ac.uk"
                 },
                 {
-                    "translateDisplayName" : "DOWNLOAD.TRANSPORT.SCARF.NAME",
                     "type" : "scarf",
                     "url": "https://dls-ids01.scarf.rl.ac.uk"
                 }

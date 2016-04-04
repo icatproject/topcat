@@ -183,6 +183,7 @@ from the above following namespaces defined:
           * "title" - A user friendly title that will appear in the tabs etc...
           * "icatUrl" - A URL to a valid Icat REST API
           * "idsUrl" - A URL to a valid IDS REST API
+          * "hierarchy" - the entity heierachy of the browse section.
           * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP
           * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
           * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
@@ -357,6 +358,8 @@ $h3 topcat.json "facilities" > [facilityName] > "authenticationTypes"
 
 Specifies the authentication plugins to be used e.g. LDAP
 
+An example configuration:
+
 ```
 {
   "facilities": {
@@ -374,6 +377,7 @@ Specifies the authentication plugins to be used e.g. LDAP
     }
   }
 }
+```
 
   * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
   * name - a name that is used to programmatically reference the plugin on the Icat server.
@@ -382,24 +386,23 @@ $h3 topcat.json "facilities" > [facilityName] > "downloadTransportTypes"
 
 Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
 
+An example configuration:
+
 ```
 {
   "facilities": {
     "dsl": {
-      "authenticationTypes": "downloadTransportTypes": [
+      "downloadTransportTypes": [
           {
-              "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
               "type" : "https",
               "default" : true,
               "url": "https://fdsgos11.fds.rl.ac.uk"
           },
           {
-              "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
               "type" : "globus",
               "url": "https://fdsgos11.fds.rl.ac.uk"
           },
           {
-              "translateDisplayName" : "DOWNLOAD.TRANSPORT.SCARF.NAME",
               "type" : "scarf",
               "url": "https://dls-ids01.scarf.rl.ac.uk"
           }
@@ -407,9 +410,33 @@ Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus'
     }
   }
 }
+```
 
-  * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
-  * name - a name that is used to programmatically reference the plugin on the Icat server.
+  * type - the download method the will be used to retrieve the download.
+  * default - whether or not you want the current download transport type to be set as default.
+  * url - a url to a valid IDS API that can handle the particular download transport type.
+
+
+$h3 topcat.json "facilities" > [facilityName] > "admin" 
+
+Defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
+
+An example (partial) configuration:
+
+```
+{
+  "facilities": {
+    "dsl": {
+      "admin":{
+          "gridOptions": {...}
+      }
+    }
+  }
+}
+```
+
+* "gridOptions" - the grid options for the "download" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
+
 
 $h2 lang.json 
 
