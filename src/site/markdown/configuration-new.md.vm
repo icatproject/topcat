@@ -614,26 +614,7 @@ An example configuration:
   * "enableSelection" - whether or not the entity can be added to the cart. This only applies to "investigation", "dataset" or "datafile".
       * "columnDefs" - the column definitions of the grid.
           * "field" - The field you want to display in the column.
-              * if using dot notation e.g. "investigationInstrument.fullName" the following jpql variables are available:
-                  * datafileParameter (referencing the relative datafile.parameters)
-                  * dataset (referencing the relative dataset)
-                  * datafileParameterType (referencing the relative datafile.parameters.type)
-                  * datafile (referencing the relative datafile)
-                  * datasetSample (referencing the relative dataset.samples)
-                  * investigation (referencing the relative investigation)
-                  * datasetType (referencing the relative dataset.type)
-                  * datasetParameter (referencing the relative dataset.parameters)
-                  * datasetParameterType (referencing the relative dataset.parameters.type)
-                  * instrument  (referencing the relative facility.instruments)
-                  * facilityCycle (referencing the relative facility.facilityCycles)
-                  * facility (referencing the relative facility)
-                  * investigationInstrument (referencing the relative investigation.investigationInstruments.instrument)
-                  * publication (referencing the relative investigation.publications)
-                  * investigationParameter (referencing the relative investigation.parameters)
-                  * investigationSample (referencing the relative investigation.samples)
-                  * investigationGroup (referencing the relative investigation.investigationGroups.grouping)
-                  * investigationParameterType (referencing the relative investigation.parameters.type)
-                  * investigationUser ((referencing the relative investigation.investigationUsers.user)
+              * the dot notation e.g. "investigationInstrument.fullName" refers to "[variable name].[field name]" - see the "standard jpql variables" for more info.
           * "link" - whether or not to link to the next entity in the hierachy.
           * "breadcrumb" - whether or not you want to use the field value as title in the breadcrumb. By default this will be 'title' or 'name' if the entity has these fields.
           * "excludeFuture" - will preload the date 'to' filter with the current time, thus elliminating any rows in the future.
@@ -661,12 +642,12 @@ An example configuration:
                 "field": "description"
             },
             {
-                "title": "METATABS.DATASET.START_DATE",
+                "label": "METATABS.DATASET.START_DATE",
                 "field": "startDate",
                 "template": "{{content.value | date:'yyyy-MM-dd'}}"
             },
             {
-                "title": "METATABS.DATASET.END_DATE",
+                "label": "METATABS.DATASET.END_DATE",
                 "field": "endDate",
                 "template": "{{content.value | date:'yyyy-MM-dd'}}"
             }
@@ -685,6 +666,36 @@ An example configuration:
     }
 ]
 ```
+
+  * "title" - the title of the tab.
+      * items - the items to be displayed inside the metatab
+          *
+
+$h3 topcat.json: standard jpql variables
+
+Topcat defines the following jpql variables - which if used from any icat entity type will automatically work out any joins required to create a jpql statement for fetching the data from icat:
+
+  * datafileParameter (referencing the relative datafile.parameters)
+  * dataset (referencing the relative dataset)
+  * datafileParameterType (referencing the relative datafile.parameters.type)
+  * datafile (referencing the relative datafile)
+  * datasetSample (referencing the relative dataset.samples)
+  * investigation (referencing the relative investigation)
+  * datasetType (referencing the relative dataset.type)
+  * datasetParameter (referencing the relative dataset.parameters)
+  * datasetParameterType (referencing the relative dataset.parameters.type)
+  * instrument  (referencing the relative facility.instruments)
+  * facilityCycle (referencing the relative facility.facilityCycles)
+  * facility (referencing the relative facility)
+  * investigationInstrument (referencing the relative investigation.investigationInstruments.instrument)
+  * publication (referencing the relative investigation.publications)
+  * investigationParameter (referencing the relative investigation.parameters)
+  * investigationSample (referencing the relative investigation.samples)
+  * investigationGroup (referencing the relative investigation.investigationGroups.grouping)
+  * investigationParameterType (referencing the relative investigation.parameters.type)
+  * investigationUser (referencing the relative investigation.investigationUsers.user)
+
+To get a better understanding what these jpql variables refer to please view the [icat schema documentation](https://icatproject.org/mvn/site/icat/server/4.6.1/schema.html).
 
 $h2 lang.json 
 

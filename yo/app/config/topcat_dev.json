@@ -847,7 +847,7 @@
                             "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
                             "items": [
                                 {
-                                    "title": "METATABS.INVESTIGATION_USERS.NAME",
+                                    "label": "METATABS.INVESTIGATION_USERS.NAME",
                                     "field": "investigationUser.fullName"
                                 }
                             ]
@@ -905,19 +905,19 @@
                                     "field": "description"
                                 },
                                 {
-                                    "title": "METATABS.DATASET.START_DATE",
+                                    "label": "METATABS.DATASET.START_DATE",
                                     "field": "startDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
                                 },
                                 {
-                                    "title": "METATABS.DATASET.END_DATE",
+                                    "label": "METATABS.DATASET.END_DATE",
                                     "field": "endDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
                                 }
                             ]
                         },
                         {
-                            "title": "METATABS.DATASET_TYPE.TABTITLE",
+                            "label": "METATABS.DATASET_TYPE.TABTITLE",
                             "items": [
                                 {
                                     "field": "datasetType.name"
@@ -962,7 +962,7 @@
                                     "field": "description"
                                 },
                                 {
-                                    "title": "METATABS.DATAFILE.SIZE",
+                                    "label": "METATABS.DATAFILE.SIZE",
                                     "field": "fileSize",
                                     "template": "{{content.value | bytes}}"
                                 },

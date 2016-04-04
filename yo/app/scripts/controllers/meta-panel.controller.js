@@ -78,7 +78,7 @@
                             var value = entity.find(field)[0];
                             if(value !== undefined){
                                 tab.items.push({
-                                    title: itemConfig.title ? $translate.instant(itemConfig.title) : null,
+                                    label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
                                     template: itemConfig.template,
                                     value: entity.find(field)[0],
                                     entity: entity

@@ -23,10 +23,10 @@
                         field = matches[2];
                     }
 
-                    if(!item.title){
+                    if(!item.label){
                         var entityTypeNamespace = helpers.constantify(entityType);
                         var fieldNamespace = helpers.constantify(field);
-                        item.title = "METATABS." + entityTypeNamespace + "." + fieldNamespace;
+                        item.label = "METATABS." + entityTypeNamespace + "." + fieldNamespace;
                     }
                 });
             });

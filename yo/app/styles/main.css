@@ -240,14 +240,14 @@ a[ng-click]{
   padding: 5px;
 }
 
-.meta-box .item .title {
+.meta-box .item .label {
   font-weight: bold;
   color: #333;
   font-size: 14px;
   padding-left: 0px;
 }
 
-.meta-box .item .title::after {
+.meta-box .item .label::after {
     content: ": ";
 }
 
