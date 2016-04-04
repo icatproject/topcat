@@ -117,7 +117,6 @@ exec %{
   cd topcat
   dos2unix ./setup
   chmod 0755 ./setup
-  sudo ./setup configure
   sudo ./setup install
   cd ../
 
