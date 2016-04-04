@@ -4,8 +4,8 @@
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="topcatv2">
-        <jta-data-source>jdbc/topcatv2</jta-data-source>
+    <persistence-unit name="topcat">
+        <jta-data-source>jdbc/topcat</jta-data-source>
         <properties>
             <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
             <property name="eclipselink.logging.level.sql" value="FINE"/>

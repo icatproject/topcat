@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class CartRepository {
     private static final Logger logger = LoggerFactory.getLogger(CartRepository.class);
 
-    @PersistenceContext(unitName="topcatv2")
+    @PersistenceContext(unitName="topcat")
     EntityManager em;
 
     public Cart getCart(String userName, String facilityName){

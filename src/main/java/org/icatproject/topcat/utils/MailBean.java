@@ -17,25 +17,25 @@ import org.slf4j.LoggerFactory;
 @Stateless
 @LocalBean
 public class MailBean {
-    private static final Logger logger = LoggerFactory.getLogger(MailBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(MailBean.class);
 
-    @Resource(name="mail/topcatv2")
-    private Session session;
+	@Resource(name = "mail/topcat")
+	private Session session;
 
-    public void send(String email, String subject, String body) {
-        System.out.println("Sending email to " + email);
-        Message msg = new MimeMessage(session);
-        try {
-            msg.setSubject(subject);
-            msg.setText(body);
-            msg.setRecipients(RecipientType.TO, InternetAddress.parse(email));
+	public void send(String email, String subject, String body) {
+		System.out.println("Sending email to " + email);
+		Message msg = new MimeMessage(session);
+		try {
+			msg.setSubject(subject);
+			msg.setText(body);
+			msg.setRecipients(RecipientType.TO, InternetAddress.parse(email));
 
-            Transport.send(msg);
+			Transport.send(msg);
 
-            logger.debug("Email sent to " + email);
-        } catch (MessagingException e) {
-            logger.debug(e.getMessage());
-        }
-    }
+			logger.debug("Email sent to " + email);
+		} catch (MessagingException e) {
+			logger.debug(e.getMessage());
+		}
+	}
 
 }

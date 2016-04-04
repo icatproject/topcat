@@ -2,56 +2,41 @@
 from setup_utils import *
 import os
 
-# TopCATv2
+# topcat
 
 def uninstall():
-    if not actions.isInstalled(): return
     app = actions.getAppName("topcat")
-    if app: actions.asadmin("undeploy " + app)
+    if app: actions.undeploy(app)
+    actions.unregisterDB("topcat")
+    actions.deleteMailResource("mail/topcat")
 
-    actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
-    actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
-    actions.asadmin("delete-javamail-resource mail/topcatv2", tolerant=True)
-
-actions, options, arg = getActions()
-props = actions.getGlassfish("topcat-setup.properties", ["dbProperties", "glassfish", "driver", "port", "topcatUrlRoot"])
+actions, arg, props = getActions("topcat-setup.properties", ["db.vendor", "db.driver", "db.url", "db.username", "db.password"])
 
 prop_name = "topcat.properties"
+prop_list = []
+
+if arg in ["CONFIGURE", "INSTALL"]: 
+    actions.configure(prop_name, prop_list) 
+    for f in ["topcat.json", "lang.json", "topcat.css"]:
+        actions.configureFileForWar(f)
+    actions.checkNoErrors()
 
 if arg == "INSTALL":
     actions.installFile(prop_name)
-
+           
     try:
         uninstall()
 
-        topcatProperties = actions.getProperties("topcat.properties", ["mail.enable", "ids.getStatus.max", "poll.delay", "poll.interval.wait"])
+        actions.registerDB("topcat", props["db.vendor"], props["db.driver"], props["db.url"], props["db.username"], props["db.password"])
 
-        if not os.path.isfile("topcat.json"):
-            abort("topcat.json not found.")
-
-        if not os.path.isfile("lang.json"):
-            abort("lang.json not found")
-
-        if not os.path.isfile("topcat.css"):
-            abort("topcat.css not found")
-
-        actions.asadmin("delete-jdbc-resource jdbc/topcatv2", tolerant=True)
-        actions.asadmin("delete-jdbc-connection-pool topcatv2", tolerant=True)
-
-        actions.asadmin('create-jdbc-connection-pool --datasourceclassname ' + props["driver"] +
-                ' --restype javax.sql.DataSource --failconnection=true --steadypoolsize 2' +
-                ' --ping --property ' + props["dbProperties"] + ' topcatv2', printOutput=True)
-
-        actions.asadmin("create-jdbc-resource --connectionpoolid topcatv2 jdbc/topcatv2")
-
-        if topcatProperties["mail.enable"].lower() == 'true':
-            actions.asadmin("create-javamail-resource --mailhost " + props["mail.host"] + " --mailuser " + props["mail.user"] + " --fromaddress " + props["mail.from"] + " --property " + props["mail.property"] + " mail/topcatv2")
-
-        actions.deploy("topcat-*.war", contextroot=props["topcatUrlRoot"], deploymentorder=140)
-
-        actions.installToAppWeb("topcat.json", "topcat", "config")
-        actions.installToAppWeb("lang.json", "topcat", "languages")
-        actions.installToAppWeb("topcat.css", "topcat", "styles")
+        if props["mail.enable"].lower() == 'true':
+            actions.createMailResource("mail/topcat", props["mail.host"], props["mail.user"], props["mail.from"], props["mail.property"])
+ 
+        files = []
+        files.append(["topcat.json", "config"])
+        files.append(["lang.json", "languages"])
+        files.append(["topcat.css", "styles"])
+        actions.deploy(files=files, deploymentorder=140)
 
     except Exception, e:
         abort(str(e))

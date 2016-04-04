@@ -1,34 +1,27 @@
-# Derby Database Properties
-driver=org.apache.derby.jdbc.ClientDataSource
-dbProperties=Password=APP:User=APP:serverName=localhost:DatabaseName=topcat:connectionAttributes=";"create"'"="'"true
+# Derby Database
+!db.vendor   = derby
+!db.driver   = org.apache.derby.jdbc.ClientDataSource
+!db.url      = jdbc:derby:topcat;create\\=true
+!db.username = APP
+!db.password = APP
 
-# MySQL Database Properties
-#driver=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
-#dbProperties=user=topcat:password=secret:databaseName=topcat
+# MySQL Database
+db.vendor      = mysql
+db.url         = jdbc:mysql://localhost:3306/topcat
+db.driver      = com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+db.username    = icat
+db.password    = icat
 
-# Oracle Database Properties
-#driver=oracle.jdbc.pool.OracleDataSource
-#dbProperties=url="jdbc:oracle:thin:@//localhost:1521/XE":ImplicitCachingEnabled=true:MaxStatements=200:user=topcat:password=secret
-
-# Glasfish home, must contain "glassfish/domains"
-glassfish=/opt/glassfish4
-
-# Glassfish admin port (default 4848)
-port=4848
-
-#url root context where topcat will be deployed. use / for root context or enter your required url but do not end with /
-topcatUrlRoot=/
+secure         = true
+container      = glassfish
+home           = /home/fisher/pf/glassfish4
+port           = 4848
 
 # Email setup see http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-javamail-resource.htm#GSRFM00035
-#the smtp host address
+mail.enable = true
 mail.host=smtp.example.com
-
-#name of mail acount user when connecting to the mail server
 mail.user=user@example.com
-
-#mail from address
 mail.from=no-reply@example.com
 
 #see https://javamail.java.net/nonav/docs/api/ for list of properties
 mail.property=mail.smtp.port="25":mail.smtp.from="no-reply@example.com"
-

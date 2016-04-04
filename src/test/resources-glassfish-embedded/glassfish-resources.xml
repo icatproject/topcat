@@ -4,7 +4,7 @@
     "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
 <resources>
     <jdbc-resource pool-name="ArquillianEmbeddedDerbyPool"
-        jndi-name="jdbc/topcatv2"/>
+        jndi-name="jdbc/topcat"/>
     <jdbc-connection-pool name="ArquillianEmbeddedDerbyPool"
         res-type="javax.sql.DataSource"
         datasource-classname="org.apache.derby.jdbc.EmbeddedDataSource"

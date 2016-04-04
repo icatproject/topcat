@@ -30,7 +30,3 @@ poll.interval.wait=600
 
 # A list of usernames that can use the admin REST API and Topcat admin user interface
 adminUserNames=simple/root, uows/elz087, asd345, ldap/fgh123
-
-
-
-
