@@ -331,9 +331,9 @@ An example (partial) configuration:
   * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false.
   * "enableSamples" - specifies whether the sample search feature should be enabled or not. Can be true or false.
   * gridOptions
-      * investigation - the grid options for the "investigation" Icat entity type. See "Icat entity gridOptions configuration" for more information.
-      * dataset - the grid options for the "dataset" Icat entity type. See "Icat entity gridOptions configuration" for more information.
-      * datafile - the grid options for the "datafile" Icat entity type. See "Icat entity gridOptions configuration" for more information.
+      * investigation - the grid options for the "investigation" Icat entity type. See "gridOptions configuration" for more information.
+      * dataset - the grid options for the "dataset" Icat entity type. See "gridOptions configuration" for more information.
+      * datafile - the grid options for the "datafile" Icat entity type. See "gridOptions configuration" for more information.
 
 $h3 topcat.json: "site" > "browse"
 
@@ -351,8 +351,8 @@ An example (partial) configuration:
   }
 }
 ```
-  * the grid options for the "facility" Icat entity type. See "Icat entity gridOptions configuration" for more information.
-  * the meta tabs for the "facility" Icat entity type. See "Icat entity metaTabs configuration" for more information.
+  * the grid options for the "facility" Icat entity type. See "gridOptions configuration" for more information.
+  * the meta tabs for the "facility" Icat entity type. See "metaTabs configuration" for more information.
 
 $h3 topcat.json "site" >  "cart" 
 
@@ -370,7 +370,7 @@ An example (partial) configuration:
 }
 ```
 
-* "gridOptions" - the grid options for the "cartItem" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
+* "gridOptions" - the grid options for the "cartItem" Topcat entity type. See "gridOptions configuration" for more information.
 
 $h3 topcat.json: "site" >  "myDownloads" 
 
@@ -388,7 +388,7 @@ An example (partial) configuration:
 }
 ```
 
-* "gridOptions" - the grid options for the "download" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
+* "gridOptions" - the grid options for the "download" Topcat entity type. See "gridOptions configuration" for more information.
 
 $h3 topcat.json: "site" >  "pages" 
 
@@ -528,7 +528,7 @@ An example (partial) configuration:
 }
 ```
 
-* "gridOptions" - the grid options for the "download" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
+* "gridOptions" - the grid options for the "download" Topcat entity type. See "gridOptions configuration" for more information.
 
 $h3 topcat.json: "facilities" > [facilityName] > "myData" 
 
@@ -549,7 +549,7 @@ An example (partial) configuration:
 }
 ```
   * "entityType" - the entity type can be either "investigation", "dataset" or "datafile".
-  * "gridOptions" - the grid options for the Icat entity type (specified). See "Icat entity gridOptions configuration" for more information.
+  * "gridOptions" - the grid options for the Icat entity type (specified). See "gridOptions configuration" for more information.
 
 
 $h3 topcat.json: "facilities" > [facilityName] > "browse" 
@@ -573,15 +573,88 @@ An example (partial) configuration:
   }
 }
 ```
-  * "gridOptions" - the grid options for the current Icat entity type. See "Icat entity gridOptions configuration" for more information.
-  * "metaTabs" - the meta tabs for the current Icat entity type. See “Icat entity metaTabs configuration” for more information.
+  * "gridOptions" - the grid options for the current Icat entity type. See "gridOptions configuration" for more information.
+  * "metaTabs" - the meta tabs for the current Icat entity type. See “metaTabs configuration” for more information.
+
+$h3 topcat.json: gridOptions configuration
+
+General principles configuring the gridOptions.
+
+An example configuration:
+
+```
+  "gridOptions": {
+    "columnDefs": [
+        {
+            "field": "visitId",
+            "link": true,
+            "breadcrumb": true
+        },
+        {
+            "field": "size|bytes"
+        },
+        {
+            "field": "investigationInstrument.fullName"
+        },
+        {
+            "field": "startDate",
+            "excludeFuture": true,
+            "sort": {
+              "direction": "desc",
+              "priority": 1
+            }
+        },
+        {
+            "field": "endDate"
+        }
+    ]
+  }
+```
+  
 
 
-$h3 topcat.json: Icat entity gridOptions configuration
+$h3 topcat.json: metaTabs configuration
 
-$h3 topcat.json: Icat entity metaTabs configuration
+General principles configuring the metaTabs.
 
-$h3 topcat.json: Topcat entity gridOptions configuration
+An example configuration:
+
+```
+"metaTabs": [
+    {
+        "title": "METATABS.DATASET.TABTITLE",
+        "items": [
+            {
+                "field": "name"
+            },
+            {
+                "field": "description"
+            },
+            {
+                "title": "METATABS.DATASET.START_DATE",
+                "field": "startDate",
+                "template": "{{content.value | date:'yyyy-MM-dd'}}"
+            },
+            {
+                "title": "METATABS.DATASET.END_DATE",
+                "field": "endDate",
+                "template": "{{content.value | date:'yyyy-MM-dd'}}"
+            }
+        ]
+    },
+    {
+        "title": "METATABS.DATASET_TYPE.TABTITLE",
+        "items": [
+            {
+                "field": "datasetType.name"
+            },
+            {
+                "field": "datasetType.description"
+            }
+        ]
+    }
+]
+```
 
 $h2 lang.json 
 
