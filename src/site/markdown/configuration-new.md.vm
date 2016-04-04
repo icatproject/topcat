@@ -611,9 +611,29 @@ An example configuration:
     ]
   }
 ```
-  * "enableSelection" - whether or not the entity can be added to the cart.
+  * "enableSelection" - whether or not the entity can be added to the cart. This only applies to "investigation", "dataset" or "datafile".
       * "columnDefs" - the column definitions of the grid.
           * "field" - The field you want to display in the column.
+              * if using dot notation e.g. "investigationInstrument.fullName" the following jpql variables are available:
+                  * datafileParameter (referencing the relative datafile.parameters)
+                  * dataset (referencing the relative dataset)
+                  * datafileParameterType (referencing the relative datafile.parameters.type)
+                  * datafile (referencing the relative datafile)
+                  * datasetSample (referencing the relative dataset.samples)
+                  * investigation (referencing the relative investigation)
+                  * datasetType (referencing the relative dataset.type)
+                  * datasetParameter (referencing the relative dataset.parameters)
+                  * datasetParameterType (referencing the relative dataset.parameters.type)
+                  * instrument  (referencing the relative facility.instruments)
+                  * facilityCycle (referencing the relative facility.facilityCycles)
+                  * facility (referencing the relative facility)
+                  * investigationInstrument (referencing the relative investigation.investigationInstruments.instrument)
+                  * publication (referencing the relative investigation.publications)
+                  * investigationParameter (referencing the relative investigation.parameters)
+                  * investigationSample (referencing the relative investigation.samples)
+                  * investigationGroup (referencing the relative investigation.investigationGroups.grouping)
+                  * investigationParameterType (referencing the relative investigation.parameters.type)
+                  * investigationUser ((referencing the relative investigation.investigationUsers.user)
           * "link" - whether or not to link to the next entity in the hierachy.
           * "breadcrumb" - whether or not you want to use the field value as title in the breadcrumb. By default this will be 'title' or 'name' if the entity has these fields.
           * "excludeFuture" - will preload the date 'to' filter with the current time, thus elliminating any rows in the future.
