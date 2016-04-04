@@ -176,6 +176,7 @@ from the above following namespaces defined:
       * "search" - specifies the structure of the search results and search fields for searching across facilities.
       * "browse" - specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
       * "cart" - specifies the structure of the cart.
+      * "myDownloads" - specifies the structure of 'downloads' dialog box.
       * "pages" - allows you to define information pages e.g. "About Us" or "Contact" etc...
   * "facilities"
       * "dls" - the facility name. This is used as namespace throughout topcat e.g. in the url or in the sessions.
@@ -187,7 +188,7 @@ from the above following namespaces defined:
           * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP
           * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
           * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
-          * "myData" - specifies the structure of 'downloads' dialog box.
+          * "myData" - specifies the structure of the "My Data" section.
           * "browse" - specifies the structure of the hierachical browse section.
 
 $h3 topcat.json: "site" > "paging"
@@ -353,6 +354,42 @@ An example (partial) configuration:
   * the grid options for the "facility" Icat entity type. See "Icat entity gridOptions configuration" for more information.
   * the meta tabs for the "facility" Icat entity type. See "Icat entity metaTabs configuration" for more information.
 
+$h3 topcat.json "site" >  "cart" 
+
+Specifies the structure of the cart.
+
+An example (partial) configuration:
+
+```
+{
+  "site": {
+    "cart":{
+        "gridOptions": {...}
+    }
+  }
+}
+```
+
+* "gridOptions" - the grid options for the "cartItem" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
+
+$h3 topcat.json "site" >  "myDownloads" 
+
+Specifies the structure of 'downloads' dialog box.
+
+An example (partial) configuration:
+
+```
+{
+  "site": {
+    "myDownloads":{
+        "gridOptions": {...}
+    }
+  }
+}
+```
+
+* "gridOptions" - the grid options for the "download" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
+
 $h3 topcat.json "facilities" > [facilityName] > "hierachy"
 
 The entity heierachy of the browse section.
@@ -451,7 +488,7 @@ An example (partial) configuration:
   "facilities": {
     "dsl": {
       "admin":{
-          "gridOptions": {...}
+        "gridOptions": {...}
       }
     }
   }
@@ -460,6 +497,24 @@ An example (partial) configuration:
 
 * "gridOptions" - the grid options for the "download" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
 
+$h3 topcat.json: "site" > "browse"
+
+Specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
+
+An example (partial) configuration:
+
+```
+{
+  "site": {
+    "browse":{
+        "gridOptions": {...},
+        "metaTabs": [...]
+    }
+  }
+}
+```
+  * the grid options for the "facility" Icat entity type. See "Icat entity gridOptions configuration" for more information.
+  * the meta tabs for the "facility" Icat entity type. See "Icat entity metaTabs configuration" for more information.
 
 $h2 lang.json 
 
