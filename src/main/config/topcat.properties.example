@@ -1,6 +1,3 @@
-# general
-file.directory=../data/preparedfiles
-
 # enable send email
 mail.enable=true
 
@@ -30,7 +27,3 @@ poll.delay=600
 
 # The wait time in seconds between each poll to the IDS.
 poll.interval.wait=600
-
-
-
-

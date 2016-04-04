@@ -65,352 +65,329 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 @Path("v1/user")
 public class UserResource {
-    private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
-    @EJB
-    private DownloadRepository downloadRepository;
+	@EJB
+	private DownloadRepository downloadRepository;
 
-    @EJB
-    private CartRepository cartRepository;
+	@EJB
+	private CartRepository cartRepository;
 
-    @EJB
-    private ICATClientBean icatClientService;
+	@EJB
+	private ICATClientBean icatClientService;
 
-    @EJB
-    private IdsClientBean idsClientService;
+	@EJB
+	private IdsClientBean idsClientService;
 
-    @PersistenceContext(unitName="topcatv2")
-    EntityManager em;
+	@PersistenceContext(unitName = "topcat")
+	EntityManager em;
 
-    @GET
-    @Path("/downloads")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getDownloads(
-        @QueryParam("icatUrl") String icatUrl,
-        @QueryParam("sessionId") String sessionId,
-        @QueryParam("queryOffset") String queryOffset)
-        throws TopcatException, MalformedURLException, ParseException {
+	@GET
+	@Path("/downloads")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getDownloads(@QueryParam("icatUrl") String icatUrl, @QueryParam("sessionId") String sessionId,
+			@QueryParam("queryOffset") String queryOffset)
+			throws TopcatException, MalformedURLException, ParseException {
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("userName", icatClientService.getUserName(icatUrl, sessionId));
-        params.put("queryOffset", queryOffset);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userName", icatClientService.getUserName(icatUrl, sessionId));
+		params.put("queryOffset", queryOffset);
 
-        List<Download> downloads = new ArrayList<Download>();
-        downloads = downloadRepository.getDownloads(params);
+		List<Download> downloads = new ArrayList<Download>();
+		downloads = downloadRepository.getDownloads(params);
 
-        return Response.ok().entity(new GenericEntity<List<Download>>(downloads){}).build();
-    }
+		return Response.ok().entity(new GenericEntity<List<Download>>(downloads) {
+		}).build();
+	}
 
-    @PUT
-    @Path("/download/{id}/isDeleted")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteDownload(
-        @PathParam("id") Long id,
-        @FormParam("icatUrl") String icatUrl,
-        @FormParam("sessionId") String sessionId,
-        @FormParam("value") Boolean value)
-        throws TopcatException, MalformedURLException, ParseException {
+	@PUT
+	@Path("/download/{id}/isDeleted")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response deleteDownload(@PathParam("id") Long id, @FormParam("icatUrl") String icatUrl,
+			@FormParam("sessionId") String sessionId, @FormParam("value") Boolean value)
+			throws TopcatException, MalformedURLException, ParseException {
 
-        Download download = downloadRepository.getDownload(id);
-        if(download == null){
-            throw new NotFoundException("could not find download");
-        }
+		Download download = downloadRepository.getDownload(id);
+		if (download == null) {
+			throw new NotFoundException("could not find download");
+		}
 
-        String userName = icatClientService.getUserName(icatUrl, sessionId);
-        if(!download.getUserName().equals(userName)){
-            throw new ForbiddenException("You do not have permission to delete this download");
-        }
+		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		if (!download.getUserName().equals(userName)) {
+			throw new ForbiddenException("You do not have permission to delete this download");
+		}
 
-        download.setIsDeleted(value);
-        if(value){
-            download.setDeletedAt(new Date());
-        }
+		download.setIsDeleted(value);
+		if (value) {
+			download.setDeletedAt(new Date());
+		}
 
-        downloadRepository.save(download);
+		downloadRepository.save(download);
 
-        return Response.ok().build();
-    }
+		return Response.ok().build();
+	}
 
-    
-    @GET
-    @Path("/cart/{facilityName}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getCart(
-        @PathParam("facilityName") String facilityName,
-        @QueryParam("icatUrl") String icatUrl,
-        @QueryParam("sessionId") String sessionId)
-        throws TopcatException, MalformedURLException, ParseException {
+	@GET
+	@Path("/cart/{facilityName}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getCart(@PathParam("facilityName") String facilityName, @QueryParam("icatUrl") String icatUrl,
+			@QueryParam("sessionId") String sessionId) throws TopcatException, MalformedURLException, ParseException {
 
-        String userName = icatClientService.getUserName(icatUrl, sessionId);
-        Cart cart = cartRepository.getCart(userName, facilityName);
-        
-        if(cart != null){
-            em.refresh(cart);
-            return Response.ok().entity(cart).build();
-        } else {
-            return emptyCart(facilityName, userName);
-        }
-    }
+		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		Cart cart = cartRepository.getCart(userName, facilityName);
 
-    @POST
-    @Path("/cart/{facilityName}/cartItems")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response addCartItems(
-        @PathParam("facilityName") String facilityName,
-        @FormParam("icatUrl") String icatUrl,
-        @FormParam("sessionId") String sessionId,
-        @FormParam("items") String items)
-        throws TopcatException, MalformedURLException, ParseException {
+		if (cart != null) {
+			em.refresh(cart);
+			return Response.ok().entity(cart).build();
+		} else {
+			return emptyCart(facilityName, userName);
+		}
+	}
 
-        String userName = icatClientService.getUserName(icatUrl, sessionId);
-        Cart cart = cartRepository.getCart(userName, facilityName);
+	@POST
+	@Path("/cart/{facilityName}/cartItems")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response addCartItems(@PathParam("facilityName") String facilityName, @FormParam("icatUrl") String icatUrl,
+			@FormParam("sessionId") String sessionId, @FormParam("items") String items)
+			throws TopcatException, MalformedURLException, ParseException {
 
-        if(cart == null){
-            cart = new Cart();
-            cart.setFacilityName(facilityName);
-            cart.setUserName(userName);
-            em.persist(cart);
-            em.flush();
-        }
+		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		Cart cart = cartRepository.getCart(userName, facilityName);
 
-        Map<String, List<Long>> entityTypeEntityIds = new HashMap<String, List<Long>>();
-        entityTypeEntityIds.put("investigation", new ArrayList<Long>());
-        entityTypeEntityIds.put("dataset", new ArrayList<Long>());
-        entityTypeEntityIds.put("datafile", new ArrayList<Long>());
+		if (cart == null) {
+			cart = new Cart();
+			cart.setFacilityName(facilityName);
+			cart.setUserName(userName);
+			em.persist(cart);
+			em.flush();
+		}
 
-        for(String item : items.split("\\s*,\\s*")){
-            String[] pair = item.split("\\s+");
-            if(pair.length == 2){
-                String entityType = pair[0];
-                Long entityId = Long.parseLong(pair[1]);
-                List<Long> entityIds = entityTypeEntityIds.get(entityType);
-                boolean isAlreadyInCart = false;
+		Map<String, List<Long>> entityTypeEntityIds = new HashMap<String, List<Long>>();
+		entityTypeEntityIds.put("investigation", new ArrayList<Long>());
+		entityTypeEntityIds.put("dataset", new ArrayList<Long>());
+		entityTypeEntityIds.put("datafile", new ArrayList<Long>());
 
-                for(CartItem cartItem : cart.getCartItems()){
-                    if(cartItem.getEntityType().equals(EntityType.valueOf(entityType)) && cartItem.getEntityId().equals(entityId)){
-                        isAlreadyInCart = true;
-                        break;
-                    }
-                }
+		for (String item : items.split("\\s*,\\s*")) {
+			String[] pair = item.split("\\s+");
+			if (pair.length == 2) {
+				String entityType = pair[0];
+				Long entityId = Long.parseLong(pair[1]);
+				List<Long> entityIds = entityTypeEntityIds.get(entityType);
+				boolean isAlreadyInCart = false;
 
-                if(!isAlreadyInCart){
-                    entityIds.add(entityId);
-                }
-            }
-        }
+				for (CartItem cartItem : cart.getCartItems()) {
+					if (cartItem.getEntityType().equals(EntityType.valueOf(entityType))
+							&& cartItem.getEntityId().equals(entityId)) {
+						isAlreadyInCart = true;
+						break;
+					}
+				}
 
-        for(CartItem cartItem : icatClientService.getCartItems(icatUrl, sessionId, entityTypeEntityIds)){
-            cartItem.setCart(cart);
-            em.persist(cartItem);
-            for(ParentEntity parentEntity : cartItem.getParentEntities()){
-                parentEntity.setCartItem(cartItem);
-                em.persist(parentEntity);
-            }
-        }
+				if (!isAlreadyInCart) {
+					entityIds.add(entityId);
+				}
+			}
+		}
 
-        em.flush();
-        em.refresh(cart);
-        
-        return Response.ok().entity(cart).build();
-    }
+		for (CartItem cartItem : icatClientService.getCartItems(icatUrl, sessionId, entityTypeEntityIds)) {
+			cartItem.setCart(cart);
+			em.persist(cartItem);
+			for (ParentEntity parentEntity : cartItem.getParentEntities()) {
+				parentEntity.setCartItem(cartItem);
+				em.persist(parentEntity);
+			}
+		}
 
+		em.flush();
+		em.refresh(cart);
 
-    @DELETE
-    @Path("/cart/{facilityName}/cartItems")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteCartItems(
-        @PathParam("facilityName") String facilityName,
-        @QueryParam("icatUrl") String icatUrl,
-        @QueryParam("sessionId") String sessionId,
-        @QueryParam("items") String items)
-        throws TopcatException, MalformedURLException, ParseException {
+		return Response.ok().entity(cart).build();
+	}
 
-        String userName = icatClientService.getUserName(icatUrl, sessionId);
-        Cart cart = cartRepository.getCart(userName, facilityName);
-        if(cart == null){
-            return emptyCart(facilityName, userName);
-        }
+	@DELETE
+	@Path("/cart/{facilityName}/cartItems")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response deleteCartItems(@PathParam("facilityName") String facilityName,
+			@QueryParam("icatUrl") String icatUrl, @QueryParam("sessionId") String sessionId,
+			@QueryParam("items") String items) throws TopcatException, MalformedURLException, ParseException {
 
-        if(items.equals("*")){
-            for(CartItem cartItem : cart.getCartItems()){
-                em.remove(cartItem);
-            }
-        } else {
-            for(String item : items.split("\\s*,\\s*")){
-                String[] pair = item.split("\\s+");
-                
-                if(pair.length > 1){
-                    String entityType = pair[0];
-                    Long entityId = Long.parseLong(pair[1]);
+		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		Cart cart = cartRepository.getCart(userName, facilityName);
+		if (cart == null) {
+			return emptyCart(facilityName, userName);
+		}
 
-                    for(CartItem cartItem : cart.getCartItems()){
-                        boolean entityTypesMatch = cartItem.getEntityType().equals(EntityType.valueOf(entityType));
-                        boolean entityIdsMatch = cartItem.getEntityId().equals(entityId);
-                        if(entityTypesMatch && entityIdsMatch){
-                            em.remove(cartItem);
-                        }
-                    }
-                } else {
-                    Long id = Long.parseLong(pair[0]);
-                    for(CartItem cartItem : cart.getCartItems()){
-                        if(cartItem.getId().equals(id)){
-                            em.remove(cartItem);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+		if (items.equals("*")) {
+			for (CartItem cartItem : cart.getCartItems()) {
+				em.remove(cartItem);
+			}
+		} else {
+			for (String item : items.split("\\s*,\\s*")) {
+				String[] pair = item.split("\\s+");
 
-        em.flush();
-        em.refresh(cart);
+				if (pair.length > 1) {
+					String entityType = pair[0];
+					Long entityId = Long.parseLong(pair[1]);
 
-        if(cart.getCartItems().size() == 0){
-            em.remove(cart);
-            em.flush();
-            return emptyCart(facilityName, userName);
-        }
+					for (CartItem cartItem : cart.getCartItems()) {
+						boolean entityTypesMatch = cartItem.getEntityType().equals(EntityType.valueOf(entityType));
+						boolean entityIdsMatch = cartItem.getEntityId().equals(entityId);
+						if (entityTypesMatch && entityIdsMatch) {
+							em.remove(cartItem);
+						}
+					}
+				} else {
+					Long id = Long.parseLong(pair[0]);
+					for (CartItem cartItem : cart.getCartItems()) {
+						if (cartItem.getId().equals(id)) {
+							em.remove(cartItem);
+							break;
+						}
+					}
+				}
+			}
+		}
 
-        return Response.ok().entity(cart).build();
-    }
+		em.flush();
+		em.refresh(cart);
 
-    @POST
-    @Path("/cart/{facilityName}/submit")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response submitCart(
-        @PathParam("facilityName") String facilityName,
-        @FormParam("icatUrl") String icatUrl,
-        @FormParam("sessionId") String sessionId,
-        @FormParam("transport") String transport,
-        @FormParam("transportUrl") String transportUrl,
-        @FormParam("email") String email,
-        @FormParam("fileName") String fileName,
-        @FormParam("zipType") String zipType)
-        throws TopcatException, MalformedURLException, ParseException {
+		if (cart.getCartItems().size() == 0) {
+			em.remove(cart);
+			em.flush();
+			return emptyCart(facilityName, userName);
+		}
 
-        if (fileName == null || fileName.trim().isEmpty()) {
-            throw new BadRequestException("fileName is required");
-        }
+		return Response.ok().entity(cart).build();
+	}
 
-        if (transport == null || transport.trim().isEmpty()) {
-            throw new BadRequestException("transport is required");
-        }
+	@POST
+	@Path("/cart/{facilityName}/submit")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response submitCart(@PathParam("facilityName") String facilityName, @FormParam("icatUrl") String icatUrl,
+			@FormParam("sessionId") String sessionId, @FormParam("transport") String transport,
+			@FormParam("transportUrl") String transportUrl, @FormParam("email") String email,
+			@FormParam("fileName") String fileName, @FormParam("zipType") String zipType)
+			throws TopcatException, MalformedURLException, ParseException {
 
-        String userName = icatClientService.getUserName(icatUrl, sessionId);
-        Cart cart = cartRepository.getCart(userName, facilityName);
-        String fullName = icatClientService.getFullName(icatUrl, sessionId);
-        Long downloadId = null;
-        
-        if(cart != null){
-            em.refresh(cart);
-            DataSelection dataSelection = cartToDataSelection(cart);
-            String preparedId = idsClientService.prepareData(transportUrl, sessionId, dataSelection, getZipFlag(zipType));
+		if (fileName == null || fileName.trim().isEmpty()) {
+			throw new BadRequestException("fileName is required");
+		}
 
-            if (preparedId != null) {
-                Download download = new Download();
-                download.setPreparedId(preparedId);
-                download.setFacilityName(cart.getFacilityName());
-                download.setFileName(fileName);
-                download.setUserName(cart.getUserName());
-                download.setFullName(fullName);
-                download.setTransport(transport);
-                download.setTransportUrl(transportUrl);
-                download.setIcatUrl(icatUrl);
-                download.setEmail(email);
-                boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
-                download.setIsTwoLevel(isTwoLevel);
+		if (transport == null || transport.trim().isEmpty()) {
+			throw new BadRequestException("transport is required");
+		}
 
-                Status status = idsClientService.getStatus(transportUrl, sessionId, dataSelection);
-                if(status != Status.ONLINE){
-                    download.setStatus(DownloadStatus.RESTORING);
-                } else {
-                    download.setStatus(DownloadStatus.COMPLETE);
-                    download.setCompletedAt(new Date());
-                }
+		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		Cart cart = cartRepository.getCart(userName, facilityName);
+		String fullName = icatClientService.getFullName(icatUrl, sessionId);
+		Long downloadId = null;
 
-                List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
+		if (cart != null) {
+			em.refresh(cart);
+			DataSelection dataSelection = cartToDataSelection(cart);
+			String preparedId = idsClientService.prepareData(transportUrl, sessionId, dataSelection,
+					getZipFlag(zipType));
 
-                for(CartItem cartItem : cart.getCartItems()) {
-                    DownloadItem downloadItem = new DownloadItem();
-                    downloadItem.setEntityId(cartItem.getEntityId());
-                    downloadItem.setEntityType(cartItem.getEntityType());
-                    downloadItem.setDownload(download);
-                    downloadItems.add(downloadItem);
-                }
+			if (preparedId != null) {
+				Download download = new Download();
+				download.setPreparedId(preparedId);
+				download.setFacilityName(cart.getFacilityName());
+				download.setFileName(fileName);
+				download.setUserName(cart.getUserName());
+				download.setFullName(fullName);
+				download.setTransport(transport);
+				download.setTransportUrl(transportUrl);
+				download.setIcatUrl(icatUrl);
+				download.setEmail(email);
+				boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
+				download.setIsTwoLevel(isTwoLevel);
 
-                download.setDownloadItems(downloadItems);
+				Status status = idsClientService.getStatus(transportUrl, sessionId, dataSelection);
+				if (status != Status.ONLINE) {
+					download.setStatus(DownloadStatus.RESTORING);
+				} else {
+					download.setStatus(DownloadStatus.COMPLETE);
+					download.setCompletedAt(new Date());
+				}
 
-                try {
-                    em.persist(download);
-                    em.flush();
-                    em.refresh(download);
-                    downloadId = download.getId();
-                    em.remove(cart);
-                    em.flush();
-                } catch (Exception e) {
-                    logger.debug(e.getMessage());
-                    throw new BadRequestException("Unable to submit for cart for download");
-                }
+				List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
 
-            } else {
-                throw new BadRequestException("Unable to submit for cart for download");
-            }
-           
-        }
+				for (CartItem cartItem : cart.getCartItems()) {
+					DownloadItem downloadItem = new DownloadItem();
+					downloadItem.setEntityId(cartItem.getEntityId());
+					downloadItem.setEntityType(cartItem.getEntityType());
+					downloadItem.setDownload(download);
+					downloadItems.add(downloadItem);
+				}
 
-        return emptyCart(facilityName, userName, downloadId);
-    }
+				download.setDownloadItems(downloadItems);
 
-    private Response emptyCart(String facilityName, String userName, Long downloadId){
-        JsonObjectBuilder emptyCart = Json.createObjectBuilder()
-            .add("facilityName", facilityName)
-            .add("userName", userName)
-            .add("cartItems", Json.createArrayBuilder().build());
-            
-            if(downloadId != null){
-                emptyCart.add("downloadId", downloadId);
-            }
+				try {
+					em.persist(download);
+					em.flush();
+					em.refresh(download);
+					downloadId = download.getId();
+					em.remove(cart);
+					em.flush();
+				} catch (Exception e) {
+					logger.debug(e.getMessage());
+					throw new BadRequestException("Unable to submit for cart for download");
+				}
 
-        return Response.ok().entity(emptyCart.build().toString()).build();
-    }
+			} else {
+				throw new BadRequestException("Unable to submit for cart for download");
+			}
 
-    private Response emptyCart(String facilityName, String userName){
-        return emptyCart(facilityName, userName, null);
-    }
+		}
 
+		return emptyCart(facilityName, userName, downloadId);
+	}
 
+	private Response emptyCart(String facilityName, String userName, Long downloadId) {
+		JsonObjectBuilder emptyCart = Json.createObjectBuilder().add("facilityName", facilityName)
+				.add("userName", userName).add("cartItems", Json.createArrayBuilder().build());
 
-    private Flag getZipFlag(String zip) {
-        if (zip == null ) {
-            return Flag.ZIP;
-        }
-        zip = zip.toUpperCase();
-        if(zip.equals("ZIP_AND_COMPRESS")) {
-            return Flag.ZIP_AND_COMPRESS;
-        } else {
-            return Flag.ZIP;
-        }
-    }
+		if (downloadId != null) {
+			emptyCart.add("downloadId", downloadId);
+		}
 
-    private DataSelection cartToDataSelection(Cart cart) {
-        DataSelection dataSelection = new DataSelection();
+		return Response.ok().entity(emptyCart.build().toString()).build();
+	}
 
-        for (CartItem cartItem : cart.getCartItems()) {
-            if (cartItem.getEntityType() == EntityType.investigation) {
-                dataSelection.addInvestigation(cartItem.getEntityId());
-            }
+	private Response emptyCart(String facilityName, String userName) {
+		return emptyCart(facilityName, userName, null);
+	}
 
-            if (cartItem.getEntityType() == EntityType.dataset) {
-                dataSelection.addDataset(cartItem.getEntityId());
-            }
+	private Flag getZipFlag(String zip) {
+		if (zip == null) {
+			return Flag.ZIP;
+		}
+		zip = zip.toUpperCase();
+		if (zip.equals("ZIP_AND_COMPRESS")) {
+			return Flag.ZIP_AND_COMPRESS;
+		} else {
+			return Flag.ZIP;
+		}
+	}
 
-            if (cartItem.getEntityType() == EntityType.datafile) {
-                dataSelection.addDatafile(cartItem.getEntityId());
-            }
-        }
+	private DataSelection cartToDataSelection(Cart cart) {
+		DataSelection dataSelection = new DataSelection();
 
-        return dataSelection;
-    }
-    
+		for (CartItem cartItem : cart.getCartItems()) {
+			if (cartItem.getEntityType() == EntityType.investigation) {
+				dataSelection.addInvestigation(cartItem.getEntityId());
+			}
+
+			if (cartItem.getEntityType() == EntityType.dataset) {
+				dataSelection.addDataset(cartItem.getEntityId());
+			}
+
+			if (cartItem.getEntityType() == EntityType.datafile) {
+				dataSelection.addDatafile(cartItem.getEntityId());
+			}
+		}
+
+		return dataSelection;
+	}
 
 }

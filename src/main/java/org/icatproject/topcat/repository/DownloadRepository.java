@@ -21,7 +21,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.TemporalType;
 
-
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.icatproject.topcat.domain.Download;
@@ -35,234 +34,232 @@ import org.slf4j.LoggerFactory;
 @LocalBean
 @Singleton
 public class DownloadRepository {
-    @PersistenceContext(unitName="topcatv2")
-    EntityManager em;
+	@PersistenceContext(unitName = "topcat")
+	EntityManager em;
 
-    @EJB
-    MailBean mailBean;
+	@EJB
+	MailBean mailBean;
 
-    private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
+	private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
 
-    public List<Download> getDownloads(Map<String, Object> params) throws ParseException{
-        List<Download> downloads = new ArrayList<Download>();
+	public List<Download> getDownloads(Map<String, Object> params) throws ParseException {
+		List<Download> downloads = new ArrayList<Download>();
 
-        String queryOffset = (String) params.get("queryOffset");
-        String userName = (String) params.get("userName");
-        Integer pageSize = null;
-        Integer page = null;
+		String queryOffset = (String) params.get("queryOffset");
+		String userName = (String) params.get("userName");
+		Integer pageSize = null;
+		Integer page = null;
 
-        if(queryOffset != null){
-            queryOffset = queryOffset.replaceAll("(?i)^\\s*WHERE\\s+", "");
-            Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d)+,\\s*(\\d+)\\s*$");
-            Matcher matches = pattern.matcher(queryOffset);
-            if(matches.find()){
-                queryOffset = matches.group(1);
-                page = Integer.parseInt(matches.group(2));
-                pageSize = Integer.parseInt(matches.group(3));
-            }
-        }
+		if (queryOffset != null) {
+			queryOffset = queryOffset.replaceAll("(?i)^\\s*WHERE\\s+", "");
+			Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d)+,\\s*(\\d+)\\s*$");
+			Matcher matches = pattern.matcher(queryOffset);
+			if (matches.find()) {
+				queryOffset = matches.group(1);
+				page = Integer.parseInt(matches.group(2));
+				pageSize = Integer.parseInt(matches.group(3));
+			}
+		}
 
-        if (em != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT download FROM Download download ");
+		if (em != null) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT download FROM Download download ");
 
+			if (userName != null && queryOffset != null) {
+				sb.append("WHERE download.userName = :userName AND " + queryOffset + " ");
+			} else if (userName != null) {
+				sb.append("WHERE download.userName = :userName ");
+			} else if (queryOffset != null) {
+				sb.append("WHERE " + queryOffset + " ");
+			}
 
-            if(userName != null && queryOffset != null) {
-                sb.append("WHERE download.userName = :userName AND " + queryOffset + " ");
-            } else if (userName != null) {
-                sb.append("WHERE download.userName = :userName ");
-            } else if (queryOffset != null) {
-                sb.append("WHERE " + queryOffset + " ");
-            }
-                
+			logger.debug(sb.toString());
 
-            logger.debug(sb.toString());
+			TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
 
-            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
+			if (userName != null) {
+				query.setParameter("userName", userName);
+			}
 
-            if(userName != null) {
-                query.setParameter("userName", userName);
-            }
+			if (page != null) {
+				query.setFirstResult((page - 1) * pageSize);
+				query.setMaxResults(pageSize);
+			}
 
-            if(page != null) {
-                query.setFirstResult((page - 1) * pageSize);
-                query.setMaxResults(pageSize);
-            }
+			logger.debug(query.toString());
 
-            logger.debug(query.toString());
+			downloads = query.getResultList();
 
-            downloads = query.getResultList();
+			if (downloads != null) {
+				return downloads;
+			}
 
-            if (downloads != null) {
-                return downloads;
-            }
+		}
 
-        }
+		return downloads;
+	}
 
-        return downloads;
-    }
+	public Download getDownload(Long id) {
+		return em.find(Download.class, id);
+	}
 
-    public Download getDownload(Long id){
-        return em.find(Download.class, id);
-    }
+	public List<Download> getDownloadsByFacilityNameAndUser(Map<String, String> params) {
+		List<Download> downloads = new ArrayList<Download>();
 
-    public List<Download> getDownloadsByFacilityNameAndUser(Map<String, String> params) {
-        List<Download> downloads = new ArrayList<Download>();
+		String facilityName = params.get("facilityName");
+		String userName = params.get("userName");
+		String status = params.get("status");
+		String transport = params.get("transport");
+		String preparedId = params.get("preparedId");
 
-        String facilityName = params.get("facilityName");
-        String userName = params.get("userName");
-        String status = params.get("status");
-        String transport = params.get("transport");
-        String preparedId = params.get("preparedId");
+		DownloadStatus downloadStatus = null;
 
-        DownloadStatus downloadStatus = null;
+		if (status != null) {
+			downloadStatus = DownloadStatus.valueOf(status);
+		}
 
-        if (status != null) {
-            downloadStatus = DownloadStatus.valueOf(status);
-        }
+		if (em != null) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(
+					"SELECT d FROM Download d WHERE d.isDeleted = false AND d.facilityName = :facilityName AND d.userName = :userName");
 
-        if (em != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT d FROM Download d WHERE d.isDeleted = false AND d.facilityName = :facilityName AND d.userName = :userName" );
+			if (status != null) {
+				sb.append(" AND d.status = :status");
+			}
 
-            if (status != null) {
-                sb.append(" AND d.status = :status");
-            }
+			if (transport != null) {
+				sb.append(" AND d.transport = :transport");
+			}
 
-            if (transport != null) {
-                sb.append(" AND d.transport = :transport");
-            }
+			if (preparedId != null) {
+				sb.append(" AND d.preparedId = :preparedId");
+			}
 
-            if (preparedId != null) {
-                sb.append(" AND d.preparedId = :preparedId");
-            }
+			sb.append(" ORDER BY d.createdAt DESC");
 
-            sb.append(" ORDER BY d.createdAt DESC");
+			logger.debug(sb.toString());
 
-            logger.debug(sb.toString());
+			TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
+			query.setParameter("facilityName", facilityName).setParameter("userName", userName);
 
-            TypedQuery<Download> query = em.createQuery(sb.toString(), Download.class);
-            query.setParameter("facilityName", facilityName).
-            setParameter("userName", userName);
+			if (status != null) {
+				query.setParameter("status", downloadStatus);
+			}
 
-            if (status != null) {
-                query.setParameter("status", downloadStatus);
-            }
+			if (transport != null) {
+				query.setParameter("transport", transport);
+			}
 
-            if (transport != null) {
-                query.setParameter("transport", transport);
-            }
+			if (preparedId != null) {
+				query.setParameter("preparedId", preparedId);
+			}
 
-            if (preparedId != null) {
-                query.setParameter("preparedId", preparedId);
-            }
+			downloads = query.getResultList();
 
-            downloads = query.getResultList();
+		}
 
-        }
+		return downloads;
+	}
 
-        return downloads;
-    }
+	public String setCompleteByPreparedId(Map<String, String> params) {
+		List<Download> downloads = new ArrayList<Download>();
 
+		if (em != null) {
+			String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId";
 
-    public String setCompleteByPreparedId(Map<String, String> params) {
-        List<Download> downloads = new ArrayList<Download>();
+			TypedQuery<Download> query = em.createQuery(jpql, Download.class);
+			query.setParameter("preparedId", params.get("preparedId"));
 
-        if (em != null) {
-            String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId";
+			downloads = query.getResultList();
 
-            TypedQuery<Download> query = em.createQuery(jpql, Download.class);
-            query.setParameter("preparedId", params.get("preparedId"));
+			if (downloads.size() > 0) {
+				downloads.get(0).setStatus(DownloadStatus.COMPLETE);
+				downloads.get(0).setCompletedAt(new Date());
+				em.flush();
 
-            downloads = query.getResultList();
+				EmailValidator emailValidator = EmailValidator.getInstance();
+				PropertyHandler properties = PropertyHandler.getInstance();
 
-            if (downloads.size() > 0) {
-                downloads.get(0).setStatus(DownloadStatus.COMPLETE);
-                downloads.get(0).setCompletedAt(new Date());
-                em.flush();
+				if (properties.isMailEnable() == true) {
+					if (downloads.get(0).getEmail() != null) {
+						if (emailValidator.isValid(downloads.get(0).getEmail())) {
+							// get fullName if exists
+							String userName = downloads.get(0).getUserName();
 
-                EmailValidator emailValidator = EmailValidator.getInstance();
-                PropertyHandler properties = PropertyHandler.getInstance();
+							String fullName = downloads.get(0).getFullName();
 
-                if (properties.isMailEnable() == true) {
-                    if (downloads.get(0).getEmail() != null) {
-                        if (emailValidator.isValid(downloads.get(0).getEmail())) {
-                            //get fullName if exists
-                            String userName = downloads.get(0).getUserName();
+							if (fullName != null && !fullName.trim().isEmpty()) {
+								userName = fullName;
+							}
 
-                            String fullName = downloads.get(0).getFullName();
+							Map<String, String> valuesMap = new HashMap<String, String>();
+							valuesMap.put("email", downloads.get(0).getEmail());
+							valuesMap.put("userName", userName);
+							valuesMap.put("facilityName", downloads.get(0).getFacilityName());
+							valuesMap.put("preparedId", downloads.get(0).getPreparedId());
+							valuesMap.put("downloadUrl", downloads.get(0).getTransportUrl() + "/ids/getData?preparedId="
+									+ downloads.get(0).getPreparedId() + "&outname=" + downloads.get(0).getFileName());
+							valuesMap.put("fileName", downloads.get(0).getFileName());
 
-                            if (fullName != null && ! fullName.trim().isEmpty()) {
-                                userName = fullName;
-                            }
+							StrSubstitutor sub = new StrSubstitutor(valuesMap);
 
-                            Map<String, String> valuesMap = new HashMap<String, String>();
-                            valuesMap.put("email", downloads.get(0).getEmail());
-                            valuesMap.put("userName", userName);
-                            valuesMap.put("facilityName", downloads.get(0).getFacilityName());
-                            valuesMap.put("preparedId", downloads.get(0).getPreparedId());
-                            valuesMap.put("downloadUrl", downloads.get(0).getTransportUrl() + "/ids/getData?preparedId=" + downloads.get(0).getPreparedId() + "&outname=" + downloads.get(0).getFileName());
-                            valuesMap.put("fileName", downloads.get(0).getFileName());
+							if (downloads.get(0).getTransport().equals("https")) {
+								mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()),
+										sub.replace(properties.getMailBodyHttps()));
+							}
 
-                            StrSubstitutor sub = new StrSubstitutor(valuesMap);
+							if (downloads.get(0).getTransport().equals("globus")) {
+								mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()),
+										sub.replace(properties.getMailBodyGlobus()));
+							}
 
-                            if (downloads.get(0).getTransport().equals("https")) {
-                                mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()), sub.replace(properties.getMailBodyHttps()));
-                            }
+							if (downloads.get(0).getTransport().equals("smartclient")) {
+								mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()),
+										sub.replace(properties.getMailBodySmartClient()));
+							}
+						} else {
+							logger.debug("Email not sent. Invalid email " + downloads.get(0).getEmail());
+						}
+					}
+				} else {
+					logger.debug("Email not sent. Email not enabled");
+				}
 
-                            if (downloads.get(0).getTransport().equals("globus")) {
-                                mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()), sub.replace(properties.getMailBodyGlobus()));
-                            }
+				return downloads.get(0).getPreparedId();
+			}
+		}
 
-                            if (downloads.get(0).getTransport().equals("smartclient")) {
-                                mailBean.send(downloads.get(0).getEmail(), sub.replace(properties.getMailSubject()), sub.replace(properties.getMailBodySmartClient()));
-                            }
-                        } else {
-                            logger.debug("Email not sent. Invalid email " + downloads.get(0).getEmail());
-                        }
-                    }
-                } else {
-                    logger.debug("Email not sent. Email not enabled");
-                }
+		return null;
+	}
 
-                return downloads.get(0).getPreparedId();
-            }
-        }
+	public Download save(Download store) {
+		em.persist(store);
+		em.flush();
 
-        return null;
-    }
+		return store;
+	}
 
+	public String deleteDownloadByPreparedIdAndUserName(Map<String, String> params) {
+		List<Download> downloads = new ArrayList<Download>();
 
-    public Download save(Download store) {
-        em.persist(store);
-        em.flush();
+		if (em != null) {
+			String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId AND d.userName = :userName";
 
-        return store;
-    }
+			TypedQuery<Download> query = em.createQuery(jpql, Download.class);
+			query.setParameter("preparedId", params.get("preparedId")).setParameter("userName", params.get("userName"));
 
+			downloads = query.getResultList();
 
-    public String deleteDownloadByPreparedIdAndUserName(Map<String, String> params) {
-        List<Download> downloads = new ArrayList<Download>();
+			if (downloads.size() > 0) {
+				downloads.get(0).setIsDeleted(true);
+				downloads.get(0).setDeletedAt(new Date());
+				em.flush();
 
-        if (em != null) {
-            String jpql = "SELECT d FROM Download d WHERE d.isDeleted = false AND d.preparedId = :preparedId AND d.userName = :userName";
+				return downloads.get(0).getPreparedId();
+			}
+		}
 
-            TypedQuery<Download> query = em.createQuery(jpql, Download.class);
-            query.setParameter("preparedId", params.get("preparedId"))
-                .setParameter("userName", params.get("userName"));
-
-            downloads = query.getResultList();
-
-            if (downloads.size() > 0) {
-                downloads.get(0).setIsDeleted(true);
-                downloads.get(0).setDeletedAt(new Date());
-                em.flush();
-
-                return downloads.get(0).getPreparedId();
-            }
-        }
-
-        return null;
-    }
+		return null;
+	}
 
 }

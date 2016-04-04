@@ -2,13 +2,14 @@
 <configuration>
 	<appender name="logfile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>../logs/topcatv2.log</file>
+		<file>../logs/topcat.log</file>
 		<encoder>
 			<pattern>%d [%thread] %-5level %logger{0} - %msg%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- rollover daily -->
-			<fileNamePattern>../logs/topcatv2.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>../logs/topcat.log.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
 			<maxHistory>14</maxHistory>
 		</rollingPolicy>
 	</appender>
