@@ -7,12 +7,12 @@ mvn clean install
 cp ~/topcat_tmp/target/topcat-*.zip ~/
 cd ~/
 unzip -o topcat-*.zip
-cd topcatv2
-sudo cp ~/topcat_tmp/provision/topcat.properties /home/vagrant/topcatv2/topcat.properties
-sudo cp ~/topcat_tmp/provision/topcat-setup.properties /home/vagrant/topcatv2/topcat-setup.properties
-sudo cp ~/topcat_tmp/yo/app/config/topcat_dev.json /home/vagrant/topcatv2/topcat.json
-sudo cp ~/topcat_tmp/yo/app/languages/lang.json /home/vagrant/topcatv2/lang.json
-sudo cp ~/topcat_tmp/yo/app/styles/topcat.css /home/vagrant/topcatv2/topcat.css
+cd topcat
+sudo cp ~/topcat_tmp/provision/topcat.properties /home/vagrant/topcat/topcat.properties
+sudo cp ~/topcat_tmp/provision/topcat-setup.properties /home/vagrant/topcat/topcat-setup.properties
+sudo cp ~/topcat_tmp/yo/app/config/topcat_dev.json /home/vagrant/topcat/topcat.json
+sudo cp ~/topcat_tmp/yo/app/languages/lang.json /home/vagrant/topcat/lang.json
+sudo cp ~/topcat_tmp/yo/app/styles/topcat.css /home/vagrant/topcat/topcat.css
 dos2unix ./setup
 chmod 0755 ./setup
 sudo ./setup configure

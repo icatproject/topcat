@@ -109,12 +109,12 @@ exec %{
   cp ./target/topcat-*.zip ./install
   cd install
   unzip -o topcat-*.zip
-  sudo cp ./provision/topcat.properties ./topcatv2
-  sudo cp ./provision/topcat-setup.properties ./topcatv2
-  sudo cp ../yo/app/config/topcat_dev.json ./topcatv2/topcat.json
-  sudo cp ../yo/app/languages/lang.json ./topcatv2
-  sudo cp ../yo/app/styles/topcat.css ./topcatv2
-  cd topcatv2
+  sudo cp ./provision/topcat.properties ./topcat
+  sudo cp ./provision/topcat-setup.properties ./topcat
+  sudo cp ../yo/app/config/topcat_dev.json ./topcat/topcat.json
+  sudo cp ../yo/app/languages/lang.json ./topcat
+  sudo cp ../yo/app/styles/topcat.css ./topcat
+  cd topcat
   dos2unix ./setup
   chmod 0755 ./setup
   sudo ./setup configure

@@ -246,23 +246,6 @@ An example breadcrumb configuration:
 ```
   * "maxTitleLength" - the maximum length after which it will get truncated with ellipses.
 
-$h3 topcat.json: "site" > "breadcrumb"
-
-Specifies global breadcrumb options.
-
-An example breadcrumb configuration:
-
-```
-{
-  "site": {
-    "breadcrumb": {
-        "maxTitleLength": 30
-    }
-  }
-}
-```
-  * "maxTitleLength" - the maximum length after which it will get truncated with ellipses.
-
 $h3 topcat.json: "site" > "serviceStatus"
 
 Allows the displaying of a message that the user can dismiss and then carry on using the system
@@ -663,7 +646,9 @@ An example configuration:
 
   * "title" - the title of the tab.
       * items - the items to be displayed inside the metatab
-          *
+          * "field" - the field to be displayed.
+          * "label" - a label to describe what the field is. By default this will field name.
+          * "template" - a custom (angular) template to display the field.
 
 $h3 topcat.json: standard jpql variables
 

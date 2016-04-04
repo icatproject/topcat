@@ -3,19 +3,8 @@
     xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <body>
     <menu name="Contents">
-        <item name="TopCAT Installation" href="installation.html"/>
-        <item name="Configuration New" href="configuration-new.html"/>
-        <item name="Configuration Quick Start Guide" href="configuration-quick-start-guide.html"/>
-        <item name="Configuration" href="configuration.html"/>
-        <item name="-topcat.json configuration" href="topcat-json-configuration.html"/>
-        <item name="--columnDefs object" href="columndefs.html"/>
-        <item name="--facility object" href="facility.html"/>
-        <item name="--filter object" href="filter.html"/>
-        <item name="--gridOption object" href="gridoption.html"/>
-        <item name="--metatab Object" href="metatab.html"/>
-        <item name="--page Object" href="page.html"/>
-        <item name="--paging Object" href="paging.html"/>
-        <item name="--site Object" href="site.html"/>
+        <item name="Installation" href="installation.html"/>
+        <item name="Configuration" href="configuration-new.html"/>
         <item name="Release Notes" href="release-notes.html"/>
         <item name="RESTful interface (in new window)" href="miredot/index.html" target="_blank"/>
     </menu>
