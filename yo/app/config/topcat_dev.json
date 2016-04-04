@@ -169,7 +169,6 @@
             {
                 "url" : "/about",
                 "stateName": "about",
-                "templateTranslateName" : "PAGE.ABOUT.HTML",
                 "addToNavBar": {
                     "linkLabel" : "MAIN_NAVIGATION.ABOUT",
                     "align" : "left"
@@ -179,7 +178,6 @@
             {
                 "url" : "/contact",
                 "stateName": "contact",
-                "templateTranslateName" : "PAGE.CONTACT.HTML",
                 "addToNavBar": {
                     "linkLabel" : "MAIN_NAVIGATION.CONTACT",
                     "align" : "left"
@@ -189,7 +187,6 @@
             {
                 "url" : "/help",
                 "stateName": "help",
-                "templateTranslateName" : "PAGE.HELP.HTML",
                 "addToNavBar": {
                     "linkLabel" : "MAIN_NAVIGATION.HELP",
                     "align" : "left"
@@ -197,13 +194,11 @@
             },
             {
                 "url" : "/globus-help",
-                "stateName": "globus-help",
-                "templateTranslateName" : "PAGE.GLOBUS_HELP.HTML"
+                "stateName": "globus-help"
             },
             {
                 "url" : "/cookie-policy",
-                "stateName": "cookie-policy",
-                "templateTranslateName" : "PAGE.COOKIE_POLICY.HTML"
+                "stateName": "cookie-policy"
             }
 
         ]

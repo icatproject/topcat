@@ -412,7 +412,7 @@
 		}
 
 		this.constantify = function(text){
-			return ('' + text).replace(/([A-Z])/g, '_$1').replace(/^_/, '').toUpperCase();
+			return ('' + text).replace(/([A-Z])/g, '_$1').replace(/-/g, '_').replace(/^_/, '').toUpperCase();
 		};
 
 		this.generateRestMethods = function(that, prefix){

@@ -372,7 +372,7 @@ An example (partial) configuration:
 
 * "gridOptions" - the grid options for the "cartItem" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
 
-$h3 topcat.json "site" >  "myDownloads" 
+$h3 topcat.json: "site" >  "myDownloads" 
 
 Specifies the structure of 'downloads' dialog box.
 
@@ -390,7 +390,40 @@ An example (partial) configuration:
 
 * "gridOptions" - the grid options for the "download" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
 
-$h3 topcat.json "facilities" > [facilityName] > "hierachy"
+$h3 topcat.json: "site" >  "pages" 
+
+Allows you to define information pages e.g. “About Us” or “Contact” etc…
+
+An example configuration:
+
+```
+{
+  "site": {
+    "pages" : [
+      {
+        "url" : "/about",
+        "stateName": "about",
+        "addToNavBar": {
+            "linkLabel" : "MAIN_NAVIGATION.ABOUT",
+            "align" : "left"
+        },
+        "contents": "PAGE.ABOUT.HTML"
+      }
+    ]
+  }
+}
+```
+
+  * "url" - The url of the page.
+  * "stateName" - A unique token that represents that state.
+  * "addToNavBar" - Specified whether or not as link should be added to the top bar.
+      * "linkLabel" - the label (i.e. text) for the link.
+      * "align" - whether the link should be on the "left" or "right" hand side.
+  * "contents" - the html contents of the page specified in lang.json file. If not defined it will try and work the translation variable based on the stateName. e.g.
+      * stateName: "about" -> contents: "PAGE.ABOUT.HTML"
+      * stateName: "globus-help" -> contents: "PAGE.GLOBUS_HELP.HTML"
+
+$h3 topcat.json: "facilities" > [facilityName] > "hierachy"
 
 The entity heierachy of the browse section.
 
