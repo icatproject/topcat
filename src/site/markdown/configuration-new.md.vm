@@ -584,6 +584,7 @@ An example configuration:
 
 ```
   "gridOptions": {
+    "enableSelection": true,
     "columnDefs": [
         {
             "field": "visitId",
@@ -610,6 +611,15 @@ An example configuration:
     ]
   }
 ```
+  * "enableSelection" - whether or not the entity can be added to the cart.
+      * "columnDefs" - the column definitions of the grid.
+          * "field" - The field you want to display in the column.
+          * "link" - whether or not to link to the next entity in the hierachy.
+          * "breadcrumb" - whether or not you want to use the field value as title in the breadcrumb. By default this will be 'title' or 'name' if the entity has these fields.
+          * "excludeFuture" - will preload the date 'to' filter with the current time, thus elliminating any rows in the future.
+          * "sort" - allows the sorting of the rows by this particular column.
+              * "direction" - the direction the rows should be sorted by can be "asc" (ascending) or "desc" (descending).
+              * "priority" - if sorting by multiple columns, you can set the order in which rows get sorted by e.g. "title" then "startDate".
   
 
 
