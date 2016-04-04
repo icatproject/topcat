@@ -353,7 +353,30 @@ An example (partial) configuration:
   * the grid options for the "facility" Icat entity type. See "Icat entity gridOptions configuration" for more information.
   * the meta tabs for the "facility" Icat entity type. See "Icat entity metaTabs configuration" for more information.
 
-=======
+$h3 topcat.json "facilities" > [facilityName] > "hierachy"
+
+The entity heierachy of the browse section.
+
+An example configuration:
+
+```
+{
+  "facilities": {
+    "dsl": {
+      "hierarchy": [
+        "facility",
+        "proposal",
+        "investigation",
+        "dataset",
+        "datafile"
+      ]
+    }
+  }
+}
+```
+
+The above configuration will make the user browse via "facility" > "proposal" > "investigation" > "dataset" > "datafile".
+
 $h3 topcat.json "facilities" > [facilityName] > "authenticationTypes" 
 
 Specifies the authentication plugins to be used e.g. LDAP
