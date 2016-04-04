@@ -352,6 +352,65 @@ An example (partial) configuration:
   * the grid options for the "facility" Icat entity type. See "Icat entity gridOptions configuration" for more information.
   * the meta tabs for the "facility" Icat entity type. See "Icat entity metaTabs configuration" for more information.
 
+=======
+$h3 topcat.json "facilities" > [facilityName] > "authenticationTypes" 
+
+Specifies the authentication plugins to be used e.g. LDAP
+
+```
+{
+  "facilities": {
+    "dsl": {
+      "authenticationTypes": [
+          {
+              "title": "Simple",
+              "plugin": "simple"
+          },
+          {
+              "title": "DB",
+              "plugin": "db"
+          }
+      ]
+    }
+  }
+}
+
+  * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
+  * name - a name that is used to programmatically reference the plugin on the Icat server.
+
+$h3 topcat.json "facilities" > [facilityName] > "downloadTransportTypes" 
+
+Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
+
+```
+{
+  "facilities": {
+    "dsl": {
+      "authenticationTypes": "downloadTransportTypes": [
+          {
+              "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
+              "type" : "https",
+              "default" : true,
+              "url": "https://fdsgos11.fds.rl.ac.uk"
+          },
+          {
+              "translateDisplayName" : "DOWNLOAD.TRANSPORT.GLOBUS.NAME",
+              "type" : "globus",
+              "url": "https://fdsgos11.fds.rl.ac.uk"
+          },
+          {
+              "translateDisplayName" : "DOWNLOAD.TRANSPORT.SCARF.NAME",
+              "type" : "scarf",
+              "url": "https://dls-ids01.scarf.rl.ac.uk"
+          }
+      ]
+    }
+  }
+}
+
+  * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
+  * name - a name that is used to programmatically reference the plugin on the Icat server.
+
 $h2 lang.json 
 
 $h2 topcat.css
