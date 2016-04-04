@@ -432,7 +432,7 @@ An example configuration:
 ```
 {
   "facilities": {
-    "dsl": {
+    "dls": {
       "hierarchy": [
         "facility",
         "proposal",
@@ -456,7 +456,7 @@ An example configuration:
 ```
 {
   "facilities": {
-    "dsl": {
+    "dls": {
       "authenticationTypes": [
           {
               "title": "Simple",
@@ -475,7 +475,7 @@ An example configuration:
   * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
   * name - a name that is used to programmatically reference the plugin on the Icat server.
 
-$h3 topcat.json "facilities" > [facilityName] > "downloadTransportTypes" 
+$h3 topcat.json: "facilities" > [facilityName] > "downloadTransportTypes" 
 
 Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
 
@@ -484,7 +484,7 @@ An example configuration:
 ```
 {
   "facilities": {
-    "dsl": {
+    "dls": {
       "downloadTransportTypes": [
           {
               "type" : "https",
@@ -510,7 +510,7 @@ An example configuration:
   * url - a url to a valid IDS API that can handle the particular download transport type.
 
 
-$h3 topcat.json "facilities" > [facilityName] > "admin" 
+$h3 topcat.json: "facilities" > [facilityName] > "admin" 
 
 Defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
 
@@ -519,7 +519,7 @@ An example (partial) configuration:
 ```
 {
   "facilities": {
-    "dsl": {
+    "dls": {
       "admin":{
         "gridOptions": {...}
       }
@@ -530,24 +530,58 @@ An example (partial) configuration:
 
 * "gridOptions" - the grid options for the "download" Topcat entity type. See "Topcat entity gridOptions configuration" for more information.
 
-$h3 topcat.json: "site" > "browse"
+$h3 topcat.json: "facilities" > [facilityName] > "myData" 
 
-Specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
+Specifies the structure of the “My Data” section.
 
 An example (partial) configuration:
 
 ```
 {
-  "site": {
-    "browse":{
-        "gridOptions": {...},
-        "metaTabs": [...]
+  "facilities": {
+    "dls": {
+      "myData": {
+          "entityType" : "investigation",
+          "gridOptions": {...}
+      }
     }
   }
 }
 ```
-  * the grid options for the "facility" Icat entity type. See "Icat entity gridOptions configuration" for more information.
-  * the meta tabs for the "facility" Icat entity type. See "Icat entity metaTabs configuration" for more information.
+  * "entityType" - the entity type can be either "investigation", "dataset" or "datafile".
+  * "gridOptions" - the grid options for the Icat entity type (specified). See "Icat entity gridOptions configuration" for more information.
+
+
+$h3 topcat.json: "facilities" > [facilityName] > "browse" 
+
+Specifies the structure of the hierachical browse section.
+
+An example (partial) configuration:
+
+```
+{
+  "facilities": {
+    "dls": {
+      "investigation": {
+          "gridOptions": {...},
+          "metaTabs": [...]
+      },
+      "proposal": {...},
+      "dataset": {...},
+      "datafile": {...}
+    }
+  }
+}
+```
+  * "gridOptions" - the grid options for the current Icat entity type. See "Icat entity gridOptions configuration" for more information.
+  * "metaTabs" - the meta tabs for the current Icat entity type. See “Icat entity metaTabs configuration” for more information.
+
+
+$h3 topcat.json: Icat entity gridOptions configuration
+
+$h3 topcat.json: Icat entity metaTabs configuration
+
+$h3 topcat.json: Topcat entity gridOptions configuration
 
 $h2 lang.json 
 
