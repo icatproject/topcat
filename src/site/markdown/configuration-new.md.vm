@@ -676,6 +676,10 @@ Topcat defines the following jpql variables - which if used from any icat entity
 
 To get a better understanding what these jpql variables refer to please view the [icat schema documentation](https://icatproject.org/mvn/site/icat/server/4.6.1/schema.html).
 
-$h2 lang.json 
+$h2 lang.json
+
+A hierachy of translation strings. Self explainitory. 
 
 $h2 topcat.css
+
+As stansard css file adding in custom css rules.
