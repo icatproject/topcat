@@ -16,8 +16,8 @@
 
         this.facilityChanged = function(){
             facility = tc.facility(this.facilityName);
-            this.plugin = facility.config().authenticationType[0].plugin;
-            this.authenticationTypes = facility.config().authenticationType;
+            this.plugin = facility.config().authenticationTypes[0].plugin;
+            this.authenticationTypes = facility.config().authenticationTypes;
         };
         if(this.nonUserFacilities.length > 0) this.facilityChanged();
 

@@ -25,7 +25,7 @@ exec %{
 
   echo "mysql-server mysql-server/root_password password secret" | sudo debconf-set-selections 
   echo "mysql-server mysql-server/root_password_again password secret" | sudo debconf-set-selections
-  sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential 
+  sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
 
   echo "create database icat;" | mysql -u root --password=secret
   echo "create database topcat;" | mysql -u root --password=secret
@@ -98,15 +98,28 @@ exec %{
   sudo ./setup install
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
-
-  chmod 0755 ./provision/topcat_build_install
   
   curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
   sudo apt-get --assume-yes install nodejs maven phantomjs
   sudo npm install -g bower
   sudo npm install -g grunt-cli
 
-  ./provision/topcat_build_install
+  cd ../
+  mvn clean install
+  cp ./target/topcat-*.zip ./install
+  cd install
+  unzip -o topcat-*.zip
+  sudo cp ./provision/topcat.properties ./topcatv2
+  sudo cp ./provision/topcat-setup.properties ./topcatv2
+  sudo cp ../yo/app/config/topcat_dev.json ./topcatv2/topcat.json
+  sudo cp ../yo/app/languages/lang.json ./topcatv2
+  sudo cp ../yo/app/styles/topcat.css ./topcatv2
+  cd topcatv2
+  dos2unix ./setup
+  chmod 0755 ./setup
+  sudo ./setup configure
+  sudo ./setup install
+  cd ../
 
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=140
 

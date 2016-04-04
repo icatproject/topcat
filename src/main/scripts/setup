@@ -7,7 +7,6 @@ import os
 def uninstall():
     app = actions.getAppName("topcat")
     if app: actions.undeploy(app)
-
     actions.unregisterDB("topcat")
     actions.deleteMailResource("mail/topcat")
 
@@ -27,6 +26,7 @@ if arg == "INSTALL":
            
     try:
         uninstall()
+
         actions.registerDB("topcat", props["db.vendor"], props["db.driver"], props["db.url"], props["db.username"], props["db.password"])
 
         if props["mail.enable"].lower() == 'true':

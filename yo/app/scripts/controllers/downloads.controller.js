@@ -4,34 +4,15 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('DownloadsController', function($state, $scope, $translate, $uibModalInstance, $q, tc, uiGridConstants){
+    app.controller('DownloadsController', function($state, $scope, $translate, $uibModalInstance, $q, tc, uiGridConstants, helpers){
         var that = this;
         var pagingConfig = tc.config().paging;
         this.isScroll = pagingConfig.pagingType == 'scroll';
-        this.gridOptions = _.merge({
-            data: [],
-            appScopeProvider: this,
-            enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
-            enableRowSelection: false,
-            enableRowHeaderSelection: false,
-            gridMenuShowHideColumns: false,
-            pageSize: !this.isScroll ? pagingConfig.paginationNumberOfRows : null,
-            paginationPageSizes: pagingConfig.paginationPageSizes
-        }, tc.config().myDownloadGridOptions);
-        _.each(this.gridOptions.columnDefs, function(columnDef){
-            if (columnDef.filter.condition) {
-                columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
-            }
-
-            if(columnDef.translateDisplayName){
-                columnDef.displayName = columnDef.translateDisplayName;
-                columnDef.headerCellFilter = 'translate';
-            }
-            
-            if(columnDef.field == 'status'){
-                columnDef.cellTemplate = '<div class="ui-grid-cell-contents">{{"DOWNLOAD.STATUS." + row.entity.status | translate}}</div>';
-            }
-        });
+        this.gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().myDownloads.gridOptions);
+        helpers.setupTopcatGridOptions(this.gridOptions, 'download');
+        this.gridOptions.useExternalPagination =  false;
+        this.gridOptions.useExternalSorting =  false;
+        this.gridOptions.useExternalFiltering =  false;
         this.gridOptions.columnDefs.push({
             name : 'actions',
             translateDisplayName: 'DOWNLOAD.COLUMN.ACTIONS',

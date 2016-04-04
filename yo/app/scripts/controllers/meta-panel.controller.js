@@ -10,9 +10,18 @@
         var previousEntityHash;
 
         $scope.$on('rowclick', function(event, entity){
+
             var facility = tc.facility(entity.facilityName);
-            var config = facility.config().metaTabs[entity.type];
+            var config;
+            if(entity.type == 'facility'){
+                config = tc.config().browse.metaTabs;
+            } else if(facility.config().browse[entity.type]) {
+                config = facility.config().browse[entity.type].metaTabs;
+            }
+
             if(!config) return;
+
+            helpers.setupMetatabs(config, entity.type);
 
             var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;
             if(entityHash == previousEntityHash){
@@ -33,6 +42,7 @@
                 queryBuilder.include('investigationParameterType');
                 queryBuilder.include('sample');
                 queryBuilder.include('publication');
+                queryBuilder.include('investigationUser');
             }
 
             if(entity.type == 'dataset'){
@@ -45,9 +55,10 @@
                 queryBuilder.include('datafileParameterType');
             }
 
+
+
             queryBuilder.run().then(function(entity){
                 entity = entity[0];
-
                 var tabs = [];
                 _.each(config, function(tabConfig){
                     var tab = {
@@ -55,15 +66,24 @@
                         items: []
                     };
                     _.each(tabConfig.items, function(itemConfig){
-                        var find = itemConfig.find || helpers.uncapitalize(entity.entityType);
-                        if(!find.match(/\]$/)) find = find + '[]'
+                        var find = entity.entityType;
+                        var field = itemConfig.field;
+                        var matches;
+                        if(matches = itemConfig.field.replace(/\|.+$/, '').match(/^(.*)?\.([^\.\[\]]+)$/)){
+                            find = matches[1];
+                            field = matches[2]
+                        }
+                        if(!find.match(/\]$/)) find = find + '[]';
                         _.each(entity.find(find), function(entity){
-                            tab.items.push({
-                                label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
-                                template: itemConfig.template,
-                                value: itemConfig.value ? entity.find(itemConfig.value)[0] : null,
-                                entity: entity
-                            });
+                            var value = entity.find(field)[0];
+                            if(value !== undefined){
+                                tab.items.push({
+                                    title: itemConfig.title ? $translate.instant(itemConfig.title) : null,
+                                    template: itemConfig.template,
+                                    value: entity.find(field)[0],
+                                    entity: entity
+                                });
+                            }
                         });
                     });
 

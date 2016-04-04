@@ -16,7 +16,7 @@
   	};
 
   	this.facilities = function(){
-  		return _.map(APP_CONFIG.facilities, function(facility){ return tc.facility(facility.facilityName); });
+  		return _.map(APP_CONFIG.facilities, function(facility, facilityName){ return tc.facility(facilityName); });
   	};
 
   	this.config = function(){ return APP_CONFIG.site; }

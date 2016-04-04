@@ -18,10 +18,12 @@
             var user;
             
             this.config = function(){
-              var sessions = $sessionStorage.sessions || {};
-              var facilityId = (sessions[facilityName] || {}).facilityId;
-              if(facilityId) APP_CONFIG.facilities[facilityName].facilityId = facilityId;
-              return APP_CONFIG.facilities[facilityName]; 
+                var out = APP_CONFIG.facilities[facilityName];
+                out.facilityName = out.facilityName || facilityName;
+                var sessions = $sessionStorage.sessions || {};
+                var facilityId = (sessions[facilityName] || {}).facilityId;
+                if(facilityId) out.facilityId = facilityId;
+                return out; 
             }
 
             this.tc = function(){

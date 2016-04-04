@@ -2,7 +2,7 @@
 mail.enable=true
 
 # The email subject. Tokens available are:
-# ${userName} - user fullname or username
+# ${userName} - user username
 # ${email} - user email
 # ${facilityName} - the facility key (defined in frontend config)
 # ${preparedId} - the prepared Id of the download request
@@ -27,3 +27,6 @@ poll.delay=600
 
 # The wait time in seconds between each poll to the IDS.
 poll.interval.wait=600
+
+# A list of usernames that can use the admin REST API and Topcat admin user interface
+adminUserNames=simple/root, uows/elz087, asd345, ldap/fgh123

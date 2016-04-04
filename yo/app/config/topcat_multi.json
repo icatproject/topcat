@@ -300,7 +300,7 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType": [
+            "authenticationTypes": [
                 {
                     "title": "Username/Password",
                     "plugin": "ldap"
@@ -314,7 +314,7 @@
                     "plugin": "anon"
                 }
             ],
-            "downloadTransportType": [
+            "downloadTransportTypes": [
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",
@@ -788,13 +788,13 @@
                 "dataset",
                 "datafile"
             ],
-            "authenticationType": [
+            "authenticationTypes": [
                 {
                     "title": "User Office",
                     "plugin": "uows"
                 }
             ],
-            "downloadTransportType": [
+            "downloadTransportTypes": [
                 {
                     "translateDisplayName" : "DOWNLOAD.TRANSPORT.HTTPS.NAME",
                     "type" : "https",

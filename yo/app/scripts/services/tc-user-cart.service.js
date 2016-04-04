@@ -67,7 +67,7 @@
 
                 cartItem.entity = helpers.overload({
                     'object': function(options){
-                        return facility.icat().entity(helpers.capitalize(this.entityType), ["where ?.id = ?", this.entityType.safe(), this.entityId], options);
+                        return facility.icat().entity(this.entityType, ["where ?.id = ?", this.entityType.safe(), this.entityId], options);
                     },
                     'promise': function(timeout){
                         return this.entity({timeout: timeout});

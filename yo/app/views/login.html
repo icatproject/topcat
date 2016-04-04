@@ -16,7 +16,7 @@
                     </div>
                     <div class="form-group" ng-hide="loginController.authenticationTypes.length <= 1">
                         <label class="control-label" for="plugin">{{'LOGIN.AUTHENTICATION_TYPE' | translate}} </label>
-                        <select id="plugin" name="plugin" class="form-control" ng-model="loginController.plugin" ng-options="authenticationType.plugin as authenticationType.title for authenticationType in loginController.authenticationTypes" required>
+                        <select id="plugin" name="plugin" class="form-control" ng-model="loginController.plugin" ng-options="authenticationTypes.plugin as authenticationTypes.title for authenticationTypes in loginController.authenticationTypes" required>
                         </select>
                     </div>
                     <div class="form-group" ng-if="loginController.plugin != 'anon'">

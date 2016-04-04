@@ -5,14 +5,14 @@
 
     var app = angular.module('angularApp');
 
-    app.service('tcIcatQueryBuilder', function($q, helpers, icatEntityPaths, tcIcatEntity){
+    app.service('tcIcatQueryBuilder', function($q, helpers, icatSchema, tcIcatEntity){
 
         var steps = {};
-        _.each(icatEntityPaths, function(entityPaths, entityType){
-            _.each(entityPaths, function(path, name){
+        _.each(icatSchema.entityTypes, function(entitySchema, entityType){
+            _.each(entitySchema.variablePaths, function(path, variableName){
                 var matches;
-                if(matches = path.match(/^[^\.]+\.([^\.]+)$/)){
-                    steps[entityType + '.' + matches[1]] = name;
+                if(path.length == 1){
+                    steps[entityType + '.' + path[0]] = variableName;
                 }
             });
         });
@@ -31,7 +31,7 @@
     		var whereList = [];
             var orderByList = [];
             var includeList = [];
-    		var entityPaths = icatEntityPaths[entityType];
+    		var variablePaths = icatSchema.entityTypes[entityType].variablePaths;
             var limitOffset;
             var limitCount;
 
@@ -58,9 +58,10 @@
                 return this;
             };
 
-            this.include = function(include){
-                var path = entityPaths[include];
-                if(!_.contains(includeList, path) && entityType != include && !(entityType == 'proposal' && include == 'investigation')){
+            this.include = function(variableName){
+                var variablePath = variablePaths[variableName] || [];
+                var path = _.flatten([[entityType], variablePath]).join('.');
+                if(!_.contains(includeList, path) && entityType != path && !(entityType == 'proposal' && variableName == 'investigation')){
                     includeList.push(path);
                 }
                 return this;
@@ -102,7 +103,8 @@
     			var whereQuery = _.clone(whereList);
     			var whereQueryFragment = helpers.buildQuery(whereQuery);
     			var impliedPaths = {};
-    			_.each(entityPaths, function(path, name){
+
+    			_.each(variablePaths, function(path, name){
     				if(name != entityType && whereQueryFragment.indexOf(name) >= 0){
     					impliedPaths[name] = path;
     				}
@@ -111,16 +113,15 @@
                 _.each(orderByList, function(orderBy){
                     var name = orderBy.replace(/\.[^\.]+$/, '');
                     if(name !=  entityType){
-                        impliedPaths[name] = entityPaths[name];
+                        impliedPaths[name] = variablePaths[name];
                     }
                 });
-
 
     			if(impliedPaths.facilityCycle || entityType == 'facilityCycle'){
                     if(whereQuery.length > 0) whereQuery.push('and');
     				whereQuery.push('investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate')
     				if(entityType != 'investigation' && entityType != 'proposal'){
-    					impliedPaths['investigation'] = entityPaths['investigation'];
+    					impliedPaths['investigation'] = variablePaths['investigation'];
     				}
     			}
 
@@ -131,26 +132,14 @@
 
                 if(entityType == 'proposal'){
                     var alteredImpliedPaths = {}
-                    _.each(impliedPaths, function(value, name){
-                        alteredImpliedPaths[name] = value.replace(/^proposal\.investigations/, 'investigation');
+                    _.each(impliedPaths, function(path, name){
+                        path = path.slice(1);
+                        alteredImpliedPaths[name] = path;
                     });
                     impliedPaths = alteredImpliedPaths;
                 }
 
-                var impliedVars = {};
-                _.each(impliedPaths, function(path, name){
-                    var segments = path.split(/\./);
-                    var currentEntity = entityType;
-                    if(currentEntity == 'proposal') currentEntity = 'investigation';
-                    for(var i = 0; i < segments.length - 1; i++){
-                        var pair = currentEntity + '.' + segments[i + 1];
-                        if(!steps[pair]){
-                            throw "could not work out step " + pair;
-                        }
-                        impliedVars[pair] = steps[pair];
-                        currentEntity = steps[pair];
-                    }
-                });
+                var impliedVars = this.impliedPathsToImpliedSteps(impliedPaths);
 
     			var joins = [];
     			_.each(impliedVars, function(name, pair){
@@ -180,6 +169,24 @@
     			return helpers.buildQuery(out);
     		}
 
+            this.impliedPathsToImpliedSteps = function(impliedPaths){
+                var out = {};
+                _.each(impliedPaths, function(path, variableName){
+                    var currentVariableName = entityType;
+                    var currentEntityType = entityType;
+                    _.each(path, function(relationship){
+                        if(currentEntityType == 'proposal') currentEntityType = 'investigation';
+                        if(currentVariableName == 'proposal') currentVariableName = 'investigation';
+                        var stepPair = currentVariableName + "." + relationship;
+                        var entityPair = currentEntityType + "." + relationship;
+                        currentVariableName = steps[entityPair];
+                        out[stepPair] = currentVariableName;
+                        currentEntityType = icatSchema['variableEntityTypes'][currentVariableName];
+                    });
+                });
+                return out;
+            };
+
     		this.run = helpers.overload({
     			'object': function(options){
                     var out = icat.query([this.build()], options);
@@ -192,7 +199,7 @@
                             _.each(names, function(name){
                                 promises.push(icat.query([that.build(false, name)], options).then(function(investigations){
                                     var proposal = {};
-                                    proposal.entityType = "Proposal";
+                                    proposal.entityType = "proposal";
                                     proposal.id = investigations[0].name;
                                     proposal.name = investigations[0].name;
                                     proposal.investigations = investigations;
@@ -202,6 +209,13 @@
                             });
                             
                             $q.all(promises).then(function(){
+                                var proposalIndex = {};
+                                _.each(proposals, function(proposal){
+                                    proposalIndex[proposal.name] = proposal; 
+                                });
+                                proposals = _.map(names, function(name){
+                                    return proposalIndex[name]
+                                });
                                 defered.resolve(proposals);
                             });
                             

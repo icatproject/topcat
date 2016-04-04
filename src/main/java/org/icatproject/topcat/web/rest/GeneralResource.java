@@ -20,7 +20,13 @@ import org.slf4j.LoggerFactory;
 public class GeneralResource {
     private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
-  
+    /**
+     * Used to detect whether Topcat is running or not.
+     *
+     * @summary ping
+     *
+     * @return a string "ok" if all is well
+    */
     @GET
     @Path("/ping")
     @Produces({MediaType.APPLICATION_JSON})
@@ -32,7 +38,13 @@ public class GeneralResource {
         return Response.ok().entity(value).build();
     }
 
-
+    /**
+     * Provides the current version of the Topcat instance.
+     *
+     * @summary getVersion
+     *
+     * @return a version number as a string e.g. "2.0.0"
+    */
     @GET
     @Path("/version")
     @Produces({MediaType.APPLICATION_JSON})

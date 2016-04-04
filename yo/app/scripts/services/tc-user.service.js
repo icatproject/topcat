@@ -238,8 +238,8 @@
             this.submitCart = helpers.overload({
                 'string, string, string, object': function(fileName, transport, email, options){
                     var transportTypeIndex = {};
-                    _.each(facility.config().downloadTransportType, function(downloadTransportType){
-                        transportTypeIndex[downloadTransportType.type] = downloadTransportType
+                    _.each(facility.config().downloadTransportTypes, function(downloadTransportTypes){
+                        transportTypeIndex[downloadTransportTypes.type] = downloadTransportTypes
                     })
                     var transportType = transportTypeIndex[transport];
 

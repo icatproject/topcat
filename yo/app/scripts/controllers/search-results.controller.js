@@ -3,7 +3,7 @@
 
   var app = angular.module('angularApp');
 
-  app.controller('SearchResultsController', function($stateParams, $scope, $rootScope, $q, $timeout, tc){
+  app.controller('SearchResultsController', function($stateParams, $scope, $rootScope, $q, $timeout, tc, helpers){
     var that = this;
     var facilities = $stateParams.facilities ? JSON.parse($stateParams.facilities) : [];
     var text = $stateParams.text;
@@ -84,24 +84,7 @@
     function createGridOptions(type){
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: this, enableSelectAll: false}, tc.config().search.gridOptions[type]);
-      _.each(gridOptions.columnDefs, function(columnDef){
-        if(columnDef.link && !columnDef.cellTemplate){
-          if(typeof columnDef.link == "string"){
-            columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity.' + columnDef.link + ')">{{row.entity.' + columnDef.field + '}}</a></div>';
-          } else {
-            columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity)">{{row.entity.' + columnDef.field + '}}</a></div>';
-          }
-        }
-        if(columnDef.field == 'size'){
-            columnDef.cellTemplate = '<div class="ui-grid-cell-contents"><span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="row.entity.size === undefined" class="grid-cell-spinner"></span><span>{{row.entity.size|bytes}}</span></div>';
-            columnDef.enableSorting = false;
-            columnDef.enableFiltering = false;
-        }
-        if(columnDef.translateDisplayName){
-            columnDef.displayName = columnDef.translateDisplayName;
-            columnDef.headerCellFilter = 'translate';
-        }
-      });
+      helpers.setupIcatGridOptions(gridOptions, type);
 
       gridOptions.onRegisterApi = function(_gridApi) {
         gridApi = _gridApi;
