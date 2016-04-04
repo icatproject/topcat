@@ -205,7 +205,6 @@
     },
     "facilities": {
         "test": {
-            "facilityName": "test",
             "title": "TEST",
             "icatUrl": "https://localhost:8181",
             "idsUrl": "https://localhost:8181",
@@ -679,7 +678,6 @@
             }
         },
         "dls": {
-            "facilityName": "dls",
             "title": "DIAMOND",
             "icatUrl": "https://facilities02.esc.rl.ac.uk",
             "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
@@ -979,7 +977,6 @@
         },
         "isis": {
             "facilityDatabaseName": "ISIS",
-            "facilityName": "isis",
             "title": "ISIS",
             "icatUrl": "https://icatdev15.isis.cclrc.ac.uk",
             "idsUrl": "https://idsdev2.isis.cclrc.ac.uk",
