@@ -104,6 +104,8 @@ exec %{
   sudo npm install -g bower
   sudo npm install -g grunt-cli
 
+  sudo bash ./provision/java-cert-importer.sh localhost 8181
+
   cd ../
   mvn clean install
   cp ./target/topcat-*.zip ./install

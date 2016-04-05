@@ -128,6 +128,8 @@ Vagrant.configure(2) do |config|
     sudo sh -c "iptables-save > /etc/iptables/rules.v4"
     sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
 
+    sudo bash /vagrant/provision/java-cert-importer.sh localhost 8181
+
     sudo cp /vagrant/provision/topcat_build_install /usr/bin/topcat_build_install
     sudo chmod 755 /usr/bin/topcat_build_install
     sudo dos2unix /usr/bin/topcat_build_install
