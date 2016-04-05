@@ -321,7 +321,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<repoUrl>http://www.icatproject.org/mvn/repo</repoUrl>
+		<repoUrl>https://www.icatproject.org/mvn/repo</repoUrl>
 		<project.scm.id>github</project.scm.id>
 		<icatSchemaVersionDoc>4.6.0-SNAPSHOT</icatSchemaVersionDoc>
 	</properties>
@@ -329,7 +329,7 @@
 	<repositories>
 		<repository>
 			<id>ICAT Repo</id>
-			<url>http://www.icatproject.org/mvn/repo</url>
+			<url>https://www.icatproject.org/mvn/repo</url>
 		</repository>
 	</repositories>
 
