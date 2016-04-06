@@ -69,6 +69,7 @@ exec %{
   sudo keytool -import -noprompt -v -trustcacerts -alias keyAlias -file server.cer -keystore cacerts.jks -keypass changeit -storepass changeit
   sudo /opt/glassfish4/bin/asadmin stop-domain
   sudo /opt/glassfish4/bin/asadmin start-domain
+  cd ~/install
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/authn_simple/1.0.1/authn_simple-1.0.1-distro.zip
   unzip -q authn_simple-1.0.1-distro.zip
