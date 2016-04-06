@@ -115,7 +115,7 @@ exec %{
   sudo bash ./provision/java-cert-importer localhost 8181
 
   cd ../
-  mvn clean install
+  mvn clean install -X
   cp ./target/topcat-*.zip ./install
   cd install
   unzip -o topcat-*.zip
