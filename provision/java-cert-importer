@@ -67,7 +67,7 @@ fi
 tmpfile="/tmp/${host}.$$.crt"
 
 # Create java cacerts backup file
-cp ${cacertspath} ${cacertsbackup} 2>/dev/null
+#cp ${cacertspath} ${cacertsbackup} 2>/dev/null
 
 echo "Java CaCerts Backup: ${cacertsbackup}"
 

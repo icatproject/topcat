@@ -1114,22 +1114,7 @@
                             },
                             "link": true
                         },
-                        {
-                            "field": "datafileParameter.numericValue",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
-                            "type": "number",
-                            "where": "datafileParameterType.name = 'run_number'",
-                            "filters": [
-                                {
-                                    "placeholder": "From...",
-                                    "type": "input"
-                                },
-                                {
-                                    "placeholder": "To...",
-                                    "type": "input"
-                                }
-                            ]
-                        },
+                        
                         {
                             "field": "investigationInstrument.fullName",
                             "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
