@@ -16,3 +16,5 @@ addons:
 after_failure:
   - cat target/surefire-reports/*.txt
   - ls /usr/lib/jvm/
+  - ls /opt/glassfish4/glassfish/domains/domain1/config/
+  - keytool -list -keystore /opt/glassfish4/glassfish/domains/domain1/config/keystore.jks -alias keyAlias -storepass changeit
