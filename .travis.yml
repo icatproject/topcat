@@ -11,13 +11,12 @@ before_script:
   - chmod 0755 ci/travis.rb
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 script:
   - ci/travis.rb
 addons:
   - firefox: "44.0.2"
 after_failure:
   - cat target/surefire-reports/*.txt
-  - ls /usr/lib/jvm/
+  - ls /usr/lib/jvm/*/jre/lib/security
   - ls /opt/glassfish4/glassfish/domains/domain1/config/
   - keytool -list -keystore /opt/glassfish4/glassfish/domains/domain1/config/keystore.jks -alias keyAlias -storepass changeit
