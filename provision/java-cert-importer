@@ -28,7 +28,7 @@ exit 1
 fi;
 
 if [ "$JAVA_HOME" ]; then
-    javahome=${JAVA_HOME}
+    javahome="${JAVA_HOME}/jre"
 elif [[ "$OSTYPE" == "linux-gnu" ]]; then # Linux
     javahome=$(readlink -f $(which java) | sed "s:bin/java::")
 elif [[ "$OSTYPE" == "darwin"* ]]; then # Mac OS X
@@ -46,7 +46,7 @@ fi
 echo "Detected Java Home: $javahome"
 
 # Set cacerts file path
-cacertsdir=${javahome}/jre/lib/security
+cacertsdir=${javahome}/lib/security
 sudo mkdir -p ${cacertsdir}
 sudo chmod -R 766 ${cacertsdir}
 cacertspath=${cacertsdir}/cacerts
