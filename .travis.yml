@@ -11,6 +11,7 @@ before_script:
   - chmod 0755 ci/travis.rb
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 script:
   - ci/travis.rb
 addons:
