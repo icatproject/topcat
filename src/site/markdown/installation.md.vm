@@ -15,7 +15,7 @@ TopCAT requires icat.server 4.6+  and ids.server 1.5.0.+
 
 ## Configure
 
-See [Configuration Quick Start Guide](configuration-quick-start-guide.html) and [configuration page](configuration.html)
+See [configuration page](configuration.html)
 
 
 ## Install

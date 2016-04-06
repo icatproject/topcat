@@ -157,7 +157,7 @@
 	               <output>
 						<html>
 							<location>site/miredot</location>
-							<baseUrl>https://example.com/api</baseUrl>
+							<baseUrl>https://example.com/topcat</baseUrl>
 						</html>
 					</output>
 	               <!-- apply for spring mvc support

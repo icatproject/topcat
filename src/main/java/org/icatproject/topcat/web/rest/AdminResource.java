@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean
-@Path("v1/admin")
+@Path("admin")
 public class AdminResource {
     private static final Logger logger = LoggerFactory.getLogger(AdminResource.class);
 

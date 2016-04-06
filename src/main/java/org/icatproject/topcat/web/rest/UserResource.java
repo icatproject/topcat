@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean
-@Path("v1/user")
+@Path("user")
 public class UserResource {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserResource.class);

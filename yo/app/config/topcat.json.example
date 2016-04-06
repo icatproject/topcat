@@ -1,6 +1,6 @@
 {
     "site": {
-        "topcatApiPath": "api/v1",
+        "topcatApiPath": "topcat",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "serviceStatus": {

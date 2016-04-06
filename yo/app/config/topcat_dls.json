@@ -1,6 +1,6 @@
 {
     "site": {
-        "topcatApiPath": "https://localhost:8181/api/v1",
+        "topcatApiPath": "https://localhost:8181/topcat",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "paging" : {
