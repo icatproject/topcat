@@ -47,7 +47,7 @@ echo "Detected Java Home: $javahome"
 
 # Set cacerts file path
 cacertspath=${javahome}/lib/security/cacerts
-sudo touch cacertspath
+sudo touch ${cacertspath}
 cacertsbackup="${cacertspath}.$$.backup"
 
 if ( [ "$deleteCmd" == "-d" ] || [ "$deleteCmd" == "--delete" ] ); then
