@@ -64,7 +64,7 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
 
   cd /opt/glassfish4/glassfish/domains/domain1/config
-  sudo keytool -genkey -noprompt -alias keyAlias -keyalg RSA -keypass changeit -storepass changeit -keystore keystore.jks -dname "CN=localhost, OU=ID, O=STFC, L=Harwell, S=Oxfordshire, C=GB"
+  sudo keytool -genkey -noprompt -alias keyAlias -keyalg RSA -keypass changeit -storepass changeit -keystore keystore.jks -dname "CN=localhost:8181, OU=ID, O=STFC, L=Harwell, S=Oxfordshire, C=GB"
   sudo keytool -export -alias keyAlias -storepass changeit -file server.cer -keystore keystore.jks
   sudo keytool -import -noprompt -v -trustcacerts -alias keyAlias -file server.cer -keystore cacerts.jks -keypass changeit -storepass changeit
   sudo /opt/glassfish4/bin/asadmin stop-domain
