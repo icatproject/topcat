@@ -46,7 +46,7 @@ fi
 echo "Detected Java Home: $javahome"
 
 # Set cacerts file path
-cacertsdir=${javahome}/lib/security
+cacertsdir=${javahome}/jre/lib/security
 sudo mkdir -p ${cacertsdir}
 sudo chmod -R 766 ${cacertsdir}
 cacertspath=${cacertsdir}/cacerts
