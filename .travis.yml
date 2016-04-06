@@ -13,3 +13,5 @@ script:
   - ci/travis.rb
 addons:
   - firefox: "44.0.2"
+after_failure:
+  - cat target/surefire-reports/*.txt
