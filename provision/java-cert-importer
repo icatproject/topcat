@@ -50,7 +50,6 @@ cacertsdir=${javahome}/lib/security
 sudo mkdir -p ${cacertsdir}
 sudo chmod -R 766 ${cacertsdir}
 cacertspath=${cacertsdir}/cacerts
-sudo touch ${cacertspath}
 
 cacertsbackup="${cacertspath}.$$.backup"
 
