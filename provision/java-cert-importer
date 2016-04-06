@@ -48,9 +48,8 @@ echo "Detected Java Home: $javahome"
 # Set cacerts file path
 cacertsdir=${javahome}/lib/security
 sudo mkdir -p ${cacertsdir}
-cacertspath=${cacertsdir}/cacerts
-sudo touch ${cacertspath}
 sudo chmod -R 766 ${cacertsdir}
+cacertspath=${cacertsdir}/cacerts
 
 cacertsbackup="${cacertspath}.$$.backup"
 
@@ -68,7 +67,7 @@ fi
 tmpfile="/tmp/${host}.$$.crt"
 
 # Create java cacerts backup file
-cp ${cacertspath} ${cacertsbackup}
+cp ${cacertspath} ${cacertsbackup} 2>/dev/null
 
 echo "Java CaCerts Backup: ${cacertsbackup}"
 
