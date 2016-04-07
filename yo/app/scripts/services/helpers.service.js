@@ -195,7 +195,8 @@
 
 	            if(columnDef.excludeFuture){
 	                var date = new Date();
-	                var day = date.getDate();
+	                var day = "" + date.getDate();
+                    if(day.length == 1) day = '0' + day;
 	                var month = "" + (date.getMonth() + 1);
 	                if(month.length == 1) month = '0' + month;
 	                var year = date.getFullYear();

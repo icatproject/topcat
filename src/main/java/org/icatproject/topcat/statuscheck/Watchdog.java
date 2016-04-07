@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
@@ -18,6 +19,7 @@ import org.icatproject.ids.client.NotFoundException;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.utils.PropertyHandler;
+import org.icatproject.topcat.repository.DownloadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,9 @@ public class Watchdog {
 
   @PersistenceContext(unitName="topcat")
   EntityManager em;
+
+  @EJB
+  private DownloadRepository downloadRepository;
 
   @Schedule(hour="*", minute="*")
   private void poll() {
@@ -69,10 +74,16 @@ public class Watchdog {
     try {
       IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
       if(ids.isPrepared(download.getPreparedId())){
+        /*
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         em.persist(download);
         em.flush();
+        */
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("preparedId", download.getPreparedId());
+        downloadRepository.setCompleteByPreparedId(params);
+
         lastChecks.remove(download.getId());
       } else {
         lastChecks.put(download.getId(), new Date());

@@ -288,3 +288,8 @@ a[ng-click]{
     right: 20px;
     z-index: 3;
 }
+
+
+.ui-grid-cell-contents {
+    padding: 3px;
+}

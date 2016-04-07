@@ -131,18 +131,15 @@ public class ICATClient45 implements ICATClientInterface {
 	 * @throws TopcatException
 	 */
 	@Override
-	public Boolean isAdmin(String icatSessionId) {
-		try {
-			String[] adminUserNames = PropertyHandler.getInstance().getAdminUserNames();
-			String userName = getUserName(icatSessionId);
-			int i;
-			for (i = 0; i < adminUserNames.length; i++) {
-				if (userName.equals(adminUserNames[i])) {
-					return true;
-				}
+	public Boolean isAdmin(String icatSessionId) throws TopcatException {
+		String[] adminUserNames = PropertyHandler.getInstance().getAdminUserNames();
+		String userName = getUserName(icatSessionId);
+		int i;
+
+		for (i = 0; i < adminUserNames.length; i++) {
+			if (userName.equals(adminUserNames[i])) {
+				return true;
 			}
-		} catch (Exception e) {
-			// do nothing
 		}
 
 		return false;

@@ -23,6 +23,7 @@ import org.junit.Test;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ICATClient45Test {
+    /*
     private static Properties prop;
     private static String icatSessionId;
     private static ICATClientInterface service;
@@ -118,6 +119,7 @@ public class ICATClient45Test {
         assertTrue(timeRemaining > 0);
     }
 
+    */
 
     /*
     @Test
@@ -148,6 +150,8 @@ public class ICATClient45Test {
         assertTrue(endTimeRemaining > startTimeRemaining);
     }
     */
+
+    /*
 
     @Test
     public void username() {
@@ -211,6 +215,6 @@ public class ICATClient45Test {
 
 
 
-
+    */
 
 }

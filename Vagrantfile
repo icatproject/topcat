@@ -131,7 +131,7 @@ Vagrant.configure(2) do |config|
     sudo cp /vagrant/provision/java-cert-importer /usr/bin/java-cert-importer
     sudo chmod 755 /usr/bin/java-cert-importer
     sudo dos2unix /usr/bin/java-cert-importer
-    sudo java-cert-importer localhost 8181
+    #sudo java-cert-importer localhost 8181
 
     sudo cp /vagrant/provision/topcat_build_install /usr/bin/topcat_build_install
     sudo chmod 755 /usr/bin/topcat_build_install

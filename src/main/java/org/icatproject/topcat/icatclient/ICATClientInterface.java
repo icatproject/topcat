@@ -14,7 +14,7 @@ public interface ICATClientInterface {
 
 	public String getUserName(String icatSessionId) throws TopcatException;
 
-	public Boolean isAdmin(String icatSessionId);
+	public Boolean isAdmin(String icatSessionId) throws TopcatException;
 
 	public String getEntityName(String icatSessionId, String entityType, Long entityId) throws TopcatException;
 

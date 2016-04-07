@@ -22,7 +22,6 @@ public class PropertyHandler {
 		return logger;
 	}
 
-	private String path;
 	private boolean mailEnable;
 	private String mailSubject;
 	private String mailBodyHttps;
@@ -40,7 +39,6 @@ public class PropertyHandler {
 		try {
 			props.loadFromFile("topcat.properties");
 
-			path = props.getString("file.directory");
 			mailEnable = props.getBoolean("mail.enable");
 			if (mailEnable) {
 				mailSubject = props.getString("mail.subject");
@@ -82,10 +80,6 @@ public class PropertyHandler {
 
 	public void setPollIsPreparedWait(int pollIsPreparedWait) {
 		this.pollIsPreparedWait = pollIsPreparedWait;
-	}
-
-	public String getPath() {
-		return path;
 	}
 
 	public boolean isMailEnable() {
