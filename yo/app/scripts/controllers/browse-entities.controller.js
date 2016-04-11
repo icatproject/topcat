@@ -213,7 +213,7 @@
 
         this.showTabs = function(row){
             $rootScope.$broadcast('rowclick', {
-                'type': row.entity.entityType.toLowerCase(),
+                'type': row.entity.entityType,
                 'id' : row.entity.id,
                 facilityName: facilityName
             });

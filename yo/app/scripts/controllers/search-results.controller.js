@@ -81,9 +81,17 @@
       row.browse();
     };
 
+    this.showTabs = function(row){
+        $rootScope.$broadcast('rowclick', {
+            'type': row.entity.entityType,
+            'id' : row.entity.id,
+            'facilityName': row.entity.facilityName
+        });
+    };
+
     function createGridOptions(type){
       var gridApi;
-      var gridOptions = _.merge({data: [], appScopeProvider: this, enableSelectAll: false}, tc.config().search.gridOptions[type]);
+      var gridOptions = _.merge({data: [], appScopeProvider: that, enableSelectAll: false}, tc.config().search.gridOptions[type]);
       helpers.setupIcatGridOptions(gridOptions, type);
 
       gridOptions.onRegisterApi = function(_gridApi) {
