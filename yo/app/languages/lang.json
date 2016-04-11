@@ -204,6 +204,7 @@
         }
     },
     "SEARCH" : {
+        "EMPTY" : "No results for this entity type",
         "FORM" : {
             "SEARCH_TEXT_PLACEHOLDER": "Search Text",
             "SELECT_TYPE": "Select a Search Type",
