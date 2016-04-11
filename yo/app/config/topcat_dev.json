@@ -56,6 +56,7 @@
                     ]
                 },
                 "dataset": {
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name",
@@ -77,6 +78,7 @@
                     ]
                 },
                 "datafile": {
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name"

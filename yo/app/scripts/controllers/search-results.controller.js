@@ -96,7 +96,7 @@
             if(_.find(gridApi.selection.getSelectedRows(), identity)){
                 row.entity.addToCart(timeout.promise);
             } else {
-                tc.user(facilityName).cart(timeout.promise).then(function(cart){
+                tc.user(row.entity.facilityName).cart(timeout.promise).then(function(cart){
                     if(cart.isCartItem(row.entity.entityType, row.entity.id)){
                         row.entity.deleteFromCart(timeout.promise);
                     }
