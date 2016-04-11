@@ -105,7 +105,7 @@ exec %{
   sudo npm install -g grunt-cli
 
   cd ../
-  mvn clean install -X
+  mvn clean install
   cp ./target/topcat-*.zip ./install
   cd install
   unzip -o topcat-*.zip
