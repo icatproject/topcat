@@ -136,6 +136,8 @@
             var entitySchema = topcatSchema.entityTypes[entityType];
 
             _.each(gridOptions.columnDefs, function(columnDef){
+                columnDef.enableHiding = false;
+                
             	var field = columnDef.field;
             	var type = entitySchema.fields[field];
             	if(!columnDef.type) columnDef.type = type;
@@ -157,6 +159,8 @@
 	        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
 
     		_.each(gridOptions.columnDefs, function(columnDef){
+                columnDef.enableHiding = false;
+
     			var matches;
                 var field = columnDef.field;
                 var variableEntityType = entityType;
