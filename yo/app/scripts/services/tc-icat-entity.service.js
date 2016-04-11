@@ -25,7 +25,7 @@
 				}).join("\n");
 			}
 
-			if(this.entityType.match(/^(investigation|dataset|datafile)$/)){
+			if(false && this.entityType.match(/^(investigation|dataset|datafile)$/)){
 				this.getSize = helpers.overload({
 					'object': function(options){
 						var that = this;

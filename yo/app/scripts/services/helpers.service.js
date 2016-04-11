@@ -158,7 +158,7 @@
 	        gridOptions.enableFiltering = true;
 	        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
 
-    		_.each(gridOptions.columnDefs, function(columnDef){
+    		_.each(gridOptions.columnDefs, function(columnDef, i){
                 columnDef.enableHiding = false;
 
     			var matches;
@@ -239,19 +239,21 @@
 
 	            if(columnDef.link) {
 	                if(typeof columnDef.link == "string"){
-	                    titleTemplate = '<a ng-click="grid.appScope.browse(row.entity.' + columnDef.link + ')">' + titleTemplate + '</a></div>';
+	                    titleTemplate = '<a ng-click="grid.appScope.browse(row.entity.' + columnDef.link + ')">' + titleTemplate + '</a>';
 	                } else {
-	                    titleTemplate = '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.browse(row.entity)">' + titleTemplate + '</a>';
+	                    titleTemplate = '<a ng-click="grid.appScope.browse(row.entity)">' + titleTemplate + '</a>';
 	                }
 	            }
+
+                var tooltipPlacement = i == 0 ? 'right' : 'top';
 
 	            columnDef.cellTemplate = columnDef.cellTemplate || [
 	                '<div class="ui-grid-cell-contents">',
 	                    '<span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="!(' + showCondition + ')" class="grid-cell-spinner"></span>',
-	                    '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" class="glyphicon glyphicon-th-list" uib-tooltip="{{row.entity.find(&quot;' + columnDef.field + '&quot;).join(&quot;\n&quot;)}}" tooltip-placement="top" tooltip-append-to-body="true"></span> ',
-	                    '<span ng-if="' + showCondition + '">',
+                        '<span ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" uib-tooltip="{{row.entity.find(&quot;' + columnDef.field + '&quot;).join(&quot;\n&quot;)}}" tooltip-placement="' + tooltipPlacement + '" tooltip-append-to-body="true" class="glyphicon glyphicon-th-list"></span> ',
+                        '<span ng-if="' + showCondition + '">',
 	                    	titleTemplate,
-						'</span>',                    
+						'</span>',          
 	                '</div>'
 	            ].join('');
 	        });
