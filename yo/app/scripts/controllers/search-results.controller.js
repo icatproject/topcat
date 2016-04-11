@@ -51,7 +51,6 @@
     this.investigation = $stateParams.investigation == 'true';
     this.dataset = $stateParams.dataset == 'true';
     this.datafile = $stateParams.datafile == 'true';
-    this.visable = false;
     if(this.investigation){
       this.currentTab = 'investigation';
     } else if(this.dataset){
@@ -65,6 +64,7 @@
       if(!that[type]) return;
       createGridOptions.call(that, type);
     });
+    this.isLoading = true;
     $q.all(promises).then(function(){
       _.each(['investigation', 'dataset', 'datafile'], function(type){
         if(!that[type]) return;
@@ -73,6 +73,7 @@
           entity.getSize(timeout.promise);
         });
       });
+      that.isLoading = false;
     });
 
 

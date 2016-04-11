@@ -62,7 +62,7 @@ body {
   position: absolute;
   top: 30%;
   font-size: 20px;
-  width: 400px;
+  text-align: center;
 }
 
 .cart-container {

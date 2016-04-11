@@ -33,17 +33,21 @@
 
 <div>
     <div ng-if="browseEntitiesController.isScroll" ui-grid="browseEntitiesController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-save-state ui-grid-selection ui-grid-resize-columns  class="browse-grid" take-up-remaining-height>
-        <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="BROWSE.EMPTY"></span>
-            </div>
+        <div class="no-rows row" ng-show="!browseEntitiesController.isLoading && browseEntitiesController.gridOptions.data.length == 0">
+            <div class="col-xs-12 empty-message" translate="BROWSE.NO_RESULTS"></div>
+        </div>
+        <div class="no-rows row" ng-show="browseEntitiesController.isLoading">
+            <div class="col-xs-12 empty-message" translate="BROWSE.LOADING"></div>
         </div>
     </div>
 
     <div ng-if="!browseEntitiesController.isScroll" ui-grid="browseEntitiesController.gridOptions" ui-grid-pagination ui-grid-selection ui-grid-save-state ui-grid-selection ui-grid-resize-columns class="browse-grid" take-up-remaining-height>
         <div class="no-rows row" ng-show="isEmpty">
-            <div class="col-md-2 col-md-offset-5 empty-message">
-                <span translate="BROWSE.EMPTY"></span>
+            <div class="no-rows row" ng-show="!browseEntitiesController.isLoading && browseEntitiesController.gridOptions.data.length == 0">
+                <div class="col-xs-12 empty-message" translate="BROWSE.NO_RESULTS"></div>
+            </div>
+            <div class="no-rows row" ng-show="browseEntitiesController.isLoading">
+                <div class="col-xs-12 empty-message" translate="BROWSE.LOADING"></div>
             </div>
         </div>
     </div>

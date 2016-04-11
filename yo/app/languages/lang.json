@@ -188,7 +188,8 @@
                 "SORT_DESCENDING": ": activate to sort column descending"
             }
         },
-        "EMPTY" : "Nothing to display",
+        "NO_RESULTS" : "Nothing to display",
+        "LOADING" : "Loading - please wait",
         "SELECTOR" : {
             "ADD_REMOVE_TOOLTIP" : {
                 "TEXT" : "Click to add/remove this item from cart."
@@ -204,7 +205,8 @@
         }
     },
     "SEARCH" : {
-        "EMPTY" : "No results for this entity type",
+        "NO_RESULTS" : "No results for this entity type",
+        "LOADING" : "Loading - please wait",
         "FORM" : {
             "SEARCH_TEXT_PLACEHOLDER": "Search Text",
             "SELECT_TYPE": "Select a Search Type",
@@ -236,7 +238,8 @@
     },
     "MY_DATA" : {
         "TITLE" : "My Data",
-        "EMPTY" : "You do not have any data",
+        "NO_RESULTS" : "You do not have any data",
+        "LOADING" : "Loading - please wait",
         "SELECTOR" : {
             "TOOLTIP" : {
                 "TEXT" : "@:BROWSE.SELECTOR.TOOLTIP.TEXT"

@@ -129,7 +129,9 @@
         }
 
         function getPage(){
+            that.isLoading = true;
             return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                that.isLoading = false;
                 _.each(entities, function(entity){
                     if(entity.getSize){
                         entity.getSize(canceler.promise);

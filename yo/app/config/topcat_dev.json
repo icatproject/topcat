@@ -685,7 +685,7 @@
         },
         "dls": {
             "title": "DIAMOND",
-            "icatUrl": "https://icat02.diamond.ac.uk",
+            "icatUrl": "https://facilities02.esc.rl.ac.uk",
             "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
             "facilityId": 1,
             "hierarchy": [
