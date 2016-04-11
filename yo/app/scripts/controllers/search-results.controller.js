@@ -93,6 +93,10 @@
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: that, enableSelectAll: false}, tc.config().search.gridOptions[type]);
       helpers.setupIcatGridOptions(gridOptions, type);
+      gridOptions.useExternalPagination =  false;
+      gridOptions.useExternalSorting =  false;
+      gridOptions.useExternalFiltering =  false;
+
 
       gridOptions.onRegisterApi = function(_gridApi) {
         gridApi = _gridApi;
