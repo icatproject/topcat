@@ -157,9 +157,7 @@
     	return $q.all(promises);
     };
 
-		var topcatApiPath = this.config().topcatApiPath;
-		if(!topcatApiPath.match(/^https:\/\//)) topcatApiPath = '/' + topcatApiPath;
-		if(!topcatApiPath.match(/\/$/)) topcatApiPath = topcatApiPath + '/';
+		var topcatApiPath = this.config().topcatApiPath + "/topcat/";
 		this.topcatApiPath = topcatApiPath;
 		helpers.generateRestMethods(this, topcatApiPath);
 

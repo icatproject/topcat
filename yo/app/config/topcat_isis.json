@@ -1,6 +1,6 @@
 {
     "site": {
-        "topcatApiPath": "https://topcatv2dev.isis.cclrc.ac.uk/topcat",
+        "topcatApiPath": "https://topcatv2dev.isis.cclrc.ac.uk",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "paging" : {
