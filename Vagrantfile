@@ -25,12 +25,21 @@ Vagrant.configure(2) do |config|
     sudo cp /vagrant/provision/my.cnf /etc/mysql/my.cnf
     sudo /etc/init.d/mysql restart
 
+    #sudo add-apt-repository ppa:webupd8team/java -y
+    #sudo apt-get update
+    #sudo debconf-set-selections <<< "debconf shared/accepted-oracle-license-v1-1 select true"
+    #sudo debconf-set-selections <<< "debconf shared/accepted-oracle-license-v1-1 seen true"
+    #sudo apt-get --assume-yes install oracle-java8-installer
+
     wget download.java.net/glassfish/4.0/release/glassfish-4.0.zip
     sudo unzip glassfish-4.0.zip -d /opt
  
     wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
     unzip mysql-connector-java-5.1.37.zip
     sudo cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
+
+    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
+    sudo cp /home/vagrant/ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
 
     sudo /opt/glassfish4/bin/asadmin start-domain
     sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
@@ -43,6 +52,7 @@ Vagrant.configure(2) do |config|
     sudo /opt/glassfish4/bin/asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
     sudo /opt/glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
     sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
+  
 
     mkdir /home/vagrant/bin
 
@@ -66,6 +76,7 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant
 
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
+
 
     wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
     unzip ids.server-1.5.0-distro.zip
