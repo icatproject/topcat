@@ -42,15 +42,6 @@ exec %{
   unzip -q mysql-connector-java-5.1.37.zip
   sudo cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
 
-  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.plugin/1.3.0/ids.plugin-1.3.0.jar
-  sudo cp ./ids.plugin-1.3.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
-  wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.client/4.5.0/icat.client-4.5.0.jar
-  sudo cp ./icat.client-4.5.0.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
-  wget https://icatproject.org/mvn/repo/org/icatproject/icat.utils/4.13.0-SNAPSHOT/icat.utils-4.13.0-20160307.151912-1.jar
-  sudo cp ./icat.utils-4.13.0-20160307.151912-1.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
-  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
-  sudo cp ./ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
-
   sudo /opt/glassfish4/bin/asadmin start-domain
   sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
   sudo /opt/glassfish4/bin/asadmin set server.http-service.access-logging-enabled=true
