@@ -4,7 +4,7 @@
 
 ## Compatibility
 
-TopCAT requires icat.server 4.6+  and ids.server 1.5.0.+
+TopCAT requires Java 8+, icat.server 4.6+  and ids.server 1.5.0.+
 
 ## Prerequisites
 

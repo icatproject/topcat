@@ -126,7 +126,7 @@ If we expand the namespaces in high level overview we can get a medium overview 
 ```
   {    
       "site": {
-          "topcatApiPath": "https://example.com/api/v1",
+          "topcatApiPath": "https://example.com",
           "home" : "my-data",
           "enableEuCookieLaw" : true,
           "paging" : {...},
@@ -682,4 +682,4 @@ A hierachy of translation strings. Self explainitory.
 
 $h2 topcat.css
 
-As stansard css file adding in custom css rules.
+As standard css file adding in custom css rules.
