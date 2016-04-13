@@ -990,7 +990,6 @@
                 "facility",
                 "instrument",
                 "facilityCycle",
-                "proposal",
                 "investigation",
                 "dataset",
                 "datafile"
@@ -1221,37 +1220,6 @@
                             ]
                         }
                     ]
-                },
-                "proposal": {
-                    "gridOptions": {
-                        "enableFiltering": true,
-                        "columnDefs": [
-                            {
-                                "field": "investigation.title",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "starts_with",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                },
-                                "cellTooltip": true,
-                                "link": true
-                               
-                            },
-                            {
-                                "field": "name",
-                                "type": "string",
-                                "filter": {
-                                    "condition": "starts_with",
-                                    "placeholder": "Containing...",
-                                    "type": "input"
-                                },
-                                "cellTooltip": true,
-                                "link": true,
-                                "breadcrumb":true
-                            }
-                        ]
-                    }
                 },
                 "investigation": {
                     "gridOptions": {
