@@ -15,6 +15,11 @@
             that.adminFacilities = tc.adminFacilities();
             refreshCartItemCount();
             refreshDownloadCount()
+            tc.cache().removeAll();
+            _.each(that.userFacilities, function(facility){
+                facility.icat().cache().removeAll();
+                facility.ids().cache().removeAll();
+            });
         }
         $rootScope.$on('session:change', refreshUserFacilities);
         refreshUserFacilities();

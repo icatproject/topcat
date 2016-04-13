@@ -1,4 +1,4 @@
-{
+{    
     "site": {
         "topcatApiPath": "https://topcat-dev.esc.rl.ac.uk",
         "home" : "my-data",
@@ -34,6 +34,10 @@
                 "investigation": {
                     "columnDefs": [
                         {
+                            "field": "title",
+                            "link": true
+                        },
+                        {
                             "field": "visitId",
                             "link": true
                         },
@@ -52,6 +56,7 @@
                     ]
                 },
                 "dataset": {
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name",
@@ -73,6 +78,7 @@
                     ]
                 },
                 "datafile": {
+                    "enableSelection": true,
                     "columnDefs": [
                         {
                             "field": "name"
@@ -235,10 +241,6 @@
                 {
                     "type" : "globus",
                     "url": "https://fdsgos11.fds.rl.ac.uk"
-                },
-                {
-                    "type" : "scarf",
-                    "url": "https://dls-ids01.scarf.rl.ac.uk"
                 }
             ],
             "admin":{
