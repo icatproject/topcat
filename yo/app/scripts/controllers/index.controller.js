@@ -16,7 +16,7 @@
             refreshCartItemCount();
             refreshDownloadCount()
             tc.cache().removeAll();
-            _.each(that.userFacilities, function(facility){
+            _.each(tc.facilities(), function(facility){
                 facility.icat().cache().removeAll();
                 facility.ids().cache().removeAll();
             });
