@@ -52,22 +52,19 @@
             var entityType = stateFromTo.replace(/^.*-/, '');
             var out = icat.queryBuilder(entityType);
 
-            if(stateFromTo == 'facility-proposal' || stateFromTo == 'facility-instrument'){
-                out.where(["facility.id = ?", facilityId]);
-            } else if(stateFromTo == 'instrument-facilityCycle'){
-                out.where(["facility.id = ?", facilityId]);
-                out.where(["instrument.id = ?", $state.params.instrumentId]);
-            } else if(stateFromTo == 'facilityCycle-proposal'){
-                out.where(["facility.id = ?", facilityId]);
-                out.where(["instrument.id = ?", $state.params.instrumentId]);
-                out.where(["facilityCycle.id = ?", $state.params.facilityCycleId]);
-            } else if(stateFromTo == 'proposal-investigation'){
-                out.where(["investigation.name = ?", $state.params.proposalId]);
-            } else if(stateFromTo == 'investigation-dataset'){
-                out.where(["investigation.id = ?", $state.params.investigationId])
-            } else if(stateFromTo == 'dataset-datafile'){
-                out.where(["dataset.id = ?", $state.params.datasetId])
-            }
+            out.where(["facility.id = ?", facilityId]);
+
+            _.each($state.params, function(id, name){
+                var matches;
+                if(matches = name.match(/^(.*)Id$/)){
+                    var variableName = matches[1];
+                    if(variableName == 'proposal'){
+                        out.where(["investigation.name = ?", id]);
+                    } else {
+                        out.where(["?.id = ?", variableName.safe(), parseInt(id)]);
+                    }
+                }
+            });
 
             _.each(gridOptions.columnDefs, function(columnDef){
                 if(!columnDef.field) return;
