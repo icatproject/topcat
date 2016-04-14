@@ -179,7 +179,7 @@ public class Download implements Serializable {
         this.email = email;
     }
 
-    public String getIsEmailSent() {
+    public Boolean getIsEmailSent() {
         return isEmailSent;
     }
 
