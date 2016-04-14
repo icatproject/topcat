@@ -19,9 +19,13 @@ import org.icatproject.ids.client.NotFoundException;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.utils.PropertyHandler;
+import org.icatproject.topcat.utils.MailBean;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.validator.routines.EmailValidator;
 
 @Singleton
 public class Watchdog {
@@ -36,6 +40,9 @@ public class Watchdog {
   @EJB
   private DownloadRepository downloadRepository;
 
+  @EJB
+  MailBean mailBean;
+
   @Schedule(hour="*", minute="*")
   private void poll() {
     if(!busy.compareAndSet(false, true)){
@@ -46,7 +53,7 @@ public class Watchdog {
     int pollDelay = properties.getPollDelay();
     int pollIntervalWait = properties.getPollIntervalWait();
 
-    TypedQuery<Download> query = em.createQuery("select d from Download d where d.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and d.transport = 'https'", Download.class);
+    TypedQuery<Download> query = em.createQuery("select d from Download d where (d.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and d.transport = 'https') || (d.email != '' && d.isEmailSent == false)", Download.class);
     List<Download> downloads = query.getResultList();
 
     for(Download download : downloads){
@@ -70,21 +77,21 @@ public class Watchdog {
   }
 
   private void performCheck(Download download) {
-
     try {
       IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
-      if(ids.isPrepared(download.getPreparedId())){
-        /*
+      if(download.getTransport() != "https" && download.getStatus() == DownloadStatus.COMPLETE){
+        download.setIsEmailSent(true);
+        em.persist(download);
+        em.flush();
+        lastChecks.remove(download.getId());
+        sendDownloadReadyEmail(download);
+      } else if(download.getTransport() == "http" && ids.isPrepared(download.getPreparedId())){
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         em.persist(download);
         em.flush();
-        */
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("preparedId", download.getPreparedId());
-        downloadRepository.setCompleteByPreparedId(params);
-
         lastChecks.remove(download.getId());
+        sendDownloadReadyEmail(download);
       } else {
         lastChecks.put(download.getId(), new Date());
       }
@@ -98,5 +105,57 @@ public class Watchdog {
     }
   }
 
+  private void sendDownloadReadyEmail(Download download){
+    EmailValidator emailValidator = EmailValidator.getInstance();
+    PropertyHandler properties = PropertyHandler.getInstance();
+
+    if (properties.isMailEnable() == true) {
+      if (download.getEmail() != null) {
+        if (emailValidator.isValid(download.getEmail())) {
+          // get fullName if exists
+          String userName = download.getUserName();
+          String fullName = download.getFullName();
+          if (fullName != null && !fullName.trim().isEmpty()) {
+            userName = fullName;
+          }
+
+          String downloadUrl = download.getTransportUrl();
+          downloadUrl += "/ids/getData?preparedId=" + download.getPreparedId();
+          downloadUrl += "&outname=" + download.getFileName();
+
+          Map<String, String> valuesMap = new HashMap<String, String>();
+          valuesMap.put("email", download.getEmail());
+          valuesMap.put("userName", userName);
+          valuesMap.put("facilityName", download.getFacilityName());
+          valuesMap.put("preparedId", download.getPreparedId());
+          valuesMap.put("downloadUrl", downloadUrl);
+          valuesMap.put("fileName", download.getFileName());
+
+          StrSubstitutor sub = new StrSubstitutor(valuesMap);
+          String subject = sub.replace(properties.getMailSubject());
+          String message = "";
+
+          if (download.getTransport().equals("https")) {
+            message = sub.replace(properties.getMailBodyHttps());
+          }
+
+          if (download.getTransport().equals("globus")) {
+            message = sub.replace(properties.getMailBodyGlobus());
+          }
+
+          if (download.getTransport().equals("smartclient")) {
+            message = sub.replace(properties.getMailBodySmartClient());
+          }
+
+          mailBean.send(download.getEmail(), subject, message);
+
+        } else {
+          logger.debug("Email not sent. Invalid email " + download.getEmail());
+        }
+      }
+    } else {
+      logger.debug("Email not sent. Email not enabled");
+    }
+  }
 
 }

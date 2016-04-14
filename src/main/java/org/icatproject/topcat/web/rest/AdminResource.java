@@ -152,6 +152,9 @@ public class AdminResource {
         }
 
         download.setStatus(DownloadStatus.valueOf(value));
+        if(value.equals("COMPLETE")){
+            download.setCompletedAt(new Date());
+        }
 
         downloadRepository.save(download);
 
