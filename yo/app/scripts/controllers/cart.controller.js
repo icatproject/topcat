@@ -17,6 +17,7 @@
         var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().cart.gridOptions);
         var page = 1;
         var filter = function(){ return true; };
+        var sorter = function(){ return true; };
         helpers.setupTopcatGridOptions(gridOptions, 'cartItem');
         gridOptions.columnDefs.push({
             name : 'actions',
@@ -26,7 +27,7 @@
             enableSorting: false,
             cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.remove(row.entity)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
         });
-        console.log('gridOptions.columnDefs[0]', gridOptions.columnDefs[0]);
+
         this.gridOptions = gridOptions;
         this.totalSize = undefined;
 
@@ -83,6 +84,7 @@
             cartItemsPromise.then(function(){
                 var preparedCartItems = cartItems;
                 preparedCartItems = _.select(preparedCartItems, filter);
+                preparedCartItems.sort(sorter);
 
                 var pages = _.chunk(preparedCartItems, pageSize);
                 var out = pages[page - 1];
@@ -116,7 +118,46 @@
 
             //sort change callback
             gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
-                
+                timeout.resolve();
+                timeout = $q.defer();
+                var _timeout = $timeout(function(){
+                    var sorters = [];
+                    _.each(sortColumns, function(sortColumn){
+                        if(sortColumn.colDef){
+                            sorters.push(function(rowA, rowB){
+                                var valueA = rowA[sortColumn.colDef.field];
+                                var valueB = rowB[sortColumn.colDef.field];
+
+                                var out = 0;
+                                if(valueA < valueB){
+                                    out = -1
+                                } else if(valueA > valueB){
+                                    out = 1
+                                }
+
+                                if(sortColumn.sort.direction == 'desc') out = out * -1;
+
+                                return out;
+                            });
+                        }
+                    });
+                    sorter = function(rowA, rowB){
+                        var out = 0;
+                        _.each(sorters, function(sorter){
+                            var current = sorter(rowA, rowB);
+                            if(current != 0){
+                                out = current;
+                                return false;
+                            }
+                        });
+                        return out;
+                    };
+                    page = 1;
+                    getPage().then(function(page){
+                        gridOptions.data = page;
+                    });
+                });
+                timeout.promise.then(function(){ $timeout.cancel(_timeout); });
             });
 
             //filter change callback

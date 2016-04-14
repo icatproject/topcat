@@ -142,9 +142,7 @@
             	var type = entitySchema.fields[field];
             	if(!columnDef.type) columnDef.type = type;
             	helpers.setupColumnDef(columnDef, entityType, helpers.constantify(entityType) + '.COLUMN');
-                console.log('setup columnDef', columnDef);
             });
-
 
     	};
 

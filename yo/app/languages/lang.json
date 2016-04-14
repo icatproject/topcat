@@ -249,16 +249,6 @@
     "CART" : {
         "TITLE" : "Cart",
         "NEW_MESSAGE": "A new item has been added to the cart",
-        "COLUMN" : {
-            "ID" : "Id",
-            "NAME" : "Name",
-            "ENTITY_TYPE" : "Type",
-            "FACILITY" : "Facility",
-            "SIZE" : "Size",
-            "FACILITY_NAME" : "Facility",
-            "STATUS" : "Availability",
-            "ACTIONS" : "Action"
-        },
         "STATUS": {
             "ONLINE": "Available",
             "RESTORING": "Restoring from Tape",
@@ -331,6 +321,23 @@
                     "PLURAL" : "items"
                 }
             }
+        }
+    },
+    "CART_ITEM": {
+        "COLUMN" : {
+            "ID" : "Id",
+            "NAME" : "Name",
+            "ENTITY_TYPE" : "Type",
+            "FACILITY" : "Facility",
+            "SIZE" : "Size",
+            "FACILITY_NAME" : "Facility",
+            "STATUS" : "Availability",
+            "ACTIONS" : "Action"
+        },
+        "STATUS": {
+            "ONLINE": "Available",
+            "RESTORING": "Restoring from Tape",
+            "ARCHIVED": "Archived on Tape"
         }
     },
     "DOWNLOAD" : {
