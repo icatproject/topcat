@@ -3,6 +3,8 @@
         <h3 class="modal-title" translate="CART.TITLE"></h3>
     </div>
     <div class="modal-body">
+        
+        
         <div ng-if="cartController.isScroll" ui-grid="cartController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-selection ui-grid-resize-columns  class="cart-grid" take-up-remaining-height>
             <div class="no-rows row" ng-show="isEmpty">
                 <div class="col-md-2 col-md-offset-5 empty-message">

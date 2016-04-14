@@ -36,16 +36,16 @@
             var type = columnDef.type;
             var field = columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '');
 
-
             if(!columnDef.filter){
                 if(type == 'string'){
                     columnDef.filter = {
                         "condition": uiGridConstants.filter.CONTAINS,
                         "placeholder": "Containing...",
-                        "type": "input",
+                        "type": "input"
                     }
                 }
             }
+
             if(!columnDef.filters){
                 if(type == 'date'){
                     columnDef.filters = [
@@ -65,7 +65,7 @@
             if(!columnDef.cellFilter){
                 if(field.match(/Date$/)){
                     columnDef.cellFilter = "date: 'yyyy-MM-dd'"
-                } else {
+                } else if(field.match(/Time$/)) {
                     columnDef.cellFilter = "date: 'yyyy-MM-dd HH:mm:ss'"
                 }
             }
@@ -113,6 +113,7 @@
             if(columnDef.filter && typeof columnDef.filter.condition == 'string'){
             	columnDef.filter.condition = uiGridConstants.filter[columnDef.filter.condition.toUpperCase()];
             }
+
     	};
 
     	this.setupTopcatGridOptions = function(gridOptions, entityType){
@@ -137,12 +138,14 @@
 
             _.each(gridOptions.columnDefs, function(columnDef){
                 columnDef.enableHiding = false;
-                
             	var field = columnDef.field;
             	var type = entitySchema.fields[field];
             	if(!columnDef.type) columnDef.type = type;
             	helpers.setupColumnDef(columnDef, entityType, helpers.constantify(entityType) + '.COLUMN');
-	        });
+                console.log('setup columnDef', columnDef);
+            });
+
+
     	};
 
     	this.setupIcatGridOptions = function(gridOptions, entityType){

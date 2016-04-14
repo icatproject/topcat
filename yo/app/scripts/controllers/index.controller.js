@@ -14,7 +14,7 @@
             that.nonUserFacilities = tc.nonUserFacilities();
             that.adminFacilities = tc.adminFacilities();
             refreshCartItemCount();
-            refreshDownloadCount()
+            refreshDownloadCount();
             tc.cache().removeAll();
             _.each(tc.facilities(), function(facility){
                 facility.icat().cache().removeAll();

@@ -15,7 +15,9 @@
         this.isScroll = isScroll;
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
         var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().cart.gridOptions);
-        helpers.setupTopcatGridOptions(gridOptions, 'cart');
+        var page = 1;
+        var filter = function(){ return true; };
+        helpers.setupTopcatGridOptions(gridOptions, 'cartItem');
         gridOptions.columnDefs.push({
             name : 'actions',
             translateDisplayName: 'CART.COLUMN.ACTIONS',
@@ -24,13 +26,14 @@
             enableSorting: false,
             cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.remove(row.entity)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
         });
+        console.log('gridOptions.columnDefs[0]', gridOptions.columnDefs[0]);
         this.gridOptions = gridOptions;
         this.totalSize = undefined;
 
-        var promises = [$timeout(1000)];
+        var cartPromises = [$timeout(1000)];
         var cartItems = [];
         _.each(tc.userFacilities(), function(facility){
-            promises.push(facility.user().cart(timeout.promise).then(function(cart){
+            cartPromises.push(facility.user().cart(timeout.promise).then(function(cart){
                 cartItems = _.flatten([cartItems, cart.cartItems]);
                 cart.getSize(timeout.promise).then(function(size){
                     if(that.totalSize === undefined) that.totalSize = 0;
@@ -38,12 +41,7 @@
                 });
             }));
         });
-
-        var page = 1;
-        var pages = [];
-        var pagesPromise = $q.all(promises).then(function(){
-            pages = _.chunk(cartItems, pageSize);
-        });
+        var cartItemsPromise = $q.all(cartPromises);
 
         this.cancel = function() {
             $uibModalInstance.dismiss('cancel');
@@ -63,11 +61,11 @@
         };
 
         this.removeAll = function(){
-            var promises = [];
+            var cartPromises = [];
             _.each(tc.userFacilities(), function(facility){
-                promises.push(facility.user().deleteAllCartItems(timeout.promise));
+                cartPromises.push(facility.user().deleteAllCartItems(timeout.promise));
             });
-            $q.all(promises).then(function(){
+            $q.all(cartPromises).then(function(){
                 $uibModalInstance.dismiss('cancel');
             });
         };
@@ -82,7 +80,11 @@
 
         function getPage(){
             var defered = $q.defer();
-            pagesPromise.then(function(){
+            cartItemsPromise.then(function(){
+                var preparedCartItems = cartItems;
+                preparedCartItems = _.select(preparedCartItems, filter);
+
+                var pages = _.chunk(preparedCartItems, pageSize);
                 var out = pages[page - 1];
                 if(!out) out = [];
                 _.each(out, function(cartItem){
@@ -117,9 +119,38 @@
                 
             });
 
-            //filter change calkback
-            gridApi.core.on.filterChanged($scope, function() {
-                
+            //filter change callback
+            gridApi.core.on.filterChanged($scope, function(){
+                timeout.resolve();
+                timeout = $q.defer();
+                var _timeout = $timeout(function(){
+                    var conditions = [];
+                    _.each(gridOptions.columnDefs, function(columnDef){
+                        if(!columnDef.field) return;
+                        if(columnDef.type == 'date' && columnDef.filters){
+
+                        } else if(columnDef.type == 'string' && columnDef.filter){
+                            conditions.push(function(row){
+                                return columnDef.filter.term === undefined || row[columnDef.field].indexOf(columnDef.filter.term) >= 0;
+                            });
+                        }
+                    });
+                    filter = function(row){
+                        var out = true;
+                        _.each(conditions, function(condition){
+                            if(!condition(row)){
+                                out = false;
+                                return false;
+                            }
+                        })
+                        return out;
+                    };
+                    page = 1;
+                    getPage().then(function(page){
+                        gridOptions.data = page;
+                    });
+                });
+                timeout.promise.then(function(){ $timeout.cancel(_timeout); });
             });
 
 
@@ -134,15 +165,6 @@
                     });
                 });
 
-                //scoll up more data at top callback (prepend data)
-                gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, function() {
-                    page--;
-                    getPage().then(function(results){
-                        _.each(results.reverse(), function(result){ gridOptions.data.unshift(result); });
-                        if(results.length == 0) page++;
-                        updateScroll(results.length);
-                    });
-                });
             } else {
                 //pagination callback
                 gridApi.pagination.on.paginationChanged($scope, function(_page, _pageSize) {
