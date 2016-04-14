@@ -81,19 +81,21 @@
 
         function getPage(){
             var defered = $q.defer();
-            cartItemsPromise.then(function(){
-                var preparedCartItems = cartItems;
-                preparedCartItems = _.select(preparedCartItems, filter);
-                preparedCartItems.sort(sorter);
+            $timeout(function(){
+                cartItemsPromise.then(function(){
+                    var preparedCartItems = cartItems;
+                    preparedCartItems = _.select(preparedCartItems, filter);
+                    preparedCartItems.sort(sorter);
 
-                var pages = _.chunk(preparedCartItems, pageSize);
-                var out = pages[page - 1];
-                if(!out) out = [];
-                _.each(out, function(cartItem){
-                    cartItem.getSize(timeout.promise);
-                    cartItem.getStatus(timeout.promise);
+                    var pages = _.chunk(preparedCartItems, pageSize);
+                    var out = pages[page - 1];
+                    if(!out) out = [];
+                    _.each(out, function(cartItem){
+                        cartItem.getSize(timeout.promise);
+                        cartItem.getStatus(timeout.promise);
+                    });
+                    defered.resolve(out);
                 });
-                defered.resolve(out);
             });
             return defered.promise;
         }
@@ -172,7 +174,7 @@
 
                         } else if(columnDef.type == 'string' && columnDef.filter){
                             conditions.push(function(row){
-                                return columnDef.filter.term === undefined || row[columnDef.field].indexOf(columnDef.filter.term) >= 0;
+                                return columnDef.filter.term === undefined || columnDef.filter.term === null || row[columnDef.field].indexOf(columnDef.filter.term) >= 0;
                             });
                         }
                     });
