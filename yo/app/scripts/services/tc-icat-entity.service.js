@@ -340,27 +340,27 @@
 				}
 
 				traverse(this);
-				function traverse(current){
+				function traverse(entity){
 					if(variablePath.length == 0){
-						if(!predicate || eval("current." + predicate)){
+						if(!predicate || eval(predicate)){
 							if(entityField){
-								var value = current[entityField];
+								var value = entity[entityField];
 								if(value !== undefined){
 									out.push(value);
 								}
 							} else {
-								out.push(current);
+								out.push(entity);
 							}
 						}
 					} else {
 						var fieldName = variablePath.shift();
-						current = current[fieldName];
-						if(current instanceof Array){
-							_.each(current, function(current){
-								traverse(current);
+						entity = entity[fieldName];
+						if(entity instanceof Array){
+							_.each(entity, function(entity){
+								traverse(entity);
 							});
 						} else {
-							traverse(current);
+							traverse(entity);
 						}
 						variablePath.push(fieldName);
 					}

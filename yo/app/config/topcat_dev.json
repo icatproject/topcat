@@ -1460,7 +1460,7 @@
                             "title": "METATABS.DATAFILE.PARAMETERS",
                             "items": [
                                 {
-                                    "find": "datafileParameter[type.valueType=='STRING']",
+                                    "find": "datafileParameter[entity.type.valueType=='STRING']",
                                     "value": "stringValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
@@ -1470,7 +1470,7 @@
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
                                 {
-                                    "find": "datafileParameter[type.valueType=='DATE_AND_TIME']",
+                                    "find": "datafileParameter[entity.type.valueType=='DATE_AND_TIME']",
                                     "value": "datetimeValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value | date:'yyyy-MM-dd'}}</span>"
                                 }
