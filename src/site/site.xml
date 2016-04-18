@@ -5,6 +5,7 @@
     <menu name="Contents">
         <item name="Installation" href="installation.html"/>
         <item name="Configuration" href="configuration.html"/>
+        <item name="Recipies" href="recipies.html"/>
         <item name="Release Notes" href="release-notes.html"/>
         <item name="RESTful interface (in new window)" href="miredot/index.html" target="_blank"/>
     </menu>
