@@ -519,6 +519,7 @@ public class UserResource {
 				download.setTransportUrl(transportUrl);
 				download.setIcatUrl(icatUrl);
 				download.setEmail(email);
+				download.setIsEmailSent(false);
 				boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
 				download.setIsTwoLevel(isTwoLevel);
 
