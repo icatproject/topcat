@@ -79,15 +79,16 @@ public class Watchdog {
   private void performCheck(Download download) {
     try {
       IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
-      if(download.getTransport() != "https" && download.getStatus() == DownloadStatus.COMPLETE){
+      if(!download.getTransport().equals("https") && download.getStatus() == DownloadStatus.COMPLETE){
         download.setIsEmailSent(true);
         em.persist(download);
         em.flush();
         lastChecks.remove(download.getId());
         sendDownloadReadyEmail(download);
-      } else if(download.getTransport() == "https" && ids.isPrepared(download.getPreparedId())){
+      } else if(download.getTransport().equals("https") && ids.isPrepared(download.getPreparedId())){
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
+        download.setIsEmailSent(true);
         em.persist(download);
         em.flush();
         lastChecks.remove(download.getId());
