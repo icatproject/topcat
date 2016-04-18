@@ -539,13 +539,15 @@ An example (partial) configuration:
 {
   "facilities": {
     "dls": {
-      "investigation": {
-          "gridOptions": {...},
-          "metaTabs": [...]
-      },
-      "proposal": {...},
-      "dataset": {...},
-      "datafile": {...}
+      "browse": {
+        "investigation": {
+            "gridOptions": {...},
+            "metaTabs": [...]
+        },
+        "proposal": {...},
+        "dataset": {...},
+        "datafile": {...}
+      }
     }
   }
 }

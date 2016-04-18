@@ -5,3 +5,22 @@
 
 $h1 Combining Grid Columns
 
+```
+{
+  "facilities": {
+    "dls": {
+      "browse": {
+        "investigation": {
+            "gridOptions": {
+              
+            },
+            "metaTabs": [...]
+        },
+        "proposal": {...},
+        "dataset": {...},
+        "datafile": {...}
+      }
+    }
+  }
+}
+```
