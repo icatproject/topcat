@@ -45,6 +45,8 @@
     		};	
 
     		this.login = function(plugin, username, password){
+                if(username === undefined) username = "anon";
+
     			var params = {
     				json: JSON.stringify({
                         plugin: plugin,
