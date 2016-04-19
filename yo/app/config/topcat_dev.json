@@ -212,7 +212,6 @@
     "facilities": {
         "test": {
             "title": "TEST",
-            "icatUrl": "https://localhost:8181",
             "idsUrl": "https://localhost:8181",
             "facilityId": 1,
             "hierarchy": [

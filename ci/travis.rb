@@ -57,15 +57,15 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
   sudo /opt/glassfish4/bin/asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
 
-  wget https://www.icatproject.org/mvn/repo/org/icatproject/authn_simple/1.0.1/authn_simple-1.0.1-distro.zip
-  unzip -q authn_simple-1.0.1-distro.zip
-  cp ./provision/authn_simple.properties ./authn_simple/authn_simple.properties
-  cp ./provision/authn_simple-setup.properties ./authn_simple/authn_simple-setup.properties
-  cd ./authn_simple
+  wget https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.1.0/authn.simple-1.1.0-distro.zip
+  unzip -q authn.simple-1.1.0-distro.zip
+  cp ./provision/authn_simple.properties ./authn.simple/authn_simple.properties
+  cp ./provision/authn_simple-setup.properties ./authn.simple/authn_simple-setup.properties
+  cd ./authn.simple
   sudo ./setup configure
   sudo ./setup install
   cd ../
-  sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
+  sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn.simple-1.1.0.deployment-order=80
 
   wget https://www.icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.1/icat.server-4.6.1-distro.zip
   unzip -q icat.server-4.6.1-distro.zip

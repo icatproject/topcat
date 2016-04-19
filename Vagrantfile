@@ -56,15 +56,16 @@ Vagrant.configure(2) do |config|
 
     mkdir /home/vagrant/bin
 
-    wget https://www.icatproject.org/mvn/repo/org/icatproject/authn_simple/1.0.1/authn_simple-1.0.1-distro.zip
-    unzip authn_simple-1.0.1-distro.zip
-    sudo cp /vagrant/provision/authn_simple.properties /home/vagrant/authn_simple/authn_simple.properties
-    sudo cp /vagrant/provision/authn_simple-setup.properties /home/vagrant/authn_simple/authn_simple-setup.properties
-    cd /home/vagrant/authn_simple
+    wget https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.1.0/authn.simple-1.1.0-distro.zip
+
+    unzip authn.simple-1.1.0-distro.zip
+    sudo cp /vagrant/provision/authn_simple.properties /home/vagrant/authn.simple/authn_simple.properties
+    sudo cp /vagrant/provision/authn_simple-setup.properties /home/vagrant/authn.simple/authn_simple-setup.properties
+    cd /home/vagrant/authn.simple
     sudo ./setup configure
     sudo ./setup install
     cd /home/vagrant
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn_simple-1.0.1.deployment-order=80
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.authn.simple-1.1.0.deployment-order=80
 
     wget http://www.icatproject.org/mvn/repo/org/icatproject/icat.server/4.6.1/icat.server-4.6.1-distro.zip
     unzip icat.server-4.6.1-distro.zip

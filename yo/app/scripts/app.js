@@ -7,18 +7,6 @@
         'Expires': '0'
     };
 
-    angular
-        .module('angularApp', [
-            'ngResource',
-            'ngSanitize',
-            'ui.router',
-            'ct.ui.router.extras.sticky',
-            'ui.bootstrap',
-            'truncate',
-            'inform',
-            'inform-exception',
-        ]);
-
     /**
      * deferred bootstrap to load main configuration to APP_CONFIG
      */
@@ -26,7 +14,7 @@
         element : document.documentElement,
         module : 'angularApp',
         resolve : {
-            APP_CONFIG : function($http) {
+            APP_CONFIG : function($http, $q) {
                 var port = parseInt(window.location.port);
                 var url;
                 if(port === 10080 || port === 9000){
@@ -45,6 +33,21 @@
                         }
                         return {};
                     }
+                }).then(function(response){
+                    var config = response.data;
+                    var defered = $q.defer();
+                    var promises = [];
+                    _.each(config.facilities, function(facility, facilityName){
+                        if(!facility.icatUrl){
+                            promises.push($.get(facility.idsUrl + "/ids/getIcatUrl").then(function(icatUrl){
+                                facility.icatUrl = icatUrl;
+                            }));
+                        }
+                    });
+                    $q.all(promises).then(function(){
+                        defered.resolve(config);
+                    });
+                    return defered.promise;
                 });
             },
             LANG : ['$http', function($http) {
