@@ -7,6 +7,18 @@
         'Expires': '0'
     };
 
+    angular
+        .module('angularApp', [
+            'ngResource',
+            'ngSanitize',
+            'ui.router',
+            'ct.ui.router.extras.sticky',
+            'ui.bootstrap',
+            'truncate',
+            'inform',
+            'inform-exception',
+        ]);
+
     /**
      * deferred bootstrap to load main configuration to APP_CONFIG
      */
@@ -14,15 +26,41 @@
         element : document.documentElement,
         module : 'angularApp',
         resolve : {
-            APP_CONFIG : ['$http', function($http) {
+            APP_CONFIG : function($http) {
                 var port = parseInt(window.location.port);
+                var url;
                 if(port === 10080 || port === 9000){
-                    return $http.get('config/topcat_dev.json', {headers: noCacheHeaders});
+                    url = 'config/topcat_dev.json';
+                } else {
+                    url = 'config/topcat.json';
                 }
-                return $http.get('config/topcat.json', {headers: noCacheHeaders});
-            } ],
+                return $http({
+                    url: url,
+                    method: 'GET',
+                    transformResponse: function (json) {
+                        try {
+                            return jsonlint.parse(json);
+                        } catch(e){
+                            alert(url + "\n\n" + e.message);
+                        }
+                        return {};
+                    }
+                });
+            },
             LANG : ['$http', function($http) {
-                return $http.get('languages/lang.json', {headers: noCacheHeaders});
+                var url = 'languages/lang.json';
+                return $http({
+                    url: url,
+                    method: 'GET',
+                    transformResponse: function (json) {
+                        try {
+                            return jsonlint.parse(json);
+                        } catch(e){
+                            alert(url + "\n\n" + e.message);
+                        }
+                        return {};
+                    }
+                });
             } ]
         }
     });
