@@ -16,6 +16,17 @@
         this.facilityCount = tc.facilities().length;
         this.connectionSpeed = "3932160";
 
+        this.isNonHttpsTransportType = function(){
+            var out = false;
+            _.each(this.downloads, function(download){
+                if(download.transportType != 'https'){
+                    out = true;
+                    return false;
+                }
+            });
+            return out;
+        };
+
         _.each(tc.userFacilities(), function(facility){
             facility.user().cart(timeout).then(function(cart){
                 if(cart.cartItems.length > 0){

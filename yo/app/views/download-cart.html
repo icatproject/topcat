@@ -42,7 +42,7 @@
             </tr>
         </table>
 
-        <div ng-if="downloadCartController.hasArchive">
+        <div ng-if="downloadCartController.hasArchive || downloadCartController.isNonHttpsTransportType()">
             <div class="panel panel-default" >
                 <div class="panel-body" >
                     <p translate="CART.DOWNLOAD.MODAL.IS_ARCHIVED_MESSAGE"></p>
@@ -54,6 +54,7 @@
             </div>
         </div>
     </form>
+
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="downloadCartController.ok()" translate="CART.DOWNLOAD.MODAL.BUTTON.OK.TEXT"></button>
