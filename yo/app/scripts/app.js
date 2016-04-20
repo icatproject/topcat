@@ -301,6 +301,15 @@
                     url: '/admin/:facilityName',
                     templateUrl: 'views/admin.html',
                     controller: 'AdminController as adminController'
+                })
+                .state('doi-redirect', {
+                    url: '/doi-redirect/:facilityName/:entityType/:entityId',
+                    controller: 'DoiRedirectController',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    }
                 });
                 $urlRouterProvider.otherwise('/');
 
