@@ -26,7 +26,7 @@
         element : document.documentElement,
         module : 'angularApp',
         resolve : {
-            APP_CONFIG : function($http) {
+            APP_CONFIG : ['$http', function($http) {
                 var port = parseInt(window.location.port);
                 var url;
                 if(port === 10080 || port === 9000){
@@ -46,7 +46,7 @@
                         return {};
                     }
                 });
-            },
+            }],
             LANG : ['$http', function($http) {
                 var url = 'languages/lang.json';
                 return $http({
