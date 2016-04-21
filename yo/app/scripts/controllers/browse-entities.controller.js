@@ -66,7 +66,7 @@
                 }
             });
 
-            if($state.params.instrumentId && (entityType == 'investigation' || $state.params.investigationId || $state.params.facilityCycleId)){
+            if($state.params.instrumentId && (entityType == 'investigation' || entityType == 'facilityCycle' || $state.params.investigationId || $state.params.facilityCycleId)){
                 out.where("investigationInstrument.id = instrument.id")
             }
 
