@@ -23,7 +23,7 @@
                         field = matches[2];
                     }
 
-                    if(item.label === null){
+                    if(!item.label && item.label !== ''){
                         var entityTypeNamespace = helpers.constantify(entityType);
                         var fieldNamespace = helpers.constantify(field);
                         item.label = "METATABS." + entityTypeNamespace + "." + fieldNamespace;

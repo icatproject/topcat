@@ -1356,6 +1356,7 @@
                             "title": "METATABS.DATAFILE.PARAMETERS",
                             "items": [
                                 {
+                                    "label": "",
                                     "field": "datafileParameter[entity.type.valueType=='STRING'].stringValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
@@ -1365,6 +1366,7 @@
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
                                 {
+                                    "label": "",
                                     "field": "datafileParameter[entity.type.valueType=='DATE_AND_TIME'].datetimeValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value | date:'yyyy-MM-dd'}}</span>"
                                 }
