@@ -203,8 +203,8 @@
                             icat.queryBuilder('datafileParameter').where([
                                 "investigation.id = ?", entity.id,
                                 "and datafileParameterType.name = 'run_number'"
-                            ]).max('numericValue', canceler.promise).then(function(results){
-                                entity['max' + fieldNameSuffix] = min;
+                            ]).max('numericValue', canceler.promise).then(function(max){
+                                entity['max' + fieldNameSuffix] = max;
                             });
                         }
                     });

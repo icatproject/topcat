@@ -320,6 +320,7 @@
         };
 
         this.typeOf = function(data){
+            if(data === null) return 'null';
 			var out = typeof data;
 			if(out == 'object'){
 				if(data instanceof Array) return 'array';
