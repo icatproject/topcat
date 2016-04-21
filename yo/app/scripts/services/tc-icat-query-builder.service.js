@@ -105,7 +105,7 @@
                             out.push(["select ?(?)", functionName.safe(), entityType.safe()]);
                         }
                     } else {
-                        out.push(["select ?", entityType.safe()]);
+                        out.push(["select distinct ?", entityType.safe()]);
                     }
 
         			out.push([
