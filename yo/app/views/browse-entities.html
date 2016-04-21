@@ -7,14 +7,25 @@
                     <a href="{{item.href}}" translate="{{item.translate}}" ng-if="item.translate"></a>
                     <a 
                         href="{{item.href}}"
-                        ng-if="!item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength"
+                        ng-if="item.href && !item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength"
                         uib-tooltip="{{item.title}}"
                         tooltip-placement="bottom"
                     >{{item.title | limitTo : breadcrumbController.maxBreadcrumbTitleLength}}...</a>
                     <a
                         href="{{item.href}}"
-                        ng-if="!(!item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength)"
+                        ng-if="item.href && !(!item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength)"
                     >{{item.title}}</a>
+
+                    <span 
+                        ng-if="!item.href && !item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength"
+                        uib-tooltip="{{item.title}}"
+                        tooltip-placement="bottom"
+                    >{{item.title | limitTo : breadcrumbController.maxBreadcrumbTitleLength}}...</span>
+                    <span
+                        ng-if="!item.href && !(!item.translate && item.title.length > breadcrumbController.maxBreadcrumbTitleLength)"
+                    >{{item.title}}</span>
+
+
                 </span>
                 <i ng-show="$last" translate="{{item.translate}}"></i>
             </li>
