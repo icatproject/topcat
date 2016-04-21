@@ -76,7 +76,6 @@
                         if(!find.match(/\]$/)) find = find + '[]';
                         _.each(entity.find(find), function(entity){
                             var value = entity.find(field)[0];
-                            console.log('itemConfig.label', itemConfig.label)
                             if(value !== undefined){
                                 tab.items.push({
                                     label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
