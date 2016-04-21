@@ -84,10 +84,12 @@
                     href: currentHref
                 });
 
-                that.breadcrumbItems.unshift({
-                    translate: "BROWSE.BREADCRUMB.ROOT.NAME",
-                    href: '#/browse/facility'
-                });
+                if(tc.facilities().length > 1){
+                    that.breadcrumbItems.unshift({
+                        translate: "BROWSE.BREADCRUMB.ROOT.NAME",
+                        href: '#/browse/facility'
+                    });
+                }
 
                 that.breadcrumbItems.push({
                     translate: 'ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME'
