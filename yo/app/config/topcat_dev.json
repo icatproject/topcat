@@ -1051,7 +1051,7 @@
                         },
                         {
                             "field": "datafileParameter.numericValue",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.RUN_NUMBER",
                             "type": "number",
                             "where": "datafileParameterType.name = 'run_number'",
                             "filters": [
@@ -1072,7 +1072,11 @@
                             "field": "size"
                         },
                         {
-                            "field": "startDate"
+                            "field": "startDate",
+                            "sort": {
+                              "direction": "desc",
+                              "priority": 1
+                            }
                         },
                         {
                             "field": "endDate"
@@ -1155,7 +1159,11 @@
                                 "field": "investigationInstrument.fullName"
                             },
                             {
-                                "field": "startDate"
+                                "field": "startDate",
+                                "sort": {
+                                  "direction": "desc",
+                                  "priority": 1
+                                }
                             },
                             {
                                 "field": "endDate"
@@ -1233,7 +1241,8 @@
                                 }
                             },
                             {
-                                "field": "modTime"                            }
+                                "field": "modTime"
+                            }
                         ]
                     },
                     "metaTabs": [
@@ -1285,7 +1294,11 @@
                                 "field": "description"
                             },
                             {
-                                "field": "startDate"
+                                "field": "startDate",
+                                "sort": {
+                                  "direction": "desc",
+                                  "priority": 1
+                                }
                             },
                             {
                                 "field": "endDate"
