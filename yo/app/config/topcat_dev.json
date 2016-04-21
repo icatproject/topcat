@@ -1360,7 +1360,8 @@
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
                                 {
-                                    "field": "datafileParameter[type.valueType=='NUMERIC'].numericValue",
+                                    "label": "",
+                                    "field": "datafileParameter[entity.type.valueType=='NUMERIC'].numericValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
                                 {
