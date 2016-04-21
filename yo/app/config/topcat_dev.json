@@ -1010,75 +1010,25 @@
                 "gridOptions": {
                     "columnDefs": [
                         {
-                            "field": "userName",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "userName"
                         },
                         {
-                            "field": "preparedId",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "preparedId"
                         },
                         {
-                            "field": "transport",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "transport"
                         },
                         {
-                            "field": "status",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "status"
                         },
                         {
-                            "field": "size",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.SIZE",
-                            "type" : "number"
+                            "field": "size"
                         },
                         {
-                            "field": "createdAt",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
-                            "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
-                            "filters": [
-                                {
-                                    "placeholder": "From...",
-                                    "type": "input"
-                                },
-                                {
-                                    "placeholder": "To...",
-                                    "type": "input"
-                                }
-                            ]
+                            "field": "createdAt"
                         },
                         {
-                            "field": "isDeleted",
-                            "translateDisplayName": "DOWNLOAD.COLUMN.IS_DELETED",
-                            "type" : "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "isDeleted"
                         }
                     ]
                 }
@@ -1094,80 +1044,22 @@
                     "columnDefs": [
                         {
                             "field": "title",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
-                            "type": "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            },
-                            "cellTooltip": true,
                             "link": true
                         },
                         {
-                            "field": "visitId",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
-                            "type": "string",
-                            "filter": {
-                                "condition": "contains",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            },
-                            "link": true
-                        },
-                        
-                        {
-                            "field": "investigationInstrument.fullName",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME",
-                            "type": "string",
-                            "visible": true,
-                            "filter": {
-                                "condition": "starts_with",
-                                "placeholder": "Containing...",
-                                "type": "input"
-                            }
+                            "field": "visitId"
                         },
                         {
-                            "field": "size",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
-                            "type": "number"
+                            "field": "investigationInstrument.fullName"
                         },
                         {
-                            "field": "startDate",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
-                            "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd'",
-                            "excludeFuture": true,
-                            "sort": {
-                              "direction": "desc",
-                              "priority": 1
-                            },
-                            "filters": [
-                                {
-                                    "placeholder": "From...",
-                                    "type": "input"
-                                },
-                                {
-                                    "placeholder": "To...",
-                                    "type": "input"
-                                }
-                            ]
+                            "field": "size"
                         },
                         {
-                            "field": "endDate",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
-                            "type": "date",
-                            "cellFilter": "date: 'yyyy-MM-dd'",
-                            "filters": [
-                                {
-                                    "placeholder": "From...",
-                                    "type": "input"
-                                },
-                                {
-                                    "placeholder": "To...",
-                                    "type": "input"
-                                }
-                            ]
+                            "field": "startDate"
+                        },
+                        {
+                            "field": "endDate"
                         }
                     ]
                 }

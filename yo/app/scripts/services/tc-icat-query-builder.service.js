@@ -28,6 +28,7 @@
     		var tc = facility.tc();
     		var user = tc.user(facilityName);
     		var cart = user.cart();
+            var select = entityType;
     		var whereList = [];
             var orderByList = [];
             var includeList = [];
@@ -67,19 +68,27 @@
                 return this;
             };
 
-    		this.build = function(isCount, investigationName){
+    		this.build = function(functionName, fieldName, investigationName){
     			var out = [];
 
                 if(entityType == 'proposal'){
                     if(investigationName){
-                        if(isCount){
-                            out.push("select count(investigation)");
+                        if(functionName){
+                            if(fieldName){
+                                out.push(["select ?(investigation.?)", functionName.safe(), fieldName.safe()]);
+                            } else {
+                                out.push(["select ?(investigation)", functionName.safe()]);
+                            }
                         } else {
                             out.push(["select investigation"]);
                         }
                     } else {
-                        if(isCount){
-                            out.push("select count(distinct investigation.name)");
+                        if(functionName){
+                            if(fieldName){
+                                out.push(["select ?(distinct investigation.?)", functionName.safe(), fieldName.safe()]);
+                            } else {
+                                out.push(["select ?(distinct investigation.name)", functionName.safe()]);
+                            }
                         } else {
                             out.push(["select distinct investigation.name"]);
                         }
@@ -89,8 +98,12 @@
                         "from Investigation investigation"
                     ]);
                 } else {
-                    if(isCount){
-                        out.push(["select count(?)", entityType.safe()]);
+                    if(functionName){
+                        if(fieldName){
+                            out.push(["select ?(?.?)", functionName.safe(), entityType.safe(), fieldName.safe()]);
+                        } else {
+                            out.push(["select ?(?)", functionName.safe(), entityType.safe()]);
+                        }
                     } else {
                         out.push(["select ?", entityType.safe()]);
                     }
@@ -158,11 +171,11 @@
                     out.push(['ORDER BY', orderByList.join(', ')]);
                 }
 
-                if(!isCount && limitCount && !investigationName){
+                if(!functionName && limitCount && !investigationName){
                     out.push(['limit ?, ?', limitOffset, limitCount]);
                 }
 
-                if(!isCount && includeList.length > 0 && !investigationName){
+                if(!functionName && includeList.length > 0 && !investigationName){
                     out.push(['include', includeList.join(', ')]);
                 }
 
@@ -197,7 +210,7 @@
                             var proposals = [];
 
                             _.each(names, function(name){
-                                promises.push(icat.query([that.build(false, name)], options).then(function(investigations){
+                                promises.push(icat.query([that.build(null, null, name)], options).then(function(investigations){
                                     var proposal = {};
                                     proposal.entityType = "proposal";
                                     proposal.id = investigations[0].name;
@@ -235,7 +248,7 @@
 
             this.count = helpers.overload({
                 'object': function(options){
-                    return icat.query([this.build(true)], options).then(function(results){
+                    return icat.query([this.build('count')], options).then(function(results){
                         return results[0];
                     });
                 },
@@ -246,6 +259,35 @@
                     return this.count({});
                 }
             });
+
+            this.min = helpers.overload({
+                'string, object': function(fieldName, options){
+                    return icat.query([this.build('min', fieldName)], options).then(function(results){
+                        return results[0];
+                    });
+                },
+                'string, promise': function(fieldName, timeout){
+                    return this.min(fieldName, {timeout: timeout});
+                },
+                'string': function(fieldName){
+                    return this.min(fieldName, {});
+                }
+            });
+
+            this.max = helpers.overload({
+                'string, object': function(fieldName, options){
+                    return icat.query([this.build('max', fieldName)], options).then(function(results){
+                        return results[0];
+                    });
+                },
+                'string, promise': function(fieldName, timeout){
+                    return this.max(fieldName, {timeout: timeout});
+                },
+                'string': function(fieldName){
+                    return this.max(fieldName, {});
+                }
+            });
+
 
     	}
 
