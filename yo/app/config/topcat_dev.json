@@ -1096,20 +1096,18 @@
                             "title": "METATABS.INSTRUMENT.TABTITLE",
                             "items": [
                                 {
-                                    "label": "METATABS.INSTRUMENT.NAME",
-                                    "value": "fullName"
+                                    "field": "fullName"
                                 },
                                 {
-                                    "label": "METATABS.INSTRUMENT.DESCRIPTION",
-                                    "value": "description"
+                                    "field": "description"
                                 },
                                 {
                                     "label": "METATABS.INSTRUMENT.TYPE",
-                                    "value": "type"
+                                    "field": "type"
                                 },
                                 {
                                     "label": "METATABS.INSTRUMENT.URL",
-                                    "value": "url"
+                                    "field": "url"
                                 }
                             ]
                         },
@@ -1119,7 +1117,7 @@
                                 {
                                     "find": "instrumentScientistUser",
                                     "label": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
-                                    "value": "fullName"
+                                    "field": "fullName"
                                 }
                             ]
                         }
@@ -1170,25 +1168,20 @@
                             "default": true,
                             "items": [
                                 {
-                                    "label": "METATABS.INVESTIGATION.NAME",
-                                    "value": "name"
+                                    "field": "name"
                                 },
                                 {
-                                    "label": "METATABS.INVESTIGATION.TITLE",
-                                    "value": "title"
+                                    "field": "title"
                                 },
                                 {
-                                    "label": "METATABS.INVESTIGATION.SUMMARY",
-                                    "value": "summary"
+                                    "field": "summary"
                                 },
                                 {
-                                    "label": "METATABS.INVESTIGATION.START_DATE",
-                                    "value": "startDate",
+                                    "field": "startDate",
                                     "template": "{{item.value | date:'yyyy-MM-dd'}}"
                                 },
                                 {
-                                    "label": "METATABS.INVESTIGATION.END_DATE",
-                                    "value": "endDate",
+                                    "field": "endDate",
                                     "template": "{{item.value | date:'yyyy-MM-dd'}}"
                                 }
                             ]
@@ -1197,9 +1190,7 @@
                             "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
                             "items": [
                                 {
-                                    "find": "user",
-                                    "label": "METATABS.INVESTIGATION_USERS.NAME",
-                                    "value": "fullName"
+                                    "field": "investigationUser.fullName"
                                 }
                                 
                             ]
@@ -1208,9 +1199,7 @@
                             "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
                             "items": [
                                 {
-                                    "find": "sample",
-                                    "label": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
-                                    "value": "name"
+                                    "field": "investigationSample.name"
                                 }
                             ]
                         },
@@ -1218,9 +1207,7 @@
                             "title": "Publications",
                             "items": [
                                 {
-                                    "find": "publication",
-                                    "label": "Reference",
-                                    "value": "fullReference"
+                                    "field": "publication.fullReference"
                                 }
                             ]
                         }
@@ -1255,21 +1242,17 @@
                             "default": true,
                             "items": [
                                 {
-                                    "label": "METATABS.DATASET.NAME",
-                                    "value": "name"
+                                    "field": "name"
                                 },
                                 {
-                                    "label": "METATABS.DATASET.DESCRIPTION",
-                                    "value": "description"
+                                    "field": "description"
                                 },
                                 {
-                                    "label": "METATABS.DATASET.START_DATE",
-                                    "value": "startDate",
+                                    "field": "startDate",
                                     "template": "{{item.value | date:'yyyy-MM-dd'}}"
                                 },
                                 {
-                                    "label": "METATABS.DATASET.END_DATE",
-                                    "value": "endDate",
+                                    "field": "endDate",
                                     "template": "{{item.value | date:'yyyy-MM-dd'}}"
                                 }
                             ]
@@ -1278,14 +1261,10 @@
                             "title": "METATABS.DATASET_TYPE.TABTITLE",
                             "items": [
                                 {
-                                    "find": "datasetType",
-                                    "label": "METATABS.DATASET_TYPE.NAME",
-                                    "value": "name"
+                                    "field": "datasetType.name"
                                 },
                                 {
-                                    "find": "datasetType",
-                                    "label": "METATABS.DATASET_TYPE.DESCRIPTION",
-                                    "value": "description"
+                                    "field": "datasetType.description"
                                 }
                             ]
                         }
@@ -1346,21 +1325,17 @@
                             "title": "METATABS.DATAFILE.TABTITLE",
                             "items": [
                                 {
-                                    "label": "METATABS.DATAFILE.NAME",
-                                    "value": "name"
+                                    "field": "name"
                                 },
                                 {
-                                    "label": "METATABS.DATAFILE.DESCRIPTION",
-                                    "value": "description"
+                                    "field": "description"
                                 },
                                 {
-                                    "label": "METATABS.DATAFILE.SIZE",
-                                    "value": "fileSize",
+                                    "field": "fileSize",
                                     "template": "{{item.value | bytes}}"
                                 },
                                 {
-                                    "label": "METATABS.DATAFILE.LOCATION",
-                                    "value": "location"
+                                    "field": "location"
                                 }
                             ]
                         },
@@ -1368,18 +1343,15 @@
                             "title": "METATABS.DATAFILE.PARAMETERS",
                             "items": [
                                 {
-                                    "find": "datafileParameter[entity.type.valueType=='STRING']",
-                                    "value": "stringValue",
+                                    "field": "datafileParameter[entity.type.valueType=='STRING'].stringValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
                                 {
-                                    "find": "datafileParameter[type.valueType=='NUMERIC']",
-                                    "value": "numericValue",
+                                    "field": "datafileParameter[type.valueType=='NUMERIC'].numericValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value}}</span>"
                                 },
                                 {
-                                    "find": "datafileParameter[entity.type.valueType=='DATE_AND_TIME']",
-                                    "value": "datetimeValue",
+                                    "field": "datafileParameter[entity.type.valueType=='DATE_AND_TIME'].datetimeValue",
                                     "template": "<span class='label'>{{item.entity.type.name}}</span><span class='value'>{{item.value | date:'yyyy-MM-dd'}}</span>"
                                 }
                             ]
