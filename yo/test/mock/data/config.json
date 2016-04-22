@@ -1109,7 +1109,7 @@
             }
         },
         "isis": {
-            "facilityDatabaseName": "ISIS",
+            "name": "ISIS",
             "facilityName": "isis",
             "title": "ISIS",
             "icatUrl": "https://icatdev15.isis.cclrc.ac.uk",

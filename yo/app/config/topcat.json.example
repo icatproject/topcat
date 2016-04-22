@@ -211,7 +211,7 @@
     },
     "facilities": {
         "facilityName": {
-            "facilityDatabaseName": "ISIS",
+            "name": "ISIS",
             "title": "My Facility Fullname",
             "icatUrl": "https://myicat.server.ac.uk",
             "idsUrl": "https://myids.server.ac.uk",
