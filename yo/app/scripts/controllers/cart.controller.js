@@ -16,6 +16,7 @@
         var pageSize = isScroll ? pagingConfig.scrollPageSize : pagingConfig.paginationNumberOfRows;
         var gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().cart.gridOptions);
         var page = 1;
+        var delay = $timeout(1000);
         var filter = function(){ return true; };
         var sorter = function(){ return true; };
         helpers.setupTopcatGridOptions(gridOptions, 'cartItem');
@@ -31,18 +32,6 @@
         this.gridOptions = gridOptions;
         this.totalSize = undefined;
 
-        var cartPromises = [$timeout(1000)];
-        var cartItems = [];
-        _.each(tc.userFacilities(), function(facility){
-            cartPromises.push(facility.user().cart(timeout.promise).then(function(cart){
-                cartItems = _.flatten([cartItems, cart.cartItems]);
-                cart.getSize(timeout.promise).then(function(size){
-                    if(that.totalSize === undefined) that.totalSize = 0;
-                    that.totalSize = that.totalSize + size;
-                });
-            }));
-        });
-        var cartItemsPromise = $q.all(cartPromises);
 
         this.cancel = function() {
             $uibModalInstance.dismiss('cancel');
@@ -57,6 +46,11 @@
             cartItem.delete().then(function(){
                 if(that.gridOptions.data.length == 0){
                     $uibModalInstance.dismiss('cancel');
+                } else {
+                    cartItemsCache = null;
+                    getTotalSize().then(function(totalSize){
+                        that.totalSize = totalSize;
+                    });
                 }
             });
         };
@@ -79,10 +73,70 @@
             })
         };
 
+        function getCarts(){
+            var defered = $q.defer();
+            var out = [];
+            var promises = [delay];
+            _.each(tc.userFacilities(), function(facility){
+                promises.push(facility.user().cart(timeout.promise).then(function(cart){
+                    out.push(cart);
+                }));
+            });
+            $q.all(promises).then(function(){
+                defered.resolve(out);
+            });
+            return defered.promise;
+        }
+
+        var cartItemsCache = null;
+        function getCartItems(){
+            var defered = $q.defer();
+            if(!cartItemsCache){
+                getCarts().then(function(carts){
+                    var out = [];
+                    _.each(carts, function(cart){
+                        out = _.flatten([out, cart.cartItems]);
+                    });
+                    cartItemsCache = out;
+                    defered.resolve(out);
+                });
+            } else {
+                defered.resolve(cartItemsCache)
+            }
+            return defered.promise;
+        }
+
+        var getTotalSizeTimeout;
+        function getTotalSize(){
+            if(getTotalSizeTimeout){
+                getTotalSizeTimeout.resolve();
+            }
+            getTotalSizeTimeout = $q.defer();
+            timeout.promise.then(function(){ getTotalSizeTimeout.resolve(); });
+            var defered = $q.defer();
+            getCarts().then(function(carts){
+                var out = 0;
+                var promises = [];
+                _.each(carts, function(cart){
+                    promises.push(cart.getSize(getTotalSizeTimeout.promise).then(function(size){
+                        out = out + size
+                    }));
+                });
+                $q.all(promises).then(function(){
+                    defered.resolve(out);
+                });
+            });
+            return defered.promise;
+        }
+
+        getTotalSize().then(function(totalSize){
+            that.totalSize = totalSize;
+        });
+
         function getPage(){
             var defered = $q.defer();
             $timeout(function(){
-                cartItemsPromise.then(function(){
+                getCartItems().then(function(cartItems){
                     var preparedCartItems = cartItems;
                     preparedCartItems = _.select(preparedCartItems, filter);
                     preparedCartItems.sort(sorter);
