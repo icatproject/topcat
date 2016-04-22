@@ -141,7 +141,7 @@ If we expand the namespaces in high level overview we can get a medium overview 
       },
       "facilities": {
           "dls": {
-              "facilityDatabaseName": "DIAMOND",
+              "name": "DIAMOND",
               "facilityName": "dls",
               "title": "Diamond Light Source",
               "icatUrl": "https://example.com",
@@ -174,7 +174,7 @@ from the above following namespaces defined:
       * "pages" - allows you to define information pages e.g. "About Us" or "Contact" etc...
   * "facilities"
       * "dls" - the facility name. This is used as namespace throughout topcat e.g. in the url or in the sessions.
-          * "facilityDatabaseName" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
+          * "name" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
           * "title" - A user friendly title that will appear in the tabs etc...
           * "icatUrl" - A URL to a valid Icat REST API
           * "idsUrl" - A URL to a valid IDS REST API
