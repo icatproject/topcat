@@ -29,6 +29,7 @@
 
         _.each(tc.userFacilities(), function(facility){
             facility.user().cart(timeout).then(function(cart){
+                
                 if(cart.cartItems.length > 0){
                     var transportTypes = [];
                     var transportType = "";
@@ -61,28 +62,21 @@
                         transportType: transportType
                     };
                     
-                    var promises = [];
-                    var size = 0;
-                    _.each(cart.cartItems, function(cartItem){
-                        promises.push(cartItem.getSize(timeout).then(function(_size){
-                            size = size + _size;
-                        }));
-
-                        cartItem.getStatus(timeout).then(function(status){
-                            if(status == "ARCHIVED"){
-                                that.hasArchive = true;
-                            }
-                            download.status = status;
-                        });
+                    cart.getStatus(timeout).then(function(status){
+                        if(status == "ARCHIVED"){
+                            that.hasArchive = true;
+                        }
+                        download.status = status;
                     });
 
-                    $q.all(promises).then(function(){
+                    cart.getSize(timeout).then(function(size){
                         download.size = size;
                         download.estimatedTime = Math.ceil(size);
                     });
 
                     that.downloads.push(download);
                 }
+                
             });
         });
 
