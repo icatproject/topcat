@@ -1,5 +1,9 @@
 package org.icatproject.topcat.idsclient;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -85,9 +89,18 @@ public class IdsClient13 implements IdsClientInterface {
     @Override
     public Status getStatus(String sessionId, DataSelection dataSelection) throws TopcatException {
         Status status = null;
-
         try {
-            status = service.getStatus(sessionId, dataSelection);
+            for(DataSelection currentDataSelection : chunkDataSelection(dataSelection)){
+                Status currentStatus = service.getStatus(sessionId, currentDataSelection);
+                if(currentStatus == Status.ARCHIVED){
+                    status = Status.ARCHIVED;
+                    break;
+                } else if(currentStatus == Status.RESTORING){
+                    status = Status.RESTORING;
+                } else if(status != Status.RESTORING){
+                    status = Status.ONLINE;
+                }
+            }
         } catch (org.icatproject.ids.client.BadRequestException e) {
             throw new org.icatproject.topcat.exceptions.BadRequestException(e.getMessage());
         } catch (org.icatproject.ids.client.NotFoundException e) {
@@ -182,8 +195,74 @@ public class IdsClient13 implements IdsClientInterface {
     @SuppressWarnings("unused")
     private void throwNewICATException(IdsException e) throws TopcatException {
         logger.debug("IdsException class: " + e.getClass());
+    }
 
+    private List<DataSelection> chunkDataSelection(DataSelection dataSelection){
+        List<DataSelection> out = new ArrayList<DataSelection>();
+        Map<String, String> parameters = dataSelection.getParameters();
+        List<Long> investigationIds = new ArrayList<Long>();
+        List<Long> datasetIds = new ArrayList<Long>();
+        List<Long> datafileIds = new ArrayList<Long>();
 
+        if(parameters.get("investigationIds") != null){
+            for(String id : parameters.get("investigationIds").split(",")){
+                investigationIds.add(Long.valueOf(id));
+            }
+        }
+        if(parameters.get("datasetIds") != null){
+            for(String id : parameters.get("datasetIds").split(",")){
+                datasetIds.add(Long.valueOf(id));
+            }
+        }
+        if(parameters.get("datafileIds") != null){
+            for(String id : parameters.get("datafileIds").split(",")){
+                datafileIds.add(Long.valueOf(id));
+            }
+        }
+
+        while(!investigationIds.isEmpty() || !datasetIds.isEmpty() || !datafileIds.isEmpty()){
+            DataSelection currentDataSelection = new DataSelection();
+
+            while(!investigationIds.isEmpty()){
+                if(dataSelectionSize(currentDataSelection) >= 900){
+                    break;
+                }
+                currentDataSelection.addInvestigation(investigationIds.remove(0));
+            }
+
+            while(!datasetIds.isEmpty()){
+                if(dataSelectionSize(currentDataSelection) >= 900){
+                    break;
+                }
+                currentDataSelection.addDataset(datasetIds.remove(0));
+            }
+
+            while(!datafileIds.isEmpty()){
+                if(dataSelectionSize(currentDataSelection) >= 900){
+                    break;
+                }
+                currentDataSelection.addDatafile(datafileIds.remove(0));
+            }
+
+            out.add(currentDataSelection);
+        }
+
+        return out;
+    }
+
+    private int dataSelectionSize(DataSelection dataSelection){
+        Map<String, String> parameters = dataSelection.getParameters();
+        int out = 0;
+        if(parameters.get("investigationIds") != null){
+            out += parameters.get("investigationIds").length();
+        }
+        if(parameters.get("datasetIds") != null){
+            out += parameters.get("datasetIds").length();
+        }
+        if(parameters.get("datafileIds") != null){
+            out += parameters.get("datafileIds").length();
+        }
+        return out; 
     }
 
 }

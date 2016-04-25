@@ -15,6 +15,7 @@
         this.downloads = [];
         this.facilityCount = tc.facilities().length;
         this.connectionSpeed = "3932160";
+        this.isSubmitting = false;
 
         this.isNonHttpsTransportType = function(){
             var out = false;
@@ -87,9 +88,11 @@
                 }
             });
 
+            this.isSubmitting = true;
+
             var promises = [];
             _.each(this.downloads, function(download){
-                promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email));
+                promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email, timeout.promise));
             });
             $q.all(promises).then(function(){
                 $uibModalStack.dismissAll();

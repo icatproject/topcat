@@ -181,9 +181,9 @@
                 }));
               }
               $q.all(promises).then(function(){
-                if(_.select(out, function(s){ s == 'ARCHIVED' }).length > 0){
+                if(_.select(out, function(s){ return s == 'ARCHIVED'; }).length > 0){
                   defered.resolve('ARCHIVED');
-                } else if(_.select(out, function(s){ s == 'RESTORING' }).length > 0){
+                } else if(_.select(out, function(s){ return s == 'RESTORING'; }).length > 0){
                   defered.resolve('RESTORING');
                 } else {
                   defered.resolve('ONLINE');
