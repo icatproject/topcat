@@ -15,7 +15,7 @@
         this.gridOptions.useExternalFiltering =  false;
         this.gridOptions.columnDefs.push({
             name : 'actions',
-            translateDisplayName: 'DOWNLOAD.COLUMN.ACTIONS',
+            title: 'DOWNLOAD.COLUMN.ACTIONS',
             enableFiltering: false,
             enable: false,
             enableColumnMenu: false,

@@ -246,7 +246,7 @@ Example:
             {
                 "field": "fullName",
                 "displayName": "Facility Full Name",
-                "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
+                "title": "BROWSE.COLUMN.FACILITY.FULLNAME",
                 "filter": {
                     "condition": "starts_with",
                     "placeholder": "Containing...",
@@ -257,7 +257,7 @@ Example:
             {
                 "field": "name",
                 "displayName": "Facility Name",
-                "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
+                "title": "BROWSE.COLUMN.FACILITY.NAME",
                 "filter": {
                     "condition": "contains",
                     "placeholder": "Containing...",
@@ -290,7 +290,7 @@ Example:
         "columnDefs": [
             {
                 "field": "name",
-                "translateDisplayName": "CART.COLUMN.NAME",
+                "title": "CART.COLUMN.NAME",
                 "type" : "string",
                 "filter": {
                     "condition": "starts_with",
@@ -301,7 +301,7 @@ Example:
             },
             {
                 "field": "entityType",
-                "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
+                "title": "CART.COLUMN.ENTITY_TYPE",
                 "cellFilter": "entityTypeTitle",
                 "type" : "string",
                 "filter": {
@@ -312,7 +312,7 @@ Example:
             },
             {
                 "field": "size",
-                "translateDisplayName": "CART.COLUMN.SIZE",
+                "title": "CART.COLUMN.SIZE",
                 "type" : "number",
                 "filter": {
                     "condition": "contains",
@@ -322,7 +322,7 @@ Example:
             },
             {
                 "field": "availability",
-                "translateDisplayName": "CART.COLUMN.AVAILABILITY",
+                "title": "CART.COLUMN.AVAILABILITY",
                 "type" : "string",
                 "filter": {
                     "condition": "contains",
@@ -368,7 +368,7 @@ Example:
                 {
                     "field": "title",
                     "displayName": "Title",
-                    "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                    "title": "BROWSE.COLUMN.INVESTIGATION.TITLE",
                     "type": "string",
                     "filter": {
                         "condition": "contains",
@@ -381,7 +381,7 @@ Example:
                 {
                     "field": "visitId",
                     "displayName": "Visit Id",
-                    "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                    "title": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                     "type": "string",
                     "filter": {
                         "condition": "contains",
@@ -404,13 +404,13 @@ Example:
                 {
                     "field": "size",
                     "displayName": "Size",
-                    "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                    "title": "BROWSE.COLUMN.INVESTIGATION.SIZE",
                     "type": "number"
                 },
                 {
                     "field": "startDate",
                     "displayName": "Start Date",
-                    "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                    "title": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                     "type": "date",
                     "cellFilter": "date: 'yyyy-MM-dd'",
                     "filters": [
@@ -430,7 +430,7 @@ Example:
                 {
                     "field": "endDate",
                     "displayName": "End Date",
-                    "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                    "title": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                     "type": "date",
                     "cellFilter": "date: 'yyyy-MM-dd'",
                     "filters": [
@@ -475,7 +475,7 @@ Example:
         "columnDefs": [
             {
                 "field": "fileName",
-                "translateDisplayName": "DOWNLOAD.COLUMN.FILE_NAME",
+                "title": "DOWNLOAD.COLUMN.FILE_NAME",
                 "type" : "string",
                 "filter": {
                     "condition": "contains",
@@ -485,7 +485,7 @@ Example:
             },
             {
                 "field": "transport",
-                "translateDisplayName": "DOWNLOAD.COLUMN.TRANSPORT",
+                "title": "DOWNLOAD.COLUMN.TRANSPORT",
                 "type" : "string",
                 "filter": {
                     "condition": "contains",
@@ -495,7 +495,7 @@ Example:
             },
             {
                 "field": "status",
-                "translateDisplayName": "DOWNLOAD.COLUMN.STATUS",
+                "title": "DOWNLOAD.COLUMN.STATUS",
                 "type" : "string",
                 "filter": {
                     "condition": "contains",
@@ -505,7 +505,7 @@ Example:
             },
             {
                 "field": "createdAt",
-                "translateDisplayName": "DOWNLOAD.COLUMN.CREATED_AT",
+                "title": "DOWNLOAD.COLUMN.CREATED_AT",
                 "type" : "date",
                 "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss'",
                 "filter": {
@@ -545,28 +545,28 @@ Example:
     "facility": [
         {
             "title": "Facility Details",
-            "translateDisplayName": "METATABS.FACILITY.TABTITLE",
+            "title": "METATABS.FACILITY.TABTITLE",
             "field": "facility",
             "default": true,
             "data": [
                 {
                     "title": "Full Name",
-                    "translateDisplayName": "METATABS.FACILITY.FULLNAME",
+                    "title": "METATABS.FACILITY.FULLNAME",
                     "field": "fullName"
                 },
                 {
                     "title": "Description",
-                    "translateDisplayName": "METATABS.FACILITY.DESCRIPTION",
+                    "title": "METATABS.FACILITY.DESCRIPTION",
                     "field": "description"
                 },
                 {
                     "title": "Name",
-                    "translateDisplayName": "METATABS.FACILITY.NAME",
+                    "title": "METATABS.FACILITY.NAME",
                     "field": "name"
                 },
                 {
                     "title": "URL",
-                    "translateDisplayName": "METATABS.FACILITY.URL",
+                    "title": "METATABS.FACILITY.URL",
                     "field": "url"
                 }
             ]
@@ -726,11 +726,11 @@ This sets whether or not to show a tooltip when a user hovers over a cell in thi
 
 ****
 
-###### Property: _**displayName**_ (Either displayName or translateDisplayName must be set)
+###### Property: _**displayName**_ (Either displayName or title must be set)
 
 Value: string
 
-The column name that will be shown in the grid header. See also [translateDisplayName](#property-translatedisplayname-optional-either-translatedisplayname-or-displayname-must-be-set).
+The column name that will be shown in the grid header. See also [title](#property-translatedisplayname-optional-either-translatedisplayname-or-displayname-must-be-set).
 
 ****
 
@@ -829,13 +829,13 @@ The _direction_ property value must be either **asc** or **desc**.
 
 ****
 
-###### Property: _**translateDisplayName**_ (Optional. Either translateDisplayName or displayName must be set)
+###### Property: _**title**_ (Optional. Either title or displayName must be set)
 
 Value: string
 
 The property to use from lang.json for this column name shown in the grid header.
 
-If both displayName and translateDisplayName are set, translateDisplayName is used.
+If both displayName and title are set, title is used.
 
 ****
 
@@ -1193,7 +1193,7 @@ Example:
             {
                 "field": "fullName",
                 "displayName": "Full Name",
-                "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
+                "title": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                 "type": "string",
                 "filter": {
                     "condition": "contains",
@@ -1246,24 +1246,24 @@ Example:
 "metaTabs": {
     "instrument": [
         {
-            "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
+            "title": "METATABS.INSTRUMENT.TABTITLE",
             "field": "instrument",
             "default": true,
             "data": [
                 {
-                    "translateDisplayName": "METATABS.INSTRUMENT.NAME",
+                    "title": "METATABS.INSTRUMENT.NAME",
                     "field": "fullName"
                 },
                 {
-                    "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
+                    "title": "METATABS.INSTRUMENT.DESCRIPTION",
                     "field": "description"
                 },
                 {
-                    "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
+                    "title": "METATABS.INSTRUMENT.TYPE",
                     "field": "type"
                 },
                 {
-                    "translateDisplayName": "METATABS.INSTRUMENT.URL",
+                    "title": "METATABS.INSTRUMENT.URL",
                     "field": "url"
                 }
             ]
@@ -1281,22 +1281,22 @@ For each entity defined in the hierachy, you should have a corresponding propert
 
 A metaTab object corresponds to a single tab in the metatab area. It allows you to define what fields should be displayed for an entity or related entities.
 
-###### Property: _**displayName**_ (Optional. Either translateDisplayName or displayName must be set)
+###### Property: _**displayName**_ (Optional. Either title or displayName must be set)
 
 Value: string
 
 The title of tab.
 
-If both displayName and translateDisplayName are set, translateDisplayName is used.
+If both displayName and title are set, title is used.
 
 
-###### Property: _**translateDisplayName **_ (Optional. Either translateDisplayName or displayName must be set)
+###### Property: _**title **_ (Optional. Either title or displayName must be set)
 
 Value: string
 
 Use a property from lang.json as the title of the tab.
 
-If both displayName and translateDisplayName are set, translateDisplayName is used.
+If both displayName and title are set, title is used.
 
 
 ###### Property: _**default **_ (required)
@@ -1334,23 +1334,23 @@ Example:
 ```
 "data": [
     {
-        "translateDisplayName": "METATABS.INVESTIGATION.NAME",
+        "title": "METATABS.INVESTIGATION.NAME",
         "field": "name"
     },
     {
-        "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
+        "title": "METATABS.INVESTIGATION.TITLE",
         "field": "title"
     },
     {
-        "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
+        "title": "METATABS.INVESTIGATION.SUMMARY",
         "field": "summary"
     },
     {
-        "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+        "title": "METATABS.INVESTIGATION.START_DATE",
         "field": "startDate"
     },
     {
-        "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+        "title": "METATABS.INVESTIGATION.END_DATE",
         "field": "endDate"
     }
 ]
@@ -1367,7 +1367,7 @@ Example (fields from a related entity) :
         "default": false,
         "data": [
             {
-                "translateDisplayName": "METATABS.INVESTIGATION_USERS.NAME",
+                "title": "METATABS.INVESTIGATION_USERS.NAME",
                 "field": "fullName"
             }
         ]
@@ -1378,8 +1378,8 @@ Example (fields from a related entity) :
 This sets the field data to display in a meta tab. The object has 4 possible properties:
 
   - **displayName** (string - optional) - the field label
-  - **translateDisplayName** (string - optional) - Use a property from lang.json as the field label
+  - **title** (string - optional) - Use a property from lang.json as the field label
   - **field** (string - required) - the entity field name whose value will be displayed
   - **data** (object - optional) - used when you wish to display relationship fields
 
-Either displayName or translateDisplayName must be set. If both title and translateDisplayName are set, translateDisplayName is used.
+Either displayName or title must be set. If both title and title are set, title is used.

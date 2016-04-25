@@ -22,7 +22,7 @@
         helpers.setupTopcatGridOptions(gridOptions, 'cartItem');
         gridOptions.columnDefs.push({
             name : 'actions',
-            translateDisplayName: 'CART.COLUMN.ACTIONS',
+            title: 'CART.COLUMN.ACTIONS',
             enableFiltering: false,
             enable: false,
             enableSorting: false,

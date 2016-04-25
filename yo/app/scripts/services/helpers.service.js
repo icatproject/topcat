@@ -264,7 +264,7 @@
 	            gridOptions.columnDefs.push({
 	                name : 'actions',
 	                visible: true,
-	                translateDisplayName: 'BROWSE.COLUMN.ACTIONS.NAME',
+	                title: 'BROWSE.COLUMN.ACTIONS.NAME',
 	                enableFiltering: false,
 	                enable: false,
 	                enableColumnMenu: false,

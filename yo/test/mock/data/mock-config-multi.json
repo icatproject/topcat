@@ -51,7 +51,7 @@
                         {
                             "field": "name",
                             "displayName": "Name",
-                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.NAME",
+                            "title": "BROWSE.COLUMN.INSTRUMENT.NAME",
                             "type": "string",
                             "visible": false,
                             "sort": {
@@ -71,7 +71,7 @@
                         {
                             "field": "fullName",
                             "displayName": "Full Name",
-                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
+                            "title": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -164,7 +164,7 @@
                         {
                             "field": "title",
                             "displayName": "Title",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.TITLE",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -182,7 +182,7 @@
                         {
                             "field": "visitId",
                             "displayName": "Visit Id",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -198,7 +198,7 @@
                         {
                             "field": "size",
                             "displayName": "Size",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                            "title": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
                         {
@@ -220,7 +220,7 @@
                         {
                             "field": "startDate",
                             "displayName": "Start Date",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
@@ -236,7 +236,7 @@
                         {
                             "field": "endDate",
                             "displayName": "End Date",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
@@ -258,7 +258,7 @@
                         {
                             "field": "name",
                             "displayName": "Dataset Name",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
+                            "title": "BROWSE.COLUMN.DATASET.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -274,13 +274,13 @@
                         {
                             "field": "size",
                             "displayName": "Size",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                            "title": "BROWSE.COLUMN.DATASET.SIZE",
                             "type": "number"
                         },
                         {
                             "field": "createTime",
                             "displayName": "Create Date",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
+                            "title": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
@@ -296,7 +296,7 @@
                         {
                             "field": "modTime",
                             "displayName": "Modified Time",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
+                            "title": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
@@ -318,7 +318,7 @@
                         {
                             "field": "name",
                             "displayName": "Datafile Name",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.NAME",
+                            "title": "BROWSE.COLUMN.DATAFILE.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -333,7 +333,7 @@
                         {
                             "field": "fileSize",
                             "displayName": "File Size",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
+                            "title": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
                             "type": "number",
                             "cellFilter": "bytes",
                             "filter": {
@@ -349,7 +349,7 @@
                         {
                             "field": "modTime",
                             "displayName": "Modified Time",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
+                            "title": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
                             "filter": {
                                 "condition": "contains",
@@ -589,7 +589,7 @@
                         {
                             "field": "name",
                             "displayName": "Name",
-                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.NAME",
+                            "title": "BROWSE.COLUMN.INSTRUMENT.NAME",
                             "type": "string",
                             "sort": {
                                 "direction": "asc"
@@ -608,7 +608,7 @@
                         {
                             "field": "fullName",
                             "displayName": "Full Name",
-                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
+                            "title": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "visible": false,
                             "filter": {
@@ -646,7 +646,7 @@
                         {
                             "field": "name",
                             "displayName": "Name",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
                             "type": "number",
                             "sort": {
                                 "direction": "asc"
@@ -665,7 +665,7 @@
                         {
                             "field": "description",
                             "displayName": "Description",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -680,7 +680,7 @@
                         {
                             "field": "startDate",
                             "displayName": "Start Date",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -695,7 +695,7 @@
                         {
                             "field": "endDate",
                             "displayName": "End Date",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -768,7 +768,7 @@
                         {
                             "field": "title",
                             "displayName": "Title",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.TITLE",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -784,7 +784,7 @@
                         {
                             "field": "visitId",
                             "displayName": "Visit Id",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -800,7 +800,7 @@
                         {
                             "field": "startDate",
                             "displayName": "Start Date",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
                             "filter": {
                                 "condition": "contains",
@@ -815,7 +815,7 @@
                         {
                             "field": "endDate",
                             "displayName": "End Date",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                             "type": "date",
                             "filter": {
                                 "condition": "contains",
@@ -836,7 +836,7 @@
                         {
                             "field": "name",
                             "displayName": "Dataset Name",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
+                            "title": "BROWSE.COLUMN.DATASET.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -852,7 +852,7 @@
                         {
                             "field": "createTime",
                             "displayName": "Create Date",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
+                            "title": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
                             "filter": {
                                 "condition": "contains",
@@ -867,7 +867,7 @@
                         {
                             "field": "modTime",
                             "displayName": "Modified Time",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
+                            "title": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
                             "filter": {
                                 "condition": "contains",
@@ -888,7 +888,7 @@
                         {
                             "field": "name",
                             "displayName": "Datafile Name",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.NAME",
+                            "title": "BROWSE.COLUMN.DATAFILE.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -903,7 +903,7 @@
                         {
                             "field": "fileSize",
                             "displayName": "File Size",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
+                            "title": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
                             "type": "number",
                             "filter": {
                                 "condition": "contains",
@@ -918,7 +918,7 @@
                         {
                             "field": "modTime",
                             "displayName": "Modified Time",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
+                            "title": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
                             "filter": {
                                 "condition": "contains",
@@ -937,35 +937,35 @@
                 "instrument": [
                     {
                         "title": "Instrument Details",
-                        "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
+                        "title": "METATABS.INSTRUMENT.TABTITLE",
                         "field": "instrument",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.INSTRUMENT.NAME",
+                                "title": "METATABS.INSTRUMENT.NAME",
                                 "field": "fullName"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
+                                "title": "METATABS.INSTRUMENT.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Type",
-                                "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
+                                "title": "METATABS.INSTRUMENT.TYPE",
                                 "field": "type"
                             },
                             {
                                 "title": "URL",
-                                "translateDisplayName": "METATABS.INSTRUMENT.URL",
+                                "title": "METATABS.INSTRUMENT.URL",
                                 "field": "url"
                             }
                         ]
                     },
                     {
                         "title": "Instrument Scientists",
-                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                        "title": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
                         "field": "instrumentScientists",
                         "queryParams": [
                             "InstrumentScientist",
@@ -979,7 +979,7 @@
                                 "data": [
                                     {
                                         "title": "Name",
-                                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                        "title": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
                                         "field": "fullName"
                                     }
                                 ]
@@ -990,28 +990,28 @@
                 "facilityCycle": [
                     {
                         "title": "Facility Cycle Details",
-                        "translateDisplayName": "METATABS.FACILITYCYCLE.TABTITLE",
+                        "title": "METATABS.FACILITYCYCLE.TABTITLE",
                         "field": "instrument",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.NAME",
+                                "title": "METATABS.FACILITYCYCLE.NAME",
                                 "field": "fullName"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.DESCRIPTION",
+                                "title": "METATABS.FACILITYCYCLE.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Start Date",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.START_DATE",
+                                "title": "METATABS.FACILITYCYCLE.START_DATE",
                                 "field": "startDate"
                             },
                             {
                                 "title": "End Date",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.END_DATE",
+                                "title": "METATABS.FACILITYCYCLE.END_DATE",
                                 "field": "endDate"
                             }
                         ]
@@ -1020,40 +1020,40 @@
                 "investigation": [
                     {
                         "title": "Investigation Details",
-                        "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
+                        "title": "METATABS.INVESTIGATION.TABTITLE",
                         "field": "investigation",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.INVESTIGATION.NAME",
+                                "title": "METATABS.INVESTIGATION.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Title",
-                                "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
+                                "title": "METATABS.INVESTIGATION.TITLE",
                                 "field": "title"
                             },
                             {
                                 "title": "Summary",
-                                "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
+                                "title": "METATABS.INVESTIGATION.SUMMARY",
                                 "field": "summary"
                             },
                             {
                                 "title": "Start Date",
-                                "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+                                "title": "METATABS.INVESTIGATION.START_DATE",
                                 "field": "startDate"
                             },
                             {
                                 "title": "End Date",
-                                "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+                                "title": "METATABS.INVESTIGATION.END_DATE",
                                 "field": "endDate"
                             }
                         ]
                     },
                     {
                         "title": "Investigation Users",
-                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                        "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
                         "field": "investigationUsers",
                         "queryParams": [
                             "InvestigationUser",
@@ -1067,7 +1067,7 @@
                                 "data": [
                                     {
                                         "title": "Name",
-                                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.USERS_NAME",
+                                        "title": "METATABS.INVESTIGATION_USERS.USERS_NAME",
                                         "field": "fullName"
                                     }
                                 ]
@@ -1076,7 +1076,7 @@
                     },
                     {
                         "title": "Investigation Samples",
-                        "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                        "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
                         "field": "samples",
                         "queryParams": [
                             "Sample"
@@ -1085,14 +1085,14 @@
                         "data": [
                             {
                                 "title": "Sample Name",
-                                "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                "title": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
                                 "field": "name"
                             }
                         ]
                     },
                     {
                         "title": "Investigation Parameters",
-                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.TABTITLE",
+                        "title": "METATABS.INVESTIGATION_PARAMS.TABTITLE",
                         "field": "parameters",
                         "queryParams": [
                             "InvestigationParameter",
@@ -1106,29 +1106,29 @@
                                 "data": [
                                     {
                                         "title": "name",
-                                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_NAME",
+                                        "title": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_NAME",
                                         "field": "name"
                                     },
                                     {
                                         "title": "description",
-                                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_DESCRIPTION",
+                                        "title": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_DESCRIPTION",
                                         "field": "description"
                                     },
                                     {
                                         "title": "units",
-                                        "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_UNITS",
+                                        "title": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_UNITS",
                                         "field": "units"
                                     }
                                 ]
                             },
                             {
                                 "title": "value",
-                                "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
+                                "title": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
                                 "field": "numericValue"
                             },
                             {
                                 "title": "value",
-                                "translateDisplayName": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
+                                "title": "METATABS.INVESTIGATION_PARAMS.PARAM_TYPE_VALUE",
                                 "field": "stringValue"
                             }
                         ]
@@ -1137,35 +1137,35 @@
                 "dataset": [
                     {
                         "title": "Dataset Details",
-                        "translateDisplayName": "METATABS.DATASET.TABTITLE",
+                        "title": "METATABS.DATASET.TABTITLE",
                         "field": "dataset",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.DATASET.NAME",
+                                "title": "METATABS.DATASET.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
+                                "title": "METATABS.DATASET.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Start Date",
-                                "translateDisplayName": "METATABS.DATASET.START_DATE",
+                                "title": "METATABS.DATASET.START_DATE",
                                 "field": "startDate"
                             },
                             {
                                 "title": "End Date",
-                                "translateDisplayName": "METATABS.DATASET.END_DATE",
+                                "title": "METATABS.DATASET.END_DATE",
                                 "field": "endDate"
                             }
                         ]
                     },
                     {
                         "title": "Dataset Type",
-                        "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
+                        "title": "METATABS.DATASET_TYPE.TABTITLE",
                         "field": "type",
                         "queryParams": [
                             "DatasetType"
@@ -1174,12 +1174,12 @@
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
+                                "title": "METATABS.DATASET_TYPE.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                "title": "METATABS.DATASET_TYPE.DESCRIPTION",
                                 "field": "description"
                             }
                         ]
@@ -1188,28 +1188,28 @@
                 "datafile": [
                     {
                         "title": "Datafile Details",
-                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                        "title": "METATABS.DATAFILE.TABTITLE",
                         "field": "datafile",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.DATAFILE.NAME",
+                                "title": "METATABS.DATAFILE.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
+                                "title": "METATABS.DATAFILE.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Size",
-                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                "title": "METATABS.DATAFILE.SIZE",
                                 "field": "fileSize"
                             },
                             {
                                 "title": "Location",
-                                "translateDisplayName": "METATABS.DATAFILE.LOCATION",
+                                "title": "METATABS.DATAFILE.LOCATION",
                                 "field": "location"
                             }
                         ]
@@ -1261,7 +1261,7 @@
                         {
                             "field": "name",
                             "displayName": "Name",
-                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.NAME",
+                            "title": "BROWSE.COLUMN.INSTRUMENT.NAME",
                             "type": "string",
                             "sort": {
                                 "direction": "asc"
@@ -1280,7 +1280,7 @@
                         {
                             "field": "fullName",
                             "displayName": "Full Name",
-                            "translateDisplayName": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
+                            "title": "BROWSE.COLUMN.INSTRUMENT.FULLNAME",
                             "type": "string",
                             "visible": false,
                             "filter": {
@@ -1318,7 +1318,7 @@
                         {
                             "field": "name",
                             "displayName": "Name",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.NAME",
                             "type": "number",
                             "sort": {
                                 "direction": "asc"
@@ -1337,7 +1337,7 @@
                         {
                             "field": "description",
                             "displayName": "Description",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.DESCRIPTION",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -1352,7 +1352,7 @@
                         {
                             "field": "startDate",
                             "displayName": "Start Date",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
@@ -1368,7 +1368,7 @@
                         {
                             "field": "endDate",
                             "displayName": "End Date",
-                            "translateDisplayName": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
+                            "title": "BROWSE.COLUMN.FACILITYCYCLE.END_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
@@ -1462,7 +1462,7 @@
                         {
                             "field": "title",
                             "displayName": "Title",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.TITLE",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -1478,7 +1478,7 @@
                         {
                             "field": "visitId",
                             "displayName": "Visit Id",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -1494,7 +1494,7 @@
                         {
                             "field": "startDate",
                             "displayName": "Start Date",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
@@ -1510,7 +1510,7 @@
                         {
                             "field": "endDate",
                             "displayName": "End Date",
-                            "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                            "title": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd'",
                             "filter": {
@@ -1532,7 +1532,7 @@
                         {
                             "field": "name",
                             "displayName": "Dataset Name",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
+                            "title": "BROWSE.COLUMN.DATASET.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -1548,7 +1548,7 @@
                         {
                             "field": "createTime",
                             "displayName": "Create Date",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
+                            "title": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
@@ -1564,7 +1564,7 @@
                         {
                             "field": "modTime",
                             "displayName": "Modified Time",
-                            "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
+                            "title": "BROWSE.COLUMN.DATASET.MOD_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
@@ -1586,7 +1586,7 @@
                         {
                             "field": "name",
                             "displayName": "Datafile Name",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.NAME",
+                            "title": "BROWSE.COLUMN.DATAFILE.NAME",
                             "type": "string",
                             "filter": {
                                 "condition": "contains",
@@ -1601,7 +1601,7 @@
                         {
                             "field": "fileSize",
                             "displayName": "File Size",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
+                            "title": "BROWSE.COLUMN.DATAFILE.FILE_SIZE",
                             "type": "number",
                             "cellFilter": "bytes",
                             "filter": {
@@ -1617,7 +1617,7 @@
                         {
                             "field": "modTime",
                             "displayName": "Modified Time",
-                            "translateDisplayName": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
+                            "title": "BROWSE.COLUMN.DATAFILE.DATAFILE_MOD_TIME",
                             "type": "date",
                             "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                             "filter": {
@@ -1637,35 +1637,35 @@
                 "instrument": [
                     {
                         "title": "Instrument Details",
-                        "translateDisplayName": "METATABS.INSTRUMENT.TABTITLE",
+                        "title": "METATABS.INSTRUMENT.TABTITLE",
                         "field": "instrument",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.INSTRUMENT.NAME",
+                                "title": "METATABS.INSTRUMENT.NAME",
                                 "field": "fullName"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.INSTRUMENT.DESCRIPTION",
+                                "title": "METATABS.INSTRUMENT.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Type",
-                                "translateDisplayName": "METATABS.INSTRUMENT.TYPE",
+                                "title": "METATABS.INSTRUMENT.TYPE",
                                 "field": "type"
                             },
                             {
                                 "title": "URL",
-                                "translateDisplayName": "METATABS.INSTRUMENT.URL",
+                                "title": "METATABS.INSTRUMENT.URL",
                                 "field": "url"
                             }
                         ]
                     },
                     {
                         "title": "Instrument Scientists",
-                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
+                        "title": "METATABS.INSTRUMENT_SCIENTISTS.TABTITLE",
                         "field": "instrumentScientists",
                         "queryParams": [
                             "InstrumentScientist",
@@ -1679,7 +1679,7 @@
                                 "data": [
                                     {
                                         "title": "Name",
-                                        "translateDisplayName": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
+                                        "title": "METATABS.INSTRUMENT_SCIENTISTS.USERS_NAME",
                                         "field": "fullName"
                                     }
                                 ]
@@ -1690,28 +1690,28 @@
                 "facilityCycle": [
                     {
                         "title": "Facility Cycle Details",
-                        "translateDisplayName": "METATABS.FACILITYCYCLE.TABTITLE",
+                        "title": "METATABS.FACILITYCYCLE.TABTITLE",
                         "field": "instrument",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.NAME",
+                                "title": "METATABS.FACILITYCYCLE.NAME",
                                 "field": "fullName"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.DESCRIPTION",
+                                "title": "METATABS.FACILITYCYCLE.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Start Date",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.START_DATE",
+                                "title": "METATABS.FACILITYCYCLE.START_DATE",
                                 "field": "startDate"
                             },
                             {
                                 "title": "End Date",
-                                "translateDisplayName": "METATABS.FACILITYCYCLE.END_DATE",
+                                "title": "METATABS.FACILITYCYCLE.END_DATE",
                                 "field": "endDate"
                             }
                         ]
@@ -1720,40 +1720,40 @@
                 "investigation": [
                     {
                         "title": "Investigation Details",
-                        "translateDisplayName": "METATABS.INVESTIGATION.TABTITLE",
+                        "title": "METATABS.INVESTIGATION.TABTITLE",
                         "field": "investigation",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.INVESTIGATION.NAME",
+                                "title": "METATABS.INVESTIGATION.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Title",
-                                "translateDisplayName": "METATABS.INVESTIGATION.TITLE",
+                                "title": "METATABS.INVESTIGATION.TITLE",
                                 "field": "title"
                             },
                             {
                                 "title": "Summary",
-                                "translateDisplayName": "METATABS.INVESTIGATION.SUMMARY",
+                                "title": "METATABS.INVESTIGATION.SUMMARY",
                                 "field": "summary"
                             },
                             {
                                 "title": "Start Date",
-                                "translateDisplayName": "METATABS.INVESTIGATION.START_DATE",
+                                "title": "METATABS.INVESTIGATION.START_DATE",
                                 "field": "startDate"
                             },
                             {
                                 "title": "End Date",
-                                "translateDisplayName": "METATABS.INVESTIGATION.END_DATE",
+                                "title": "METATABS.INVESTIGATION.END_DATE",
                                 "field": "endDate"
                             }
                         ]
                     },
                     {
                         "title": "Investigation Users",
-                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                        "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
                         "field": "investigationUsers",
                         "queryParams": [
                             "InvestigationUser",
@@ -1767,7 +1767,7 @@
                                 "data": [
                                     {
                                         "title": "Name",
-                                        "translateDisplayName": "METATABS.INVESTIGATION_USERS.USERS_NAME",
+                                        "title": "METATABS.INVESTIGATION_USERS.USERS_NAME",
                                         "field": "fullName"
                                     }
                                 ]
@@ -1776,7 +1776,7 @@
                     },
                     {
                         "title": "Investigation Samples",
-                        "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
+                        "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
                         "field": "samples",
                         "queryParams": [
                             "Sample"
@@ -1785,7 +1785,7 @@
                         "data": [
                             {
                                 "title": "Sample Name",
-                                "translateDisplayName": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                "title": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
                                 "field": "name"
                             }
                         ]
@@ -1846,28 +1846,28 @@
                 "dataset": [
                     {
                         "title": "Dataset Details",
-                        "translateDisplayName": "METATABS.DATASET.TABTITLE",
+                        "title": "METATABS.DATASET.TABTITLE",
                         "field": "dataset",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.DATASET.NAME",
+                                "title": "METATABS.DATASET.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.DATASET.DESCRIPTION",
+                                "title": "METATABS.DATASET.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Start Date",
-                                "translateDisplayName": "METATABS.DATASET.START_DATE",
+                                "title": "METATABS.DATASET.START_DATE",
                                 "field": "startDate"
                             },
                             {
                                 "title": "End Date",
-                                "translateDisplayName": "METATABS.DATASET.END_DATE",
+                                "title": "METATABS.DATASET.END_DATE",
                                 "field": "endDate"
                             }
                         ]
@@ -1888,7 +1888,7 @@
                     },
                     {
                         "title": "Dataset Type",
-                        "translateDisplayName": "METATABS.DATASET_TYPE.TABTITLE",
+                        "title": "METATABS.DATASET_TYPE.TABTITLE",
                         "field": "type",
                         "queryParams": [
                             "DatasetType"
@@ -1897,12 +1897,12 @@
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.DATASET_TYPE.NAME",
+                                "title": "METATABS.DATASET_TYPE.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.DATASET_TYPE.DESCRIPTION",
+                                "title": "METATABS.DATASET_TYPE.DESCRIPTION",
                                 "field": "description"
                             }
                         ]
@@ -1945,28 +1945,28 @@
                 "datafile": [
                     {
                         "title": "Datafile Details",
-                        "translateDisplayName": "METATABS.DATAFILE.TABTITLE",
+                        "title": "METATABS.DATAFILE.TABTITLE",
                         "field": "datafile",
                         "default": true,
                         "data": [
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.DATAFILE.NAME",
+                                "title": "METATABS.DATAFILE.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.DATAFILE.DESCRIPTION",
+                                "title": "METATABS.DATAFILE.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Size",
-                                "translateDisplayName": "METATABS.DATAFILE.SIZE",
+                                "title": "METATABS.DATAFILE.SIZE",
                                 "field": "fileSize"
                             },
                             {
                                 "title": "Location",
-                                "translateDisplayName": "METATABS.DATAFILE.LOCATION",
+                                "title": "METATABS.DATAFILE.LOCATION",
                                 "field": "location"
                             }
                         ]
@@ -1997,7 +1997,7 @@
                 {
                     "field": "fullName",
                     "displayName": "Facility Full Name",
-                    "translateDisplayName": "BROWSE.COLUMN.FACILITY.FULLNAME",
+                    "title": "BROWSE.COLUMN.FACILITY.FULLNAME",
                     "enableSorting": false,
                     "sortDirection": "asc",
                     "filter": {
@@ -2014,7 +2014,7 @@
                 {
                     "field": "name",
                     "displayName": "Facility Name",
-                    "translateDisplayName": "BROWSE.COLUMN.FACILITY.NAME",
+                    "title": "BROWSE.COLUMN.FACILITY.NAME",
                     "filter": {
                         "condition": "contains",
                         "placeholder": "Containing...",
@@ -2033,7 +2033,7 @@
                 {
                     "field": "id",
                     "displayName": "Id",
-                    "translateDisplayName": "CART.COLUMN.ID",
+                    "title": "CART.COLUMN.ID",
                     "sortDirection": "asc",
                     "type" : "number",
                     "filter": {
@@ -2049,7 +2049,7 @@
                 {
                     "field": "name",
                     "displayName": "Facility",
-                    "translateDisplayName": "CART.COLUMN.NAME",
+                    "title": "CART.COLUMN.NAME",
                     "sortDirection": "asc",
                     "type" : "string",
                     "filter": {
@@ -2065,7 +2065,7 @@
                 {
                     "field": "entityType",
                     "displayName": "Type",
-                    "translateDisplayName": "CART.COLUMN.ENTITY_TYPE",
+                    "title": "CART.COLUMN.ENTITY_TYPE",
                     "sortDirection": "asc",
                     "cellFilter": "entityTypeTitle",
                     "type" : "string",
@@ -2082,7 +2082,7 @@
                 {
                     "field": "facilityName",
                     "displayName": "Facility",
-                    "translateDisplayName": "CART.COLUMN.FACILITY",
+                    "title": "CART.COLUMN.FACILITY",
                     "cellFilter": "facilityTitle",
                     "type" : "string",
                     "filter": {
@@ -2098,7 +2098,7 @@
                 {
                     "field": "size",
                     "displayName": "Size",
-                    "translateDisplayName": "CART.COLUMN.SIZE",
+                    "title": "CART.COLUMN.SIZE",
                     "type" : "number",
                     "filter": {
                         "condition": "contains",
@@ -2113,7 +2113,7 @@
                 {
                     "field": "availability",
                     "displayName": "Availability",
-                    "translateDisplayName": "CART.COLUMN.AVAILABILITY",
+                    "title": "CART.COLUMN.AVAILABILITY",
                     "type" : "string",
                     "filter": {
                         "condition": "contains",
@@ -2139,7 +2139,7 @@
                     {
                         "field": "facilityTitle",
                         "displayName": "Facility",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.FACILITY",
+                        "title": "BROWSE.COLUMN.INVESTIGATION.FACILITY",
                         "type": "string"
                     },
                     {
@@ -2161,7 +2161,7 @@
                     {
                         "field": "title",
                         "displayName": "Title",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.TITLE",
+                        "title": "BROWSE.COLUMN.INVESTIGATION.TITLE",
                         "type": "string",
                         "filter": {
                             "condition": "contains",
@@ -2177,7 +2177,7 @@
                     {
                         "field": "visitId",
                         "displayName": "Visit Id",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
+                        "title": "BROWSE.COLUMN.INVESTIGATION.VISIT_ID",
                         "type": "string",
                         "filter": {
                             "condition": "contains",
@@ -2192,13 +2192,13 @@
                     {
                         "field": "size",
                         "displayName": "Size",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.SIZE",
+                        "title": "BROWSE.COLUMN.INVESTIGATION.SIZE",
                         "type": "number"
                     },
                     {
                         "field": "startDate",
                         "displayName": "Start Date",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
+                        "title": "BROWSE.COLUMN.INVESTIGATION.START_DATE",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd'",
                         "filter": {
@@ -2214,7 +2214,7 @@
                     {
                         "field": "endDate",
                         "displayName": "End Date",
-                        "translateDisplayName": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
+                        "title": "BROWSE.COLUMN.INVESTIGATION.END_DATE",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd'",
                         "filter": {
@@ -2236,13 +2236,13 @@
                     {
                         "field": "facilityTitle",
                         "displayName": "Facility",
-                        "translateDisplayName": "BROWSE.COLUMN.DATASET.FACILITY",
+                        "title": "BROWSE.COLUMN.DATASET.FACILITY",
                         "type": "string"
                     },
                     {
                         "field": "name",
                         "displayName": "Dataset Name",
-                        "translateDisplayName": "BROWSE.COLUMN.DATASET.NAME",
+                        "title": "BROWSE.COLUMN.DATASET.NAME",
                         "type": "string",
                         "filter": {
                             "condition": "contains",
@@ -2258,13 +2258,13 @@
                     {
                         "field": "size",
                         "displayName": "Size",
-                        "translateDisplayName": "BROWSE.COLUMN.DATASET.SIZE",
+                        "title": "BROWSE.COLUMN.DATASET.SIZE",
                         "type": "number"
                     },
                     {
                         "field": "createTime",
                         "displayName": "Create Date",
-                        "translateDisplayName": "BROWSE.COLUMN.DATASET.CREATE_TIME",
+                        "title": "BROWSE.COLUMN.DATASET.CREATE_TIME",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                         "filter": {
@@ -2280,7 +2280,7 @@
                     {
                         "field": "modTime",
                         "displayName": "Modified Time",
-                        "translateDisplayName": "BROWSE.COLUMN.DATASET.MOD_TIME",
+                        "title": "BROWSE.COLUMN.DATASET.MOD_TIME",
                         "type": "date",
                         "cellFilter": "date: 'yyyy-MM-dd HH:mm:ss Z'",
                         "filter": {
@@ -2301,28 +2301,28 @@
                 "facility": [
                     {
                         "title": "Facility Details",
-                        "translateDisplayName": "METATABS.FACILITY.TABTITLE",
+                        "title": "METATABS.FACILITY.TABTITLE",
                         "field": "facility",
                         "default": true,
                         "data": [
                             {
                                 "title": "Full Name",
-                                "translateDisplayName": "METATABS.FACILITY.FULLNAME",
+                                "title": "METATABS.FACILITY.FULLNAME",
                                 "field": "fullName"
                             },
                             {
                                 "title": "Description",
-                                "translateDisplayName": "METATABS.FACILITY.DESCRIPTION",
+                                "title": "METATABS.FACILITY.DESCRIPTION",
                                 "field": "description"
                             },
                             {
                                 "title": "Name",
-                                "translateDisplayName": "METATABS.FACILITY.NAME",
+                                "title": "METATABS.FACILITY.NAME",
                                 "field": "name"
                             },
                             {
                                 "title": "URL",
-                                "translateDisplayName": "METATABS.FACILITY.URL",
+                                "title": "METATABS.FACILITY.URL",
                                 "field": "url"
                             }
                         ]
