@@ -2,61 +2,66 @@
     <h3 class="modal-title" translate="CART.DOWNLOAD.MODAL.TITLE"></h3>
 </div>
 <div class="modal-body">
-    <p translate="CART.DOWNLOAD.MODAL.MESSAGE"></p>
-    <form role="form">
-        <table class="table-bordered table-condensed" width="100%">
-            <tr>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.FILE_NAME"></th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.TRANSPORT"></th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.SIZE"></th>
-                <th>
-                    <span translate="CART.DOWNLOAD.MODAL.COLUMN.ESTIMATED_TIME"></span>
-                    -
-                    <select ng-model="downloadCartController.connectionSpeed">
-                        <option value="131072">1 Mbps {{"CART.DOWNLOAD.MODAL.COLUMN.CONNECTION" | translate}}</option>
-                        <option value="3932160">30 Mbps {{"CART.DOWNLOAD.MODAL.COLUMN.CONNECTION" | translate}}</option>
-                        <option value="13107200">100 Mbps {{"CART.DOWNLOAD.MODAL.COLUMN.CONNECTION" | translate}}</option>
-                    </select>
-                </th>
-                <th ng-if="downloadCartController.facilityCount > 1" translate="CART.DOWNLOAD.MODAL.COLUMN.FACILITY"></th>
-                <th translate="CART.DOWNLOAD.MODAL.COLUMN.STATUS"></th>
-            </tr>
-            <tr ng-repeat="download in downloadCartController.downloads">
-                <td>
-                    <input type="text" class="form-control input-sm" placeholder="Filename" ng-model="download.fileName" />
-                </td>
-                <td>
-                    <select ng-options="item for item in download.transportTypes" ng-model="download.transportType"></select>
-                </td>
-                <td>
-                    <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.size === undefined" class="grid-cell-spinner"></span><span>{{download.size | bytes}}</span>
-                </td>
-                <td>
-                    <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.estimatedTime === undefined" class="grid-cell-spinner"></span><span>{{download.estimatedTime / downloadCartController.connectionSpeed | timeLength}}</span>
-                <td ng-if="downloadCartController.facilityCount > 1">
-                    <span>{{download.facilityName}}</span>
-                </td>
-                <td>
-                    <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.status === undefined" class="grid-cell-spinner"></span><span>{{"CART.STATUS." + download.status | translate}}</span>
-                </td>
-            </tr>
-        </table>
+    <div ng-if="!downloadCartController.isSubmitting">
+        <p translate="CART.DOWNLOAD.MODAL.MESSAGE"></p>
+        <form role="form">
+            <table class="table-bordered table-condensed" width="100%">
+                <tr>
+                    <th translate="CART.DOWNLOAD.MODAL.COLUMN.FILE_NAME"></th>
+                    <th translate="CART.DOWNLOAD.MODAL.COLUMN.TRANSPORT"></th>
+                    <th translate="CART.DOWNLOAD.MODAL.COLUMN.SIZE"></th>
+                    <th>
+                        <span translate="CART.DOWNLOAD.MODAL.COLUMN.ESTIMATED_TIME"></span>
+                        -
+                        <select ng-model="downloadCartController.connectionSpeed">
+                            <option value="131072">1 Mbps {{"CART.DOWNLOAD.MODAL.COLUMN.CONNECTION" | translate}}</option>
+                            <option value="3932160">30 Mbps {{"CART.DOWNLOAD.MODAL.COLUMN.CONNECTION" | translate}}</option>
+                            <option value="13107200">100 Mbps {{"CART.DOWNLOAD.MODAL.COLUMN.CONNECTION" | translate}}</option>
+                        </select>
+                    </th>
+                    <th ng-if="downloadCartController.facilityCount > 1" translate="CART.DOWNLOAD.MODAL.COLUMN.FACILITY"></th>
+                    <th translate="CART.DOWNLOAD.MODAL.COLUMN.STATUS"></th>
+                </tr>
+                <tr ng-repeat="download in downloadCartController.downloads">
+                    <td>
+                        <input type="text" class="form-control input-sm" placeholder="Filename" ng-model="download.fileName" />
+                    </td>
+                    <td>
+                        <select ng-options="item for item in download.transportTypes" ng-model="download.transportType"></select>
+                    </td>
+                    <td>
+                        <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.size === undefined" class="grid-cell-spinner"></span><span>{{download.size | bytes}}</span>
+                    </td>
+                    <td>
+                        <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.estimatedTime === undefined" class="grid-cell-spinner"></span><span>{{download.estimatedTime / downloadCartController.connectionSpeed | timeLength}}</span>
+                    <td ng-if="downloadCartController.facilityCount > 1">
+                        <span>{{download.facilityName}}</span>
+                    </td>
+                    <td>
+                        <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.status === undefined" class="grid-cell-spinner"></span><span ng-if="download.status !== undefined">{{"CART.STATUS." + download.status | translate}}</span>
+                    </td>
+                </tr>
+            </table>
 
-        <div ng-if="downloadCartController.hasArchive">
-            <div class="panel panel-default" >
-                <div class="panel-body" >
-                    <p translate="CART.DOWNLOAD.MODAL.IS_ARCHIVED_MESSAGE"></p>
+            <div ng-if="downloadCartController.hasArchive || downloadCartController.isNonHttpsTransportType()">
+                <div class="panel panel-default" >
+                    <div class="panel-body" >
+                        <p translate="CART.DOWNLOAD.MODAL.IS_ARCHIVED_MESSAGE"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <p translate="CART.DOWNLOAD.MODAL.EMAIL_ME_MESSAGE"></p><input type="text" class="form-control input-sm inline" id="emailNotification" placeholder="email@address" ng-model="downloadCartController.email" />
                 </div>
             </div>
-
-            <div>
-                <p translate="CART.DOWNLOAD.MODAL.EMAIL_ME_MESSAGE"></p><input type="text" class="form-control input-sm inline" id="emailNotification" placeholder="email@address" ng-model="downloadCartController.email" />
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
+    <div ng-if="downloadCartController.isSubmitting">
+        <p><span us-spinner="{radius:2, width:2, length: 2}" class="grid-cell-spinner"></span> Submitting cart - please wait...</p>
+    </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="downloadCartController.ok()" translate="CART.DOWNLOAD.MODAL.BUTTON.OK.TEXT"></button>
+    <button class="btn btn-primary" ng-click="downloadCartController.ok()" ng-if="!downloadCartController.isSubmitting" translate="CART.DOWNLOAD.MODAL.BUTTON.OK.TEXT"></button>
 
     <button class="btn btn-warning" ng-click="downloadCartController.cancel()" translate="CART.DOWNLOAD.MODAL.BUTTON.CANCEL.TEXT"></button>
 </div>

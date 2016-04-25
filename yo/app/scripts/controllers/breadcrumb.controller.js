@@ -61,7 +61,7 @@
                 
                 if(path.length > 1){
                     var pathPairs = _.chunk(path, 2);
-                    _.each(pathPairs.reverse(), function(pathPair){
+                    _.each(pathPairs.reverse(), function(pathPair, i){
                         var entityType = pathPair[0];
                         var entityId = pathPair[1];
                         var entity = breadcrumbEntities[entityType];
@@ -71,23 +71,37 @@
                         } else {
                             title = 'untitled';
                         }
-                        that.breadcrumbItems.unshift({
-                            title: title,
-                            href: currentHref
-                        });
+                        if(i == 0){
+                            that.breadcrumbItems.unshift({
+                                title: title
+                            });
+                        } else {
+                            that.breadcrumbItems.unshift({
+                                title: title,
+                                href: currentHref
+                            });
+                        }
                         currentHref = currentHref.replace(/\/[^\/]*\/[^\/]*$/, '');
                     });
                 }
 
-                that.breadcrumbItems.unshift({
-                    title: facility.config().title,
-                    href: currentHref
-                });
+                if(that.breadcrumbItems.length > 0){
+                    that.breadcrumbItems.unshift({
+                        title: facility.config().title,
+                        href: currentHref
+                    });
+                } else {
+                    that.breadcrumbItems.unshift({
+                        title: facility.config().title
+                    });
+                }
 
-                that.breadcrumbItems.unshift({
-                    translate: "BROWSE.BREADCRUMB.ROOT.NAME",
-                    href: '#/browse/facility'
-                });
+                if(tc.userFacilities().length > 1){
+                    that.breadcrumbItems.unshift({
+                        translate: "BROWSE.BREADCRUMB.ROOT.NAME",
+                        href: '#/browse/facility'
+                    });
+                }
 
                 that.breadcrumbItems.push({
                     translate: 'ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME'

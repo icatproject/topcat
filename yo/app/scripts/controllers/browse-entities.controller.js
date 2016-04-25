@@ -66,6 +66,10 @@
                 }
             });
 
+            if($state.params.instrumentId && (entityType == 'investigation' || entityType == 'facilityCycle' || $state.params.investigationId || $state.params.facilityCycleId)){
+                out.where("investigationInstrument.id = instrument.id")
+            }
+
             _.each(gridOptions.columnDefs, function(columnDef){
                 if(!columnDef.field) return;
 

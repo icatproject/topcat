@@ -67,16 +67,16 @@
 
                     var promises = [];
 
-                    var facilityDatabaseName = facility.config().facilityDatabaseName;
-                    if(facilityDatabaseName){
+                    var name = facility.config().name;
+                    if(name){
                       promises.push(that.query([
-                        "SELECT facility FROM Facility facility WHERE facility.name = ?", facilityDatabaseName
+                        "SELECT facility FROM Facility facility WHERE facility.name = ?", name
                       ]).then(function(results){
                         var facility = results[0];
                         if(facility){
                           $sessionStorage.sessions[facilityName].facilityId = facility.id;
                         } else {
-                          throw "Could not find facility by name '" + facilityDatabaseName + "'";
+                          throw "Could not find facility by name '" + name + "'";
                         }
                       }));
                     }

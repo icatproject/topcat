@@ -191,29 +191,20 @@
                             var pair = columnDef.jpqlExpression.split(/\./);
                             var entityType = pair[0];
                             var entityField = pair[1];
+                            var fieldNameSuffix = helpers.capitalize(entityType) + entityField;
 
                             icat.queryBuilder(entityType).where([
                                 "investigation.id = ?", entity.id,
                                 "and datafileParameterType.name = 'run_number'"
-                            ]).orderBy('datafileParameter.numericValue').limit(1).run(canceler.promise).then(function(results){
-                                var fieldNameSuffix = helpers.capitalize(entityType) + entityField;
-                                if(results.length > 0){
-                                    entity['min' + fieldNameSuffix] = results[0].numericValue;
-                                } else {
-                                    entity['min' + fieldNameSuffix] = "";
-                                }
+                            ]).min('numericValue', canceler.promise).then(function(min){
+                                entity['min' + fieldNameSuffix] = min;
                             });
 
                             icat.queryBuilder('datafileParameter').where([
                                 "investigation.id = ?", entity.id,
                                 "and datafileParameterType.name = 'run_number'"
-                            ]).orderBy('datafileParameter.numericValue', 'desc').limit(1).run(canceler.promise).then(function(results){
-                                var fieldNameSuffix = helpers.capitalize(entityType) + entityField;
-                                if(results.length > 0){
-                                    entity['max' + fieldNameSuffix]  = results[0].numericValue;
-                                } else {
-                                    entity['max' + fieldNameSuffix] = "";
-                                }
+                            ]).max('numericValue', canceler.promise).then(function(max){
+                                entity['max' + fieldNameSuffix] = max;
                             });
                         }
                     });

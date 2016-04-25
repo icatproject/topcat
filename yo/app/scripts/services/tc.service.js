@@ -19,7 +19,11 @@
   		return _.map(APP_CONFIG.facilities, function(facility, facilityName){ return tc.facility(facilityName); });
   	};
 
-  	this.config = function(){ return APP_CONFIG.site; }
+  	this.config = function(){ 
+      var out = APP_CONFIG.site;
+      if(!out.topcatApiPath) out.topcatApiPath = "https://" + window.location.host;
+      return out;
+    }
 
     this.cache = function(){
       if(!cache) cache = tcCache.create('topcat');

@@ -15,9 +15,22 @@
         this.downloads = [];
         this.facilityCount = tc.facilities().length;
         this.connectionSpeed = "3932160";
+        this.isSubmitting = false;
+
+        this.isNonHttpsTransportType = function(){
+            var out = false;
+            _.each(this.downloads, function(download){
+                if(download.transportType != 'https'){
+                    out = true;
+                    return false;
+                }
+            });
+            return out;
+        };
 
         _.each(tc.userFacilities(), function(facility){
             facility.user().cart(timeout).then(function(cart){
+                
                 if(cart.cartItems.length > 0){
                     var transportTypes = [];
                     var transportType = "";
@@ -50,28 +63,21 @@
                         transportType: transportType
                     };
                     
-                    var promises = [];
-                    var size = 0;
-                    _.each(cart.cartItems, function(cartItem){
-                        promises.push(cartItem.getSize(timeout).then(function(_size){
-                            size = size + _size;
-                        }));
-
-                        cartItem.getStatus(timeout).then(function(status){
-                            if(status == "ARCHIVED"){
-                                that.hasArchive = true;
-                            }
-                            download.status = status;
-                        });
+                    cart.getStatus(timeout).then(function(status){
+                        if(status == "ARCHIVED"){
+                            that.hasArchive = true;
+                        }
+                        download.status = status;
                     });
 
-                    $q.all(promises).then(function(){
+                    cart.getSize(timeout).then(function(size){
                         download.size = size;
                         download.estimatedTime = Math.ceil(size);
                     });
 
                     that.downloads.push(download);
                 }
+                
             });
         });
 
@@ -82,9 +88,11 @@
                 }
             });
 
+            this.isSubmitting = true;
+
             var promises = [];
             _.each(this.downloads, function(download){
-                promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email));
+                promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email, timeout.promise));
             });
             $q.all(promises).then(function(){
                 $uibModalStack.dismissAll();

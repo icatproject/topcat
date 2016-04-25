@@ -14,7 +14,7 @@
         element : document.documentElement,
         module : 'angularApp',
         resolve : {
-            APP_CONFIG : function($http, $q) {
+            APP_CONFIG : ['$http', '$q', function($http, $q) {
                 var port = parseInt(window.location.port);
                 var url;
                 if(port === 10080 || port === 9000){
@@ -49,7 +49,7 @@
                     });
                     return defered.promise;
                 });
-            },
+            }],
             LANG : ['$http', function($http) {
                 var url = 'languages/lang.json';
                 return $http({
@@ -304,6 +304,15 @@
                     url: '/admin/:facilityName',
                     templateUrl: 'views/admin.html',
                     controller: 'AdminController as adminController'
+                })
+                .state('doi-redirect', {
+                    url: '/doi-redirect/:facilityName/:entityType/:entityId',
+                    controller: 'DoiRedirectController',
+                    resolve: {
+                        authenticate : ['Authenticate', function(Authenticate) {
+                            return Authenticate.authenticate();
+                        }]
+                    }
                 });
                 $urlRouterProvider.otherwise('/');
 

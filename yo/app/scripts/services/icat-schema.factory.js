@@ -420,8 +420,7 @@
 						},
 						'investigationInstruments': {
 							'entityType': 'investigationInstrument',
-							'cardinality': '0,*',
-							'variableName': 'investigationInstrument'
+							'cardinality': '0,*'
 						}
 					}
 				},
