@@ -48,6 +48,25 @@
                         defered.resolve(config);
                     });
                     return defered.promise;
+                }).then(function(config){
+                    var defered = $q.defer();
+                    var promises = [];
+                    _.each(config.facilities, function(facility, facilityName){
+                        if(!facility.authenticationTypes){
+                            promises.push($.get(facility.icatUrl + "/icat/properties").then(function(properties){
+                                facility.authenticationTypes = _.map(properties.authenticators, function(authenticator){
+                                    return {
+                                        title: authenticator.friendly || authenticator.mnemonic,
+                                        plugin: authenticator.mnemonic
+                                    };
+                                });
+                            }));
+                        }
+                    });
+                    $q.all(promises).then(function(){
+                        defered.resolve(config);
+                    });
+                    return defered.promise;
                 });
             }],
             LANG : ['$http', function($http) {
