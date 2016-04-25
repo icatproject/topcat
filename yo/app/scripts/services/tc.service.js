@@ -21,7 +21,7 @@
 
   	this.config = function(){ 
       var out = APP_CONFIG.site;
-      if(!out.topcatApiPath) out.topcatApiPath = "https://" + window.location.host;
+      if(!out.topcatUrl) out.topcatUrl = "https://" + window.location.host;
       return out;
     }
 
@@ -161,9 +161,9 @@
     	return $q.all(promises);
     };
 
-		var topcatApiPath = this.config().topcatApiPath + "/topcat/";
-		this.topcatApiPath = topcatApiPath;
-		helpers.generateRestMethods(this, topcatApiPath);
+		var topcatUrl = this.config().topcatUrl + "/topcat/";
+		this.topcatUrl = topcatUrl;
+		helpers.generateRestMethods(this, topcatUrl);
 
   });
 

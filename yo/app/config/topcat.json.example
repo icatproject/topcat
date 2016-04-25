@@ -1,6 +1,6 @@
 {    
     "site": {
-        "topcatApiPath": "https://mytopcat.server.ac.uk",
+        "topcatUrl": "https://mytopcat.server.ac.uk",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "paging" : {

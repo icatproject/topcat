@@ -104,7 +104,7 @@ A simplified summary of the configuration object is shown below:
 ```
 {
     site: {
-        "topcatApiPath": "string",
+        "topcatUrl": "string",
         "home" : "string",
         "paging" : {
             "pagingType": "string",
@@ -176,7 +176,7 @@ The site object covers the configuration which are not specific to a particular 
 
 ### Site Object Properties
 
-###### Property: _**topcatApiPath**_ (required)
+###### Property: _**topcatUrl**_ (required)
 
 Value: String
 
@@ -184,7 +184,7 @@ Example:
 
 ```
 "site" : {
-    "topcatApiPath" : "api/v1"
+    "topcatUrl" : "api/v1"
 }
 ```
 
