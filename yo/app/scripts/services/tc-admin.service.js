@@ -195,7 +195,7 @@
                 }
             });
 
-            helpers.generateRestMethods(this, facility.tc().topcatUrl + 'admin/');
+            helpers.generateRestMethods(this, facility.tc().config().topcatUrl + "/topcat/admin/");
         }
 
 	});

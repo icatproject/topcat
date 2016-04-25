@@ -161,9 +161,7 @@
     	return $q.all(promises);
     };
 
-		var topcatUrl = this.config().topcatUrl + "/topcat/";
-		this.topcatUrl = topcatUrl;
-		helpers.generateRestMethods(this, topcatUrl);
+		helpers.generateRestMethods(this, this.config().topcatUrl + "/topcat/");
 
   });
 
