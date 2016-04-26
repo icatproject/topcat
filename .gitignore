@@ -12,3 +12,4 @@ npm-debug.log
 .DS_Store
 /.pydevproject
 /release.properties
+/pom.xml.releaseBackup
