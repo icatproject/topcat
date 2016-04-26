@@ -65,10 +65,10 @@ public class Download implements Serializable {
     @Column(name = "PREPARED_ID", nullable = false)
     private String preparedId;
 
-    @Column(name = "EMAIL")
-    private String email;
+    @Column(name = "EMAIL", nullable = false)
+    private String email = "";
 
-    @Column(name = "IS_EMAIL_SENT")
+    @Column(name = "IS_EMAIL_SENT", nullable = false)
     private Boolean isEmailSent = false;
 
     @Column(name = "STATUS")
