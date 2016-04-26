@@ -11,3 +11,4 @@ npm-debug.log
 .vagrant
 .DS_Store
 /.pydevproject
+/release.properties
