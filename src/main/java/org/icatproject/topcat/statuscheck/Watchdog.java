@@ -53,7 +53,7 @@ public class Watchdog {
     int pollDelay = properties.getPollDelay();
     int pollIntervalWait = properties.getPollIntervalWait();
 
-    TypedQuery<Download> query = em.createQuery("select d from Download d where (d.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and d.transport = 'https') or (d.email != '' and d.isEmailSent = false)", Download.class);
+    TypedQuery<Download> query = em.createQuery("select download from Download download where (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
     List<Download> downloads = query.getResultList();
 
     for(Download download : downloads){
