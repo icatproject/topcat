@@ -135,11 +135,11 @@ public class ICATClient45 implements ICATClientInterface {
 		String[] adminUserNames = PropertyHandler.getInstance().getAdminUserNames();
 		String userName = getUserName(icatSessionId);
 
-		for (adminUserName : adminUserNames) {
-			logger.info("userName :" + userName + ", ");
+		for (String adminUserName : adminUserNames) {
+			logger.info("userName :" + userName + ", " + "adminUserName: " + adminUserName);
 		}
 
-		for (adminUserName : adminUserNames) {
+		for (String adminUserName : adminUserNames) {
 			if(userName.equals(adminUserName)) {
 				return true;
 			}
