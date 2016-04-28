@@ -127,7 +127,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat_build_install
     sudo dos2unix /usr/bin/topcat_build_install
     topcat_build_install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0.deployment-order=140
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.1-SNAPSHOT.deployment-order=140
 
     #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
 
