@@ -135,6 +135,8 @@ public class ICATClient45 implements ICATClientInterface {
 		String[] adminUserNames = PropertyHandler.getInstance().getAdminUserNames();
 		String userName = getUserName(icatSessionId);
 
+		logger.info("isAdmin called");
+
 		for (String adminUserName : adminUserNames) {
 			logger.info("userName :" + userName + ", " + "adminUserName: " + adminUserName);
 		}
