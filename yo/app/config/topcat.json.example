@@ -440,17 +440,17 @@
                                 {
                                     "label": "METATABS.DATASET.START_DATE",
                                     "field": "startDate",
-                                    "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                    "template": "{{item.value | date:'yyyy-MM-dd'}}"
                                 },
                                 {
                                     "label": "METATABS.DATASET.END_DATE",
                                     "field": "endDate",
-                                    "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                    "template": "{{item.value | date:'yyyy-MM-dd'}}"
                                 }
                             ]
                         },
                         {
-                            "label": "METATABS.DATASET_TYPE.TABTITLE",
+                            "title": "METATABS.DATASET_TYPE.TABTITLE",
                             "items": [
                                 {
                                     "field": "datasetType.name"
@@ -497,7 +497,7 @@
                                 {
                                     "label": "METATABS.DATAFILE.SIZE",
                                     "field": "fileSize",
-                                    "template": "{{content.value | bytes}}"
+                                    "template": "{{item.value | bytes}}"
                                 },
                                 {
                                     "field": "location"
