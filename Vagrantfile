@@ -24,6 +24,10 @@ Vagrant.configure(2) do |config|
     echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root --password=secret
     sudo cp /vagrant/provision/my.cnf /etc/mysql/my.cnf
     sudo /etc/init.d/mysql restart
+    sudo rm /usr/bin/java
+    sudo rm /usr/bin/javac
+    sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/java /usr/bin/java
+    sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/javac /usr/bin/javac
 
     #sudo add-apt-repository ppa:webupd8team/java -y
     #sudo apt-get update
@@ -107,6 +111,7 @@ Vagrant.configure(2) do |config|
 
     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
     sudo apt-get --assume-yes install nodejs maven phantomjs
+    sudo update-ca-certificates -f
     sudo npm install -g bower
     sudo npm install -g grunt-cli
     cd /vagrant/yo
@@ -127,7 +132,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat_build_install
     sudo dos2unix /usr/bin/topcat_build_install
     topcat_build_install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.0-SNAPSHOT.deployment-order=140
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.1-SNAPSHOT.deployment-order=140
 
     #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
 

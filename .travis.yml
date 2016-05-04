@@ -15,6 +15,4 @@ addons:
   - firefox: "44.0.2"
 after_failure:
   - cat target/surefire-reports/*.txt
-  - ls /usr/lib/jvm/*/jre/lib/security
-  - ls /opt/glassfish4/glassfish/domains/domain1/config/
-  - keytool -list -keystore /opt/glassfish4/glassfish/domains/domain1/config/keystore.jks -alias keyAlias -storepass changeit
+  - cat /opt/glassfish4/glassfish/domains/domain1/logs/*.log
