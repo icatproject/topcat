@@ -121,8 +121,6 @@
         });
 
         gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
-          timeout.resolve();
-          timeout = $q.defer();
           var _timeout = $timeout(function(){
               sorter = helpers.generateEntitySorter(sortColumns);
               updateResults();
@@ -131,8 +129,6 @@
         });
 
         gridApi.core.on.filterChanged($scope, function(){
-          timeout.resolve();
-          timeout = $q.defer();
           var _timeout = $timeout(function(){
             filter = helpers.generateEntityFilter(gridOptions);
             updateResults();

@@ -282,8 +282,8 @@
                 if(sortColumn.colDef){
                     sorters.push(function(entityA, entityB){
                         var field = sortColumn.colDef.field;
-                        var valueA = (entityA.find ? entityA.find(field)[0] :  entityA[field]) || '';
-                        var valueB = (entityB.find ? entityB.find(field)[0] :  entityB[field]) || '';
+                        var valueA = (((entityA.find ? entityA.find(field)[0] :  entityA[field]) || '') + '').toLowerCase();
+                        var valueB = (((entityB.find ? entityB.find(field)[0] :  entityB[field]) || '') + '').toLowerCase();
 
                         var out = 0;
                         if(valueA < valueB){
@@ -328,8 +328,8 @@
                 } else if(columnDef.type == 'string' && columnDef.filter){
                     conditions.push(function(entity){
                         var field = columnDef.field;
-                        var value = (entity.find ? entity.find(field)[0] : entity[field]) || '';
-                        return columnDef.filter.term === undefined || columnDef.filter.term === null || value.indexOf(columnDef.filter.term) >= 0;
+                        var value = (((entity.find ? entity.find(field)[0] : entity[field]) || '') + '').toLowerCase();
+                        return columnDef.filter.term === undefined || columnDef.filter.term === null || value.indexOf(columnDef.filter.term.toLowerCase()) >= 0;
                     });
                 }
             });
