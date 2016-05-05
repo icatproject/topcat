@@ -318,7 +318,13 @@
             _.each(gridOptions.columnDefs, function(columnDef){
                 if(!columnDef.field) return;
                 if(columnDef.type == 'date' && columnDef.filters){
-                    
+                    conditions.push(function(entity){
+                        var fromDate = helpers.completePartialFromDate(columnDef.filters[0].term);
+                        var toDate = helpers.completePartialToDate(columnDef.filters[1].term);
+                        var field = columnDef.field;
+                        var value = (entity.find ? entity.find(field)[0] : entity[field]) || '';
+                        return value >= fromDate && value <= toDate;
+                    });
                 } else if(columnDef.type == 'string' && columnDef.filter){
                     conditions.push(function(entity){
                         var field = columnDef.field;
@@ -341,7 +347,7 @@
         };
 
     	this.completePartialFromDate = function(date){
-            var segments = date.split(/[-:\s\/]+/);
+            var segments = (date || '').split(/[-:\s\/]+/);
             var year = segments[0];
             var month = segments[1] || "01";
             var day = segments[2] || "01";
@@ -363,7 +369,7 @@
         };
 
         this.completePartialToDate = function(date){
-            var segments = date.split(/[-:\s\/]+/);
+            var segments = (date || '').split(/[-:\s\/]+/);
             var year = segments[0] || "";
             var month = segments[1] || "";
             var day = segments[2] || "";
