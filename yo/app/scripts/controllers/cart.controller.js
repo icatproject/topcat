@@ -177,37 +177,7 @@
                 timeout.resolve();
                 timeout = $q.defer();
                 var _timeout = $timeout(function(){
-                    var sorters = [];
-                    _.each(sortColumns, function(sortColumn){
-                        if(sortColumn.colDef){
-                            sorters.push(function(rowA, rowB){
-                                var valueA = rowA[sortColumn.colDef.field];
-                                var valueB = rowB[sortColumn.colDef.field];
-
-                                var out = 0;
-                                if(valueA < valueB){
-                                    out = -1
-                                } else if(valueA > valueB){
-                                    out = 1
-                                }
-
-                                if(sortColumn.sort.direction == 'desc') out = out * -1;
-
-                                return out;
-                            });
-                        }
-                    });
-                    sorter = function(rowA, rowB){
-                        var out = 0;
-                        _.each(sorters, function(sorter){
-                            var current = sorter(rowA, rowB);
-                            if(current != 0){
-                                out = current;
-                                return false;
-                            }
-                        });
-                        return out;
-                    };
+                    sorter = helpers.generateEntitySorter(sortColumns);
                     page = 1;
                     getPage().then(function(page){
                         gridOptions.data = page;
@@ -221,27 +191,7 @@
                 timeout.resolve();
                 timeout = $q.defer();
                 var _timeout = $timeout(function(){
-                    var conditions = [];
-                    _.each(gridOptions.columnDefs, function(columnDef){
-                        if(!columnDef.field) return;
-                        if(columnDef.type == 'date' && columnDef.filters){
-
-                        } else if(columnDef.type == 'string' && columnDef.filter){
-                            conditions.push(function(row){
-                                return columnDef.filter.term === undefined || columnDef.filter.term === null || row[columnDef.field].indexOf(columnDef.filter.term) >= 0;
-                            });
-                        }
-                    });
-                    filter = function(row){
-                        var out = true;
-                        _.each(conditions, function(condition){
-                            if(!condition(row)){
-                                out = false;
-                                return false;
-                            }
-                        })
-                        return out;
-                    };
+                    filter = helpers.generateEntityFilter(gridOptions);
                     page = 1;
                     getPage().then(function(page){
                         gridOptions.data = page;

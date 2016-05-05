@@ -275,6 +275,71 @@
 	        }
     	};
 
+        this.generateEntitySorter = function(sortColumns){
+            var sorters = [];
+
+            _.each(sortColumns, function(sortColumn){
+                if(sortColumn.colDef){
+                    sorters.push(function(entityA, entityB){
+                        var field = sortColumn.colDef.field;
+                        var valueA = (entityA.find ? entityA.find(field)[0] :  entityA[field]) || '';
+                        var valueB = (entityB.find ? entityB.find(field)[0] :  entityB[field]) || '';
+
+                        var out = 0;
+                        if(valueA < valueB){
+                            out = -1
+                        } else if(valueA > valueB){
+                            out = 1
+                        }
+
+                        if(sortColumn.sort.direction == 'desc') out = out * -1;
+
+                        return out;
+                    });
+                }
+            });
+
+            return function(entityA, entityB){
+                var out = 0;
+                _.each(sorters, function(sorter){
+                    var current = sorter(entityA, entityB);
+                    if(current != 0){
+                        out = current;
+                        return false;
+                    }
+                });
+                return out;
+            };
+        };
+
+        this.generateEntityFilter = function(gridOptions){
+            var conditions = [];
+
+            _.each(gridOptions.columnDefs, function(columnDef){
+                if(!columnDef.field) return;
+                if(columnDef.type == 'date' && columnDef.filters){
+                    
+                } else if(columnDef.type == 'string' && columnDef.filter){
+                    conditions.push(function(entity){
+                        var field = columnDef.field;
+                        var value = (entity.find ? entity.find(field)[0] : entity[field]) || '';
+                        return columnDef.filter.term === undefined || columnDef.filter.term === null || value.indexOf(columnDef.filter.term) >= 0;
+                    });
+                }
+            });
+
+            return function(row){
+                var out = true;
+                _.each(conditions, function(condition){
+                    if(!condition(row)){
+                        out = false;
+                        return false;
+                    }
+                });
+                return out;
+            };
+        };
+
     	this.completePartialFromDate = function(date){
             var segments = date.split(/[-:\s\/]+/);
             var year = segments[0];
