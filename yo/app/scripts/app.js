@@ -14,7 +14,7 @@
         element : document.documentElement,
         module : 'angularApp',
         resolve : {
-            APP_CONFIG : ['$http', '$q', function($http, $q) {
+            APP_CONFIG : ['$http', '$q',  function($http, $q) {
                 var port = parseInt(window.location.port);
                 var url;
                 if(port === 10080 || port === 9000){
@@ -122,8 +122,16 @@
             'emguo.poller',
             'angular-bind-html-compile',
             'angular-loading-bar',
-            'ipCookie'
+            'ipCookie',
+            'bootstrap'
         ])
+        .run(['APP_CONFIG', 'LANG', 'objectValidator', function(APP_CONFIG, LANG, objectValidator){
+            try {
+                objectValidator.createAppConfigValidator().validate(APP_CONFIG);
+            } catch(e){
+                alert(e);
+            }
+        }])
         .constant('_', window._)
         .constant('APP_CONSTANT', {
             smartClientUrl: 'https://localhost:8888'
