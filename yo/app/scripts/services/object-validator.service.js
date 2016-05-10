@@ -35,13 +35,13 @@
             this.validate = function(o, parent){
                 if(o === undefined){
                     if(!mandatory(parent)) return;
-                    throw "object > " + path.join(' > ') + ": this is a mandatory attribute";
+                    throw path.join(' > ') + ": this is a mandatory attribute";
                 }
 
                 var oType = typeof o;
                 if(o instanceof Array) oType = 'array';               
                 if(!oType.match(new RegExp('^' + type + '$'))){
-                    throw "object > " + path.join(' > ') + ": invalid type expected '" + type + "' got '" + oType + "'";
+                    throw path.join(' > ') + ": invalid type expected '" + type + "' got '" + oType + "'";
                 }
 
                 if(oType == 'array'){
@@ -65,7 +65,7 @@
                     _.each(o, function(value, name){
                         if(attributes[name] === undefined){
                             path.push(name);
-                            throw "object > " + path.join(' > ') + ": unexpected attribute";
+                            throw path.join(' > ') + ": unexpected attribute";
                         }
                     });
                 }
@@ -120,15 +120,187 @@
                                         this.attribute('*', function(){
                                             this.attribute('field', function(){ this.type("string"); });
                                             this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
+                                            this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
                                         });
                                     });
                                 });
                             });
                         });
                     });
+                    this.attribute('browse', function(){
+                        this.attribute('gridOptions', function(){
+                            this.attribute('columnDefs', function(){
+                                this.type('array');
+                                this.attribute('*', function(){
+                                    this.attribute('field', function(){ this.type("string"); });
+                                    this.attribute('link', function(){ this.type('boolean'); this.mandatory(false); });
+                                    this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
+                                });
+                            });
+                        });
+                        this.attribute('metaTabs', function(){
+                            this.type('array');
+                            this.mandatory(false);
+                            this.attribute('*', function(){
+                                this.attribute('title', function(){ this.type("string"); });
+                                this.attribute('items', function(){
+                                    this.type('array');
+                                    this.attribute('*', function(){
+                                        this.attribute('field', function(){ this.type("string"); });
+                                        this.attribute('label', function(){ this.type("string"); this.mandatory(false); });
+                                        this.attribute('template', function(){ this.type("string"); this.mandatory(false); });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                    this.attribute('cart', function(){
+                        this.attribute('gridOptions', function(){
+                            this.attribute('columnDefs', function(){
+                                this.type('array');
+                                this.attribute('*', function(){
+                                    this.attribute('field', function(){ this.type("string"); });
+                                    this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
+                                });
+                            });
+                        });
+                    });
+                    this.attribute('myDownloads', function(){
+                        this.attribute('gridOptions', function(){
+                            this.attribute('columnDefs', function(){
+                                this.type('array');
+                                this.attribute('*', function(){
+                                    this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
+                                    this.attribute('field', function(){ this.type("string"); });
+                                    this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
+                                });
+                            });
+                        });
+                    });
+                    this.attribute('pages', function(){
+                        this.type('array');
+                        this.attribute('*', function(){
+                            this.attribute('url', function(){ this.type("string"); });
+                            this.attribute('stateName', function(){ this.type("string"); });
+                            this.attribute('addToNavBar', function(){ 
+                                this.mandatory(false);
+                                this.attribute('linkLabel', function(){ this.type("string"); });
+                                this.attribute('align', function(){ this.type("string"); });
+                            });
+                        });
+                    });
                 });
                 this.attribute('facilities', function(){
+                    this.type('array');
+                    this.attribute('*', function(){
+                        this.attribute('title', function(){ this.type("string"); });
+                        this.attribute('name', function(){ this.type("string"); });
+                        this.attribute('idsUrl', function(){ this.type("string"); });
+                        this.attribute('icatUrl', function(){ this.type("string"); this.mandatory(false); });
+                        this.attribute('hierarchy', function(){
+                            this.type('array');
+                            this.attribute('*', function(){
+                                this.type("string");
+                            });
+                        });
+                        this.attribute('authenticationTypes', function(){
+                            this.type('array');
+                            this.attribute('*', function(){
+                                this.attribute('title', function(){ this.type("string"); });
+                                this.attribute('plugin', function(){ this.type("string"); });
+                            });
+                        });
+                        this.attribute('downloadTransportTypes', function(){
+                            this.type('array');
+                            this.attribute('*', function(){
+                                this.attribute('type', function(){ this.type("string"); });
+                                this.attribute('url', function(){ this.type("string"); });
+                            });
+                        });
+                        this.attribute('admin', function(){
+                            this.attribute('gridOptions', function(){
+                                this.attribute('columnDefs', function(){
+                                    this.type('array');
+                                    this.attribute('*', function(){
+                                        this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
+                                        this.attribute('field', function(){ this.type("string"); });
+                                        this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
+                                    });
+                                });
+                            });
+                        });
+                        this.attribute('myData', function(){
+                            this.attribute('entityType', function(){ this.type('string'); });
+                            this.attribute('gridOptions', function(){
+                                this.attribute('enableSelection', function(){ this.type('boolean'); this.mandatory(false); });
+                                this.attribute('columnDefs', function(){
+                                    this.type('array');
+                                    this.attribute('*', function(){
+                                        this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
+                                        this.attribute('field', function(){ this.type("string"); });
+                                        this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
+                                        this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
+                                        this.attribute('where', function(){ this.type('string'); this.mandatory(false); });
+                                        this.attribute('excludeFuture', function(){ this.type('boolean'); this.mandatory(false); });
+                                        this.attribute('sort', function(){
+                                            this.mandatory(false);
+                                            this.attribute('direction', function(){ this.type("string"); });
+                                            this.attribute('priority', function(){ this.type("number"); this.mandatory(false); });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                        this.attribute('browse', function(){
+                            var that = this;
+                            _.each(["instrument", "facilityCycle", "investigation", "proposal", "dataset", "datafile"], function(entityType){
+                                that.attribute(entityType, function(){
+                                    this.mandatory(false);
+                                    this.attribute('gridOptions', function(){
+                                        if(entityType == 'investigation' || entityType == 'dataset' || entityType == 'datafile'){
+                                            this.attribute('enableSelection', function(){ this.type('boolean'); this.mandatory(false); });
+                                        }
+                                        if(entityType == 'datafile'){
+                                            this.attribute('enableDownload', function(){ this.type('boolean'); this.mandatory(false); });
+                                        }
+                                        this.attribute('columnDefs', function(){
+                                            this.type('array');
+                                            this.attribute('*', function(){
+                                                this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
+                                                this.attribute('field', function(){ this.type("string"); });
+                                                this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
+                                                this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
+                                                this.attribute('where', function(){ this.type('string'); this.mandatory(false); });
+                                                this.attribute('excludeFuture', function(){ this.type('boolean'); this.mandatory(false); });
+                                                this.attribute('breadcrumb', function(){ this.type('boolean'); this.mandatory(false); });
+                                                this.attribute('sort', function(){
+                                                    this.mandatory(false);
+                                                    this.attribute('direction', function(){ this.type("string"); });
+                                                    this.attribute('priority', function(){ this.type("number"); this.mandatory(false); });
+                                                });
+                                            });
+                                        });
+                                    });
+                                    this.attribute('metaTabs', function(){
+                                        this.type('array');
+                                        this.mandatory(false);
+                                        this.attribute('*', function(){
+                                            this.attribute('title', function(){ this.type("string"); });
+                                            this.attribute('items', function(){
+                                                this.type('array');
+                                                this.attribute('*', function(){
+                                                    this.attribute('field', function(){ this.type("string"); });
+                                                    this.attribute('label', function(){ this.type("string"); this.mandatory(false); });
+                                                    this.attribute('template', function(){ this.type("string"); this.mandatory(false); });
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
 
+                    });
                 });
             });
         }

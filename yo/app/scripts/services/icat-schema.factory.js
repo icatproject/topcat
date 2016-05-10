@@ -416,7 +416,8 @@
 						},
 						'instrumentScientists': {
 							'entityType': 'instrumentScientist',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'instrumentScientistPivot'
 						},
 						'investigationInstruments': {
 							'entityType': 'investigationInstrument',
@@ -438,7 +439,8 @@
 						},
 						'user': {
 							'entityType': 'user',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'instrumentScientist'
 						}
 					}
 				},
