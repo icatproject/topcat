@@ -29,7 +29,7 @@
                         try {
                             return jsonlint.parse(json);
                         } catch(e){
-                            alert(url + "\n\n" + e.message);
+                            alert("Invalid topcat.json\n\n" + e.message);
                         }
                         return {};
                     }
@@ -78,7 +78,7 @@
                         try {
                             return jsonlint.parse(json);
                         } catch(e){
-                            alert(url + "\n\n" + e.message);
+                            alert("Invalid lang.json:\n\n" + e.message);
                         }
                         return {};
                     }
@@ -129,7 +129,7 @@
             try {
                 objectValidator.createAppConfigValidator().validate(APP_CONFIG);
             } catch(e){
-                alert(e);
+                alert("Invalid topcat.json: \n\n" + e);
             }
         }])
         .constant('_', window._)
