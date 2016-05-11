@@ -212,6 +212,7 @@
                         });
                         this.attribute('downloadTransportTypes', function(){
                             this.type('array');
+                            this.mandatory(false);
                             this.attribute('*', function(){
                                 this.attribute('type', function(){ this.type("string"); });
                                 this.attribute('idsUrl', function(){ this.type("string"); });
