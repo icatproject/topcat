@@ -61,6 +61,20 @@
                         }
                     ];
                 }
+                //this is a hack to satify Isis
+                //todo: refactor to make more generic
+                if(type == 'number' && columnDef.field == "datafileParameter.numericValue"){
+                    columnDef.filters = [
+                        {
+                            "placeholder": "From...",
+                            "type": "input"
+                        },
+                        {
+                            "placeholder": "To...",
+                            "type": "input"
+                        }
+                    ];
+                }
             }
             if(!columnDef.cellFilter){
                 if(field.match(/Date$/)){

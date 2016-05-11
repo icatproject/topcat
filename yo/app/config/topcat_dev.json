@@ -854,8 +854,7 @@
         {
             "name": "ISIS",
             "title": "ISIS",
-            "icatUrl": "https://icatdev15.isis.cclrc.ac.uk",
-            "idsUrl": "https://idsdev2.isis.cclrc.ac.uk",
+            "idsUrl": "https://idsdev.isis.cclrc.ac.uk",
             "hierarchy": [
                 "facility",
                 "instrument",
@@ -874,7 +873,7 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "url": "https://idsdev2.isis.cclrc.ac.uk"
+                    "url": "https://idsdev.isis.cclrc.ac.uk"
                 }
               
             ],
