@@ -155,8 +155,8 @@ If we expand the namespaces in high level overview we can get a medium overview 
           "myDownloads":{...},
           "pages" : [...]
       },
-      "facilities": {
-          "dls": {
+      "facilities": [
+          {
               "name": "DIAMOND",
               "facilityName": "dls",
               "title": "Diamond Light Source",
@@ -169,7 +169,7 @@ If we expand the namespaces in high level overview we can get a medium overview 
               "myData": {...},
               "browse":{...}
           }
-      }
+      ]
   }
 ```
 
@@ -416,7 +416,7 @@ An example configuration:
       * stateName: "about" -> contents: "PAGE.ABOUT.HTML"
       * stateName: "globus-help" -> contents: "PAGE.GLOBUS_HELP.HTML"
 
-$h3 topcat.json: "facilities" > [facilityName] > "hierachy"
+$h3 topcat.json: "facilities" > [facility] > "hierachy"
 
 The entity heierachy of the browse section.
 
@@ -424,8 +424,8 @@ An example configuration:
 
 ```
 {
-  "facilities": {
-    "dls": {
+  "facilities": [
+    {
       "hierarchy": [
         "facility",
         "proposal",
@@ -434,13 +434,13 @@ An example configuration:
         "datafile"
       ]
     }
-  }
+  ]
 }
 ```
 
 The above configuration will make the user browse via "facility" > "proposal" > "investigation" > "dataset" > "datafile".
 
-$h3 topcat.json "facilities" > [facilityName] > "authenticationTypes" 
+$h3 topcat.json "facilities" > [facility] > "authenticationTypes" 
 
 Specifies the authentication plugins to be used e.g. LDAP
 
@@ -448,8 +448,8 @@ An example configuration:
 
 ```
 {
-  "facilities": {
-    "dls": {
+  "facilities": [
+    {
       "authenticationTypes": [
           {
               "title": "Simple",
@@ -461,14 +461,14 @@ An example configuration:
           }
       ]
     }
-  }
+  ]
 }
 ```
 
   * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
   * name - a name that is used to programmatically reference the plugin on the Icat server.
 
-$h3 topcat.json: "facilities" > [facilityName] > "downloadTransportTypes" 
+$h3 topcat.json: "facilities" > [facility] > "downloadTransportTypes" 
 
 Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
 
@@ -476,8 +476,8 @@ An example configuration:
 
 ```
 {
-  "facilities": {
-    "dls": {
+  "facilities": [
+    {
       "downloadTransportTypes": [
           {
               "type" : "https",
@@ -493,7 +493,7 @@ An example configuration:
               "url": "https://dls-ids01.scarf.rl.ac.uk"
           }
       ]
-    }
+    ]
   }
 }
 ```
@@ -503,7 +503,7 @@ An example configuration:
   * url - a url to a valid IDS API that can handle the particular download transport type.
 
 
-$h3 topcat.json: "facilities" > [facilityName] > "admin" 
+$h3 topcat.json: "facilities" > [facility] > "admin" 
 
 Defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
 
@@ -511,19 +511,19 @@ An example (partial) configuration:
 
 ```
 {
-  "facilities": {
-    "dls": {
+  "facilities": [
+    {
       "admin":{
         "gridOptions": {...}
       }
     }
-  }
+  ]
 }
 ```
 
 * "gridOptions" - the grid options for the "download" Topcat entity type. See "gridOptions configuration" for more information.
 
-$h3 topcat.json: "facilities" > [facilityName] > "myData" 
+$h3 topcat.json: "facilities" > [facility] > "myData" 
 
 Specifies the structure of the “My Data” section.
 
@@ -531,21 +531,21 @@ An example (partial) configuration:
 
 ```
 {
-  "facilities": {
-    "dls": {
+  "facilities": [
+    {
       "myData": {
           "entityType" : "investigation",
           "gridOptions": {...}
       }
     }
-  }
+  ]
 }
 ```
   * "entityType" - the entity type can be either "investigation", "dataset" or "datafile".
   * "gridOptions" - the grid options for the Icat entity type (specified). See "gridOptions configuration" for more information.
 
 
-$h3 topcat.json: "facilities" > [facilityName] > "browse" 
+$h3 topcat.json: "facilities" > [facility] > "browse" 
 
 Specifies the structure of the hierachical browse section.
 
@@ -553,8 +553,8 @@ An example (partial) configuration:
 
 ```
 {
-  "facilities": {
-    "dls": {
+  "facilities": [
+    {
       "browse": {
         "investigation": {
             "gridOptions": {...},
@@ -565,7 +565,7 @@ An example (partial) configuration:
         "datafile": {...}
       }
     }
-  }
+  ]
 }
 ```
   * "gridOptions" - the grid options for the current Icat entity type. See "gridOptions configuration" for more information.
@@ -682,6 +682,7 @@ Topcat defines the following jpql variables - which if used from any icat entity
   * datasetParameter (referencing the relative dataset.parameters)
   * datasetParameterType (referencing the relative dataset.parameters.type)
   * instrument  (referencing the relative facility.instruments)
+  * instrumentScientist  (referencing the relative instrument.instrumentScientists.user)
   * facilityCycle (referencing the relative facility.facilityCycles)
   * facility (referencing the relative facility)
   * investigationInstrument (referencing the relative investigation.investigationInstruments.instrument)
