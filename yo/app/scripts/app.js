@@ -37,7 +37,7 @@
                     var config = response.data;
                     var defered = $q.defer();
                     var promises = [];
-                    _.each(config.facilities, function(facility, facilityName){
+                    _.each(config.facilities, function(facility){
                         if(!facility.icatUrl){
                             promises.push($.get(facility.idsUrl + "/ids/getIcatUrl").then(function(icatUrl){
                                 facility.icatUrl = icatUrl;
@@ -51,7 +51,7 @@
                 }).then(function(config){
                     var defered = $q.defer();
                     var promises = [];
-                    _.each(config.facilities, function(facility, facilityName){
+                    _.each(config.facilities, function(facility){
                         if(!facility.authenticationTypes){
                             promises.push($.get(facility.icatUrl + "/icat/properties").then(function(properties){
                                 facility.authenticationTypes = _.map(properties.authenticators, function(authenticator){

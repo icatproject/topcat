@@ -17,7 +17,7 @@
     	this.facilities = tc.adminFacilities();
 
       if($state.params.facilityName == ''){
-          $state.go('admin', {facilityName: this.facilities[0].config().facilityName});
+          $state.go('admin', {facilityName: this.facilities[0].config().name});
           return;
       }
       var admin = tc.admin($state.params.facilityName);

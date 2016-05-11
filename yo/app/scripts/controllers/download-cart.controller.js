@@ -53,12 +53,12 @@
                     if(minute < 10) minute = '0' + minute;
                     var second = date.getSeconds();
                     if(second < 10) second = '0' + second;
-                    var fileName = facility.config().facilityName + "_" + year + "-" + month + "-" + day + "_" + hour + "-" + minute + "-" + second;
+                    var fileName = facility.config().name + "_" + year + "-" + month + "-" + day + "_" + hour + "-" + minute + "-" + second;
 
                     var download = {
                         fileName: fileName,
                         facility: facility,
-                        facilityName: facility.config().facilityName,
+                        facilityName: facility.config().name,
                         transportTypes: transportTypes,
                         transportType: transportType
                     };

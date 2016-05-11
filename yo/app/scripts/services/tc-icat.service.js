@@ -16,7 +16,7 @@
             var cache;
 
             this.cache = function(){
-              if(!cache) cache = tcCache.create('icat:' + facility.config().facilityName);
+              if(!cache) cache = tcCache.create('icat:' + facility.config().name);
               return cache;
             };
 
@@ -33,7 +33,7 @@
     		};
 
     		this.session = function(){
-    			var facilityName = facility.config().facilityName;
+    			var facilityName = facility.config().name;
     			if($sessionStorage.sessions && $sessionStorage.sessions[facilityName]){
     				return $sessionStorage.sessions[facilityName];
     			}
@@ -58,7 +58,7 @@
     			};
     			return this.post('session', params).then(function(response){
     				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
-    				var facilityName = facility.config().facilityName;
+    				var facilityName = facility.config().name;
 
     				$sessionStorage.sessions[facilityName] = {
     					sessionId: response.sessionId,
@@ -101,7 +101,7 @@
     		            }));
             		}
 
-            		delete $sessionStorage.sessions[facility.config().facilityName];
+            		delete $sessionStorage.sessions[facility.config().name];
     				    $sessionStorage.$apply();
 
             		return $q.all(promises).then(function(){

@@ -11,7 +11,7 @@
                 <fieldset>
                     <div class="form-group" ng-hide="loginController.facilities.length <= 1">
                         <label class="control-label" for="server">{{'LOGIN.FACILITY' | translate}}</label>
-                        <select id="facilityName" name="facilityName" class="form-control" ng-model="loginController.facilityName" ng-options="facility.config().facilityName as facility.config().title for facility in loginController.nonUserFacilities" ng-change="loginController.facilityChanged()" required>
+                        <select id="facilityName" name="facilityName" class="form-control" ng-model="loginController.facilityName" ng-options="facility.config().name as facility.config().title for facility in loginController.nonUserFacilities" ng-change="loginController.facilityChanged()" required>
                         </select>
                     </div>
                     <div class="form-group" ng-hide="loginController.authenticationTypes.length <= 1">

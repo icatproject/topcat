@@ -16,7 +16,7 @@
         var cache;
 
         this.cache = function(){
-          if(!cache) cache = tcCache.create('ids:' + facility.config().facilityName);
+          if(!cache) cache = tcCache.create('ids:' + facility.config().name);
           return cache;
         };
 

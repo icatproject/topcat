@@ -10,7 +10,7 @@
         var entityInstanceName = stateFromTo.replace(/^.*-/, '');
         var facilityName = $state.params.facilityName;
         var facility = tc.facility(facilityName);
-        var facilityId = facility.config().facilityId;
+        var facilityId = facility.config().id;
         var icat = tc.icat(facilityName);
         var breadcrumb = tc.config().breadcrumb;
         var maxBreadcrumbTitleLength = breadcrumb && breadcrumb.maxTitleLength ? breadcrumb.maxTitleLength : 1000000;

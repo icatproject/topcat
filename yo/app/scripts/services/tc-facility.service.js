@@ -7,22 +7,21 @@
 
     app.service('tcFacility', function($sessionStorage, helpers, tcIcat, tcIds, tcUser, tcAdmin, APP_CONFIG){
 
-    	this.create = function(tc, facilityName, APP_CONFIG){
-    		return new Facility(tc, facilityName);
+    	this.create = function(tc, name, APP_CONFIG){
+    		return new Facility(tc, name);
     	};
 
-        function Facility(tc, facilityName){
+        function Facility(tc, name){
             var icat;
             var ids;
             var admin;
             var user;
             
             this.config = function(){
-                var out = APP_CONFIG.facilities[facilityName];
-                out.facilityName = out.facilityName || facilityName;
+                var out = _.select(APP_CONFIG.facilities, function(facility){ return name == facility.name; })[0];
                 var sessions = $sessionStorage.sessions || {};
-                var facilityId = (sessions[facilityName] || {}).facilityId;
-                if(facilityId) out.facilityId = facilityId;
+                var id = (sessions[name] || {}).facilityId;
+                if(id) out.id = id;
                 return out; 
             }
 

@@ -41,7 +41,7 @@
 
             this.downloads = helpers.overload({
                 'object, object': function(params, options){
-                    params.queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().facilityName) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
+                    params.queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
 
                     return this.get('downloads', _.merge({
                         icatUrl: facility.config().icatUrl,

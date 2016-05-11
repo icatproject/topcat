@@ -27,7 +27,7 @@
 
         this.facilities = tc.userFacilities();
         if($state.params.facilityName == ''){
-          $state.go('home.my-data', {facilityName: this.facilities[0].config().facilityName});
+          $state.go('home.my-data', {facilityName: this.facilities[0].config().name});
           return;
         }
 
@@ -68,7 +68,7 @@
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
                 'id' : row.entity.id,
-                facilityName: facility.config().facilityName
+                facilityName: facility.config().name
             });
         };
         

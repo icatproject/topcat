@@ -11,9 +11,9 @@
         var facilities = [];
         _.each(tc.userFacilities(), function(facility){
             facilities.push({
-                name: facility.config().facilityName,
+                name: facility.config().name,
                 title: facility.config().title,
-                selected: $state.params.facilities ? _.include(JSON.parse($state.params.facilities), facility.config().facilityName) : true
+                selected: $state.params.facilities ? _.include(JSON.parse($state.params.facilities), facility.config().name) : true
             });
         });
         this.facilities = facilities;

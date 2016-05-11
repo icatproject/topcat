@@ -10,7 +10,7 @@
         var entityType = stateFromTo.replace(/^.*-/, '');
         var facilityName = $state.params.facilityName;
         var facility = tc.facility(facilityName);
-        var facilityId = facility.config().facilityId;
+        var facilityId = facility.config().id;
         var icat = tc.icat(facilityName);
         var gridOptions = _.merge({data: [], appScopeProvider: this}, facility.config().browse[entityType].gridOptions);
         var uiGridState = $state.params.uiGridState ? JSON.parse($state.params.uiGridState) : null;

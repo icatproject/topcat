@@ -20,7 +20,7 @@
 
             this.downloads = helpers.overload({
                 'object, object': function(params, options){
-                    params.queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().facilityName) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
+                    params.queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
 
                     return this.get('downloads', _.merge({
                         icatUrl: facility.config().icatUrl,
@@ -102,7 +102,7 @@
                         return defered.promise;
                     }
 
-                    return this.get('cart/' + facility.config().facilityName, {
+                    return this.get('cart/' + facility.config().name, {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId
                     }, options).then(function(cart){
@@ -132,7 +132,7 @@
                         items = _.map(filteredItems, function(item){ return item.entityType + " " + item.entityId; }).join(',');
                         
                         if(items != ''){
-                            return that.post('cart/' + facility.config().facilityName + '/cartItems', {
+                            return that.post('cart/' + facility.config().name + '/cartItems', {
                                 icatUrl: facility.config().icatUrl,
                                 sessionId: facility.icat().session().sessionId,
                                 items: items
@@ -174,7 +174,7 @@
                     }
                     items = items.join(',');
 
-                    return this.delete('cart/' + facility.config().facilityName + '/cartItems', {
+                    return this.delete('cart/' + facility.config().name + '/cartItems', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         items: items
@@ -216,7 +216,7 @@
 
             this.deleteAllCartItems = helpers.overload({
                 'object': function(options){
-                    return this.delete('cart/' + facility.config().facilityName + '/cartItems', {
+                    return this.delete('cart/' + facility.config().name + '/cartItems', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         items: "*"
@@ -243,7 +243,7 @@
                     })
                     var transportType = transportTypeIndex[transport];
 
-                    return this.post('cart/' + facility.config().facilityName + '/submit', {
+                    return this.post('cart/' + facility.config().name + '/submit', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         fileName: fileName,

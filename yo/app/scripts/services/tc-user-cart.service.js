@@ -72,7 +72,7 @@
             });
 
             _.each(this.cartItems, function(cartItem){
-                cartItem.facilityName = facility.config().facilityName;
+                cartItem.facilityName = facility.config().name;
 
                 cartItem.delete = helpers.overload({
                     'object': function(options){

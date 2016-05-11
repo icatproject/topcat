@@ -16,14 +16,14 @@
             var facility = tc.userFacilities()[0];
             var hierarchy = facility.config().hierarchy;
             $state.go('home.browse.facility.' + _.slice(hierarchy, 0, 2).join('-'), {
-                facilityName: facility.config().facilityName
+                facilityName: facility.config().name
             });
             return;
         }
         
         _.each(tc.userFacilities(), function(facility){
-            facility.icat().entity("facility", ["where facility.id = ?", facility.config().facilityId]).then(function(_facility){
-                _facility.facilityName = facility.config().facilityName;
+            facility.icat().entity("facility", ["where facility.id = ?", facility.config().id]).then(function(_facility){
+                _facility.facilityName = facility.config().name;
                 gridOptions.data.push(_facility);
             });
         });

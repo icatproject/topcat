@@ -16,7 +16,7 @@
 			_.merge(this, attributes);
 			var that = this;
 			var icat = facility.icat();
-			var facilityName = facility.config().facilityName;
+			var facilityName = facility.config().name;
 
 			if(this.investigationInstruments && this.investigationInstruments.length > 0){
 				this.firstInstrumentName = this.investigationInstruments[0].instrument.fullName;
@@ -105,7 +105,7 @@
 						icat.entity('facilityCycle', [
 							', facilityCycle.facility facility,',
 							'facility.investigations investigation',
-							'where facility.id = ?', facility.config().facilityId,
+							'where facility.id = ?', facility.config().id,
 							'and investigation.id = ?', investigation.id,
 							'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
 						], options).then(function(facilityCycle){
@@ -131,7 +131,7 @@
 								', instrument.investigationInstruments investigationInstrument,',
 								'investigationInstrument.investigation investigation,',
 								'instrument.facility facility',
-								'where facility.id = ?', facility.config().facilityId,
+								'where facility.id = ?', facility.config().id,
 								'and investigation.id = ?', investigation.id,
 							], options).then(function(instrument){
 								facilityCycle.instrument = instrument;

@@ -24,7 +24,7 @@
     	function IcatQueryBuilder(icat, entityType){
             var that = this;
     		var facility = icat.facility();
-    		var facilityName = facility.config().facilityName;
+    		var facilityName = facility.config().name;
     		var tc = facility.tc();
     		var user = tc.user(facilityName);
     		var cart = user.cart();
