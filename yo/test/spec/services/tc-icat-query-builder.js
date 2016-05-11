@@ -14,7 +14,7 @@ describe('tc icat query builder service', function () {
     beforeEach(module('angularApp'));
 
     beforeEach(inject(function(tc){
-        icat = tc.icat('test');
+        icat = tc.icat('TEST');
     }));
     
     describe('impliedPathsToImpliedSteps()', function(){
