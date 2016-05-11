@@ -482,15 +482,15 @@ An example configuration:
           {
               "type" : "https",
               "default" : true,
-              "url": "https://fdsgos11.fds.rl.ac.uk"
+              "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
           },
           {
               "type" : "globus",
-              "url": "https://fdsgos11.fds.rl.ac.uk"
+              "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
           },
           {
               "type" : "scarf",
-              "url": "https://dls-ids01.scarf.rl.ac.uk"
+              "idsUrl": "https://dls-ids01.scarf.rl.ac.uk"
           }
       ]
     ]
@@ -500,7 +500,7 @@ An example configuration:
 
   * type - the download method the will be used to retrieve the download.
   * default - whether or not you want the current download transport type to be set as default.
-  * url - a url to a valid IDS API that can handle the particular download transport type.
+  * idsUrl - a url to a valid IDS API that can handle the particular download transport type.
 
 
 $h3 topcat.json: "facilities" > [facility] > "admin" 
