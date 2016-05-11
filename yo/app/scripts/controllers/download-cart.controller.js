@@ -33,13 +33,10 @@
                 
                 if(cart.cartItems.length > 0){
                     var transportTypes = [];
-                    var transportType = "";
 
+                    var transportType = facility.config().downloadTransportTypes[0].type;
                     _.each(facility.config().downloadTransportTypes, function(current){
                         transportTypes.push(current.type);
-                        if(current.default){
-                            transportType = current.type;
-                        }
                     });
                     
                     var date = new Date();

@@ -250,7 +250,7 @@
                         transport: transport,
                         email: email,
                         zipType: transportType.zipType ? transportType.zipType : '',
-                        transportUrl: transportType.url
+                        transportUrl: transportType.idsUrl
                     }, options).then(function(cart){
                         cart = tcUserCart.create(cart, that);
                         cartCache = cart;

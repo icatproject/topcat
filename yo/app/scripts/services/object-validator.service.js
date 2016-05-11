@@ -214,7 +214,7 @@
                             this.type('array');
                             this.attribute('*', function(){
                                 this.attribute('type', function(){ this.type("string"); });
-                                this.attribute('url', function(){ this.type("string"); });
+                                this.attribute('idsUrl', function(){ this.type("string"); });
                             });
                         });
                         this.attribute('admin', function(){

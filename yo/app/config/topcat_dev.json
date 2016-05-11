@@ -234,11 +234,11 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "url": "https://localhost:18181"
+                    "idsUrl": "https://localhost:18181"
                 },
                 {
                     "type" : "globus",
-                    "url": "https://localhost:18181"
+                    "idsUrl": "https://localhost:18181"
                 }
             ],
             "admin":{
@@ -584,11 +584,11 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "url": "https://fdsgos11.fds.rl.ac.uk"
+                    "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
                 },
                 {
                     "type" : "globus",
-                    "url": "https://fdsgos11.fds.rl.ac.uk"
+                    "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
                 }
             ],
             "admin":{
@@ -873,7 +873,7 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "url": "https://idsdev.isis.cclrc.ac.uk"
+                    "idsUrl": "https://idsdev.isis.cclrc.ac.uk"
                 }
               
             ],
