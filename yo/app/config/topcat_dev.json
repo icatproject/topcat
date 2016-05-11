@@ -211,7 +211,7 @@
     },
     "facilities": [
         {
-            "name": "NATURE",
+            "name": "TEST",
             "title": "TEST",
             "idsUrl": "https://localhost:8181",
             "hierarchy": [
