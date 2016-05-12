@@ -318,7 +318,7 @@
 					entityType = matches[1];
 					predicate = matches[2];
 					entityField = matches[3];
-				} if(matches = expression.match(/^([^\[]+)\[(.*)\]$/)){
+				} else if(matches = expression.match(/^([^\[]+)\[(.*)\]$/)){
 					entityType = matches[1];
 					predicate = matches[2];
 				} else if(matches = expression.match(/^([^\.]+)\.([^\.]+)$/)){
@@ -329,14 +329,21 @@
 					entityField = expression;
 				}
 
+				
+
+				var that = this;
 				var variablePath = [];
 
-				if(entityType != this.entityType){
+				if(icatSchema.variableEntityTypes[entityType] != this.entityType){
 					var variablePaths = icatSchema.entityTypes[this.entityType].variablePaths;
-					if(!variablePaths) throw "Unknown expression for find(): " + expression;
+					if(!variablePaths){
+						throw "Unknown expression for find(): " + expression;
+					}
 
-					var variablePath = _.clone(variablePaths[entityType]);
-					if(!variablePath) throw "Unknown expression for find(): " + expression;
+					variablePath = _.clone(variablePaths[entityType]);
+					if(!variablePath){
+						throw "Unknown expression for find(): " + expression;
+					}
 				}
 
 				traverse(this);
@@ -349,6 +356,7 @@
 									out.push(value);
 								}
 							} else {
+
 								out.push(entity);
 							}
 						}
@@ -362,7 +370,7 @@
 						} else {
 							traverse(entity);
 						}
-						variablePath.push(fieldName);
+						//variablePath.push(fieldName);
 					}
 				}
 

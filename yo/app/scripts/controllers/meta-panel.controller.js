@@ -59,6 +59,7 @@
 
             queryBuilder.run().then(function(entity){
                 entity = entity[0];
+
                 var tabs = [];
                 _.each(config, function(tabConfig){
                     var tab = {
@@ -80,7 +81,7 @@
                                 tab.items.push({
                                     label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
                                     template: itemConfig.template,
-                                    value: entity.find(field)[0],
+                                    value: value,
                                     entity: entity
                                 });
                             }

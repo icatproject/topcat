@@ -438,7 +438,9 @@
                             "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
                             "items": [
                                 {
-                                    "field": "investigationUser.name"
+                                    "label": "",
+                                    "field": "investigationUserPivot.role",
+                                    "template": "<div class='label'>{{item.value}}</div><div>{{item.entity.find('investigationUser.fullName')[0]}}</div>"
                                 }
                             ]
                         },
