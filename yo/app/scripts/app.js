@@ -17,10 +17,10 @@
             APP_CONFIG : ['$http', '$q',  function($http, $q) {
                 var port = parseInt(window.location.port);
                 var url;
-                if(port === 10080 || port === 9000){
-                    url = 'config/topcat_dev.json';
+                if(port === 10080 || port === 9000 || port === 8080){
+                    url = './config/topcat_dev.json';
                 } else {
-                    url = 'config/topcat.json';
+                    url = './config/topcat.json';
                 }
                 return $http({
                     url: url,
@@ -70,7 +70,7 @@
                 });
             }],
             LANG : ['$http', function($http) {
-                var url = 'languages/lang.json';
+                var url = './languages/lang.json';
                 return $http({
                     url: url,
                     method: 'GET',
