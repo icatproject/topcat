@@ -8,9 +8,7 @@
 	* topcatApiPath -> topcatUrl (for "site")
 	* facilities attribute is now an array of facility objects rather that an index of facility objects.
 	* url -> idsUrl (for "facilities" > [facility] > authenticationTypes > [authenticationType])
-
-
-* The topcat.json now gets validated making it less prone to erroneous configuration.
+	* The topcat.json now gets validated making it less prone to erroneous configuration.
 
 ## 2.0.0
 
