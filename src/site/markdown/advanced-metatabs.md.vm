@@ -38,6 +38,6 @@ The following partial configuration shows how can get a metatab label dynamicall
 }
 ```
 
-	* The "label" attribute is set to an empty string as we don't want to use it (instead we're going to define it in our custom template).
-	* The "field" attribute represents the dynamic label we want to use.
-	* The "template" attribute is a custom angular template that displays this formatted item.
+  * The "label" attribute is set to an empty string as we don't want to use it (instead we're going to define it in our custom template).
+  * The "field" attribute represents the dynamic label we want to use.
+  * The "template" attribute is a custom angular template that displays this formatted item.
