@@ -130,19 +130,19 @@ A high level overview of the topcat.json file is as follows:
   }
 ```
 
-from the above example there are two namespaces defined: 
+from the above example there are two attributes defined: 
 
   * "site" - configures anything anything global across facilities e.g. the cart, information pages or branding etc.
   * "facilities" - configures anything specific to a facility e.g. authentication, column headings or download transport (i.e. delivery) methods.
 
 $h3 Medium level overview
 
-If we expand the namespaces in high level overview we can get a medium overview as follows:
+If we expand the attributes in high level overview we can get a medium overview as follows:
 
 ```
   {    
       "site": {
-          "topcatApiPath": "https://example.com",
+          "topcatUrl": "https://example.com",
           "home" : "my-data",
           "enableEuCookieLaw" : true,
           "paging" : {...},
@@ -173,10 +173,10 @@ If we expand the namespaces in high level overview we can get a medium overview 
   }
 ```
 
-from the above following namespaces defined: 
+from the above following attributes defined: 
 
   * "site"
-      * "topcatApiPath" - the path to a valid Topcat REST API.
+      * "topcatUrl" - the path to a valid Topcat REST API (optional).
       * "home" - the section the user gets redirected to after logging in can be "my-data", "browse" or "search"
       * "enableEuCookieLaw" - will show a cookie policy banner which the user can dismiss.
       * "paging" - specifies the paging type configuration i.e. for either paged or infinite scroll
@@ -188,18 +188,18 @@ from the above following namespaces defined:
       * "cart" - specifies the structure of the cart.
       * "myDownloads" - specifies the structure of 'downloads' dialog box.
       * "pages" - allows you to define information pages e.g. "About Us" or "Contact" etc...
-  * "facilities"
-      * "dls" - the facility name. This is used as namespace throughout topcat e.g. in the url or in the sessions.
-          * "name" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
-          * "title" - A user friendly title that will appear in the tabs etc...
-          * "icatUrl" - A URL to a valid Icat REST API
-          * "idsUrl" - A URL to a valid IDS REST API
-          * "hierarchy" - the entity heierachy of the browse section.
-          * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP
-          * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
-          * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
-          * "myData" - specifies the structure of the "My Data" section.
-          * "browse" - specifies the structure of the hierachical browse section.
+      * "facilities" - an array of facility configuration objects.
+        * [facility]
+            * "name" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
+            * "title" - A user friendly title that will appear in the tabs etc...
+            * "icatUrl" - A URL to a valid Icat REST API (optional - if not explicity specified it will obtain this url from the IDS server below)
+            * "idsUrl" - A URL to a valid IDS REST API
+            * "hierarchy" - the entity heierachy of the browse section.
+            * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP (optional - if not explicity specified it will obtain them from the icat server)
+            * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
+            * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
+            * "myData" - specifies the structure of the "My Data" section.
+            * "browse" - specifies the structure of the hierachical browse section.
 
 $h3 topcat.json: "site" > "paging"
 
@@ -481,7 +481,6 @@ An example configuration:
       "downloadTransportTypes": [
           {
               "type" : "https",
-              "default" : true,
               "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
           },
           {
@@ -499,7 +498,6 @@ An example configuration:
 ```
 
   * type - the download method the will be used to retrieve the download.
-  * default - whether or not you want the current download transport type to be set as default.
   * idsUrl - a url to a valid IDS API that can handle the particular download transport type.
 
 
