@@ -3,6 +3,7 @@
 ## 2.0.1
 
 * Bug fixes.
+* Improved documentation.
 * The topcat.json facilities attribute is now an array of facility objects rather that an index of facility objects. Please refer to the installation docs for more details.
 * The topcat.json now gets validated making it less prone to erroneous configuration.
 
