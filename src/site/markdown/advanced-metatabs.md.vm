@@ -5,3 +5,38 @@
 
 $h1 Advanced Metatabs
 
+$h2 Creating dynamic labels
+
+The following partial configuration shows how can get a metatab label dynamically:
+
+```
+{
+  "facilities": [
+    {
+      "browse": {
+        "investigation": {
+            "gridOptions": {...},
+            "metaTabs": [
+            	{
+                    "title": "METATABS.INVESTIGATION_USERS.TABTITLE",
+                    "items": [
+                        {
+                            "label": "",
+                            "field": "investigationUserPivot.role",
+                            "template": "<span class='label'>{{item.value}}</span><span>{{item.entity.find('investigationUser.fullName')[0]}}</span>"
+                        }
+                    ]
+                }
+            ]
+        },
+        "proposal": {...},
+        "dataset": {...},
+        "datafile": {...}
+      }
+    
+  ]
+}
+
+ 	* The "label" attribute is set to an empty string as we don't want to use it (instead we're going to define it in our custom template).
+ 	* The "field" attribute represents the dynamic label we want to use.
+ 	* The "template" attribute is a custom angular template that displays this formatted item.
