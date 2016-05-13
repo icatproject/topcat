@@ -5,14 +5,22 @@
 
 $h1 Combining Grid Columns
 
+The following partial configuration shows how you can combine columns:
+
 ```
 {
-  "facilities": {
-    "dls": {
+  "facilities": [
+    {
       "browse": {
         "investigation": {
             "gridOptions": {
-              
+              columnDefs: [
+                {
+                  "field": "investigationVisit",
+                  "jpqlExpression": "CONCAT(investigation.name, '-', investigation.visitId)",
+                  "cellTemplate": "<div class='ui-grid-cell-contents'>{{row.entity.name}}-{{row.entity.visitId}}</div>"
+                }
+              ]
             },
             "metaTabs": [...]
         },
@@ -20,7 +28,12 @@ $h1 Combining Grid Columns
         "dataset": {...},
         "datafile": {...}
       }
-    }
-  }
+    
+  ]
 }
 ```
+
+  * The "field" attribute can be anything you want but will map on a lang.json substitution; in this case BROWSE.COLUMN.INVESTIGATION.INVESTIGATION_VISIT.
+  * The "jpqlExpression" attribute is a jpql expression that represents this column; this gets used by both filtering and sorting.
+  * The "cellTemplate" attribute is an angular template for this particular column's cells.
+

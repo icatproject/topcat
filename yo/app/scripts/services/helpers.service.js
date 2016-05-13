@@ -37,7 +37,7 @@
             var field = columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '');
 
             if(!columnDef.filter){
-                if(type == 'string'){
+                if(type == 'string' || type === undefined){
                     columnDef.filter = {
                         "condition": uiGridConstants.filter.CONTAINS,
                         "placeholder": "Containing...",

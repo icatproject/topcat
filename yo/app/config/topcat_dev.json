@@ -395,6 +395,11 @@
                                 "link": true
                             },
                             {
+                              "field": "investigationVisit",
+                              "jpqlExpression": "CONCAT(investigation.name, '-', investigation.visitId)",
+                              "cellTemplate": "<div class='ui-grid-cell-contents'>{{row.entity.name}}-{{row.entity.visitId}}</div>"
+                            },
+                            {
                                 "field": "name",
                                 "link": true
                             },
