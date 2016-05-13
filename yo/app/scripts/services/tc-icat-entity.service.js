@@ -310,22 +310,21 @@
 
 				var out = [];
 				var matches;
-				var entityType;
+				var variable;
 				var predicate;
 				var entityField;
 
 				if(matches = expression.match(/^([^\[]+)\[(.*)\]\.([^\.]+)$/)){
-					entityType = matches[1];
+					variable = matches[1];
 					predicate = matches[2];
 					entityField = matches[3];
 				} else if(matches = expression.match(/^([^\[]+)\[(.*)\]$/)){
-					entityType = matches[1];
+					variable = matches[1];
 					predicate = matches[2];
 				} else if(matches = expression.match(/^([^\.]+)\.([^\.]+)$/)){
-					entityType = matches[1];
+					variable = matches[1];
 					entityField = matches[2];
 				} else {
-					entityType = helpers.uncapitalize(this.entityType);
 					entityField = expression;
 				}
 
@@ -334,13 +333,13 @@
 				var that = this;
 				var variablePath = [];
 
-				if(icatSchema.variableEntityTypes[entityType] != this.entityType){
+				if(variable !== undefined && icatSchema.variableEntityTypes[variable] != this.entityType){
 					var variablePaths = icatSchema.entityTypes[this.entityType].variablePaths;
 					if(!variablePaths){
 						throw "Unknown expression for find(): " + expression;
 					}
 
-					variablePath = _.clone(variablePaths[entityType]);
+					variablePath = _.clone(variablePaths[variable]);
 					if(!variablePath){
 						throw "Unknown expression for find(): " + expression;
 					}
@@ -370,7 +369,6 @@
 						} else {
 							traverse(entity);
 						}
-						//variablePath.push(fieldName);
 					}
 				}
 

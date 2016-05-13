@@ -20,12 +20,12 @@ describe('tc icat entity service', function () {
                 icat: function(){ return {}; },
                 config: function(){ return {name: ""}; }
             };
-            var mockEntity = {
+            var mockAttributes = {
                 entityType: "investigation"
             };
 
             entity = {
-                find: tcIcatEntity.create(mockEntity, mockFacility).find
+                find: tcIcatEntity.create(mockAttributes, mockFacility).find
             };
         }));
 
