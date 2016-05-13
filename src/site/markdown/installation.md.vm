@@ -672,26 +672,32 @@ $h3 topcat.json: standard jpql variables
 
 Topcat defines the following jpql variables - which if used from any icat entity type will automatically work out any joins required to create a jpql statement for fetching the data from icat:
 
-  * datafileParameter (referencing the relative datafile.parameters)
-  * dataset (referencing the relative dataset)
-  * datafileParameterType (referencing the relative datafile.parameters.type)
+
   * datafile (referencing the relative datafile)
-  * datasetSample (referencing the relative dataset.samples)
-  * investigation (referencing the relative investigation)
-  * datasetType (referencing the relative dataset.type)
+  * datafileParameter (referencing the relative datafile.parameters)
+  * datafileParameterType (referencing the relative datafile.parameters.type)
+  * dataset (referencing the relative dataset)
   * datasetParameter (referencing the relative dataset.parameters)
   * datasetParameterType (referencing the relative dataset.parameters.type)
-  * instrument  (referencing the relative facility.instruments)
-  * instrumentScientist  (referencing the relative instrument.instrumentScientists.user)
-  * facilityCycle (referencing the relative facility.facilityCycles)
+  * datasetSample (referencing the relative dataset.samples)
+  * datasetType (referencing the relative dataset.type)
   * facility (referencing the relative facility)
-  * investigationInstrument (referencing the relative investigation.investigationInstruments.instrument)
-  * publication (referencing the relative investigation.publications)
-  * investigationParameter (referencing the relative investigation.parameters)
-  * investigationSample (referencing the relative investigation.samples)
+  * facilityCycle (referencing the relative facility.facilityCycles)
+  * instrument (referencing the relative facility.instruments)
+  * instrumentScientist (referencing the relative instrument.instrumentScientists.user)
+  * instrumentScientistPivot (referencing the relative instrument.instrumentScientists)
+  * investigation (referencing the relative investigation)
   * investigationGroup (referencing the relative investigation.investigationGroups.grouping)
+  * investigationInstrument (referencing the relative investigation.investigationInstruments.instrument)
+  * investigationInstrumentPivot (referencing the relative investigation.investigationInstruments)
+  * investigationParameter (referencing the relative investigation.parameters)
   * investigationParameterType (referencing the relative investigation.parameters.type)
+  * investigationSample (referencing the relative investigation.samples)
   * investigationUser (referencing the relative investigation.investigationUsers.user)
+  * investigationUserPivot (referencing the relative investigation.investigationUsers)
+  * publication (referencing the relative investigation.publications)
+
+
 
 To get a better understanding what these jpql variables refer to please view the [icat schema documentation](https://icatproject.org/mvn/site/icat/server/4.6.1/schema.html).
 
