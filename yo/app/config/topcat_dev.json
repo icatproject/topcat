@@ -440,7 +440,7 @@
                                 {
                                     "label": "",
                                     "field": "investigationUserPivot.role",
-                                    "template": "<div class='label'>{{item.value}}</div><div>{{item.entity.find('investigationUser.fullName')[0]}}</div>"
+                                    "template": "<span class='label'>{{item.value}}</span><span>{{item.entity.find('investigationUser.fullName')[0]}}</span>"
                                 }
                             ]
                         },
