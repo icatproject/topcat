@@ -4,7 +4,12 @@
 
 * Bug fixes.
 * Improved documentation.
-* The topcat.json facilities attribute is now an array of facility objects rather that an index of facility objects. Please refer to the installation docs for more details.
+* The topcat.json (Please refer to the installation docs for more details)
+	* topcatApiPath -> topcatUrl (for "site")
+	* facilities attribute is now an array of facility objects rather that an index of facility objects.
+	* url -> idsUrl (for "facilities" > [facility] > authenticationTypes > [authenticationType])
+
+
 * The topcat.json now gets validated making it less prone to erroneous configuration.
 
 ## 2.0.0
