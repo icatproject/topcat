@@ -69,18 +69,8 @@
     });
     this.isLoading = true;
     $q.all(promises).then(function(){
-      _.each(['investigation', 'dataset', 'datafile'], function(type){
-        if(!that[type]) return;
-        var gridOptions = that[type + "GridOptions"];
-        _.each(gridOptions.data, function(entity){
-          entity.getSize(timeout.promise);
-        });
-      });
       that.isLoading = false;
     });
-
-
-
 
     this.browse = function(row){
       timeout.resolve();
@@ -96,6 +86,8 @@
     };
 
     function createGridOptions(type){
+      console.log('createGridOptions for ' + type);
+
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: that, enableSelectAll: false}, tc.config().search.gridOptions[type]);
       helpers.setupIcatGridOptions(gridOptions, type);
@@ -104,6 +96,7 @@
       var sorter = function(){ return true; };
 
       gridOptions.onRegisterApi = function(_gridApi) {
+
         gridApi = _gridApi;
         updateResults();
 
@@ -148,6 +141,9 @@
         function processResults(results){
           var out = _.select(results, filter);
           out.sort(sorter);
+          _.each(out, function(entity){
+            entity.getSize(timeout.promise);
+          });
           return out;
         }
         return searchPromise.then(processResults, function(){}, processResults);
