@@ -86,8 +86,6 @@
     };
 
     function createGridOptions(type){
-      console.log('createGridOptions for ' + type);
-
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: that, enableSelectAll: false}, tc.config().search.gridOptions[type]);
       helpers.setupIcatGridOptions(gridOptions, type);
