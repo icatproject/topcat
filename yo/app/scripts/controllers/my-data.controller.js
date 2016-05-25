@@ -49,7 +49,7 @@
         _.each(gridOptions.columnDefs, function(columnDef){
             if(columnDef.sort){
                 sortColumns.push({
-                    colDef: columnDef,
+                    colDef: {jpqlSort: columnDef.jpqlSort},
                     sort: columnDef.sort
                 });
             }
@@ -59,7 +59,7 @@
 
         if(sortColumns.length > 0){
             sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
-                return sortColumn.jpqlExpression + ' ' + sortColumn.sort.direction;
+                return sortColumn.jpqlSort + ' ' + sortColumn.sort.direction;
             }).join(', '));
         }
 
@@ -92,7 +92,7 @@
                         to = helpers.completePartialToDate(to);
                         out.where([
                             "? between {ts ?} and {ts ?}",
-                            columnDef.jpqlExpression.safe(),
+                            columnDef.jpqlFilter.safe(),
                             from.safe(),
                             to.safe()
                         ]);
@@ -105,7 +105,7 @@
                         to = parseInt(to || '1000000000000');
                         out.where([
                             "? between ? and ?",
-                            columnDef.jpqlExpression.safe(),
+                            columnDef.jpqlFilter.safe(),
                             from,
                             to
                         ]);
@@ -114,7 +114,7 @@
                 } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
                     out.where([
                         "UPPER(?) like concat('%', ?, '%')", 
-                        columnDef.jpqlExpression.safe(),
+                        columnDef.jpqlFilter.safe(),
                         columnDef.filter.term.toUpperCase()
                     ]);
                 }
@@ -127,11 +127,10 @@
                 }
                 
             });
-        
-            
+
             _.each(sortColumns, function(sortColumn){
                 if(sortColumn.colDef){
-                    out.orderBy(sortColumn.colDef.jpqlExpression, sortColumn.sort.direction);
+                    out.orderBy(sortColumn.colDef.jpqlSort, sortColumn.sort.direction);
                 }
             });
 
@@ -187,11 +186,12 @@
                     }
 
                     _.each(gridOptions.columnDefs, function(columnDef){
+                        //todo: this is a hack for ISIS - refactor to make more generic
                         if(columnDef.type == 'number' && columnDef.filters){
-                            var pair = columnDef.jpqlExpression.split(/\./);
+                            var pair = columnDef.jpqlFilter.split(/\./);
                             var entityType = pair[0];
                             var entityField = pair[1];
-                            var fieldNameSuffix = helpers.capitalize(entityType) + entityField;
+                            var fieldNameSuffix = helpers.capitalize(entityType) + helpers.capitalize(entityField);
 
                             icat.queryBuilder(entityType).where([
                                 "investigation.id = ?", entity.id,
@@ -226,7 +226,7 @@
 
             //sort change callback
             gridApi.core.on.sortChanged($scope, function(grid, _sortColumns){
-                var sortColumns = _sortColumns;
+                sortColumns = _sortColumns;
                 page = 1;
                 getPage().then(function(results){
                     updateScroll(results.length);

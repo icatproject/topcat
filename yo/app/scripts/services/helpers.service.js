@@ -225,29 +225,31 @@
 	                });
 	            }
 
-	            if(!columnDef.jpqlExpression){
-	            	var _entityType = entityType;
-	            	if(_entityType == 'proposal') _entityType = 'investigation';
-	                if(!columnDef.field.match(/\./)){
-	                    columnDef.jpqlExpression =  _entityType + '.' + columnDef.field;
-	                } else {
-	                    columnDef.jpqlExpression = columnDef.field;
-	                }
-	            }
+                var jpqlExpression = columnDef.field;
+                if(!columnDef.field.match(/\./)){
+                    if(entityType == 'proposal'){
+                        jpqlExpression = 'investigation.' + jpqlExpression;
+                    } else {
+                        jpqlExpression = entityType + '.' + jpqlExpression;
+                    }
+                    
+                }
+                if(!columnDef.jpqlFilter) columnDef.jpqlFilter = jpqlExpression;
+                if(!columnDef.jpqlSort) columnDef.jpqlSort = jpqlExpression;
 
 	            var titleTemplate;
 	            var showCondition;
-	           
 	            if(columnDef.type == 'number' && columnDef.filters){
-	            	var pair = columnDef.jpqlExpression.split(/\./);
+	            	var pair = jpqlExpression.split(/\./);
                     var _entityType = pair[0];
                     var entityField = pair[1];
-	            	var fieldNameSuffix = helpers.capitalize(_entityType) + entityField;
+	            	var fieldNameSuffix = helpers.capitalize(_entityType) + helpers.capitalize(entityField);
 	            	var minFieldName = "min" + fieldNameSuffix;
 	            	var maxFieldName = "max" + fieldNameSuffix;
 	            	titleTemplate = '{{row.entity.find(&quot;' + minFieldName + '&quot;)[0]' + filters + '}} - {{row.entity.find(&quot;' + maxFieldName + '&quot;)[0]' + filters + '}}';
 	            	showCondition = 'row.entity.find(&quot;' + minFieldName + '&quot;).length > 0 && row.entity.find(&quot;' + maxFieldName + '&quot;).length > 0';
-	            } else {
+                    columnDef.enableSorting = false;
+                } else {
 					titleTemplate = '{{row.entity.find(&quot;' + columnDef.field + '&quot;)[0]' + filters + '}}';
 	            	showCondition = 'row.entity.find(&quot;' + columnDef.field + '&quot;).length > 0';
 	            }

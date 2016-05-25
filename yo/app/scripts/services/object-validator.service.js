@@ -240,7 +240,8 @@
                                         this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
                                         this.attribute('field', function(){ this.type("string"); });
                                         this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                        this.attribute('jpqlExpression', function(){ this.type('string'); this.mandatory(false); });
+                                        this.attribute('jpqlFilter', function(){ this.type('string'); this.mandatory(false); });
+                                        this.attribute('jpqlSort', function(){ this.type('string'); this.mandatory(false); });
                                         this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
                                         this.attribute('where', function(){ this.type('string'); this.mandatory(false); });
                                         this.attribute('excludeFuture', function(){ this.type('boolean'); this.mandatory(false); });
@@ -271,7 +272,8 @@
                                                 this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
                                                 this.attribute('field', function(){ this.type("string"); });
                                                 this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                                this.attribute('jpqlExpression', function(){ this.type('string'); this.mandatory(false); });
+                                                this.attribute('jpqlFilter', function(){ this.type('string'); this.mandatory(false); });
+                                                this.attribute('jpqlSort', function(){ this.type('string'); this.mandatory(false); });
                                                 this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
                                                 this.attribute('where', function(){ this.type('string'); this.mandatory(false); });
                                                 this.attribute('excludeFuture', function(){ this.type('boolean'); this.mandatory(false); });

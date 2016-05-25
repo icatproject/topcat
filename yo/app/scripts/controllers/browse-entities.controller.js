@@ -37,7 +37,7 @@
         _.each(this.gridOptions.columnDefs, function(columnDef){
             if(columnDef.sort){
                 sortColumns.push({
-                    colDef: {jpqlExpression: columnDef.jpqlExpression},
+                    colDef: {jpqlSort: columnDef.jpqlSort},
                     sort: columnDef.sort
                 })
             }
@@ -81,7 +81,7 @@
                         to = helpers.completePartialToDate(to);
                         out.where([
                             "? between {ts ?} and {ts ?}",
-                            columnDef.jpqlExpression.safe(),
+                            columnDef.jpqlFilter.safe(),
                             from.safe(),
                             to.safe()
                         ]);
@@ -94,7 +94,7 @@
                         to = parseInt(to || '1000000000');
                         out.where([
                             "? between ? and ?",
-                            columnDef.jpqlExpression.safe(),
+                            columnDef.jpqlFilter.safe(),
                             from,
                             to
                         ]);
@@ -103,7 +103,7 @@
                 } else if(columnDef.type == 'string' && columnDef.filter && columnDef.filter.term) {
                     out.where([
                         "UPPER(?) like concat('%', ?, '%')", 
-                        columnDef.jpqlExpression.safe(),
+                        columnDef.jpqlFilter.safe(),
                         columnDef.filter.term.toUpperCase()
                     ]);
                 }
@@ -120,7 +120,7 @@
             
             _.each(sortColumns, function(sortColumn){
                 if(sortColumn.colDef){
-                    out.orderBy(sortColumn.colDef.jpqlExpression, sortColumn.sort.direction);
+                    out.orderBy(sortColumn.colDef.jpqlSort, sortColumn.sort.direction);
                 }
             });
 
