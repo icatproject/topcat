@@ -41,5 +41,5 @@ The following partial configuration shows how you can combine columns:
   * The "jpqlSort" attribute is a jpql expression that represents this column when sorting.
   * The "cellTemplate" attribute is an angular template for this particular column's cells.
   * The "breadcrumb" attribute tells Topcat to include this column in the breadcrumb.
-  * The "breadcrumbTemplate" an angular template that is used to represent this column in the breadcrumb.
+  * The "breadcrumbTemplate" attribute is an angular template that is used to represent this column in the breadcrumb.
 
