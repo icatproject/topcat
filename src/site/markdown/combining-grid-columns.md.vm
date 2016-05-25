@@ -17,8 +17,11 @@ The following partial configuration shows how you can combine columns:
               columnDefs: [
                 {
                   "field": "investigationVisit",
-                  "jpqlExpression": "CONCAT(investigation.name, '-', investigation.visitId)",
-                  "cellTemplate": "<div class='ui-grid-cell-contents'>{{row.entity.name}}-{{row.entity.visitId}}</div>"
+                  "jpqlFilter": "CONCAT(investigation.name, '-', investigation.visitId)",
+                  "jpqlSort": "investigation.name, investigation.visitId",
+                  "cellTemplate": "<div class='ui-grid-cell-contents'>{{row.entity.name}}-{{row.entity.visitId}}</div>",
+                  "breadcrumb": true,
+                  "breadcrumbTemplate": "{{item.entity.name}}-{{item.entity.visitId}}"
                 }
               ]
             },
@@ -34,6 +37,9 @@ The following partial configuration shows how you can combine columns:
 ```
 
   * The "field" attribute can be anything you want but will map on a lang.json substitution; in this case BROWSE.COLUMN.INVESTIGATION.INVESTIGATION_VISIT.
-  * The "jpqlExpression" attribute is a jpql expression that represents this column; this gets used by both filtering and sorting.
+  * The "jpqlFilter" attribute is a jpql expression that represents this column when filtering.
+  * The "jpqlSort" attribute is a jpql expression that represents this column when sorting.
   * The "cellTemplate" attribute is an angular template for this particular column's cells.
+  * The "breadcrumb" attribute tells Topcat to include this column in the breadcrumb.
+  * The "breadcrumbTemplate" an angular template that is used to represent this column in the breadcrumb.
 

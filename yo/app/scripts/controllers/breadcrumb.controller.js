@@ -94,7 +94,6 @@
                     });
                 }
 
-
                 items.push({
                     template: '<i translate="ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME"></i>'
                 });
