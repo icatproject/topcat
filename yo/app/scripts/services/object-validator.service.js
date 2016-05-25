@@ -278,6 +278,7 @@
                                                 this.attribute('where', function(){ this.type('string'); this.mandatory(false); });
                                                 this.attribute('excludeFuture', function(){ this.type('boolean'); this.mandatory(false); });
                                                 this.attribute('breadcrumb', function(){ this.type('boolean'); this.mandatory(false); });
+                                                this.attribute('breadcrumbTemplate', function(){ this.type('string'); this.mandatory(false); });
                                                 this.attribute('sort', function(){
                                                     this.mandatory(false);
                                                     this.attribute('direction', function(){ this.type("string"); });

@@ -4,115 +4,99 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('BreadcrumbController', function($state, $q, $scope, $rootScope, $translate, $timeout, $templateCache, tc, helpers, uiGridConstants){
-        var that = this; 
-        var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
-        var entityInstanceName = stateFromTo.replace(/^.*-/, '');
-        var facilityName = $state.params.facilityName;
-        var facility = tc.facility(facilityName);
-        var facilityId = facility.config().id;
-        var icat = tc.icat(facilityName);
-        var breadcrumb = tc.config().breadcrumb;
-        var maxBreadcrumbTitleLength = breadcrumb && breadcrumb.maxTitleLength ? breadcrumb.maxTitleLength : 1000000;
-        var canceler = $q.defer();
+    app.controller('BreadcrumbController', function($scope, $state, $q, $timeout, tc){
+        var that = this;
+        var timeout = $q.defer();
         $scope.$on('$destroy', function(){
-            canceler.resolve();
+            timeout.resolve();
         });
-        var breadcrumbTitleMap = {};
-        _.each(facility.config().browse, function(config, entityType){
-            var field = "";
-            _.each(config.gridOptions.columnDefs, function(columnDef){
-                if(columnDef.breadcrumb){
-                    field = columnDef.field;
-                    return false;
+        var breadcrumbConfig = tc.config().breadcrumb;
+        this.maxBreadcrumbTitleLength = breadcrumbConfig  && breadcrumbConfig.maxTitleLength ? breadcrumbConfig .maxTitleLength : 1000000;
+
+        var facility = tc.facility($state.params.facilityName);
+        var hierarchy = _.clone(facility.config().hierarchy);
+        hierarchy.shift();
+        while(hierarchy.length >0){
+            var currentEntityType = hierarchy[hierarchy.length - 1];
+            var currentEntityIdName = currentEntityType + "Id";
+            if($state.params[currentEntityIdName]) break;
+            hierarchy.pop();
+        }
+
+        
+        var breadcrumbPromise = $timeout(function(){
+            var promises = [];
+            var currentHref = window.location.hash.replace(/\?.*$/, '');
+            var items = _.map(hierarchy.reverse(), function(entityType){
+                var out = {href: currentHref};
+                currentHref = currentHref.replace(/\/[^\/]+\/[^\/]+$/, '');
+                var entityId = $state.params[entityType + "Id"];
+
+                var gridOptions = facility.config().browse[entityType].gridOptions;
+                var columnDef =  _.select(gridOptions.columnDefs, function(columnDef){
+                    return columnDef.breadcrumb;
+                }).pop();
+                if(!columnDef){
+                    columnDef = _.select(gridOptions.columnDefs, function(columnDef){
+                        return columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '') == 'title';
+                    }).pop();
                 }
-            });
-            breadcrumbTitleMap[entityType] = field;
-        });
-
-        this.maxBreadcrumbTitleLength = maxBreadcrumbTitleLength;
-        this.breadcrumbItems = [];
-
-        var breadcrumbTimeout = $timeout(function(){
-            var path = window.location.hash.replace(/^#\/browse\/facility\/[^\/]*\//, '').replace(/\/[^\/]*$/, '').split(/\//);
-            var pathPairs = _.chunk(path, 2);
-            var breadcrumbEntities = {};       
-            var breadcrumbPromises = [];
-
-            _.each(pathPairs, function(pathPair){
-                if(pathPair.length == 2){
-                    var entityType = pathPair[0];
-                    var uppercaseEntityType = entityType.replace(/^(.)/, function(s){ return s.toUpperCase(); });
-                    var entityId = pathPair[1];
-                    if(entityType == 'proposal'){
-                        breadcrumbPromises.push(icat.entity("investigation", ["where investigation.name = ?", entityId, "limit 0, 1"], canceler).then(function(entity){
-                            breadcrumbEntities[entityType] = entity;
-                        }));
-                    } else {
-                        breadcrumbPromises.push(icat.entity(entityType, ["where ?.id = ?", entityType.safe(), entityId, "limit 0, 1"], canceler).then(function(entity){
-                            breadcrumbEntities[entityType] = entity;
-                        }));
-                    }
+                if(!columnDef){
+                    columnDef =  _.select(gridOptions.columnDefs, function(columnDef){
+                        return columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '') == 'name';
+                    }).pop();
                 }
-            });
-            $q.all(breadcrumbPromises).then(function(){
-                var currentHref = window.location.hash.replace(/\?.*$/, '');
-                var path = window.location.hash.replace(/^#\/browse\/facility\/[^\/]*\//, '').replace(/\?.*$/, '').replace(/\/[^\/]*$/, '').split(/\//);
-                
-                if(path.length > 1){
-                    var pathPairs = _.chunk(path, 2);
-                    _.each(pathPairs.reverse(), function(pathPair, i){
-                        var entityType = pathPair[0];
-                        var entityId = pathPair[1];
-                        var entity = breadcrumbEntities[entityType];
-                        var title;
-                        if(entity){
-                            title = entity.find(breadcrumbTitleMap[entityType])[0] || entity.title || entity.name || 'untitled';
-                        } else {
-                            title = 'untitled';
-                        }
-                        if(i == 0){
-                            that.breadcrumbItems.unshift({
-                                title: title
-                            });
-                        } else {
-                            that.breadcrumbItems.unshift({
-                                title: title,
-                                href: currentHref
-                            });
-                        }
-                        currentHref = currentHref.replace(/\/[^\/]*\/[^\/]*$/, '');
-                    });
+                if(!columnDef){
+                    columnDef = gridOptions.columnDefs[0];
                 }
 
-                if(that.breadcrumbItems.length > 0){
-                    that.breadcrumbItems.unshift({
-                        title: facility.config().title,
-                        href: currentHref
-                    });
+                var template = columnDef.breadcrumbTemplate;
+                if(!template){
+                    var fieldName = columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '');
+                    template = [
+                        '<span ng-if="item.entity.' + fieldName + '.length > breadcrumbController.maxBreadcrumbTitleLength" uib-tooltip="{{item.entity.' + fieldName + '}}" tooltip-placement="bottom">',
+                            '{{item.entity.' + fieldName + ' | limitTo : breadcrumbController.maxBreadcrumbTitleLength}}...',
+                        '</span>',
+                        '<span ng-if="item.entity.' + fieldName + '.length <= breadcrumbController.maxBreadcrumbTitleLength">',
+                            '{{item.entity.' + fieldName + '}}',
+                        '</span>'
+                    ].join('');
+                }
+                out.template = template;
+
+                if(entityType == 'proposal'){
+                    promises.push(facility.icat().entity("investigation", ["where investigation.name = ?", entityId, "limit 0, 1"], timeout).then(function(entity){
+                        out.entity = entity;
+                    }));
                 } else {
-                    that.breadcrumbItems.unshift({
-                        title: facility.config().title
-                    });
+                    promises.push(facility.icat().entity(entityType, ["where ?.id = ?", entityType.safe(), entityId, "limit 0, 1"], timeout).then(function(entity){
+                        out.entity = entity;
+                    }));
                 }
+
+                return out;
+            }).reverse();
+
+            $q.all(promises).then(function(){
+                if(items.length > 0) items[items.length - 1].href = undefined;
 
                 if(tc.userFacilities().length > 1){
-                    that.breadcrumbItems.unshift({
-                        translate: "BROWSE.BREADCRUMB.ROOT.NAME",
+                    items.unshift({
+                        template: '<a href="{{item.href}}" translate="BROWSE.BREADCRUMB.ROOT.NAME"></a>',
                         href: '#/browse/facility'
                     });
                 }
 
-                that.breadcrumbItems.push({
-                    translate: 'ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME'
+                items.push({
+                    template: '<i translate="ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME"></i>'
                 });
 
+                that.items = items;
             });
-
-            canceler.promise.then(function(){ $timeout.cancel(breadcrumbTimeout); });
-
         });
-
+        timeout.promise.then(function(){ $timeout.cancel(breadcrumbPromise); });
 
     });
+
 })();
+
