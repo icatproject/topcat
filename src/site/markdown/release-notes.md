@@ -9,7 +9,7 @@
 	* "facilities" attribute is now an array of facility objects rather that an index of facility objects.
 	* "url" -> "idsUrl" (for "facilities" > [facility] > authenticationTypes > [authenticationType])
 	* Now gets validated making it less prone to erroneous configuration.
-    * "jpqlExpression" attribute (for "facilities" > [facility] > "browse" > [entity type] > "gridOptions" > "columnDefs" > [columnDef]) no longer exists instead it has been replaced by "jpqlFilter" and "jpqlSort". 
+    * "jpqlExpression" attribute (for "facilities" > [facility] > "browse" > [entity type] > "gridOptions" > "columnDefs" > [columnDef]) no longer exists; instead it has been replaced by "jpqlFilter" and "jpqlSort". 
 
 ## 2.0.0
 
