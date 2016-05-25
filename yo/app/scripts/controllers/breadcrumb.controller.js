@@ -78,7 +78,14 @@
             }).reverse();
 
             $q.all(promises).then(function(){
-                if(items.length > 0) items[items.length - 1].href = undefined;
+
+                items.unshift({
+                    template: "<span>{{item.title}}</span>",
+                    title: facility.config().title,
+                    href: currentHref
+                });
+
+                items[items.length - 1].href = undefined;
 
                 if(tc.userFacilities().length > 1){
                     items.unshift({
@@ -86,6 +93,7 @@
                         href: '#/browse/facility'
                     });
                 }
+
 
                 items.push({
                     template: '<i translate="ENTITIES.' + window.location.hash.replace(/\?.*$/, '').replace(/^.*\//, '').toUpperCase() + '.NAME"></i>'
