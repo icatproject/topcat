@@ -35,7 +35,7 @@
 
             }, function(response){
                 inform.add(response.message != null ? response.message : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {
-                    'ttl': 4000,
+                    'ttl': 0,
                     'type': 'danger'
                 });
             });
