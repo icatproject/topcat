@@ -347,6 +347,35 @@
         .config(function (pollerConfig) {
             pollerConfig.neverOverwrite = true;
         })
+        .config(function ($httpProvider) {
+            $httpProvider.interceptors.push(function($rootScope, $q) {
+              return {
+               'request': function(config) {
+                    $rootScope.requestCounter++;
+                    $rootScope.updateLoadingState();
+                    return config;
+                },
+
+                'requestError': function(config) {
+                    $rootScope.requestCounter--;
+                    $rootScope.updateLoadingState();
+                    return config;
+                },
+
+                'response': function(response) {
+                    $rootScope.requestCounter--;
+                    $rootScope.updateLoadingState();
+                    return response;
+                },
+
+                'responseError': function(rejection) {
+                    $rootScope.requestCounter--;
+                    $rootScope.updateLoadingState();
+                    return $q.reject(rejection);
+                }
+              };
+            });
+        })
         .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
             //make $state and $stateParams available at rootscope.
             $rootScope.$state = $state;

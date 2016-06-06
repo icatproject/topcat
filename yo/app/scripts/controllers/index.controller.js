@@ -138,6 +138,14 @@
         }, 1000 * 60 * 5);
         $scope.$on('$destroy', function(){ clearInterval(refreshSessionInterval); });
 
+
+        $rootScope.requestCounter = 0;
+        $rootScope.updateLoadingState = function(){
+            if(this.requestCounter == 0){
+                this.$broadcast('loaded');
+            }
+        }
+
     });
 
 })();

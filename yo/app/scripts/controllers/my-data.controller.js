@@ -5,6 +5,7 @@
     var app = angular.module('angularApp');
 
     app.controller('MyDataController', function($translate, $q, $scope, $rootScope, $timeout, $templateCache, $state, tc, helpers, uiGridConstants){
+        console.log('$scope', $scope);
         var that = this;
         var pagingConfig = tc.config().paging;
         var pagingConfig = tc.config().paging;

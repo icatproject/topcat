@@ -123,25 +123,25 @@
                     var key = "query:" + query;
 
     	        	this.cache().getPromise(key, 10 * 60 * 60, function(){
-                    return that.get('entityManager', {
-                        sessionId: that.session().sessionId,
-                        query: query,
-                        server: facility.config().icatUrl
-                    }, options);
-                }).then(function(results){
-                	defered.resolve(_.map(results, function(result){
-                		var type = _.keys(result)[0];
-                		if(helpers.typeOf(result) != 'object' || !type) return result;
-            				var out = result[type];
-            				out.entityType = helpers.uncapitalize(type);
-            				out = tcIcatEntity.create(out, facility);
-            				return out;
-            			}));
-                }, function(response){
-                	defered.reject(response);
-                });
+                        return that.get('entityManager', {
+                            sessionId: that.session().sessionId,
+                            query: query,
+                            server: facility.config().icatUrl
+                        }, options);
+                    }).then(function(results){
+                    	defered.resolve(_.map(results, function(result){
+                    		var type = _.keys(result)[0];
+                    		if(helpers.typeOf(result) != 'object' || !type) return result;
+                				var out = result[type];
+                				out.entityType = helpers.uncapitalize(type);
+                				out = tcIcatEntity.create(out, facility);
+                				return out;
+                			}));
+                    }, function(response){
+                    	defered.reject(response);
+                    });
 
-                return defered.promise;
+                    return defered.promise;
             	},
             	'promise, array': function(timeout, query){
     	        	return this.query(query, {timeout: timeout});
