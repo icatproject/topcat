@@ -369,6 +369,7 @@
 						} else {
 							traverse(entity);
 						}
+						variablePath.unshift(fieldName);
 					}
 				}
 
