@@ -61,7 +61,7 @@
                     if(variableName == 'proposal'){
                         out.where(["investigation.name = ?", id]);
                     } else {
-                        out.where(["?.id = ?", variableName.safe(), parseInt(id)]);
+                        out.where(["?.id = ?", variableName.safe(), parseInt(id || "-1")]);
                     }
                 }
             });

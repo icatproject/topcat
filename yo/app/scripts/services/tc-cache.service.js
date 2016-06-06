@@ -69,8 +69,6 @@
                   store.put("putSeconds:" + key, (new Date).getTime() /  1000);
                 }
                 defered.resolve(value);
-                $rootScope.requestCounter--;
-                $rootScope.updateLoadingState();
               }, function(results){
                 defered.reject(results);
               }, function(results){
@@ -79,12 +77,17 @@
             } else {
               $timeout(function(){
                 defered.resolve(out);
-                $rootScope.requestCounter--;
-                $rootScope.updateLoadingState();
               });
             }
             
-            return defered.promise;
+            return defered.promise.then(function(value){
+              $rootScope.requestCounter--;
+              $rootScope.updateLoadingState();
+              return value;
+            }, function(){
+              $rootScope.requestCounter--;
+              $rootScope.updateLoadingState();
+            });
           },
           'string, function': function(key, fn){
             return this.getPromise(key, 0, fn);
