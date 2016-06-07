@@ -58,7 +58,7 @@
               maxCount: 300
             }, options);
           }).then(function(data){
-            if(data.length > 0){
+            if(data && data.length > 0){
               var ids = [];
               var scores = {};
               _.each(data, function(result){
