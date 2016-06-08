@@ -100,9 +100,9 @@
                 } else {
                     if(functionName){
                         if(fieldName){
-                            out.push(["select ?(?.?)", functionName.safe(), entityType.safe(), fieldName.safe()]);
+                            out.push(["select ?(distinct ?.?)", functionName.safe(), entityType.safe(), fieldName.safe()]);
                         } else {
-                            out.push(["select ?(?)", functionName.safe(), entityType.safe()]);
+                            out.push(["select ?(distinct ?)", functionName.safe(), entityType.safe()]);
                         }
                     } else {
                         out.push(["select distinct ?", entityType.safe()]);
