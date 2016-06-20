@@ -38,8 +38,8 @@ public class DownloadRepository {
 
 		String queryOffset = (String) params.get("queryOffset");
 		String userName = (String) params.get("userName");
-		Integer pageSize = null;
-		Integer page = null;
+		Integer limitPageSize = null;
+		Integer limitOffset = null;
 
 		if (queryOffset != null) {
 			queryOffset = queryOffset.replaceAll("(?i)^\\s*WHERE\\s+", "");
@@ -47,8 +47,8 @@ public class DownloadRepository {
 			Matcher matches = pattern.matcher(queryOffset);
 			if (matches.find()) {
 				queryOffset = matches.group(1);
-				page = Integer.parseInt(matches.group(2));
-				pageSize = Integer.parseInt(matches.group(3));
+				limitOffset = Integer.parseInt(matches.group(2));
+				limitPageSize = Integer.parseInt(matches.group(3));
 			}
 		}
 
@@ -72,9 +72,9 @@ public class DownloadRepository {
 				query.setParameter("userName", userName);
 			}
 
-			if (page != null) {
-				query.setFirstResult((page - 1) * pageSize);
-				query.setMaxResults(pageSize);
+			if (limitOffset != null) {
+				query.setFirstResult(limitOffset);
+				query.setMaxResults(limitPageSize);
 			}
 
 			logger.debug(query.toString());

@@ -100,6 +100,8 @@
             });
           }
 
+          out.push(["limit ?, ?", page - 1, pageSize])          
+
           return out;
       }
 
