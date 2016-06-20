@@ -344,6 +344,7 @@
         "TITLE" : "Downloads",
         "NEW_MESSAGE": "A new download has been added",
         "COLUMN" : {
+            "FULL_NAME": "Name",
             "USER_NAME": "Username",
             "PREPARED_ID": "Prepared Id",
             "SIZE": "Size",

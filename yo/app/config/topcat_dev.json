@@ -606,6 +606,9 @@
                 "gridOptions": {
                     "columnDefs": [
                         {
+                            "field": "fullName"
+                        },
+                        {
                             "field": "userName"
                         },
                         {
