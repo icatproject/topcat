@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, tc, ipCookie){
+    app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, $sessionStorage, tc, ipCookie){
         var that = this;
 
         this.facilities = tc.facilities();
@@ -145,6 +145,22 @@
                 this.$broadcast('loaded');
             }
         }
+
+
+        $rootScope.$on('cas:authentication', function(event, facilityName, ticket){
+            var service = window.location.href.replace(/#.*$/, '').replace(/[^\/]*$/, '') + 'cas?facilityName=' + facilityName;
+            tc.icat(facilityName).login('cas', service, ticket).then(function(){
+                var name;
+                var params = {};
+                if($sessionStorage.lastState){
+                    name = $sessionStorage.lastState.name;
+                    params = $sessionStorage.lastState.params;
+                } else {
+                    name = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
+                }
+                $state.go(name, params);
+            });
+        });
 
     });
 

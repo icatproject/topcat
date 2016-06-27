@@ -3,7 +3,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('LoginController', function($translate, $state, $sessionStorage, inform, deviceDetector, tc){
+    app.controller('LoginController', function($translate, $state, $rootScope, $scope, $sessionStorage, inform, deviceDetector, tc){
         var that = this;
         this.isFirefox = deviceDetector.browser == 'firefox'
         this.isIE9 = deviceDetector.browser == 'ie' && deviceDetector.browser_version <= 9; 
@@ -18,8 +18,41 @@
             facility = tc.facility(this.facilityName);
             this.plugin = facility.config().authenticationTypes[0].plugin;
             this.authenticationTypes = facility.config().authenticationTypes;
+            this.casService = window.location.href.replace(/#.*$/, '').replace(/[^\/]*$/, '') + 'cas?facilityName=' + this.facilityName;
+        
+            this.authenticationTypesIndex = {};
+            _.each(facility.config().authenticationTypes, function(authenticationType){
+                that.authenticationTypesIndex[authenticationType.plugin] = authenticationType;
+            });
         };
         if(this.nonUserFacilities.length > 0) this.facilityChanged();
+
+        var casIframes = [];
+        _.each(tc.nonUserFacilities(), function(facility){
+            _.each(facility.config().authenticationTypes, function(authenticationType){
+                if(authenticationType.plugin == 'cas'){
+
+                    var service = window.location.href.replace(/#.*$/, '').replace(/[^\/]*$/, '') + 'cas?facilityName=' + facility.config().name;
+
+                    var casIframe = $('<iframe>').attr({
+                        src: authenticationType.casUrl + '/login?service=' + encodeURIComponent(service)
+                    }).css({
+                        position: 'relative',
+                        left: '-1000000px',
+                        height: '1px',
+                        width: '1px'
+                    });
+
+                    $(document.body).append(casIframe);
+                    casIframe.push(casIframe);
+                }
+            });
+        });
+        $scope.$on('$destroy', function(){
+            _.each(casIframes, function(casIframe){
+                $(casIframe).remove();
+            });
+        });
 
         this.login = function(){
             facility.icat().login(this.plugin, this.userName, this.password).then(function(){

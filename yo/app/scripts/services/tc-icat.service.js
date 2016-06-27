@@ -42,55 +42,86 @@
 
     		this.refreshSession = function(){
     			return this.put('session/' + this.session().sessionId);
-    		};	
+    		};
 
-    		this.login = function(plugin, username, password){
-                if(username === undefined) username = "anon";
 
-    			var params = {
-    				json: JSON.stringify({
-                        plugin: plugin,
-                        credentials: [
-                            {username: username},
-                            {password: password}
-                        ]
-                    })
+    		this.login = function(plugin, arg2, arg3){
+                
+    			var params;
+
+                if(plugin == 'cas'){
+                    var service = arg2;
+                    var ticket = arg3;
+
+                    params = {
+                        json: JSON.stringify({
+                            plugin: plugin,
+                            credentials: [
+                                {service: service},
+                                {ticket: ticket}
+                            ]
+                        })
+                    };
+                } else {
+                    var username = arg2;
+                    var password = arg3;
+                    if(username === undefined) username = "anon";
+
+                    params = {
+        				json: JSON.stringify({
+                            plugin: plugin,
+                            credentials: [
+                                {username: username},
+                                {password: password}
+                            ]
+                        })
+                    };
     			};
+
     			return this.post('session', params).then(function(response){
     				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
     				var facilityName = facility.config().name;
+                    var sessionId = response.sessionId;
 
-    				$sessionStorage.sessions[facilityName] = {
-    					sessionId: response.sessionId,
-    					userName: plugin + '/' + username
-    				}
+                    $sessionStorage.sessions[facilityName] = { sessionId: sessionId }
 
-                    var promises = [];
+                    return that.get('session/' + response.sessionId).then(function(response){
+                        var username = response.userName;
 
-                    var name = facility.config().name;
-                    if(name){
-                      promises.push(that.query([
-                        "SELECT facility FROM Facility facility WHERE facility.name = ?", name
-                      ]).then(function(results){
-                        var facility = results[0];
-                        if(facility){
-                          $sessionStorage.sessions[facilityName].facilityId = facility.id;
-                        } else {
-                          throw "Could not find facility by name '" + name + "'";
+                        $sessionStorage.sessions[facilityName].username = username;
+                        $sessionStorage.sessions[facilityName].plugin = plugin;
+
+                        var promises = [];
+
+                        var name = facility.config().name;
+                        if(name){
+                          promises.push(that.query([
+                            "SELECT facility FROM Facility facility WHERE facility.name = ?", name
+                          ]).then(function(results){
+                            var facility = results[0];
+                            if(facility){
+                              $sessionStorage.sessions[facilityName].facilityId = facility.id;
+                            } else {
+                              console.error("Could not find facility by name '" + name + "'");
+                            }
+                          }));
                         }
-                      }));
-                    }
 
-    				promises.push(facility.admin().isValidSession(response.sessionId).then(function(isAdmin){
-                        $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
-                    }));
+                        promises.push(facility.admin().isValidSession(sessionId).then(function(isAdmin){
+                            $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
+                        }));
 
-                    promises.push(that.entity('user', ["where user.name = ?", username]).then(function(user){
-                        $sessionStorage.sessions[facilityName].fullName = user.fullName;
-                    }));
+                        promises.push(that.entity('user', ["where user.name = ?", username]).then(function(user){
+                            if(user){
+                                $sessionStorage.sessions[facilityName].fullName = user.fullName;
+                            } else {
+                                $sessionStorage.sessions[facilityName].fullName = username;
+                            }
+                        }));
 
-                    return $q.all(promises).then(function(){
-                      $rootScope.$broadcast('session:change');
+                        return $q.all(promises).then(function(){
+                          $rootScope.$broadcast('session:change');
+                        });
                     });
 
     			});
@@ -105,8 +136,38 @@
     		            }));
             		}
 
+                    if(this.session().plugin == 'cas'){
+                        var authenticationTypesIndex = {};
+                        _.each(facility.config().authenticationTypes, function(authenticationType){
+                            authenticationTypesIndex[authenticationType.plugin] = authenticationType;
+                        });
+
+                        var authenticationType = authenticationTypesIndex['cas'];
+
+                        var casIframe = $('<iframe>').attr({
+                            src: authenticationType.casUrl + '/logout'
+                        }).css({
+                            position: 'relative',
+                            left: '-1000000px',
+                            height: '1px',
+                            width: '1px'
+                        });
+
+                        $(document.body).append(casIframe);
+
+                        var defered = $q.defer();
+                        promises.push(defered.promise);
+
+                        $(casIframe).on('load', function(){
+                            defered.resolve();
+                            $(casIframe).remove();
+                        });
+
+                    }
+
             		delete $sessionStorage.sessions[facility.config().name];
-    				    $sessionStorage.$apply();
+    				$sessionStorage.$apply();
+
 
             		return $q.all(promises).then(function(){
             			$rootScope.$broadcast('session:change');

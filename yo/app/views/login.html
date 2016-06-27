@@ -19,16 +19,18 @@
                         <select id="plugin" name="plugin" class="form-control" ng-model="loginController.plugin" ng-options="authenticationTypes.plugin as authenticationTypes.title for authenticationTypes in loginController.authenticationTypes" required>
                         </select>
                     </div>
-                    <div class="form-group" ng-if="loginController.plugin != 'anon'">
+                    <div class="form-group" ng-if="loginController.plugin != 'anon' && loginController.plugin != 'cas'">
                         <label class="control-label" for="username">{{'LOGIN.USERNAME' | translate}}</label>
                         <input id="username" name="username" placeholder="{{'LOGIN.USERNAME' | translate}}" class="form-control" type="text" ng-model="loginController.userName" required>
                     </div>
-                    <div class="form-group" ng-if="loginController.plugin != 'anon'">
+                    <div class="form-group" ng-if="loginController.plugin != 'anon' && loginController.plugin != 'cas'">
                         <label class="control-label" for="password">{{'LOGIN.PASSWORD' | translate}}</label>
                         <input id="password" name="password" placeholder="{{'LOGIN.PASSWORD' | translate}}" class="form-control" type="password" ng-model="loginController.password" required>
                     </div>
                     <div class="form-group">
-                        <button type="submit" id="login" class="btn btn-primary" ng-click="loginController.login()" ng-disabled="loginController.form.$invalid">{{'LOGIN.LOGIN_BUTTON' | translate}}</button>
+                        <button ng-if="loginController.plugin != 'cas'" type="submit" id="login" class="btn btn-primary" ng-click="loginController.login()" ng-disabled="loginController.form.$invalid">{{'LOGIN.LOGIN_BUTTON' | translate}}</button>
+
+                        <a ng-if="loginController.plugin == 'cas'" id="login" class="btn btn-primary" href="{{loginController.authenticationTypesIndex[loginController.plugin].casUrl}}/login?service={{loginController.casService}}" ng-disabled="loginController.form.$invalid">{{'LOGIN.LOGIN_BUTTON' | translate}}</a>
                     </div>
                 </fieldset>
             </form>

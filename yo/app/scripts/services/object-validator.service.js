@@ -208,6 +208,9 @@
                             this.attribute('*', function(){
                                 this.attribute('title', function(){ this.type("string"); });
                                 this.attribute('plugin', function(){ this.type("string"); });
+                                this.attribute('casUrl', function(){ this.type("string"); this.mandatory(function(o){
+                                    return o.plugin == 'cas';
+                                }); });
                             });
                         });
                         this.attribute('downloadTransportTypes', function(){
