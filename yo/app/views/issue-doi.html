@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate="CART.ISSUE_DOI.MODAL.TITLE"></h3>
+</div>
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Enter password to confirm">
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="issueDoiController.confirm()" ng-if="!issueDoiController.isSubmitting" translate="CART.DOWNLOAD.MODAL.BUTTON.OK.TEXT"></button>
+
+    <button class="btn btn-warning" ng-click="issueDoiController.cancel()" translate="CART.DOWNLOAD.MODAL.BUTTON.CANCEL.TEXT"></button>
+</div>

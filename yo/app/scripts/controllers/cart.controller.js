@@ -65,6 +65,14 @@
             });
         };
 
+        this.issueDoi = function(){
+            $uibModal.open({
+                templateUrl : 'views/issue-doi.html',
+                controller: "IssueDoiController as issueDoiController",
+                size : 'md'
+            })
+        };
+
         this.download = function(){
             $uibModal.open({
                 templateUrl : 'views/download-cart.html',
