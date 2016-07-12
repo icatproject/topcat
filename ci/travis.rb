@@ -117,9 +117,14 @@ exec %{
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.1-SNAPSHOT.deployment-order=140
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
-  sudo apt-get --assume-yes install ruby-dev
-  sudo gem install rest-client
-  sudo ruby ./provision/populate_lucene.rb
+
+  curl -sSL https://get.rvm.io | bash
+  source /home/vagrant/.rvm/scripts/rvm
+  rvm install 2.3.1
+  rvm use 2.3.1 --default
+  gem install rest-client
+
+  ruby /vagrant/provision/populate_lucene.rb
 
   cd ../yo
 
