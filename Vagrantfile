@@ -134,11 +134,13 @@ Vagrant.configure(2) do |config|
     topcat_build_install
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.1-SNAPSHOT.deployment-order=140
 
-    #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
-
     mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 
-    sudo gem install rest-client
+    curl -sSL https://get.rvm.io | bash
+    source /home/vagrant/.rvm/scripts/rvm
+    rvm install 2.3.1
+    rvm use 2.3.1 --default
+    gem install rest-client
 
     ruby /vagrant/provision/populate_lucene.rb
 

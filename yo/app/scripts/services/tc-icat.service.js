@@ -86,7 +86,11 @@
                     }));
 
                     promises.push(that.entity('user', ["where user.name = ?", username]).then(function(user){
-                        $sessionStorage.sessions[facilityName].fullName = user.fullName;
+                        if(user){
+                            $sessionStorage.sessions[facilityName].fullName = user.fullName;
+                        } else {
+                            $sessionStorage.sessions[facilityName].fullName = username;
+                        }
                     }));
 
                     return $q.all(promises).then(function(){
