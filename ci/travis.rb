@@ -119,7 +119,7 @@ exec %{
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
 
   curl -sSL https://get.rvm.io | bash
-  source /home/vagrant/.rvm/scripts/rvm
+  source #{travis_build_dir}/.rvm/scripts/rvm
   rvm install 2.3.1
   rvm use 2.3.1 --default
   gem install rest-client
