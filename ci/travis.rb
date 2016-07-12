@@ -124,7 +124,7 @@ exec %{
   rvm use 2.3.1 --default
   gem install rest-client
 
-  ruby /vagrant/provision/populate_lucene.rb
+  ruby #{install_provision_dir}/populate_lucene.rb
 
   cd ../yo
 
