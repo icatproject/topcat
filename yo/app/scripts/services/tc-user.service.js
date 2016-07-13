@@ -283,6 +283,23 @@
                 }
             });
 
+            this.getConfVar = helpers.overload({
+                'string, object': function(name, options){
+                    return this.get('confVars/' + name, {
+                        icatUrl: facility.config().icatUrl,
+                        sessionId: facility.icat().session().sessionId
+                    }, options).then(function(data){
+                        return data.value;
+                    });
+                },
+                'string, promise': function(name, timeout){
+                    return this.getConfVar(name, {timeout: timeout});
+                },
+                'string': function(name){
+                    return this.getConfVar(name, {});
+                }
+            });
+
             helpers.generateRestMethods(this, facility.tc().config().topcatUrl + "/topcat/user/");
         }
 

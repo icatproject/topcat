@@ -195,6 +195,22 @@
                 }
             });
 
+            this.setConfVar = helpers.overload({
+                'string, string, object': function(name, value, options){
+                    return this.put('confVars/' + name, {
+                        icatUrl: facility.config().icatUrl,
+                        sessionId: facility.icat().session().sessionId,
+                        value: value
+                    }, options);
+                },
+                'string, string promise': function(name, value, timeout){
+                    return this.setConfVar(name, value, {timeout: timeout});
+                },
+                'string, string': function(name, value){
+                    return this.setConfVar(name, value, {});
+                }
+            });
+
             helpers.generateRestMethods(this, facility.tc().config().topcatUrl + "/topcat/admin/");
         }
 

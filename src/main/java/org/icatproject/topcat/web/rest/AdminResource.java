@@ -25,11 +25,13 @@ import javax.ws.rs.core.Response;
 
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
+import org.icatproject.topcat.domain.ConfVar;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.repository.ConfVarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,9 @@ public class AdminResource {
 
     @EJB
     private DownloadRepository downloadRepository;
+
+    @EJB
+    private ConfVarRepository confVarRepository;
 
     @EJB
     private ICATClientBean icatClientService;
@@ -213,5 +218,45 @@ public class AdminResource {
             throw new ForbiddenException("please provide a valid icatUrl and sessionId");
         }
     }
+
+
+    /**
+     * Stores a configuration variable.
+     *
+     * @summary getConfVar
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param value a string containing the configuration variable value.
+     *
+     * @throws TopcatException if anything else goes wrong.
+     */
+    @PUT
+    @Path("/confVars/{name}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response setConfVar(
+        @PathParam("name") String name,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("value") String value)
+        throws TopcatException, MalformedURLException {
+
+        onlyAllowAdmin(icatUrl, sessionId);
+
+        ConfVar confVar = confVarRepository.getConfVar(name);
+        if(confVar == null){
+            confVar = new ConfVar();
+            confVar.setName(name);
+        }
+
+        confVar.setValue(value);
+
+        confVarRepository.save(confVar);
+
+        return Response.ok().build();
+    }
+
 
 }

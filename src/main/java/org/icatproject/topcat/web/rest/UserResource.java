@@ -38,6 +38,8 @@ import org.icatproject.topcat.domain.DownloadItem;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.ParentEntity;
+import org.icatproject.topcat.domain.ConfVar;
+import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.NotFoundException;
@@ -46,6 +48,7 @@ import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.idsclient.IdsClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.repository.ConfVarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +64,9 @@ public class UserResource {
 
 	@EJB
 	private CartRepository cartRepository;
+
+	@EJB
+    private ConfVarRepository confVarRepository;
 
 	@EJB
 	private ICATClientBean icatClientService;
@@ -563,6 +569,36 @@ public class UserResource {
 
 		return emptyCart(facilityName, userName, downloadId);
 	}
+
+	/**
+     * Retrieves a configuration variable.
+     *
+     * @summary getConfVar
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @throws TopcatException if anything else goes wrong.
+     */
+    @GET
+    @Path("/confVars/{name}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getConfVar(
+        @PathParam("name") String name,
+        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("sessionId") String sessionId)
+        throws TopcatException {
+
+        ConfVar confVar = confVarRepository.getConfVar(name);
+
+        if(confVar != null){
+        	return Response.ok().entity(new StringValue(confVar.getValue())).build();
+        } else {
+        	return Response.ok().entity(new StringValue("")).build();
+        }
+    }
+
 
 	private Response emptyCart(String facilityName, String userName, Long downloadId) {
 		JsonObjectBuilder emptyCart = Json.createObjectBuilder().add("facilityName", facilityName)

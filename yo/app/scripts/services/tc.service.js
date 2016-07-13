@@ -31,11 +31,9 @@
     };
 
   	this.version = function(){
-			var out = $q.defer();
-			this.get('version').then(function(data){
-				out.resolve(data.value);
-			}, function(){ out.reject(); });
-			return out.promise;
+			return this.get('version').then(function(data){
+				return data.value;
+			});
     };
 
 		this.search = helpers.overload({
