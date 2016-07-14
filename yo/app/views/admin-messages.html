@@ -1,0 +1,21 @@
+
+<div class="row">
+    <div class="col-sm-6 col-sm-push-3">
+        <form class="form-horizontal">
+            <fieldset>
+                <div class="form-group" ng-hide="loginController.authenticationTypes.length <= 1">
+                    <label class="control-label" for="plugin">{{'ADMIN.MESSAGES.SERVICE_STATUS_MESSAGE' | translate}} </label>
+                    <textarea class="form-control" ng-model="adminMessagesController.serviceStatus.message" style="height: 150px"></textarea>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="adminMessagesController.serviceStatus.enabled"> {{'ADMIN.MESSAGES.SERVICE_STATUS_ENABLED' | translate}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" ng-click="adminMessagesController.save()">{{'ADMIN.MESSAGES.SAVE' | translate}}</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

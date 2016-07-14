@@ -563,7 +563,12 @@
         }
     },
     "ADMIN": {
-        "PAGE_TITLE": "Admin"
+        "PAGE_TITLE": "Admin",
+        "MESSAGES": {
+            "SERVICE_STATUS_MESSAGE": "Service Status",
+            "SERVICE_STATUS_ENABLED": "enabled?",
+            "SAVE": "Save"
+        }
     },
     "TIME": {
         "DAY": "day",

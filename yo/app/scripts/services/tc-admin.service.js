@@ -200,14 +200,26 @@
                     return this.put('confVars/' + name, {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
-                        value: value
+                        value: JSON.stringify(value)
                     }, options);
                 },
-                'string, string promise': function(name, value, timeout){
+                'string, string, promise': function(name, value, timeout){
                     return this.setConfVar(name, value, {timeout: timeout});
                 },
                 'string, string': function(name, value){
                     return this.setConfVar(name, value, {});
+                }
+            });
+
+            this.getConfVar = helpers.overload({
+                'string, object': function(name, value, options){
+                    return facility.user().getConfVar(name, value, options);
+                },
+                'string, promise': function(name, value, timeout){
+                    return this.getConfVar(name, value, {timeout: timeout});
+                },
+                'string': function(name, value){
+                    return this.getConfVar(name, value);
                 }
             });
 

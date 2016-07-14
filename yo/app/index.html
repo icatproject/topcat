@@ -111,6 +111,8 @@
         <script src="scripts/controllers/downloads.controller.js"></script>
         <script src="scripts/controllers/home-route.controller.js"></script>
         <script src="scripts/controllers/admin.controller.js"></script>
+        <script src="scripts/controllers/admin-downloads.controller.js"></script>
+        <script src="scripts/controllers/admin-messages.controller.js"></script>
         <script src="scripts/controllers/doi-redirect.controller.js"></script>
         <!-- directives -->
         <script src="scripts/directives/on-return-click-submit-button.directive.js"></script>
@@ -150,7 +152,7 @@
                                     <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
                                 </li>
                                 <li ng-show="indexController.adminFacilities.length > 0" ng-class="{active: $state.includes('admin')}">
-                                    <a ui-sref="admin" translate="MAIN_NAVIGATION.ADMIN"></a>
+                                    <a ui-sref="admin.downloads" translate="MAIN_NAVIGATION.ADMIN"></a>
                                 </li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">

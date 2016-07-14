@@ -328,9 +328,20 @@
                     url: '/',
                     controller: 'HomeRouteController'
                 }).state('admin', {
-                    url: '/admin/:facilityName',
+                    abstract: true,
+                    url: '/admin/',
                     templateUrl: 'views/admin.html',
                     controller: 'AdminController as adminController'
+                })
+                .state('admin.downloads', {
+                    url: ':facilityName/downloads',
+                    templateUrl: 'views/admin-downloads.html',
+                    controller: 'AdminDownloadsController as adminDownloadsController'
+                })
+                .state('admin.messages', {
+                    url: ':facilityName/messages',
+                    templateUrl: 'views/admin-messages.html',
+                    controller: 'AdminMessagesController as adminMessagesController'
                 })
                 .state('doi-redirect', {
                     url: '/doi-redirect/:facilityName/:entityType/:entityId',

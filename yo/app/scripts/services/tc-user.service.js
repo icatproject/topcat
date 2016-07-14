@@ -289,7 +289,11 @@
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId
                     }, options).then(function(data){
-                        return data.value;
+                        try {
+                            return JSON.parse(data.value);
+                        } catch(e){
+                            return {};
+                        }
                     });
                 },
                 'string, promise': function(name, timeout){
