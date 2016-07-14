@@ -291,7 +291,7 @@
                         },
                         {
                             "field": "investigationInstrument.fullName",
-                            "title": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME"
+                            "title": "BROWSE.COLUMN.INSTRUMENT.NAME"
                         },
                         {
                             "field": "size",
