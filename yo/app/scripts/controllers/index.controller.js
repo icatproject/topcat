@@ -121,7 +121,11 @@
             });
         };
 
-        this.serviceStatus = tc.config().serviceStatus
+        this.serviceStatus = tc.config().serviceStatus;
+
+        tc.getConfVar('serviceStatus').then(function(serviceStatus){
+            that.serviceStatus = serviceStatus;
+        });
 
         if(!ipCookie('hideCookieMessage')){
             this.enableEuCookieLaw =  tc.config().enableEuCookieLaw;

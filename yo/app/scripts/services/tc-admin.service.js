@@ -196,30 +196,30 @@
             });
 
             this.setConfVar = helpers.overload({
-                'string, string, object': function(name, value, options){
+                'string, object, object': function(name, value, options){
                     return this.put('confVars/' + name, {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         value: JSON.stringify(value)
                     }, options);
                 },
-                'string, string, promise': function(name, value, timeout){
+                'string, object, promise': function(name, value, timeout){
                     return this.setConfVar(name, value, {timeout: timeout});
                 },
-                'string, string': function(name, value){
+                'string, object': function(name, value){
                     return this.setConfVar(name, value, {});
                 }
             });
 
             this.getConfVar = helpers.overload({
-                'string, object': function(name, value, options){
-                    return facility.user().getConfVar(name, value, options);
+                'string, object': function(name, options){
+                    return tc.getConfVar(name, options);
                 },
-                'string, promise': function(name, value, timeout){
-                    return this.getConfVar(name, value, {timeout: timeout});
+                'string, promise': function(name, timeout){
+                    return this.getConfVar(name, {timeout: timeout});
                 },
-                'string': function(name, value){
-                    return this.getConfVar(name, value);
+                'string': function(name){
+                    return this.getConfVar(name, {});
                 }
             });
 

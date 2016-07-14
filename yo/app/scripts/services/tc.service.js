@@ -159,6 +159,24 @@
     	return $q.all(promises);
     };
 
+    this.getConfVar = helpers.overload({
+        'string, object': function(name, options){
+            return this.get('confVars/' + name, {}, options).then(function(data){
+                try {
+                    return JSON.parse(data.value);
+                } catch(e){
+                    return {};
+                }
+            });
+        },
+        'string, promise': function(name, timeout){
+            return this.getConfVar(name, {timeout: timeout});
+        },
+        'string': function(name){
+            return this.getConfVar(name, {});
+        }
+    });
+
 		helpers.generateRestMethods(this, this.config().topcatUrl + "/topcat/");
 
   });

@@ -566,7 +566,7 @@
         "PAGE_TITLE": "Admin",
         "MESSAGES": {
             "SERVICE_STATUS_MESSAGE": "Service Status",
-            "SERVICE_STATUS_ENABLED": "enabled?",
+            "SERVICE_STATUS_SHOW": "show?",
             "SAVE": "Save"
         }
     },
