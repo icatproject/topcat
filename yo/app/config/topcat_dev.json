@@ -1087,6 +1087,7 @@
                     ]
                 },
                 "dataset": {
+                    "skipSingleEntities": true,
                     "gridOptions": {
                         "enableSelection": true,
                         "columnDefs": [
