@@ -22,7 +22,7 @@
         that.maintenanceMode = maintenanceMode;
       });
 
-      var admin = tc.admin($state.params.facilityName);
+      var admin = tc.adminFacilities()[0].admin();
       this.save = function(){
         var promises = [];
 
