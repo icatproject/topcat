@@ -68,7 +68,7 @@
                         window.location.href = '/';
                     } else {
                         inform.add("You're not an admin user", {
-                            'ttl': 0,
+                            'ttl': 2000,
                             'type': 'danger'
                         });
                     }
