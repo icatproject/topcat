@@ -202,11 +202,11 @@
                     	defered.resolve(_.map(results, function(result){
                     		var type = _.keys(result)[0];
                     		if(helpers.typeOf(result) != 'object' || !type) return result;
-                				var out = result[type];
-                				out.entityType = helpers.uncapitalize(type);
-                				out = tcIcatEntity.create(out, facility);
-                				return out;
-                			}));
+            				var out = result[type];
+            				out.entityType = helpers.uncapitalize(type);
+            				out = tcIcatEntity.create(out, facility);
+            				return out;
+                		}));
                     }, function(response){
                     	defered.reject(response);
                     });
