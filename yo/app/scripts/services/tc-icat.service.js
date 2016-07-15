@@ -109,7 +109,7 @@
 
                         promises.push(facility.admin().isValidSession(sessionId).then(function(isAdmin){
                             $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
-                            document.cookie = "isAdmin=true";
+                            if(isAdmin) document.cookie = "isAdmin=true";
                         }));
 
                         promises.push(that.entity('user', ["where user.name = ?", username]).then(function(user){
