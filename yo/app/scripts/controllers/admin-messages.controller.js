@@ -11,19 +11,32 @@
           timeout.resolve();
       });
 
-      var admin = tc.admin($state.params.facilityName);
-      admin.getConfVar('serviceStatus').then(function(serviceStatus){
+      this.serviceStatus = {};
+      this.maintenanceMode = {};
+
+      
+      tc.getConfVar('serviceStatus').then(function(serviceStatus){
         that.serviceStatus = serviceStatus;
       });
 
+      tc.getConfVar('maintenanceMode').then(function(maintenanceMode){
+        that.maintenanceMode = maintenanceMode;
+      });
 
+      var admin = tc.admin($state.params.facilityName);
       this.save = function(){
-        admin.setConfVar('serviceStatus', this.serviceStatus).then(function(){
+        var promises = [];
+
+        promises.push(admin.setConfVar('serviceStatus', this.serviceStatus));
+        promises.push(admin.setConfVar('maintenanceMode', this.maintenanceMode));
+
+        $q.all(promises).then(function(){
           inform.add("Saved", {
               'ttl': 1500,
               'type': 'success'
           });
         });
+
       };
 
     });

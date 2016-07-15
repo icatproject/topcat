@@ -4,11 +4,20 @@
         <form class="form-horizontal">
             <fieldset>
                 <div class="form-group" ng-hide="loginController.authenticationTypes.length <= 1">
-                    <label class="control-label" for="plugin">{{'ADMIN.MESSAGES.SERVICE_STATUS_MESSAGE' | translate}} </label>
+                    <label class="control-label" for="plugin">{{'ADMIN.MESSAGES.SERVICE_STATUS.MESSAGE' | translate}} </label>
                     <textarea class="form-control" ng-model="adminMessagesController.serviceStatus.message" style="height: 150px"></textarea>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" ng-model="adminMessagesController.serviceStatus.show"> {{'ADMIN.MESSAGES.SERVICE_STATUS_SHOW' | translate}}
+                            <input type="checkbox" ng-model="adminMessagesController.serviceStatus.show"> {{'ADMIN.MESSAGES.SERVICE_STATUS.SHOW' | translate}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" ng-hide="loginController.authenticationTypes.length <= 1">
+                    <label class="control-label" for="plugin">{{'ADMIN.MESSAGES.MAINTENANCE_MODE.MESSAGE' | translate}} </label>
+                    <textarea class="form-control" ng-model="adminMessagesController.maintenanceMode.message" style="height: 150px"></textarea>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="adminMessagesController.maintenanceMode.show"> {{'ADMIN.MESSAGES.MAINTENANCE_MODE.SHOW' | translate}}
                         </label>
                     </div>
                 </div>

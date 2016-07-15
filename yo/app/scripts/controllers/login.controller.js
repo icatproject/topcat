@@ -55,16 +55,34 @@
         });
 
         this.login = function(){
+            console.log('$state.current.name', $state.current.name);
             facility.icat().login(this.plugin, this.userName, this.password).then(function(){
-                var name;
-                var params = {};
-                if($sessionStorage.lastState){
-                    name = $sessionStorage.lastState.name;
-                    params = $sessionStorage.lastState.params;
+                
+                if($state.current.name == 'login-admin'){
+                    var cookies = {};
+                    _.each(document.cookie.split(/;\s*/), function(pair){
+                        pair = pair.split(/=/);
+                        cookies[pair[0]] = pair[1];
+                    });
+                    if(cookies['isAdmin'] == 'true'){
+                        window.location.href = '/';
+                    } else {
+                        inform.add("You're not an admin user", {
+                            'ttl': 0,
+                            'type': 'danger'
+                        });
+                    }
                 } else {
-                    name = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
+                    var name;
+                    var params = {};
+                    if($sessionStorage.lastState){
+                        name = $sessionStorage.lastState.name;
+                        params = $sessionStorage.lastState.params;
+                    } else {
+                        name = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
+                    }
+                    $state.go(name, params);
                 }
-                $state.go(name, params);
 
             }, function(response){
                 inform.add(response.message != null ? response.message : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {

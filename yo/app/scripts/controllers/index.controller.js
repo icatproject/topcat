@@ -26,7 +26,7 @@
 
         $rootScope.$on('http:error', function(){
             tc.purgeSessions().then(function(){
-                if(tc.userFacilities().length == 0){
+                if(tc.userFacilities().length == 0 && tc.config().maintenanceMode && tc.config().maintenanceMode.show == false){
                     $state.go("login");
                 }
             });
@@ -165,6 +165,8 @@
                 $state.go(name, params);
             });
         });
+
+        this.maintenanceMode = tc.config().maintenanceMode;
 
     });
 

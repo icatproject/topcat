@@ -565,8 +565,14 @@
     "ADMIN": {
         "PAGE_TITLE": "Admin",
         "MESSAGES": {
-            "SERVICE_STATUS_MESSAGE": "Service Status",
-            "SERVICE_STATUS_SHOW": "show?",
+            "SERVICE_STATUS" : {
+                "MESSAGE": "Service Status",
+                "SHOW": "show?"
+            },
+            "MAINTENANCE_MODE" : {
+                "MESSAGE": "Maintenance mode",
+                "SHOW": "show?"
+            },
             "SAVE": "Save"
         }
     },

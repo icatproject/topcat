@@ -131,7 +131,7 @@
     <body ng-cloak ng-controller="IndexController as indexController">
         <!-- Begin page content -->
         <div class="container-fluid">
-            <div class="page-header"  ng-hide="indexController.showMaintenanceMode">
+            <div class="page-header"  ng-hide="indexController.maintenanceMode.show">
                 <!-- Fixed navbar -->
                 <div class="navbar navbar-default navbar-fixed-top">
                     <div class="container-fluid">
@@ -210,7 +210,7 @@
                 </div>
             </div>
 
-            <div ng-show="indexController.serviceStatus.show">
+            <div ng-show="indexController.serviceStatus.show && !indexController.maintenanceMode.show">
                 <div class="row">
                     <div class="col-sm-4 col-sm-push-4">
                         <div class="alert alert-info">
@@ -231,7 +231,7 @@
             <div ui-view></div>
             <!-- /content -->
         </div>
-        <footer class="footer"  ng-hide="indexController.showMaintenanceMode">
+        <footer class="footer"  ng-hide="indexController.maintenanceMode.show">
             <div class="container-fluid">
                 <div class="row-fluid">
                     <div class="col-md-12 col-centered text-center" translate="FOOTER.HTML" translate-compile></div>

@@ -67,6 +67,16 @@
                         defered.resolve(config);
                     });
                     return defered.promise;
+                }).then(function(config){
+                    var topcatUrl = config.site.topcatUrl || window.location.href.replace(/^(https{0,1}:\/\/[^\/]+).*$/, '$1');                    
+                    return $http.get(topcatUrl + '/topcat/confVars/maintenanceMode').then(function(response){
+                        try {
+                            config.site.maintenanceMode = JSON.parse(response.data.value);
+                        } catch(e){
+                            config.site.maintenanceMode = {show: false, message: ""};
+                        }
+                        return config;
+                    });
                 });
             }],
             LANG : ['$http', function($http) {
@@ -83,7 +93,7 @@
                         return {};
                     }
                 });
-            } ]
+            }]
         }
     });
 
@@ -156,20 +166,40 @@
         .config(['$logProvider', function($logProvider){
             $logProvider.debugEnabled(true);
         }])
-        .config(function($stateProvider, $urlRouterProvider, APP_CONFIG) {
+        .config(function($stateProvider, $urlRouterProvider, APP_CONFIG){
+            $stateProvider.state('login-admin', {
+                url: '/login-admin',
+                templateUrl: 'views/login.html',
+                controller: 'LoginController as loginController',
+                resolve: {
+                    SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
+                        return SmartClientManager.ping();
+                    }]
+                }
+            })
+
 
             var maintenanceMode = APP_CONFIG.site.maintenanceMode;
+            var cookies = {};
+            _.each(document.cookie.split(/;\s*/), function(pair){
+                pair = pair.split(/=/);
+                cookies[pair[0]] = pair[1];
+            });
             if(maintenanceMode && maintenanceMode.show){
-                $stateProvider.state('maintenance-mode', {
-                    url: '{path:.*}',
-                    views: {
-                      '': {
-                        templateUrl: 'views/maintenance-mode.html',
-                        controller: 'MaintenanceModeController as maintenanceModeController'
-                      }
-                    }
-                });
-                return;
+                if(cookies['isAdmin'] == 'true'){
+                    maintenanceMode.show = false
+                } else {
+                    $stateProvider.state('maintenance-mode', {
+                        url: '{path:.*}',
+                        views: {
+                          '': {
+                            templateUrl: 'views/maintenance-mode.html',
+                            controller: 'MaintenanceModeController as maintenanceModeController'
+                          }
+                        }
+                    });
+                    return;
+                }
             }
 
             $stateProvider
