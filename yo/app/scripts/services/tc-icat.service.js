@@ -169,6 +169,10 @@
             		delete $sessionStorage.sessions[facility.config().name];
     				$sessionStorage.$apply();
 
+                    if(tc.adminFacilities().length == 0){
+                        document.cookie = 'isAdmin=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    }
+
 
             		return $q.all(promises).then(function(){
             			$rootScope.$broadcast('session:change');
