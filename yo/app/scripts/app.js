@@ -364,12 +364,12 @@
                     controller: 'AdminController as adminController'
                 })
                 .state('admin.downloads', {
-                    url: ':facilityName/downloads',
+                    url: 'downloads/:facilityName',
                     templateUrl: 'views/admin-downloads.html',
                     controller: 'AdminDownloadsController as adminDownloadsController'
                 })
                 .state('admin.messages', {
-                    url: ':facilityName/messages',
+                    url: 'messages',
                     templateUrl: 'views/admin-messages.html',
                     controller: 'AdminMessagesController as adminMessagesController'
                 })

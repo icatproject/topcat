@@ -13,7 +13,6 @@
 
       this.serviceStatus = {};
       this.maintenanceMode = {};
-
       
       tc.getConfVar('serviceStatus').then(function(serviceStatus){
         that.serviceStatus = serviceStatus;

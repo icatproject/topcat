@@ -14,7 +14,12 @@
           timeout.resolve();
       });
 
-      if(!$state.params.facilityName) return;
+      this.facilities = tc.adminFacilities();
+
+      if(!$state.params.facilityName){
+        $state.go('admin.downloads', {facilityName: this.facilities[0].config().name});
+        return;
+      } 
 
       var admin = tc.admin($state.params.facilityName);
 
