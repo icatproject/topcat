@@ -42,8 +42,8 @@ Vagrant.configure(2) do |config|
     unzip mysql-connector-java-5.1.37.zip
     sudo cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
 
-    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
-    sudo cp /home/vagrant/ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
+    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.3/ids.storage_file-1.3.3.jar
+    sudo cp /home/vagrant/ids.storage_file-1.3.3.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
 
     sudo /opt/glassfish4/bin/asadmin start-domain
     sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
@@ -83,8 +83,8 @@ Vagrant.configure(2) do |config|
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
 
 
-    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
-    unzip ids.server-1.5.0-distro.zip
+    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
+    unzip ids.server-1.6.0-distro.zip
     sudo cp /vagrant/provision/ids.properties /home/vagrant/ids.server/ids.properties
     sudo cp /vagrant/provision/ids-setup.properties /home/vagrant/ids.server/ids-setup.properties
     sudo cp /vagrant/provision/ids.storage_file.main.properties /opt/glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
@@ -95,7 +95,7 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant/ids.server
     sudo ./setup configure
     sudo ./setup install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
 
     cd /home/vagrant
 
