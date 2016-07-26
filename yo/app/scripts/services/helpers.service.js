@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('helpers', function($http, $q, $timeout, uiGridConstants, icatSchema, topcatSchema){
+    app.service('helpers', function($http, $q, $timeout, $rootScope, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
@@ -511,6 +511,35 @@
 			return ('' + text).replace(/([A-Z])/g, '_$1').replace(/-/g, '_').replace(/^_/, '').toUpperCase();
 		};
 
+        function LowPriorityPromise(cancel, create){
+            var promise;
+            var defered = [];
+            var restarting;
+
+            var stopListeningForHighPriorityCalls =  $rootScope.$on('ajax:highpriority', restart);
+
+            function restart(){
+                restarting = true;
+                if(promise) cancel();
+                promise = create();
+                promise.then(function(result){
+                    if(!restarting){
+                        stopListeningForHighPriorityCalls();
+                        _.each(defered, function(defered){ defered.resolve(result); });
+                    }
+                });
+                restarting = false;
+            }
+
+            this.then = function(fn){
+                var out = $q.defer();
+                defered.push(out);
+                return out.promise.then(fn);
+            }
+
+            restart();
+        }
+
 		this.generateRestMethods = function(that, prefix){
 			
 			defineMethod.call(that, 'get');
@@ -529,16 +558,35 @@
 						if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
 						var url = prefix + offset;
 						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
-						var out = $q.defer();
-						var args = [url];
-						if(methodName.match(/post|put/)) args.push(params);
-						args.push(options);
-						$http[methodName].apply($http, args).then(function(response){
-							out.resolve(response.data);
-						}, function(response){
-							out.reject(response.data);
-						});
-						return out.promise;
+
+                        if(options.timeout) options.timeout.then(cancel);
+
+                        var defered;
+                        function cancel(){
+                            if(defered) defered.resolve();
+                        }
+
+                        function call(){
+    						var out = $q.defer();
+    						var args = [url];
+    						if(methodName.match(/post|put/)) args.push(params);
+                            defered = $q.defer();
+                            options.timeout = defered.promise;
+    						args.push(options);
+    						$http[methodName].apply($http, args).then(function(response){
+    							out.resolve(response.data);
+    						}, function(response){
+    							out.reject(response.data);
+    						});
+    						return out.promise;
+                        }
+
+                        if(options.lowPriority){
+                            return new LowPriorityPromise(cancel, call);
+                        } else {
+                            $rootScope.$broadcast('ajax:highpriority');
+                            return call();
+                        }
 		    		},
 					'string, object, object': function(offset, params, options){
 						return this[methodName].call(this, offset, helpers.urlEncode(params), options)

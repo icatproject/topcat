@@ -873,7 +873,7 @@
         {
             "name": "ISIS",
             "title": "ISIS",
-            "idsUrl": "https://idsdev.isis.cclrc.ac.uk",
+            "idsUrl": "https://isisicatds.stfc.ac.uk",
             "hierarchy": [
                 "facility",
                 "instrument",
