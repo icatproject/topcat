@@ -312,6 +312,13 @@
 
                     });
                 });
+                this.attribute('extensions', function(){
+                    this.type('array');
+                    this.mandatory(false);
+                    this.attribute('*', function(){
+                        this.type('string');
+                    });
+                });
             });
         }
 

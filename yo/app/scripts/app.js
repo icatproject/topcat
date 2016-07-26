@@ -206,7 +206,7 @@
                 .state('home', {
                     abstract: true,
                     templateUrl: 'views/abstract-home.html',
-                    controller: 'HomeController'
+                    controller: 'HomeController as homeController'
                 })
                 .state('home.browse', {
                     abstract: true,
@@ -447,5 +447,25 @@
         .run(['RouteCreatorService', 'PageCreatorService', function(RouteCreatorService, PageCreatorService) {
             PageCreatorService.createStates();
             RouteCreatorService.createStates();
+        }]).run(['APP_CONFIG', '$http', '$q', function(APP_CONFIG, $http, $q){
+            var promises = [];
+            var extensionIndex = {};
+
+            _.each(APP_CONFIG.extensions, function(extensionUrl){
+                promises.push($http.get(extensionUrl).then(function(response){
+                    var extension = response.data
+                    if(typeof extension != 'object') extension = JSON.parse(extension);
+                    extensionIndex[extensionUrl] = extension;
+                }));
+            });
+
+            $q.all(promises).then(function(){
+                _.each(APP_CONFIG.extensions, function(extensionUrl){
+                    var extension = extensionIndex[extensionUrl];
+                    _.each(extension.scripts, function(scriptUrl){
+                        $(document.body).append($('<script>').attr('src', scriptUrl));
+                    });
+                });
+            });
         }]);
 })();

@@ -4,7 +4,7 @@
 
   var app = angular.module('angularApp');
 
-  app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, APP_CONFIG){
+  app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, APP_CONFIG, RuntimeStatesProvider){
   	var tc = this;
   	window.tc = this;
   	var facilities = {};
@@ -175,6 +175,35 @@
         'string': function(name){
             return this.getConfVar(name, {});
         }
+    });
+
+    var registeredTabs = [];
+    this.registeredTabs = function(){ return registeredTabs; };
+
+    this.registerTab = helpers.overload({
+      'string, string, object': function(name, view, options){
+        registeredTabs.push({name: name, view: view, options: options});
+
+        var state = {
+          url: '/' + name,
+          resolve: {
+            authenticate : ['Authenticate', function(Authenticate) {
+                return Authenticate.authenticate();
+            }]
+          },
+          views: {},
+          controller: options.controller
+        };
+
+        state.views[name + '@home'] = { templateUrl: view };
+
+        RuntimeStatesProvider.addState('home.' + name, state);
+
+
+        $rootScope.$broadcast('tab:change');
+      }, 'string, string': function(name, view){
+        this.registerTab(name, view, {});
+      }
     });
 
 		helpers.generateRestMethods(this, this.config().topcatUrl + "/topcat/");
