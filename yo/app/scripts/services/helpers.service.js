@@ -511,46 +511,8 @@
 			return ('' + text).replace(/([A-Z])/g, '_$1').replace(/-/g, '_').replace(/^_/, '').toUpperCase();
 		};
 
-        function LowPriorityPromise(cancel, create){
-            var promise;
-            var defered = [];
-            var restarting = false;
-            var stopListeningForHighPriorityCalls =  $rootScope.$on('ajax:highpriority', restart);
-            var canceled = false;
 
-            function restart(){
-                if(restarting) return;
-
-                restarting = true;
-
-                if(promise) cancel();
-                
-                $timeout(function(){
-                    if(!canceled){
-                        promise = create();
-                        promise.then(function(result){
-                            if(!restarting){
-                                stopListeningForHighPriorityCalls();
-                                _.each(defered, function(defered){ defered.resolve(result); });
-                            }
-                        }, function(){
-                            stopListeningForHighPriorityCalls();
-                            canceled = true;
-                        });
-
-                        restarting = false;
-                    }
-                }, 1000);
-            }
-
-            this.then = function(fn){
-                var out = $q.defer();
-                defered.push(out);
-                return out.promise.then(fn);
-            }
-
-            restart();
-        }
+        var lowPriorityCounter = 0;
 
 		this.generateRestMethods = function(that, prefix){
 			
@@ -570,36 +532,47 @@
 						if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
 						var url = prefix + offset;
 						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
+                    
+						var out = $q.defer();
+						var args = [url];
+						if(methodName.match(/post|put/)) args.push(params);
 
-                        if(options.timeout) options.timeout.then(cancel);
-
-                        var defered;
-                        function cancel(){
-                            if(defered) defered.resolve();
-                        }
+						args.push(options);
 
                         function call(){
-    						var out = $q.defer();
-    						var args = [url];
-    						if(methodName.match(/post|put/)) args.push(params);
-                            defered = $q.defer();
-                            options.timeout = defered.promise;
-    						args.push(options);
+                            if(options.lowPriority) lowPriorityCounter++;
     						$http[methodName].apply($http, args).then(function(response){
     							out.resolve(response.data);
+                                if(options.lowPriority) lowPriorityCounter--;
     						}, function(response){
     							out.reject(response.data);
+                                if(options.lowPriority) lowPriorityCounter--;
     						});
-    						return out.promise;
+                        }
+
+                        var pollTimeoutPromise;
+                        function poll(){
+                            if(lowPriorityCounter < 2){
+                                call();
+                            } else {
+                                pollTimeoutPromise = $timeout(poll);
+                            }
+                        }
+
+                        if(options.timeout){
+                            options.timeout.then(function(){
+                                if(pollTimeoutPromise) $timeout.cancel(pollTimeoutPromise);
+                            });
                         }
 
                         if(options.lowPriority){
-                            return new LowPriorityPromise(cancel, call);
+                            poll();
                         } else {
-                            $rootScope.$broadcast('ajax:highpriority');
-                            return call();
+                            call();
                         }
-		    		},
+
+						return out.promise;
+                    },
 					'string, object, object': function(offset, params, options){
 						return this[methodName].call(this, offset, helpers.urlEncode(params), options)
 		    		},
