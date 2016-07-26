@@ -87,7 +87,9 @@
                     }
                   }
                 ];
-                promises.push(icat.query(query, options).then(function(_results){
+                var _options = _.clone(options);
+                _options.lowPriority = true;
+                promises.push(icat.query(query, _options).then(function(_results){
                   var _results = _.map(_results, function(result){
                     result.facilityName = facilityName;
                     result.score = scores[result.id];

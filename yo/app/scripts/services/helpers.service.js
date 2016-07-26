@@ -514,21 +514,33 @@
         function LowPriorityPromise(cancel, create){
             var promise;
             var defered = [];
-            var restarting;
-
+            var restarting = false;
             var stopListeningForHighPriorityCalls =  $rootScope.$on('ajax:highpriority', restart);
+            var canceled = false;
 
             function restart(){
+                if(restarting) return;
+
                 restarting = true;
+
                 if(promise) cancel();
-                promise = create();
-                promise.then(function(result){
-                    if(!restarting){
-                        stopListeningForHighPriorityCalls();
-                        _.each(defered, function(defered){ defered.resolve(result); });
+                
+                $timeout(function(){
+                    if(!canceled){
+                        promise = create();
+                        promise.then(function(result){
+                            if(!restarting){
+                                stopListeningForHighPriorityCalls();
+                                _.each(defered, function(defered){ defered.resolve(result); });
+                            }
+                        }, function(){
+                            stopListeningForHighPriorityCalls();
+                            canceled = true;
+                        });
+
+                        restarting = false;
                     }
-                });
-                restarting = false;
+                }, 1000);
             }
 
             this.then = function(fn){
