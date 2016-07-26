@@ -539,14 +539,20 @@
 
 						args.push(options);
 
+                        var stopListeningForLowPriorityCounterChanges = function(){};
+
                         function call(){
                             if(options.lowPriority) lowPriorityCounter++;
     						$http[methodName].apply($http, args).then(function(response){
     							out.resolve(response.data);
                                 if(options.lowPriority) lowPriorityCounter--;
+                                $rootScope.$emit('lowprioritycounter:change');
+                                stopListeningForLowPriorityCounterChanges();
     						}, function(response){
     							out.reject(response.data);
                                 if(options.lowPriority) lowPriorityCounter--;
+                                $rootScope.$emit('lowprioritycounter:change');
+                                stopListeningForLowPriorityCounterChanges();
     						});
                         }
 
@@ -554,18 +560,16 @@
                         function poll(){
                             if(lowPriorityCounter < 2){
                                 call();
-                            } else {
-                                pollTimeoutPromise = $timeout(poll);
                             }
                         }
 
+                        
                         if(options.timeout){
-                            options.timeout.then(function(){
-                                if(pollTimeoutPromise) $timeout.cancel(pollTimeoutPromise);
-                            });
+                            options.timeout.then(stopListeningForLowPriorityCounterChanges);
                         }
 
                         if(options.lowPriority){
+                            stopListeningForLowPriorityCounterChanges = $rootScope.$on('lowprioritycounter:change', poll);
                             poll();
                         } else {
                             call();
