@@ -42,6 +42,25 @@ You can edit Topcat's main configuration by editing:
 
 * [yo/app/config/topcat_dev.json](https://github.com/icatproject/topcat/tree/master/yo/app/config/topcat_dev.json)
 
+You can rebuild the server side (i.e. anything Java related) by:
+
+```bash
+vagrant ssh
+topcat_build_install
+```
+
+You can create a build by:
+
+```bash
+vagrant ssh
+cd /vagrant
+mvn clean install
+```
+
+your new build will be in:
+
+* target/
+
 ## Licence
 
 Copyright 2012-2015 The ICAT Collaboration
