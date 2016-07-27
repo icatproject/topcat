@@ -10,7 +10,7 @@ A web based GUI able to search across multiple ICAT instances and download data 
 
 Information on how to install Topcat can be found here:
 
-* https://repo.icatproject.org/site/topcat/
+* https://repo.icatproject.org/site/topcat/2.1.0/installation.html
 
 ## Development
 
