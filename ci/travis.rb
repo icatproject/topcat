@@ -21,6 +21,8 @@ end
 
 exec %{
 
+  ruby -v
+
   cd install
 
   echo "mysql-server mysql-server/root_password password secret" | sudo debconf-set-selections 
