@@ -40,7 +40,7 @@ You will be able to log into the "TEST" facility with the following credentials:
 
 You can edit Topcat's main configuration by editing:
 
-* [yo/app/config/topcat_dev.json](https://github.com/icatproject/topcat/tree/master/yo/app/config)
+* [yo/app/config/topcat_dev.json](https://github.com/icatproject/topcat/tree/master/yo/app/config/topcat_dev.json)
 
 ## Licence
 
