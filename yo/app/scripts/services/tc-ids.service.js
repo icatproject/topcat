@@ -38,6 +38,7 @@
                 sessionId: facility.icat().session().sessionId
               };
               params[idsParamName] = id;
+              options.lowPriority = true;
               return that.get('getSize', params,  options).then(function(size){
                 return parseInt('' + size);
               });
@@ -91,6 +92,7 @@
                 if(currentDatasetIds != '') params.datasetIds = currentDatasetIds;
                 if(currentDatafileIds != '') params.datafileIds = currentDatafileIds;
 
+                options.lowPriority = true;
                 promises.push(that.get('getSize', params,  options).then(function(size){
                   out = out + parseInt(size);
                 }));
@@ -123,6 +125,7 @@
                 sessionId: facility.icat().session().sessionId
               };
               params[idsParamName] = id;
+              options.lowPriority = true;
               return that.get('getStatus', params,  options).then(function(status){
                 return status;
               });
@@ -176,6 +179,7 @@
                 if(currentDatasetIds != '') params.datasetIds = currentDatasetIds;
                 if(currentDatafileIds != '') params.datafileIds = currentDatafileIds;
 
+                options.lowPriority = true;
                 promises.push(that.get('getStatus', params,  options).then(function(status){
                   out.push(status);
                 }));

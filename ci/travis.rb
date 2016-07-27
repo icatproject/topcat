@@ -114,12 +114,13 @@ exec %{
   sudo ./setup install
   cd ../
 
-  sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.1-SNAPSHOT.deployment-order=140
+  sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
-  sudo apt-get --assume-yes install ruby-dev
-  sudo gem install rest-client
-  sudo ruby ./provision/populate_lucene.rb
+
+  gem install rest-client
+
+  ruby #{install_provision_dir}/populate_lucene.rb
 
   cd ../yo
 

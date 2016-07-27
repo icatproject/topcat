@@ -60,14 +60,14 @@
                         transportType: transportType
                     };
                     
-                    cart.getStatus(timeout).then(function(status){
+                    cart.getStatus(timeout.promise).then(function(status){
                         if(status == "ARCHIVED"){
                             that.hasArchive = true;
                         }
                         download.status = status;
                     });
 
-                    cart.getSize(timeout).then(function(size){
+                    cart.getSize(timeout.promise).then(function(size){
                         download.size = size;
                         download.estimatedTime = Math.ceil(size);
                     });

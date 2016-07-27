@@ -151,7 +151,8 @@
                 "FILE_SIZE": "File Size",
                 "CHECKSUM": "Checksum",
                 "DATAFILE_CREATE_TIME": "Create Time",
-                "DATAFILE_MOD_TIME": "Modified Time"
+                "DATAFILE_MOD_TIME": "Modified Time",
+                "MOD_TIME": "Modified Time"
             },
             "ACTIONS":{
                 "NAME": "Actions",
@@ -563,7 +564,18 @@
         }
     },
     "ADMIN": {
-        "PAGE_TITLE": "Admin"
+        "PAGE_TITLE": "Admin",
+        "MESSAGES": {
+            "SERVICE_STATUS" : {
+                "MESSAGE": "Service Status",
+                "SHOW": "show?"
+            },
+            "MAINTENANCE_MODE" : {
+                "MESSAGE": "Maintenance mode",
+                "SHOW": "show?"
+            },
+            "SAVE": "Save"
+        }
     },
     "TIME": {
         "DAY": "day",

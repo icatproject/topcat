@@ -513,6 +513,10 @@
             "PARAM_TYPE_UNITS" : "Units",
             "PARAM_TYPE_VALUE" : "Value"
         },
+        "PUBLICATION" : {
+            "TABTITLE" : "Publications",
+            "FULL_REFERENCE" : "Reference"
+        },
         "DATASET" : {
             "TABTITLE" : "Dataset Details",
             "NAME" : "Name",

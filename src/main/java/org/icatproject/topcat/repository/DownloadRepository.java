@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean
-@Singleton
 public class DownloadRepository {
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;

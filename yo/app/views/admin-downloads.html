@@ -1,0 +1,21 @@
+
+<div ng-show="adminDownloadsController.facilities.length > 1">
+    <ul class="nav nav-tabs nav-tabs-head">
+        <li ng-repeat="facility in adminDownloadsController.facilities" ng-class="{active: facility.config().name == $state.params.facilityName}">
+            <a ui-sref="admin.downloads({facilityName: facility.config().name})">{{facility.config().title}}</a>
+        </li>
+    </ul>
+    <br>
+</div>
+
+<div ng-if="adminDownloadsController.gridOptions" class="col-md-12">
+    <div ui-grid="adminDownloadsController.gridOptions" ui-grid-infinite-scroll class="browse-grid" take-up-remaining-height ui-grid-resize-columns>
+        <div class="no-rows row" ng-show="isEmpty">
+            <div class="col-md-2 col-md-offset-5 empty-message">
+                <span translate="BROWSE.EMPTY"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+

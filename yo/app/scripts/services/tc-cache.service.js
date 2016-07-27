@@ -84,9 +84,10 @@
               $rootScope.requestCounter--;
               $rootScope.updateLoadingState();
               return value;
-            }, function(){
+            }, function(results){
               $rootScope.requestCounter--;
               $rootScope.updateLoadingState();
+              return $q.reject(results);
             });
           },
           'string, function': function(key, fn){

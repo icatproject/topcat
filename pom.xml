@@ -5,11 +5,20 @@
 	<groupId>org.icatproject</groupId>
 	<artifactId>topcat</artifactId>
 	<packaging>war</packaging>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.2.0-SNAPSHOT</version>
 	<name>TopCAT</name>
 	<description>Web frontend for multiple ICATs</description>
 
 	<build>
+
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>2.10</version>
+			</extension>
+		</extensions>
+
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -324,9 +333,10 @@
 	</profiles>
 
 	<properties>
+		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<repoUrl>https://www.icatproject.org/mvn/repo</repoUrl>
+		<repoUrl>https://repo.icatproject.org/repo</repoUrl>
 		<project.scm.id>github</project.scm.id>
 		<icatSchemaVersionDoc>4.6.0-SNAPSHOT</icatSchemaVersionDoc>
 	</properties>
@@ -334,7 +344,7 @@
 	<repositories>
 		<repository>
 			<id>ICAT Repo</id>
-			<url>https://www.icatproject.org/mvn/repo</url>
+			<url>https://repo.icatproject.org/repo</url>
 		</repository>
 	</repositories>
 
@@ -372,16 +382,17 @@
 	</organization>
 
 	<distributionManagement>
-		<downloadUrl>http://www.icatproject.org/mvn/repo</downloadUrl>
+		<downloadUrl>https://repo.icatproject.org/repo</downloadUrl>
 		<site>
-			<id>website</id>
-			<url>scp://www.icatproject.org/var/www/html/mvn/site/topcat/${project.version}</url>
+			<id>repo.icatproject.org</id>
+			<url>dav:https://repo.icatproject.org/site/topcat/${project.version}</url>
 		</site>
 		<repository>
-			<id>repo</id>
-			<url>scp://www.icatproject.org/var/www/html/mvn/repo</url>
+			<id>repo.icatproject.org</id>
+			<url>dav:https://repo.icatproject.org/repo</url>
 		</repository>
 	</distributionManagement>
+
 	<reporting>
 		<plugins>
 			<plugin>

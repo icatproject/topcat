@@ -42,8 +42,8 @@ Vagrant.configure(2) do |config|
     unzip mysql-connector-java-5.1.37.zip
     sudo cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
 
-    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
-    sudo cp /home/vagrant/ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
+    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.3/ids.storage_file-1.3.3.jar
+    sudo cp /home/vagrant/ids.storage_file-1.3.3.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
 
     sudo /opt/glassfish4/bin/asadmin start-domain
     sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
@@ -83,8 +83,8 @@ Vagrant.configure(2) do |config|
     sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
 
 
-    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
-    unzip ids.server-1.5.0-distro.zip
+    wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
+    unzip ids.server-1.6.0-distro.zip
     sudo cp /vagrant/provision/ids.properties /home/vagrant/ids.server/ids.properties
     sudo cp /vagrant/provision/ids-setup.properties /home/vagrant/ids.server/ids-setup.properties
     sudo cp /vagrant/provision/ids.storage_file.main.properties /opt/glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
@@ -95,7 +95,7 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant/ids.server
     sudo ./setup configure
     sudo ./setup install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
 
     cd /home/vagrant
 
@@ -132,13 +132,15 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat_build_install
     sudo dos2unix /usr/bin/topcat_build_install
     topcat_build_install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.1-SNAPSHOT.deployment-order=140
-
-    #/vagrant/provision/addContents https://localhost:8181 /vagrant/provision/import.txt simple username root password root
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
 
     mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 
-    sudo gem install rest-client
+    curl -sSL https://get.rvm.io | bash
+    source /home/vagrant/.rvm/scripts/rvm
+    rvm install 2.3.1
+    rvm use 2.3.1 --default
+    gem install rest-client
 
     ruby /vagrant/provision/populate_lucene.rb
 

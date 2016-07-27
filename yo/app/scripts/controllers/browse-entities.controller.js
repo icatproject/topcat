@@ -129,6 +129,7 @@
             return out; 
         }
 
+        var isFirstPage = true;
         function getPage(){
             that.isLoading = true;
             return generateQueryBuilder().run(canceler.promise).then(function(entities){
@@ -138,6 +139,10 @@
                         entity.getSize(canceler.promise);
                     }
                 });
+                if(isFirstPage && entities.length == 1){
+                    entities[0].browse();
+                }
+                isFirstPage = false;
                 return entities;
             });
         }

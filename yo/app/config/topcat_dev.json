@@ -230,6 +230,11 @@
                 {
                     "title": "DB",
                     "plugin": "db"
+                },
+                {
+                    "title": "CAS",
+                    "plugin": "cas",
+                    "casUrl": "https://authbeta.diamond.ac.uk/cas" 
                 }
             ],
             "downloadTransportTypes": [
@@ -291,7 +296,7 @@
                         },
                         {
                             "field": "investigationInstrument.fullName",
-                            "title": "BROWSE.COLUMN.INVESTIGATION.INSTRUMENT.NAME"
+                            "title": "BROWSE.COLUMN.INSTRUMENT.NAME"
                         },
                         {
                             "field": "size",
@@ -868,7 +873,7 @@
         {
             "name": "ISIS",
             "title": "ISIS",
-            "idsUrl": "https://idsdev.isis.cclrc.ac.uk",
+            "idsUrl": "https://isisicatds.stfc.ac.uk",
             "hierarchy": [
                 "facility",
                 "instrument",
@@ -1082,6 +1087,7 @@
                     ]
                 },
                 "dataset": {
+                    "skipSingleEntities": true,
                     "gridOptions": {
                         "enableSelection": true,
                         "columnDefs": [

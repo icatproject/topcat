@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, tc, ipCookie){
+    app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, $sessionStorage, tc, ipCookie){
         var that = this;
 
         this.facilities = tc.facilities();
@@ -26,7 +26,7 @@
 
         $rootScope.$on('http:error', function(){
             tc.purgeSessions().then(function(){
-                if(tc.userFacilities().length == 0){
+                if(tc.userFacilities().length == 0 && tc.config().maintenanceMode && tc.config().maintenanceMode.show == false){
                     $state.go("login");
                 }
             });
@@ -121,7 +121,11 @@
             });
         };
 
-        this.serviceStatus = tc.config().serviceStatus
+        this.serviceStatus = tc.config().serviceStatus;
+
+        tc.getConfVar('serviceStatus').then(function(serviceStatus){
+            that.serviceStatus = serviceStatus;
+        });
 
         if(!ipCookie('hideCookieMessage')){
             this.enableEuCookieLaw =  tc.config().enableEuCookieLaw;
@@ -145,6 +149,24 @@
                 this.$broadcast('loaded');
             }
         }
+
+
+        $rootScope.$on('cas:authentication', function(event, facilityName, ticket){
+            var service = window.location.href.replace(/#.*$/, '').replace(/[^\/]*$/, '') + 'cas?facilityName=' + facilityName;
+            tc.icat(facilityName).login('cas', service, ticket).then(function(){
+                var name;
+                var params = {};
+                if($sessionStorage.lastState){
+                    name = $sessionStorage.lastState.name;
+                    params = $sessionStorage.lastState.params;
+                } else {
+                    name = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
+                }
+                $state.go(name, params);
+            });
+        });
+
+        this.maintenanceMode = tc.config().maintenanceMode;
 
     });
 

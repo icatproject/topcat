@@ -4,7 +4,7 @@
 
     var app = angular.module('angularApp');
 
-    app.service('helpers', function($http, $q, $timeout, uiGridConstants, icatSchema, topcatSchema){
+    app.service('helpers', function($http, $q, $timeout, $rootScope, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
@@ -511,6 +511,9 @@
 			return ('' + text).replace(/([A-Z])/g, '_$1').replace(/-/g, '_').replace(/^_/, '').toUpperCase();
 		};
 
+
+        var lowPriorityCounter = 0;
+
 		this.generateRestMethods = function(that, prefix){
 			
 			defineMethod.call(that, 'get');
@@ -529,17 +532,51 @@
 						if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
 						var url = prefix + offset;
 						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
+                    
 						var out = $q.defer();
 						var args = [url];
 						if(methodName.match(/post|put/)) args.push(params);
+
 						args.push(options);
-						$http[methodName].apply($http, args).then(function(response){
-							out.resolve(response.data);
-						}, function(response){
-							out.reject(response.data);
-						});
+
+                        var stopListeningForLowPriorityCounterChanges = function(){};
+
+                        function call(){
+                            if(options.lowPriority) lowPriorityCounter++;
+    						$http[methodName].apply($http, args).then(function(response){
+    							out.resolve(response.data);
+                                if(options.lowPriority) lowPriorityCounter--;
+                                $rootScope.$emit('lowprioritycounter:change');
+                                stopListeningForLowPriorityCounterChanges();
+    						}, function(response){
+    							out.reject(response.data);
+                                if(options.lowPriority) lowPriorityCounter--;
+                                $rootScope.$emit('lowprioritycounter:change');
+                                stopListeningForLowPriorityCounterChanges();
+    						});
+                        }
+
+                        var pollTimeoutPromise;
+                        function poll(){
+                            if(lowPriorityCounter < 2){
+                                call();
+                            }
+                        }
+
+                        
+                        if(options.timeout){
+                            options.timeout.then(stopListeningForLowPriorityCounterChanges);
+                        }
+
+                        if(options.lowPriority){
+                            stopListeningForLowPriorityCounterChanges = $rootScope.$on('lowprioritycounter:change', poll);
+                            poll();
+                        } else {
+                            call();
+                        }
+
 						return out.promise;
-		    		},
+                    },
 					'string, object, object': function(offset, params, options){
 						return this[methodName].call(this, offset, helpers.urlEncode(params), options)
 		    		},
