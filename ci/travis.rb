@@ -21,8 +21,6 @@ end
 
 exec %{
 
-  ruby -v
-
   cd install
 
   echo "mysql-server mysql-server/root_password password secret" | sudo debconf-set-selections 
@@ -120,7 +118,7 @@ exec %{
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
 
-  sudo gem install rest-client
+  gem install rest-client
 
   ruby #{install_provision_dir}/populate_lucene.rb
 
