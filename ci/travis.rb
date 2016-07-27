@@ -42,8 +42,8 @@ exec %{
   unzip -q mysql-connector-java-5.1.37.zip
   sudo cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
 
-  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.2/ids.storage_file-1.3.2.jar
-  sudo cp ./ids.storage_file-1.3.2.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
+  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.3/ids.storage_file-1.3.3.jar
+  sudo cp ./ids.storage_file-1.3.3.jar /opt/glassfish4/glassfish/domains/domain1/lib/applibs
 
   sudo /opt/glassfish4/bin/asadmin start-domain
   sudo /opt/glassfish4/bin/asadmin set server.http-service.access-log.format="common"
@@ -77,8 +77,8 @@ exec %{
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
 
-  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
-  unzip -q ids.server-1.5.0-distro.zip
+  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
+  unzip -q ids.server-1.6.0-distro.zip
   cp ./provision/ids.properties ./ids.server/ids.properties
   cp ./provision/ids-setup.properties ./ids.server/ids-setup.properties
   sudo cp ./provision/ids.storage_file.main.properties /opt/glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
@@ -91,7 +91,7 @@ exec %{
   sudo ./setup configure
   sudo ./setup install
   cd ../
-  sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.5.0.deployment-order=120
+  sudo /opt/glassfish4/bin/asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
   
   curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
   sudo apt-get --assume-yes install nodejs maven phantomjs
