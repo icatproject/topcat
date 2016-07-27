@@ -200,7 +200,7 @@
                                     <a ui-sref="login" translate="MAIN_NAVIGATION.LOGIN"></a>
                                 </li>
                                 <li ng-if="indexController.userFacilities.length > 0 && indexController.facilities.length == 1">
-                                    <a ui-sref="logout.facility({facilityName: indexController.getSingleFacility().facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{userName: indexController.userFacilities[0].icat().session().userName, fullName: facility.icat().session().fullName}"></a>
+                                    <a ui-sref="logout.facility({facilityName: indexController.getSingleFacility().facilityName})" translate="MAIN_NAVIGATION.LOGOUT_FACILITY" translate-values="{userName: indexController.userFacilities[0].icat().session().userName, fullName: indexController.userFacilities[0].icat().session().fullName}"></a>
                                 </li>
                             </ul>
                         </div>
