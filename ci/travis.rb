@@ -77,7 +77,7 @@ exec %{
   cd ../
   sudo /opt/glassfish4/bin/asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
 
-  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.5.0/ids.server-1.5.0-distro.zip
+  wget https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
   unzip -q ids.server-1.5.0-distro.zip
   cp ./provision/ids.properties ./ids.server/ids.properties
   cp ./provision/ids-setup.properties ./ids.server/ids-setup.properties
