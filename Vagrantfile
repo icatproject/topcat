@@ -132,7 +132,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat_build_install
     sudo dos2unix /usr/bin/topcat_build_install
     topcat_build_install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.0.1-SNAPSHOT.deployment-order=140
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.1.0.deployment-order=140
 
     mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 

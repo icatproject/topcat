@@ -49,7 +49,7 @@ vagrant ssh
 topcat_build_install
 ```
 
-You can create a build by:
+You can build a distro by:
 
 ```bash
 vagrant ssh
