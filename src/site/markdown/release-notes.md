@@ -1,6 +1,6 @@
 #Release Notes
 
-## 2.0.1
+## 2.1.0
 
 * Bug fixes.
 * Improved documentation.
@@ -10,6 +10,7 @@
 	* "url" -> "idsUrl" (for "facilities" > [facility] > authenticationTypes > [authenticationType])
 	* Now gets validated making it less prone to erroneous configuration.
     * "jpqlExpression" attribute (for "facilities" > [facility] > "browse" > [entity type] > "gridOptions" > "columnDefs" > [columnDef]) no longer exists; instead it has been replaced by "jpqlFilter" and "jpqlSort". 
+* Now shows real name (if available) by logout button
 
 ## 2.0.0
 
