@@ -6,7 +6,9 @@ A web based GUI able to search across multiple ICAT instances and download data 
 
 [![Build Status](https://travis-ci.org/icatproject/topcat.svg?branch=master)](https://travis-ci.org/icatproject/topcat)
 
-[![Stories in Ready](https://badge.waffle.io/icatproject/topcat.png?label=ready&title=Ready)](https://waffle.io/icatproject/topcat)
+
+
+[![Stories in Ready](https://badge.waffle.io/icatproject/icat.server.png?label=ready&title=Backlog&search=topcat)](https://waffle.io/icatproject/icat.server?search=topcat)
 
 ## Installation
 
