@@ -8,7 +8,7 @@ A web based GUI able to search across multiple ICAT instances and download data 
 
 
 
-[![Stories in Ready](https://badge.waffle.io/icatproject/icat.server.png?label=open&title=Backlog&search=topcat)](https://waffle.io/icatproject/icat.server?search=topcat)
+[![Stories in Ready](https://badge.waffle.io/icatproject/icat.server.png?label=ready&title=Backlog&search=topcat)](https://waffle.io/icatproject/icat.server?search=topcat)
 
 ## Installation
 
