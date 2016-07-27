@@ -31,11 +31,9 @@
     };
 
   	this.version = function(){
-			var out = $q.defer();
-			this.get('version').then(function(data){
-				out.resolve(data.value);
-			}, function(){ out.reject(); });
-			return out.promise;
+			return this.get('version').then(function(data){
+				return data.value;
+			});
     };
 
 		this.search = helpers.overload({
@@ -160,6 +158,24 @@
 
     	return $q.all(promises);
     };
+
+    this.getConfVar = helpers.overload({
+        'string, object': function(name, options){
+            return this.get('confVars/' + name, {}, options).then(function(data){
+                try {
+                    return JSON.parse(data.value);
+                } catch(e){
+                    return {};
+                }
+            });
+        },
+        'string, promise': function(name, timeout){
+            return this.getConfVar(name, {timeout: timeout});
+        },
+        'string': function(name){
+            return this.getConfVar(name, {});
+        }
+    });
 
 		helpers.generateRestMethods(this, this.config().topcatUrl + "/topcat/");
 

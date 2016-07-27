@@ -1,0 +1,32 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    </head>
+    <body>
+    <script>
+	    (function(){
+	    	if(window.top == window){
+	    		window.location = '/#login';
+	    	} else {
+		    	var vars = {}
+		    	var pairs = window.location.search.replace(/^\?/, '').split(/&/);
+
+		    	for(var i in pairs){
+		    		var pair = pairs[i].split(/=/);
+		    		var key = encodeURIComponent(pair[0]);
+		    		var value = encodeURIComponent(pair[1]);
+		    		vars[key] = value;
+		    	}
+
+		    	var facilityName = vars['facilityName'];
+		    	var ticket = vars['ticket'];
+
+		    	window.top.angular.element(window.top.document).scope().$broadcast('cas:authentication', facilityName, ticket);
+		    }
+	    })();
+    </script>
+    </body>
+</html>

@@ -208,6 +208,9 @@
                             this.attribute('*', function(){
                                 this.attribute('title', function(){ this.type("string"); });
                                 this.attribute('plugin', function(){ this.type("string"); });
+                                this.attribute('casUrl', function(){ this.type("string"); this.mandatory(function(o){
+                                    return o.plugin == 'cas';
+                                }); });
                             });
                         });
                         this.attribute('downloadTransportTypes', function(){
@@ -259,6 +262,7 @@
                             _.each(["instrument", "facilityCycle", "investigation", "proposal", "dataset", "datafile"], function(entityType){
                                 that.attribute(entityType, function(){
                                     this.mandatory(false);
+                                    this.attribute('skipSingleEntities', function(){ this.type('boolean'); this.mandatory(false); });
                                     this.attribute('gridOptions', function(){
                                         if(entityType == 'investigation' || entityType == 'dataset' || entityType == 'datafile'){
                                             this.attribute('enableSelection', function(){ this.type('boolean'); this.mandatory(false); });

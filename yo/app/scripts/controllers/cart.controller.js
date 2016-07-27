@@ -128,6 +128,9 @@
             });
             return defered.promise;
         }
+        timeout.promise.then(function(){
+            if(getTotalSizeTimeout) getTotalSizeTimeout.resolve();
+        });
 
         getTotalSize().then(function(totalSize){
             that.totalSize = totalSize;

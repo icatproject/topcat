@@ -38,6 +38,7 @@ import org.icatproject.topcat.domain.DownloadItem;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.ParentEntity;
+import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.NotFoundException;

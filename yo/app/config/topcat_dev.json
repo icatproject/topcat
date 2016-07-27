@@ -230,6 +230,11 @@
                 {
                     "title": "DB",
                     "plugin": "db"
+                },
+                {
+                    "title": "CAS",
+                    "plugin": "cas",
+                    "casUrl": "https://authbeta.diamond.ac.uk/cas" 
                 }
             ],
             "downloadTransportTypes": [
@@ -1082,6 +1087,7 @@
                     ]
                 },
                 "dataset": {
+                    "skipSingleEntities": true,
                     "gridOptions": {
                         "enableSelection": true,
                         "columnDefs": [

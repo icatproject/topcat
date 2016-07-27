@@ -195,6 +195,34 @@
                 }
             });
 
+            this.setConfVar = helpers.overload({
+                'string, object, object': function(name, value, options){
+                    return this.put('confVars/' + name, {
+                        icatUrl: facility.config().icatUrl,
+                        sessionId: facility.icat().session().sessionId,
+                        value: JSON.stringify(value)
+                    }, options);
+                },
+                'string, object, promise': function(name, value, timeout){
+                    return this.setConfVar(name, value, {timeout: timeout});
+                },
+                'string, object': function(name, value){
+                    return this.setConfVar(name, value, {});
+                }
+            });
+
+            this.getConfVar = helpers.overload({
+                'string, object': function(name, options){
+                    return tc.getConfVar(name, options);
+                },
+                'string, promise': function(name, timeout){
+                    return this.getConfVar(name, {timeout: timeout});
+                },
+                'string': function(name){
+                    return this.getConfVar(name, {});
+                }
+            });
+
             helpers.generateRestMethods(this, facility.tc().config().topcatUrl + "/topcat/admin/");
         }
 

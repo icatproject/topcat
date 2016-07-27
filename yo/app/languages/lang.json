@@ -564,7 +564,18 @@
         }
     },
     "ADMIN": {
-        "PAGE_TITLE": "Admin"
+        "PAGE_TITLE": "Admin",
+        "MESSAGES": {
+            "SERVICE_STATUS" : {
+                "MESSAGE": "Service Status",
+                "SHOW": "show?"
+            },
+            "MAINTENANCE_MODE" : {
+                "MESSAGE": "Maintenance mode",
+                "SHOW": "show?"
+            },
+            "SAVE": "Save"
+        }
     },
     "TIME": {
         "DAY": "day",
