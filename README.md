@@ -26,11 +26,11 @@ vagrant up
 
 Once everything is up and running you'll need to make a security exception, which can be done by going to:
 
-* https://localhost:8181/topcat/ping
+* [https://localhost:8181/topcat/ping](https://localhost:8181/topcat/ping)
 
  You'll then be able to run Topcat by going to:
 
-* http://localhost:10080/
+* [http://localhost:10080/](http://localhost:10080/)
 
 You will be able to log into the "TEST" facility with the following credentials:
 
