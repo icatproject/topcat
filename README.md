@@ -12,7 +12,7 @@ A web based GUI able to search across multiple ICAT instances and download data 
 
 Information on how to install Topcat can be found here:
 
- * https://repo.icatproject.org/site/topcat/
+	* https://repo.icatproject.org/site/topcat/
 
 ## Development
 
@@ -26,21 +26,21 @@ vagrant up
 
 Once everything is up and running you'll need to make a security exception, which can be done by going to:
 
- * https://localhost:8181/topcat/ping
+	* https://localhost:8181/topcat/ping
 
  You'll then be able to run Topcat by going to:
 
- * http://localhost:10080/
+	* http://localhost:10080/
 
 You will be able to log into the "TEST" facility with the following credentials:
 
- * Authentication Type: Simple
- * Username: root
- * Password: root
+	* Authentication Type: Simple
+	* Username: root
+	* Password: root
 
 You can edit Topcat's main configuration by editing:
 
- * yo/app/config/topcat_dev.json
+	* yo/app/config/topcat_dev.json
 
 ## Licence
 
