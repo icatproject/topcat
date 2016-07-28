@@ -322,6 +322,21 @@
                     "PLURAL" : "items"
                 }
             }
+        },
+        "MAKE_DATA_PUBLIC": {
+            "TITLE": "Make data public",
+            "NEXT_BUTTON": {
+                "TEXT": "Next"
+            },
+            "CONFIRM_BUTTON": {
+                "TEXT": "Confirm"
+            },
+            "PREVIOUS_BUTTON": {
+                "TEXT": "Previous"
+            },
+            "CANCEL_BUTTON": {
+                "TEXT": "Cancel"
+            }
         }
     },
     "CART_ITEM": {

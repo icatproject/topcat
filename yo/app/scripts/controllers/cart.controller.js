@@ -65,10 +65,10 @@
             });
         };
 
-        this.issueDoi = function(){
+        this.makeDataPublic = function(){
             $uibModal.open({
-                templateUrl : 'views/issue-doi.html',
-                controller: "IssueDoiController as issueDoiController",
+                templateUrl : 'views/make-data-public.html',
+                controller: "MakeDataPublicController as makeDataPublicController",
                 size : 'md'
             })
         };
