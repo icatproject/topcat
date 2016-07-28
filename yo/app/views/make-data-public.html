@@ -27,11 +27,31 @@
 </div>
 <div class="modal-footer">
 
-	<button ng-disabled="makeDataPublicController.state == 'release_date'" class="btn btn-primary" ng-click="makeDataPublicController.previous()" translate="CART.MAKE_DATA_PUBLIC.PREVIOUS_BUTTON.TEXT"></button>
+	<button
+		ng-disabled="makeDataPublicController.isPreviousDisabled()"
+		class="btn btn-primary"
+		ng-click="makeDataPublicController.previous()"
+		translate="CART.MAKE_DATA_PUBLIC.PREVIOUS_BUTTON.TEXT"
+	></button>
 
-	<button ng-if="makeDataPublicController.state != 'confirm'" class="btn btn-primary" ng-click="makeDataPublicController.next()" translate="CART.MAKE_DATA_PUBLIC.NEXT_BUTTON.TEXT"></button>
+	<button
+		ng-if="makeDataPublicController.state != 'confirm'"
+		ng-disabled="makeDataPublicController.isNextDisabled()" 
+		class="btn btn-primary" ng-click="makeDataPublicController.next()"
+		translate="CART.MAKE_DATA_PUBLIC.NEXT_BUTTON.TEXT"
+	></button>
 
-    <button ng-if="makeDataPublicController.state == 'confirm'" class="btn btn-primary" ng-click="makeDataPublicController.confirm()" translate="CART.MAKE_DATA_PUBLIC.CONFIRM_BUTTON.TEXT"></button>
+    <button
+    	ng-if="makeDataPublicController.state == 'confirm'"
+    	class="btn btn-primary"
+    	ng-click="makeDataPublicController.confirm()"
+    	translate="CART.MAKE_DATA_PUBLIC.CONFIRM_BUTTON.TEXT"
+    ></button>
 
-    <button class="btn btn-warning" ng-click="makeDataPublicController.cancel()" translate="CART.MAKE_DATA_PUBLIC.CANCEL_BUTTON.TEXT"></button>
+    <button
+    	class="btn btn-warning"
+    	ng-click="makeDataPublicController.cancel()"
+    	translate="CART.MAKE_DATA_PUBLIC.CANCEL_BUTTON.TEXT"
+    ></button>
+
 </div>
