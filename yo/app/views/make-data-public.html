@@ -3,25 +3,60 @@
 </div>
 <div class="modal-body">
     <form>
-        <div ng-if="makeDataPublicController.state == 'release_date'" class="checkbox">
-		    <label>
-		    	<input type="checkbox" ng-model="makeDataPublicController.isReleaseDate"> Do you want to specify a release date?
-		    </label>
+    	<div ng-if="makeDataPublicController.state == 'release_date'" class="form-group">
+	    	<label>Do you want to specify a release date?</label>
+	        <div ng-if="makeDataPublicController.state == 'release_date'" class="checkbox">
+			    <label>
+			    	<input type="checkbox" ng-model="makeDataPublicController.isReleaseDate">
+			    	Yes I want to specify a release date
+			    </label>
+			</div>
 		</div>
 		<div ng-if="makeDataPublicController.state == 'release_date' && makeDataPublicController.isReleaseDate" class="form-group">
             <label>Release date</label>
             <p class="input-group">
-                <input type="text" class="form-control input-sm" uib-datepicker-popup="{{searchController.dateFormat}}" ng-model="makeDataPublicController.releaseDate" is-open="makeDataPublicController.isReleaseDateOpen" ng-click="makeDataPublicController.isReleaseDateOpen = true"  close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" />
+                <input
+                	type="text"
+                	class="form-control input-sm"
+                	uib-datepicker-popup="{{searchController.dateFormat}}"
+                	ng-model="makeDataPublicController.releaseDate"
+                	is-open="makeDataPublicController.isReleaseDateOpen"
+                	ng-click="makeDataPublicController.isReleaseDateOpen = true"
+                	close-text="Close"
+                	placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}"
+                />
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default input-sm" ng-click="makeDataPublicController.isReleaseDateOpen = true">
+                    <button
+                    	type="button"
+                    	class="btn btn-default input-sm"
+                    	ng-click="makeDataPublicController.isReleaseDateOpen = true">
                     	<i class="glyphicon glyphicon-calendar"></i>
                     </button>
                 </span>
             </p>
         </div>
+        <div ng-if="makeDataPublicController.state == 'legal'" class="form-group">
+        	<label>Licence</label>
+        	<select
+        		class="form-control"
+        		ng-change="makeDataPublicController.hasAcceptedLegal = false"
+        		ng-model="makeDataPublicController.licence"
+        		ng-options="licence.name as licence.title for licence in makeDataPublicController.licences">
+            </select>
+        </div>
+        <div ng-if="makeDataPublicController.state == 'legal'" class="form-group">
+        	<label>Terms and Conditions</label>
+        	<textarea class="form-control"></textarea>
+        	<div class="checkbox">
+			    <label>
+			    	<input type="checkbox" ng-model="makeDataPublicController.hasAcceptedLegal">
+			    	I agree to the above terms and conditions
+			    </label>
+			</div>
+        </div>
         <div ng-if="makeDataPublicController.state == 'confirm'" class="form-group">
-            <label>Password</label>
-            <input type="password" name="password" class="form-control" placeholder="Enter password to confirm">
+            <label>Are you really sure you want to make this data public?</label>
+            <input type="password" ng-model="makeDataPublicController.password" class="form-control" placeholder="Enter password to confirm">
         </div>
     </form>
 </div>
@@ -31,27 +66,28 @@
 		ng-disabled="makeDataPublicController.isPreviousDisabled()"
 		class="btn btn-primary"
 		ng-click="makeDataPublicController.previous()"
-		translate="CART.MAKE_DATA_PUBLIC.PREVIOUS_BUTTON.TEXT"
-	></button>
+		translate="CART.MAKE_DATA_PUBLIC.PREVIOUS_BUTTON.TEXT">		
+	</button>
 
 	<button
 		ng-if="makeDataPublicController.state != 'confirm'"
 		ng-disabled="makeDataPublicController.isNextDisabled()" 
 		class="btn btn-primary" ng-click="makeDataPublicController.next()"
-		translate="CART.MAKE_DATA_PUBLIC.NEXT_BUTTON.TEXT"
-	></button>
+		translate="CART.MAKE_DATA_PUBLIC.NEXT_BUTTON.TEXT">		
+	</button>
 
     <button
     	ng-if="makeDataPublicController.state == 'confirm'"
+    	ng-disabled="makeDataPublicController.isConfirmDisabled()" 
     	class="btn btn-primary"
     	ng-click="makeDataPublicController.confirm()"
-    	translate="CART.MAKE_DATA_PUBLIC.CONFIRM_BUTTON.TEXT"
-    ></button>
+    	translate="CART.MAKE_DATA_PUBLIC.CONFIRM_BUTTON.TEXT">	
+    </button>
 
     <button
     	class="btn btn-warning"
     	ng-click="makeDataPublicController.cancel()"
-    	translate="CART.MAKE_DATA_PUBLIC.CANCEL_BUTTON.TEXT"
-    ></button>
+    	translate="CART.MAKE_DATA_PUBLIC.CANCEL_BUTTON.TEXT">	
+    </button>
 
 </div>

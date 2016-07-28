@@ -12,10 +12,19 @@
     	this.releaseDate = null;
     	this.isReleaseDateOpen = false;
     	this.licence = null;
-    	this.hasAcceptLegal = false;
+    	this.hasAcceptedLegal = false;
     	this.dateFormat = 'yyyy-MM-dd';
-
-    	var states = ['release_date', 'legal', 'confirmation'];
+    	this.licences = [
+    		{
+    			name: 'mit',
+    			title: 'MIT'
+    		},
+    		{
+    			name: 'cc',
+    			title: 'Creative Commons'
+    		}
+    	];
+    	this.password = "";
 
     	this.isPreviousDisabled = function(){
     		return this.state == 'release_date';
@@ -24,7 +33,7 @@
     	this.previous = function(){
     		if(this.state == 'confirm'){
     			this.state = 'legal';
-    			this.hasAcceptLegal = false;
+    			this.password = '';
     		} else if(this.state == 'legal'){
     			this.state = 'release_date';
     		}
@@ -35,7 +44,7 @@
     			return false;
     		}
 
-    		if(this.state == 'legal' && this.acceptedLegal){
+    		if(this.state == 'legal' && this.licence != null && this.hasAcceptedLegal){
     			return false;
     		}
 
@@ -48,9 +57,13 @@
     		if(this.state == 'release_date' && (!this.isReleaseDate || this.releaseDate != null)){
     			this.isReleaseDateOpen = false;
     			this.state = 'legal';
-	    	} else if(this.state == 'legal' && this.licence != null && this.hasAcceptLegal){
+	    	} else if(this.state == 'legal' && this.licence != null && this.hasAcceptedLegal){
 	    		this.state = 'confirm';
 	    	}
+    	};
+
+    	this.isConfirmDisabled = function(){
+    		return this.password == '';
     	};
 
     	this.confirm = function(){
