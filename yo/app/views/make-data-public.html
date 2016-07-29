@@ -46,13 +46,21 @@
         </div>
         <div ng-if="makeDataPublicController.state == 'legal'" class="form-group">
         	<label>Terms and Conditions</label>
-        	<textarea class="form-control"></textarea>
+            <div class="terms-and-conditions">{{makeDataPublicController.termsAndConditions}}</div>
         	<div class="checkbox">
 			    <label>
 			    	<input type="checkbox" ng-model="makeDataPublicController.hasAcceptedLegal">
 			    	I agree to the above terms and conditions
 			    </label>
 			</div>
+        </div>
+        <div ng-if="makeDataPublicController.state == 'confirm' && makeDataPublicController.users.length > 1" class="form-group">
+            <label>Select account</label>
+            <select
+                class="form-control"
+                ng-model="makeDataPublicController.facilityName"
+                ng-options="user.facilityName as user.name for user in makeDataPublicController.users">
+            </select>
         </div>
         <div ng-if="makeDataPublicController.state == 'confirm'" class="form-group">
             <label>Are you really sure you want to make this data public?</label>

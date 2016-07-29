@@ -293,3 +293,20 @@ a[ng-click]{
 .ui-grid-cell-contents {
     padding: 3px;
 }
+
+
+.terms-and-conditions {
+  display: inline-block;
+  width: 100%;
+  height: 150px;
+  overflow-y: auto;
+  white-space: pre-line;
+  border-style: solid;
+  border-color: #ddd;
+  border-width: 1px;
+}
+
+
+
+
+
