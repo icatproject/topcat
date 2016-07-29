@@ -5,7 +5,7 @@
 
     var app = angular.module('angularApp');
 
-    app.controller('MakeDataPublicController', function($uibModalInstance, tc, inform){
+    app.controller('MakeDataPublicController', function($uibModalInstance, $uibModalStack, tc, inform){
         var that = this;
     	this.state = 'release_date';
     	this.isReleaseDate = false;
@@ -80,7 +80,7 @@
     	this.confirm = function(){
             tc.icat(this.facilityName).verifyPassword(this.password).then(function(isValid){
                 if(isValid){
-
+                    $uibModalStack.dismissAll();
                 } else {
                     that.password = "";
                     inform.add("Password is invalid - please try again", {
