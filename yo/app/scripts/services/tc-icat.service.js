@@ -285,6 +285,21 @@
         		return tcIcatQueryBuilder.create(this, entityType);
         	};
 
+            this.write = helpers.overload({
+               'array, object': function(entities, options){
+                    return this.post('entityManager', {
+                        sessionId: that.session().sessionId,
+                        entities: JSON.stringify(entities)
+                    }, options);
+               },
+               'promise, array': function(timeout, entities){
+                    return this.write(entities, {timeout: timeout});
+               },
+               'array': function(entities){
+                    return this.write(entities, {});
+               }
+            });
+
           	helpers.generateRestMethods(this, facility.config().icatUrl + '/icat/');
         }
 
