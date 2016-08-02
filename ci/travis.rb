@@ -77,7 +77,7 @@ exec %{
   sudo ./setup configure
   sudo ./setup install
   cd ../
-  asadmin -t set applications.application.icat.server-4.6.1.deployment-order=100
+  asadmin -t set applications.application.icat.server-4.8.0-SNAPSHOT.deployment-order=100
 
   wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
   unzip -q ids.server-1.6.0-distro.zip
