@@ -323,6 +323,12 @@
                 }
             }
         },
+        "MAKE_DATA_PUBLIC_BUTTON":{
+            "TEXT": "Make Data Public",
+            "TOOLTIP": {
+                "TEXT": "In making this public a DOI will be automatically minted"
+            }
+        },
         "MAKE_DATA_PUBLIC": {
             "TITLE": "Make data public",
             "NEXT_BUTTON": {
