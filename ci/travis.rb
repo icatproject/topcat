@@ -36,7 +36,7 @@ exec %{
   sudo /etc/init.d/apache2 restart
 
   wget --quiet download.java.net/glassfish/4.0/release/glassfish-4.0.zip
-  sudo unzip -q glassfish-4.0.zip
+  unzip -q glassfish-4.0.zip
 
   wget --quiet http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
   unzip -q mysql-connector-java-5.1.37.zip
