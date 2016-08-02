@@ -75,6 +75,9 @@ public class Download implements Serializable {
     @Enumerated(EnumType.STRING)
     private DownloadStatus status;
 
+    @Column(name = "SIZE")
+    private long size;
+
     @Column(name = "IS_TWO_LEVEL")
     private Boolean isTwoLevel;
 
@@ -193,6 +196,14 @@ public class Download implements Serializable {
 
     public void setStatus(DownloadStatus status) {
         this.status = status;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 
     public Boolean getIsTwoLevel() {

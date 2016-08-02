@@ -121,7 +121,7 @@ public class IdsClient13 implements IdsClientInterface {
         long size = -1L;
 
         try {
-            service.getSize(sessionId, dataSelection);
+            size = service.getSize(sessionId, dataSelection);
         } catch (org.icatproject.ids.client.BadRequestException e) {
             throw new org.icatproject.topcat.exceptions.BadRequestException(e.getMessage());
         } catch (org.icatproject.ids.client.NotFoundException e) {

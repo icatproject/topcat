@@ -508,7 +508,7 @@ public class UserResource {
 			DataSelection dataSelection = cartToDataSelection(cart);
 			String preparedId = idsClientService.prepareData(transportUrl, sessionId, dataSelection,
 					getZipFlag(zipType));
-
+			long size = idsClientService.getSize(transportUrl, sessionId, dataSelection);
 			if (preparedId != null) {
 				Download download = new Download();
 				download.setPreparedId(preparedId);
@@ -521,6 +521,7 @@ public class UserResource {
 				download.setIcatUrl(icatUrl);
 				download.setEmail(email);
 				download.setIsEmailSent(false);
+				download.setSize(size);
 				boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
 				download.setIsTwoLevel(isTwoLevel);
 
