@@ -23,8 +23,11 @@
                 'string, string, object': function(name, view, options){
                     mainTabs.push({name: name, view: view, options: options});
 
+                    var url = '/' + name;
+                    if(options.multiFacility) url += "/:facilityName";
+
                     var state = {
-                      url: '/' + name,
+                      url: url,
                       resolve: {
                         authenticate: function(Authenticate){
                             return Authenticate.authenticate();

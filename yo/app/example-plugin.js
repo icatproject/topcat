@@ -7,7 +7,8 @@ registerTopcatPlugin(function(){
 		setup: function(tc){
 			tc.ui().registerMainTab('my-jobs', 'views/login.html', {
 				insertAfter: 'my-data',
-				controller: 'LoginController as loginController'
+				controller: 'LoginController as loginController',
+				multiFacility: true
 			});
 		}
 	};
