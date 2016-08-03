@@ -32,6 +32,40 @@
         this.gridOptions = gridOptions;
         this.totalSize = undefined;
 
+        //<button class="btn btn-warning" ng-click="cartController.cancel()" translate="CART.BUTTON.CANCEL.TEXT"></button>
+
+        var existingButtons = [
+            {
+                name: "remove-all",
+                click: function(){
+                    that.removeAll();
+                },
+                class: "btn btn-primary",
+                translate: "CART.REMOVE_ALL_BUTTON.TEXT",
+                translateTooltip: "CART.DOWNLOAD_CART_BUTTON.TOOLTIP.TEXT"
+            },
+            {
+                name: "download-cart",
+                click: function(){
+                    that.download();
+                },
+                class: "btn btn-primary",
+                translate: "CART.DOWNLOAD_CART_BUTTON.TEXT",
+                translateTooltip: "CART.DOWNLOAD_CART_BUTTON.TOOLTIP.TEXT"
+            },
+            {
+                name: "cancel",
+                click: function(){
+                    that.cancel();
+                },
+                class: "btn btn-warning",
+                translate: "CART.CANCEL_BUTTON.TEXT",
+                translateTooltip: "CART.CANCEL_BUTTON.TOOLTIP.TEXT"
+            }
+
+        ];
+
+        this.buttons = existingButtons;
 
         this.cancel = function() {
             $uibModalInstance.dismiss('cancel');

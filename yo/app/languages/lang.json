@@ -255,23 +255,25 @@
             "ARCHIVED": "Archived on Tape"
         },
         "EMPTY" : "Cart is empty",
-        "BUTTON" : {
-            "REMOVE_ALL" : {
-                "TEXT" : "Remove All",
-                "TOOLTIP" : {
-                    "TEXT" : "Click to remove all items from cart"
-                }
-            },
-            "DOWNLOAD_CART" : {
-                "TEXT" : "Download Cart",
-                "TOOLTIP" : {
-                    "TEXT" : "Click to submit this cart for download"
-                }
-            },
-            "CANCEL" : {
-                "TEXT" : "Close"
+        "REMOVE_ALL_BUTTON" : {
+            "TEXT" : "Remove All",
+            "TOOLTIP" : {
+                "TEXT" : "Click to remove all items from cart"
             }
         },
+        "DOWNLOAD_CART_BUTTON" : {
+            "TEXT" : "Download Cart",
+            "TOOLTIP" : {
+                "TEXT" : "Click to submit this cart for download"
+            }
+        },
+        "CANCEL_BUTTON" : {
+            "TEXT" : "Close",
+            "TOOLTIP" : {
+                "TEXT" : "Close this dialog"
+            }
+        },
+
         "ACTIONS" : {
             "LINK": {
                 "REMOVE" : {

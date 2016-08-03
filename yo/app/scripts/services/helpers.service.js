@@ -603,7 +603,7 @@
 			return defered.promise;
 		};
 
-        this.mergeNamedObjectArray = function(existingObjects, toBeMergedObjects){
+        this.mergeNamedObjectArrays = function(existingObjects, toBeMergedObjects){
             var out = _.clone(existingObjects);
             var changed;
             

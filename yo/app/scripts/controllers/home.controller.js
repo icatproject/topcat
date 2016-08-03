@@ -47,7 +47,7 @@
 	    		};
 	    	});
 
-	    	that.tabs = helpers.mergeNamedObjectArray(existingTabs, otherTabs);
+	    	that.tabs = helpers.mergeNamedObjectArrays(existingTabs, otherTabs);
 
 	    }
     });
