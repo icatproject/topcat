@@ -4,6 +4,7 @@
     var app = angular.module('topcat');
 
     app.controller('HomeController', function($rootScope, $scope, tc) {
+
         var that = this;
     	this.tabs = [];
 

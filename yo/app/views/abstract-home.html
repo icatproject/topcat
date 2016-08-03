@@ -8,9 +8,5 @@
     		</a>
         </li>
     </ul>
-    <div 
-    	ng-repeat="tab in homeController.tabs"
-    	ui-view="{{tab.name}}"
-    	ng-show="$state.includes(tab.showState)">	
-    </div>
+    <div ui-view></div>
 </div>

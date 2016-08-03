@@ -285,7 +285,7 @@
                 abstract: true,
                 url: '/browse',
                 views: {
-                  'browse@home': {
+                  '': {
                     templateUrl: 'views/main-browse.html'
                   }
                 }
@@ -314,7 +314,7 @@
                 abstract: true,
                 url: '/search',
                 views: {
-                    'search@home': {
+                    '': {
                         templateUrl: 'views/main-search.html',
                         controller: 'SearchController as searchController'
                     }
@@ -356,7 +356,7 @@
                     }]
                 },
                 views: {
-                    'my-data@home': {
+                    '': {
                         templateUrl: 'views/main-my-data.html'
                     },
                     '@home.my-data': {

@@ -33,12 +33,12 @@
                             return Authenticate.authenticate();
                         }
                       },
-                      views: {}
-                    };
-
-                    state.views[name + '@home'] = {
-                        templateUrl: view,
-                        controller: options.controller
+                      views: {
+                        '': {
+                            templateUrl: view,
+                            controller: options.controller
+                        }
+                      }
                     };
 
                     RuntimeStatesProvider.addState('home.' + name, state);
