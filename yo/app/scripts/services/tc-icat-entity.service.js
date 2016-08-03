@@ -3,7 +3,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers, icatSchema){
     	var tcIcatEntity = this;

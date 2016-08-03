@@ -2,7 +2,7 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('PageCreatorService', PageCreatorService);
+        module('topcat').factory('PageCreatorService', PageCreatorService);
 
     PageCreatorService.$inject = ['RouteService', 'RuntimeStatesProvider', 'tc', 'helpers', '$translate'];
 

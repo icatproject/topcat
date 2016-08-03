@@ -2,13 +2,14 @@
 (function() {
   'use strict';
 
-  var app = angular.module('angularApp');
+  var app = angular.module('topcat');
 
-  app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, APP_CONFIG){
+  app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, tcUi, APP_CONFIG){
   	var tc = this;
   	window.tc = this;
   	var facilities = {};
     var cache;
+    var ui;
 
   	this.facility = function(name){
   		if(!facilities[name]) facilities[name] = tcFacility.create(tc, name);
@@ -28,6 +29,11 @@
     this.cache = function(){
       if(!cache) cache = tcCache.create('topcat');
       return cache;
+    };
+
+    this.ui = function(){
+      if(!ui) ui = tcUi.create(this);
+      return ui;
     };
 
   	this.version = function(){

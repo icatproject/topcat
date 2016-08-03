@@ -1235,5 +1235,8 @@
                 }
             }
         }
+    ],
+    "plugins":[
+        "/example-plugin.js"
     ]
 }

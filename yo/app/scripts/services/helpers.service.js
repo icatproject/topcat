@@ -2,7 +2,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.service('helpers', function($http, $q, $timeout, $rootScope, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;

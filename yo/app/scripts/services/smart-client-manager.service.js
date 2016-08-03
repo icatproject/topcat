@@ -2,7 +2,7 @@
     'use strict';
 
     angular.
-        module('angularApp').service('SmartClientManager', SmartClientManager);
+        module('topcat').service('SmartClientManager', SmartClientManager);
 
     SmartClientManager.$inject = ['$http', '$q', 'SmartClientService'];
 

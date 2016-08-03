@@ -2,7 +2,7 @@
 (function(){
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('DownloadsController', function($state, $scope, $translate, $uibModalInstance, $q, tc, uiGridConstants, helpers){
         var that = this;

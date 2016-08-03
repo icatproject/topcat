@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('LoginController', function($translate, $state, $rootScope, $scope, $sessionStorage, inform, deviceDetector, tc){
         var that = this;

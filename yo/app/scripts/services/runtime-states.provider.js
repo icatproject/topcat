@@ -4,7 +4,7 @@
     //see http://stackoverflow.com/a/25872852/4925354
 
     angular.
-        module('angularApp').provider('RuntimeStatesProvider', RuntimeStatesProvider);
+        module('topcat').provider('RuntimeStatesProvider', RuntimeStatesProvider);
 
     RuntimeStatesProvider.$inject = ['$stateProvider'];
 

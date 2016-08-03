@@ -2,7 +2,7 @@
     'use strict';
 
     angular.
-        module('angularApp').service('RouteService', RouteService);
+        module('topcat').service('RouteService', RouteService);
 
     RouteService.$inject = [];
 

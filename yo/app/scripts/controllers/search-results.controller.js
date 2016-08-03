@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('angularApp');
+  var app = angular.module('topcat');
 
   app.controller('SearchResultsController', function($stateParams, $scope, $rootScope, $q, $timeout, tc, helpers){
     var that = this;

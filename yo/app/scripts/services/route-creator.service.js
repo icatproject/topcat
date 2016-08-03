@@ -2,7 +2,7 @@
     'use strict';
 
     angular.
-        module('angularApp').factory('RouteCreatorService', RouteCreatorService);
+        module('topcat').factory('RouteCreatorService', RouteCreatorService);
 
     RouteCreatorService.$inject = ['APP_CONFIG', 'RouteService', 'RuntimeStatesProvider'];
 

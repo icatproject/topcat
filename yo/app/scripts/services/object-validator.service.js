@@ -312,6 +312,12 @@
 
                     });
                 });
+                this.attribute('plugins', function(){
+                    this.type('array');
+                    this.attribute('*', function(){
+                        this.type("string");
+                    });
+                });
             });
         }
 

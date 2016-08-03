@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('MaintenanceModeController', ['APP_CONFIG', function(APP_CONFIG){
         var maintenanceMode = APP_CONFIG.site.maintenanceMode;

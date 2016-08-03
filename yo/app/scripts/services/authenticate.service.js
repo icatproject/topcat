@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('angularApp')
+        .module('topcat')
         .service('Authenticate', Authenticate );
 
     Authenticate.$inject = ['$q', '$sessionStorage'];
