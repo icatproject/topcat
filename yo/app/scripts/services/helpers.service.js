@@ -603,6 +603,48 @@
 			return defered.promise;
 		};
 
+        this.mergeNamedObjectArray = function(existingObjects, toBeMergedObjects){
+            var out = _.clone(existingObjects);
+            var changed;
+            
+            while(true){
+                changed = false;
+
+                _.each(_.clone(toBeMergedObjects), function(toBeMergedObject){
+                    if(toBeMergedObject.insertBefore){
+                        var index = _.findIndex(out, function(tab){
+                            return tab.name == toBeMergedObject.insertBefore
+                        });
+
+                        if(index !== -1){
+                            out.splice(index, 0, toBeMergedObject);
+                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                            changed = true;
+                        }
+
+                    } else if(toBeMergedObject.insertAfter){
+                        var index = _.findIndex(out, function(tab){
+                            return tab.name == toBeMergedObject.insertAfter;
+                        });
+
+                        if(index !== -1){
+                            out.splice(index + 1, 0, toBeMergedObject);
+                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                            changed = true;
+                        }
+                    } else {
+                        out.push(toBeMergedObject);
+                        _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                        changed = true;
+                    }   
+                });
+
+                if(!changed) break;
+            }
+
+            return out;
+        };
+
 		(function(){
 			var methods = {
 	            get: $http.get,

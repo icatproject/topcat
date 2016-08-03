@@ -3,7 +3,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('HomeController', function($rootScope, $scope, tc) {
+    app.controller('HomeController', function($rootScope, $scope, tc, helpers) {
 
         var that = this;
     	this.tabs = [];
@@ -14,7 +14,8 @@
     	refreshTabs();
 
     	function refreshTabs(){
-    		that.tabs = [
+
+    		var existingTabs = [
 	    		{
 	    			name: "my-data",
 	    			translate: "MAIN_NAVIGATION.MAIN_TAB.MY_DATA",
@@ -46,42 +47,7 @@
 	    		};
 	    	});
 
-	    	var changed;
-	    	
-	    	while(true){
-	    		changed = false;
-
-	    		_.each(_.clone(otherTabs), function(otherTab){
-	    			if(otherTab.insertBefore){
-	    				var index = _.findIndex(that.tabs, function(tab){
-	    					return tab.name == otherTab.insertBefore
-	    				});
-
-	    				if(index !== -1){
-	    					that.tabs.splice(index, 0, otherTab);
-	    					_.remove(otherTabs, {name: otherTab.name});
-	    					changed = true;
-	    				}
-
-	    			} else if(otherTab.insertAfter){
-	    				var index = _.findIndex(that.tabs, function(tab){
-	    					return tab.name == otherTab.insertAfter;
-	    				});
-
-	    				if(index !== -1){
-	    					that.tabs.splice(index + 1, 0, otherTab);
-	    					_.remove(otherTabs, {name: otherTab.name});
-	    					changed = true;
-	    				}
-	    			} else {
-	    				that.tabs.push(otherTab);
-	    				_.remove(otherTabs, {name: otherTab.name});
-	    				changed = true;
-	    			}	
-	    		});
-
-	    		if(!changed) break;
-	    	}
+	    	that.tabs = helpers.mergeNamedObjectArray(existingTabs, otherTabs);
 
 	    }
     });

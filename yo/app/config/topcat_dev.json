@@ -1237,6 +1237,6 @@
         }
     ],
     "plugins":[
-        "/example-plugin.js"
+        "http://localhost:9000/scripts/plugin.js"
     ]
 }

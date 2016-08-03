@@ -50,6 +50,17 @@
                 }
             });
 
+            var cartButtons = [];
+
+            this.registerCartButton = helpers.overload({
+                'string, string, object': function(name, view, options){
+                    cartButtons.push({name: name, view: view, options: options});
+                },
+                'string, string': function(name, view){
+                    return this.registerCartButton(name, view, {});
+                }
+            });
+
         }
 
     });
