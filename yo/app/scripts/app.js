@@ -279,7 +279,7 @@
             .state('home', {
                 abstract: true,
                 templateUrl: 'views/abstract-home.html',
-                controller: 'HomeController'
+                controller: 'HomeController as homeController'
             })
             .state('home.browse', {
                 abstract: true,
@@ -368,36 +368,6 @@
                         controller: 'MetaPanelController as meta'
                     }
                 }
-            })
-            .state('home.cart', {
-                url: '/cart',
-                resolve: {
-                    authenticate : ['Authenticate', function(Authenticate) {
-                        return Authenticate.authenticate();
-                    }]
-                },
-                views: {
-                  'cart': {
-                    templateUrl: 'views/main-cart.html',
-                    controller: 'CartController'
-                  }
-                }
-            })
-            .state('home.download', {
-                url: '/download',
-                resolve: {
-                    authenticate : ['Authenticate', function(Authenticate) {
-                        return Authenticate.authenticate();
-                    }]
-                },
-                views: {
-                  'download': {
-                    templateUrl: 'views/main-download.html',
-                    controller: 'DownloadController'
-                  }
-                },
-                /*sticky: true,
-                deepStateRedirect: true*/
             })
             .state('login', {
                 url: '/login',

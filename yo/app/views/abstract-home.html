@@ -1,10 +1,16 @@
 <div class="row">
     <ul class="nav nav-tabs nav-tabs-head" role="tablist">
-        <li ui-sref-active="active"><a ui-sref="home.my-data" role="tab" translate="MAIN_NAVIGATION.MAIN_TAB.MY_DATA"></a></li>
-        <li ng-class="{active : $state.includes('home.browse')}"><a ui-sref="home.browse.facility" role="tab" translate="MAIN_NAVIGATION.MAIN_TAB.BROWSE"></a></li>
-        <li ng-class="{active : $state.includes('home.search')}"><a ui-sref="home.search.start" role="tab" translate="MAIN_NAVIGATION.MAIN_TAB.SEARCH"></a></li>
+        <li ng-repeat="tab in homeController.tabs" ng-class="{active : $state.includes(tab.showState)}">
+        	<a 
+        		ui-sref="{{tab.sref}}"
+        		role="tab"
+        		translate="{{tab.translate}}">
+    		</a>
+        </li>
     </ul>
-    <div ui-view="my-data" ng-show="$state.includes('home.my-data')"></div>
-    <div ui-view="browse" ng-show="$state.includes('home.browse')"></div>
-    <div ui-view="search" ng-show="$state.includes('home.search')"></div>
+    <div 
+    	ng-repeat="tab in homeController.tabs"
+    	ui-view="{{tab.name}}"
+    	ng-show="$state.includes(tab.showState)">	
+    </div>
 </div>

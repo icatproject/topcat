@@ -26,19 +26,21 @@
                     var state = {
                       url: '/' + name,
                       resolve: {
-                        authenticate: function(Authenticate) {
+                        authenticate: function(Authenticate){
                             return Authenticate.authenticate();
                         }
                       },
-                      views: {},
-                      controller: options.controller
+                      views: {}
                     };
 
-                    state.views[name + '@home'] = { templateUrl: view };
+                    state.views[name + '@home'] = {
+                        templateUrl: view,
+                        controller: options.controller
+                    };
 
                     RuntimeStatesProvider.addState('home.' + name, state);
 
-                    $rootScope.$broadcast('tab:change');
+                    $rootScope.$broadcast('maintab:change');
                 },
                 'string, string': function(name, view){
                     this.registerMainTab(name, view, {});
