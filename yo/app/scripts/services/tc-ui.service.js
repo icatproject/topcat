@@ -52,6 +52,10 @@
 
             var cartButtons = [];
 
+            this.cartButtons = function(){
+                return cartButtons;
+            };
+
             this.registerCartButton = helpers.overload({
                 'string, string, object': function(name, view, options){
                     cartButtons.push({name: name, view: view, options: options});

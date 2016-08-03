@@ -65,7 +65,28 @@
 
         ];
 
-        this.buttons = existingButtons;
+        var otherButtons = _.map(tc.ui().cartButtons(), function(otherButton){
+
+            function click(){
+                $uibModal.open({
+                    templateUrl : otherButton.view,
+                    controller: otherButton.options.controller,
+                    size : otherButton.options.size || 'lg'
+                })
+            }
+
+            return {
+                name: otherButton.name,
+                click: click,
+                class: otherButton.options.class || "btn btn-primary",
+                translate: "CART." + otherButton.name.toUpperCase().replace(/-/, '_') + "_BUTTON.TEXT",
+                translateTooltip: "CART." + otherButton.name.toUpperCase().replace(/-/, '_') + "_BUTTON.TOOLTIP.TEXT",
+                insertBefore: otherButton.options.insertBefore,
+                insertAfter: otherButton.options.insertAfter
+            };
+        });
+
+        this.buttons = helpers.mergeNamedObjectArrays(existingButtons, otherButtons);
 
         this.cancel = function() {
             $uibModalInstance.dismiss('cancel');
