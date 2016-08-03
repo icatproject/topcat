@@ -14,8 +14,6 @@
         this.authenticationTypes = [];
         var facility;
 
-        console.log('Logou Controller called');
-
         this.facilityChanged = function(){
             facility = tc.facility(this.facilityName);
             this.plugin = facility.config().authenticationTypes[0].plugin;
