@@ -460,6 +460,20 @@
           };
         });
     })
+    .config(function($sceDelegateProvider, APP_CONFIG) {
+        var whiteList = ['self'];
+
+        if(APP_CONFIG.plugins){
+            _.each(APP_CONFIG.plugins, function(plugin){
+                var matches = plugin.match(/^(https{0,1}:\/\/[^\/]+)/);
+                if(matches){
+                    whiteList.push(matches[1] + "**");
+                }
+            })
+        }
+
+        $sceDelegateProvider.resourceUrlWhitelist(whiteList);
+    })
     .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
         //make $state and $stateParams available at rootscope.
         $rootScope.$state = $state;

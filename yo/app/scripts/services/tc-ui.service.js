@@ -65,6 +65,21 @@
                 }
             });
 
+            var entityActionButtons = [];
+
+            this.entityActionButtons = function(){
+                return entityActionButtons;
+            };
+
+            this.registerEntityActionButton = helpers.overload({
+                'string, string, object': function(name, view, options){
+                    entityActionButtons.push({name: name, view: view, options: options});
+                },
+                'string, string': function(name, view){
+                    return this.registerEntityActionButton(name, view, {});
+                }
+            });
+
         }
 
     });

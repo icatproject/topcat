@@ -267,6 +267,12 @@
                 "TEXT" : "Click to submit this cart for download"
             }
         },
+        "CONFIGURE_JOB_BUTTON" : {
+            "TEXT" : "Configure Job",
+            "TOOLTIP" : {
+                "TEXT" : "Configure job for submission to the IJP"
+            }
+        },
         "CANCEL_BUTTON" : {
             "TEXT" : "Close",
             "TOOLTIP" : {
@@ -279,8 +285,8 @@
                 "REMOVE" : {
                     "TEXT" : "Remove",
                     "TOOLTIP" : {
-                    "TEXT" : "Click to remove this item from the cart"
-                }
+                        "TEXT" : "Click to remove this item from the cart"
+                    }
                 }
             }
         },
