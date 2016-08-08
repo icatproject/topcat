@@ -210,7 +210,14 @@
 
     app.run(['APP_CONFIG', 'LANG', 'objectValidator', function(APP_CONFIG, LANG, objectValidator){
         try {
-            objectValidator.createAppConfigValidator().validate(APP_CONFIG);
+            var pluginSchemas = [];
+
+            _.each(registerPluginCallbacks, function(registerPluginCallback){
+                var plugin = registerPluginCallback();
+                if(plugin.configSchema) pluginSchemas.push(plugin.configSchema);
+            });
+
+            objectValidator.createAppConfigValidator(pluginSchemas).validate(APP_CONFIG);
         } catch(e){
             alert("Invalid topcat.json: \n\n" + e);
         }

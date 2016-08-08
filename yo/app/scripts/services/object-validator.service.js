@@ -75,7 +75,7 @@
             schema.call(this);
         }
 
-        this.createAppConfigValidator = function(){
+        this.createAppConfigValidator = function(pluginSchemas){
             return this.create(function(){
                 this.attribute('site', function(){
                     this.attribute('topcatUrl', function(){ this.type('string'); this.mandatory(false); });
@@ -317,6 +317,12 @@
                     this.attribute('*', function(){
                         this.type("string");
                     });
+                });
+
+                var that = this;
+
+                _.each(pluginSchemas, function(pluginSchema){
+                    pluginSchema.call(that);
                 });
             });
         }
