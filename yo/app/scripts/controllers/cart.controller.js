@@ -66,15 +66,6 @@
         ];
 
         var otherButtons = _.map(tc.ui().cartButtons(), function(otherButton){
-
-            function click(){
-                $uibModal.open({
-                    templateUrl : otherButton.view,
-                    controller: otherButton.options.controller,
-                    size : otherButton.options.size || 'lg'
-                })
-            }
-
             return {
                 name: otherButton.name,
                 click: otherButton.click,
