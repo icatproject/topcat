@@ -52,9 +52,7 @@
 
             var cartButtons = [];
 
-            this.cartButtons = function(){
-                return cartButtons;
-            };
+            this.cartButtons = function(){ return cartButtons; };
 
             this.registerCartButton = helpers.overload({
                 'string, object, function': function(name, options, click){
@@ -67,16 +65,15 @@
 
             var entityActionButtons = [];
 
-            this.entityActionButtons = function(){
-                return entityActionButtons;
-            };
+            this.entityActionButtons = function(){ return entityActionButtons; };
 
             this.registerEntityActionButton = helpers.overload({
-                'string, string, object': function(name, view, options){
-                    entityActionButtons.push({name: name, view: view, options: options});
+                'string, object, function': function(name, options, click){
+                    options.entityTypes = options.entityTypes || ['investigation', 'dataset', 'datafile'];
+                    entityActionButtons.push({name: name, options: options, click: click});
                 },
-                'string, string': function(name, view){
-                    return this.registerEntityActionButton(name, view, {});
+                'string, function': function(name, click){
+                    return this.registerEntityActionButton(name,  {}, click);
                 }
             });
 

@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('helpers', function($http, $q, $timeout, $rootScope, $injector, uiGridConstants, icatSchema, topcatSchema){
+    app.service('helpers', function($http, $q, $timeout, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
@@ -276,40 +276,85 @@
 	            ].join('');
 	        });
 
+            var actionButtons = [];
 
 	        if(gridOptions.enableDownload){
-	            gridOptions.columnDefs.push({
-	                name : 'actions',
-	                visible: true,
-	                title: 'BROWSE.COLUMN.ACTIONS.NAME',
-	                enableFiltering: false,
-	                enable: false,
-	                enableColumnMenu: false,
-	                enableSorting: false,
-	                enableHiding: false,
-	                cellTemplate : '<div class="ui-grid-cell-contents"><a type="button" class="btn btn-primary btn-xs" translate="BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TEXT" uib-tooltip="{{\'BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="right" tooltip-append-to-body="true" href="{{grid.appScope.downloadUrl(row.entity)}}" target="_blank"></a></div>'
-	            });
+                actionButtons.push({
+                    name: "download",
+                    click: function(entity){
+                        var idsUrl = entity.facility.config().idsUrl;
+                        var sessionId = entity.facility.icat().session().sessionId;
+                        var id = entity.id;
+                        var name = entity.location.replace(/^.*\//, '');
+                        var idsUrl = [
+                            '/ids/getData?sessionId=' + encodeURIComponent(sessionId),
+                            'datafileIds=' + id,
+                            'compress=false',
+                            'zip=false',
+                            'outfile=' + encodeURIComponent(name)
+                        ].join('&');
+
+                        $(document.body).append($('<iframe>').attr({
+                            src: idsUrl
+                        }).css({
+                            position: 'relative',
+                            left: '-1000000px',
+                            height: '1px',
+                            width: '1px'
+                        }));
+                    },
+                    class: "btn btn-primary",
+                    translate: "DOWNLOAD_ENTITY_ACTION_BUTTON.TEXT",
+                    translateTooltip: "DOWNLOAD_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT"
+                });
 	        }
-    	};
 
-        function generateEntityActionButtonsForEntityType(entityType){
-            var out = [];
-
-            _.each($injector.get('tc').entityActionButtons(), function(button){
-                if(_.includes(button.options, entityType)){
-                    out.push({
+            _.each($injector.get('tc').ui().entityActionButtons(), function(button){
+                if(_.includes(button.options.entityTypes, entityType)){
+                    actionButtons.push({
                         name: button.name,
+                        click: button.click,
                         class: button.options.class || "btn btn-primary",
-                        translate: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON",
+                        translate: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON.TEXT",
                         translateTooltip: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT",
-                        insertBefore: otherButton.options.insertBefore,
-                        insertAfter: otherButton.options.insertAfter
+                        insertBefore: button.options.insertBefore,
+                        insertAfter: button.options.insertAfter
                     });
                 }
             });
 
-            return helpers.mergeNamedObjectArrays([], out);
-        };
+            console.log('actionButtons', actionButtons);
+
+            gridOptions.actionButtons = this.mergeNamedObjectArrays([], actionButtons);
+
+            if(gridOptions.actionButtons.length > 0){
+                gridOptions.columnDefs.push({
+                    name : 'actions',
+                    visible: true,
+                    title: 'BROWSE.COLUMN.ACTIONS.NAME',
+                    enableFiltering: false,
+                    enable: false,
+                    enableColumnMenu: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    cellTemplate : [
+                        '<div class="ui-grid-cell-contents">',
+                            '<a ',
+                                'ng-repeat="actionButton in grid.options.actionButtons" ',
+                                'type="button" ',
+                                'class="btn btn-primary btn-xs btn-entity-action" ',
+                                'translate="{{actionButton.translate}}" ',
+                                'uib-tooltip="{{actionButton.translateTooltip | translate}}" ',
+                                'tooltip-placement="left" ',
+                                'tooltip-append-to-body="true" ',
+                                'ng-click="actionButton.click(row.entity); $event.stopPropagation();">',
+                            '</a>',
+                        '</div>'
+                    ].join('')
+                });
+            }
+    	};
+
 
         this.generateEntitySorter = function(sortColumns){
             var sorters = [];

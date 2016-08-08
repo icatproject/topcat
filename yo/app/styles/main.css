@@ -293,3 +293,7 @@ a[ng-click]{
 .ui-grid-cell-contents {
     padding: 3px;
 }
+
+.btn-entity-action {
+  margin-left: 3px;
+}

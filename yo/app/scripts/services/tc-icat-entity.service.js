@@ -18,6 +18,8 @@
 			var icat = facility.icat();
 			var facilityName = facility.config().name;
 
+			this.facility = facility;
+
 			if(this.investigationInstruments && this.investigationInstruments.length > 0){
 				this.firstInstrumentName = this.investigationInstruments[0].instrument.fullName;
 				this.instrumentNames = _.map(this.investigationInstruments, function(investigationInstrument){

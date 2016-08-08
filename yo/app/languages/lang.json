@@ -593,5 +593,17 @@
         "MINUTES": "minutes",
         "SECOND": "second",
         "SECONDS": "seconds"
+    },
+    "DOWNLOAD_ENTITY_ACTION_BUTTON": {
+        "TEXT": "Download",
+        "TOOLTIP": {
+            "TEXT": "Click to download"
+        }
+    },
+    "CONFIGURE_JOB_ENTITY_ACTION_BUTTON": {
+        "TEXT": "Configure Job",
+        "TOOLTIP": {
+            "TEXT": "Configure job"
+        }
     }
 }
