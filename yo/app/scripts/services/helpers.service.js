@@ -323,8 +323,6 @@
                 }
             });
 
-            console.log('actionButtons', actionButtons);
-
             gridOptions.actionButtons = this.mergeNamedObjectArrays([], actionButtons);
 
             if(gridOptions.actionButtons.length > 0){
