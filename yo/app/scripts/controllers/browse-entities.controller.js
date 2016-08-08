@@ -229,19 +229,6 @@
         this.browse = function(row) {
             row.browse(canceler);
         };
-
-        this.downloadUrl = function(datafile){
-            var idsUrl = facility.config().idsUrl;
-            var sessionId = icat.session().sessionId;
-            var id = datafile.id;
-            var name = datafile.location.replace(/^.*\//, '');
-            return idsUrl + 
-                '/ids/getData?sessionId=' + encodeURIComponent(sessionId) +
-                '&datafileIds=' + id +
-                '&compress=false' +
-                '&zip=false' +
-                '&outfile=' + encodeURIComponent(name);
-        };
         
         this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');
 
