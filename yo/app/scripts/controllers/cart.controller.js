@@ -77,7 +77,7 @@
 
             return {
                 name: otherButton.name,
-                click: click,
+                click: otherButton.click,
                 class: otherButton.options.class || "btn btn-primary",
                 translate: "CART." + otherButton.name.toUpperCase().replace(/-/, '_') + "_BUTTON.TEXT",
                 translateTooltip: "CART." + otherButton.name.toUpperCase().replace(/-/, '_') + "_BUTTON.TOOLTIP.TEXT",

@@ -4,10 +4,11 @@
 
     var app = angular.module('topcat');
 
-    app.service('helpers', function($http, $q, $timeout, $rootScope, uiGridConstants, icatSchema, topcatSchema){
+    app.service('helpers', function($http, $q, $timeout, $rootScope, $injector, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
+
     		_.each(metaTabs, function(metaTab){
                 _.each(metaTab.items, function(item){
                     var field = item.field;
@@ -291,6 +292,25 @@
 	        }
     	};
 
+        function generateEntityActionButtonsForEntityType(entityType){
+            var out = [];
+
+            _.each($injector.get('tc').entityActionButtons(), function(button){
+                if(_.includes(button.options, entityType)){
+                    out.push({
+                        name: button.name,
+                        class: button.options.class || "btn btn-primary",
+                        translate: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON",
+                        translateTooltip: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT",
+                        insertBefore: otherButton.options.insertBefore,
+                        insertAfter: otherButton.options.insertAfter
+                    });
+                }
+            });
+
+            return helpers.mergeNamedObjectArrays([], out);
+        };
+
         this.generateEntitySorter = function(sortColumns){
             var sorters = [];
 
@@ -360,6 +380,48 @@
                 });
                 return out;
             };
+        };
+
+        this.mergeNamedObjectArrays = function(existingObjects, toBeMergedObjects){
+            var out = _.clone(existingObjects);
+            var changed;
+            
+            while(true){
+                changed = false;
+
+                _.each(_.clone(toBeMergedObjects), function(toBeMergedObject){
+                    if(toBeMergedObject.insertBefore){
+                        var index = _.findIndex(out, function(tab){
+                            return tab.name == toBeMergedObject.insertBefore
+                        });
+
+                        if(index !== -1){
+                            out.splice(index, 0, toBeMergedObject);
+                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                            changed = true;
+                        }
+
+                    } else if(toBeMergedObject.insertAfter){
+                        var index = _.findIndex(out, function(tab){
+                            return tab.name == toBeMergedObject.insertAfter;
+                        });
+
+                        if(index !== -1){
+                            out.splice(index + 1, 0, toBeMergedObject);
+                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                            changed = true;
+                        }
+                    } else {
+                        out.push(toBeMergedObject);
+                        _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                        changed = true;
+                    }   
+                });
+
+                if(!changed) break;
+            }
+
+            return out;
         };
 
     	this.completePartialFromDate = function(date){
@@ -602,48 +664,6 @@
 			defered.resolve(value);
 			return defered.promise;
 		};
-
-        this.mergeNamedObjectArrays = function(existingObjects, toBeMergedObjects){
-            var out = _.clone(existingObjects);
-            var changed;
-            
-            while(true){
-                changed = false;
-
-                _.each(_.clone(toBeMergedObjects), function(toBeMergedObject){
-                    if(toBeMergedObject.insertBefore){
-                        var index = _.findIndex(out, function(tab){
-                            return tab.name == toBeMergedObject.insertBefore
-                        });
-
-                        if(index !== -1){
-                            out.splice(index, 0, toBeMergedObject);
-                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
-                            changed = true;
-                        }
-
-                    } else if(toBeMergedObject.insertAfter){
-                        var index = _.findIndex(out, function(tab){
-                            return tab.name == toBeMergedObject.insertAfter;
-                        });
-
-                        if(index !== -1){
-                            out.splice(index + 1, 0, toBeMergedObject);
-                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
-                            changed = true;
-                        }
-                    } else {
-                        out.push(toBeMergedObject);
-                        _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
-                        changed = true;
-                    }   
-                });
-
-                if(!changed) break;
-            }
-
-            return out;
-        };
 
 		(function(){
 			var methods = {

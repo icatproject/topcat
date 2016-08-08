@@ -49,7 +49,6 @@
 
 
         function generateQueryBuilder(){
-            var entityType = stateFromTo.replace(/^.*-/, '');
             var out = icat.queryBuilder(entityType);
 
             out.where(["facility.id = ?", facilityId]);
@@ -266,7 +265,6 @@
                 updateScroll(results.length);
             });
 
-            //sort change callback
             gridApi.core.on.sortChanged($scope, function(grid, _sortColumns){
                 sortColumns = _sortColumns;
                 page = 1;
@@ -278,7 +276,6 @@
                 });
             });
 
-            //filter change calkback
             gridApi.core.on.filterChanged($scope, function(){
                 canceler.resolve();
                 canceler = $q.defer();

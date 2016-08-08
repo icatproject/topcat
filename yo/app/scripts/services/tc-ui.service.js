@@ -57,11 +57,11 @@
             };
 
             this.registerCartButton = helpers.overload({
-                'string, string, object': function(name, view, options){
-                    cartButtons.push({name: name, view: view, options: options});
+                'string, object, function': function(name, options, click){
+                    cartButtons.push({name: name, options: options, click: click});
                 },
-                'string, string': function(name, view){
-                    return this.registerCartButton(name, view, {});
+                'string, function': function(name, click){
+                    return this.registerCartButton(name,  {}, click);
                 }
             });
 
