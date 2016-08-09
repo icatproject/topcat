@@ -87,7 +87,7 @@
                     
                     if(config.plugins){
                         _.each(config.plugins, function(pluginUrl){
-                            $(document.body).append($("<script>").attr('src', pluginUrl));
+                            $(document.body).append($("<script>").attr('src', pluginUrl + "/scripts/plugin.js"));
                         });
                         waitForPlugins();
                     } else {
@@ -99,7 +99,13 @@
                     function waitForPlugins(){
                         if(registerPluginCallbacks.length == config.plugins.length){
                             _.each(registerPluginCallbacks, function(registerPluginCallback){
-                                var plugin = registerPluginCallback();
+                                if(!registerPluginCallback.pluginUrl){
+                                    var scripts = document.getElementsByTagName('script');
+                                    var index = scripts.length - 1;
+                                    registerPluginCallback.pluginUrl = scripts[index].src.replace(/scripts\/plugin\.js/, '');
+                                }
+
+                                var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
                                 if(plugin.stylesheets){
                                     _.each(plugin.stylesheets, function(stylesheetUrl){
                                         $(document.body).append($("<link>").attr({rel: "stylesheet", href: pluginUrl}));
@@ -513,7 +519,7 @@
         RouteCreatorService.createStates();
     }]).run(['$injector', function($injector){
         _.each(registerPluginCallbacks, function(registerPluginCallback){
-            var plugin = registerPluginCallback();
+            var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
             if(plugin.setup) $injector.invoke(plugin.setup);
         });
     }]);

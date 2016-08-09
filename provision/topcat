@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+command_name = ARGV[0]
+
+def build_install
+	system(%Q{
+		rm -rf ~/topcat_tmp
+		cp -r /vagrant ~/topcat_tmp
+		cd ~/topcat_tmp
+		mvn clean install
+		cp ~/topcat_tmp/target/topcat-*.zip ~/
+		cd ~/
+		unzip -o topcat-*.zip
+		cd topcat
+		cp ~/topcat_tmp/provision/topcat.properties /home/vagrant/topcat/topcat.properties
+		cp ~/topcat_tmp/provision/topcat-setup.properties /home/vagrant/topcat/topcat-setup.properties
+		cp ~/topcat_tmp/yo/app/config/topcat_dev.json /home/vagrant/topcat/topcat.json
+		cp ~/topcat_tmp/yo/app/languages/lang.json /home/vagrant/topcat/lang.json
+		cp ~/topcat_tmp/yo/app/styles/topcat.css /home/vagrant/topcat/topcat.css
+		dos2unix ./setup
+		chmod 0755 ./setup
+		./setup configure
+		./setup install
+	})
+end
+
+def build_install_plugin(name)
+	plugin_dir = "/vagrant/plugins/#{name}"
+
+	if File.directory? plugin_dir
+		system(%Q{
+			rm -rf ~/#{name}_tmp
+			cp -r #{plugin_dir} ~/#{name}_tmp
+			cd ~/#{name}_tmp
+			mvn clean install
+			cd target
+			asadmin deploy --force=true $(ls *.war)
+		})
+	else
+		puts "No such plugin directory '#{plugin_dir}'"
+	end
+end
+
+def build_install_plugins
+	Dir.open("/vagrant/plugins").each do |name|
+		next if name.match(/\A\./)
+		build_install_plugin(name)
+	end
+end
+
+def build_install_all
+	build_install
+	build_install_plugins
+end
+
+if command_name == 'build_install'
+	build_install
+elsif command_name == 'build_install_plugin'
+	build_install_plugin(ARGV[1])
+elsif command_name == 'build_install_plugins'
+	build_install_plugins
+elsif command_name == 'build_install_all'
+	build_install_all
+elsif command_name.nil?
+	puts ""
+	puts "-------------------------"
+	puts "Available commands"
+	puts "-------------------------"
+	puts "  * build_install"
+	puts "  * build_install_plugin [plugin_name]"
+	puts "  * build_install_plugins"
+	puts "  * build_install_all"
+	puts ""
+else
+	puts "Unknown command '#{command_name}'"
+end

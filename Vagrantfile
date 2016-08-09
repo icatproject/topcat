@@ -128,19 +128,19 @@ Vagrant.configure(2) do |config|
     sudo sh -c "iptables-save > /etc/iptables/rules.v4"
     sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
 
-    sudo cp /vagrant/provision/topcat_build_install /usr/bin/topcat_build_install
-    sudo chmod 755 /usr/bin/topcat_build_install
-    sudo dos2unix /usr/bin/topcat_build_install
-    topcat_build_install
-    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
-
-    mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
-
     curl -sSL https://get.rvm.io | bash
     source /home/vagrant/.rvm/scripts/rvm
     rvm install 2.3.1
     rvm use 2.3.1 --default
     gem install rest-client
+
+    sudo cp /vagrant/provision/topcat /usr/bin/topcat
+    sudo chmod 755 /usr/bin/topcat
+    sudo dos2unix /usr/bin/topcat
+    topcat build_install_all
+    sudo /opt/glassfish4/bin/asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
+
+    mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 
     ruby /vagrant/provision/populate_lucene.rb
 
