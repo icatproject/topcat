@@ -104,6 +104,7 @@ Vagrant.configure(2) do |config|
 
     sudo cp /vagrant/provision/000-default.conf /etc/apache2/sites-available
     sudo a2enmod headers
+    sudo a2enmod rewrite
     sudo /etc/init.d/apache2 restart
 
     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -

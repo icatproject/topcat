@@ -9,7 +9,7 @@
 # Short-Description: Starts a glassfish server
 ### END INIT INFO
 
-GLASSFISH_HOME=${GLASSFISH_HOME:-"/opt/glassfish4/glassfish"}
+GLASSFISH_HOME=${GLASSFISH_HOME:-"/home/vagrant/glassfish4/glassfish"}
 
 case "$1" in
 start)
