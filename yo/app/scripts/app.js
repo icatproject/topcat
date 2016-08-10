@@ -3,6 +3,9 @@
 
     var registerPluginCallbacks = [];
     window.registerTopcatPlugin = function(fn){
+        var scripts = document.getElementsByTagName('script');
+        var index = scripts.length - 1;
+        fn.pluginUrl = scripts[index].src.replace(/scripts\/plugin\.js/, '');
         registerPluginCallbacks.push(fn);
     };
 
@@ -99,12 +102,6 @@
                     function waitForPlugins(){
                         if(registerPluginCallbacks.length == config.plugins.length){
                             _.each(registerPluginCallbacks, function(registerPluginCallback){
-                                if(!registerPluginCallback.pluginUrl){
-                                    var scripts = document.getElementsByTagName('script');
-                                    var index = scripts.length - 1;
-                                    registerPluginCallback.pluginUrl = scripts[index].src.replace(/scripts\/plugin\.js/, '');
-                                }
-
                                 var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
                                 if(plugin.stylesheets){
                                     _.each(plugin.stylesheets, function(stylesheetUrl){

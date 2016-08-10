@@ -3,7 +3,7 @@
 registerTopcatPlugin(function(pluginUrl){
 	return {
 		scripts: [
-			pluginUrl + 'scripts/controllers/hello-world.controller.js'
+			pluginUrl + 'scripts/controllers/example-skeleton-plugin.controller.js'
 		],
 
 		stylesheets: [],
@@ -14,20 +14,20 @@ registerTopcatPlugin(function(pluginUrl){
 
 		setup: function($uibModal, tc){
 
-			tc.ui().registerMainTab('hello-world', pluginUrl + 'views/hello-world.html', {
+			tc.ui().registerMainTab('skeleton-plugin', pluginUrl + 'views/example-skeleton-plugin-template.html', {
 				insertAfter: 'my-data',
-				controller: 'HelloWorldController as helloWorldController'
+				controller: 'ExampleSkeletonPluginController as exampleSkeletonPluginController'
 			});
 
-			tc.ui().registerCartButton('hello-world', {insertBefore: 'cancel'}, function(){
+			tc.ui().registerCartButton('skeleton-plugin', {insertBefore: 'cancel'}, function(){
 				$uibModal.open({
-                    templateUrl : pluginUrl + 'views/hello-world.html',
-                    controller: 'HelloWorldController as helloWorldController',
+                    templateUrl : pluginUrl + 'views/example-skeleton-plugin-template.html',
+                    controller: 'ExampleSkeletonPluginController as exampleSkeletonPluginController',
                     size : 'sm'
                 })
 			});
 
-			tc.ui().registerEntityActionButton('hello-world', function(){
+			tc.ui().registerEntityActionButton('skeleton-plugin', function(){
 				alert("Hello World!");
 			});
 

@@ -67,17 +67,21 @@ end
 def copy_plugin_files(name, from, to)
 
 	name_no_underscores = name.gsub(/_/, '')
+	name_with_hyphens = name.gsub(/_/, '-')
+	name_camel_case = name.split(/_/).map{|segment| segment.capitalize }.join
 
 	Dir.open(from).each do |item|
 		next if item == '.' || item == '..'
 		current_from = "#{from}/#{item}"
-		current_to = "#{to}/#{item}"
+		current_to = "#{to}/#{item.gsub('skeleton-plugin', name_with_hyphens)}"
 
 		if File.file?(current_from)
 			data = File.read(current_from)
 			data.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
 			data.gsub!(/skeleton_plugin/, name)
 			data.gsub!(/skeletonplugin/, name_no_underscores)
+			data.gsub!(/skeleton-plugin/, name_with_hyphens)
+			data.gsub!(/SkeletonPlugin/, name_camel_case)
 			File.write(current_to, data)
 		else
 			Dir.mkdir(current_to) if !File.directory?(current_to)
