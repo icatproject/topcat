@@ -53,6 +53,39 @@ def build_install_all
 	build_install_plugins
 end
 
+def generate_plugin(name)
+	if !name.nil?
+		to = "/vagrant/plugins/#{name}"
+		Dir.mkdir(to) if !File.directory?(to)
+		copy_plugin_files(name, "/vagrant/provision/skeleton_plugin", to)
+		build_install_plugin(name)
+	else
+		puts "Please give a name e.g. foo_bar"
+	end
+end
+
+def copy_plugin_files(name, from, to)
+
+	name_no_underscores = name.gsub(/_/, '')
+
+	Dir.open(from).each do |item|
+		next if item == '.' || item == '..'
+		current_from = "#{from}/#{item}"
+		current_to = "#{to}/#{item}"
+
+		if File.file?(current_from)
+			data = File.read(current_from)
+			data.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+			data.gsub!(/skeleton_plugin/, name)
+			data.gsub!(/skeletonplugin/, name_no_underscores)
+			File.write(current_to, data)
+		else
+			Dir.mkdir(current_to) if !File.directory?(current_to)
+			copy_plugin_files(name, current_from, current_to)
+		end
+	end
+end
+
 if command_name == 'build_install'
 	build_install
 elsif command_name == 'build_install_plugin'
@@ -61,6 +94,8 @@ elsif command_name == 'build_install_plugins'
 	build_install_plugins
 elsif command_name == 'build_install_all'
 	build_install_all
+elsif command_name == 'generate_plugin'
+	generate_plugin(ARGV[1])
 elsif command_name.nil?
 	puts ""
 	puts "-------------------------"
@@ -70,6 +105,7 @@ elsif command_name.nil?
 	puts "  * build_install_plugin [plugin_name]"
 	puts "  * build_install_plugins"
 	puts "  * build_install_all"
+	puts "  * generate_plugin [plugin_name]"
 	puts ""
 else
 	puts "Unknown command '#{command_name}'"
