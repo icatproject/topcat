@@ -106,7 +106,7 @@ public class UserResource {
 	 *         "icatUrl":"https://example.com","id":2,"isDeleted":false,
 	 *         "isTwoLevel":false,"preparedId":
 	 *         "6d3aaca5-da9f-4e6a-922d-eceeefcc07e0","status":"COMPLETE",
-	 *         "transport":"https","transportUrl":"https://example.com",
+	 *         "size":324675,"transport":"https","transportUrl":"https://example.com",
 	 *         "userName":"simple/root"}]
 	 *
 	 * @throws MalformedURLException

@@ -150,6 +150,10 @@ public class Watchdog {
             message = sub.replace(properties.getMailBodySmartClient());
           }
 
+          if (download.getTransport().equals("scarf")) {
+            message = sub.replace(properties.getMailBodyScarf());
+          }
+
           mailBean.send(download.getEmail(), subject, message);
 
         } else {

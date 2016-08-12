@@ -27,6 +27,7 @@ public class PropertyHandler {
 	private String mailBodyHttps;
 	private String mailBodyGlobus;
 	private String mailBodySmartClient;
+	private String mailBodyScarf;
 	private int maxPerGetStatus;
 	private int pollDelay;
 	private int pollIntervalWait;
@@ -45,6 +46,7 @@ public class PropertyHandler {
 				mailBodyHttps = props.getString("mail.body.https");
 				mailBodyGlobus = props.getString("mail.body.globus");
 				mailBodySmartClient = props.getString("mail.body.smartclient");
+				mailBodyScarf = props.getString("mail.body.scarf");
 			}
 			maxPerGetStatus = props.getPositiveInt("ids.getStatus.max");
 			pollDelay = props.getPositiveInt("poll.delay");
@@ -100,6 +102,10 @@ public class PropertyHandler {
 
 	public String getMailBodySmartClient() {
 		return mailBodySmartClient;
+	}
+
+	public String getMailBodyScarf() {
+		return mailBodyScarf;
 	}
 
 	public int getMaxPerGetStatus() {
