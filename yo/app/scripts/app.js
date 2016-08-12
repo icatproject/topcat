@@ -87,10 +87,17 @@
                     });
                 }).then(function(config){
                     var defered = $q.defer();
+                    var pluginsLength = config.plugins ? config.plugins.length : 0;
                     
                     if(config.plugins){
                         _.each(config.plugins, function(pluginUrl){
-                            $(document.body).append($("<script>").attr('src', pluginUrl + "/scripts/plugin.js"));
+                            var src = pluginUrl + "/scripts/plugin.js";
+                            $http.get(src).then(function(){
+                                $(document.body).append($("<script>").attr('src', src));
+                            }, function(){
+                                console.log(src + " is unreachable");
+                                pluginsLength--;
+                            });
                         });
                         waitForPlugins();
                     } else {
@@ -100,7 +107,9 @@
                     var pluginScriptCount = 0;
 
                     function waitForPlugins(){
-                        if(registerPluginCallbacks.length == config.plugins.length){
+                        if(registerPluginCallbacks.length == pluginsLength){
+                            pluginScriptRegisteryCounter = 0;
+
                             _.each(registerPluginCallbacks, function(registerPluginCallback){
                                 var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
                                 if(plugin.stylesheets){
@@ -114,7 +123,7 @@
                                         pluginScriptCount++;
                                     });
                                 }
-                                pluginScriptRegisteryCounter = 0;
+                                
                                 waitForPluginScripts();
                             });
                             
@@ -216,7 +225,7 @@
             var pluginSchemas = [];
 
             _.each(registerPluginCallbacks, function(registerPluginCallback){
-                var plugin = registerPluginCallback();
+                var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
                 if(plugin.configSchema) pluginSchemas.push(plugin.configSchema);
             });
 
