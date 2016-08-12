@@ -27,8 +27,6 @@ describe('tc icat entity service', function () {
             entity = {
                 find: tcIcatEntity.create(mockAttributes, mockFacility).find
             };
-
-            console.log('entity', entity);
         }));
 
         describe('for investigationUserPivot', function(){
