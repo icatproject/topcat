@@ -44,7 +44,7 @@ You can rebuild the server side (i.e. anything Java related) by:
 
 ```bash
 vagrant ssh
-topcat_build_install
+topcat build_install
 ```
 
 You can build a distro by:

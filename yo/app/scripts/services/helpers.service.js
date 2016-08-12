@@ -634,31 +634,55 @@
 							if(!options.headers) options.headers = {};
 							if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 						}
-						if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
 						var url = prefix + offset;
 						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
                     
 						var out = $q.defer();
-						var args = [url];
-						if(methodName.match(/post|put/)) args.push(params);
-
-						args.push(options);
 
                         var stopListeningForLowPriorityCounterChanges = function(){};
 
                         function call(){
                             if(options.lowPriority) lowPriorityCounter++;
-    						$http[methodName].apply($http, args).then(function(response){
-    							out.resolve(response.data);
-                                if(options.lowPriority) lowPriorityCounter--;
-                                $rootScope.$emit('lowprioritycounter:change');
-                                stopListeningForLowPriorityCounterChanges();
-    						}, function(response){
-    							out.reject(response.data);
-                                if(options.lowPriority) lowPriorityCounter--;
-                                $rootScope.$emit('lowprioritycounter:change');
-                                stopListeningForLowPriorityCounterChanges();
-    						});
+
+                            if(options.bypassInterceptors){
+                                var xhr = $.ajax(url, {
+                                    method: methodName.toUpperCase(),
+                                    headers: options.headers,
+                                    data: methodName.match(/post|put/) ? params : undefined
+                                });
+
+                                xhr.then(function(data){
+                                    success({data: data})
+                                }, function(qXHR, textStatus, errorThrown){
+                                    failure({data: errorThrown})
+                                });
+
+                                if(options.timeout){
+                                    options.timeout.then(function(){
+                                        xhr.abort();
+                                    });
+                                }
+                            } else {
+                                var args = [url];
+                                if(methodName.match(/post|put/)) args.push(params);
+                                args.push(options);
+
+        						$http[methodName].apply($http, args).then(success, failure);
+                            }
+                        }
+
+                        function success(response){
+                            out.resolve(response.data);
+                            if(options.lowPriority) lowPriorityCounter--;
+                            $rootScope.$emit('lowprioritycounter:change');
+                            stopListeningForLowPriorityCounterChanges();
+                        }
+
+                        function failure(response){
+                            out.reject(response.data);
+                            if(options.lowPriority) lowPriorityCounter--;
+                            $rootScope.$emit('lowprioritycounter:change');
+                            stopListeningForLowPriorityCounterChanges();
                         }
 
                         var pollTimeoutPromise;
