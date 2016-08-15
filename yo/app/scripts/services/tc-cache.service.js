@@ -2,7 +2,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.service('tcCache', function($cacheFactory, $q, $timeout, $rootScope, helpers){
 

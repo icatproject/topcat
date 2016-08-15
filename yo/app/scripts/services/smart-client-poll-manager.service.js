@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('angularApp')
+        .module('topcat')
         .service('SmartClientPollManager', SmartClientPollManager);
 
     SmartClientPollManager.$inject = ['APP_CONFIG', 'SmartClientManager', '$sessionStorage', 'poller', 'inform', 'tc'];

@@ -11,7 +11,7 @@ describe('tc icat query builder service', function () {
         });
     });
 
-    beforeEach(module('angularApp'));
+    beforeEach(module('topcat'));
 
     beforeEach(inject(function(tc){
         icat = tc.icat('TEST');

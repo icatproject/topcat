@@ -2,12 +2,13 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
-    app.service('helpers', function($http, $q, $timeout, $rootScope, uiGridConstants, icatSchema, topcatSchema){
+    app.service('helpers', function($http, $q, $timeout, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
+
     		_.each(metaTabs, function(metaTab){
                 _.each(metaTab.items, function(item){
                     var field = item.field;
@@ -275,21 +276,83 @@
 	            ].join('');
 	        });
 
+            var actionButtons = [];
 
 	        if(gridOptions.enableDownload){
-	            gridOptions.columnDefs.push({
-	                name : 'actions',
-	                visible: true,
-	                title: 'BROWSE.COLUMN.ACTIONS.NAME',
-	                enableFiltering: false,
-	                enable: false,
-	                enableColumnMenu: false,
-	                enableSorting: false,
-	                enableHiding: false,
-	                cellTemplate : '<div class="ui-grid-cell-contents"><a type="button" class="btn btn-primary btn-xs" translate="BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TEXT" uib-tooltip="{{\'BROWSE.COLUMN.ACTIONS.LINK.DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="right" tooltip-append-to-body="true" href="{{grid.appScope.downloadUrl(row.entity)}}" target="_blank"></a></div>'
-	            });
+                actionButtons.push({
+                    name: "download",
+                    click: function(entity){
+                        var idsUrl = entity.facility.config().idsUrl;
+                        var sessionId = entity.facility.icat().session().sessionId;
+                        var id = entity.id;
+                        var name = entity.location.replace(/^.*\//, '');
+                        var idsUrl = [
+                            '/ids/getData?sessionId=' + encodeURIComponent(sessionId),
+                            'datafileIds=' + id,
+                            'compress=false',
+                            'zip=false',
+                            'outfile=' + encodeURIComponent(name)
+                        ].join('&');
+
+                        $(document.body).append($('<iframe>').attr({
+                            src: idsUrl
+                        }).css({
+                            position: 'relative',
+                            left: '-1000000px',
+                            height: '1px',
+                            width: '1px'
+                        }));
+                    },
+                    class: "btn btn-primary",
+                    translate: "DOWNLOAD_ENTITY_ACTION_BUTTON.TEXT",
+                    translateTooltip: "DOWNLOAD_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT"
+                });
 	        }
+
+            _.each($injector.get('tc').ui().entityActionButtons(), function(button){
+                if(_.includes(button.options.entityTypes, entityType)){
+                    actionButtons.push({
+                        name: button.name,
+                        click: button.click,
+                        class: button.options.class || "btn btn-primary",
+                        translate: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON.TEXT",
+                        translateTooltip: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT",
+                        insertBefore: button.options.insertBefore,
+                        insertAfter: button.options.insertAfter
+                    });
+                }
+            });
+
+            gridOptions.actionButtons = this.mergeNamedObjectArrays([], actionButtons);
+
+            if(gridOptions.actionButtons.length > 0){
+                gridOptions.columnDefs.push({
+                    name : 'actions',
+                    visible: true,
+                    title: 'BROWSE.COLUMN.ACTIONS.NAME',
+                    enableFiltering: false,
+                    enable: false,
+                    enableColumnMenu: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    cellTemplate : [
+                        '<div class="ui-grid-cell-contents">',
+                            '<a ',
+                                'ng-repeat="actionButton in grid.options.actionButtons" ',
+                                'type="button" ',
+                                'class="btn btn-primary btn-xs btn-entity-action" ',
+                                'translate="{{actionButton.translate}}" ',
+                                'uib-tooltip="{{actionButton.translateTooltip | translate}}" ',
+                                'tooltip-placement="left" ',
+                                'tooltip-append-to-body="true" ',
+                                'ng-click="actionButton.click(row.entity); $event.stopPropagation();">',
+                            '</a>',
+                        '</div>'
+                    ].join('')
+                });
+            }
     	};
+
 
         this.generateEntitySorter = function(sortColumns){
             var sorters = [];
@@ -360,6 +423,48 @@
                 });
                 return out;
             };
+        };
+
+        this.mergeNamedObjectArrays = function(existingObjects, toBeMergedObjects){
+            var out = _.clone(existingObjects);
+            var changed;
+            
+            while(true){
+                changed = false;
+
+                _.each(_.clone(toBeMergedObjects), function(toBeMergedObject){
+                    if(toBeMergedObject.insertBefore){
+                        var index = _.findIndex(out, function(tab){
+                            return tab.name == toBeMergedObject.insertBefore
+                        });
+
+                        if(index !== -1){
+                            out.splice(index, 0, toBeMergedObject);
+                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                            changed = true;
+                        }
+
+                    } else if(toBeMergedObject.insertAfter){
+                        var index = _.findIndex(out, function(tab){
+                            return tab.name == toBeMergedObject.insertAfter;
+                        });
+
+                        if(index !== -1){
+                            out.splice(index + 1, 0, toBeMergedObject);
+                            _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                            changed = true;
+                        }
+                    } else {
+                        out.push(toBeMergedObject);
+                        _.remove(toBeMergedObjects, {name: toBeMergedObject.name});
+                        changed = true;
+                    }   
+                });
+
+                if(!changed) break;
+            }
+
+            return out;
         };
 
     	this.completePartialFromDate = function(date){
@@ -529,31 +634,55 @@
 							if(!options.headers) options.headers = {};
 							if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 						}
-						if(_.isUndefined(options.byPassIntercepter)) options.byPassIntercepter = true;
 						var url = prefix + offset;
 						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
                     
 						var out = $q.defer();
-						var args = [url];
-						if(methodName.match(/post|put/)) args.push(params);
-
-						args.push(options);
 
                         var stopListeningForLowPriorityCounterChanges = function(){};
 
                         function call(){
                             if(options.lowPriority) lowPriorityCounter++;
-    						$http[methodName].apply($http, args).then(function(response){
-    							out.resolve(response.data);
-                                if(options.lowPriority) lowPriorityCounter--;
-                                $rootScope.$emit('lowprioritycounter:change');
-                                stopListeningForLowPriorityCounterChanges();
-    						}, function(response){
-    							out.reject(response.data);
-                                if(options.lowPriority) lowPriorityCounter--;
-                                $rootScope.$emit('lowprioritycounter:change');
-                                stopListeningForLowPriorityCounterChanges();
-    						});
+
+                            if(options.bypassInterceptors){
+                                var xhr = $.ajax(url, {
+                                    method: methodName.toUpperCase(),
+                                    headers: options.headers,
+                                    data: methodName.match(/post|put/) ? params : undefined
+                                });
+
+                                xhr.then(function(data){
+                                    success({data: data})
+                                }, function(qXHR, textStatus, errorThrown){
+                                    failure({data: errorThrown})
+                                });
+
+                                if(options.timeout){
+                                    options.timeout.then(function(){
+                                        xhr.abort();
+                                    });
+                                }
+                            } else {
+                                var args = [url];
+                                if(methodName.match(/post|put/)) args.push(params);
+                                args.push(options);
+
+        						$http[methodName].apply($http, args).then(success, failure);
+                            }
+                        }
+
+                        function success(response){
+                            out.resolve(response.data);
+                            if(options.lowPriority) lowPriorityCounter--;
+                            $rootScope.$emit('lowprioritycounter:change');
+                            stopListeningForLowPriorityCounterChanges();
+                        }
+
+                        function failure(response){
+                            out.reject(response.data);
+                            if(options.lowPriority) lowPriorityCounter--;
+                            $rootScope.$emit('lowprioritycounter:change');
+                            stopListeningForLowPriorityCounterChanges();
                         }
 
                         var pollTimeoutPromise;

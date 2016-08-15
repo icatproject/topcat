@@ -2,7 +2,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('AdminMessagesController', function($scope, $state, $timeout, $q, tc, inform){
     	var that = this;

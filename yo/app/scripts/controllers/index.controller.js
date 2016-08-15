@@ -2,7 +2,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, $sessionStorage, tc, ipCookie){
         var that = this;

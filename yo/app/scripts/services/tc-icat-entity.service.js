@@ -3,7 +3,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers, icatSchema){
     	var tcIcatEntity = this;
@@ -17,6 +17,8 @@
 			var that = this;
 			var icat = facility.icat();
 			var facilityName = facility.config().name;
+
+			this.facility = facility;
 
 			if(this.investigationInstruments && this.investigationInstruments.length > 0){
 				this.firstInstrumentName = this.investigationInstruments[0].instrument.fullName;

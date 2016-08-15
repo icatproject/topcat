@@ -3,7 +3,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('BrowseFacilitiesController', function($state, $q, $scope, $rootScope, $timeout, tc, helpers, uiGridConstants){
         var pagingConfig = tc.config().paging;

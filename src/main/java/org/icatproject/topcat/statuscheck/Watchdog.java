@@ -20,6 +20,7 @@ import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.utils.PropertyHandler;
 import org.icatproject.topcat.utils.MailBean;
+import org.icatproject.topcat.utils.ConvertUtils;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +132,7 @@ public class Watchdog {
           valuesMap.put("preparedId", download.getPreparedId());
           valuesMap.put("downloadUrl", downloadUrl);
           valuesMap.put("fileName", download.getFileName());
+          valuesMap.put("size", ConvertUtils.bytesToHumanReadable(download.getSize()));
 
           StrSubstitutor sub = new StrSubstitutor(valuesMap);
           String subject = sub.replace(properties.getMailSubject());
@@ -146,6 +148,10 @@ public class Watchdog {
 
           if (download.getTransport().equals("smartclient")) {
             message = sub.replace(properties.getMailBodySmartClient());
+          }
+
+          if (download.getTransport().equals("scarf")) {
+            message = sub.replace(properties.getMailBodyScarf());
           }
 
           mailBean.send(download.getEmail(), subject, message);

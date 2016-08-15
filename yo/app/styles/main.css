@@ -294,7 +294,6 @@ a[ng-click]{
     padding: 3px;
 }
 
-
 .terms-and-conditions {
   display: inline-block;
   width: 100%;
@@ -306,7 +305,7 @@ a[ng-click]{
   border-width: 1px;
 }
 
-
-
-
+.btn-entity-action {
+  margin-left: 3px;
+}
 

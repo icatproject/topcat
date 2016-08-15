@@ -104,6 +104,7 @@ Vagrant.configure(2) do |config|
 
     sudo cp /vagrant/provision/000-default.conf /etc/apache2/sites-available
     sudo a2enmod headers
+    sudo a2enmod rewrite
     sudo /etc/init.d/apache2 restart
 
     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
@@ -118,6 +119,12 @@ Vagrant.configure(2) do |config|
     sudo dos2unix /etc/profile.d/phantomjs_bin.sh
     source /etc/profile.d/phantomjs_bin.sh
 
+    curl -sSL https://get.rvm.io | bash
+    source /home/vagrant/.rvm/scripts/rvm
+    rvm install 2.3.1
+    rvm use 2.3.1 --default
+    gem install rest-client
+
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
     sudo apt-get --assume-yes install iptables-persistent
@@ -125,19 +132,14 @@ Vagrant.configure(2) do |config|
     sudo sh -c "iptables-save > /etc/iptables/rules.v4"
     sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
 
-    sudo cp /vagrant/provision/topcat_build_install /usr/bin/topcat_build_install
-    sudo chmod 755 /usr/bin/topcat_build_install
-    sudo dos2unix /usr/bin/topcat_build_install
-    topcat_build_install
+    sudo cp /vagrant/provision/topcat /usr/bin/topcat
+    sudo chmod 755 /usr/bin/topcat
+    sudo dos2unix /usr/bin/topcat
+    topcat build_install_all
+
     asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
 
     mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
-
-    curl -sSL https://get.rvm.io | bash
-    source /home/vagrant/.rvm/scripts/rvm
-    rvm install 2.3.1
-    rvm use 2.3.1 --default
-    gem install rest-client
 
     ruby /vagrant/provision/populate_lucene.rb
 

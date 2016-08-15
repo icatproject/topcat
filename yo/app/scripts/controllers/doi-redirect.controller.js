@@ -3,7 +3,7 @@
 (function(){
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('DoiRedirectController', function($state, tc){
     	var facilityName = $state.params.facilityName;

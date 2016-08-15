@@ -2,7 +2,7 @@
 (function() {
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $translate, $timeout, $templateCache, tc, helpers){
         var that = this; 
@@ -49,7 +49,6 @@
 
 
         function generateQueryBuilder(){
-            var entityType = stateFromTo.replace(/^.*-/, '');
             var out = icat.queryBuilder(entityType);
 
             out.where(["facility.id = ?", facilityId]);
@@ -230,19 +229,6 @@
         this.browse = function(row) {
             row.browse(canceler);
         };
-
-        this.downloadUrl = function(datafile){
-            var idsUrl = facility.config().idsUrl;
-            var sessionId = icat.session().sessionId;
-            var id = datafile.id;
-            var name = datafile.location.replace(/^.*\//, '');
-            return idsUrl + 
-                '/ids/getData?sessionId=' + encodeURIComponent(sessionId) +
-                '&datafileIds=' + id +
-                '&compress=false' +
-                '&zip=false' +
-                '&outfile=' + encodeURIComponent(name);
-        };
         
         this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');
 
@@ -266,7 +252,6 @@
                 updateScroll(results.length);
             });
 
-            //sort change callback
             gridApi.core.on.sortChanged($scope, function(grid, _sortColumns){
                 sortColumns = _sortColumns;
                 page = 1;
@@ -278,7 +263,6 @@
                 });
             });
 
-            //filter change calkback
             gridApi.core.on.filterChanged($scope, function(){
                 canceler.resolve();
                 canceler = $q.defer();

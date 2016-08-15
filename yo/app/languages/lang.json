@@ -16,8 +16,7 @@
             "MY_DATA" : "My Data",
             "BROWSE" : "Browse",
             "SEARCH" : "Search",
-            "CART" : "Cart",
-            "DOWNLOAD" : "Download"
+            "MY_MACHINES" : "My Machines"
         }
     },
     "LANGUAGE" : {
@@ -256,30 +255,38 @@
             "ARCHIVED": "Archived on Tape"
         },
         "EMPTY" : "Cart is empty",
-        "BUTTON" : {
-            "REMOVE_ALL" : {
-                "TEXT" : "Remove All",
-                "TOOLTIP" : {
-                    "TEXT" : "Click to remove all items from cart"
-                }
-            },
-            "DOWNLOAD_CART" : {
-                "TEXT" : "Download Cart",
-                "TOOLTIP" : {
-                    "TEXT" : "Click to submit this cart for download"
-                }
-            },
-            "CANCEL" : {
-                "TEXT" : "Close"
+        "REMOVE_ALL_BUTTON" : {
+            "TEXT" : "Remove All",
+            "TOOLTIP" : {
+                "TEXT" : "Click to remove all items from cart"
             }
         },
+        "DOWNLOAD_CART_BUTTON" : {
+            "TEXT" : "Download Cart",
+            "TOOLTIP" : {
+                "TEXT" : "Click to submit this cart for download"
+            }
+        },
+        "CONFIGURE_JOB_BUTTON" : {
+            "TEXT" : "Configure Job",
+            "TOOLTIP" : {
+                "TEXT" : "Configure job for submission to the IJP"
+            }
+        },
+        "CANCEL_BUTTON" : {
+            "TEXT" : "Close",
+            "TOOLTIP" : {
+                "TEXT" : "Close this dialog"
+            }
+        },
+
         "ACTIONS" : {
             "LINK": {
                 "REMOVE" : {
                     "TEXT" : "Remove",
                     "TOOLTIP" : {
-                    "TEXT" : "Click to remove this item from the cart"
-                }
+                        "TEXT" : "Click to remove this item from the cart"
+                    }
                 }
             }
         },
@@ -607,5 +614,17 @@
         "MINUTES": "minutes",
         "SECOND": "second",
         "SECONDS": "seconds"
+    },
+    "DOWNLOAD_ENTITY_ACTION_BUTTON": {
+        "TEXT": "Download",
+        "TOOLTIP": {
+            "TEXT": "Click to download"
+        }
+    },
+    "CONFIGURE_JOB_ENTITY_ACTION_BUTTON": {
+        "TEXT": "Configure Job",
+        "TOOLTIP": {
+            "TEXT": "Configure job"
+        }
     }
 }

@@ -2,7 +2,7 @@
 (function(){
     'use strict';
 
-    var app = angular.module('angularApp');
+    var app = angular.module('topcat');
 
     app.controller('MyDataController', function($translate, $q, $scope, $rootScope, $timeout, $templateCache, $state, tc, helpers, uiGridConstants){
         var that = this;

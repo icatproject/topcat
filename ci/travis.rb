@@ -33,6 +33,7 @@ exec %{
 
   sudo cp provision/000-default.conf /etc/apache2/sites-available
   sudo a2enmod headers
+  sudo a2enmod rewrite
   sudo /etc/init.d/apache2 restart
 
   wget --quiet download.java.net/glassfish/4.0/release/glassfish-4.0.zip

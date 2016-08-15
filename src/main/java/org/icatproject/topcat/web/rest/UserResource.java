@@ -106,7 +106,7 @@ public class UserResource {
 	 *         "icatUrl":"https://example.com","id":2,"isDeleted":false,
 	 *         "isTwoLevel":false,"preparedId":
 	 *         "6d3aaca5-da9f-4e6a-922d-eceeefcc07e0","status":"COMPLETE",
-	 *         "transport":"https","transportUrl":"https://example.com",
+	 *         "size":324675,"transport":"https","transportUrl":"https://example.com",
 	 *         "userName":"simple/root"}]
 	 *
 	 * @throws MalformedURLException
@@ -508,7 +508,7 @@ public class UserResource {
 			DataSelection dataSelection = cartToDataSelection(cart);
 			String preparedId = idsClientService.prepareData(transportUrl, sessionId, dataSelection,
 					getZipFlag(zipType));
-
+			long size = idsClientService.getSize(transportUrl, sessionId, dataSelection);
 			if (preparedId != null) {
 				Download download = new Download();
 				download.setPreparedId(preparedId);
@@ -521,6 +521,7 @@ public class UserResource {
 				download.setIcatUrl(icatUrl);
 				download.setEmail(email);
 				download.setIsEmailSent(false);
+				download.setSize(size);
 				boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
 				download.setIsTwoLevel(isTwoLevel);
 

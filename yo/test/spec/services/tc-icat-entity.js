@@ -10,7 +10,7 @@ describe('tc icat entity service', function () {
         });
     });
 
-    beforeEach(module('angularApp'));
+    beforeEach(module('topcat'));
 
     describe('find', function(){
         var entity;
@@ -32,6 +32,8 @@ describe('tc icat entity service', function () {
         describe('for investigationUserPivot', function(){
 
             beforeEach(function(){
+
+
                 entity = _.merge(entity, {
                     entityType: "investigationUser",
                     role: "apple",
@@ -40,6 +42,7 @@ describe('tc icat entity service', function () {
                         fullName: "orange"
                     }
                 });
+
             });
 
             it("should be able to find the investigation users role", function(){
