@@ -1237,7 +1237,6 @@
         }
     ],
     "plugins":[
-        "http://localhost:10080/topcat_daaas_plugin",
-        "http://localhost:10080/topcat_daaas_pluginsdf"
+        
     ]
 }

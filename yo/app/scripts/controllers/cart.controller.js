@@ -70,8 +70,8 @@
                 name: otherButton.name,
                 click: otherButton.click,
                 class: otherButton.options.class || "btn btn-primary",
-                translate: "CART." + otherButton.name.toUpperCase().replace(/-/, '_') + "_BUTTON.TEXT",
-                translateTooltip: "CART." + otherButton.name.toUpperCase().replace(/-/, '_') + "_BUTTON.TOOLTIP.TEXT",
+                translate: "CART." + otherButton.name.toUpperCase().replace(/-/g, '_') + "_BUTTON.TEXT",
+                translateTooltip: "CART." + otherButton.name.toUpperCase().replace(/-/g, '_') + "_BUTTON.TOOLTIP.TEXT",
                 insertBefore: otherButton.options.insertBefore,
                 insertAfter: otherButton.options.insertAfter
             };

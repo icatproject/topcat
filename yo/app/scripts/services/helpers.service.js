@@ -315,8 +315,8 @@
                         name: button.name,
                         click: button.click,
                         class: button.options.class || "btn btn-primary",
-                        translate: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON.TEXT",
-                        translateTooltip: button.name.toUpperCase().replace(/-/, '_') + "_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT",
+                        translate: button.name.toUpperCase().replace(/-/g, '_') + "_ENTITY_ACTION_BUTTON.TEXT",
+                        translateTooltip: button.name.toUpperCase().replace(/-/g, '_') + "_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT",
                         insertBefore: button.options.insertBefore,
                         insertAfter: button.options.insertAfter
                     });

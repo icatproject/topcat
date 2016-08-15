@@ -39,7 +39,7 @@
 	    	var otherTabs = _.map(tc.ui().mainTabs(), function(otherTab){
 	    		return {
 	    			name: otherTab.name,
-	    			translate: "MAIN_NAVIGATION.MAIN_TAB." + otherTab.name.toUpperCase().replace(/-/, '_'),
+	    			translate: "MAIN_NAVIGATION.MAIN_TAB." + otherTab.name.toUpperCase().replace(/-/g, '_'),
 	    			sref: "home." + otherTab.name,
 	    			showState: "home." + otherTab.name,
 	    			insertBefore: otherTab.options.insertBefore,

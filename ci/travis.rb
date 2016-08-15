@@ -127,6 +127,8 @@ exec %{
 
   cd ../yo
 
+  cp app/config/topcat_dev.json.example app/config/topcat_dev.json
+
   grunt test
 
 

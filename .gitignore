@@ -14,3 +14,4 @@ npm-debug.log
 /.pydevproject
 /release.properties
 /pom.xml.releaseBackup
+/yo/app/config/topcat_dev.json
