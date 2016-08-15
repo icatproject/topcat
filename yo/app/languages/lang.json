@@ -273,13 +273,18 @@
                 "TEXT" : "Configure job for submission to the IJP"
             }
         },
+        "MAKE_DATA_PUBLIC_BUTTON" : {
+            "TEXT" : "Make Data Public",
+            "TOOLTIP" : {
+                "TEXT" : "Make this data available to the public and create DOI"
+            }
+        },
         "CANCEL_BUTTON" : {
             "TEXT" : "Close",
             "TOOLTIP" : {
                 "TEXT" : "Close this dialog"
             }
         },
-
         "ACTIONS" : {
             "LINK": {
                 "REMOVE" : {
@@ -328,6 +333,18 @@
                     "SINGULAR" : "item",
                     "PLURAL" : "items"
                 }
+            }
+        },
+        "MAKE_DATA_PUBLIC": {
+            "TITLE": "Make Data Public",
+            "PREVIOUS_BUTTON": {
+                "TEXT": "Previous"
+            },
+            "NEXT_BUTTON": {
+                "TEXT": "NEXT"
+            },
+            "CANCEL_BUTTON": {
+                "TEXT": "Cancel"
             }
         }
     },

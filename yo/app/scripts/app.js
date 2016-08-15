@@ -114,7 +114,7 @@
                                 var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
                                 if(plugin.stylesheets){
                                     _.each(plugin.stylesheets, function(stylesheetUrl){
-                                        $(document.body).append($("<link>").attr({rel: "stylesheet", href: pluginUrl}));
+                                        $(document.body).append($("<link>").attr({rel: "stylesheet", href: stylesheetUrl}));
                                     });
                                 }
                                 if(plugin.scripts){
