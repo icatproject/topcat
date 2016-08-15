@@ -128,6 +128,23 @@
     			});
     		};
 
+            this.verifyPassword = function(password){
+                var params = {
+                    json: JSON.stringify({
+                        plugin: this.session().plugin,
+                        credentials: [
+                            {username: this.session().username.replace(/^[^\/]*\//, '')},
+                            {password: password}
+                        ]
+                    })
+                };
+                return this.post('session', params).then(function(response){
+                    return true;
+                }, function(){
+                    return false;
+                });
+            };
+
             this.logout = helpers.overload({
             	'boolean': function(isSoft){
             		var promises = [];
