@@ -345,6 +345,9 @@
             },
             "CANCEL_BUTTON": {
                 "TEXT": "Cancel"
+            },
+            "CONFIRM_BUTTON": {
+                "TEXT": "Confirm"
             }
         }
     },

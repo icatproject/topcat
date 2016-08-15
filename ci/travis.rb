@@ -108,7 +108,7 @@ exec %{
   unzip -o topcat-*.zip
   cp provision/topcat.properties ./topcat
   cp provision/topcat-setup.properties ./topcat
-  cp ../yo/app/config/topcat_dev.json ./topcat/topcat.json
+  cp ../yo/app/config/topcat_dev.json.example ./topcat/topcat.json
   cp ../yo/app/languages/lang.json ./topcat
   cp ../yo/app/styles/topcat.css ./topcat
   cd topcat
