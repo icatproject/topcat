@@ -32,8 +32,6 @@
         this.gridOptions = gridOptions;
         this.totalSize = undefined;
 
-        //<button class="btn btn-warning" ng-click="cartController.cancel()" translate="CART.BUTTON.CANCEL.TEXT"></button>
-
         var existingButtons = [
             {
                 name: "remove-all",
@@ -42,7 +40,7 @@
                 },
                 class: "btn btn-primary",
                 translate: "CART.REMOVE_ALL_BUTTON.TEXT",
-                translateTooltip: "CART.DOWNLOAD_CART_BUTTON.TOOLTIP.TEXT"
+                translateTooltip: "CART.REMOVE_ALL_BUTTON.TOOLTIP.TEXT"
             },
             {
                 name: "download-cart",
@@ -71,9 +69,11 @@
                 click: otherButton.click,
                 class: otherButton.options.class || "btn btn-primary",
                 translate: "CART." + otherButton.name.toUpperCase().replace(/-/g, '_') + "_BUTTON.TEXT",
+                translateValues: otherButton.options.translateValues,
                 translateTooltip: "CART." + otherButton.name.toUpperCase().replace(/-/g, '_') + "_BUTTON.TOOLTIP.TEXT",
                 insertBefore: otherButton.options.insertBefore,
-                insertAfter: otherButton.options.insertAfter
+                insertAfter: otherButton.options.insertAfter,
+                show: otherButton.options.show
             };
         });
 

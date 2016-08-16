@@ -316,9 +316,11 @@
                         click: button.click,
                         class: button.options.class || "btn btn-primary",
                         translate: button.name.toUpperCase().replace(/-/g, '_') + "_ENTITY_ACTION_BUTTON.TEXT",
+                        translateValues: button.options.translateValues,
                         translateTooltip: button.name.toUpperCase().replace(/-/g, '_') + "_ENTITY_ACTION_BUTTON.TOOLTIP.TEXT",
                         insertBefore: button.options.insertBefore,
-                        insertAfter: button.options.insertAfter
+                        insertAfter: button.options.insertAfter,
+                        show: button.options.show
                     });
                 }
             });
@@ -340,11 +342,13 @@
                             '<a ',
                                 'ng-repeat="actionButton in grid.options.actionButtons" ',
                                 'type="button" ',
-                                'class="btn btn-primary btn-xs btn-entity-action" ',
+                                'class="{{actionButton.class}} btn-xs btn-entity-action" ',
                                 'translate="{{actionButton.translate}}" ',
+                                'translateValues="{{actionButton.translateValues}}" ',
                                 'uib-tooltip="{{actionButton.translateTooltip | translate}}" ',
                                 'tooltip-placement="left" ',
                                 'tooltip-append-to-body="true" ',
+                                'ng-show="actionButton.show() === undefined ? true : actionButton.show()"',
                                 'ng-click="actionButton.click(row.entity); $event.stopPropagation();">',
                             '</a>',
                         '</div>'
