@@ -30,12 +30,14 @@
         <button
             ng-repeat="button in cartController.buttons"
             ng-click="button.click()"
+            ng-show="button.show() === undefined ? true : button.show()"
             type="button"
             class="{{button.class}}"
             translate="{{button.translate}}"
+            translate-values="{{button.translateValues}}"
             uib-tooltip="{{button.translateTooltip | translate}}"
             tooltip-append-to-body="true"
-            tooltip-placement="top">     
+            tooltip-placement="top">
         </button>
 
 

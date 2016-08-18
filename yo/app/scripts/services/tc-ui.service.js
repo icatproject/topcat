@@ -33,6 +33,7 @@
                             return Authenticate.authenticate();
                         }
                       },
+                      params: options.params,
                       views: {
                         '': {
                             templateUrl: view,
