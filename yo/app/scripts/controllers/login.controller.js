@@ -44,7 +44,7 @@
                     });
 
                     $(document.body).append(casIframe);
-                    casIframe.push(casIframe);
+                    casIframes.push(casIframe);
                 }
             });
         });
