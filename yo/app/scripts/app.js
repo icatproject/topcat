@@ -1,12 +1,12 @@
 (function() {
     'use strict';
 
-    var registerPluginCallbacks = [];
+    var plugins = [];
     window.registerTopcatPlugin = function(fn){
         var scripts = document.getElementsByTagName('script');
         var index = scripts.length - 1;
-        fn.pluginUrl = scripts[index].src.replace(/scripts\/plugin\.js/, '');
-        registerPluginCallbacks.push(fn);
+        var pluginUrl = scripts[index].src.replace(/scripts\/plugin\.js/, '');
+        plugins.push(fn(pluginUrl));
     };
 
     var noCacheHeaders = {
@@ -107,11 +107,11 @@
                     var pluginScriptCount = 0;
 
                     function waitForPlugins(){
-                        if(registerPluginCallbacks.length == pluginsLength){
+                        if(plugins.length == pluginsLength){
                             pluginScriptRegisteryCounter = 0;
 
-                            _.each(registerPluginCallbacks, function(registerPluginCallback){
-                                var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
+                            _.each(plugins, function(plugin){
+
                                 if(plugin.stylesheets){
                                     _.each(plugin.stylesheets, function(stylesheetUrl){
                                         $(document.body).append($("<link>").attr({rel: "stylesheet", href: stylesheetUrl}));
@@ -169,6 +169,7 @@
      *
      * Main module of the application.
      */
+
     var app = angular.module('topcat', [
         'ngResource',
         'ngSanitize',
@@ -219,13 +220,11 @@
 
     })();
     
-
-    app.run(['APP_CONFIG', 'LANG', 'objectValidator', function(APP_CONFIG, LANG, objectValidator){
+    app.run(function(APP_CONFIG, LANG, objectValidator){
         try {
             var pluginSchemas = [];
 
-            _.each(registerPluginCallbacks, function(registerPluginCallback){
-                var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
+            _.each(plugins, function(plugin){
                 if(plugin.configSchema) pluginSchemas.push(plugin.configSchema);
             });
 
@@ -233,15 +232,19 @@
         } catch(e){
             alert("Invalid topcat.json: \n\n" + e);
         }
-    }])
-    .constant('_', window._)
-    .constant('APP_CONSTANT', {
+    });
+
+    app.constant('_', window._);
+
+    app.constant('APP_CONSTANT', {
         smartClientUrl: 'https://localhost:8888'
-    })
-    .config(function($uibTooltipProvider){
+    });
+    
+    app.config(function($uibTooltipProvider){
         $uibTooltipProvider.setTriggers({'show': 'show'});
-    })
-    .config(['$translateProvider', 'LANG', function($translateProvider, LANG) {
+    });
+
+    app.config(function($translateProvider, LANG) {
         $translateProvider.translations('en', LANG);
 
         $translateProvider.useStaticFilesLoader({
@@ -251,14 +254,17 @@
         $translateProvider.preferredLanguage('en');
 
         $translateProvider.useSanitizeValueStrategy(null);
-     }])
-    .config(['$httpProvider', function($httpProvider) {
+    });
+    
+    app.config(function($httpProvider) {
         $httpProvider.interceptors.push('HttpErrorInterceptor');
-    }])
-    .config(['$logProvider', function($logProvider){
+    });
+
+    app.config(function($logProvider){
         $logProvider.debugEnabled(true);
-    }])
-    .config(function($stateProvider, $urlRouterProvider, APP_CONFIG){
+    });
+
+    app.config(function($stateProvider, $urlRouterProvider, APP_CONFIG){
         $stateProvider.state('login-admin', {
             url: '/login-admin',
             templateUrl: 'views/login.html',
@@ -446,11 +452,13 @@
             });
             $urlRouterProvider.otherwise('/');
 
-    })
-    .config(function (pollerConfig) {
+    });
+
+    app.config(function(pollerConfig) {
         pollerConfig.neverOverwrite = true;
-    })
-    .config(function ($httpProvider) {
+    });
+
+    app.config(function($httpProvider) {
         $httpProvider.interceptors.push(function($rootScope, $q) {
           return {
            'request': function(config) {
@@ -478,8 +486,9 @@
             }
           };
         });
-    })
-    .config(function($sceDelegateProvider, APP_CONFIG) {
+    });
+
+    app.config(function($sceDelegateProvider, APP_CONFIG) {
         var whiteList = ['self'];
 
         if(APP_CONFIG.plugins){
@@ -492,13 +501,15 @@
         }
 
         $sceDelegateProvider.resourceUrlWhitelist(whiteList);
-    })
-    .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
+    });
+
+    app.run(function ($rootScope, $state, $stateParams) {
         //make $state and $stateParams available at rootscope.
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
-    }])
-    .run(['$rootScope', '$state', '$sessionStorage', function ($rootScope, $state, $sessionStorage) {
+    });
+
+    app.run(function ($rootScope, $state, $sessionStorage) {
         //store the last state
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams){
             if(!toState.name.match(/^(login|logout)/)){
@@ -515,18 +526,22 @@
                 $state.go('login');
             }
         });
-    }])
-    .run(['SmartClientPollManager', function(SmartClientPollManager) {
+    });
+
+    app.run(function(SmartClientPollManager) {
         //run checking of smartclient
         SmartClientPollManager.runOnStartUp();
-    }])
-    .run(['RouteCreatorService', 'PageCreatorService', function(RouteCreatorService, PageCreatorService) {
+    });
+
+    app.run(function(RouteCreatorService, PageCreatorService) {
         PageCreatorService.createStates();
         RouteCreatorService.createStates();
-    }]).run(['$injector', function($injector){
-        _.each(registerPluginCallbacks, function(registerPluginCallback){
-            var plugin = registerPluginCallback(registerPluginCallback.pluginUrl);
+    });
+
+    app.run(function($injector){
+        _.each(plugins, function(plugin){
             if(plugin.setup) $injector.invoke(plugin.setup);
         });
-    }]);
+    });
+
 })();
