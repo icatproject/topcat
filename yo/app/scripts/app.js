@@ -22,7 +22,7 @@
         element : document.documentElement,
         module : 'topcat',
         resolve : {
-            APP_CONFIG : ['$http', '$q', '$timeout', function($http, $q, $timeout) {
+            APP_CONFIG: function($http, $q, $timeout) {
                 var port = parseInt(window.location.port);
                 var url;
                 if(port === 10080 || port === 9000 || port === 8080){
@@ -142,8 +142,8 @@
 
                     return defered.promise;
                 });
-            }],
-            LANG : ['$http', function($http) {
+            },
+            LANG: function($http) {
                 var url = './languages/lang.json';
                 return $http({
                     url: url,
@@ -157,7 +157,7 @@
                         return {};
                     }
                 });
-            }]
+            }
         }
     });
 
