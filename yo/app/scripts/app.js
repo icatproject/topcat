@@ -2,6 +2,7 @@
     'use strict';
 
     var plugins = [];
+    var reachablePluginsLength;
     window.registerTopcatPlugin = function(fn){
         var scripts = document.getElementsByTagName('script');
         var index = scripts.length - 1;
@@ -87,7 +88,7 @@
                     });
                 }).then(function(config){
                     var defered = $q.defer();
-                    var pluginsLength = config.plugins ? config.plugins.length : 0;
+                    reachablePluginsLength = config.plugins ? config.plugins.length : 0;
                     
                     if(config.plugins){
                         _.each(config.plugins, function(pluginUrl){
@@ -96,7 +97,7 @@
                                 $(document.body).append($("<script>").attr('src', src));
                             }, function(){
                                 console.log(src + " is unreachable");
-                                pluginsLength--;
+                                reachablePluginsLength--;
                             });
                         });
                         waitForPlugins();
@@ -107,7 +108,7 @@
                     var pluginScriptCount = 0;
 
                     function waitForPlugins(){
-                        if(plugins.length == pluginsLength){
+                        if(plugins.length == reachablePluginsLength){
                             pluginScriptRegisteryCounter = 0;
 
                             _.each(plugins, function(plugin){
@@ -119,6 +120,7 @@
                                 }
                                 if(plugin.scripts){
                                     _.each(plugin.scripts, function(scriptUrl){
+                                        if(scriptUrl instanceof Array) scriptUrl = scriptUrl[0];
                                         $(document.body).append($("<script>").attr('src', scriptUrl));
                                         pluginScriptCount++;
                                     });
@@ -217,6 +219,37 @@
                 };
             }
         });
+
+        function checkIfScriptsHaveLoaded(){
+            if(reachablePluginsLength && plugins.length == reachablePluginsLength){
+                var allHaveLoaded = true;
+
+                _.each(plugins, function(plugin){
+                    _.each(plugin.scripts, function(script){
+                        if(script instanceof Array){
+                            var hasLoaded = script[1];
+                            if(!hasLoaded()){
+                                allHaveLoaded = false;
+                            }
+                        }
+                    });
+                });
+
+                if(allHaveLoaded){
+                    _.each(plugins, function(plugin){
+                        _.each(plugin.scripts, function(script){
+                            if(script instanceof Array) pluginScriptRegisteryCounter++; 
+                        });
+                    });
+                } else {
+                    setTimeout(checkIfScriptsHaveLoaded, 50);
+                }
+            } else {
+                setTimeout(checkIfScriptsHaveLoaded, 50);
+            }
+        }
+
+        checkIfScriptsHaveLoaded();
 
     })();
     
