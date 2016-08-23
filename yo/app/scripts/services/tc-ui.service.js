@@ -78,6 +78,23 @@
                 }
             });
 
+            var externalGridFilters = {};
+
+            this.externalGridFilters = function(){ return externalGridFilters; };
+
+            this.registerExternalGridFilter = helpers.overload({
+                'array, object': function(states, options){
+                    _.each(states, function(state){
+                        externalGridFilters[state] = externalGridFilters[state] || [];
+                        externalGridFilters[state].push({
+                            template: options.template || '',
+                            setup: options.setup || function(){},
+                            modifyQuery: options.modifyQuery || function(){}
+                        });
+                    });
+                }
+            });
+
         }
 
     });

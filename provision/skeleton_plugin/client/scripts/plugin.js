@@ -31,6 +31,12 @@ registerTopcatPlugin(function(pluginUrl){
 				alert("Hello World!");
 			});
 
+            tc.ui().registerExternalGridFilter(['myData','browse'], {
+                template: '<div>Hello World</div>',
+                setup: function(){ console.log('setting up filter...'); },
+                modifyQuery: function(query){ console.log('modifying query...'); }
+            });
+
 		}
 	};
 });

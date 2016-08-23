@@ -9,6 +9,9 @@
     </ul>
     <br>
 </div>
+
+<span ng-repeat="externalGridFilter in myDataController.externalGridFilters" bind-html-compile="externalGridFilter.template"></span>
+
 <div ng-if="myDataController.isScroll" ui-grid="myDataController.gridOptions" ui-grid-infinite-scroll ui-grid-selection ui-grid-selection ui-grid-resize-columns  class="my-data-grid" take-up-remaining-height>
     <div class="no-rows row" ng-show="!myDataController.isLoading && myDataController.gridOptions.data.length == 0">
         <div class="col-xs-12 empty-message" translate="MY_DATA.NO_RESULTS"></div>
