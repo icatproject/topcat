@@ -26,7 +26,7 @@
             APP_CONFIG: function($http, $q, $timeout) {
                 var port = parseInt(window.location.port);
                 var url;
-                if(port === 10080 || port === 9000 || port === 8080){
+                if(port === 10080 || port === 9000){
                     url = './config/topcat_dev.json';
                 } else {
                     url = './config/topcat.json';
