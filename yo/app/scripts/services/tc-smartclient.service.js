@@ -20,12 +20,15 @@
 
     		idsUrl = idsUrl && idsUrl[0] ? idsUrl[0].idsUrl : undefined;
 
+    		this.isEnabled = function(){
+    			return idsUrl !== undefined;
+    		};
 
     		this.ping = helpers.overload({
     			"object": function(options){
     				var defered = $q.defer();
 
-    				this.get('ping', options).then(function(){
+    				this.get('ping', {}, options).then(function(){
     					defered.resolve(true);
     				}, function(){
     					defered.resolve(false);
@@ -38,6 +41,24 @@
     			},
     			"": function(){
     				return this.ping({});
+    			}
+    		});
+
+    		this.login = helpers.overload({
+    			"object": function(options){
+    				return this.post('login', {
+    					json: JSON.stringify({
+    						sessionId: facility.icat().session().sessionId,
+    						idsUrl: idsUrl
+    					})
+    					
+    				}, options);
+    			},
+    			"promise": function(timeout){
+    				return this.login({timeout: timeout});
+    			},
+    			"": function(){
+    				return this.login({});
     			}
     		});
 
@@ -55,6 +76,23 @@
     			},
     			"string": function(preparedId){
     				return this.getData(preparedId, {});
+    			}
+    		});
+
+    		this.status = helpers.overload({
+    			"string, object": function(preparedId, options){
+    				return this.get('status', {
+    					json: JSON.stringify({
+    						idsUrl: idsUrl,
+    						preparedIds: [preparedId]
+    					})
+    				}, options);
+    			},
+    			"promise, string": function(timeout, preparedId){
+    				return this.status(preparedId, {timeout: timeout});
+    			},
+    			"string": function(preparedId){
+    				return this.status(preparedId, {});
     			}
     		});
 

@@ -17,10 +17,10 @@
         this.connectionSpeed = "3932160";
         this.isSubmitting = false;
 
-        this.isNonHttpsTransportType = function(){
+        this.isStaged = function(){
             var out = false;
             _.each(this.downloads, function(download){
-                if(download.transportType != 'https'){
+                if(download.transportType != 'https' && download.transportType != 'smartclient'){
                     out = true;
                     return false;
                 }

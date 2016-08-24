@@ -4,9 +4,11 @@
 
     var app = angular.module('topcat');
 
-    app.controller('DownloadsController', function($state, $scope, $translate, $uibModalInstance, $q, tc, uiGridConstants, helpers){
+    app.controller('DownloadsController', function($state, $scope, $translate, $uibModalInstance, $q, $interval, tc, uiGridConstants, helpers){
         var that = this;
         var pagingConfig = tc.config().paging;
+        var timeout = $q.defer();
+        $scope.$on('$destroy', function(){ timeout.resolve(); });
         this.isScroll = pagingConfig.pagingType == 'scroll';
         this.gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().myDownloads.gridOptions);
         helpers.setupTopcatGridOptions(this.gridOptions, 'download');
@@ -21,14 +23,28 @@
             enableColumnMenu: false,
             enableSorting: false,
             enableHiding: false,
-            cellTemplate : '<div class="ui-grid-cell-contents"><span bind-html-compile="row.entity.downloadLink"></span> <span class="remove-download"><a ng-click="grid.appScope.remove(row.entity)" translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></span></div>'
+            cellTemplate : [
+                '<div class="ui-grid-cell-contents">',
+                    '<span bind-html-compile="row.entity.downloadLink"></span>',
+                    '<span class="remove-download">', 
+                        '<a ng-click="grid.appScope.remove(row.entity)" translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>',
+                    '</span>',
+                '</div>'
+            ].join('')
         });
 
+
+        var refreshPromise = $interval(refresh, 1000 * 60);
+        timeout.promise.then(function(){ $interval.cancel(refreshPromise); });
+        refresh();
 
         function refresh(){
             var promises = [];
             that.gridOptions.data = [];
             _.each(tc.userFacilities(), function(facility){
+                var smartclient = facility.smartclient();
+                var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : undefined;
+
                 promises.push(facility.user().downloads("where download.isDeleted = false").then(function(results){
                     _.each(results, function(download){
                         download.downloadLink = getDownloadUrl(download);
@@ -43,13 +59,8 @@
                 }
             });
         };
-        refresh();
-        var refreshInterval = window.setInterval(refresh, 1000 * 60);
-        $scope.$on('$destroy', function(){
-            window.clearInterval(refreshInterval);
-        });
-
-
+        
+    
         this.remove = function(download){
             var data = [];
             _.each(that.gridOptions.data, function(currentDownload){
@@ -80,7 +91,7 @@
                 html ='<a href="' + $state.href('globus-help') + '" target="_blank" translate="DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
             } else if (data.transport === 'smartclient') {
                 if (data.status === 'COMPLETE') {
-                    html ='<a href="' + $state.href('smartclient-help') + '" translate="DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
+                    html ='<a href="' + $state.href('smartclient-help') + '" target="_blank" translate="DOWNLOAD.ACTIONS.LINK.START_SMARTCLIENT_SERVER.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.START_SMARTCLIENT_SERVER.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
                 }
             }
 

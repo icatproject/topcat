@@ -43,14 +43,20 @@
                 </tr>
             </table>
 
-            <div ng-if="downloadCartController.hasArchive || downloadCartController.isNonHttpsTransportType()">
-                <div class="panel panel-default" >
-                    <div class="panel-body" >
-                        <p translate="CART.DOWNLOAD.MODAL.IS_ARCHIVED_MESSAGE"></p>
+            <div>
+                <div class="panel panel-default" ng-if="downloadCartController.hasArchive">
+                    <div class="panel-body">
+                        <p translate="CART.DOWNLOAD.MODAL.HAS_ARCHIVE_MESSAGE"></p>
                     </div>
                 </div>
-
-                <div>
+                <div 
+                    class="panel panel-default"
+                    ng-if="!downloadCartController.hasArchive && downloadCartController.isStaged()">
+                    <div class="panel-body">
+                        <p translate="CART.DOWNLOAD.MODAL.IS_STAGED_MESSAGE"></p>
+                    </div>
+                </div>
+                <div ng-if="downloadCartController.hasArchive || downloadCartController.isStaged()">
                     <p translate="CART.DOWNLOAD.MODAL.EMAIL_ME_MESSAGE"></p><input type="text" class="form-control input-sm inline" id="emailNotification" placeholder="email@address" ng-model="downloadCartController.email" />
                 </div>
             </div>
