@@ -267,11 +267,6 @@
         }
     });
 
-    app.constant('_', window._);
-
-    app.constant('APP_CONSTANT', {
-        smartClientUrl: 'https://localhost:8888'
-    });
     
     app.config(function($uibTooltipProvider){
         $uibTooltipProvider.setTriggers({'show': 'show'});
@@ -301,12 +296,7 @@
         $stateProvider.state('login-admin', {
             url: '/login-admin',
             templateUrl: 'views/login.html',
-            controller: 'LoginController as loginController',
-            resolve: {
-                SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
-                    return SmartClientManager.ping();
-                }]
-            }
+            controller: 'LoginController as loginController'
         })
 
 
@@ -430,30 +420,15 @@
             .state('login', {
                 url: '/login',
                 templateUrl: 'views/login.html',
-                controller: 'LoginController as loginController',
-                resolve: {
-                    SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
-                        return SmartClientManager.ping();
-                    }]
-                }
+                controller: 'LoginController as loginController'
             })
             .state('logout', {
                 url: '/logout',
-                controller: 'LogoutController',
-                resolve: {
-                    SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
-                        return SmartClientManager.ping();
-                    }]
-                }
+                controller: 'LogoutController'
             })
             .state('logout.facility', {
                 url: '/:facilityName',
-                controller: 'LogoutController',
-                resolve: {
-                    SMARTCLIENTPING : ['SmartClientManager', function(SmartClientManager) {
-                        return SmartClientManager.ping();
-                    }]
-                }
+                controller: 'LogoutController'
             })
             .state('homeRoute', {
                 url: '/',
@@ -487,10 +462,6 @@
 
     });
 
-    app.config(function(pollerConfig) {
-        pollerConfig.neverOverwrite = true;
-    });
-
     app.config(function($httpProvider) {
         $httpProvider.interceptors.push(function($rootScope, $q) {
           return {
@@ -521,6 +492,7 @@
         });
     });
 
+    //add plugin hosts to cross site scripting white list
     app.config(function($sceDelegateProvider, APP_CONFIG) {
         var whiteList = ['self'];
 
@@ -537,7 +509,6 @@
     });
 
     app.run(function ($rootScope, $state, $stateParams) {
-        //make $state and $stateParams available at rootscope.
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
     });
@@ -559,11 +530,6 @@
                 $state.go('login');
             }
         });
-    });
-
-    app.run(function(SmartClientPollManager) {
-        //run checking of smartclient
-        SmartClientPollManager.runOnStartUp();
     });
 
     app.run(function(RouteCreatorService, PageCreatorService) {

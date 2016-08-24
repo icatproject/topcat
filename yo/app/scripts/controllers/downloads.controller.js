@@ -67,13 +67,6 @@
             $uibModalInstance.dismiss('cancel');
         };
 
-        this.smartClientModal = function() {
-            $uibModal.open({
-                templateUrl: 'views/smartclient-download-modal.html',
-                controller: 'SmartClientDownloadModalController as sc',
-            });
-        };
-
         function getDownloadUrl(data) {
             var html = '';
 
@@ -87,22 +80,13 @@
                 html ='<a href="' + $state.href('globus-help') + '" target="_blank" translate="DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
             } else if (data.transport === 'smartclient') {
                 if (data.status === 'COMPLETE') {
-                    html ='<a ng-click="grid.appScope.smartClientModal()" translate="DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
+                    html ='<a href="' + $state.href('smartclient-help') + '" translate="DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('DOWNLOAD.ACTIONS.LINK.SMARTCLIENT_DOWNLOAD.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a>';
                 }
             }
 
             return html;
         }
 
-    });
-
-
-    app.controller('SmartClientDownloadModalController', function($modalInstance) {
-        var sc = this;
-
-        sc.ok = function() {
-            $modalInstance.dismiss('cancel');
-        };
     });
 
 })();

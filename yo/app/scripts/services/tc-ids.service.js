@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcIds', function($q, helpers, tcCache){
+    app.service('tcIds', function($q, helpers, tcCache, tcIdsSmartclient){
 
     	this.create = function(facility){
     		return new Ids(facility);
@@ -14,10 +14,20 @@
     	function Ids(facility){
         var that = this;
         var cache;
+        var smartclient;
+
+        this.facility = function(){
+          return facility;
+        };
 
         this.cache = function(){
           if(!cache) cache = tcCache.create('ids:' + facility.config().name);
           return cache;
+        };
+
+        this.smartclient = function(){
+          if(!smartclient) smartclient = tcIdsSmartclient.create(this);
+          return smartclient;
         };
 
     		this.version = function(){
@@ -110,10 +120,6 @@
     				return this.getSize(investigationIds, datasetIds, datafileIds, {});
     			}
     		});
-
-    		
-
-
 
         this.getStatus = helpers.overload({
           'string, number, object': function(type, id, options){
