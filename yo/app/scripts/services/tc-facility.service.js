@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcFacility', function($sessionStorage, helpers, tcIcat, tcIds, tcUser, tcAdmin, APP_CONFIG){
+    app.service('tcFacility', function($sessionStorage, helpers, tcIcat, tcIds, tcUser, tcAdmin, tcSmartclient, APP_CONFIG){
 
     	this.create = function(tc, name, APP_CONFIG){
     		return new Facility(tc, name);
@@ -16,6 +16,7 @@
             var ids;
             var admin;
             var user;
+            var smartclient;
             
             this.config = function(){
                 var out = _.select(APP_CONFIG.facilities, function(facility){ return name == facility.name; })[0];
@@ -48,6 +49,11 @@
                 if(!user) user = tcUser.create(this);
                 return user;
             }
+
+            this.smartclient = function(){
+              if(!smartclient) smartclient = tcSmartclient.create(this);
+              return smartclient;
+            };
 
         }
 

@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcIds', function($q, helpers, tcCache, tcIdsSmartclient){
+    app.service('tcIds', function($q, helpers, tcCache){
 
     	this.create = function(facility){
     		return new Ids(facility);
@@ -14,7 +14,6 @@
     	function Ids(facility){
         var that = this;
         var cache;
-        var smartclient;
 
         this.facility = function(){
           return facility;
@@ -23,11 +22,6 @@
         this.cache = function(){
           if(!cache) cache = tcCache.create('ids:' + facility.config().name);
           return cache;
-        };
-
-        this.smartclient = function(){
-          if(!smartclient) smartclient = tcIdsSmartclient.create(this);
-          return smartclient;
         };
 
     		this.version = function(){

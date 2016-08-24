@@ -134,12 +134,11 @@
 
 		this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
 
-    this.smartclient = function(facilityName){ return this.ids(facilityName).smartclient(); };
-
 		this.admin = function(facilityName){ return this.facility(facilityName).admin(); };
 
 		this.user = function(facilityName){ return this.facility(facilityName).user(); };
 
+    this.smartclient = function(facilityName){ return this.facility(facilityName).smartclient(); };
 
 		this.adminFacilities = function(){
 			return _.select(this.facilities(), function(facility){ return facility.icat().session().isAdmin; });

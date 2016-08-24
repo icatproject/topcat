@@ -6,13 +6,20 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcIdsSmartclient', function($q, helpers){
+    app.service('tcSmartclient', function($q, helpers){
 
-    	this.create = function(ids){
-    		return new IdsSmartclient(ids);
+    	this.create = function(facility){
+    		return new Smartclient(facility);
     	};
 
-    	function IdsSmartclient(ids){
+    	function Smartclient(facility){
+
+    		var idsUrl = _.select(facility.config().downloadTransportTypes, function(downloadTransportType){
+    			return downloadTransportType.type == 'smartclient';
+    		});
+
+    		idsUrl = idsUrl && idsUrl[0] ? idsUrl[0].idsUrl : undefined;
+
 
     		this.ping = helpers.overload({
     			"object": function(options){
@@ -38,7 +45,7 @@
     			"string, object": function(preparedId, options){
     				return this.post('getData', {
     					json: JSON.stringify({
-    						idsUrl: ids.facility().config().idsUrl,
+    						idsUrl: idsUrl,
     						preparedIds: [preparedId]
     					})
     				}, options);
@@ -57,7 +64,7 @@
 
     				this.get('isReady', {
     					json: JSON.stringify({
-    						idsUrl: ids.facility().config().idsUrl,
+    						idsUrl: idsUrl,
     						preparedIds: [preparedId]
     					})
     				}, options).then(function(response){
