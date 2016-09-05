@@ -81,7 +81,7 @@
         this.ok = function() {
             _.each(this.downloads, function(download){
                 if(!download.fileName){
-                    throw "A download file name must be provided.";
+                    throw "A download name must be provided.";
                 }
             });
 
