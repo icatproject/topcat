@@ -171,27 +171,21 @@
             });
 
             this.setDownloadStatus = helpers.overload({
-                'string, string, object': function(id, status, options){
+                'number, string, object': function(id, status, options){
                     return this.put('download/' + id + '/status', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         value: status
                     }, options);
                 },
-                'string, string, promise': function(id, status, timeout){
-                    return this.setDownloadStatus(id, status, {timeout: timeout});
-                },
-                'string, string': function(id, status){
-                    return this.setDownloadStatus(id, status, {});
-                },
                 'number, string, object': function(id, status, options){
-                    return this.setDownloadStatus("" + id, status, options);
+                    return this.setDownloadStatus(id, status, options);
                 },
                 'number, string, promise': function(id, status, timeout){
-                    return this.setDownloadStatus("" + id, status, {timeout: timeout});
+                    return this.setDownloadStatus(id, status, {timeout: timeout});
                 },
                 'number, string': function(id, status){
-                    return this.setDownloadStatus("" + id, status, {});
+                    return this.setDownloadStatus(id, status, {});
                 }
             });
 

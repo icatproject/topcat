@@ -422,10 +422,22 @@
                         "TEXT" : "Click to find out how to download this using Globus Online"
                     }
                 },
-                "SMARTCLIENT_DOWNLOAD" : {
-                    "TEXT" : "@:DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT",
+                "SMARTCLIENT_COMPLETE" : {
+                    "TEXT" : "View",
                     "TOOLTIP" : {
                         "TEXT" : "Check your Smart Client home directory for your files"
+                    }
+                },
+                "SMARTCLIENT_NOT_COMPLETE" : {
+                    "TEXT" : "View",
+                    "TOOLTIP" : {
+                        "TEXT" : "Please wait while your smartclient downloads your files"
+                    }
+                },
+                "SMARTCLIENT_START_SERVER" : {
+                    "TEXT" : "Start Server",
+                    "TOOLTIP" : {
+                        "TEXT" : "Please start your smartclient's server to begin download"
                     }
                 },
                 "REMOVE" : {

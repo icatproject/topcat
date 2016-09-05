@@ -101,7 +101,7 @@
                         value: status
                     }, options);
                 },
-                'string, string, promise': function(id, status, timeout){
+                'promise, string, string': function(timeout, id, status){
                     return this.setDownloadStatus(id, status, {timeout: timeout});
                 },
                 'string, string': function(id, status){
@@ -110,7 +110,7 @@
                 'number, string, object': function(id, status, options){
                     return this.setDownloadStatus("" + id, status, options);
                 },
-                'number, string, promise': function(id, status, timeout){
+                'promise, number, string': function(timeout, id, status){
                     return this.setDownloadStatus("" + id, status, {timeout: timeout});
                 },
                 'number, string': function(id, status){
