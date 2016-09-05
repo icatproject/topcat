@@ -178,7 +178,7 @@ public class UserResource {
 
 		String userName = icatClientService.getUserName(icatUrl, sessionId);
 		if (!download.getUserName().equals(userName)) {
-			throw new ForbiddenException("You do not have permission to delete this download");
+			throw new ForbiddenException("you do not have permission to delete this download");
 		}
 
 		download.setIsDeleted(value);
@@ -190,6 +190,56 @@ public class UserResource {
 
 		return Response.ok().build();
 	}
+
+	/**
+     * Sets the download status.
+     *
+     * @summary setDownloadStatus
+     *
+     * @param icatUrl a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @param id the download id in the database.
+     *
+     * @param value the status value i.e. 'ONLINE', 'ARCHIVE' or 'RESTORING'.
+     *
+     * @throws MalformedURLException if icatUrl is invalid.
+     *
+     * @throws ParseException if a JPQL query is malformed.
+     * 
+     * @throws TopcatException if anything else goes wrong.
+     */
+    @PUT
+    @Path("/download/{id}/status")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response setDownloadStatus(
+        @PathParam("id") Long id,
+        @FormParam("icatUrl") String icatUrl,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("value") String value)
+        throws TopcatException, MalformedURLException, ParseException {
+
+        Download download = downloadRepository.getDownload(id);
+
+        if(download == null){
+            throw new NotFoundException("could not find download");
+        }
+
+        String userName = icatClientService.getUserName(icatUrl, sessionId);
+		if (!download.getUserName().equals(userName)) {
+			throw new ForbiddenException("you do not have permission to delete this download");
+		}
+
+        download.setStatus(DownloadStatus.valueOf(value));
+        if(value.equals("COMPLETE")){
+            download.setCompletedAt(new Date());
+        }
+
+        downloadRepository.save(download);
+
+        return Response.ok().build();
+    }
 
 	/**
 	 * Returns the cart object associated with a particular sessionId and
