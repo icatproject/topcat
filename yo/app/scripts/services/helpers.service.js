@@ -92,10 +92,14 @@
 
             var entityTypeNamespace = helpers.constantify(entityType);
 
-            if(field === 'size' || field === 'fileSize') {
+            if(field === 'size') {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span loading="row.entity.size === undefined"></span><span>{{row.entity.size|bytes}}</span></div>';
             	columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
+            }
+
+            if(field === 'fileSize') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents">{{row.entity.fileSize|bytes}}</div>';
             }
 
             if(field === 'status') {

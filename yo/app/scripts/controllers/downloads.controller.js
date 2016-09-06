@@ -54,7 +54,7 @@
             that.gridOptions.data = [];
             _.each(tc.userFacilities(), function(facility){
                 var smartclient = facility.smartclient();
-                var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $.reject();
+                var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
                 var smartclientLogin = smartclientPing.then(function(){ return smartclient.login(timeout.promise); });
 
                 promises.push(facility.user().downloads("where download.isDeleted = false").then(function(results){

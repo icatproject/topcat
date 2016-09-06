@@ -140,7 +140,7 @@
           var out = _.select(results, filter);
           out.sort(sorter);
           _.each(out, function(entity){
-            entity.getSize(timeout.promise);
+            if(entity.getSize) entity.getSize(timeout.promise);
           });
           return out;
         }

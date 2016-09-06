@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcUserCart', function(helpers){
+    app.service('tcUserCart', function($q, helpers){
 
     	this.create = function(attributes, user){
     		return new Cart(attributes, user);
@@ -102,11 +102,17 @@
                 cartItem.getSize = helpers.overload({
                     'object': function(options){
                         var that = this;
+
                         return this.entity(options).then(function(entity){
-                            return entity.getSize(options).then(function(size){
-                                that.size = size;
-                                return size;
-                            });
+                            if(cartItem.entityType == 'datafile'){
+                                that.size = entity.fileSize;
+                                return $q.resolve(entity.fileSize);
+                            } else {
+                                return entity.getSize(options).then(function(size){
+                                    that.size = size;
+                                    return size;
+                                });
+                            }
                         });
                     },
                     'promise': function(timeout){

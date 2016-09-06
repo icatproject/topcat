@@ -27,7 +27,7 @@
 				}).join("\n");
 			}
 
-			if(this.entityType.match(/^(investigation|dataset|datafile)$/)){
+			if(this.entityType.match(/^(investigation|dataset)$/)){
 				this.getSize = helpers.overload({
 					'object': function(options){
 						var that = this;
@@ -43,6 +43,10 @@
 						return this.getSize({});
 					}
 				});
+			}
+
+			if(this.entityType == 'datafile'){
+				this.size = this.fileSize;
 
 				this.getStatus = helpers.overload({
 					'object': function(options){
