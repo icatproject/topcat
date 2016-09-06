@@ -90,7 +90,7 @@
                     var defered = $q.defer();
                     reachablePluginsLength = config.plugins ? config.plugins.length : 0;
                     
-                    if(config.plugins){
+                    if(config.plugins && config.plugins.length > 0){
                         _.each(config.plugins, function(pluginUrl){
                             var src = pluginUrl + "/scripts/plugin.js";
                             $http.get(src).then(function(){
