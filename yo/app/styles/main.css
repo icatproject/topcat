@@ -235,6 +235,13 @@ a[ng-click]{
   height: 150px;
 }
 
+@media screen and (min-height: 768px){ .meta-box .tab-pane { height: 256px; } }
+@media screen and (min-height: 800px){ .meta-box .tab-pane { height: 266px; } }
+@media screen and (min-height: 900px){ .meta-box .tab-pane { height: 300px; } }
+@media screen and (min-height: 1050px){ .meta-box .tab-pane { height: 350px; } }
+@media screen and (min-height: 1080px){ .meta-box .tab-pane { height: 360px; } }
+@media screen and (min-height: 1440px){ .meta-box .tab-pane { height: 480px; } }
+
 .meta-box {
   margin: 0px;
   padding: 5px;
