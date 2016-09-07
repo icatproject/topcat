@@ -8,7 +8,7 @@ registerTopcatPlugin(function(pluginUrl){
 
 		stylesheets: [],
 
-		configSchema: function(){
+		configSchema: {
 			//see https://github.com/icatproject/topcat/blob/master/yo/app/scripts/services/object-validator.service.js
 		},
 
