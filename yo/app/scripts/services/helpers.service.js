@@ -90,7 +90,7 @@
                 columnDef.title = translateNameSpace + '.' + fieldNamespace;
             }
 
-            var entityTypeNamespace = helpers.constantify(entityType);
+            var entityTypeNamespace = helpers.constantify(entityType.replace(/Item$/, ''));
 
             if(field === 'size') {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span loading="row.entity.size === undefined"></span><span>{{row.entity.size|bytes}}</span></div>';
@@ -160,7 +160,7 @@
             	var field = columnDef.field;
             	var type = entitySchema.fields[field];
             	if(!columnDef.type) columnDef.type = type;
-            	helpers.setupColumnDef(columnDef, entityType, helpers.constantify(entityType) + '.COLUMN');
+            	helpers.setupColumnDef(columnDef, entityType, helpers.constantify(entityType.replace(/Item$/, '')) + '.COLUMN');
             });
 
     	};

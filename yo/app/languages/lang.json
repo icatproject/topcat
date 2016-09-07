@@ -19,10 +19,6 @@
             "MY_MACHINES" : "My Machines"
         }
     },
-    "LANGUAGE" : {
-        "BUTTON_LANG_EN" : "English",
-        "BUTTON_LANG_FR" : "French"
-    },
     "LOGIN": {
         "PAGE_TITLE": "Login",
         "FACILITY": "Facility",
@@ -37,9 +33,6 @@
             "NO_MORE_FACILITIES" : "You have already logged into all available facilities"
         }
     },
-    "SESSION" : {
-        "EXPIRED_ERROR" : "Your session has expired. You must login again to the {{facilityTitle}} facility"
-    },
     "EU_COOKIE_LAW" : {
         "HTML" : {
             "MESSAGE" : "This site uses cookies and similar technologies. By continuing, you are giving consent to these technologies being used.",
@@ -47,18 +40,6 @@
             "CONSENT_BUTTON": "I understand"
         },
         "COOKIE_POLICY_STATENAME" : "cookie-policy"
-    },
-    "RESTAPI" : {
-        "BAD_REQUEST_ERROR" : "There was a bad request made to the server"
-    },
-    "INFO" : {
-        "LOGOUT" : {
-            "LOGOUT" : "You logged out of {{facilityName}}",
-            "LOGOUT_ALL" : "You logged out of all facilities"
-        }
-    },
-    "ERROR": {
-        "LOGOUT" : "Error"
     },
     "ENTITIES" :{
         "FACILITY" : {
@@ -254,6 +235,16 @@
             "RESTORING": "Restoring from Tape",
             "ARCHIVED": "Archived on Tape"
         },
+        "COLUMN" : {
+            "ID" : "Id",
+            "NAME" : "Name",
+            "ENTITY_TYPE" : "Type",
+            "FACILITY" : "Facility",
+            "SIZE" : "Size",
+            "FACILITY_NAME" : "Facility",
+            "STATUS" : "Availability",
+            "ACTIONS" : "Action"
+        },
         "EMPTY" : "Cart is empty",
         "REMOVE_ALL_BUTTON" : {
             "TEXT" : "Remove All",
@@ -349,23 +340,6 @@
             "CONFIRM_BUTTON": {
                 "TEXT": "Confirm"
             }
-        }
-    },
-    "CART_ITEM": {
-        "COLUMN" : {
-            "ID" : "Id",
-            "NAME" : "Name",
-            "ENTITY_TYPE" : "Type",
-            "FACILITY" : "Facility",
-            "SIZE" : "Size",
-            "FACILITY_NAME" : "Facility",
-            "STATUS" : "Availability",
-            "ACTIONS" : "Action"
-        },
-        "STATUS": {
-            "ONLINE": "Available",
-            "RESTORING": "Restoring from Tape",
-            "ARCHIVED": "Archived on Tape"
         }
     },
     "DOWNLOAD" : {
@@ -486,29 +460,6 @@
             "SMARTCLIENT" : {
                 "NAME" : "Smartclient"
             }
-        }
-    },
-    "ABOUT" : {
-        "TITLE" : "About",
-        "HTML" : "<p>Topcat v2</p>"
-    },
-    "CONTACT" : {
-        "TITLE" : "Contact",
-        "HTML" : "<p>For TopCat problems, please submit an issue to the TopCat project at <a href=\"https://github.com/icatproject/topcat\">Github</a></p><p>For installation help and general issues, please post to the <a href=\"https://groups.google.com/forum/#!forum/icatgroup\">icatgroup</a></p>"
-    },
-    "HELP" : {
-        "TITLE" : "Help",
-        "HTML" : ""
-    },
-    "GLOBUS_HELP" : {
-        "TITLE" : "Globus Help"
-    },
-    "COOKIE_POLICY" : {
-        "TITLE" : "Cookie Policy"
-    },
-    "RESPONSE": {
-        "ERROR" : {
-            "NO_CONNECTION" : "Unable to contact the facility {{facilityTitle}}"
         }
     },
     "METATABS" : {
