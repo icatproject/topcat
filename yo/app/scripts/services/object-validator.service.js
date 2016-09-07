@@ -1,333 +1,316 @@
 
 
+
 (function() {
     'use strict';
 
     angular.module('bootstrap', []).service('objectValidator', function(){
         var objectValidator = this;
 
-    	this.create = function(schema){
-    		return new ObjectValidator(schema);
-    	};
+        this.create = function(schema){
+            return new ObjectValidator(schema);
+        };
 
-    	function ObjectValidator(schema, path){
-            var attributes = {};
-            var mandatory = function(){ return true };
-            var type = 'object';
-            if(!path) path = [];
+        function ObjectValidator(schema){
 
-            this.attribute = function(name, schema, condition){
-                attributes[name] = schema;
-            };
+            this.validate = function(value, parent, currentSchema, path){
+                var that = this;
 
-            this.mandatory = function(arg1){
-                if(arg1 instanceof Function){
-                    mandatory = arg1;
-                } else {
-                    mandatory = function(){ return arg1; };
+                if(!parent){
+                    currentSchema = schema;
+                    path = [];
                 }
-            };
 
-            this.type = function(_type){
-                type = _type;
-            };
+                if(currentSchema === undefined){
+                    throw path.join(' > ') + ": unexpected attribute";
+                }
 
-            this.validate = function(o, parent){
-                if(o === undefined){
-                    if(!mandatory(parent)) return;
+                var type = currentSchema._type || 'object';
+                var mandatory = currentSchema._mandatory === undefined ? true : currentSchema._mandatory;
+                if(typeof mandatory == 'function') mandatory = mandatory(parent);
+                
+                if(mandatory && value === undefined){
                     throw path.join(' > ') + ": this is a mandatory attribute";
                 }
 
-                var oType = typeof o;
-                if(o instanceof Array) oType = 'array';               
-                if(!oType.match(new RegExp('^' + type + '$'))){
-                    throw path.join(' > ') + ": invalid type expected '" + type + "' got '" + oType + "'";
-                }
+                if(value !== undefined){
+                    var valueType = typeof value;
+                    if(value instanceof Array) valueType = 'array';               
+                    if(!valueType.match(new RegExp('^' + type + '$'))){
+                        throw path.join(' > ') + ": invalid type expected '" + type + "' got '" + valueType + "'";
+                    }
 
-                if(oType == 'array'){
-                    var schema = attributes['*'];
-                    if(schema){
-                        _.each(o, function(item, name){
+                    if(type == 'array' || type == 'object'){
+                        var attributes = [];
+                        _.each(value, function(value, name){ attributes.push(name); });
+                        _.each(currentSchema, function(value, name){ if(!name.match(/^_/)) attributes.push(name); });
+
+                        _.each(attributes, function(name){
                             path.push(name);
-                            (new ObjectValidator(schema, path)).validate(item, o);
+                            that.validate(value[name], value, type == 'array' ? currentSchema['_item'] : currentSchema[name], path);
                             path.pop();
                         });
                     }
-                } else {
-                    _.each(attributes, function(schema, name){
-                        path.push(name);
-                        (new ObjectValidator(schema, path)).validate(o[name], o);
-                        path.pop();
-                    });
                 }
+            }
 
-                if(oType == 'object'){
-                    _.each(o, function(value, name){
-                        if(attributes[name] === undefined){
-                            path.push(name);
-                            throw path.join(' > ') + ": unexpected attribute";
-                        }
-                    });
-                }
+        };
 
-            };
-
-            schema.call(this);
-        }
 
         this.createAppConfigValidator = function(pluginSchemas){
-            return this.create(function(){
-                this.attribute('site', function(){
-                    this.attribute('topcatUrl', function(){ this.type('string'); this.mandatory(false); });
-                    this.attribute('home', function(){ this.type('string'); });
-                    this.attribute('enableEuCookieLaw', function(){ this.type('boolean'); });
-                    this.attribute('paging', function(){ 
-                        this.attribute('pagingType', function(){ this.type('string'); });
-                        this.attribute('paginationNumberOfRows', function(){ this.type('number'); });
-                        this.attribute('paginationPageSizes', function(){
-                            this.type('array');
-                            this.mandatory(function(o){ return o.pagingType == 'page'; });
-                            this.attribute('*', function(){
-                                this.type('number');
-                            });
-                        });
-                        this.attribute('scrollPageSize', function(){ this.type('number'); });
-                        this.attribute('scrollRowFromEnd', function(){ this.type('number'); });
-                    });
-                    this.attribute('breadcrumb', function(){
-                        this.attribute('maxTitleLength', function(){ this.type('number'); });
-                    });
-                    this.attribute('serviceStatus', function(){
-                        this.mandatory(false);
-                        this.attribute('show', function(){ this.type('boolean'); });
-                        this.attribute('message', function(){ this.type('string'); });
-                    });
-                    this.attribute('maintenanceMode', function(){
-                        this.mandatory(false);
-                        this.attribute('show', function(){ this.type('boolean'); });
-                        this.attribute('message', function(){ this.type('string'); });
-                    });
-                    this.attribute('search', function(){
-                        this.attribute('enableParameters', function(){ this.type('boolean'); this.mandatory(false); });
-                        this.attribute('enableSamples', function(){ this.type('boolean'); this.mandatory(false); });
-                        this.attribute('gridOptions', function(){
-                            var that = this;
-                            _.each(['investigation', 'dataset', 'datafile'], function(entityType){
-                                that.attribute(entityType, function(){
-                                    this.attribute('enableSelection', function(){ this.type('boolean'); this.mandatory(false); });
-                                    this.attribute('columnDefs', function(){
-                                        this.type('array');
-                                        this.attribute('*', function(){
-                                            this.attribute('field', function(){ this.type("string"); });
-                                            this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
-                                            this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                    this.attribute('browse', function(){
-                        this.attribute('gridOptions', function(){
-                            this.attribute('columnDefs', function(){
-                                this.type('array');
-                                this.attribute('*', function(){
-                                    this.attribute('field', function(){ this.type("string"); });
-                                    this.attribute('link', function(){ this.type('boolean'); this.mandatory(false); });
-                                    this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                });
-                            });
-                        });
-                        this.attribute('metaTabs', function(){
-                            this.type('array');
-                            this.mandatory(false);
-                            this.attribute('*', function(){
-                                this.attribute('title', function(){ this.type("string"); });
-                                this.attribute('items', function(){
-                                    this.type('array');
-                                    this.attribute('*', function(){
-                                        this.attribute('field', function(){ this.type("string"); });
-                                        this.attribute('label', function(){ this.type("string"); this.mandatory(false); });
-                                        this.attribute('template', function(){ this.type("string"); this.mandatory(false); });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                    this.attribute('cart', function(){
-                        this.attribute('gridOptions', function(){
-                            this.attribute('columnDefs', function(){
-                                this.type('array');
-                                this.attribute('*', function(){
-                                    this.attribute('field', function(){ this.type("string"); });
-                                    this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                });
-                            });
-                        });
-                    });
-                    this.attribute('myDownloads', function(){
-                        this.attribute('gridOptions', function(){
-                            this.attribute('columnDefs', function(){
-                                this.type('array');
-                                this.attribute('*', function(){
-                                    this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
-                                    this.attribute('field', function(){ this.type("string"); });
-                                    this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                });
-                            });
-                        });
-                    });
-                    this.attribute('pages', function(){
-                        this.type('array');
-                        this.attribute('*', function(){
-                            this.attribute('url', function(){ this.type("string"); });
-                            this.attribute('stateName', function(){ this.type("string"); });
-                            this.attribute('addToNavBar', function(){ 
-                                this.mandatory(false);
-                                this.attribute('linkLabel', function(){ this.type("string"); });
-                                this.attribute('align', function(){ this.type("string"); });
-                            });
-                        });
-                    });
-                });
-                this.attribute('facilities', function(){
-                    this.type('array');
-                    this.attribute('*', function(){
-                        this.attribute('title', function(){ this.type("string"); });
-                        this.attribute('name', function(){ this.type("string"); });
-                        this.attribute('idsUrl', function(){ this.type("string"); });
-                        this.attribute('icatUrl', function(){ this.type("string"); this.mandatory(false); });
-                        this.attribute('hierarchy', function(){
-                            this.type('array');
-                            this.attribute('*', function(){
-                                this.type("string");
-                            });
-                        });
-                        this.attribute('authenticationTypes', function(){
-                            this.type('array');
-                            this.attribute('*', function(){
-                                this.attribute('title', function(){ this.type("string"); });
-                                this.attribute('plugin', function(){ this.type("string"); });
-                                this.attribute('casUrl', function(){ this.type("string"); this.mandatory(function(o){
+            var schema = {
+                site: {
+                    topcatUrl: { _type: 'string', _mandatory: false },
+                    home: { _type: 'string' },
+                    enableEuCookieLaw: { _type: 'boolean' },
+                    paging: { 
+                        pagingType: { _type: 'string' },
+                        paginationNumberOfRows: { _type: 'number' },
+                        paginationPageSizes: {
+                            _type: 'array',
+                            _mandatory: function(o){ return o.pagingType == 'page';  },
+                            _item: {
+                                _type: 'number'
+                             }
+                        },
+                        scrollPageSize: { _type: 'number' },
+                        scrollRowFromEnd: { _type: 'number' }
+                    },
+                    breadcrumb: {
+                        maxTitleLength: { _type: 'number' }
+                    },
+                    serviceStatus: {
+                        _mandatory: false,
+                        show: { _type: 'boolean' },
+                        message: { _type: 'string' }
+                    },
+                    maintenanceMode: {
+                        _mandatory: false,
+                        show: { _type: 'boolean' },
+                        message: { _type: 'string' }
+                    },
+                    search: {
+                        enableParameters: { _type: 'boolean', _mandatory: false },
+                        enableSamples: { _type: 'boolean', _mandatory: false },
+                        gridOptions: {}
+                     },
+                    browse: {
+                        gridOptions: {
+                            columnDefs: {
+                                _type: 'array',
+                                _item: {
+                                    field: { _type: 'string'  },
+                                    link: { _type: 'boolean', _mandatory: false },
+                                    cellTemplate: { _type: 'string', _mandatory: false }
+                                }
+                             }
+                        },
+                        metaTabs: {
+                            _type: 'array',
+                            _mandatory: false,
+                            _item: {
+                                title: { _type: 'string'  },
+                                items: {
+                                    _type: 'array',
+                                    _item: {
+                                        field: { _type: 'string'  },
+                                        label: { _type: 'string', _mandatory: false },
+                                        template: { _type: 'string', _mandatory: false }
+                                    }
+                                 }
+                            }
+                         }
+                    },
+                    cart: {
+                        gridOptions: {
+                            columnDefs: {
+                                _type: 'array',
+                                _item: {
+                                    field: { _type: 'string'  },
+                                    cellTemplate: { _type: 'string', _mandatory: false }
+                                }
+                             }
+                        }
+                    },
+                    myDownloads: {
+                        gridOptions: {
+                            columnDefs: {
+                                _type: 'array',
+                                _item: {
+                                    title: { _type: 'string', _mandatory: false },
+                                    field: { _type: 'string'  },
+                                    cellTemplate: { _type: 'string', _mandatory: false }
+                                }
+                             }
+                        }
+                     },
+                    pages: {
+                        _type: 'array',
+                        _item: {
+                            url: { _type: 'string'  },
+                            stateName: { _type: 'string'  },
+                            addToNavBar: { 
+                                _mandatory: false,
+                                linkLabel: { _type: 'string'  },
+                                align: { _type: 'string'  }
+                            }
+                         }
+                    }
+                 },
+                facilities: {
+                    _type: 'array',
+                    _item: {
+                        title: { _type: 'string'  },
+                        name: { _type: 'string'  },
+                        idsUrl: { _type: 'string'  },
+                        icatUrl: { _type: 'string', _mandatory: false },
+                        hierarchy: {
+                            _type: 'array',
+                            _item: {
+                                _type: 'string'
+                             }
+                        },
+                        authenticationTypes: {
+                            _type: 'array',
+                            _item: {
+                                title: { _type: 'string'  },
+                                plugin: { _type: 'string'  },
+                                casUrl: { _type: 'string', _mandatory: function(o){
                                     return o.plugin == 'cas';
-                                }); });
-                            });
-                        });
-                        this.attribute('downloadTransportTypes', function(){
-                            this.type('array');
-                            this.mandatory(false);
-                            this.attribute('*', function(){
-                                this.attribute('type', function(){ this.type("string"); });
-                                this.attribute('idsUrl', function(){ this.type("string"); });
-                            });
-                        });
-                        this.attribute('admin', function(){
-                            this.attribute('gridOptions', function(){
-                                this.attribute('columnDefs', function(){
-                                    this.type('array');
-                                    this.attribute('*', function(){
-                                        this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
-                                        this.attribute('field', function(){ this.type("string"); });
-                                        this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                    });
-                                });
-                            });
-                        });
-                        this.attribute('myData', function(){
-                            this.attribute('entityType', function(){ this.type('string'); });
-                            this.attribute('gridOptions', function(){
-                                this.attribute('enableSelection', function(){ this.type('boolean'); this.mandatory(false); });
-                                this.attribute('columnDefs', function(){
-                                    this.type('array');
-                                    this.attribute('*', function(){
-                                        this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
-                                        this.attribute('field', function(){ this.type("string"); });
-                                        this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                        this.attribute('jpqlFilter', function(){ this.type('string'); this.mandatory(false); });
-                                        this.attribute('jpqlSort', function(){ this.type('string'); this.mandatory(false); });
-                                        this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
-                                        this.attribute('where', function(){ this.type('string'); this.mandatory(false); });
-                                        this.attribute('excludeFuture', function(){ this.type('boolean'); this.mandatory(false); });
-                                        this.attribute('sort', function(){
-                                            this.mandatory(false);
-                                            this.attribute('direction', function(){ this.type("string"); });
-                                            this.attribute('priority', function(){ this.type("number"); this.mandatory(false); });
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                        this.attribute('browse', function(){
-                            var that = this;
-                            _.each(["instrument", "facilityCycle", "investigation", "proposal", "dataset", "datafile"], function(entityType){
-                                that.attribute(entityType, function(){
-                                    this.mandatory(false);
-                                    this.attribute('skipSingleEntities', function(){ this.type('boolean'); this.mandatory(false); });
-                                    this.attribute('gridOptions', function(){
-                                        if(entityType == 'investigation' || entityType == 'dataset' || entityType == 'datafile'){
-                                            this.attribute('enableSelection', function(){ this.type('boolean'); this.mandatory(false); });
+                                }}
+                            }
+                        },
+                        downloadTransportTypes: {
+                            _type: 'array',
+                            _mandatory: false,
+                            _item: {
+                                type: { _type: 'string'  },
+                                idsUrl: { _type: 'string'  }
+                            }
+                        },
+                        admin: {
+                            gridOptions: {
+                                columnDefs: {
+                                    _type: 'array',
+                                    _item: {
+                                        title: { _type: 'string', _mandatory: false },
+                                        field: { _type: 'string'  },
+                                        cellTemplate: { _type: 'string', _mandatory: false }
+                                    }
+                                 }
+                            }
+                         },
+                        myData: {
+                            entityType: { _type: 'string' },
+                            gridOptions: {
+                                enableSelection: { _type: 'boolean', _mandatory: false },
+                                columnDefs: {
+                                    _type: 'array',
+                                    _item: {
+                                        title: { _type: 'string', _mandatory: false },
+                                        field: { _type: 'string'  },
+                                        cellTemplate: { _type: 'string', _mandatory: false },
+                                        jpqlFilter: { _type: 'string', _mandatory: false },
+                                        jpqlSort: { _type: 'string', _mandatory: false },
+                                        link: { _type: 'boolean|string', _mandatory: false },
+                                        where: { _type: 'string', _mandatory: false },
+                                        excludeFuture: { _type: 'boolean', _mandatory: false },
+                                        sort: {
+                                            _mandatory: false,
+                                            direction: { _type: 'string'  },
+                                            priority: { _type: 'number', _mandatory: false }
                                         }
-                                        if(entityType == 'datafile'){
-                                            this.attribute('enableDownload', function(){ this.type('boolean'); this.mandatory(false); });
-                                        }
-                                        this.attribute('columnDefs', function(){
-                                            this.type('array');
-                                            this.attribute('*', function(){
-                                                this.attribute('title', function(){ this.type("string"); this.mandatory(false); });
-                                                this.attribute('field', function(){ this.type("string"); });
-                                                this.attribute('cellTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                                this.attribute('jpqlFilter', function(){ this.type('string'); this.mandatory(false); });
-                                                this.attribute('jpqlSort', function(){ this.type('string'); this.mandatory(false); });
-                                                this.attribute('link', function(){ this.type('boolean|string'); this.mandatory(false); });
-                                                this.attribute('where', function(){ this.type('string'); this.mandatory(false); });
-                                                this.attribute('excludeFuture', function(){ this.type('boolean'); this.mandatory(false); });
-                                                this.attribute('breadcrumb', function(){ this.type('boolean'); this.mandatory(false); });
-                                                this.attribute('breadcrumbTemplate', function(){ this.type('string'); this.mandatory(false); });
-                                                this.attribute('sort', function(){
-                                                    this.mandatory(false);
-                                                    this.attribute('direction', function(){ this.type("string"); });
-                                                    this.attribute('priority', function(){ this.type("number"); this.mandatory(false); });
-                                                });
-                                            });
-                                        });
-                                    });
-                                    this.attribute('metaTabs', function(){
-                                        this.type('array');
-                                        this.mandatory(false);
-                                        this.attribute('*', function(){
-                                            this.attribute('title', function(){ this.type("string"); });
-                                            this.attribute('items', function(){
-                                                this.type('array');
-                                                this.attribute('*', function(){
-                                                    this.attribute('field', function(){ this.type("string"); });
-                                                    this.attribute('label', function(){ this.type("string"); this.mandatory(false); });
-                                                    this.attribute('template', function(){ this.type("string"); this.mandatory(false); });
-                                                });
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-                        });
+                                     }
+                                }
+                             }
+                        },
+                        browse: {}
+                     }
+                },
+                plugins: {
+                    _type: 'array',
+                    _mandatory: false,
+                    _item: {
+                        _type: 'string'
+                     }
+               }
+            };
 
-                    });
-                });
-                this.attribute('plugins', function(){
-                    this.type('array');
-                    this.mandatory(false);
-                    this.attribute('*', function(){
-                        this.type("string");
-                    });
-                });
 
-                var that = this;
+            _.each(["instrument", "facilityCycle", "investigation", "proposal", "dataset", "datafile"], function(entityType){
+                schema.facilities._item.browse[entityType] = {
+                    _mandatory: false,
+                    skipSingleEntities: { _type: 'boolean', _mandatory: false },
+                    gridOptions: {
+                        columnDefs: {
+                            _type: 'array',
+                            _item: {
+                                title: { _type: 'string', _mandatory: false },
+                                field: { _type: 'string'  },
+                                cellTemplate: { _type: 'string', _mandatory: false },
+                                jpqlFilter: { _type: 'string', _mandatory: false },
+                                jpqlSort: { _type: 'string', _mandatory: false },
+                                link: { _type: 'boolean|string', _mandatory: false },
+                                where: { _type: 'string', _mandatory: false },
+                                excludeFuture: { _type: 'boolean', _mandatory: false },
+                                breadcrumb: { _type: 'boolean', _mandatory: false },
+                                breadcrumbTemplate: { _type: 'string', _mandatory: false },
+                                sort: {
+                                    _mandatory: false,
+                                    direction: { _type: 'string'  },
+                                    priority: { _type: 'number', _mandatory: false }
+                                }
+                            }
+                        }
+                    },
+                    metaTabs: {
+                        _type: 'array',
+                        _mandatory: false,
+                        _item: {
+                            title: { _type: 'string'  },
+                            items: {
+                                _type: 'array',
+                                _item: {
+                                    field: { _type: 'string'  },
+                                    label: { _type: 'string', _mandatory: false },
+                                    template: { _type: 'string', _mandatory: false }
+                                }
+                             }
+                        }
+                    }
+                };
 
-                _.each(pluginSchemas, function(pluginSchema){
-                    pluginSchema.call(that);
-                });
+                if(entityType == 'investigation' || entityType == 'dataset' || entityType == 'datafile'){
+                    schema.facilities._item.browse[entityType].gridOptions.enableSelection = { _type: 'boolean', _mandatory: false };
+                }
+                if(entityType == 'datafile'){
+                    schema.facilities._item.browse[entityType].gridOptions.enableDownload = { _type: 'boolean', _mandatory: false };
+                }
+
             });
-        }
 
-	});
+
+            _.each(['investigation', 'dataset', 'datafile'], function(entityType){
+                schema.site.search.gridOptions[entityType] = {
+                    enableSelection: { _type: 'boolean', _mandatory: false },
+                    columnDefs: {
+                        _type: 'array',
+                        _item: {
+                            field: { _type: 'string'  },
+                            link: { _type: 'boolean|string', _mandatory: false },
+                            cellTemplate: { _type: 'string', _mandatory: false }
+                        }
+                     }
+                };
+            });
+
+            _.each(pluginSchemas, function(pluginSchema){
+                _.merge(schema, pluginSchema);
+            });
+
+            return this.create(schema);
+        };
+    });
 
 })();
+
