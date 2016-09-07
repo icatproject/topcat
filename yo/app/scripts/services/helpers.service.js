@@ -33,7 +33,7 @@
             });
     	};
 
-    	this.setupColumnDef = function(columnDef, entityType, translateNameSpace){
+    	this.setupColumnDef = function(columnDef, entityType, translateTitleNameSpace, translateStatusNameSpace){
             var type = columnDef.type;
             var field = columnDef.field.replace(/^.*\./, '').replace(/\|.*$/, '');
 
@@ -87,10 +87,8 @@
 
             if(!columnDef.title){
                 var fieldNamespace = helpers.constantify(field);
-                columnDef.title = translateNameSpace + '.' + fieldNamespace;
+                columnDef.title = translateTitleNameSpace + '.' + fieldNamespace;
             }
-
-            var entityTypeNamespace = helpers.constantify(entityType.replace(/Item$/, ''));
 
             if(field === 'size') {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span loading="row.entity.size === undefined"></span><span>{{row.entity.size|bytes}}</span></div>';
@@ -103,7 +101,7 @@
             }
 
             if(field === 'status') {
-               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span loading="row.entity.status === undefined"></span><span ng-if="row.entity.status">{{"' + entityTypeNamespace + '.STATUS." + row.entity.status | translate}}</span></div>';
+               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span loading="row.entity.status === undefined"></span><span ng-if="row.entity.status">{{"' + translateStatusNameSpace + '." + row.entity.status | translate}}</span></div>';
             }
 
 
@@ -160,7 +158,9 @@
             	var field = columnDef.field;
             	var type = entitySchema.fields[field];
             	if(!columnDef.type) columnDef.type = type;
-            	helpers.setupColumnDef(columnDef, entityType, helpers.constantify(entityType.replace(/Item$/, '')) + '.COLUMN');
+                var translateColumnNameSpace = helpers.constantify(entityType.replace(/Item$/, '')) + '.COLUMN';
+            	var translateStatusNameSpace = helpers.constantify(entityType.replace(/Item$/, '')) + '.STATUS';
+                helpers.setupColumnDef(columnDef, entityType, translateColumnNameSpace, translateStatusNameSpace);
             });
 
     	};
