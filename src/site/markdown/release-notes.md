@@ -1,5 +1,13 @@
 #Release Notes
 
+## 2.2.0
+
+* Topcat is now plugable - this is yet to be documented.
+* Bug fixes
+* Performance improvements - most notabley low priority requests such as getSize have been throttled back to give way to high priority requests.
+* lang.json - CART_ITEM.COLUMN and CART_ITEM.STATUS now sits under CART.COLUMN and CART.STATUS
+
+
 ## 2.1.0
 
 * Bug fixes.
