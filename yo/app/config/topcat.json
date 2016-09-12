@@ -18,14 +18,6 @@
         "breadcrumb": {
             "maxTitleLength": 30
         },
-        "serviceStatus": {
-            "show": false,
-            "message": "<strong>Service status:</strong> Site is down for maintenance"
-        },
-        "maintenanceMode": {
-            "show": false,
-            "message": "This server in undergoing maintenance."
-        },
         "search": {
             "enableParameters": false,
             "enableSamples": false,

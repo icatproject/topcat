@@ -79,16 +79,6 @@
                     breadcrumb: {
                         maxTitleLength: { _type: 'number' }
                     },
-                    serviceStatus: {
-                        _mandatory: false,
-                        show: { _type: 'boolean' },
-                        message: { _type: 'string' }
-                    },
-                    maintenanceMode: {
-                        _mandatory: false,
-                        show: { _type: 'boolean' },
-                        message: { _type: 'string' }
-                    },
                     search: {
                         enableParameters: { _type: 'boolean', _mandatory: false },
                         enableSamples: { _type: 'boolean', _mandatory: false },
