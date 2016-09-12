@@ -75,7 +75,7 @@ public class Download implements Serializable {
     @Enumerated(EnumType.STRING)
     private DownloadStatus status;
 
-    @Column(name = "SIZE")
+    @Column(name = "THE_SIZE")
     private long size;
 
     @Column(name = "IS_TWO_LEVEL")
