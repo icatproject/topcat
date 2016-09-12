@@ -47,7 +47,9 @@
 
 			if(this.entityType == 'datafile'){
 				this.size = this.fileSize;
+			}
 
+			if(this.entityType.match(/^(investigation|dataset|datafile)$/)){
 				this.getStatus = helpers.overload({
 					'object': function(options){
 						var that = this;
