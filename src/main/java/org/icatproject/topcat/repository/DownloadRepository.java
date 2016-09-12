@@ -42,7 +42,7 @@ public class DownloadRepository {
 
 		if (queryOffset != null) {
 			queryOffset = queryOffset.replaceAll("(?i)^\\s*WHERE\\s+", "");
-			Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d)+,\\s*(\\d+)\\s*$");
+			Pattern pattern = Pattern.compile("(?i)^(.*)LIMIT\\s+(\\d+)\\s*,\\s*(\\d+)\\s*$");
 			Matcher matches = pattern.matcher(queryOffset);
 			if (matches.find()) {
 				queryOffset = matches.group(1);

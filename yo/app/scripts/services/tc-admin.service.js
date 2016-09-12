@@ -178,9 +178,6 @@
                         value: status
                     }, options);
                 },
-                'number, string, object': function(id, status, options){
-                    return this.setDownloadStatus(id, status, options);
-                },
                 'number, string, promise': function(id, status, timeout){
                     return this.setDownloadStatus(id, status, {timeout: timeout});
                 },
