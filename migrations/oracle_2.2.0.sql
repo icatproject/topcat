@@ -1,0 +1,7 @@
+
+CREATE TABLE CONFVAR (
+  NAME varchar(255) NOT NULL,
+  VALUE clob,
+  PRIMARY KEY (NAME)
+);
+

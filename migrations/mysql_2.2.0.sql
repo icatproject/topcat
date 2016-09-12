@@ -1,0 +1,6 @@
+
+CREATE TABLE `CONFVAR` (
+  `NAME` varchar(255) NOT NULL,
+  `VALUE` text,
+  PRIMARY KEY (`NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
