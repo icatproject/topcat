@@ -101,7 +101,7 @@
             });
           }
 
-          out.push(["limit ?, ?", page - 1, pageSize])          
+          out.push(["limit ?, ?", (page - 1) * pageSize, pageSize])          
 
           return out;
       }
