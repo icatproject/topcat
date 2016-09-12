@@ -60,10 +60,7 @@
       }
 
       function getPage(){
-        return admin.downloads(generateQuery()).then(function(downloads){
-          _.each(downloads, function(download){ download.getSize(timeout.promise); });
-          return downloads;
-        });
+        return admin.downloads(generateQuery());
       }
 
       function generateQuery(){

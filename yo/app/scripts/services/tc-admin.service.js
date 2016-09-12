@@ -73,28 +73,6 @@
                                 }
                             });
 
-                            download.getSize = helpers.overload({
-                                'object': function(options){
-                                    var that = this;
-
-                                    var investigationIds = _.map(_.select(this.downloadItems, function(item){ return item.entityType == 'investigation'}), function(item){ return item.entityId});
-                                    var datasetIds = _.map(_.select(this.downloadItems, function(item){ return item.entityType == 'dataset'}), function(item){ return item.entityId});
-                                    var datafileIds = _.map(_.select(this.downloadItems, function(item){ return item.entityType == 'datafile'}), function(item){ return item.entityId});
-
-                                    return facility.ids().getSize(investigationIds, datasetIds, datafileIds, options).then(function(size){
-                                        that.size = size;
-                                        return size;
-                                    });
-                                },
-                                'promise': function(timeout){
-                                    return this.getSize({timeout: timeout});
-                                },
-                                '': function(){
-                                    return this.getSize({});
-                                }
-                            });
-
-
                         });
 
                         return downloads;
