@@ -7,6 +7,7 @@
 * Performance improvements - most notabley low priority requests such as getSize have been throttled back to give way to high priority requests.
 * lang.json - CART_ITEM.COLUMN and CART_ITEM.STATUS now sits under CART.COLUMN and CART.STATUS.
 * Smartclient is now supported.
+* There are database migrations which need to be applied.
 
 ## 2.1.0
 

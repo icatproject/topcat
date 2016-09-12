@@ -47,6 +47,11 @@
 			</includes>
 		</fileSet>
 
+		<fileSet>
+			<outputDirectory>topcat/migrations</outputDirectory>
+			<directory>${project.basedir}/migrations</directory>
+		</fileSet>
+
 	</fileSets>
 
 
