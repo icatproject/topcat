@@ -16,7 +16,8 @@
             "MY_DATA" : "My Data",
             "BROWSE" : "Browse",
             "SEARCH" : "Search",
-            "MY_MACHINES" : "My Machines"
+            "MY_MACHINES" : "My Machines",
+            "MY_DOIS" : "My DOIs"
         }
     },
     "LOGIN": {

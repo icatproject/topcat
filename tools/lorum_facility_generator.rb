@@ -45,6 +45,18 @@ def write(entities)
 	}).body)
 end
 
+def get(query)
+	JSON.parse(RestClient::Request.execute({
+		:method => :get, 
+		:url => "#{$icat_url}/icat/entityManager",
+	    :payload => {
+	    	:sessionId => $session_id,
+	    	:query => query
+	    },
+		:verify_ssl => OpenSSL::SSL::VERIFY_NONE
+	}).body)
+end
+
 facility_id = write([{
 	:Facility => {
 		:fullName => "Lorum Ipsum Light Source",
@@ -85,7 +97,7 @@ end)
 dataset_type_ids = write(dataset_types_count.times.map do |i|
 	{
 		:DatasetType => {
-			:name => "DatasetType #{i}",
+			:name => "DatasetType #{i + 1}",
 			:description => Faker::Lorem.words.join(' '),
 			:facility => {:id => facility_id}
 		}
@@ -156,3 +168,13 @@ proposals_count.times do |i|
 
 	end
 end
+
+root_user_id = write([
+	{
+		:User => {
+			:fullName => Faker::Name.name,
+			:name => "root",
+			:email => "root@example.com"
+		}
+	}
+]).first
