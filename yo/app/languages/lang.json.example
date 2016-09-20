@@ -1,5 +1,5 @@
 {
-    "SITE_NAME_LOGO": "<img alt=\"My TopCAT\" src=\"images/example/stfc_logo.png\" height=\"50px\">",
+    "SITE_NAME_LOGO": "<img alt=\"Diamond Light Source\" src=\"images/diamond/diamond_logo.png\" height=\"50px\">",
     "SITE_TITLE": "Topcat",
     "MAIN_NAVIGATION": {
         "HOME": "Home",
@@ -15,7 +15,9 @@
         "MAIN_TAB" : {
             "MY_DATA" : "My Data",
             "BROWSE" : "Browse",
-            "SEARCH" : "Search"
+            "SEARCH" : "Search",
+            "MY_MACHINES" : "My Machines",
+            "MY_DOIS" : "My DOIs"
         }
     },
     "LOGIN": {
@@ -586,12 +588,6 @@
         "TEXT": "Download",
         "TOOLTIP": {
             "TEXT": "Click to download"
-        }
-    },
-    "CONFIGURE_JOB_ENTITY_ACTION_BUTTON": {
-        "TEXT": "Configure Job",
-        "TOOLTIP": {
-            "TEXT": "Configure job"
         }
     }
 }
