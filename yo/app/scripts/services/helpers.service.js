@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('helpers', function($http, $q, $timeout, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema){
+    app.service('helpers', function($http, $q, $timeout, $interval, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
@@ -636,6 +636,13 @@
 
 
         var lowPriorityCounter = 0;
+        var lowPriorityQueue = [];
+
+        $interval(function(){
+            if(lowPriorityCounter < 2 && lowPriorityQueue.length > 0){
+                lowPriorityQueue.pop().call();
+            }
+        }, 10);
 
 		this.generateRestMethods = function(that, prefix){
 			
@@ -656,8 +663,6 @@
 						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
                     
 						var out = $q.defer();
-
-                        var stopListeningForLowPriorityCounterChanges = function(){};
 
                         function call(){
                             if(options.lowPriority) lowPriorityCounter++;
@@ -692,32 +697,15 @@
                         function success(response){
                             out.resolve(response.data);
                             if(options.lowPriority) lowPriorityCounter--;
-                            $rootScope.$emit('lowprioritycounter:change');
-                            stopListeningForLowPriorityCounterChanges();
                         }
 
                         function failure(response){
                             out.reject(response.data);
                             if(options.lowPriority) lowPriorityCounter--;
-                            $rootScope.$emit('lowprioritycounter:change');
-                            stopListeningForLowPriorityCounterChanges();
-                        }
-
-                        var pollTimeoutPromise;
-                        function poll(){
-                            if(lowPriorityCounter < 2){
-                                call();
-                            }
-                        }
-
-                        
-                        if(options.timeout){
-                            options.timeout.then(stopListeningForLowPriorityCounterChanges);
                         }
 
                         if(options.lowPriority){
-                            stopListeningForLowPriorityCounterChanges = $rootScope.$on('lowprioritycounter:change', poll);
-                            poll();
+                            lowPriorityQueue.push(call);
                         } else {
                             call();
                         }
