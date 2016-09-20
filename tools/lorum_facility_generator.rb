@@ -2,6 +2,7 @@
 require 'faker'
 require 'rest-client'
 require 'json'
+require 'uri'
 
 $icat_url = "https://localhost:8181"
 users_count = 100
@@ -46,15 +47,17 @@ def write(entities)
 end
 
 def get(query)
-	JSON.parse(RestClient::Request.execute({
+	out = JSON.parse(RestClient::Request.execute({
 		:method => :get, 
-		:url => "#{$icat_url}/icat/entityManager",
-	    :payload => {
-	    	:sessionId => $session_id,
-	    	:query => query
-	    },
+		:url => "#{$icat_url}/icat/entityManager?sessionId=#{URI.escape($session_id)}&query=#{URI.escape(query)}",
 		:verify_ssl => OpenSSL::SSL::VERIFY_NONE
 	}).body)
+
+	if out.kind_of?(Array) &&  out.first.kind_of?(Hash)
+		out.map{|i| i.values.first}
+	else
+		out
+	end
 end
 
 facility_id = write([{
@@ -173,8 +176,38 @@ root_user_id = write([
 	{
 		:User => {
 			:fullName => Faker::Name.name,
-			:name => "root",
+			:name => "simple/root",
 			:email => "root@example.com"
 		}
 	}
 ]).first
+
+investigation_ids = get("select investigation.id from Investigation investigation limit 0, 31")
+doi_counter = 1
+
+
+investigation_ids.each do |investigation_id|
+	write([{
+		:InvestigationUser => {
+			:investigation => {:id => investigation_id},
+			:user => {:id => root_user_id},
+			:role => "CO_INVESTIGATOR"
+		}
+	}])
+
+	dataset_ids = get("select dataset.id from Dataset dataset, dataset.investigation as investigation where investigation.id = #{investigation_id} limit 0, 3")
+
+	write([
+		{
+			:DataCollection => {
+				:doi => "doi/#{doi_counter}",
+				:dataCollectionDatasets => dataset_ids.map{ |dataset_id| { :dataset => { :id => dataset_id } } }
+			}
+		}
+	])
+
+	doi_counter += 1
+
+end
+
+
