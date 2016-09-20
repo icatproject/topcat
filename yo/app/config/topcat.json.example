@@ -234,11 +234,7 @@
                     "idsUrl": "https://myids.server.ac.uk"
                 },
                 {
-                    "type" : "globus",
-                    "idsUrl": "https://myids.server.ac.uk"
-                },
-                {
-                    "type" : "scarf",
+                    "type" : "smartclient",
                     "idsUrl": "https://myids.server.ac.uk"
                 }
             ],

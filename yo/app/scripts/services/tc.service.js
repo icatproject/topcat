@@ -22,7 +22,7 @@
 
   	this.config = function(){ 
       var out = APP_CONFIG.site;
-      if(!out.topcatUrl) out.topcatUrl = "https://" + window.location.host;
+      if(!out.topcatUrl) out.topcatUrl = window.location.href.replace(/^(https{0,1}:\/\/[^\/]+).*$/, '$1');
       return out;
     }
 
