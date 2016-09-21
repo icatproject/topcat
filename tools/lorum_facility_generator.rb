@@ -185,6 +185,24 @@ root_user_id = write([
 investigation_ids = get("select investigation.id from Investigation investigation limit 0, 31")
 doi_counter = 1
 
+(title_type_id, release_date_type_id) = write([
+	{
+		:ParameterType => {
+			:name => "title",
+			:valueType => "STRING",
+			:applicableToDataCollection => true
+		},
+
+	},
+	{
+		:ParameterType => {
+			:name => "releaseDate",
+			:valueType => "DATE_AND_TIME",
+			:applicableToDataCollection => true
+		},
+		
+	}
+])
 
 investigation_ids.each do |investigation_id|
 	write([{
@@ -201,7 +219,17 @@ investigation_ids.each do |investigation_id|
 		{
 			:DataCollection => {
 				:doi => "doi/#{doi_counter}",
-				:dataCollectionDatasets => dataset_ids.map{ |dataset_id| { :dataset => { :id => dataset_id } } }
+				:dataCollectionDatasets => dataset_ids.map{ |dataset_id| { :dataset => { :id => dataset_id } } },
+				:parameters => [
+					{
+						:type => { :id => title_type_id },
+						:stringValue => Faker::ChuckNorris.fact
+					},
+					{
+						:type => { :id => release_date_type_id },
+						:dateTimeValue => seven_days_from_now
+					}
+				]
 			}
 		}
 	])
