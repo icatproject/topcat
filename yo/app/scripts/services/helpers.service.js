@@ -91,7 +91,7 @@
             }
 
             if(field === 'size') {
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span loading="row.entity.size === undefined"></span><span>{{row.entity.size|bytes}}</span></div>';
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined" class="loading">&nbsp;</span><span>{{row.entity.size|bytes}}</span></div>';
             	columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
@@ -101,7 +101,7 @@
             }
 
             if(field === 'status') {
-               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span loading="row.entity.status === undefined"></span><span ng-if="row.entity.status">{{"' + translateStatusNameSpace + '." + row.entity.status | translate}}</span></div>';
+               columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.status === undefined" class="loading"></span><span ng-if="row.entity.status">{{"' + translateStatusNameSpace + '." + row.entity.status | translate}}</span></div>';
             }
 
 
@@ -271,7 +271,7 @@
 
 	            columnDef.cellTemplate = columnDef.cellTemplate || [
 	                '<div class="ui-grid-cell-contents">',
-	                    '<span loading="!(' + showCondition + ')"></span>',
+	                    '<span ng-if="!(' + showCondition + ')" class="loading">&nbsp;</span>',
                         '<span ',
                             'ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" ',
                             'uib-dropdown dropdown-append-to-body ',

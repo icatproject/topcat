@@ -192,7 +192,6 @@
         'ui.grid.resizeColumns',
         'ui.grid.moveColumns',
         'bytes',
-        'angularSpinner',
         'ng.deviceDetector',
         'angularMoment',
         'emguo.poller',

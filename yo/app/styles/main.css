@@ -90,11 +90,17 @@ body {
   margin: 0 auto;
 }
 
-.grid-cell-spinner {
+.loading {
   position: relative;
-  display: block;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
   margin: 0 auto;
   float: none;
+  background: url(/images/loading.gif);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto 100%;
 }
 
 .has-archived {

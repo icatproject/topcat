@@ -11,13 +11,12 @@
         </ul>
     </div>
     <div class="col-sm-2">
-        <span class="result-count">
-            <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="browseEntitiesController.totalItems === undefined" class="grid-cell-spinner"></span>
+        <div class="result-count">
+            <span ng-if="browseEntitiesController.totalItems === undefined" class="loading">&nbsp;</span>
             <span ng-if="browseEntitiesController.totalItems !== undefined">
                 Results: {{browseEntitiesController.totalItems}}
             </span>
-            &nbsp;
-        </span>
+        </div>
     </div>
 </div>
 
