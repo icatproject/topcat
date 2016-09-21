@@ -138,7 +138,7 @@
                         entity.getSize(canceler.promise);
                     }
                 });
-                if(isFirstPage && entities.length == 1){
+                if(isFirstPage && entities.length == 1 && facility.config(entities[0].entityType).browse[entityType].skipSingleEntities){
                     entities[0].browse();
                 }
                 isFirstPage = false;
