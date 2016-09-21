@@ -381,7 +381,7 @@
 					}
 				}
 
-				return out;
+				return _.uniq(out);
 			};
 
 			var children = {};
