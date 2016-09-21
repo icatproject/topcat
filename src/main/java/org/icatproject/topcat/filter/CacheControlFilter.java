@@ -29,7 +29,8 @@ public class CacheControlFilter implements Filter  {
         boolean isIe = false;
         String userAgent = request.getHeader("user-agent");
         if(userAgent != null){
-            isIe = userAgent.indexOf("MSIE") > 0;
+            String iePattern = ".*(MSIE|Windows).*";
+            isIe = Pattern.matches(iePattern, userAgent);
         }
 
         String uriPath = request.getRequestURI();
