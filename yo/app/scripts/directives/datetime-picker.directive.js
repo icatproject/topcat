@@ -8,7 +8,7 @@
     app.directive('datetimePicker', function(){
         return {
             restrict: 'A',
-            templateUrl: '/views/datetime-picker.html',
+            templateUrl: 'views/datetime-picker.html',
             controller: "DatetimePickerController as datetimePickerController",
             scope: {
                 value: '=ngModel'
