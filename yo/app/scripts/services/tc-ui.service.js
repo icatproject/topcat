@@ -43,8 +43,6 @@
                     };
 
                     RuntimeStatesProvider.addState('home.' + name, state);
-
-                    $rootScope.$broadcast('maintab:change');
                 },
                 'string, string': function(name, view){
                     this.registerMainTab(name, view, {});
@@ -75,6 +73,42 @@
                 },
                 'string, function': function(name, click){
                     return this.registerEntityActionButton(name,  {}, click);
+                }
+            });
+
+            var pages = [];
+
+            this.pages = function(){ return pages; };
+            
+            this.registerPage = helpers.overload({
+                'string, string, object': function(name, view, options){
+                    pages.push({name: name, view: view, options: options});
+
+
+                    var state = {
+                      url: options.url || ('/' + name),
+                      params: options.params,
+                      views: {
+                        '': {
+                            templateUrl: view,
+                            controller: options.controller
+                        }
+                      }
+                    };
+
+                    if(options.authenticate){
+                        state['resolve'] = {
+                            authenticate: function(Authenticate){
+                                return Authenticate.authenticate();
+                            }
+                        };
+                    }
+
+                    RuntimeStatesProvider.addState(name, state);
+
+                },
+                'string, string': function(name, view){
+                    this.registerPage(name, view, {});
                 }
             });
 

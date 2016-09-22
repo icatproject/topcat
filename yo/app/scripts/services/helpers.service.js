@@ -8,7 +8,6 @@
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
-
     		_.each(metaTabs, function(metaTab){
                 _.each(metaTab.items, function(item){
                     var field = item.field;

@@ -53,7 +53,8 @@
 						},
 						'parameters': {
 							'entityType': 'dataCollectionParameter',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'dataCollectionParameter'
 						}
 					}
 				},

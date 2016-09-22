@@ -188,17 +188,21 @@ doi_counter = 1
 (title_type_id, release_date_type_id) = write([
 	{
 		:ParameterType => {
+			:facility => { :id => facility_id },
 			:name => "title",
 			:valueType => "STRING",
-			:applicableToDataCollection => true
+			:applicableToDataCollection => true,
+			:units => "title"
 		},
 
 	},
 	{
 		:ParameterType => {
+			:facility => { :id => facility_id },
 			:name => "releaseDate",
 			:valueType => "DATE_AND_TIME",
-			:applicableToDataCollection => true
+			:applicableToDataCollection => true,
+			:units => "releaseDate",
 		},
 		
 	}
