@@ -293,7 +293,8 @@
 					'relationships':{
 						'datasets': {
 							'entityType': 'dataset',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'dataset'
 						},
 						'facility': {
 							'entityType': 'facility',

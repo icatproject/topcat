@@ -63,7 +63,17 @@
             }).join(', '));
         }
 
-        
+        var externalGridFilters = tc.ui().externalGridFilters().myData;
+        this.externalGridFilters = externalGridFilters;
+
+        _.each(externalGridFilters, function(externalGridFilter){
+            externalGridFilter.setup.apply(that);
+        });
+
+        this.externalGridFilterChanged = function (){
+            gridApi.core.raise.filterChanged();
+        };
+
         this.showTabs = function(row) {
             $rootScope.$broadcast('rowclick', {
                 'type': row.entity.entityType.toLowerCase(),
@@ -135,6 +145,10 @@
             });
 
             out.limit((page - 1) * pageSize, pageSize);
+
+            _.each(externalGridFilters, function(externalGridFilter){
+                externalGridFilter.modifyQuery.apply(that, [out]);
+            });
 
             return out; 
         }
