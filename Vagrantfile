@@ -133,12 +133,13 @@ Vagrant.configure(2) do |config|
     sudo sh -c "iptables-save > /etc/iptables/rules.v4"
     sudo sh -c "ip6tables-save > /etc/iptables/rules.v6"
 
+    cp /vagrant/yo/app/config/topcat_dev.json.example /vagrant/yo/app/config/topcat_dev.json
     sudo cp /vagrant/provision/topcat /usr/bin/topcat
     sudo chmod 755 /usr/bin/topcat
     sudo dos2unix /usr/bin/topcat
     topcat build_install_all
     asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
-    cp /vagrant/yo/app/config/topcat_dev.json.example /vagrant/yo/app/config/topcat_dev.json
+    
 
     #mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 
