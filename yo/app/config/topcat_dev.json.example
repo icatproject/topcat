@@ -205,6 +205,14 @@
             {
                 "url" : "/cookie-policy",
                 "stateName": "cookie-policy"
+            },
+            {
+                "url" : "/smartclient-start-server",
+                "stateName": "smartclient-start-server"
+            },
+            {
+                "url" : "/smartclient-complete",
+                "stateName": "smartclient-complete"
             }
 
         ]

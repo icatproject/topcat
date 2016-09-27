@@ -5,13 +5,18 @@
 
     app.controller('LogoutController', function($q, $state, tc){
         var facilityName = $state.params.facilityName;
+        
         var promises = [];
 
         if(facilityName){
-            promises.push(tc.icat(facilityName).logout());
+            promises.push(tc.smartclient(facilityName).ping().then(function(smartclientIsAvailable){
+                return tc.icat(facilityName).logout(smartclientIsAvailable);
+            }));
         } else {
             _.each(tc.facilities(), function(facility){
-                promises.push(facility.icat().logout());
+                promises.push(facility.smartclient().ping().then(function(smartclientIsAvailable){
+                    return facility.icat().logout(smartclientIsAvailable);
+                }));
             });
         }
 

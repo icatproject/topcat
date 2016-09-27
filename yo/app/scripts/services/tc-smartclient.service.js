@@ -28,11 +28,15 @@
     			"object": function(options){
     				var defered = $q.defer();
 
-    				this.get('ping', {}, options).then(function(){
-    					defered.resolve(true);
-    				}, function(){
-    					defered.resolve(false);
-    				});
+                    if(this.isEnabled()){
+        				this.get('ping', {}, options).then(function(){
+        					defered.resolve(true);
+        				}, function(){
+        					defered.resolve(false);
+        				});
+                    } else {
+                        defered.resolve(false);
+                    }
 
     				return defered.promise;
     			},

@@ -576,7 +576,7 @@ public class UserResource {
 				download.setIsTwoLevel(isTwoLevel);
 
 				Status status = idsClientService.getStatus(transportUrl, sessionId, dataSelection);
-				if (status != Status.ONLINE || !(transport.equals("https") || transport.equals("smartclient"))) {
+				if (status != Status.ONLINE || !transport.equals("https")) {
 					download.setStatus(DownloadStatus.RESTORING);
 				} else {
 					download.setStatus(DownloadStatus.COMPLETE);
