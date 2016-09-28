@@ -21,6 +21,36 @@ $h2 Summary of Steps
   1. Please follow the [generic installation instructions](http://icatproject.org/installation/component/) 
   1. Check that it works by going to https\://example.com:8181 or whatever is the name of your server.
 
+$h2 Schema upgrade
+
+If you are using an older version of Topcat you may need to apply some migrations to your database. These can be found in the "migrations/" directory within the Topcat release.
+
+$h3 Upgrade 2.1.0 schema to 2.2.0
+
+For MySQL:
+
+```
+  CREATE TABLE `CONFVAR` (
+    `NAME` varchar(255) NOT NULL,
+    `VALUE` text,
+    PRIMARY KEY (`NAME`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+  ALTER TABLE `DOWNLOAD` ADD `THE_SIZE` bigint(20) DEFAULT NULL;
+```
+
+For Oracle:
+
+```
+  CREATE TABLE CONFVAR (
+    NAME varchar(255) NOT NULL,
+    VALUE clob,
+    PRIMARY KEY (NAME)
+  );
+
+  ALTER TABLE DOWNLOAD ADD THE_SIZE NUMBER(19, 0) DEFAULT 0 NOT NULL;
+```
+
 $h2 Configuration Overview
 
 Topcat is configured in two main places:
