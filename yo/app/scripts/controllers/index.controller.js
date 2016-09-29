@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, $sessionStorage, tc, ipCookie){
+    app.controller('IndexController', function($rootScope, $q, $scope, $translate, $state, $uibModal, $timeout, $interval, $sessionStorage, tc, ipCookie){
         var that = this;
 
         this.facilities = tc.facilities();
@@ -167,6 +167,39 @@
         });
 
         this.maintenanceMode = tc.config().maintenanceMode;
+
+        var smartClientPingDone = true;
+        function pingSmartclient(){
+            if(!smartClientPingDone) return;
+            smartClientPingDone = false;
+            var promises = [];
+            var options = {bypassInterceptors: true, lowPriority: true};
+            _.each(tc.userFacilities(), function(facility){
+                var smartclient = facility.smartclient();
+                promises.push(smartclient.ping(options).then(function(smartclientIsAvailable){
+                    if(smartclientIsAvailable){
+                        return smartclient.login(options).then(function(){
+                            return facility.user().downloads({queryOffset: "where download.isDeleted = false and download.transport = 'smartclient' and download.status != org.icatproject.topcat.domain.DownloadStatus.COMPLETE"}, options).then(function(downloads){
+                                var promises = []
+                                _.each(downloads, function(download){
+                                    promises.push(smartclient.getData(download.preparedId, options).then(function(){
+                                        return smartclient.isReady(download.preparedId, options).then(function(isReady){
+                                            if(isReady) return facility.user().setDownloadStatus(download.id, 'COMPLETE', options);
+                                        });
+                                    }));
+                                });
+                                return $q.all(promises);
+                            });
+                        });
+                    }
+                }));
+            });
+            $q.all(promises).then(function(){
+                smartClientPingDone = true;
+            });
+        }
+
+        $interval(pingSmartclient, 1000 * 60);
 
     });
 

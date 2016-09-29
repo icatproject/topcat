@@ -49,33 +49,18 @@
         timeout.promise.then(function(){ $interval.cancel(refreshPromise); });
         refresh();
 
+
         function refresh(){
             var promises = [];
             that.gridOptions.data = [];
             _.each(tc.userFacilities(), function(facility){
                 var smartclient = facility.smartclient();
                 var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
-                var smartclientLogin = smartclientPing.then(function(){ return smartclient.login(timeout.promise); });
-
                 promises.push(facility.user().downloads("where download.isDeleted = false").then(function(results){
                     _.each(results, function(download){
-                        if(download.transport == 'smartclient'){
+                        if(download.transport == 'smartclient' && download.status != 'COMPLETE'){
                             smartclientPing.then(function(isServer){
                                 download.isServer = isServer;
-
-                                if(download.status != 'COMPLETE'){
-                                    smartclient.login(timeout.promise).then(function(){
-                                        smartclient.getData(timeout.promise, download.preparedId).then(function(){
-                                            smartclient.isReady(timeout.promise, download.preparedId).then(function(isReady){
-                                                if(isReady){
-                                                    facility.user().setDownloadStatus(timeout.promise, download.id, 'COMPLETE').then(function(){
-                                                        download.status = 'COMPLETE';
-                                                    });
-                                                }
-                                            });
-                                        });
-                                    });
-                                }
                             });
                         }
                     });
@@ -89,7 +74,6 @@
                 }
             });
         };
-        
     
         this.remove = function(download){
             var data = [];

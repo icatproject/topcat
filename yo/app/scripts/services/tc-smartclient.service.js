@@ -31,7 +31,7 @@
                     if(this.isEnabled()){
         				this.get('ping', {}, options).then(function(){
         					defered.resolve(true);
-        				}, function(){
+        				}, function(error){
         					defered.resolve(false);
         				});
                     } else {

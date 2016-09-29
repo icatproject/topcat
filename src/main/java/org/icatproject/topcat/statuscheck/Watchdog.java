@@ -86,7 +86,7 @@ public class Watchdog {
         em.flush();
         lastChecks.remove(download.getId());
         sendDownloadReadyEmail(download);
-      } else if((download.getTransport().equals("https") || download.getTransport().equals("smartclient")) && ids.isPrepared(download.getPreparedId())){
+      } else if(download.getTransport().equals("https") && ids.isPrepared(download.getPreparedId())){
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         download.setIsEmailSent(true);
