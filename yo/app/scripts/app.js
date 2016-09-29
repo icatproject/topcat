@@ -466,25 +466,21 @@
           return {
            'request': function(config) {
                 $rootScope.requestCounter++;
-                $rootScope.updateLoadingState();
                 return config;
             },
 
             'requestError': function(config) {
                 $rootScope.requestCounter--;
-                $rootScope.updateLoadingState();
                 return config;
             },
 
             'response': function(response) {
                 $rootScope.requestCounter--;
-                $rootScope.updateLoadingState();
                 return response;
             },
 
             'responseError': function(rejection) {
                 $rootScope.requestCounter--;
-                $rootScope.updateLoadingState();
                 return $q.reject(rejection);
             }
           };

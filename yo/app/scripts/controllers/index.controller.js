@@ -144,12 +144,6 @@
 
 
         $rootScope.requestCounter = 0;
-        $rootScope.updateLoadingState = function(){
-            if(this.requestCounter == 0){
-                this.$broadcast('loaded');
-            }
-        }
-
 
         $rootScope.$on('cas:authentication', function(event, facilityName, ticket){
             var service = window.location.href.replace(/#.*$/, '').replace(/[^\/]*$/, '') + 'cas?facilityName=' + facilityName;

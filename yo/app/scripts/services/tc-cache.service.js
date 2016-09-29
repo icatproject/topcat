@@ -60,7 +60,6 @@
             var putSeconds = store.get("putSeconds:" + key);
 
             $rootScope.requestCounter++;
-            $rootScope.updateLoadingState();
 
             if(out === undefined || (putSeconds && (nowSeconds - putSeconds) > seconds)){
               fn().then(function(value){
@@ -82,11 +81,9 @@
             
             return defered.promise.then(function(value){
               $rootScope.requestCounter--;
-              $rootScope.updateLoadingState();
               return value;
             }, function(results){
               $rootScope.requestCounter--;
-              $rootScope.updateLoadingState();
               return $q.reject(results);
             });
           },
