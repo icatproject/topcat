@@ -595,5 +595,16 @@
         "TOOLTIP": {
             "TEXT": "Configure job"
         }
+    },
+    "LANDING_PAGE": {
+        "DOWNLOAD": {
+            "TITLE": "Download",
+            "NEXT_BUTTON": {
+                "TEXT": "Next"
+            },
+            "CANCEL_BUTTON": {
+                "TEXT": "Cancel"
+            }
+        }
     }
 }
