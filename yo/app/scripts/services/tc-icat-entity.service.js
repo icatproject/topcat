@@ -313,7 +313,10 @@
 				}
 			});
 
+			var findCache = {};
+
 			this.find = function(expression){
+				if(findCache[expression]) return findCache[expression];
 				if(expression == '') return [];
 
 				var out = [];
@@ -381,7 +384,11 @@
 					}
 				}
 
-				return _.uniq(out);
+				out =_.uniq(out);
+
+				findCache[expression] = out;
+
+				return out;
 			};
 
 			var children = {};
