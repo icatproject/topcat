@@ -306,8 +306,6 @@
                             'outfile=' + encodeURIComponent(name)
                         ].join('&');
 
-                        console.log('idsUrl', idsUrl);
-
                         $(document.body).append($('<iframe>').attr({
                             src: idsUrl
                         }).css({
