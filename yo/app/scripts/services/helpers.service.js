@@ -295,17 +295,18 @@
                 actionButtons.push({
                     name: "download",
                     click: function(entity){
-                        var idsUrl = entity.facility.config().idsUrl;
                         var sessionId = entity.facility.icat().session().sessionId;
                         var id = entity.id;
                         var name = entity.location.replace(/^.*\//, '');
-                        var idsUrl = [
+                        var idsUrl = entity.facility.config().idsUrl + [
                             '/ids/getData?sessionId=' + encodeURIComponent(sessionId),
                             'datafileIds=' + id,
                             'compress=false',
                             'zip=false',
                             'outfile=' + encodeURIComponent(name)
                         ].join('&');
+
+                        console.log('idsUrl', idsUrl);
 
                         $(document.body).append($('<iframe>').attr({
                             src: idsUrl

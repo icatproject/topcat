@@ -127,7 +127,6 @@
                     'object': function(options){
                         var that = this;
                         return this.entity(options).then(function(entity){
-                            console.log('entity', entity);
                             return entity.getStatus(options).then(function(status){
                                 that.status = status;
                                 return status;
