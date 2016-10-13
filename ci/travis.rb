@@ -70,15 +70,15 @@ exec %{
   cd ../
   asadmin -t set applications.application.authn.simple-1.1.0.deployment-order=80
 
-  wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.8.0-SNAPSHOT/icat.server-4.8.0-20160729.140441-1-distro.zip
-  unzip -q icat.server-4.8.0-20160729.140441-1-distro.zip
+  wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.8.0/icat.server-4.8.0-distro.zip
+  unzip -q icat.server-4.8.0-distro.zip
   cp ./provision/icat.properties ./icat.server/icat.properties
   cp ./provision/icat-setup.properties ./icat.server/icat-setup.properties
   cd ./icat.server
   sudo ./setup configure
   sudo ./setup install
   cd ../
-  asadmin -t set applications.application.icat.server-4.8.0-SNAPSHOT.deployment-order=100
+  asadmin -t set applications.application.icat.server-4.8.0.deployment-order=100
 
   wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
   unzip -q ids.server-1.6.0-distro.zip
