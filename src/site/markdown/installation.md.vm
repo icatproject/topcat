@@ -191,8 +191,7 @@ If we expand the attributes in high level overview we can get a medium overview 
       },
       "facilities": [
           {
-              "name": "DIAMOND",
-              "facilityName": "dls",
+              "name": "DLS",
               "title": "Diamond Light Source",
               "icatUrl": "https://example.com",
               "idsUrl": "https://example.com",
@@ -215,25 +214,23 @@ from the above following attributes defined:
       * "enableEuCookieLaw" - will show a cookie policy banner which the user can dismiss.
       * "paging" - specifies the paging type configuration i.e. for either paged or infinite scroll
       * "breadcrumb" - specifies global breadcrumb options
-      * "serviceStatus" - allows the displaying of a message that the user can dismiss and then carry on using the system.
-      * "maintenanceMode" - allows the displaying of a message that the user can't dismiss, and disables the frontend interface i.e. the user can't do anything.
       * "search" - specifies the structure of the search results and search fields for searching across facilities.
       * "browse" - specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
       * "cart" - specifies the structure of the cart.
       * "myDownloads" - specifies the structure of 'downloads' dialog box.
       * "pages" - allows you to define information pages e.g. "About Us" or "Contact" etc...
-      * "facilities" - an array of facility configuration objects.
-        * [facility]
-            * "name" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
-            * "title" - A user friendly title that will appear in the tabs etc...
-            * "icatUrl" - A URL to a valid Icat REST API (optional - if not explicity specified it will obtain this url from the IDS server below)
-            * "idsUrl" - A URL to a valid IDS REST API
-            * "hierarchy" - the entity heierachy of the browse section.
-            * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP (optional - if not explicity specified it will obtain them from the icat server)
-            * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
-            * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
-            * "myData" - specifies the structure of the "My Data" section.
-            * "browse" - specifies the structure of the hierachical browse section.
+  * "facilities" - an array of facility configuration objects.
+    * [facility]
+        * "name" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
+        * "title" - A user friendly title that will appear in the tabs etc...
+        * "icatUrl" - A URL to a valid Icat REST API (optional - if not explicity specified it will obtain this url from the IDS server below)
+        * "idsUrl" - A URL to a valid IDS REST API
+        * "hierarchy" - the entity heierachy of the browse section.
+        * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP (optional - if not explicity specified it will obtain them from the icat server)
+        * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
+        * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
+        * "myData" - specifies the structure of the "My Data" section.
+        * "browse" - specifies the structure of the hierachical browse section.
 
 $h3 topcat.json: "site" > "paging"
 
@@ -731,7 +728,7 @@ Topcat defines the following jpql variables - which if used from any icat entity
 
 
 
-To get a better understanding what these jpql variables refer to please view the [icat schema documentation](https://icatproject.org/mvn/site/icat/server/4.6.1/schema.html).
+To get a better understanding of what these jpql variables refer to please view the [icat schema documentation](https://icatproject.org/mvn/site/icat/server/4.6.1/schema.html).
 
 $h2 lang.json
 
