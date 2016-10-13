@@ -4,10 +4,12 @@
 
     var app = angular.module('topcat');
 
-    app.controller('DownloadsController', function($state, $scope, $translate, $uibModalInstance, $q, $interval, tc, uiGridConstants, helpers){
+    app.controller('DownloadsController', function($state, $scope, $translate, $timeout, $uibModalInstance, $q, $interval, tc, uiGridConstants, helpers){
         var that = this;
         var pagingConfig = tc.config().paging;
         var timeout = $q.defer();
+        var filter = function(){ return true; };
+        var sorter = function(){ return true; };
         $scope.$on('$destroy', function(){ timeout.resolve(); });
         this.isScroll = pagingConfig.pagingType == 'scroll';
         this.gridOptions = _.merge({data: [], appScopeProvider: this}, tc.config().myDownloads.gridOptions);
@@ -43,20 +45,23 @@
                 '</div>'
             ].join('')
         });
+        var data = [];
 
 
         var refreshPromise = $interval(refresh, 1000 * 60);
-        timeout.promise.then(function(){ $interval.cancel(refreshPromise); });
+        $scope.$on('$destroy', function(){ $interval.cancel(refreshPromise); });
         refresh();
 
 
         function refresh(){
+            timeout.resolve();
+            timeout = $q.defer();
             var promises = [];
-            that.gridOptions.data = [];
+            data = [];
             _.each(tc.userFacilities(), function(facility){
                 var smartclient = facility.smartclient();
                 var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
-                promises.push(facility.user().downloads("where download.isDeleted = false").then(function(results){
+                promises.push(facility.user().downloads(timeout.promise, "where download.isDeleted = false").then(function(results){
                     _.each(results, function(download){
                         if(download.transport == 'smartclient' && download.status != 'COMPLETE'){
                             smartclientPing.then(function(isServer){
@@ -64,25 +69,27 @@
                             });
                         }
                     });
-                    that.gridOptions.data = _.flatten([that.gridOptions.data, results]);
+                    data = _.flatten([data, results]);
                 }));
             });
 
             $q.all(promises).then(function(){
-                if(that.gridOptions.data.length == 0){
-                    $uibModalInstance.dismiss('cancel');
-                }
+                that.gridOptions.data = _.select(data, filter);
+                that.gridOptions.data.sort(sorter);
             });
         };
     
         this.remove = function(download){
-            var data = [];
-            _.each(that.gridOptions.data, function(currentDownload){
-                if(currentDownload.id != download.id) data.push(currentDownload);
+            var _data = [];
+            _.each(data, function(currentDownload){
+                if(currentDownload.id != download.id) _data.push(currentDownload);
             });
-            that.gridOptions.data = data;
+            data = _data;
+            that.gridOptions.data = _.select(data, filter);
+            that.gridOptions.data.sort(sorter);
+
             download.delete().then(function(){
-                if(that.gridOptions.data.length == 0){
+                if(data.length == 0){
                     $uibModalInstance.dismiss('cancel');
                 }
             });
@@ -92,6 +99,23 @@
             $uibModalInstance.dismiss('cancel');
         };
 
+        this.gridOptions.onRegisterApi = function(gridApi) {
+            //sort change callback
+            gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
+                $timeout(function(){
+                    sorter = helpers.generateEntitySorter(sortColumns);
+                    refresh();
+                });
+            });
+
+            //filter change callback
+            gridApi.core.on.filterChanged($scope, function(){
+                var _timeout = $timeout(function(){
+                    filter = helpers.generateEntityFilter(that.gridOptions);
+                    refresh();
+                });
+            });
+        };
 
     });
 

@@ -52,10 +52,10 @@
                     return this.downloads({queryOffset: helpers.buildQuery(queryOffset)}, {});
                 },
                 'promise, string': function(timeout, queryOffset){
-                    return this.downloads([queryOffset], {timeout: timeout});
+                    return this.downloads({queryOffset: helpers.buildQuery([queryOffset])}, {timeout: timeout});
                 },
                 'string': function(queryOffset){
-                    return this.downloads([queryOffset]);
+                    return this.downloads({queryOffset: helpers.buildQuery([queryOffset])}, {});
                 },
                 'promise': function(timeout){
                     return this.downloads(params, {timeout: timeout});
