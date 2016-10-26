@@ -1,0 +1,7 @@
+{
+	"removeComments": true,
+	"noImplicitAny": false,
+	"target": "ES3",
+	"module": "commonjs",
+	"declarationFiles": true
+}

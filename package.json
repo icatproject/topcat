@@ -1,0 +1,17 @@
+{
+  "name": "typescript-icat",
+  "version": "1.0.0",
+  "description": "TypeScript inferface to ICAT and IDS servers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.0.2",
+    "gulp-typings": "^2.0.0",
+    "typescript": "^2.0.3"
+  }
+}
