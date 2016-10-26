@@ -182,31 +182,7 @@ root_user_id = write([
 	}
 ]).first
 
-investigation_ids = get("select investigation.id from Investigation investigation limit 0, 31")
-doi_counter = 1
-
-(title_type_id, release_date_type_id) = write([
-	{
-		:ParameterType => {
-			:facility => { :id => facility_id },
-			:name => "title",
-			:valueType => "STRING",
-			:applicableToDataCollection => true,
-			:units => "title"
-		},
-
-	},
-	{
-		:ParameterType => {
-			:facility => { :id => facility_id },
-			:name => "releaseDate",
-			:valueType => "DATE_AND_TIME",
-			:applicableToDataCollection => true,
-			:units => "releaseDate",
-		},
-		
-	}
-])
+investigation_ids = get("select investigation.id from Investigation investigation limit 0, 31");
 
 investigation_ids.each do |investigation_id|
 	write([{
@@ -216,30 +192,29 @@ investigation_ids.each do |investigation_id|
 			:role => "CO_INVESTIGATOR"
 		}
 	}])
-
-	dataset_ids = get("select dataset.id from Dataset dataset, dataset.investigation as investigation where investigation.id = #{investigation_id} limit 0, 3")
-
-	write([
-		{
-			:DataCollection => {
-				:doi => "doi/#{doi_counter}",
-				:dataCollectionDatasets => dataset_ids.map{ |dataset_id| { :dataset => { :id => dataset_id } } },
-				:parameters => [
-					{
-						:type => { :id => title_type_id },
-						:stringValue => Faker::ChuckNorris.fact
-					},
-					{
-						:type => { :id => release_date_type_id },
-						:dateTimeValue => seven_days_from_now
-					}
-				]
-			}
-		}
-	])
-
-	doi_counter += 1
-
 end
+
+write([
+	{
+		:ParameterType => {
+			:name => "title",
+			:valueType => "STRING",
+			:units => "title",
+			:applicableToDataCollection => true,
+			:facility => {:id => facility_id}
+		},
+
+	},
+	{
+		:ParameterType => {
+			:name => "releaseDate",
+			:valueType => "DATE_AND_TIME",
+			:units => "releaseDate",
+			:applicableToDataCollection => true,
+			:facility => {:id => facility_id}
+		},
+		
+	}
+])
 
 
