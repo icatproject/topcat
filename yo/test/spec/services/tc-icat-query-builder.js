@@ -144,7 +144,6 @@ describe('tc icat query builder service', function () {
     describe('build()', function() {
         describe('with left join', function() {
             it('should ensure a left join', function() {
-                console.log(icat.queryBuilder('dataset').where('datasetParameterType.name = \'blah\'').leftJoin('datasetParameter').build());
                 var queryBuilder = icat.queryBuilder('dataset');
                 queryBuilder.leftJoin('datasetParameter');
                 queryBuilder.leftJoin('datasetParameterType');
