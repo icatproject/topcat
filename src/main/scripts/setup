@@ -10,7 +10,7 @@ def uninstall():
     actions.unregisterDB("topcat")
     actions.deleteMailResource("mail/topcat")
 
-actions, arg, props = getActions("topcat-setup.properties", ["db.vendor", "db.driver", "db.url", "db.username", "db.password"])
+actions, arg, props = getActions("topcat-setup.properties", ["db.driver", "db.url", "db.username", "db.password"])
 
 prop_name = "topcat.properties"
 prop_list = []
@@ -27,7 +27,7 @@ if arg == "INSTALL":
     try:
         uninstall()
 
-        actions.registerDB("topcat", props["db.vendor"], props["db.driver"], props["db.url"], props["db.username"], props["db.password"])
+        actions.registerDB("topcat", props["db.driver"], props["db.url"], props["db.username"], props["db.password"])
 
         if props["mail.enable"].lower() == 'true':
             actions.createMailResource("mail/topcat", props["mail.host"], props["mail.user"], props["mail.from"], props["mail.property"])

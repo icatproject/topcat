@@ -1,19 +1,19 @@
 # Derby Database
-!db.vendor   = derby
+!db.target   = derby
 !db.driver   = org.apache.derby.jdbc.ClientDataSource
 !db.url      = jdbc:derby:topcat;create\\=true
 !db.username = APP
 !db.password = APP
 
 # MySQL Database
-db.vendor      = mysql
+db.target      = mysql
 db.url         = jdbc:mysql://localhost:3306/topcat
 db.driver      = com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 db.username    = icat
 db.password    = icat
 
 secure         = true
-container      = glassfish
+container      = Glassfish
 home           = /home/fisher/pf/glassfish4
 port           = 4848
 
