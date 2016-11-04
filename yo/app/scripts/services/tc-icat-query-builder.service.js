@@ -17,31 +17,31 @@
             });
         });
 
-    	this.create = function(icat, entityType){
-    		return new IcatQueryBuilder(icat, entityType);
-    	};
+        this.create = function(icat, entityType){
+            return new IcatQueryBuilder(icat, entityType);
+        };
 
-    	function IcatQueryBuilder(icat, entityType){
+        function IcatQueryBuilder(icat, entityType){
             var that = this;
-    		var facility = icat.facility();
-    		var facilityName = facility.config().name;
-    		var tc = facility.tc();
-    		var user = tc.user(facilityName);
-    		var cart = user.cart();
+            var facility = icat.facility();
+            var facilityName = facility.config().name;
+            var tc = facility.tc();
+            var user = tc.user(facilityName);
+            var cart = user.cart();
             var select = entityType;
-    		var whereList = [];
+            var whereList = [];
             var orderByList = [];
             var includeList = [];
             var leftJoinList = [];
-    		var variablePaths = icatSchema.entityTypes[entityType].variablePaths;
+            var variablePaths = icatSchema.entityTypes[entityType].variablePaths;
             var limitOffset;
             var limitCount;
 
-    		this.where = function(where){
+            this.where = function(where){
                 if(whereList.length > 0) whereList.push('and');
-    			whereList.push(where);
-    			return this;
-    		};
+                whereList.push(where);
+                return this;
+            };
 
             this.leftJoin = function(leftJoin){
                 leftJoinList.push(leftJoin);
@@ -74,8 +74,8 @@
                 return this;
             };
 
-    		this.build = function(functionName, fieldName, investigationName){
-    			var out = [];
+            this.build = function(functionName, fieldName, investigationName){
+                var out = [];
 
                 var distinct = functionName == 'count' ? 'distinct ' : '';
 
@@ -116,20 +116,20 @@
                         out.push(["select distinct ?", entityType.safe()]);
                     }
 
-        			out.push([
-        				"from ? ?", helpers.capitalize(entityType).safe(), entityType.safe()
-        			]);
+                    out.push([
+                        "from ? ?", helpers.capitalize(entityType).safe(), entityType.safe()
+                    ]);
                 }
 
-    			var whereQuery = _.clone(whereList);
-    			var whereQueryFragment = helpers.buildQuery(whereQuery);
-    			var impliedPaths = {};
+                var whereQuery = _.clone(whereList);
+                var whereQueryFragment = helpers.buildQuery(whereQuery);
+                var impliedPaths = {};
 
-    			_.each(variablePaths, function(path, name){
-    				if(name != entityType && whereQueryFragment.indexOf(name) >= 0){
-    					impliedPaths[name] = path;
-    				}
-    			});
+                _.each(variablePaths, function(path, name){
+                    if(name != entityType && whereQueryFragment.indexOf(name) >= 0){
+                        impliedPaths[name] = path;
+                    }
+                });
 
                 _.each(orderByList, function(orderBy){
                     var name = orderBy.replace(/\.[^\.]+$/, '');
@@ -138,13 +138,13 @@
                     }
                 });
 
-    			if(impliedPaths.facilityCycle || entityType == 'facilityCycle'){
+                if(impliedPaths.facilityCycle || entityType == 'facilityCycle'){
                     if(whereQuery.length > 0) whereQuery.push('and');
-    				whereQuery.push('investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate')
-    				if(entityType != 'investigation' && entityType != 'proposal'){
-    					impliedPaths['investigation'] = variablePaths['investigation'];
-    				}
-    			}
+                    whereQuery.push('investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate')
+                    if(entityType != 'investigation' && entityType != 'proposal'){
+                        impliedPaths['investigation'] = variablePaths['investigation'];
+                    }
+                }
 
                 if(investigationName){
                     if(whereQuery.length > 0) whereQuery.push('and');
@@ -171,13 +171,13 @@
                     }
                 });
 
-    			if(joins.length > 0){
-    				out.push(joins);
-    			}
+                if(joins.length > 0){
+                    out.push(joins);
+                }
 
-    			if(whereQuery.length > 0){
-    				out.push(['where', whereQuery]);
-    			}
+                if(whereQuery.length > 0){
+                    out.push(['where', whereQuery]);
+                }
 
                 if(orderByList.length > 0){
                     out.push(['ORDER BY', orderByList.join(', ')]);
@@ -191,8 +191,8 @@
                     out.push(['include', includeList.join(', ')]);
                 }
 
-    			return helpers.buildQuery(out);
-    		}
+                return helpers.buildQuery(out);
+            }
 
             this.impliedPathsToImpliedSteps = function(impliedPaths){
                 var out = {};
@@ -212,8 +212,8 @@
                 return out;
             };
 
-    		this.run = helpers.overload({
-    			'object': function(options){
+            this.run = helpers.overload({
+                'object': function(options){
                     var out = icat.query([this.build()], options);
                     if(entityType == 'proposal'){
                         var defered = $q.defer();
@@ -247,16 +247,16 @@
                         });
                         return defered.promise;
                     } else {
-    				    return out;
+                        return out;
                     }
-    			},
-    			'promise': function(timeout){
-    				return this.run({timeout: timeout});
-    			},
-    			'': function(){
-    				return this.run({});
-    			}
-    		});
+                },
+                'promise': function(timeout){
+                    return this.run({timeout: timeout});
+                },
+                '': function(){
+                    return this.run({});
+                }
+            });
 
             this.count = helpers.overload({
                 'object': function(options){
@@ -301,8 +301,8 @@
             });
 
 
-    	}
+        }
 
-	});
+    });
 
 })();
