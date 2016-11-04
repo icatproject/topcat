@@ -32,6 +32,7 @@
     		var whereList = [];
             var orderByList = [];
             var includeList = [];
+            var leftJoinList = [];
     		var variablePaths = icatSchema.entityTypes[entityType].variablePaths;
             var limitOffset;
             var limitCount;
@@ -41,6 +42,11 @@
     			whereList.push(where);
     			return this;
     		};
+
+            this.leftJoin = function(leftJoin){
+                leftJoinList.push(leftJoin);
+                return this;
+            };
 
             this.orderBy = function(orderBy, direction){
                 if(!direction) direction = 'asc';
@@ -156,10 +162,14 @@
 
                 var impliedVars = this.impliedPathsToImpliedSteps(impliedPaths);
 
-    			var joins = [];
-    			_.each(impliedVars, function(name, pair){
-    				joins.push([", ? as ?", pair.safe(), name.safe()]);
-    			});
+                var joins = [];
+                _.each(impliedVars, function(name, pair){
+                    if(leftJoinList.includes(name)) {
+                        joins.push(["LEFT OUTER JOIN ? ?", pair.safe(), name.safe()])
+                    } else {
+                        joins.push([", ? as ?", pair.safe(), name.safe()]);
+                    }
+                });
 
     			if(joins.length > 0){
     				out.push(joins);
@@ -222,18 +232,18 @@
                                     proposals.push(proposal);
                                 }));
                             });
-                            
+
                             $q.all(promises).then(function(){
                                 var proposalIndex = {};
                                 _.each(proposals, function(proposal){
-                                    proposalIndex[proposal.name] = proposal; 
+                                    proposalIndex[proposal.name] = proposal;
                                 });
                                 proposals = _.map(names, function(name){
                                     return proposalIndex[name]
                                 });
                                 defered.resolve(proposals);
                             });
-                            
+
                         });
                         return defered.promise;
                     } else {
