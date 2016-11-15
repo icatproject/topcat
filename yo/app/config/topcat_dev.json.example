@@ -19,14 +19,6 @@
         "breadcrumb": {
             "maxTitleLength": 30
         },
-        "serviceStatus": {
-            "show": false,
-            "message": "<strong>Service status:</strong> Site is down for maintenance"
-        },
-        "maintenanceMode": {
-            "show": false,
-            "message": "This server in undergoing maintenance."
-        },
         "search": {
             "enableParameters": false,
             "enableSamples": false,
@@ -219,8 +211,8 @@
     },
     "facilities": [
         {
-            "name": "TEST",
-            "title": "TEST",
+            "name": "LILS",
+            "title": "Lorum Ipsum Light Source",
             "idsUrl": "https://localhost:8181",
             "icatUrl": "https://localhost:8181",
             "hierarchy": [

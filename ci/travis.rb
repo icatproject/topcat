@@ -117,7 +117,7 @@ exec %{
   sudo ./setup install
   cd ../
 
-  asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
+  asadmin -t set applications.application.topcat-2.2.0.deployment-order=140
 
   mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
 

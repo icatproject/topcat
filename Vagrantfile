@@ -7,6 +7,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 8181, host: 8181
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   config.vm.network "forwarded_port", guest: 3306, host: 13306
+  config.vm.network "forwarded_port", guest: 29876, host: 29876
   config.vm.box = "ubuntu/trusty32"
   config.vm.provider("virtualbox") { |v| v.memory = 1024 * 4 }
   config.vm.network :private_network, ip: '192.168.50.50'
