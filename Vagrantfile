@@ -109,6 +109,7 @@ Vagrant.configure(2) do |config|
     sudo a2enmod rewrite
     sudo /etc/init.d/apache2 restart
 
+    
     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
     sudo apt-get --assume-yes install nodejs maven phantomjs
     sudo update-ca-certificates -f
@@ -139,7 +140,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat
     sudo dos2unix /usr/bin/topcat
     topcat build_install_all
-    asadmin -t set applications.application.topcat-2.2.0-SNAPSHOT.deployment-order=140
+    asadmin -t set applications.application.topcat-2.2.0.deployment-order=140
     
 
     #mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
