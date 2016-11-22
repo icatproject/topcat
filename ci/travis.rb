@@ -123,7 +123,7 @@ exec %{
   ruby lorum_facility_generator.rb
 
   gem install rest-client
-
+  gem install faker
   ruby #{install_provision_dir}/populate_lucene.rb
 
   cd ../yo
