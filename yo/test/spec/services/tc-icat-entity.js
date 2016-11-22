@@ -33,7 +33,6 @@ describe('tc icat entity service', function () {
 
             beforeEach(function(){
 
-
                 entity = _.merge(entity, {
                     entityType: "investigationUser",
                     role: "apple",
