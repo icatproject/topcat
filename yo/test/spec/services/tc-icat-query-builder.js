@@ -14,7 +14,7 @@ describe('tc icat query builder service', function () {
     beforeEach(module('topcat'));
 
     beforeEach(inject(function(tc){
-        icat = tc.icat('TEST');
+        icat = tc.icat('LILS');
     }));
     
     describe('impliedPathsToImpliedSteps()', function(){
