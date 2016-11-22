@@ -120,10 +120,10 @@ exec %{
   asadmin -t set applications.application.topcat-2.2.0.deployment-order=140
 
   cd ../tools
-  ruby lorum_facility_generator.rb
-
   gem install rest-client
   gem install faker
+  ruby lorum_facility_generator.rb
+
   ruby #{install_provision_dir}/populate_lucene.rb
 
   cd ../yo
