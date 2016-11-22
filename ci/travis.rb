@@ -119,7 +119,8 @@ exec %{
 
   asadmin -t set applications.application.topcat-2.2.0.deployment-order=140
 
-  mysql -u root --password=secret --host=127.0.0.1 icat < ./provision/icat.sql
+  cd ../tools
+  ruby lorum_facility_generator.rb
 
   gem install rest-client
 
