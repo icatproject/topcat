@@ -22,7 +22,7 @@
     		}
     	];
 
-    	var otherTabs = _.map(tc.ui().mainTabs(), function(otherTab){
+    	var otherTabs = _.map(tc.ui().adminTabs(), function(otherTab){
     		return {
     			name: otherTab.name,
     			translate: "ADMIN.MAIN_TAB." + otherTab.name.toUpperCase().replace(/-/g, '_'),
