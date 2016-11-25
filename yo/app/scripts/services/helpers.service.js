@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('helpers', function($http, $q, $timeout, $interval, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema){
+    app.service('helpers', function($http, $q, $timeout, $interval, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema, plugins){
     	var helpers = this;
 
     	this.setupMetatabs = function(metaTabs, entityType){
@@ -777,6 +777,14 @@
 			}
 
 	    })();
+
+        this.mixinPluginMethods = function(name, that){
+            _.each(plugins, function(plugin){
+              if(plugin.extend && plugin.extend[name]){
+                $injector.invoke(plugin.extend[name], that);
+              }
+            });
+        };
 
     });
 

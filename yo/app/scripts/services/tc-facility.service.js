@@ -55,6 +55,8 @@
               return smartclient;
             };
 
+            helpers.mixinPluginMethods('facility', this);
+
         }
 
 	});

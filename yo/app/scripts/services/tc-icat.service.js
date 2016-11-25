@@ -286,6 +286,8 @@
         	};
 
           	helpers.generateRestMethods(this, facility.config().icatUrl + '/icat/');
+
+            helpers.mixinPluginMethods('icat', this);
         }
 
 

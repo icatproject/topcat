@@ -309,6 +309,8 @@
             });
 
             helpers.generateRestMethods(this, facility.tc().config().topcatUrl + "/topcat/user/");
+
+            helpers.mixinPluginMethods('user', this);
         }
 
     });

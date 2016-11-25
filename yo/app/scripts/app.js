@@ -201,6 +201,10 @@
         'bootstrap'
     ]);
 
+    app.factory('plugins', function(){
+        return plugins;
+    });
+
     var pluginScriptRegisteryCounter = 0;
     (function(){
         var isMethodCalled = false;

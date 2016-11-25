@@ -206,6 +206,8 @@
 
 
     		helpers.generateRestMethods(this, facility.config().idsUrl + '/ids/');
+
+        helpers.mixinPluginMethods('ids', this);
     	}
 		
 

@@ -4,7 +4,7 @@
 
   var app = angular.module('topcat');
 
-  app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, tcUi, APP_CONFIG){
+  app.service('tc', function($sessionStorage, $q, $state, $timeout, $rootScope, helpers, tcFacility, tcIcatEntity, tcCache, tcUi, APP_CONFIG, plugins, $injector){
   	var tc = this;
   	window.tc = this;
   	var facilities = {};
@@ -186,6 +186,8 @@
     });
 
 		helpers.generateRestMethods(this, this.config().topcatUrl + "/topcat/");
+
+    helpers.mixinPluginMethods('tc', this);
 
   });
 

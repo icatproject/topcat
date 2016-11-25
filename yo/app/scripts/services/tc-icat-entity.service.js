@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, helpers, icatSchema){
+    app.service('tcIcatEntity', function($http, $q, $rootScope, $state, $injector, helpers, icatSchema, plugins){
     	var tcIcatEntity = this;
 
     	this.create = function(attributes, facility){
@@ -410,6 +410,12 @@
 					that[name] = tcIcatEntity.create(that[name], facility);
 				}
 			});
+
+			_.each(plugins, function(plugin){
+              if(plugin.extend && plugin.extend.entities && plugin.extend.entities[that.entityType]){
+                $injector.invoke(plugin.extend.entities[that.entityType], that);
+              }
+            });
 
 		}
 

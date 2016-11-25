@@ -142,6 +142,8 @@
                 });
 
             });
+
+            helpers.mixinPluginMethods('cart', this);
         }
 
     });
