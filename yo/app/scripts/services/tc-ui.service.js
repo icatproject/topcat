@@ -49,6 +49,42 @@
                 }
             });
 
+            var adminTabs = [];
+
+            this.adminTabs = function(){
+                return adminTabs;
+            };
+
+            this.registerAdminTab = helpers.overload({
+                'string, string, object': function(name, view, options){
+                    adminTabs.push({name: name, view: view, options: options});
+
+                    var url = '/admin/' + name;
+                    if(options.multiFacility) url += "/:facilityName";
+
+                    var state = {
+                      url: url,
+                      resolve: {
+                        authenticate: function(Authenticate){
+                            return Authenticate.authenticate();
+                        }
+                      },
+                      params: options.params,
+                      views: {
+                        '': {
+                            templateUrl: view,
+                            controller: options.controller
+                        }
+                      }
+                    };
+
+                    RuntimeStatesProvider.addState('admin.' + name, state);
+                },
+                'string, string': function(name, view){
+                    this.registerMainTab(name, view, {});
+                }
+            });
+
             var cartButtons = [];
 
             this.cartButtons = function(){ return cartButtons; };

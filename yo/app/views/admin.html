@@ -3,14 +3,14 @@
 
 <h1 translate="ADMIN.PAGE_TITLE"></h1>
 
-<ul class="nav nav-tabs nav-tabs-head">
-    <li ng-class="{active: $state.current.name == 'admin.downloads'}">
-        <a ui-sref="admin.downloads">Downloads</a>
-    </li>
-    <li ng-class="{active: $state.current.name == 'admin.messages'}">
-        <a ui-sref="admin.messages">Messages</a>
+<ul class="nav nav-tabs nav-tabs-head" role="tablist">
+    <li ng-repeat="tab in adminController.tabs" ng-class="{active : $state.includes(tab.showState)}">
+    	<a 
+    		ui-sref="{{tab.sref}}"
+    		role="tab"
+    		translate="{{tab.translate}}">
+		</a>
     </li>
 </ul>
-<br>
-
 <div ui-view></div>
+

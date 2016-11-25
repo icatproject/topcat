@@ -572,6 +572,10 @@
                 "SHOW": "show?"
             },
             "SAVE": "Save"
+        },
+        "MAIN_TAB" : {
+            "DOWNLOADS": "Downloads",
+            "MESSAGES": "Messages"
         }
     },
     "TIME": {
