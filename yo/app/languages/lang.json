@@ -575,7 +575,8 @@
         },
         "MAIN_TAB" : {
             "DOWNLOADS": "Downloads",
-            "MESSAGES": "Messages"
+            "MESSAGES": "Messages",
+            "MACHINE_TEMPLATES": "Machine Templates"
         }
     },
     "TIME": {

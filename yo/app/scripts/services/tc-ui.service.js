@@ -59,7 +59,7 @@
                 'string, string, object': function(name, view, options){
                     adminTabs.push({name: name, view: view, options: options});
 
-                    var url = '/admin/' + name;
+                    var url = name;
                     if(options.multiFacility) url += "/:facilityName";
 
                     var state = {
