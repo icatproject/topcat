@@ -145,7 +145,7 @@ Vagrant.configure(2) do |config|
 
     #mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
 
-    #ruby /vagrant/provision/populate_lucene.rb
+    ruby /vagrant/provision/populate_lucene.rb
 
   }
 end
