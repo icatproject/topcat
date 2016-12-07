@@ -193,6 +193,8 @@
             });
 
             helpers.generateRestMethods(this, facility.tc().config().topcatUrl + "/topcat/admin/");
+
+            helpers.mixinPluginMethods('admin', this);
         }
 
 	});
