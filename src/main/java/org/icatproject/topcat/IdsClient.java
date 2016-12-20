@@ -21,9 +21,30 @@ public class IdsClient {
         return httpClient.get("isPrepared?preparedId=" + preparedId, new HashMap<String, String>()).toString().equals("true");
     }
 
-    //public Status getStatus(String sessionId, DataSelection dataSelection)
+    public String getStatus(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws Exception {
+        String out = "ONLINE";
 
-    //public long getSize(String sessionId, DataSelection dataSelection)
+        for(String offset : chunkOffsets("getStatus?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
+            String result = httpClient.get(offset, new HashMap<String, String>()).toString();
+            if(result.equals("RESTORING")){
+                return "RESTORING";
+            } else if(result.equals("ARCHIVED")){
+                out = "ARCHIVED";
+            }
+        }
+
+        return out;
+    }
+
+    public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws Exception {
+        Long out = 0L;
+
+        for(String offset : chunkOffsets("getSize?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
+            out += Long.parseLong(httpClient.get(offset, new HashMap<String, String>()).toString());
+        }
+
+        return out;
+    }
 
     public boolean isTwoLevel() throws Exception {
         return httpClient.get("isTwoLevel", new HashMap<String, String>()).toString().equals("true");
