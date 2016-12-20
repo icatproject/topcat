@@ -115,6 +115,7 @@
     			}
     		});
 
+
         this.getStatus = helpers.overload({
           'string, number, object': function(type, id, options){
             var key = 'getStatus:' + type + ":" + id;
@@ -201,6 +202,36 @@
           },
           'array, array, array': function(investigationIds, datasetIds, datafileIds){
             return this.getStatus(investigationIds, datasetIds, datafileIds, {});
+          }
+        });
+
+        this.upload = helpers.overload({
+          'number, array, object': function(datasetId, files, options){
+            var promises = [];
+
+            options.queryParams = {
+              sessionId: facility.icat().session().sessionId,
+              datasetId: datasetId,
+              datafileFormatId: facility.config().idsUploadDatafileFormatId,
+            }
+
+            options.headers =  {
+              'Content-Type': 'application/octet-stream'
+            };
+
+            _.each(files, function(file){
+              options.queryParams.name = file.name
+              promises.push(that.put('put', file.data, options));
+            });
+            
+            return $q.all(promises);
+          }
+          ,
+          'promise, number, array': function(timeout, datasetId, files){
+            return this.upload(datasetId, files, {timeout: timeout});
+          },
+          'number, array': function(datasetId, files){
+            return this.upload(datasetId, files, {});
           }
         });
 

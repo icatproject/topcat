@@ -658,7 +658,11 @@
 							if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 						}
 						var url = prefix + offset;
-						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
+						if(methodName.match(/get|delete/)){
+                            if(params !== '') url += '?' + params;
+                        } else if(options.queryParams) {
+                            url += '?' + helpers.urlEncode(options.queryParams);
+                        }
                     
 						var out = $q.defer();
 
@@ -757,10 +761,20 @@
 	        	return out;
 	        };
 
+            var allMethod = $q.all;
+            $q.all = function(){
+                var out = allMethod.apply(this, arguments);
+                extendPromise(out);
+                return out;
+            };
+
 	        function extendPromise(promise){
 				promise.log = function(){
+                    var start = (new Date()).getTime();
 		            return this.then(function(data){
-		                console.log('(success)', data); 
+                        var end = (new Date()).getTime();
+                        var diff = end - start;
+		                console.log('(success - ' + diff + ' milliseconds)', data); 
 		            }, function(data){
 		                console.log('(error)', data);   
 		            }, function(data){

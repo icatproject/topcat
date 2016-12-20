@@ -217,4 +217,15 @@ write([
 	}
 ])
 
+write([
+	{
+		:DatafileFormat => {
+			:facility => {:id => facility_id},
+			:name => "upload",
+			:type => "misc",
+			:description => "Uploads by the Topcat's users",
+			:version => "1"
+		},
 
+	}
+])

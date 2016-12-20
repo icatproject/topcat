@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $translate, $timeout, $templateCache, tc, helpers){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $translate, $timeout, $templateCache, $uibModal, tc, helpers){
         var that = this; 
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
         var entityType = stateFromTo.replace(/^.*-/, '');
@@ -242,6 +242,14 @@
 
         this.browse = function(row) {
             row.browse(canceler);
+        };
+
+        this.upload = function() {
+            $uibModal.open({
+                templateUrl: 'views/upload.html',
+                controller: 'UploadController as uploadController',
+                size : 'lg'
+            });
         };
         
         this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');

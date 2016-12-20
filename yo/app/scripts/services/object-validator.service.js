@@ -164,6 +164,7 @@
                         name: { _type: 'string'  },
                         idsUrl: { _type: 'string'  },
                         icatUrl: { _type: 'string', _mandatory: false },
+                        idsUploadDatafileFormat: { _type: 'string', _mandatory: false },
                         hierarchy: {
                             _type: 'array',
                             _item: {
@@ -282,6 +283,9 @@
 
                 if(entityType == 'investigation' || entityType == 'dataset' || entityType == 'datafile'){
                     schema.facilities._item.browse[entityType].gridOptions.enableSelection = { _type: 'boolean', _mandatory: false };
+                }
+                if(entityType == 'dataset' || entityType == 'datafile'){
+                    schema.facilities._item.browse[entityType].gridOptions.enableUpload = { _type: 'boolean', _mandatory: false };
                 }
                 if(entityType == 'datafile'){
                     schema.facilities._item.browse[entityType].gridOptions.enableDownload = { _type: 'boolean', _mandatory: false };

@@ -20,6 +20,11 @@
     </div>
 </div>
 
+<div ng-if="browseEntitiesController.gridOptions.enableUpload" class="text-right">
+    <button class="btn btn-primary btn-xs" ng-click="browseEntitiesController.upload()">Upload</button>
+    <br><br>
+</div>
+
 <span ng-repeat="externalGridFilter in browseEntitiesController.externalGridFilters" bind-html-compile="externalGridFilter.template"></span>
 
 <div>

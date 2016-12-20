@@ -310,3 +310,15 @@ a[ng-click]{
 .btn-entity-action {
   margin-left: 3px;
 }
+
+.upload-area {
+  border-style: dashed;
+  border-width: 3px;
+  border-color: #ddd;
+  overflow: auto;
+  padding: 14px;
+}
+
+.upload-area.enter{
+  background: yellow;
+}

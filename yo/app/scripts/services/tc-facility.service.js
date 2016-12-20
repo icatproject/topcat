@@ -21,8 +21,11 @@
             this.config = function(){
                 var out = _.select(APP_CONFIG.facilities, function(facility){ return name == facility.name; })[0];
                 var sessions = $sessionStorage.sessions || {};
-                var id = (sessions[name] || {}).facilityId;
+                var session = sessions[name] || {};
+                var id = session.facilityId;
+                var idsUploadDatafileFormatId = session.idsUploadDatafileFormatId;
                 if(id) out.id = id;
+                if(idsUploadDatafileFormatId) out.idsUploadDatafileFormatId = idsUploadDatafileFormatId;
                 return out; 
             }
 

@@ -1,0 +1,6 @@
+
+<p ng-if="files.length == 0">Drag and drop files here.</p>
+
+<ul class="files" ng-if="files.length > 0">
+	<li ng-repeat="file in files">{{file.name}} {{file.size|bytes}}</li>
+<ul>

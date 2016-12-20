@@ -94,17 +94,31 @@
                         var promises = [];
 
                         var name = facility.config().name;
-                        if(name){
-                          promises.push(that.query([
+                        promises.push(that.query([
                             "SELECT facility FROM Facility facility WHERE facility.name = ?", name
-                          ]).then(function(results){
+                        ]).then(function(results){
                             var facility = results[0];
                             if(facility){
-                              $sessionStorage.sessions[facilityName].facilityId = facility.id;
+                                $sessionStorage.sessions[facilityName].facilityId = facility.id;
                             } else {
-                              console.error("Could not find facility by name '" + name + "'");
+                                console.error("Could not find facility by name '" + name + "'");
                             }
-                          }));
+                        }));
+
+                        var idsUploadDatafileFormat = facility.config().idsUploadDatafileFormat;
+                        if(idsUploadDatafileFormat){
+                            promises.push(that.query([
+                                "SELECT datafileFormat FROM DatafileFormat datafileFormat, datafileFormat.facility as facility", 
+                                "WHERE facility.name = ?", name,
+                                "AND datafileFormat.name = ?", idsUploadDatafileFormat
+                            ]).then(function(results){
+                                var datafileFormat = results[0];
+                                if(datafileFormat){
+                                    $sessionStorage.sessions[facilityName].idsUploadDatafileFormatId = datafileFormat.id;
+                                } else {
+                                    console.error("Could not find IDS upload datafile format with name '" + idsUploadDatafileFormat + "'");
+                                }
+                            }));
                         }
 
                         promises.push(facility.admin().isValidSession(sessionId).then(function(isAdmin){
