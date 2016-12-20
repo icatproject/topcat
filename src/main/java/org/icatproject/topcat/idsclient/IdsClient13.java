@@ -80,13 +80,6 @@ public class IdsClient13 implements IdsClientInterface {
     }
 
     @Override
-    public URL getDataUrl(String preparedId, String outname) throws TopcatException {
-        URL url = null;
-        url = service.getDataUrl(preparedId, outname);
-        return url;
-    }
-
-    @Override
     public Status getStatus(String sessionId, DataSelection dataSelection) throws TopcatException {
         Status status = null;
         try {
@@ -138,18 +131,6 @@ public class IdsClient13 implements IdsClientInterface {
         return size;
     }
 
-    @Override
-    public void ping() throws TopcatException {
-
-        try {
-            service.ping();
-        } catch (org.icatproject.ids.client.InternalException e) {
-            throw new org.icatproject.topcat.exceptions.InternalException(e.getMessage());
-        } catch (NotImplementedException e) {
-            throw new org.icatproject.topcat.exceptions.NotImplementedException(e.getMessage());
-        }
-    }
-
 
     @Override
     public boolean isTwoLevel() throws TopcatException {
@@ -161,25 +142,6 @@ public class IdsClient13 implements IdsClientInterface {
             throw new org.icatproject.topcat.exceptions.NotImplementedException(e.getMessage());
         }
     }
-
-
-    @Override
-    public String getApiVersion() throws TopcatException {
-        String apiVersion = null;
-
-        try {
-            apiVersion = service.getApiVersion();
-        } catch (org.icatproject.ids.client.InternalException e) {
-            throw new org.icatproject.topcat.exceptions.InternalException(e.getMessage());
-        } catch (NotImplementedException e) {
-            throw new org.icatproject.topcat.exceptions.NotImplementedException(e.getMessage());
-        }
-
-        return apiVersion;
-
-    }
-
-
 
     /**
      * Determine if an IcatException_Exception is an INSUFFICIENT_PRIVILEGES or SESSION type

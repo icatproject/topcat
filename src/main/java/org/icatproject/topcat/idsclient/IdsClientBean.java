@@ -44,12 +44,6 @@ public class IdsClientBean {
         return service.isPrepared(preparedId);
     }
 
-    public URL getDataUrl(String idsUrl, String preparedId, String outname) throws TopcatException, MalformedURLException {
-        IdsClientInterface service = getIdsService(idsUrl);
-
-        return service.getDataUrl(preparedId, outname);
-    }
-
     public Status getStatus(String idsUrl, String sessionId, DataSelection dataSelection) throws TopcatException, MalformedURLException {
         IdsClientInterface service = getIdsService(idsUrl);
 
@@ -62,22 +56,10 @@ public class IdsClientBean {
         return service.getSize(sessionId, dataSelection);
     }
 
-    public void ping(String idsUrl) throws TopcatException, MalformedURLException {
-        IdsClientInterface service = getIdsService(idsUrl);
-
-        service.ping();
-    }
-
     public boolean isTwoLevel(String idsUrl) throws TopcatException, MalformedURLException {
         IdsClientInterface service = getIdsService(idsUrl);
 
         return service.isTwoLevel();
-    }
-
-    public String getApiVersion(String idsUrl) throws TopcatException, MalformedURLException {
-        IdsClientInterface service = getIdsService(idsUrl);
-
-        return service.getApiVersion();
     }
 
 }
