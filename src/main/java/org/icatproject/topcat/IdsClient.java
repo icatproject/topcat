@@ -6,8 +6,18 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.icatproject.topcat.httpclient.*;
+import org.icatproject.topcat.exceptions.*;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import javax.json.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IdsClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(IdsClient.class);
 
     private HttpClient httpClient;
    
@@ -15,84 +25,118 @@ public class IdsClient {
         this.httpClient = new HttpClient(url + "/ids");
     }
 
-    public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws Exception {
-        StringBuffer investigationIdsBuffer = new StringBuffer();
-        StringBuffer datasetIdsBuffer = new StringBuffer();
-        StringBuffer datafileIdsBuffer = new StringBuffer();
-        
-        if(investigationIds != null){
-            for(Long investigationId : investigationIds){
-                if(investigationIdsBuffer.length() != 0){
-                    investigationIdsBuffer.append(",");
+    public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+        try {
+            StringBuffer investigationIdsBuffer = new StringBuffer();
+            StringBuffer datasetIdsBuffer = new StringBuffer();
+            StringBuffer datafileIdsBuffer = new StringBuffer();
+            
+            if(investigationIds != null){
+                for(Long investigationId : investigationIds){
+                    if(investigationIdsBuffer.length() != 0){
+                        investigationIdsBuffer.append(",");
+                    }
+                    investigationIdsBuffer.append(investigationId);
                 }
-                investigationIdsBuffer.append(investigationId);
             }
-        }
 
-        if(datasetIds != null){
-            for(Long datasetId : datasetIds){
-                if(datasetIdsBuffer.length() != 0){
-                    datasetIdsBuffer.append(",");
+            if(datasetIds != null){
+                for(Long datasetId : datasetIds){
+                    if(datasetIdsBuffer.length() != 0){
+                        datasetIdsBuffer.append(",");
+                    }
+                    datasetIdsBuffer.append(datasetId);
                 }
-                datasetIdsBuffer.append(datasetId);
             }
-        }
 
-        if(datafileIds != null){
-            for(Long datafileId : datafileIds){
-                if(datafileIdsBuffer.length() != 0){
-                    datafileIdsBuffer.append(",");
+            if(datafileIds != null){
+                for(Long datafileId : datafileIds){
+                    if(datafileIdsBuffer.length() != 0){
+                        datafileIdsBuffer.append(",");
+                    }
+                    datafileIdsBuffer.append(datafileId);
                 }
-                datafileIdsBuffer.append(datafileId);
             }
-        }
 
-        StringBuffer data = new StringBuffer();
-        data.append("sessionId=" + sessionId);
-        if(investigationIdsBuffer.length() > 0){
-            data.append("investigationIds=" + investigationIdsBuffer);
-        }
-        if(datasetIdsBuffer.length() > 0){
-            data.append("datasetIds=" + datasetIdsBuffer);
-        }
-        if(datafileIdsBuffer.length() > 0){
-            data.append("datafileIds=" + datafileIdsBuffer);
-        }
-
-        return httpClient.post("prepareData", new HashMap<String, String>(), data.toString()).toString();
-    }
-
-    public boolean isPrepared(String preparedId) throws Exception {
-        return httpClient.get("isPrepared?preparedId=" + preparedId, new HashMap<String, String>()).toString().equals("true");
-    }
-
-    public String getStatus(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws Exception {
-        String out = "ONLINE";
-
-        for(String offset : chunkOffsets("getStatus?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
-            String result = httpClient.get(offset, new HashMap<String, String>()).toString();
-            if(result.equals("RESTORING")){
-                return "RESTORING";
-            } else if(result.equals("ARCHIVED")){
-                out = "ARCHIVED";
+            StringBuffer data = new StringBuffer();
+            data.append("sessionId=" + sessionId);
+            if(investigationIdsBuffer.length() > 0){
+                data.append("&investigationIds=" + investigationIdsBuffer);
             }
-        }
+            if(datasetIdsBuffer.length() > 0){
+                data.append("&datasetIds=" + datasetIdsBuffer);
+            }
+            if(datafileIdsBuffer.length() > 0){
+                data.append("&datafileIds=" + datafileIdsBuffer);
+            }
 
-        return out;
+            return httpClient.post("prepareData", new HashMap<String, String>(), data.toString()).toString();
+        } catch (Exception e){
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
-    public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws Exception {
-        Long out = 0L;
-
-        for(String offset : chunkOffsets("getSize?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
-            out += Long.parseLong(httpClient.get(offset, new HashMap<String, String>()).toString());
+    public boolean isPrepared(String preparedId) throws TopcatException {
+        try {
+            Response response = httpClient.get("isPrepared?zip=true&preparedId=" + preparedId, new HashMap<String, String>());
+            if(response.getCode() >= 400){
+                throw new NotFoundException(parseJson(response.toString()).getString("message"));
+            }
+            return response.toString().equals("true");
+        } catch (TopcatException e){
+            throw e;
+        } catch (Exception e){
+            throw new BadRequestException(e.getMessage());
         }
-
-        return out;
     }
 
-    public boolean isTwoLevel() throws Exception {
-        return httpClient.get("isTwoLevel", new HashMap<String, String>()).toString().equals("true");
+    public String getStatus(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+        try {
+            String out = "ONLINE";
+
+            logger.info("getStatus: " + investigationIds.size() + ", " + datasetIds.size() + ", " + datafileIds.size());
+
+            for(String offset : chunkOffsets("getStatus?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
+                Response response = httpClient.get(offset, new HashMap<String, String>());
+                logger.info("response: " + response.toString());
+                if(response.getCode() >= 400){
+                    throw new NotFoundException(parseJson(response.toString()).getString("message"));
+                }
+                if(response.toString().equals("RESTORING")){
+                    return "RESTORING";
+                } else if(response.toString().equals("ARCHIVED")){
+                    out = "ARCHIVED";
+                }
+            }
+
+            return out;
+        } catch (TopcatException e){
+            throw e;
+        } catch (Exception e){
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+        try {
+            Long out = 0L;
+
+            for(String offset : chunkOffsets("getSize?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
+                out += Long.parseLong(httpClient.get(offset, new HashMap<String, String>()).toString());
+            }
+
+            return out;
+        } catch (Exception e){
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    public boolean isTwoLevel() throws TopcatException {
+        try {
+            return httpClient.get("isTwoLevel", new HashMap<String, String>()).toString().equals("true");
+        } catch (Exception e){
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     private List<String> chunkOffsets(String offsetPrefix, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds){
@@ -126,7 +170,6 @@ public class IdsClient {
             String offset = generateDataSelectionOffset(offsetPrefix, currentInvestigationIds, newInvestigationId, currentDatasetIds, newDatasetId, currentDatafileIds, newDatafileId);
 
             if(offset.length() > 1024){
-                out.add(generateDataSelectionOffset(offsetPrefix, currentInvestigationIds, null, currentDatasetIds, null, currentDatafileIds, null));
                 currentInvestigationIds = new ArrayList<Long>();
                 currentDatasetIds = new ArrayList<Long>();
                 currentDatafileIds = new ArrayList<Long>();
@@ -150,6 +193,10 @@ public class IdsClient {
                 newDatafileId = null;
             }
 
+        }
+
+        if(currentInvestigationIds.size() > 0 || currentDatasetIds.size() > 0 || currentDatafileIds.size() > 0){
+            out.add(generateDataSelectionOffset(offsetPrefix, currentInvestigationIds, null, currentDatasetIds, null, currentDatafileIds, null));
         }
 
         return out;
@@ -219,6 +266,14 @@ public class IdsClient {
         }
 
         return offsetPrefix + idsBuffer;
+    }
+
+    private JsonObject parseJson(String json) throws Exception {
+        InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
+        JsonReader jsonReader = Json.createReader(jsonInputStream);
+        JsonObject out = jsonReader.readObject();
+        jsonReader.close();
+        return out;
     }
 
 }

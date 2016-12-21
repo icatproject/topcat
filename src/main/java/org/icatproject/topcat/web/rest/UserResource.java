@@ -28,9 +28,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.icatproject.ids.client.DataSelection;
-import org.icatproject.ids.client.IdsClient.Flag;
-import org.icatproject.ids.client.IdsClient.Status;
 import org.icatproject.topcat.domain.Cart;
 import org.icatproject.topcat.domain.CartItem;
 import org.icatproject.topcat.domain.Download;
@@ -44,11 +41,12 @@ import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.icatclient.ICATClientBean;
-import org.icatproject.topcat.idsclient.IdsClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.icatproject.topcat.IdsClient;
 
 @Stateless
 @LocalBean
@@ -65,9 +63,6 @@ public class UserResource {
 
 	@EJB
 	private ICATClientBean icatClientService;
-
-	@EJB
-	private IdsClientBean idsClientService;
 
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;
@@ -552,13 +547,14 @@ public class UserResource {
 		Cart cart = cartRepository.getCart(userName, facilityName);
 		String fullName = icatClientService.getFullName(icatUrl, sessionId);
 		Long downloadId = null;
+		IdsClient idsClient = new IdsClient(transportUrl);
+
+		logger.info("submitCart");
 
 		if (cart != null) {
 			em.refresh(cart);
-			DataSelection dataSelection = cartToDataSelection(cart);
-			String preparedId = idsClientService.prepareData(transportUrl, sessionId, dataSelection,
-					getZipFlag(zipType));
-			long size = idsClientService.getSize(transportUrl, sessionId, dataSelection);
+			String preparedId = idsClient.prepareData(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
+			long size = idsClient.getSize(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
 			if (preparedId != null) {
 				Download download = new Download();
 				download.setPreparedId(preparedId);
@@ -572,11 +568,13 @@ public class UserResource {
 				download.setEmail(email);
 				download.setIsEmailSent(false);
 				download.setSize(size);
-				boolean isTwoLevel = idsClientService.isTwoLevel(transportUrl);
+				boolean isTwoLevel = idsClient.isTwoLevel();
 				download.setIsTwoLevel(isTwoLevel);
 
-				Status status = idsClientService.getStatus(transportUrl, sessionId, dataSelection);
-				if (status != Status.ONLINE || !transport.equals("https")) {
+				String status = idsClient.getStatus(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
+				logger.info("status: " + status);
+
+				if (!status.equals("ONLINE") || !transport.equals("https")) {
 					download.setStatus(DownloadStatus.RESTORING);
 				} else {
 					download.setStatus(DownloadStatus.COMPLETE);
@@ -629,38 +627,6 @@ public class UserResource {
 
 	private Response emptyCart(String facilityName, String userName) {
 		return emptyCart(facilityName, userName, null);
-	}
-
-	private Flag getZipFlag(String zip) {
-		if (zip == null) {
-			return Flag.ZIP;
-		}
-		zip = zip.toUpperCase();
-		if (zip.equals("ZIP_AND_COMPRESS")) {
-			return Flag.ZIP_AND_COMPRESS;
-		} else {
-			return Flag.ZIP;
-		}
-	}
-
-	private DataSelection cartToDataSelection(Cart cart) {
-		DataSelection dataSelection = new DataSelection();
-
-		for (CartItem cartItem : cart.getCartItems()) {
-			if (cartItem.getEntityType() == EntityType.investigation) {
-				dataSelection.addInvestigation(cartItem.getEntityId());
-			}
-
-			if (cartItem.getEntityType() == EntityType.dataset) {
-				dataSelection.addDataset(cartItem.getEntityId());
-			}
-
-			if (cartItem.getEntityType() == EntityType.datafile) {
-				dataSelection.addDatafile(cartItem.getEntityId());
-			}
-		}
-
-		return dataSelection;
 	}
 
 }

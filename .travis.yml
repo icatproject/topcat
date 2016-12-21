@@ -13,6 +13,8 @@ script:
   - ci/travis.rb
 addons:
   - firefox: "44.0.2"
+services:
+  - mysql
 after_failure:
   - cat target/surefire-reports/*.txt
   - cat /opt/glassfish4/glassfish/domains/domain1/logs/*.log

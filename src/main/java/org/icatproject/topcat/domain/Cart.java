@@ -129,6 +129,36 @@ public class Cart implements Serializable {
         this.cartItems = cartItems;
     }
 
+    public List<Long> getInvestigationIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (CartItem cartItem : getCartItems()) {
+            if (cartItem.getEntityType() == EntityType.investigation) {
+                out.add(cartItem.getEntityId());
+            }
+        }
+        return out;
+    }
+
+    public List<Long> getDatasetIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (CartItem cartItem : getCartItems()) {
+            if (cartItem.getEntityType() == EntityType.dataset) {
+                out.add(cartItem.getEntityId());
+            }
+        }
+        return out;
+    }
+
+    public List<Long> getDatafileIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (CartItem cartItem : getCartItems()) {
+            if (cartItem.getEntityType() == EntityType.datafile) {
+                out.add(cartItem.getEntityId());
+            }
+        }
+        return out;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("id: " + id);
