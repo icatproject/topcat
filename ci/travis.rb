@@ -20,14 +20,12 @@ end
 
 
 exec %{
-
-  sudo apt-get update
-
   cd install
 
+  sudo apt-get --assume-yes remove mysql-client mysql-server
   echo "mysql-server mysql-server/root_password password secret" | sudo debconf-set-selections 
   echo "mysql-server mysql-server/root_password_again password secret" | sudo debconf-set-selections
-  sudo apt-get --assume-yes install mysql-server-5.5 apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
+  sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
 
   echo "create database icat;" | mysql -u root --password=secret
   echo "create database topcat;" | mysql -u root --password=secret
