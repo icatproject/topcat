@@ -11,11 +11,56 @@ public class IdsClient {
 
     private HttpClient httpClient;
    
-    public void IdsClient(String url){
+    public IdsClient(String url){
         this.httpClient = new HttpClient(url + "/ids");
     }
 
-    //public String prepareData(String sessionId, DataSelection dataSelection, Flag flags)
+    public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws Exception {
+        StringBuffer investigationIdsBuffer = new StringBuffer();
+        StringBuffer datasetIdsBuffer = new StringBuffer();
+        StringBuffer datafileIdsBuffer = new StringBuffer();
+        
+        if(investigationIds != null){
+            for(Long investigationId : investigationIds){
+                if(investigationIdsBuffer.length() != 0){
+                    investigationIdsBuffer.append(",");
+                }
+                investigationIdsBuffer.append(investigationId);
+            }
+        }
+
+        if(datasetIds != null){
+            for(Long datasetId : datasetIds){
+                if(datasetIdsBuffer.length() != 0){
+                    datasetIdsBuffer.append(",");
+                }
+                datasetIdsBuffer.append(datasetId);
+            }
+        }
+
+        if(datafileIds != null){
+            for(Long datafileId : datafileIds){
+                if(datafileIdsBuffer.length() != 0){
+                    datafileIdsBuffer.append(",");
+                }
+                datafileIdsBuffer.append(datafileId);
+            }
+        }
+
+        StringBuffer data = new StringBuffer();
+        data.append("sessionId=" + sessionId);
+        if(investigationIdsBuffer.length() > 0){
+            data.append("investigationIds=" + investigationIdsBuffer);
+        }
+        if(datasetIdsBuffer.length() > 0){
+            data.append("datasetIds=" + datasetIdsBuffer);
+        }
+        if(datafileIdsBuffer.length() > 0){
+            data.append("datafileIds=" + datafileIdsBuffer);
+        }
+
+        return httpClient.post("prepareData", new HashMap<String, String>(), data.toString()).toString();
+    }
 
     public boolean isPrepared(String preparedId) throws Exception {
         return httpClient.get("isPrepared?preparedId=" + preparedId, new HashMap<String, String>()).toString().equals("true");
@@ -71,8 +116,8 @@ public class IdsClient {
             if(investigationIds.size() > 0){
                 newInvestigationId = investigationIds.get(0);
             } else if(datasetIds.size() > 0){
-                newInvestigationId = datasetIds.get(0);
-            } else if(investigationIds.size() > 0){
+                newDatasetId = datasetIds.get(0);
+            } else if(datafileIds.size() > 0){
                 newDatafileId = datafileIds.get(0);
             } else {
                 break;
@@ -92,6 +137,17 @@ public class IdsClient {
                 currentDatasetIds.add(newDatasetId);
             } else if(newDatafileId != null){
                 currentDatafileIds.add(newDatafileId);
+            }
+
+            if(newInvestigationId != null){
+                investigationIds.remove(0);
+                newInvestigationId = null;
+            } else if(newDatasetId != null){
+                datasetIds.remove(0);
+                newDatasetId = null;
+            } else if(newDatafileId != null){
+                datafileIds.remove(0);
+                newDatafileId = null;
             }
 
         }

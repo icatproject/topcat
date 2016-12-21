@@ -315,7 +315,7 @@
 						<version>2.19.1</version>
 						<configuration>
 							<!-- TODO remove next line -->
-							<skipTests>true</skipTests>
+							<!-- <skipTests>true</skipTests> -->
 							<argLine>-Xmx768m -XX:MaxPermSize=256m</argLine>
 							<systemPropertyVariables>
 								<java.util.logging.config.file>

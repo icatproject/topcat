@@ -20,11 +20,9 @@ end
 
 
 exec %{
+
   cd install
 
-  sudo apt-get clean
-  sudo apt-get autoclean
-  sudo apt-get  --assume-yes remove --purge mysql-client-5.5 mysql-client-core-5.5 mysql-common mysql-server mysql-server-5.5 mysql-server-core-5.5
   echo "mysql-server mysql-server/root_password password secret" | sudo debconf-set-selections 
   echo "mysql-server mysql-server/root_password_again password secret" | sudo debconf-set-selections
   sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
