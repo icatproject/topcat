@@ -25,7 +25,7 @@ exec %{
 
   sudo apt-get --assume-yes install apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
 
-  echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('secret');" mysql -u root
+  echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('secret');" mysql -u root --password=''
   echo "create database icat;" | mysql -u root --password=secret
   echo "create database topcat;" | mysql -u root --password=secret
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root --password=secret
