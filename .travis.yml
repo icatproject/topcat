@@ -5,6 +5,8 @@ rvm:
   - 2.0.0
 python:
   - "3.1"
+node_js:
+  - "6"
 before_script:
   - chmod 0755 ci/travis.rb
   - export DISPLAY=:99.0
@@ -18,3 +20,4 @@ services:
 after_failure:
   - cat target/surefire-reports/*.txt
   - cat /opt/glassfish4/glassfish/domains/domain1/logs/*.log
+  - cat yo/npm-debug.log 
