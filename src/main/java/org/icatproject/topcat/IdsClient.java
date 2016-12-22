@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class IdsClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(IdsClient.class);
+    private Logger logger = LoggerFactory.getLogger(IdsClient.class);
 
     private HttpClient httpClient;
    
@@ -94,11 +94,9 @@ public class IdsClient {
         try {
             String out = "ONLINE";
 
-            logger.info("getStatus: " + investigationIds.size() + ", " + datasetIds.size() + ", " + datafileIds.size());
-
             for(String offset : chunkOffsets("getStatus?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
                 Response response = httpClient.get(offset, new HashMap<String, String>());
-                logger.info("response: " + response.toString());
+                
                 if(response.getCode() >= 400){
                     throw new NotFoundException(parseJson(response.toString()).getString("message"));
                 }

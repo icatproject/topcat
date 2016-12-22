@@ -54,6 +54,7 @@ import org.icatproject.topcat.IdsClient;
 public class UserResource {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
+	
 
 	@EJB
 	private DownloadRepository downloadRepository;
@@ -333,6 +334,8 @@ public class UserResource {
 			@FormParam("sessionId") String sessionId, @FormParam("items") String items)
 			throws TopcatException, MalformedURLException, ParseException {
 
+		logger.info("addCartItems() called");
+
 		String userName = icatClientService.getUserName(icatUrl, sessionId);
 		Cart cart = cartRepository.getCart(userName, facilityName);
 
@@ -535,6 +538,8 @@ public class UserResource {
 			@FormParam("fileName") String fileName, @FormParam("zipType") String zipType)
 			throws TopcatException, MalformedURLException, ParseException {
 
+		logger.info("submitCart called");
+
 		if (fileName == null || fileName.trim().isEmpty()) {
 			throw new BadRequestException("fileName is required");
 		}
@@ -549,7 +554,7 @@ public class UserResource {
 		Long downloadId = null;
 		IdsClient idsClient = new IdsClient(transportUrl);
 
-		logger.info("submitCart");
+		
 
 		if (cart != null) {
 			em.refresh(cart);
