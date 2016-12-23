@@ -9,8 +9,8 @@ exports.config = {
 
 
   capabilities: {
-    'browserName': 'chrome',
-    'chromeOptions': {'args': ['--disable-extensions']}
+    'browserName': 'phantom',
+    //'chromeOptions': {'args': ['--disable-extensions']}
   },
 
 

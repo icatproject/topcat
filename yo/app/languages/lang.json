@@ -10,7 +10,7 @@
         "LANGUAGE": "Language",
         "LOGIN": "Login",
         "LOGOUT": "Logout",
-        "LOGOUT_FACILITY" : "Logout ({{fullName}})",
+        "LOGOUT_FACILITY" : "Logout ({{fullName != '' ? fullName : username}})",
         "LOGOUT_ALL": "Logout All",
         "MAIN_TAB" : {
             "MY_DATA" : "My Data",
