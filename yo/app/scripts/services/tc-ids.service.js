@@ -55,56 +55,55 @@
     				return this.getSize(type, id, {});
     			},
     			'array, array, array, object': function(investigationIds, datasetIds, datafileIds, options){
-            investigationIds = _.map(investigationIds, function(v){return v});
-            datasetIds = _.map(datasetIds, function(v){return v});
-            datafileIds = _.map(datafileIds, function(v){return v});
-            var key = 'getSize:investigationIds:' + investigationIds.join(',') + 'datasetIds:' + datasetIds.join(',') + 'datafileIds:' + datafileIds.join(',');
-            return this.cache().getPromise(key, function(){
-      				var defered = $q.defer();
-              var out = 0;
-              var promises = [];
-              while(investigationIds.length > 0 || datasetIds.length > 0 || datafileIds.length > 0){
-                
-                var params = {
-                  server: facility.config().icatUrl,
-                  sessionId: facility.icat().session().sessionId
-                };
+            var out = 0;
+            var currentInvestigationIds = [];
+            var currentDatasetIds = [];
+            var currentDatafileIds  = [];
+            var promises = [];
 
-                var currentInvestigationIds = [];
-                var currentDatasetIds = [];
-                var currentDatafileIds = [];
-
-                while(investigationIds.length > 0){
-                  if(currentInvestigationIds.join(',').length > 900) break;
-                  currentInvestigationIds.push(investigationIds.pop());
-                }
-                currentInvestigationIds = currentInvestigationIds.join(',');
-
-                while(datasetIds.length > 0){
-                  if((currentInvestigationIds + currentDatasetIds.join(',')).length > 900) break;
-                  currentDatasetIds.push(datasetIds.pop());
-                }
-                currentDatasetIds = currentDatasetIds.join(',');
-
-                while(datafileIds.length > 0){
-                  if((currentInvestigationIds + currentDatasetIds + currentDatafileIds.join(',')).length > 900) break;
-                  currentDatafileIds.push(datafileIds.pop());
-                }
-                currentDatafileIds = currentDatafileIds.join(',');
-
-                if(currentInvestigationIds != '') params.investigationIds = currentInvestigationIds;
-                if(currentDatasetIds != '') params.datasetIds = currentDatasetIds;
-                if(currentDatafileIds != '') params.datafileIds = currentDatafileIds;
-
-                options.lowPriority = true;
-                promises.push(that.get('getSize', params,  options).then(function(size){
-                  out = out + parseInt(size);
-                }));
+            while(investigationIds.length > 0 || datasetIds.length > 0 || datafileIds.length > 0){
+              while(investigationIds.length > 0 && urlLengthIsOk(currentInvestigationIds.concat([investigationIds[0]]), currentDatasetIds, currentDatafileIds)){
+                currentInvestigationIds.push(investigationIds.shift());
               }
-              $q.all(promises).then(function(){
-                defered.resolve(out);
-              });
-              return defered.promise;
+
+              while(datasetIds.length > 0 && urlLengthIsOk(currentInvestigationIds, currentDatasetIds.concat([datasetIds[0]]), currentDatafileIds)){
+                currentDatasetIds.push(datasetIds.shift());
+              }
+
+              while(datafileIds.length > 0 && urlLengthIsOk(currentInvestigationIds, currentDatasetIds, currentDatafileIds.concat([datafileIds[0]]))){
+                currentDatafileIds.push(datafileIds.shift());
+              }
+
+              var params = generateParams(currentInvestigationIds, currentDatasetIds, currentDatafileIds)
+
+              promises.push(this.get('getSize', params, options).then(function(size){
+                out = out + parseInt(size);
+              }));
+
+              currentInvestigationIds = [];
+              currentDatasetIds = [];
+              currentDatafileIds  = [];
+            }
+
+            function urlLengthIsOk(investigationIds, datasetIds, datafileIds){
+              return that.getUrlLength('getSize', generateParams(investigationIds, datasetIds, datafileIds)) <= 1024;
+            }
+
+            function generateParams(investigationIds, datasetIds, datafileIds){
+              var out = {
+                server: facility.config().icatUrl,
+                sessionId: facility.icat().session().sessionId
+              };
+
+              if(investigationIds.length > 0) out.investigationIds = investigationIds.join(',');
+              if(datasetIds.length > 0) out.datasetIds = datasetIds.join(',');
+              if(datafileIds.length > 0) out.datafileIds = datafileIds.join(',');
+
+              return out
+            }
+
+            return $q.all(promises).then(function(){
+              return out;
             });
     			},
     			'promise, array, array, array': function(timeout, investigationIds, datasetIds, datafileIds){
