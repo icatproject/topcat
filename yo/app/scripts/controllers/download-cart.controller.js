@@ -59,13 +59,6 @@
                         transportTypes: transportTypes,
                         transportType: transportType
                     };
-                    
-                    cart.getStatus(timeout.promise).then(function(status){
-                        if(status == "ARCHIVED"){
-                            that.hasArchive = true;
-                        }
-                        download.status = status;
-                    });
 
                     cart.getSize(timeout.promise).then(function(size){
                         download.size = size;
