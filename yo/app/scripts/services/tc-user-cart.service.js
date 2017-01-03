@@ -49,28 +49,6 @@
                 }
             });
 
-            this.getStatus = helpers.overload({
-                'object': function(options){
-                    var investigationIds = [];
-                    var datasetIds = [];
-                    var datafileIds = [];
-
-                    _.each(this.cartItems, function(cartItem){
-                        if(cartItem.entityType == 'investigation') investigationIds.push(cartItem.entityId);
-                        if(cartItem.entityType == 'dataset') datasetIds.push(cartItem.entityId);
-                        if(cartItem.entityType == 'datafile') datafileIds.push(cartItem.entityId);
-                    });
-
-                    return user.facility().ids().getStatus(investigationIds, datasetIds, datafileIds, options);
-                },
-                'promise': function(timeout){
-                    return this.getStatus({timeout: timeout});
-                },
-                '': function(){
-                    return this.getStatus({});
-                }
-            });
-
             _.each(this.cartItems, function(cartItem){
                 cartItem.facilityName = facility.config().name;
 
@@ -120,24 +98,6 @@
                     },
                     '': function(){
                         return this.getSize({});
-                    }
-                });
-
-                cartItem.getStatus = helpers.overload({
-                    'object': function(options){
-                        var that = this;
-                        return this.entity(options).then(function(entity){
-                            return entity.getStatus(options).then(function(status){
-                                that.status = status;
-                                return status;
-                            });
-                        });
-                    },
-                    'promise': function(timeout){
-                        return this.getStatus({timeout: timeout});
-                    },
-                    '': function(){
-                        return this.getStatus({});
                     }
                 });
 

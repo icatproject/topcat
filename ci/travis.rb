@@ -23,10 +23,9 @@ exec %{
 
   cd install
 
-  echo "mysql-server mysql-server/root_password password secret" | sudo debconf-set-selections 
-  echo "mysql-server mysql-server/root_password_again password secret" | sudo debconf-set-selections
-  sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
+  sudo apt-get --assume-yes install apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
 
+  echo "USE mysql; UPDATE user SET password=PASSWORD('secret') WHERE user='root'; FLUSH PRIVILEGES; " | mysql -u root
   echo "create database icat;" | mysql -u root --password=secret
   echo "create database topcat;" | mysql -u root --password=secret
   echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root --password=secret
@@ -117,7 +116,7 @@ exec %{
   sudo ./setup install
   cd ../
 
-  asadmin -t set applications.application.topcat-2.2.0.deployment-order=140
+  asadmin -t set applications.application.topcat-2.2.1.deployment-order=140
 
   cd ../tools
   gem install rest-client

@@ -14,14 +14,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.icatproject.ids.client.IdsClient;
-import org.icatproject.ids.client.NotFoundException;
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.utils.PropertyHandler;
 import org.icatproject.topcat.utils.MailBean;
 import org.icatproject.topcat.utils.ConvertUtils;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.IdsClient;
+
+import org.icatproject.topcat.exceptions.NotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,28 +52,32 @@ public class Watchdog {
       return;
     }
 
-    PropertyHandler properties = PropertyHandler.getInstance();
-    int pollDelay = properties.getPollDelay();
-    int pollIntervalWait = properties.getPollIntervalWait();
+    try {
+      PropertyHandler properties = PropertyHandler.getInstance();
+      int pollDelay = properties.getPollDelay();
+      int pollIntervalWait = properties.getPollIntervalWait();
 
-    TypedQuery<Download> query = em.createQuery("select download from Download download where (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
-    List<Download> downloads = query.getResultList();
+      TypedQuery<Download> query = em.createQuery("select download from Download download where (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
+      List<Download> downloads = query.getResultList();
 
-    for(Download download : downloads){
-      Date lastCheck = lastChecks.get(download.getId());
-      Date now = new Date();
-      long createdSecondsAgo = (now.getTime() - download.getCreatedAt().getTime()) / 1000;
+      for(Download download : downloads){
+        Date lastCheck = lastChecks.get(download.getId());
+        Date now = new Date();
+        long createdSecondsAgo = (now.getTime() - download.getCreatedAt().getTime()) / 1000;
 
-      if(createdSecondsAgo >= pollDelay){
-        if(lastCheck == null){
-          performCheck(download);
-        } else {
-          long lastCheckSecondsAgo = (now.getTime() - lastCheck.getTime()) / 1000;
-          if(lastCheckSecondsAgo >= pollIntervalWait){
+        if(createdSecondsAgo >= pollDelay){
+          if(lastCheck == null){
             performCheck(download);
+          } else {
+            long lastCheckSecondsAgo = (now.getTime() - lastCheck.getTime()) / 1000;
+            if(lastCheckSecondsAgo >= pollIntervalWait){
+              performCheck(download);
+            }
           }
         }
       }
+    } catch(Exception e){
+      logger.error(e.getMessage());
     }
 
     busy.set(false);
@@ -79,14 +85,14 @@ public class Watchdog {
 
   private void performCheck(Download download) {
     try {
-      IdsClient ids = new IdsClient(new URL(download.getTransportUrl()));
+      IdsClient idsClient = new IdsClient(download.getTransportUrl());
       if(!download.getIsEmailSent() && download.getStatus() == DownloadStatus.COMPLETE){
         download.setIsEmailSent(true);
         em.persist(download);
         em.flush();
         lastChecks.remove(download.getId());
         sendDownloadReadyEmail(download);
-      } else if(download.getTransport().equals("https") && ids.isPrepared(download.getPreparedId())){
+      } else if(download.getTransport().equals("https") && idsClient.isPrepared(download.getPreparedId())){
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         download.setIsEmailSent(true);
@@ -103,7 +109,7 @@ public class Watchdog {
       em.flush();
       lastChecks.remove(download.getId());
     } catch(Exception e){
-      logger.debug(e.toString());
+      logger.error(e.toString());
     }
   }
 

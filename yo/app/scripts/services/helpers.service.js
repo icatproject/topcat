@@ -644,12 +644,12 @@
 
 		this.generateRestMethods = function(that, prefix){
 			
-			defineMethod.call(that, 'get');
-			defineMethod.call(that, 'delete');
-			defineMethod.call(that, 'post');
-			defineMethod.call(that, 'put');
+			defineMethods.call(that, 'get');
+			defineMethods.call(that, 'delete');
+			defineMethods.call(that, 'post');
+			defineMethods.call(that, 'put');
 
-			function defineMethod(methodName){
+			function defineMethods(methodName){
 				this[methodName] = helpers.overload({
 					'string, string, object': function(offset, params, options){
 						options = _.clone(options);
@@ -730,7 +730,28 @@
 		    			return this[methodName].call(this, offset, {}, {});
 		    		}
 				});
+
+                var urlLengthMethodName = methodName + 'UrlLength';
+
+                this[urlLengthMethodName] = helpers.overload({
+                    'string, string, object': function(offset, params, options){
+                        var url = prefix + offset;
+                        if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
+                        return url.length;
+                    },
+                    'string, object, object': function(offset, params, options){
+                        return this[urlLengthMethodName].call(this, offset, helpers.urlEncode(params), options)
+                    },
+                    'string, object': function(offset, params){
+                        return this[urlLengthMethodName].call(this, offset, params, {});
+                    },
+                    'string': function(offset){
+                        return this[urlLengthMethodName].call(this, offset, {}, {});
+                    }
+                });
 			}
+
+
 
 		};
 

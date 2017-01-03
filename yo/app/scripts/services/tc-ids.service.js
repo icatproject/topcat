@@ -7,11 +7,11 @@
 
     app.service('tcIds', function($q, helpers, tcCache){
 
-    	this.create = function(facility){
-    		return new Ids(facility);
+    	this.create = function(facility, url){
+    		return new Ids(facility, url);
     	};
 
-    	function Ids(facility){
+    	function Ids(facility, url){
         var that = this;
         var cache;
 
@@ -55,56 +55,58 @@
     				return this.getSize(type, id, {});
     			},
     			'array, array, array, object': function(investigationIds, datasetIds, datafileIds, options){
-            investigationIds = _.map(investigationIds, function(v){return v});
-            datasetIds = _.map(datasetIds, function(v){return v});
-            datafileIds = _.map(datafileIds, function(v){return v});
             var key = 'getSize:investigationIds:' + investigationIds.join(',') + 'datasetIds:' + datasetIds.join(',') + 'datafileIds:' + datafileIds.join(',');
             return this.cache().getPromise(key, function(){
-      				var defered = $q.defer();
               var out = 0;
+              var currentInvestigationIds = [];
+              var currentDatasetIds = [];
+              var currentDatafileIds  = [];
               var promises = [];
+
               while(investigationIds.length > 0 || datasetIds.length > 0 || datafileIds.length > 0){
-                
-                var params = {
+                while(investigationIds.length > 0 && urlLengthIsOk(currentInvestigationIds.concat([investigationIds[0]]), currentDatasetIds, currentDatafileIds)){
+                  currentInvestigationIds.push(investigationIds.shift());
+                }
+
+                while(datasetIds.length > 0 && urlLengthIsOk(currentInvestigationIds, currentDatasetIds.concat([datasetIds[0]]), currentDatafileIds)){
+                  currentDatasetIds.push(datasetIds.shift());
+                }
+
+                while(datafileIds.length > 0 && urlLengthIsOk(currentInvestigationIds, currentDatasetIds, currentDatafileIds.concat([datafileIds[0]]))){
+                  currentDatafileIds.push(datafileIds.shift());
+                }
+
+                var params = generateParams(currentInvestigationIds, currentDatasetIds, currentDatafileIds)
+
+                promises.push(that.get('getSize', params, options).then(function(size){
+                  out = out + parseInt(size);
+                }));
+
+                currentInvestigationIds = [];
+                currentDatasetIds = [];
+                currentDatafileIds  = [];
+              }
+
+              function urlLengthIsOk(investigationIds, datasetIds, datafileIds){
+                return that.getUrlLength('getSize', generateParams(investigationIds, datasetIds, datafileIds)) <= 1024;
+              }
+
+              function generateParams(investigationIds, datasetIds, datafileIds){
+                var out = {
                   server: facility.config().icatUrl,
                   sessionId: facility.icat().session().sessionId
                 };
 
-                var currentInvestigationIds = [];
-                var currentDatasetIds = [];
-                var currentDatafileIds = [];
+                if(investigationIds.length > 0) out.investigationIds = investigationIds.join(',');
+                if(datasetIds.length > 0) out.datasetIds = datasetIds.join(',');
+                if(datafileIds.length > 0) out.datafileIds = datafileIds.join(',');
 
-                while(investigationIds.length > 0){
-                  if(currentInvestigationIds.join(',').length > 900) break;
-                  currentInvestigationIds.push(investigationIds.pop());
-                }
-                currentInvestigationIds = currentInvestigationIds.join(',');
-
-                while(datasetIds.length > 0){
-                  if((currentInvestigationIds + currentDatasetIds.join(',')).length > 900) break;
-                  currentDatasetIds.push(datasetIds.pop());
-                }
-                currentDatasetIds = currentDatasetIds.join(',');
-
-                while(datafileIds.length > 0){
-                  if((currentInvestigationIds + currentDatasetIds + currentDatafileIds.join(',')).length > 900) break;
-                  currentDatafileIds.push(datafileIds.pop());
-                }
-                currentDatafileIds = currentDatafileIds.join(',');
-
-                if(currentInvestigationIds != '') params.investigationIds = currentInvestigationIds;
-                if(currentDatasetIds != '') params.datasetIds = currentDatasetIds;
-                if(currentDatafileIds != '') params.datafileIds = currentDatafileIds;
-
-                options.lowPriority = true;
-                promises.push(that.get('getSize', params,  options).then(function(size){
-                  out = out + parseInt(size);
-                }));
+                return out
               }
-              $q.all(promises).then(function(){
-                defered.resolve(out);
+
+              return $q.all(promises).then(function(){
+                return out;
               });
-              return defered.promise;
             });
     			},
     			'promise, array, array, array': function(timeout, investigationIds, datasetIds, datafileIds){
@@ -115,93 +117,17 @@
     			}
     		});
 
-
-        this.getStatus = helpers.overload({
-          'string, number, object': function(type, id, options){
-            var key = 'getStatus:' + type + ":" + id;
-            return this.cache().getPromise(key, function(){
-              var idsParamName = helpers.uncapitalize(type) + "Ids";
-              var params = {
-                server: facility.config().icatUrl,
-                sessionId: facility.icat().session().sessionId
-              };
-              params[idsParamName] = id;
-              options.lowPriority = true;
-              return that.get('getStatus', params,  options).then(function(status){
-                return status;
-              });
+        this.isTwoLevel = helpers.overload({
+          'object': function(options){
+            return this.get('isTwoLevel', {}, options).then(function(isTwoLevel){
+              return isTwoLevel == 'true';
             });
           },
-          'string, number, promise': function(type, id, timeout){
-            return this.getStatus(type, id, {timeout: timeout});
+          'promise': function(timeout){
+            return this.isTwoLevel({timeout: timeout});
           },
-          'string, number': function(type, id){
-            return this.getStatus(type, id, {});
-          },
-          'array, array, array, object': function(investigationIds, datasetIds, datafileIds, options){
-            investigationIds = _.map(investigationIds, function(v){return v});
-            datasetIds = _.map(datasetIds, function(v){return v});
-            datafileIds = _.map(datafileIds, function(v){return v});
-            var key = 'getStatus:investigationIds:' + investigationIds.join(',') + 'datasetIds:' + datasetIds.join(',') + 'datafileIds:' + datafileIds.join(',');
-            return this.cache().getPromise(key, function(){
-              var defered = $q.defer();
-              var out = [];
-              var promises = [];
-              while(investigationIds.length > 0 || datasetIds.length > 0 || datafileIds.length > 0){
-                
-                var params = {
-                  server: facility.config().icatUrl,
-                  sessionId: facility.icat().session().sessionId
-                };
-
-                var currentInvestigationIds = [];
-                var currentDatasetIds = [];
-                var currentDatafileIds = [];
-
-                while(investigationIds.length > 0){
-                  if(currentInvestigationIds.join(',').length > 900) break;
-                  currentInvestigationIds.push(investigationIds.pop());
-                }
-                currentInvestigationIds = currentInvestigationIds.join(',');
-
-                while(datasetIds.length > 0){
-                  if((currentInvestigationIds + currentDatasetIds.join(',')).length > 900) break;
-                  currentDatasetIds.push(datasetIds.pop());
-                }
-                currentDatasetIds = currentDatasetIds.join(',');
-
-                while(datafileIds.length > 0){
-                  if((currentInvestigationIds + currentDatasetIds + currentDatafileIds.join(',')).length > 900) break;
-                  currentDatafileIds.push(datafileIds.pop());
-                }
-                currentDatafileIds = currentDatafileIds.join(',');
-
-                if(currentInvestigationIds != '') params.investigationIds = currentInvestigationIds;
-                if(currentDatasetIds != '') params.datasetIds = currentDatasetIds;
-                if(currentDatafileIds != '') params.datafileIds = currentDatafileIds;
-
-                options.lowPriority = true;
-                promises.push(that.get('getStatus', params,  options).then(function(status){
-                  out.push(status);
-                }));
-              }
-              $q.all(promises).then(function(){
-                if(_.select(out, function(s){ return s == 'ARCHIVED'; }).length > 0){
-                  defered.resolve('ARCHIVED');
-                } else if(_.select(out, function(s){ return s == 'RESTORING'; }).length > 0){
-                  defered.resolve('RESTORING');
-                } else {
-                  defered.resolve('ONLINE');
-                }
-              });
-              return defered.promise;
-            });
-          },
-          'promise, array, array, array': function(timeout, investigationIds, datasetIds, datafileIds){
-            return this.getStatus(investigationIds, datasetIds, datafileIds, {timeout: timeout});
-          },
-          'array, array, array': function(investigationIds, datasetIds, datafileIds){
-            return this.getStatus(investigationIds, datasetIds, datafileIds, {});
+          '': function(){
+            return this.isTwoLevel({});
           }
         });
 
@@ -236,7 +162,7 @@
         });
 
 
-    		helpers.generateRestMethods(this, facility.config().idsUrl + '/ids/');
+    		helpers.generateRestMethods(this, url + '/ids/');
 
         helpers.mixinPluginMethods('ids', this);
     	}

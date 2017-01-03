@@ -1,5 +1,11 @@
 #Release Notes
 
+## 2.2.1
+
+* Properly chunk GET requests
+* If user doesn't have a fullName in Icat the username will be used instead.
+* Removed getStatus from Cart - you will need to remove your cart's status field from Topcat.json
+
 ## 2.2.0
 
 * Topcat is now plugable - this is yet to be documented.

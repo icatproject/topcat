@@ -20,25 +20,21 @@
                         </select>
                     </th>
                     <th ng-if="downloadCartController.facilityCount > 1" translate="CART.DOWNLOAD.MODAL.COLUMN.FACILITY"></th>
-                    <th translate="CART.DOWNLOAD.MODAL.COLUMN.STATUS"></th>
                 </tr>
                 <tr ng-repeat="download in downloadCartController.downloads">
                     <td>
                         <input type="text" class="form-control input-sm" placeholder="Filename" ng-model="download.fileName" />
                     </td>
                     <td>
-                        <select ng-options="item for item in download.transportTypes" ng-model="download.transportType"></select>
+                        <select ng-options="item for item in download.transportTypes" ng-model="download.transportType" ng-change="download.updateIsTwoLevel()"></select>
                     </td>
                     <td>
-                        <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.size === undefined" class="grid-cell-spinner"></span><span>{{download.size | bytes}}</span>
+                        <span class="grid-cell-spinner"></span><span>{{download.size | bytes}}</span>
                     </td>
                     <td>
-                        <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.estimatedTime === undefined" class="grid-cell-spinner"></span><span>{{download.estimatedTime / downloadCartController.connectionSpeed | timeLength}}</span>
+                        <span class="grid-cell-spinner"></span><span>{{download.estimatedTime / downloadCartController.connectionSpeed | timeLength}}</span>
                     <td ng-if="downloadCartController.facilityCount > 1">
                         <span>{{download.facilityName}}</span>
-                    </td>
-                    <td>
-                        <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="download.status === undefined" class="grid-cell-spinner"></span><span ng-if="download.status !== undefined">{{"CART.STATUS." + download.status | translate}}</span>
                     </td>
                 </tr>
             </table>
@@ -51,12 +47,12 @@
                 </div>
                 <div 
                     class="panel panel-default"
-                    ng-if="!downloadCartController.hasArchive && downloadCartController.isStaged()">
+                    ng-if="!downloadCartController.isTwoLevel() && downloadCartController.isStaged()">
                     <div class="panel-body">
                         <p translate="CART.DOWNLOAD.MODAL.IS_STAGED_MESSAGE"></p>
                     </div>
                 </div>
-                <div ng-if="downloadCartController.hasArchive || downloadCartController.isStaged()">
+                <div ng-if="downloadCartController.isTwoLevel() || downloadCartController.isStaged()">
                     <p translate="CART.DOWNLOAD.MODAL.EMAIL_ME_MESSAGE"></p><input type="text" class="form-control input-sm inline" id="emailNotification" placeholder="email@address" ng-model="downloadCartController.email" />
                 </div>
             </div>

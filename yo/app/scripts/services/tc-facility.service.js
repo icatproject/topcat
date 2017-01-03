@@ -39,8 +39,19 @@
             };
 
             this.ids = function(){
-                if(!ids) ids = tcIds.create(this);
+                if(!ids) ids = tcIds.create(this, this.config().idsUrl);
                 return ids;
+            };
+
+            var downloadTransportTypeIdsIndex;
+            this.downloadTransportTypeIds = function(type){
+                if(!downloadTransportTypeIdsIndex){
+                    downloadTransportTypeIdsIndex = {};
+                    _.each(this.config().downloadTransportTypes, function(transportType){
+                        downloadTransportTypeIdsIndex[transportType.type] = tcIds.create(this, transportType.idsUrl);
+                    })
+                }
+                return downloadTransportTypeIdsIndex[type];
             };
 
             this.admin = function(){
