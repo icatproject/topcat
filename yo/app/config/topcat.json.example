@@ -145,9 +145,6 @@
                     },
                     {
                         "field": "facilityName"
-                    },
-                    {
-                        "field": "status"
                     }
                 ]
             }

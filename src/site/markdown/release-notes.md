@@ -4,6 +4,7 @@
 
 * Properly chunk GET requests
 * If user doesn't have a fullName in Icat the username will be used instead.
+* Removed getStatus from Cart - you will need to remove your cart's status field from Topcat.json
 
 ## 2.2.0
 
