@@ -10,7 +10,6 @@
         var that = this;
         var timeout = $q.defer();
         $scope.$on('$destroy', function(){ timeout.resolve(); });
-        this.hasArchive = false;
         this.email = "";
         this.downloads = [];
         this.facilityCount = tc.facilities().length;
@@ -26,6 +25,12 @@
                 }
             });
             return out;
+        };
+
+        this.isTwoLevel = function(){
+            return _.select(this.downloads, function(download){
+                return download.isTwoLevel;
+            }).length > 0;
         };
 
         _.each(tc.userFacilities(), function(facility){
@@ -57,8 +62,15 @@
                         facility: facility,
                         facilityName: facility.config().name,
                         transportTypes: transportTypes,
-                        transportType: transportType
+                        transportType: transportType,
+                        updateIsTwoLevel: function(){
+                            this.facility.downloadTransportTypeIds(this.transportType).isTwoLevel(timeout.promise).then(function(isTwoLevel){
+                                download.isTwoLevel = isTwoLevel;
+                            });
+                        }
                     };
+
+                    download.updateIsTwoLevel();
 
                     cart.getSize(timeout.promise).then(function(size){
                         download.size = size;

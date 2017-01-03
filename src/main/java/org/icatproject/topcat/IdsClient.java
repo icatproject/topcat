@@ -90,31 +90,6 @@ public class IdsClient {
         }
     }
 
-    public String getStatus(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
-        try {
-            String out = "ONLINE";
-
-            for(String offset : chunkOffsets("getStatus?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
-                Response response = httpClient.get(offset, new HashMap<String, String>());
-                
-                if(response.getCode() >= 400){
-                    throw new NotFoundException(parseJson(response.toString()).getString("message"));
-                }
-                if(response.toString().equals("RESTORING")){
-                    return "RESTORING";
-                } else if(response.toString().equals("ARCHIVED")){
-                    out = "ARCHIVED";
-                }
-            }
-
-            return out;
-        } catch (TopcatException e){
-            throw e;
-        } catch (Exception e){
-            throw new BadRequestException(e.getMessage());
-        }
-    }
-
     public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
         try {
             Long out = 0L;

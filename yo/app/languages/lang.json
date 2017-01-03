@@ -243,7 +243,6 @@
             "FACILITY" : "Facility",
             "SIZE" : "Size",
             "FACILITY_NAME" : "Facility",
-            "STATUS" : "Availability",
             "ACTIONS" : "Action"
         },
         "EMPTY" : "Cart is empty",
@@ -306,8 +305,7 @@
                     "SIZE" : "Size",
                     "ESTIMATED_TIME": "Estimated download time",
                     "CONNECTION": "connection",
-                    "FACILITY" : "Facility",
-                    "STATUS" : "Availability"
+                    "FACILITY" : "Facility"
                 },
                 "BUTTON" : {
                     "OK" : {

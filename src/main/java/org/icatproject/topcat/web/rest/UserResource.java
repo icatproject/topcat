@@ -573,13 +573,10 @@ public class UserResource {
 				download.setEmail(email);
 				download.setIsEmailSent(false);
 				download.setSize(size);
-				boolean isTwoLevel = idsClient.isTwoLevel();
+				Boolean isTwoLevel = idsClient.isTwoLevel();
 				download.setIsTwoLevel(isTwoLevel);
 
-				String status = idsClient.getStatus(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
-				logger.info("status: " + status);
-
-				if (!status.equals("ONLINE") || !transport.equals("https")) {
+				if (isTwoLevel || !transport.equals("https")) {
 					download.setStatus(DownloadStatus.RESTORING);
 				} else {
 					download.setStatus(DownloadStatus.COMPLETE);

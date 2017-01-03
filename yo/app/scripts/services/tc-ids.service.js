@@ -7,11 +7,11 @@
 
     app.service('tcIds', function($q, helpers, tcCache){
 
-    	this.create = function(facility){
-    		return new Ids(facility);
+    	this.create = function(facility, url){
+    		return new Ids(facility, url);
     	};
 
-    	function Ids(facility){
+    	function Ids(facility, url){
         var that = this;
         var cache;
 
@@ -117,8 +117,22 @@
     			}
     		});
 
+        this.isTwoLevel = helpers.overload({
+          'object': function(options){
+            return this.get('isTwoLevel', {}, options).then(function(isTwoLevel){
+              return isTwoLevel == 'true';
+            });
+          },
+          'promise': function(timeout){
+            return this.isTwoLevel({timeout: timeout});
+          },
+          '': function(){
+            return this.isTwoLevel({});
+          }
+        });
 
-    		helpers.generateRestMethods(this, facility.config().idsUrl + '/ids/');
+
+    		helpers.generateRestMethods(this, url + '/ids/');
 
         helpers.mixinPluginMethods('ids', this);
     	}
