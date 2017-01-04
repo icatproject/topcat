@@ -55,6 +55,10 @@
             e.stopPropagation();    
         });
 
+        this.deleteFile = function(file){
+            _.pull($scope.files, file);
+        };
+
     });
 
 })();

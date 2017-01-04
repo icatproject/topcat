@@ -609,5 +609,16 @@
                 "TEXT": "Cancel"
             }
         }
+    },
+    "UPLOAD": {
+        "TITLE": "Upload",
+        "BUTTON": {
+            "UPLOAD": {
+                "TEXT": "Upload"
+            },
+            "CANCEL": {
+                "TEXT": "Cancel"
+            }
+        }
     }
 }

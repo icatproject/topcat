@@ -45,10 +45,17 @@
         };
 
         function handleError(response){
-            inform.add(response.message, {
-                'ttl': 3000,
-                'type': 'danger'
-            });
+            if(response.code == 'OBJECT_ALREADY_EXISTS'){
+                inform.add("This dataset name is already exists - please choose another", {
+                    'ttl': 3000,
+                    'type': 'danger'
+                });
+            } else {
+                inform.add(response.message, {
+                    'ttl': 3000,
+                    'type': 'danger'
+                });
+            }
         }
 
     });
