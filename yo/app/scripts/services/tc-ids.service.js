@@ -145,6 +145,8 @@
               'Content-Type': 'application/octet-stream'
             };
 
+            options.transformRequest = [];
+
             _.each(files, function(file){
               options.queryParams.name = file.name
               promises.push(that.put('put', file.data, options));

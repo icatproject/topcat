@@ -45,7 +45,7 @@
                     $scope.files.push({
                         name: file.name,
                         size: file.size,
-                        data: arrayBufferToString(reader.result)
+                        data: new Uint8Array(reader.result)
                     });
                 };
 
@@ -55,15 +55,6 @@
             e.stopPropagation();    
         });
 
-
-        function arrayBufferToString(arrayBuffer){
-            var out = [];
-            var bytes = new Uint8Array(arrayBuffer);
-            _.each(_.chunk(bytes, 10000), function(chunk){
-                out.push(String.fromCharCode.apply(null, chunk));
-            });
-            return out.join('');
-        }
     });
 
 })();
