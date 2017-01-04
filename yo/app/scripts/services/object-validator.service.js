@@ -165,6 +165,7 @@
                         idsUrl: { _type: 'string'  },
                         icatUrl: { _type: 'string', _mandatory: false },
                         idsUploadDatafileFormat: { _type: 'string', _mandatory: false },
+                        idsUploadDatasetType: { _type: 'string', _mandatory: false },
                         hierarchy: {
                             _type: 'array',
                             _item: {

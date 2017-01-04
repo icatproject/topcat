@@ -24,8 +24,10 @@
                 var session = sessions[name] || {};
                 var id = session.facilityId;
                 var idsUploadDatafileFormatId = session.idsUploadDatafileFormatId;
+                var idsUploadDatasetTypeId = session.idsUploadDatasetTypeId;
                 if(id) out.id = id;
                 if(idsUploadDatafileFormatId) out.idsUploadDatafileFormatId = idsUploadDatafileFormatId;
+                if(idsUploadDatasetTypeId) out.idsUploadDatasetTypeId = idsUploadDatasetTypeId
                 return out; 
             }
 

@@ -105,16 +105,32 @@
                             }
                         }));
 
+                        var idsUploadDatasetType = facility.config().idsUploadDatasetType;
+                        if(idsUploadDatasetType){
+                            promises.push(that.query([
+                                "SELECT datasetType FROM DatasetType datasetType, datasetType.facility as facility", 
+                                "WHERE facility.name = ?", name,
+                                "AND datasetType.name = ?", idsUploadDatasetType
+                            ]).then(function(results){
+                                var datasetType = results[0];
+                                if(datasetType){
+                                    $sessionStorage.sessions[facilityName].idsUploadDatasetTypeId = datasetType.id;
+                                } else {
+                                    console.error("Could not find IDS upload dataset type with name '" + idsUploadDatasetType + "'");
+                                }
+                            }));
+                        }
+
                         var idsUploadDatafileFormat = facility.config().idsUploadDatafileFormat;
                         if(idsUploadDatafileFormat){
                             promises.push(that.query([
-                                "SELECT datafileFormat FROM DatafileFormat datafileFormat, datafileFormat.facility as facility", 
+                                "SELECT datasetType FROM DatafileFormat datasetType, datasetType.facility as facility", 
                                 "WHERE facility.name = ?", name,
-                                "AND datafileFormat.name = ?", idsUploadDatafileFormat
+                                "AND datasetType.name = ?", idsUploadDatafileFormat
                             ]).then(function(results){
-                                var datafileFormat = results[0];
-                                if(datafileFormat){
-                                    $sessionStorage.sessions[facilityName].idsUploadDatafileFormatId = datafileFormat.id;
+                                var datasetType = results[0];
+                                if(datasetType){
+                                    $sessionStorage.sessions[facilityName].idsUploadDatafileFormatId = datasetType.id;
                                 } else {
                                     console.error("Could not find IDS upload datafile format with name '" + idsUploadDatafileFormat + "'");
                                 }
@@ -256,6 +272,21 @@
     	        'string': function(query){
     	        	return this.query([query], {});
     	        }
+            });
+
+            this.write = helpers.overload({
+                'array, object': function(entities, options){
+                    return this.post('entityManager', {
+                        sessionId: this.session().sessionId,
+                        entities: JSON.stringify(entities)
+                    }, options);
+                },
+                'promise, array': function(timeout, entities){
+                    return this.write(entities, {timeout: timeout});
+                },
+                'array': function(entities){
+                    return this.write(entities, {});
+                }
             });
 
 
