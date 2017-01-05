@@ -116,7 +116,7 @@ exec %{
   sudo ./setup install
   cd ../
 
-  asadmin -t set applications.application.topcat-2.2.1.deployment-order=140
+  asadmin -t set applications.application.topcat-2.2.1-SNAPSHOT.deployment-order=140
 
   cd ../tools
   gem install rest-client
