@@ -18,7 +18,7 @@ import org.icatproject.topcat.exceptions.IcatException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.TopcatException;
-import org.icatproject.topcat.utils.PropertyHandler;
+import org.icatproject.topcat.Properties;
 import org.icatproject_4_5_0.Datafile;
 import org.icatproject_4_5_0.Dataset;
 import org.icatproject_4_5_0.ICAT;
@@ -132,7 +132,7 @@ public class ICATClient45 implements ICATClientInterface {
 	 */
 	@Override
 	public Boolean isAdmin(String icatSessionId) throws TopcatException {
-		String[] adminUserNames = PropertyHandler.getInstance().getAdminUserNames();
+		String[] adminUserNames = Properties.getInstance().getProperty("adminUserNames", "").split("[ ]*,[ ]*");
 		String userName = getUserName(icatSessionId);
 		int i;
 

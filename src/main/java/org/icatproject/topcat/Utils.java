@@ -1,6 +1,6 @@
-package org.icatproject.topcat.utils;
+package org.icatproject.topcat;
 
-public class ConvertUtils {
+public class Utils {
 
     public static String bytesToHumanReadable(long bytes) {
         int unit = 1000;

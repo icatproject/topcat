@@ -1,4 +1,4 @@
-package org.icatproject.topcat.statuscheck;
+package org.icatproject.topcat;
 
 import java.net.URL;
 import java.util.Date;
@@ -13,12 +13,12 @@ import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.annotation.Resource;
 
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
-import org.icatproject.topcat.utils.PropertyHandler;
-import org.icatproject.topcat.utils.MailBean;
-import org.icatproject.topcat.utils.ConvertUtils;
+import org.icatproject.topcat.Properties;
+import org.icatproject.topcat.Utils;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.IdsClient;
 
@@ -30,10 +30,19 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.commons.validator.routines.EmailValidator;
 
-@Singleton
-public class Watchdog {
+import javax.mail.Message;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
-  private static final Logger logger = LoggerFactory.getLogger(Watchdog.class);
+
+@Singleton
+public class StatusCheck {
+
+  private static final Logger logger = LoggerFactory.getLogger(StatusCheck.class);
   private Map<Long, Date> lastChecks = new HashMap<Long, Date>();
   private AtomicBoolean busy = new AtomicBoolean(false);
 
@@ -43,8 +52,8 @@ public class Watchdog {
   @EJB
   private DownloadRepository downloadRepository;
 
-  @EJB
-  MailBean mailBean;
+  @Resource(name = "mail/topcat")
+  private Session mailSession;
 
   @Schedule(hour="*", minute="*")
   private void poll() {
@@ -53,9 +62,9 @@ public class Watchdog {
     }
 
     try {
-      PropertyHandler properties = PropertyHandler.getInstance();
-      int pollDelay = properties.getPollDelay();
-      int pollIntervalWait = properties.getPollIntervalWait();
+      Properties properties = Properties.getInstance();
+      int pollDelay = Integer.valueOf(properties.getProperty("poll.delay", "600"));
+      int pollIntervalWait = Integer.valueOf(properties.getProperty("poll.interval.wait", "600"));
 
       TypedQuery<Download> query = em.createQuery("select download from Download download where (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
       List<Download> downloads = query.getResultList();
@@ -115,56 +124,51 @@ public class Watchdog {
 
   private void sendDownloadReadyEmail(Download download){
     EmailValidator emailValidator = EmailValidator.getInstance();
-    PropertyHandler properties = PropertyHandler.getInstance();
+    Properties properties = Properties.getInstance();
 
-    if (properties.isMailEnable() == true) {
-      if (download.getEmail() != null) {
-        if (emailValidator.isValid(download.getEmail())) {
-          // get fullName if exists
-          String userName = download.getUserName();
-          String fullName = download.getFullName();
-          if (fullName != null && !fullName.trim().isEmpty()) {
-            userName = fullName;
-          }
-
-          String downloadUrl = download.getTransportUrl();
-          downloadUrl += "/ids/getData?preparedId=" + download.getPreparedId();
-          downloadUrl += "&outname=" + download.getFileName();
-
-          Map<String, String> valuesMap = new HashMap<String, String>();
-          valuesMap.put("email", download.getEmail());
-          valuesMap.put("userName", userName);
-          valuesMap.put("facilityName", download.getFacilityName());
-          valuesMap.put("preparedId", download.getPreparedId());
-          valuesMap.put("downloadUrl", downloadUrl);
-          valuesMap.put("fileName", download.getFileName());
-          valuesMap.put("size", ConvertUtils.bytesToHumanReadable(download.getSize()));
-
-          StrSubstitutor sub = new StrSubstitutor(valuesMap);
-          String subject = sub.replace(properties.getMailSubject());
-          String message = "";
-
-          if (download.getTransport().equals("https")) {
-            message = sub.replace(properties.getMailBodyHttps());
-          }
-
-          if (download.getTransport().equals("globus")) {
-            message = sub.replace(properties.getMailBodyGlobus());
-          }
-
-          if (download.getTransport().equals("smartclient")) {
-            message = sub.replace(properties.getMailBodySmartClient());
-          }
-
-          if (download.getTransport().equals("scarf")) {
-            message = sub.replace(properties.getMailBodyScarf());
-          }
-
-          mailBean.send(download.getEmail(), subject, message);
-
-        } else {
-          logger.debug("Email not sent. Invalid email " + download.getEmail());
+    if (properties.getProperty("mail.enable", "false").equals("true")) {
+      if (download.getEmail() != null && emailValidator.isValid(download.getEmail())) {
+        // get fullName if exists
+        String userName = download.getUserName();
+        String fullName = download.getFullName();
+        if (fullName != null && !fullName.trim().isEmpty()) {
+          userName = fullName;
         }
+
+        String downloadUrl = download.getTransportUrl();
+        downloadUrl += "/ids/getData?preparedId=" + download.getPreparedId();
+        downloadUrl += "&outname=" + download.getFileName();
+
+        Map<String, String> valuesMap = new HashMap<String, String>();
+        valuesMap.put("email", download.getEmail());
+        valuesMap.put("userName", userName);
+        valuesMap.put("facilityName", download.getFacilityName());
+        valuesMap.put("preparedId", download.getPreparedId());
+        valuesMap.put("downloadUrl", downloadUrl);
+        valuesMap.put("fileName", download.getFileName());
+        valuesMap.put("size", Utils.bytesToHumanReadable(download.getSize()));
+
+        StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        String subject = sub.replace(properties.getProperty("mail.subject", "mail.subject not set in topcat.properties"));
+        String bodyProperty = "mail.body." + download.getTransport();
+        String body = sub.replace(properties.getProperty(bodyProperty, bodyProperty + " not set in topcat.properties"));
+
+
+        Message message = new MimeMessage(mailSession);
+        try {
+          message.setSubject(subject);
+          message.setText(body);
+          message.setRecipients(RecipientType.TO, InternetAddress.parse(download.getEmail()));
+
+          Transport.send(message);
+
+          logger.debug("Email sent to " + download.getEmail());
+        } catch (MessagingException e) {
+          logger.debug(e.getMessage());
+        }
+
+      } else {
+        logger.debug("Email not sent. Invalid email " + download.getEmail());
       }
     } else {
       logger.debug("Email not sent. Email not enabled");
