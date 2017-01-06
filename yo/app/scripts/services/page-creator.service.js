@@ -10,21 +10,12 @@
         var route = {};
 
         route.createStates = function() {
-            var pages = tc.config().pages;
-
-            _.each(pages, function(page) {
-                if(!page.contents){
-                    page.contents = 'PAGE.' + helpers.constantify(page.stateName) + '.HTML';
-                }
-
-                var state = {
-                    url: page.url,
-                    template: $translate.instant(page.contents)
-                };
-
-                RuntimeStatesProvider.addState(page.stateName, state);
+            _.each(tc.config().pages, function(page) {
+                RuntimeStatesProvider.addState(page.name, {
+                    url: "/" + page.name,
+                    templateUrl: "/pages/" + page.name + ".html"
+                });
             });
-
         };
 
         return route;

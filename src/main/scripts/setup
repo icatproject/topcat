@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from setup_utils import *
 import os
+import re
 
 # topcat
 
@@ -35,7 +36,13 @@ if arg == "INSTALL":
         files = []
         files.append(["topcat.json", "config"])
         files.append(["lang.json", "languages"])
-        files.append(["topcat.css", "styles"])
+
+        for root, subdirs, _files in os.walk("content/"):
+            to = re.sub("^content", ".", root)
+            for file in _files:
+                files.append([root + "/" + file, to])
+
+        
         actions.deploy(files=files, deploymentorder=140)
 
     except Exception, e:

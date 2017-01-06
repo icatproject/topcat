@@ -146,16 +146,16 @@
                                 <li ng-class="{active: $state.includes('home')}">
                                     <a ui-sref="homeRoute" translate="MAIN_NAVIGATION.HOME"></a>
                                 </li>
-                                <li ng-repeat="item in indexController.leftLinks" ng-class="{active: indexController.isActive(item)}">
-                                    <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
+                                <li ng-repeat="item in indexController.leftLinks" ng-class="{active: $state.current.name == item.name}">
+                                    <a ui-sref="{{item.name}}">{{item.addToNavBar.label}}</a>
                                 </li>
                                 <li ng-show="indexController.adminFacilities.length > 0" ng-class="{active: $state.includes('admin')}">
                                     <a ui-sref="admin.downloads" translate="MAIN_NAVIGATION.ADMIN"></a>
                                 </li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
-                                <li ng-repeat="item in indexController.rightLinks" ng-class="{active: indexController.isActive(item)}">
-                                    <a ui-sref="{{item.stateName}}" translate="{{item.addToNavBar.linkLabel}}"></a>
+                                <li ng-repeat="item in indexController.rightLinks" ng-class="{active: $state.current.name == item.name}">
+                                    <a ui-sref="{{item.name}}">{{item.addToNavBar.label}}</a>
                                 </li>
                                 <li ng-if="indexController.userFacilities.length > 0 && indexController.cartItemCount">
                                     <p class="navbar-text">

@@ -147,11 +147,10 @@
                     pages: {
                         _type: 'array',
                         _item: {
-                            url: { _type: 'string'  },
-                            stateName: { _type: 'string'  },
+                            name: { _type: 'string'  },
                             addToNavBar: { 
                                 _mandatory: false,
-                                linkLabel: { _type: 'string'  },
+                                label: { _type: 'string'  },
                                 align: { _type: 'string'  }
                             }
                          }
