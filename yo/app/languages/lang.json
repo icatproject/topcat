@@ -32,7 +32,8 @@
         "DEFAULT_LOGIN_ERROR_MESSAGE" : "Login failed",
         "INFO" : {
             "NO_MORE_FACILITIES" : "You have already logged into all available facilities"
-        }
+        },
+        "FOOTER": ""
     },
     "EU_COOKIE_LAW" : {
         "HTML" : {
