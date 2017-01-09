@@ -55,7 +55,6 @@
         });
 
         this.login = function(){
-            console.log('$state.current.name', $state.current.name);
             facility.icat().login(this.plugin, this.userName, this.password).then(function(){
                 
                 if($state.current.name == 'login-admin'){
