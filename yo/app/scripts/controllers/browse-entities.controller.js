@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $translate, $timeout, $templateCache, $uibModal, tc, helpers){
+    app.controller('BrowseEntitiesController', function($state, $q, $scope, $rootScope, $translate, $timeout, $templateCache, tc, helpers){
         var that = this; 
         var stateFromTo = $state.current.name.replace(/^.*?(\w+-\w+)$/, '$1');
         var entityType = stateFromTo.replace(/^.*-/, '');
@@ -143,14 +143,13 @@
         }
 
         var isFirstPage = true;
-        var isFileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'fileCount' }).length > 0;
         function getPage(){
             that.isLoading = true;
             return generateQueryBuilder().run(canceler.promise).then(function(entities){
                 that.isLoading = false;
                 _.each(entities, function(entity){
-                    if(isFileCountColumnDef && entity.getFileCount){
-                        entity.getFileCount(canceler.promise);
+                    if(entity.getSize){
+                        entity.getSize(canceler.promise);
                     }
                 });
                 if(isFirstPage && entities.length == 1 && facility.config(entities[0].entityType).browse[entityType].skipSingleEntities){
@@ -243,20 +242,6 @@
 
         this.browse = function(row) {
             row.browse(canceler);
-        };
-
-
-        this.upload = function() {
-            $uibModal.open({
-                templateUrl: 'views/upload.html',
-                controller: 'UploadController as uploadController',
-                size : 'lg'
-            });
-        };
-
-        this.getSize = function($event, entity){
-            $event.stopPropagation();
-            entity.getSize(canceler.promise);
         };
         
         this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');

@@ -90,16 +90,7 @@
             }
 
             if(field === 'size') {
-                if(entityType == 'cartItem'){
-                    columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.size|bytes}}</div>';
-                } else {
-                    columnDef.cellTemplate = columnDef.cellTemplate || [
-                        '<div class="ui-grid-cell-contents">', 
-                            '<span ng-if="row.entity.isGettingSize && row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>',
-                            '<span>{{row.entity.size|bytes}}</span>',
-                            '<button ng-if="!row.entity.isGettingSize && row.entity.size === undefined" class="btn btn-xs btn-info" ng-click="grid.appScope.getSize($event, row.entity)">Show</button>',
-                        '</div>'].join('');
-                }
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span><span>{{row.entity.size|bytes}}</span></div>';
             	columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
@@ -108,15 +99,9 @@
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents">{{row.entity.fileSize|bytes}}</div>';
             }
 
-            if(field === 'fileCount') {
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.fileCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.fileCount}}</div>';
-            }
-
             if(field === 'status') {
                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.status === undefined  && $root.requestCounter != 0" class="loading"></span><span ng-if="row.entity.status">{{"' + translateStatusNameSpace + '." + row.entity.status | translate}}</span></div>';
             }
-
-            
 
 
             if(columnDef.title){
@@ -546,7 +531,7 @@
             if(data === null) return 'null';
 			var out = typeof data;
 			if(out == 'object'){
-				if(data instanceof Array || data instanceof Uint8Array) return 'array';
+				if(data instanceof Array) return 'array';
 				if(data.then instanceof Function) return 'promise';
 			}
 			return out;
@@ -667,10 +652,63 @@
 			function defineMethods(methodName){
 				this[methodName] = helpers.overload({
 					'string, string, object': function(offset, params, options){
-						return send(offset, params, options);
-                    },
-                    'string, array, object': function(offset, data, options){
-                        return send(offset, data, options);
+						options = _.clone(options);
+						if(methodName.match(/post|put/)){
+							if(!options.headers) options.headers = {};
+							if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+						}
+						var url = prefix + offset;
+						if(methodName.match(/get|delete/) && params !== '') url += '?' + params;
+                    
+						var out = $q.defer();
+
+                        function call(){
+                            if(options.lowPriority) lowPriorityCounter++;
+
+                            if(options.bypassInterceptors){
+                                var xhr = $.ajax(url, {
+                                    method: methodName.toUpperCase(),
+                                    headers: options.headers,
+                                    data: methodName.match(/post|put/) ? params : undefined
+                                });
+
+                                xhr.then(function(data){
+                                    success({data: data})
+                                }, function(qXHR, textStatus, errorThrown){
+                                    failure({data: errorThrown})
+                                });
+
+                                if(options.timeout){
+                                    options.timeout.then(function(){
+                                        xhr.abort();
+                                    });
+                                }
+                            } else {
+                                var args = [url];
+                                if(methodName.match(/post|put/)) args.push(params);
+                                args.push(options);
+
+        						$http[methodName].apply($http, args).then(success, failure);
+                            }
+                        }
+
+                        function success(response){
+                            out.resolve(response.data);
+                            if(options.lowPriority) lowPriorityCounter--;
+                        }
+
+                        function failure(response){
+                            out.reject(response.data);
+                            if(options.lowPriority) lowPriorityCounter--;
+                        }
+
+                        if(options.lowPriority){
+                            lowPriorityQueue.push(call);
+                        } else {
+                            call();
+                        }
+
+						return out.promise;
                     },
 					'string, object, object': function(offset, params, options){
 						return this[methodName].call(this, offset, helpers.urlEncode(params), options)
@@ -707,72 +745,8 @@
                         return this[urlLengthMethodName].call(this, offset, {}, {});
                     }
                 });
-
-
-                function send(offset, data, options){
-                    options = _.clone(options);
-                    if(methodName.match(/post|put/)){
-                        if(!options.headers) options.headers = {};
-                        if(!options.headers['Content-Type']) options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                    }
-                    var url = prefix + offset;
-                    if(methodName.match(/get|delete/)){
-                        if(data !== '') url += '?' + data;
-                    } else if(options.queryParams) {
-                        url += '?' + helpers.urlEncode(options.queryParams);
-                    }
-                
-                    var out = $q.defer();
-
-                    function call(){
-                        if(options.lowPriority) lowPriorityCounter++;
-
-                        if(options.bypassInterceptors){
-                            var xhr = $.ajax(url, {
-                                method: methodName.toUpperCase(),
-                                headers: options.headers,
-                                data: methodName.match(/post|put/) ? data : undefined
-                            });
-
-                            xhr.then(function(data){
-                                success({data: data})
-                            }, function(qXHR, textStatus, errorThrown){
-                                failure({data: errorThrown})
-                            });
-
-                            if(options.timeout){
-                                options.timeout.then(function(){
-                                    xhr.abort();
-                                });
-                            }
-                        } else {
-                            var args = [url];
-                            if(methodName.match(/post|put/)) args.push(data);
-                            args.push(options);
-
-                            $http[methodName].apply($http, args).then(success, failure);
-                        }
-                    }
-
-                    function success(response){
-                        out.resolve(response.data);
-                        if(options.lowPriority) lowPriorityCounter--;
-                    }
-
-                    function failure(response){
-                        out.reject(response.data);
-                        if(options.lowPriority) lowPriorityCounter--;
-                    }
-
-                    if(options.lowPriority){
-                        lowPriorityQueue.push(call);
-                    } else {
-                        call();
-                    }
-
-                    return out.promise;
-                }
 			}
+
 
 
 		};
@@ -804,20 +778,10 @@
 	        	return out;
 	        };
 
-            var allMethod = $q.all;
-            $q.all = function(){
-                var out = allMethod.apply(this, arguments);
-                extendPromise(out);
-                return out;
-            };
-
 	        function extendPromise(promise){
 				promise.log = function(){
-                    var start = (new Date()).getTime();
 		            return this.then(function(data){
-                        var end = (new Date()).getTime();
-                        var diff = end - start;
-		                console.log('(success - ' + diff + ' milliseconds)', data); 
+		                console.log('(success)', data); 
 		            }, function(data){
 		                console.log('(error)', data);   
 		            }, function(data){
