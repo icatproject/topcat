@@ -39,7 +39,7 @@
                         if(cartItem.entityType == 'datafile') datafileIds.push(cartItem.entityId);
                     });
 
-                    return user.facility().icat().getSize(investigationIds, datasetIds, datafileIds, options);
+                    return user.facility().ids().getSize(investigationIds, datasetIds, datafileIds, options);
                 },
                 'promise': function(timeout){
                     return this.getSize({timeout: timeout});
