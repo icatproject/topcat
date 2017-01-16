@@ -31,7 +31,7 @@
 				this.getSize = helpers.overload({
 					'object': function(options){
 						var that = this;
-						return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+						return facility.icat().getSize(this.entityType, this.id, options).then(function(size){
 							that.size = size;
 							return size;
 						});

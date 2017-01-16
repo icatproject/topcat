@@ -274,6 +274,107 @@
     	        }
             });
 
+
+            /*
+                The use of an 'or' based expression, rather than a 'id in (id1,id2,...)' based expression,
+                is because oracle's query optimizer with a large set of IDs has previously tried to do
+                a full table scan rather than using indexes.
+            */
+
+            this.getSize = helpers.overload({
+                'array, array, array, object': function(investigationIds, datasetIds, datafileIds, options){
+                    var defered = $q.defer();
+                    var out = 0;
+                    var promises = [];
+                    
+                    options.lowPriority = true;
+                    
+                    var investigationsQuery = "select sum(datafile.fileSize) from Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where ?";
+                    var datasetsQuery = "select sum(datafile.fileSize) from Datafile datafile, datafile.dataset as dataset where ?";
+                    var datafilesQuery = "select sum(datafile.fileSize) from Datafile datafile where ?";
+
+                    var n = 1;
+                    while(investigationIds.length > 0){
+                        while(n <= investigationIds.length){
+                            var query = helpers.buildQuery([investigationsQuery, _.map(_.slice(investigationIds, 0, n), function(id){ return "investigation.id=" + id}).join(' or ').safe()]);
+                            if(this.getUrlLength('entityManager', {query: query}) > 1024){
+                                n--;
+                                break;
+                            }
+                            n++;
+                        }
+                        promises.push(this.query([investigationsQuery, _.map(_.slice(investigationIds, 0, n), function(id){ return "investigation.id=" + id}).join(' or ').safe()], options).then(function(results){
+                            out += results[0];
+                        }));
+                        investigationIds = _.slice(investigationIds, n);
+                        n = 1;
+                    }
+
+                    n = 1;
+                    while(datasetIds.length > 0){
+                        while(n <= datasetIds.length){
+                            var query = helpers.buildQuery([datasetsQuery, _.map(_.slice(datasetIds, 0, n), function(id){ return "dataset.id=" + id}).join(' or ').safe()]);
+                            if(this.getUrlLength('entityManager', {query: query}) > 1024){
+                                n--;
+                                break;
+                            }
+                            n++;
+                        }
+                        promises.push(this.query([datasetsQuery, _.map(_.slice(datasetIds, 0, n), function(id){ return "dataset.id=" + id}).join(' or ').safe()], options).then(function(results){
+                            out += results[0];
+                        }));
+                        datasetIds = _.slice(datasetIds, n);
+                        n = 1;
+                    }
+
+                    n = 1;
+                    while(datafileIds.length > 0){
+                        while(n <= datafileIds.length){
+                            var query = helpers.buildQuery([datafilesQuery, _.map(_.slice(datafileIds, 0, n), function(id){ return "datafile.id=" + id}).join(' or ').safe()]);
+                            if(this.getUrlLength('entityManager', {query: query}) > 1024){
+                                n--;
+                                break;
+                            }
+                            n++;
+                        }
+                        promises.push(this.query([datafilesQuery, _.map(_.slice(datafileIds, 0, n), function(id){ return "datafile.id=" + id}).join(' or ').safe()], options).then(function(results){
+                            out += results[0];
+                        }));
+                        datafileIds = _.slice(datafileIds, n);
+                        n = 1;
+                    }
+
+                    $q.all(promises).then(function(){
+                        defered.resolve(out);
+                    });
+
+                    return defered.promise;
+                },
+                'promise, array, array, array': function(timeout, investigationIds, datasetIds, datafileIds){
+                    return this.getSize(investigationIds, datasetIds, datafileIds, {timeout: timeout});
+                },
+                'array, array, array': function(investigationIds, datasetIds, datafileIds){
+                    return this.getSize(investigationIds, datasetIds, datafileIds, {});
+                },
+                'string, number, object': function(type, id, options){
+                    if(type == 'investigation'){
+                        return this.getSize([id], [], [], options);
+                    } else if(type == 'dataset'){
+                        return this.getSize([], [id], [], options);
+                    } else if(type == 'datafile'){
+                        return this.getSize([], [], [id], options);
+                    } else {
+                        throw "Can't perform a getSize on type '" + type + "'";
+                    }
+                },
+                'string, number, promise': function(type, id, timeout){
+                    return this.getSize(type, id, {timeout: timeout});
+                },
+                'string, number': function(type, id){
+                    return this.getSize(type, id, {});
+                }
+            });
+
             this.write = helpers.overload({
                 'array, object': function(entities, options){
                     return this.post('entityManager', {
