@@ -530,7 +530,7 @@
             "TABTITLE" : "Datafile Details",
             "NAME" : "Name",
             "DESCRIPTION" : "Description",
-            "SIZE" : "File Size",
+            "FILE_SIZE" : "File Size",
             "LOCATION" : "Location",
             "PARAMETERS" : "Parameters"
         }
