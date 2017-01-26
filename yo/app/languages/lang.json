@@ -104,7 +104,6 @@
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
                 "SIZE" : "Size",
-                "FILE_COUNT": "File Count",
                 "FACILITY" : "Facility",
                 "RUN_NUMBER" : "Run Number"
             },
@@ -120,7 +119,6 @@
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
                 "SIZE" : "Size",
-                "FILE_COUNT": "File Count",
                 "RUN_NUMBER_RANGE" : "Run Numbers",
                 "FACILITY" : "Facility"
             },
@@ -207,7 +205,6 @@
         "COLUMN": {
             "NAME": "Name",
             "SIZE": "Size",
-            "FILE_COUNT": "File Count",
             "DATASET": "Dataset",
             "INVESTIGATION": "Visit",
             "CREATE_TIME": "Create Time",

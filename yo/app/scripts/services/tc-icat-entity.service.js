@@ -31,10 +31,8 @@
 				this.getSize = helpers.overload({
 					'object': function(options){
 						var that = this;
-						this.isGettingSize = true;
 						return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
 							that.size = size;
-							that.isGettingSize = false;
 							return size;
 						});
 					},
@@ -43,32 +41,6 @@
 					},
 					'': function(){
 						return this.getSize({});
-					}
-				});
-
-				this.getFileCount = helpers.overload({
-					'object': function(options){
-						var that = this;
-						options.lowPriority = true;
-
-						var query;
-						if(this.entityType == 'investigation'){
-							query = "select count(datafile) from Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = ?";
-						} else {
-							query = "select count(datafile) from Datafile datafile, datafile.dataset as dataset where dataset.id = ?";
-						}
-
-						var key = 'getFileCount:' + this.entityType + ":" + this.id;
-            			return icat.cache().getPromise(key, function(){ return icat.query([query, that.id], options); }).then(function(response){
-							that.fileCount = response[0];
-							return that.fileCount;
-						});
-					},
-					'promise': function(timeout){
-						return this.getFileCount({timeout: timeout});
-					},
-					'': function(){
-						return this.getFileCount({});
 					}
 				});
 			}
