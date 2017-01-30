@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('MetaPanelController', function($scope, $translate, $q, tc, helpers){
+    app.controller('MetaPanelController', function($scope, $translate, $q, tc, helpers, icatSchema){
         var that = this;
         var previousEntityHash;
         var timeout = $q.defer();
@@ -27,7 +27,32 @@
 
             if(!config) return;
 
-            helpers.setupMetatabs(config, entity.type);
+            var entityType = entity.type;
+            _.each(config, function(metaTab){
+                _.each(metaTab.items, function(item){
+                    var field = item.field;
+                    if(!field) return;
+                    var matches;
+                    if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
+                        var variableName = matches[1];
+                        entityType = icatSchema.variableEntityTypes[variableName];
+                        if(!entityType){
+                            console.error("Unknown variableName: " + variableName, item)
+                        }
+                        field = matches[2];
+                    }
+
+                    if(field == 'totalFileSize'){   
+                        item.template = '<span><span ng-if="item.entity.isGettingSize && $root.requestCounter != 0" class="loading collapsed">&nbsp;</span>{{item.entity.size|bytes}}<button class="btn btn-default btn-xs" ng-click="meta.getSize(item.entity)" ng-if="!item.entity.isGettingSize && item.entity.size === undefined">Calculate</button></span>';
+                    }
+
+                    if(!item.label && item.label !== ''){
+                        var entityTypeNamespace = helpers.constantify(entityType);
+                        var fieldNamespace = helpers.constantify(field);
+                        item.label = "METATABS." + entityTypeNamespace + "." + fieldNamespace;
+                    }
+                });
+            });
 
             var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;
             if(entityHash == previousEntityHash){
@@ -98,6 +123,7 @@
                 that.tabs = tabs;
             });
         });
+
     });
 
 })();

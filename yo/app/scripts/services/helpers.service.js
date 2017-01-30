@@ -5,36 +5,7 @@
     var app = angular.module('topcat');
 
     app.service('helpers', function($http, $q, $timeout, $interval, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema, plugins){
-    	var helpers = this;
-
-    	this.setupMetatabs = function(metaTabs, entityType){
-    		_.each(metaTabs, function(metaTab){
-                _.each(metaTab.items, function(item){
-                    var field = item.field;
-                    if(!field) return;
-                    var matches;
-                    if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
-                        var variableName = matches[1];
-                        entityType = icatSchema.variableEntityTypes[variableName];
-                        if(!entityType){
-                            console.error("Unknown variableName: " + variableName, item)
-                        }
-                        entityType = entityType;
-                        field = matches[2];
-                    }
-
-                    if(field == 'totalFileSize'){   
-                        item.template = '<span><span ng-if="item.entity.isGettingSize && $root.requestCounter != 0" class="loading collapsed">&nbsp;</span>{{item.entity.size|bytes}}<button class="btn btn-default btn-xs" ng-click="meta.getSize(item.entity)" ng-if="!item.entity.isGettingSize && item.entity.size === undefined">Calculate</button></span>';
-                    }
-
-                    if(!item.label && item.label !== ''){
-                        var entityTypeNamespace = helpers.constantify(entityType);
-                        var fieldNamespace = helpers.constantify(field);
-                        item.label = "METATABS." + entityTypeNamespace + "." + fieldNamespace;
-                    }
-                });
-            });
-    	};
+    	var helpers = this;	
 
     	this.setupColumnDef = function(columnDef, entityType, translateTitleNameSpace, translateStatusNameSpace){
             var type = columnDef.type;
