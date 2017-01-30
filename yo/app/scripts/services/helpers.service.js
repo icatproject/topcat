@@ -23,6 +23,10 @@
                         field = matches[2];
                     }
 
+                    if(field == 'totalFileSize'){   
+                        item.template = '<span><span ng-if="item.entity.isGettingSize && $root.requestCounter != 0" class="loading collapsed">&nbsp;</span>{{item.entity.size|bytes}}<button class="btn btn-default btn-xs" ng-click="meta.getSize(item.entity)" ng-if="!item.entity.isGettingSize && item.entity.size === undefined">Calculate</button></span>';
+                    }
+
                     if(!item.label && item.label !== ''){
                         var entityTypeNamespace = helpers.constantify(entityType);
                         var fieldNamespace = helpers.constantify(field);
@@ -109,7 +113,7 @@
             }
 
             if(field === 'fileCount') {
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.fileCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.fileCount}}</div>';
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.fileCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.fileCount + (row.entity.fileCount == 1 ? " file" :  " files")}}</div>';
             }
 
             if(field === 'status') {

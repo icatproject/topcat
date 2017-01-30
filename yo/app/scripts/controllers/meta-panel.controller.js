@@ -5,9 +5,15 @@
 
     var app = angular.module('topcat');
 
-    app.controller('MetaPanelController', function($scope, $translate, tc, helpers){
+    app.controller('MetaPanelController', function($scope, $translate, $q, tc, helpers){
         var that = this;
         var previousEntityHash;
+        var timeout = $q.defer();
+        $scope.$on('$destroy', function(){ timeout.resolve(); });
+
+        this.getSize = function(entity){
+            entity.getSize(timeout.promise);
+        };
 
         $scope.$on('rowclick', function(event, entity){
 
@@ -55,9 +61,7 @@
                 queryBuilder.include('datafileParameterType');
             }
 
-
-
-            queryBuilder.run().then(function(entity){
+            queryBuilder.run(timeout.promise).then(function(entity){
                 entity = entity[0];
 
                 var tabs = [];
@@ -77,7 +81,7 @@
                         if(!find.match(/\]$/)) find = find + '[]';
                         _.each(entity.find(find), function(entity){
                             var value = entity.find(field)[0];
-                            if(value !== undefined){
+                            if(value !== undefined || field == 'totalFileSize'){
                                 tab.items.push({
                                     label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
                                     template: itemConfig.template,

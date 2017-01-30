@@ -104,7 +104,7 @@
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
                 "SIZE" : "Size",
-                "FILE_COUNT": "File Count",
+                "FILE_COUNT": "Size",
                 "FACILITY" : "Facility",
                 "RUN_NUMBER" : "Run Number"
             },
@@ -120,7 +120,7 @@
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
                 "SIZE" : "Size",
-                "FILE_COUNT": "File Count",
+                "FILE_COUNT": "Size",
                 "RUN_NUMBER_RANGE" : "Run Numbers",
                 "FACILITY" : "Facility"
             },
@@ -497,7 +497,8 @@
             "TITLE" : "Title",
             "SUMMARY" : "Summary",
             "START_DATE" : "Start Date",
-            "END_DATE" : "End Date"
+            "END_DATE" : "End Date",
+            "TOTAL_FILE_SIZE": "Total File Size"
         },
         "INVESTIGATION_USERS" : {
             "TABTITLE" : "Visit Users",
@@ -519,7 +520,8 @@
             "NAME" : "Name",
             "DESCRIPTION" : "Description",
             "START_DATE" : "Start Date",
-            "END_DATE" : "End Date"
+            "END_DATE" : "End Date",
+            "TOTAL_FILE_SIZE": "Total File Size"
         },
         "DATASET_TYPE" : {
             "TABTITLE" : "Dataset Type",
