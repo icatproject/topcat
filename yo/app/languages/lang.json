@@ -103,8 +103,7 @@
                 "END_DATE": "End Date",
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
-                "SIZE" : "Size",
-                "FILE_COUNT": "Size",
+                "FILE_COUNT": "File Count",
                 "FACILITY" : "Facility",
                 "RUN_NUMBER" : "Run Number"
             },
@@ -119,8 +118,7 @@
                 "COMPLETE": "complete",
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
-                "SIZE" : "Size",
-                "FILE_COUNT": "Size",
+                "FILE_COUNT": "File Count",
                 "RUN_NUMBER_RANGE" : "Run Numbers",
                 "FACILITY" : "Facility"
             },
