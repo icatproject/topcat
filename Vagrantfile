@@ -142,6 +142,8 @@ Vagrant.configure(2) do |config|
     topcat build_install
     asadmin -t set applications.application.topcat-2.2.1-SNAPSHOT.deployment-order=140
 
+    gem install faker rest-client
+    ruby /vagrant/tools/lorum_facility_generator.rb
     ruby /vagrant/provision/populate_lucene.rb
 
   }
