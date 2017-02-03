@@ -85,11 +85,6 @@
         });
     };
 
-    this.getSize = function($event, entity){
-            $event.stopPropagation();
-            entity.getSize(timeout.promise);
-        };
-
     function createGridOptions(type){
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: that, enableSelectAll: false}, tc.config().search.gridOptions[type]);

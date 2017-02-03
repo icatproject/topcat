@@ -65,16 +65,7 @@
             }
 
             if(field === 'size') {
-                if(entityType == 'cartItem'){
-                    columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.size|bytes}}</div>';
-                } else {
-                    columnDef.cellTemplate = columnDef.cellTemplate || [
-                        '<div class="ui-grid-cell-contents">', 
-                            '<span ng-if="row.entity.isGettingSize && row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>',
-                            '<span>{{row.entity.size|bytes}}</span>',
-                            '<button ng-if="!row.entity.isGettingSize && row.entity.size === undefined" class="btn btn-xs btn-info" ng-click="grid.appScope.getSize($event, row.entity)">Show</button>',
-                        '</div>'].join('');
-                }
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.size|bytes}}</div>';
             	columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
@@ -85,14 +76,13 @@
 
             if(field === 'fileCount') {
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.fileCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.fileCount + (row.entity.fileCount == 1 ? " file" :  " files")}}</div>';
+                columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
             }
 
             if(field === 'status') {
                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.status === undefined  && $root.requestCounter != 0" class="loading"></span><span ng-if="row.entity.status">{{"' + translateStatusNameSpace + '." + row.entity.status | translate}}</span></div>';
             }
-
-            
-
 
             if(columnDef.title){
                 columnDef.displayName = columnDef.title;

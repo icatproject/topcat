@@ -3,6 +3,7 @@ package org.icatproject.topcat.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -286,6 +287,36 @@ public class Download implements Serializable {
         sb.append("DownloadItems:" + this.getDownloadItems().size());
 
         return sb.toString();
+    }
+
+        public List<Long> getInvestigationIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (DownloadItem downloadItem : getDownloadItems()) {
+            if (downloadItem.getEntityType() == EntityType.investigation) {
+                out.add(downloadItem.getEntityId());
+            }
+        }
+        return out;
+    }
+
+    public List<Long> getDatasetIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (DownloadItem downloadItem : getDownloadItems()) {
+            if (downloadItem.getEntityType() == EntityType.dataset) {
+                out.add(downloadItem.getEntityId());
+            }
+        }
+        return out;
+    }
+
+    public List<Long> getDatafileIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (DownloadItem downloadItem : getDownloadItems()) {
+            if (downloadItem.getEntityType() == EntityType.datafile) {
+                out.add(downloadItem.getEntityId());
+            }
+        }
+        return out;
     }
 
     /*@Override

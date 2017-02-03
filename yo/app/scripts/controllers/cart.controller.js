@@ -154,6 +154,7 @@
 
         var getTotalSizeTimeout;
         function getTotalSize(){
+            console.log('getTotalSize');
             if(getTotalSizeTimeout){
                 getTotalSizeTimeout.resolve();
             }
@@ -161,11 +162,13 @@
             timeout.promise.then(function(){ getTotalSizeTimeout.resolve(); });
             var defered = $q.defer();
             getCarts().then(function(carts){
+                console.log('carts', carts);
                 var out = 0;
                 var promises = [];
                 _.each(carts, function(cart){
                     promises.push(cart.getSize(getTotalSizeTimeout.promise).then(function(size){
-                        out = out + size
+                        console.log('out', out);
+                        out = out + size;
                     }));
                 });
                 $q.all(promises).then(function(){
@@ -179,6 +182,7 @@
         });
 
         getTotalSize().then(function(totalSize){
+            console.log('totalSize', totalSize);
             that.totalSize = totalSize;
         });
 

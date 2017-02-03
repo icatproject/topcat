@@ -91,6 +91,40 @@
         $rootScope.$on('download:change', refreshDownloadCount);
         refreshDownloadCount();
 
+        var completedDownloads = {};
+        var completedDownloadsInit = false;
+        function checkoutForNewlyCompletedDownloads(){
+            var promises = [];
+
+            _.each(tc.userFacilities(), function(facility){
+                promises.push(facility.user().downloads("where download.isDeleted = false and download.transport = 'https' and download.status = org.icatproject.topcat.domain.DownloadStatus.COMPLETE", {bypassInterceptors: true}).then(function(downloads){
+                    _.each(downloads, function(download){
+                        var key = facility.config().name + ":" + download.id;
+                        if(!completedDownloads[key]){
+                            if(completedDownloadsInit && download.transport == 'https'){
+                                var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                                var iframe = $('<iframe>').attr('src', url).css({
+                                    position: 'absolute',
+                                    left: '-1000000px',
+                                    height: '1px',
+                                    width: '1px'
+                                });
+
+                                $('body').append(iframe);
+                            }
+                            completedDownloads[key] = true;
+                        }
+                    });
+                }));
+            });
+
+            $q.all(promises).then(function(){
+                completedDownloadsInit = true;
+            });
+        }
+        $interval(checkoutForNewlyCompletedDownloads, 1000);
+        checkoutForNewlyCompletedDownloads();
+
         this.changeLanguage = function(langKey) {
             $translate.use(langKey);
         };

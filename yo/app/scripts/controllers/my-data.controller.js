@@ -86,11 +86,6 @@
             row.browse(canceler);
         };
 
-        this.getSize = function($event, entity){
-            $event.stopPropagation();
-            entity.getSize(canceler.promise);
-        };
-
         function generateQueryBuilder(){
             var out = icat.queryBuilder(entityType);
 

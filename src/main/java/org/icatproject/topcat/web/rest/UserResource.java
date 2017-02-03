@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
@@ -558,59 +560,46 @@ public class UserResource {
 
 		if (cart != null) {
 			em.refresh(cart);
-			String preparedId = idsClient.prepareData(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
-			long size = idsClient.getSize(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
-			if (preparedId != null) {
-				Download download = new Download();
-				download.setPreparedId(preparedId);
-				download.setFacilityName(cart.getFacilityName());
-				download.setFileName(fileName);
-				download.setUserName(cart.getUserName());
-				download.setFullName(fullName);
-				download.setTransport(transport);
-				download.setTransportUrl(transportUrl);
-				download.setIcatUrl(icatUrl);
-				download.setEmail(email);
-				download.setIsEmailSent(false);
-				download.setSize(size);
-				Boolean isTwoLevel = idsClient.isTwoLevel();
-				download.setIsTwoLevel(isTwoLevel);
+			
+			Download download = new Download();
+			download.setPreparedId(sessionId);
+			download.setFacilityName(cart.getFacilityName());
+			download.setFileName(fileName);
+			download.setUserName(cart.getUserName());
+			download.setFullName(fullName);
+			download.setTransport(transport);
+			download.setTransportUrl(transportUrl);
+			download.setIcatUrl(icatUrl);
+			download.setEmail(email);
+			download.setIsEmailSent(false);
+			download.setSize(0);
+			Boolean isTwoLevel = idsClient.isTwoLevel();
+			download.setIsTwoLevel(isTwoLevel);
+			download.setStatus(DownloadStatus.PREPARING);
 
-				if (isTwoLevel || !transport.equals("https")) {
-					download.setStatus(DownloadStatus.RESTORING);
-				} else {
-					download.setStatus(DownloadStatus.COMPLETE);
-					download.setCompletedAt(new Date());
-				}
+			List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
 
-				List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
-
-				for (CartItem cartItem : cart.getCartItems()) {
-					DownloadItem downloadItem = new DownloadItem();
-					downloadItem.setEntityId(cartItem.getEntityId());
-					downloadItem.setEntityType(cartItem.getEntityType());
-					downloadItem.setDownload(download);
-					downloadItems.add(downloadItem);
-				}
-
-				download.setDownloadItems(downloadItems);
-
-				try {
-					em.persist(download);
-					em.flush();
-					em.refresh(download);
-					downloadId = download.getId();
-					em.remove(cart);
-					em.flush();
-				} catch (Exception e) {
-					logger.debug(e.getMessage());
-					throw new BadRequestException("Unable to submit for cart for download");
-				}
-
-			} else {
-				throw new BadRequestException("Unable to submit for cart for download");
+			for (CartItem cartItem : cart.getCartItems()) {
+				DownloadItem downloadItem = new DownloadItem();
+				downloadItem.setEntityId(cartItem.getEntityId());
+				downloadItem.setEntityType(cartItem.getEntityType());
+				downloadItem.setDownload(download);
+				downloadItems.add(downloadItem);
 			}
 
+			download.setDownloadItems(downloadItems);
+
+			try {
+				em.persist(download);
+				em.flush();
+				em.refresh(download);
+				downloadId = download.getId();
+				em.remove(cart);
+				em.flush();
+			} catch (Exception e) {
+				logger.debug(e.getMessage());
+				throw new BadRequestException("Unable to submit for cart for download");
+			}
 		}
 
 		return emptyCart(facilityName, userName, downloadId);

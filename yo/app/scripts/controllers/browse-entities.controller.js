@@ -244,11 +244,6 @@
         this.browse = function(row) {
             row.browse(canceler);
         };
-
-        this.getSize = function($event, entity){
-            $event.stopPropagation();
-            entity.getSize(canceler.promise);
-        };
         
         this.selectTooltip = $translate.instant('BROWSE.SELECTOR.ADD_REMOVE_TOOLTIP.TEXT');
 
