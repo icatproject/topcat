@@ -144,6 +144,7 @@
 
         var isFirstPage = true;
         var isFileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'fileCount' }).length > 0;
+        var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
         function getPage(){
             that.isLoading = true;
             return generateQueryBuilder().run(canceler.promise).then(function(entities){
@@ -151,6 +152,9 @@
                 _.each(entities, function(entity){
                     if(isFileCountColumnDef && entity.getFileCount){
                         entity.getFileCount(canceler.promise);
+                    }
+                    if(isDatasetCountColumnDef && entity.getDatasetCount){
+                        entity.getDatasetCount(canceler.promise);
                     }
                 });
                 if(isFirstPage && entities.length == 1 && facility.config(entities[0].entityType).browse[entityType].skipSingleEntities){

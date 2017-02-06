@@ -104,6 +104,7 @@
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
                 "FILE_COUNT": "File Count",
+                "DATASET_COUNT": "Dataset Count",
                 "FACILITY" : "Facility",
                 "RUN_NUMBER" : "Run Number"
             },
@@ -206,6 +207,7 @@
             "NAME": "Name",
             "SIZE": "Size",
             "FILE_COUNT": "File Count",
+            "DATASET_COUNT": "Dataset Count",
             "DATASET": "Dataset",
             "INVESTIGATION": "Visit",
             "CREATE_TIME": "Create Time",

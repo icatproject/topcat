@@ -136,6 +136,7 @@
       promises.push(searchPromise);
 
       var isFileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'fileCount' }).length > 0;
+      var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
 
       function getResults(){
         function processResults(results){
@@ -144,6 +145,9 @@
           _.each(out, function(entity){
             if(isFileCountColumnDef && entity.getFileCount) {
               entity.getFileCount(timeout.promise);
+            }
+            if(isDatasetCountColumnDef && entity.getDatasetCount) {
+              entity.getDatasetCount(timeout.promise);
             }
           });
           return out;

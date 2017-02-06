@@ -80,6 +80,12 @@
                 columnDef.enableFiltering = false;
             }
 
+            if(field === 'datasetCount') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.datasetCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.datasetCount + (row.entity.datasetCount == 1 ? " dataset" :  " datasets")}}</div>';
+                columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
+            }
+
             if(field === 'status') {
                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.status === undefined  && $root.requestCounter != 0" class="loading"></span><span ng-if="row.entity.status">{{"' + translateStatusNameSpace + '." + row.entity.status | translate}}</span></div>';
             }

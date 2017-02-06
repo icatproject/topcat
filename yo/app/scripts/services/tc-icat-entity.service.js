@@ -27,6 +27,29 @@
 				}).join("\n");
 			}
 
+			if(this.entityType == 'investigation'){
+				this.getDatasetCount = helpers.overload({
+					'object': function(options){
+						var that = this;
+						options.lowPriority = true;
+
+						var query = "select count(dataset) from Dataset dataset, dataset.investigation as investigation where investigation.id = ?";
+			
+						var key = 'getDatasetCount:' + this.entityType + ":" + this.id;
+            			return icat.cache().getPromise(key, function(){ return icat.query([query, that.id], options); }).then(function(response){
+							that.datasetCount = response[0];
+							return that.datasetCount;
+						});
+					},
+					'promise': function(timeout){
+						return this.getDatasetCount({timeout: timeout});
+					},
+					'': function(){
+						return this.getDatasetCount({});
+					}
+				});
+			}
+
 			if(this.entityType.match(/^(investigation|dataset)$/)){
 				this.getSize = helpers.overload({
 					'object': function(options){
