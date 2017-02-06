@@ -57,7 +57,7 @@ public class Watchdog {
       int pollDelay = properties.getPollDelay();
       int pollIntervalWait = properties.getPollIntervalWait();
 
-      TypedQuery<Download> query = em.createQuery("select download from Download download where (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
+      TypedQuery<Download> query = em.createQuery("select download from Download download where download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
       List<Download> downloads = query.getResultList();
 
       for(Download download : downloads){
@@ -176,7 +176,7 @@ public class Watchdog {
     IdsClient idsClient = new IdsClient(download.getTransportUrl());
     String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
     download.setPreparedId(preparedId);
-    
+
     long size = idsClient.getSize(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
     download.setSize(size);
 
