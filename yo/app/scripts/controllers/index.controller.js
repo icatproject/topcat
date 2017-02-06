@@ -95,8 +95,12 @@
         var completedDownloadsInit = false;
         function checkoutForNewlyCompletedDownloads(){
             var promises = [];
+            var data = [];
 
             _.each(tc.userFacilities(), function(facility){
+                var smartclient = facility.smartclient();
+                var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
+
                 promises.push(facility.user().downloads("where download.isDeleted = false and download.transport = 'https' and download.status = org.icatproject.topcat.domain.DownloadStatus.COMPLETE", {bypassInterceptors: true}).then(function(downloads){
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
@@ -114,12 +118,20 @@
                             }
                             completedDownloads[key] = true;
                         }
+
+                        if(download.transport == 'smartclient' && download.status != 'COMPLETE'){
+                            smartclientPing.then(function(isServer){
+                                download.isServer = isServer;
+                            });
+                        }
                     });
+                    data = _.flatten([data, downloads]);
                 }));
             });
 
             $q.all(promises).then(function(){
                 completedDownloadsInit = true;
+                $rootScope.$broadcast('downloads:update', data);
             });
         }
         $interval(checkoutForNewlyCompletedDownloads, 1000);
@@ -224,6 +236,7 @@
             });
             $q.all(promises).then(function(){
                 smartClientPingDone = true;
+                $rootScope.$broadcast('downloads:');
             });
         }
 

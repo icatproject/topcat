@@ -57,15 +57,16 @@ public class Watchdog {
       int pollDelay = properties.getPollDelay();
       int pollIntervalWait = properties.getPollIntervalWait();
 
-      TypedQuery<Download> query = em.createQuery("select download from Download download where ((download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING || download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING) and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
+      TypedQuery<Download> query = em.createQuery("select download from Download download where (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
       List<Download> downloads = query.getResultList();
 
       for(Download download : downloads){
         Date lastCheck = lastChecks.get(download.getId());
         Date now = new Date();
         long createdSecondsAgo = (now.getTime() - download.getCreatedAt().getTime()) / 1000;
-
-        if(createdSecondsAgo >= pollDelay){
+        if(download.getStatus() == DownloadStatus.PREPARING){
+          prepareDownload(download);
+        } else if(createdSecondsAgo >= pollDelay){
           if(lastCheck == null){
             performCheck(download);
           } else {
@@ -78,9 +79,9 @@ public class Watchdog {
       }
     } catch(Exception e){
       logger.error(e.getMessage());
+    } finally {
+      busy.set(false);
     }
-
-    busy.set(false);
   }
 
   private void performCheck(Download download) {
@@ -169,6 +170,21 @@ public class Watchdog {
     } else {
       logger.debug("Email not sent. Email not enabled");
     }
+  }
+
+  private void prepareDownload(Download download) throws Exception {
+    IdsClient idsClient = new IdsClient(download.getTransportUrl());
+    String preparedId = idsClient.prepareData(download.getPreparedId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+    long size = idsClient.getSize(download.getPreparedId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+    download.setPreparedId(preparedId);
+    if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {
+      download.setStatus(DownloadStatus.RESTORING);
+    } else {
+      download.setStatus(DownloadStatus.COMPLETE);
+      download.setCompletedAt(new Date());
+    }
+
+    downloadRepository.save(download);
   }
 
 }
