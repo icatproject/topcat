@@ -345,6 +345,7 @@
     "DOWNLOAD" : {
         "TITLE" : "Downloads",
         "NEW_MESSAGE": "A new download has been added",
+        "COMPLETED_MESSAGE": "A new download is now available",
         "COLUMN" : {
             "FULL_NAME": "Name",
             "USER_NAME": "Username",

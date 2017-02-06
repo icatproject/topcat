@@ -93,6 +93,7 @@
 
         var completedDownloads = {};
         var completedDownloadsInit = false;
+        this.isCompletedDownloadPopoverOpen = false;
         function checkoutForNewlyCompletedDownloads(){
             var promises = [];
             var data = [];
@@ -104,17 +105,26 @@
                 promises.push(facility.user().downloads("where download.isDeleted = false", {bypassInterceptors: true}).then(function(downloads){
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
-                        if(!completedDownloads[key]){
-                            if(completedDownloadsInit && download.transport == 'https' && download.status == 'COMPLETE'){
-                                var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
-                                var iframe = $('<iframe>').attr('src', url).css({
-                                    position: 'absolute',
-                                    left: '-1000000px',
-                                    height: '1px',
-                                    width: '1px'
-                                });
+                        if(!completedDownloads[key] && download.status == 'COMPLETE'){
+                            if(completedDownloadsInit){
+                                if(download.transport == 'https'){
+                                    var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                                    var iframe = $('<iframe>').attr('src', url).css({
+                                        position: 'absolute',
+                                        left: '-1000000px',
+                                        height: '1px',
+                                        width: '1px'
+                                    });
 
-                                $('body').append(iframe);
+                                    $('body').append(iframe);
+                                } else {
+                                    that.isCompletedDownloadPopoverOpen = true;
+                                    $timeout(function(){
+                                        $timeout(function(){
+                                            that.isCompletedDownloadPopoverOpen = false;
+                                        });
+                                    });
+                                }
                             }
                             completedDownloads[key] = true;
                         }
