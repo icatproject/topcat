@@ -174,9 +174,12 @@ public class Watchdog {
 
   private void prepareDownload(Download download) throws Exception {
     IdsClient idsClient = new IdsClient(download.getTransportUrl());
-    String preparedId = idsClient.prepareData(download.getPreparedId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
-    long size = idsClient.getSize(download.getPreparedId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+    String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
     download.setPreparedId(preparedId);
+    
+    long size = idsClient.getSize(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+    download.setSize(size);
+
     if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {
       download.setStatus(DownloadStatus.RESTORING);
     } else {

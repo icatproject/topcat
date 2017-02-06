@@ -360,7 +360,8 @@
         },
         "STATUS": {
             "COMPLETE": "Available",
-            "RESTORING": "Restoring from Tape"
+            "RESTORING": "Restoring from Tape",
+            "PREPARING": "Preparing"
         },
         "EMPTY" : "No Downloads",
         "REMOVE_DOWNLOAD" : {

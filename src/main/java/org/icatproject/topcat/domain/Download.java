@@ -63,8 +63,11 @@ public class Download implements Serializable {
     @Column(name = "FILE_NAME", nullable = false)
     private String fileName;
 
-    @Column(name = "PREPARED_ID", nullable = false)
+    @Column(name = "PREPARED_ID")
     private String preparedId;
+
+    @Column(name = "SESSION_ID", nullable = false)
+    private String sessionId;
 
     @Column(name = "EMAIL")
     private String email;
@@ -173,6 +176,14 @@ public class Download implements Serializable {
 
     public void setPreparedId(String preparedId) {
         this.preparedId = preparedId;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getEmail() {

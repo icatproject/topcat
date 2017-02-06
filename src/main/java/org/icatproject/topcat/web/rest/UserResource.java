@@ -562,7 +562,7 @@ public class UserResource {
 			em.refresh(cart);
 			
 			Download download = new Download();
-			download.setPreparedId(sessionId);
+			download.setSessionId(sessionId);
 			download.setFacilityName(cart.getFacilityName());
 			download.setFileName(fileName);
 			download.setUserName(cart.getUserName());

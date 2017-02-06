@@ -101,11 +101,11 @@
                 var smartclient = facility.smartclient();
                 var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
 
-                promises.push(facility.user().downloads("where download.isDeleted = false and download.transport = 'https' and download.status = org.icatproject.topcat.domain.DownloadStatus.COMPLETE", {bypassInterceptors: true}).then(function(downloads){
+                promises.push(facility.user().downloads("where download.isDeleted = false", {bypassInterceptors: true}).then(function(downloads){
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
                         if(!completedDownloads[key]){
-                            if(completedDownloadsInit && download.transport == 'https'){
+                            if(completedDownloadsInit && download.transport == 'https' && download.status == 'COMPLETE'){
                                 var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
                                 var iframe = $('<iframe>').attr('src', url).css({
                                     position: 'absolute',
