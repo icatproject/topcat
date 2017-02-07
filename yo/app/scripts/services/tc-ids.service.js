@@ -36,6 +36,7 @@
     			'string, number, object': function(type, id, options){
             var key = 'getSize:' + type + ":" + id;
             return this.cache().getPromise(key, function(){
+              /*
               var idsParamName = helpers.uncapitalize(type) + "Ids";
               var params = {
                 server: facility.config().icatUrl,
@@ -46,6 +47,24 @@
               return that.get('getSize', params,  options).then(function(size){
                 return parseInt('' + size);
               });
+              */
+              options.lowPriority = true;
+
+              if(type == 'investigation'){
+                return facility.icat().query([
+                  "select sum(datafile.fileSize) from Datafile datafile, ",
+                  "datafile.dataset as dataset,",
+                  "dataset.investigation as investigation",
+                  "where investigation.id = ?", id
+                ], options);
+              } else {
+                return facility.icat().query([
+                  "select sum(datafile.fileSize) from Datafile datafile, ",
+                  "datafile.dataset as dataset",
+                  "where dataset.id = ?", id
+                ], options);
+              }
+
             });
     			},
     			'string, number, promise': function(type, id, timeout){
@@ -62,6 +81,8 @@
               var currentDatasetIds = [];
               var currentDatafileIds  = [];
               var promises = [];
+
+              options.lowPriority = true;
 
               while(investigationIds.length > 0 || datasetIds.length > 0 || datafileIds.length > 0){
                 while(investigationIds.length > 0 && urlLengthIsOk(currentInvestigationIds.concat([investigationIds[0]]), currentDatasetIds, currentDatafileIds)){

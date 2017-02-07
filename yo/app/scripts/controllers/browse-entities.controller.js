@@ -143,15 +143,19 @@
         }
 
         var isFirstPage = true;
-        var isFileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'fileCount' }).length > 0;
+        var isSizeColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'size' }).length > 0;
+        var isDatafileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datafileCount' }).length > 0;
         var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
         function getPage(){
             that.isLoading = true;
             return generateQueryBuilder().run(canceler.promise).then(function(entities){
                 that.isLoading = false;
                 _.each(entities, function(entity){
-                    if(isFileCountColumnDef && entity.getFileCount){
-                        entity.getFileCount(canceler.promise);
+                    if(isSizeColumnDef && entity.getSize){
+                        entity.getSize(canceler.promise);
+                    }
+                    if(isDatafileCountColumnDef && entity.getDatafileCount){
+                        entity.getDatafileCount(canceler.promise);
                     }
                     if(isDatasetCountColumnDef && entity.getDatasetCount){
                         entity.getDatasetCount(canceler.promise);

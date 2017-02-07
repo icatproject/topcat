@@ -135,7 +135,8 @@
       var searchPromise = tc.search(facilities, timeout.promise, query);
       promises.push(searchPromise);
 
-      var isFileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'fileCount' }).length > 0;
+      var isSizeColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'size' }).length > 0;
+      var isDatafileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datafileCount' }).length > 0;
       var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
 
       function getResults(){
@@ -143,8 +144,11 @@
           var out = _.select(results, filter);
           out.sort(sorter);
           _.each(out, function(entity){
-            if(isFileCountColumnDef && entity.getFileCount) {
-              entity.getFileCount(timeout.promise);
+            if(isSizeColumnDef && entity.getSize){
+              entity.getSize(timeout.promise);
+            } 
+            if(isDatafileCountColumnDef && entity.getDatafileCount) {
+              entity.getDatafileCount(timeout.promise);
             }
             if(isDatasetCountColumnDef && entity.getDatasetCount) {
               entity.getDatasetCount(timeout.promise);

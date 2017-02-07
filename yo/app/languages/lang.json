@@ -103,8 +103,9 @@
                 "END_DATE": "End Date",
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
-                "FILE_COUNT": "File Count",
+                "DATAFILE_COUNT": "File Count",
                 "DATASET_COUNT": "Dataset Count",
+                "SIZE": "Size",
                 "FACILITY" : "Facility",
                 "RUN_NUMBER" : "Run Number"
             },
@@ -119,7 +120,8 @@
                 "COMPLETE": "complete",
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
-                "FILE_COUNT": "File Count",
+                "DATAFILE_COUNT": "File Count",
+                "SIZE": "Size",
                 "RUN_NUMBER_RANGE" : "Run Numbers",
                 "FACILITY" : "Facility"
             },
@@ -500,7 +502,7 @@
             "SUMMARY" : "Summary",
             "START_DATE" : "Start Date",
             "END_DATE" : "End Date",
-            "TOTAL_FILE_SIZE": "Total File Size"
+            "SIZE": "Total File Size"
         },
         "INVESTIGATION_USERS" : {
             "TABTITLE" : "Visit Users",

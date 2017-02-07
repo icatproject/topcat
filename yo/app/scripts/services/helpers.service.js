@@ -74,8 +74,8 @@
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents">{{row.entity.fileSize|bytes}}</div>';
             }
 
-            if(field === 'fileCount') {
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.fileCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.fileCount + (row.entity.fileCount == 1 ? " file" :  " files")}}</div>';
+            if(field === 'datafileCount') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.datafileCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.datafileCount + (row.entity.datafileCount == 1 ? " file" :  " files")}}</div>';
                 columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }

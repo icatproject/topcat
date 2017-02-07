@@ -69,7 +69,7 @@
 					}
 				});
 
-				this.getFileCount = helpers.overload({
+				this.getDatafileCount = helpers.overload({
 					'object': function(options){
 						var that = this;
 						options.lowPriority = true;
@@ -81,17 +81,17 @@
 							query = "select count(datafile) from Datafile datafile, datafile.dataset as dataset where dataset.id = ?";
 						}
 
-						var key = 'getFileCount:' + this.entityType + ":" + this.id;
+						var key = 'getDatafileCount:' + this.entityType + ":" + this.id;
             			return icat.cache().getPromise(key, function(){ return icat.query([query, that.id], options); }).then(function(response){
-							that.fileCount = response[0];
-							return that.fileCount;
+							that.datafileCount = response[0];
+							return that.datafileCount;
 						});
 					},
 					'promise': function(timeout){
-						return this.getFileCount({timeout: timeout});
+						return this.getDatafileCount({timeout: timeout});
 					},
 					'': function(){
-						return this.getFileCount({});
+						return this.getDatafileCount({});
 					}
 				});
 			}

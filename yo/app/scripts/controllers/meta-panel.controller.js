@@ -42,7 +42,7 @@
                         field = matches[2];
                     }
 
-                    if(field == 'totalFileSize'){   
+                    if(field == 'size'){   
                         item.template = '<span><span ng-if="item.entity.isGettingSize && $root.requestCounter != 0" class="loading collapsed">&nbsp;</span>{{item.entity.size|bytes}}<button class="btn btn-default btn-xs" ng-click="meta.getSize(item.entity)" ng-if="!item.entity.isGettingSize && item.entity.size === undefined">Calculate</button></span>';
                     }
 
@@ -106,7 +106,7 @@
                         if(!find.match(/\]$/)) find = find + '[]';
                         _.each(entity.find(find), function(entity){
                             var value = entity.find(field)[0];
-                            if(value !== undefined || field == 'totalFileSize'){
+                            if(value !== undefined || field == 'size'){
                                 tab.items.push({
                                     label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
                                     template: itemConfig.template,
