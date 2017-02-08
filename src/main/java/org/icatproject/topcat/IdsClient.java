@@ -241,6 +241,7 @@ public class IdsClient {
         return offsetPrefix + idsBuffer;
     }
 
+    //todo: merge into Util methods in 2.3.0
     private JsonObject parseJson(String json) throws Exception {
         InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
         JsonReader jsonReader = Json.createReader(jsonInputStream);

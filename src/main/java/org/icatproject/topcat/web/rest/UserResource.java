@@ -37,7 +37,6 @@ import org.icatproject.topcat.domain.DownloadItem;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.domain.EntityType;
 import org.icatproject.topcat.domain.ParentEntity;
-import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.NotFoundException;
@@ -604,6 +603,13 @@ public class UserResource {
 
 		return emptyCart(facilityName, userName, downloadId);
 	}
+
+	// @GET
+	// @Path("/getSize")
+	// @Produces({ MediaType.APPLICATION_JSON })
+	// public Response getCart(@QueryParam("facilityName") String facilityName, @QueryParam("icatUrl") String icatUrl,
+	// 		@QueryParam("sessionId") String sessionId) throws TopcatException, MalformedURLException, ParseException {
+
 
 	private Response emptyCart(String facilityName, String userName, Long downloadId) {
 		JsonObjectBuilder emptyCart = Json.createObjectBuilder().add("facilityName", facilityName)

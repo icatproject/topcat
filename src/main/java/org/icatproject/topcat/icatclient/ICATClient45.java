@@ -69,6 +69,7 @@ public class ICATClient45 implements ICATClientInterface {
 	 *             the internal exception
 	 *
 	 */
+	/*
 	@Override
 	public String login(String authenticationType, Map<String, String> parameters)
 			throws AuthenticationException, InternalException {
@@ -99,6 +100,7 @@ public class ICATClient45 implements ICATClientInterface {
 
 		return result;
 	}
+	*/
 
 	/**
 	 * Returns the user name as used by icat
@@ -145,6 +147,7 @@ public class ICATClient45 implements ICATClientInterface {
 		return false;
 	}
 
+	/*
 	@Override
 	public String getEntityName(String icatSessionId, String entityType, Long entityId) throws TopcatException {
 		List<Object> result = new ArrayList<Object>();
@@ -181,6 +184,7 @@ public class ICATClient45 implements ICATClientInterface {
 
 		return name;
 	}
+	*/
 
 	public List<Object> getEntities(String icatSessionId, String entityType, List<Long> entityIds)
 			throws TopcatException {
@@ -302,6 +306,7 @@ public class ICATClient45 implements ICATClientInterface {
 	 *            the icat session id
 	 * @return whether the session is valid or not
 	 */
+	/*
 	@Override
 	public Boolean isSessionValid(String icatSessionId) throws IcatException {
 		Double result = null;
@@ -321,6 +326,7 @@ public class ICATClient45 implements ICATClientInterface {
 
 		return false;
 	}
+	*/
 
 	/**
 	 * Returns the number of minutes remaining for a session
@@ -330,6 +336,7 @@ public class ICATClient45 implements ICATClientInterface {
 	 * @return the remaining minutes of the session. -1 if session is not valid
 	 *         or if other icat server error is thrown
 	 */
+	/*
 	@Override
 	public Long getRemainingMinutes(String icatSessionId) throws IcatException {
 		Double result = null;
@@ -342,6 +349,7 @@ public class ICATClient45 implements ICATClientInterface {
 
 		return result.longValue();
 	}
+	*/
 
 	/**
 	 * Resets the time-to-live of the icat session
@@ -351,6 +359,7 @@ public class ICATClient45 implements ICATClientInterface {
 	 * @throws TopcatException
 	 *
 	 */
+	/*
 	@Override
 	public void refresh(String icatSessionId) throws TopcatException {
 		try {
@@ -361,6 +370,7 @@ public class ICATClient45 implements ICATClientInterface {
 		}
 
 	}
+	*/
 
 	/**
 	 * This invalidates the sessionId.
@@ -370,6 +380,7 @@ public class ICATClient45 implements ICATClientInterface {
 	 * @throws TopcatException
 	 *
 	 */
+	/*
 	@Override
 	public void logout(String icatSessionId) throws TopcatException {
 		try {
@@ -380,6 +391,7 @@ public class ICATClient45 implements ICATClientInterface {
 		}
 
 	}
+	*/
 
 	// TODO
 	/**

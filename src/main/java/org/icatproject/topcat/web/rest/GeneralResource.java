@@ -12,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.icatproject.topcat.Constants;
-import org.icatproject.topcat.domain.StringValue;
 import org.icatproject.topcat.domain.ConfVar;
 import org.icatproject.topcat.repository.ConfVarRepository;
 import org.icatproject.topcat.exceptions.TopcatException;
@@ -41,9 +40,8 @@ public class GeneralResource {
     public Response ping() {
         logger.info("ping() called");
 
-        StringValue value = new StringValue("ok");
 
-        return Response.ok().entity(value).build();
+        return Response.ok().entity("\"ok\"").build();
     }
 
     /**
@@ -58,10 +56,7 @@ public class GeneralResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getVersion() {
         logger.info("getVersion() called");
-
-        StringValue value = new StringValue(Constants.API_VERSION);
-
-        return Response.ok().entity(value).build();
+        return Response.ok().entity("\"" + Constants.API_VERSION + "\"").build();
     }
 
     /**
@@ -81,9 +76,9 @@ public class GeneralResource {
         ConfVar confVar = confVarRepository.getConfVar(name);
 
         if(confVar != null){
-            return Response.ok().entity(new StringValue(confVar.getValue())).build();
+            return Response.ok().entity(confVar).build();
         } else {
-            return Response.ok().entity(new StringValue("")).build();
+            return Response.ok().entity("\"\"").build();
         }
     }
 

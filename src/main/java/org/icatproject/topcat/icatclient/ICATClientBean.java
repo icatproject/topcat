@@ -30,11 +30,13 @@ public class ICATClientBean {
      * @throws AuthenticationException
      * @throws InternalException
      */
+    /*
     public String login(String icatUrl, String authenticationType, Map<String, String> parameters) throws MalformedURLException, AuthenticationException, InternalException {
         ICATClientInterface service = getIcatService(icatUrl);
 
         return service.login(authenticationType, parameters);
     }
+    */
 
     /**
      * Get username by sessionId
@@ -64,11 +66,13 @@ public class ICATClientBean {
         return service.isAdmin(icatSessionId);
     }
 
+    /*
     public String getEntityName(String icatUrl, String icatSessionId, String entityType, Long entityId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(icatUrl);
 
         return service.getEntityName(icatSessionId, entityType, entityId);
     }
+    */
 
     public List<CartItem> getCartItems(String icatUrl, String icatSessionId, Map<String, List<Long>> entityTypeEntityIds) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(icatUrl);
@@ -100,12 +104,13 @@ public class ICATClientBean {
      * @throws MalformedURLException
      * @throws TopcatException
      */
+    /*
     public boolean isSessionValid(String icatUrl, String icatSessionId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(icatUrl);
 
         return service.isSessionValid(icatSessionId);
     }
-
+    */
 
     /**
      * Returns the remaining minutes of a icat session
@@ -116,11 +121,13 @@ public class ICATClientBean {
      * @throws MalformedURLException
      * @throws TopcatException
      */
+    /*
     public Long getRemainingMinutes(String icatUrl, String icatSessionId) throws MalformedURLException, TopcatException {
         ICATClientInterface service = getIcatService(icatUrl);
 
         return service.getRemainingMinutes(icatSessionId);
     }
+    */
 
 
     /**

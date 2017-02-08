@@ -525,7 +525,7 @@
             "DESCRIPTION" : "Description",
             "START_DATE" : "Start Date",
             "END_DATE" : "End Date",
-            "TOTAL_FILE_SIZE": "Total File Size"
+            "SIZE": "Total File Size"
         },
         "DATASET_TYPE" : {
             "TABTITLE" : "Dataset Type",
