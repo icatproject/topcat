@@ -21,8 +21,6 @@ public class IcatClientTest {
 	public void setup() throws Exception {
 		TestHelpers.installTrustManager();
 
-		
-
 		HttpClient httpClient = new HttpClient("https://localhost:8181/icat");
 		String data = "json=" + URLEncoder.encode("{\"plugin\":\"simple\", \"credentials\":[{\"username\":\"root\"}, {\"password\":\"root\"}]}", "UTF8");
 		String response = httpClient.post("session", new HashMap<String, String>(), data).toString();
@@ -44,6 +42,16 @@ public class IcatClientTest {
 		icatClient = new IcatClientUserNotAdmin("https://localhost:8181");
 		assertFalse(icatClient.isAdmin(sessionId));
 		assertFalse(icatClient.isAdmin("bogus-session-id"));
+	}
+
+	@Test
+	public void testGetFullName() throws Exception {
+		IcatClient icatClient = new IcatClient("https://localhost:8181");
+		String fullName = icatClient.getFullName(sessionId);
+
+		assertNotNull(fullName);
+		assertTrue(fullName.length() > 0);
+
 	}
 
 	private JsonObject parseJsonObject(String json) throws Exception {

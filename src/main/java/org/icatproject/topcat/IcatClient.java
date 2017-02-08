@@ -95,7 +95,7 @@ public class IcatClient {
 
 	public String getFullName(String sessionId) throws TopcatException {
 		try {
-			String query = "select user.fullName from User user where user";
+			String query = "select user.fullName from User user where user.name = :user";
 			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
     		return parseJsonArray(httpClient.get(url, new HashMap<String, String>()).toString()).getString(0);
     	} catch (Exception e){
