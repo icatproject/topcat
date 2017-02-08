@@ -67,6 +67,7 @@ public class IcatClient {
 				cartItem.setEntityId(entityId);
 				cartItem.setName(name);
 
+
 				if (entityType.equals("datafile")) {
 					ParentEntity parentEntity = new ParentEntity();
 					parentEntity.setEntityType(EntityType.valueOf("dataset"));
@@ -81,7 +82,7 @@ public class IcatClient {
 				} else if (entityType.equals("dataset")) {
 					ParentEntity parentEntity = new ParentEntity();
 					parentEntity.setEntityType(EntityType.valueOf("investigation"));
-					parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getJsonObject("investigation").getInt("id")));
+					parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("investigation").getInt("id")));
 					cartItem.getParentEntities().add(parentEntity);
 				}
 
@@ -110,6 +111,7 @@ public class IcatClient {
 	private List<JsonObject> getEntities(String sessionId, String entityType, List<Long> entityIds) throws TopcatException {
 		List<JsonObject> out = new ArrayList<JsonObject>();
 		try {
+			entityIds = new ArrayList<Long>(entityIds);
 
 			String queryPrefix;
 			String querySuffix;
