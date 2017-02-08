@@ -39,16 +39,17 @@ public class IcatClient {
     }
 
 	public Boolean isAdmin(String icatSessionId) throws TopcatException {
-		String[] adminUserNames = PropertyHandler.getInstance().getAdminUserNames();
-		String userName = getUserName(icatSessionId);
-		int i;
+		try {
+			String[] adminUserNames = getAdminUserNames();
+			String userName = getUserName(icatSessionId);
+			int i;
 
-		for (i = 0; i < adminUserNames.length; i++) {
-			if(userName.equals(adminUserNames[i])){
-				return true;
+			for (i = 0; i < adminUserNames.length; i++) {
+				if(userName.equals(adminUserNames[i])){
+					return true;
+				}
 			}
-		}
-
+		} catch(Exception e){}
 		return false;
 	}
 
@@ -100,6 +101,10 @@ public class IcatClient {
     	} catch (Exception e){
             throw new BadRequestException(e.getMessage());
     	}
+	}
+
+	protected String[] getAdminUserNames() throws Exception {
+		return PropertyHandler.getInstance().getAdminUserNames();
 	}
 
 	private List<JsonObject> getEntities(String sessionId, String entityType, List<Long> entityIds) throws TopcatException {
