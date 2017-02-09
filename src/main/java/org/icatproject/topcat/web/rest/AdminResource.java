@@ -29,11 +29,12 @@ import org.icatproject.topcat.domain.ConfVar;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
-import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.repository.ConfVarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.icatproject.topcat.IcatClient;
 
 @Stateless
 @LocalBean
@@ -46,9 +47,6 @@ public class AdminResource {
 
     @EJB
     private ConfVarRepository confVarRepository;
-
-    @EJB
-    private ICATClientBean icatClientService;
 
 
     /**
@@ -74,7 +72,10 @@ public class AdminResource {
             @QueryParam("sessionId") String sessionId)
             throws MalformedURLException, TopcatException {
         logger.info("isValidSession() called");
-        String isAdmin = icatClientService.isAdmin(icatUrl, sessionId) ? "true" : "false";
+
+        IcatClient icatClient = new IcatClient(icatUrl);
+
+        String isAdmin = icatClient.isAdmin(sessionId) ? "true" : "false";
 
         return Response.ok().entity(isAdmin).build();
     }
@@ -214,7 +215,9 @@ public class AdminResource {
     }
 
     private void onlyAllowAdmin(String icatUrl, String sessionId) throws TopcatException, MalformedURLException {
-        if(icatUrl == null || sessionId == null || !icatClientService.isAdmin(icatUrl, sessionId)){
+        IcatClient icatClient = new IcatClient(icatUrl);
+
+        if(icatUrl == null || sessionId == null || !icatClient.isAdmin(sessionId)){
             throw new ForbiddenException("please provide a valid icatUrl and sessionId");
         }
     }

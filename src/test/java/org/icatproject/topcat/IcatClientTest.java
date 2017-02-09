@@ -75,8 +75,6 @@ public class IcatClientTest {
 		entityTypeEntityIds.get("datafile").add((long) 7);
 		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(9, cartItems.size());
-
-		
 	}
 
 	@Test

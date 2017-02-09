@@ -41,13 +41,13 @@ import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.TopcatException;
-import org.icatproject.topcat.icatclient.ICATClientBean;
 import org.icatproject.topcat.repository.CartRepository;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.icatproject.topcat.IdsClient;
+import org.icatproject.topcat.IcatClient;
 
 @Stateless
 @LocalBean
@@ -62,9 +62,6 @@ public class UserResource {
 
 	@EJB
 	private CartRepository cartRepository;
-
-	@EJB
-	private ICATClientBean icatClientService;
 
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;
@@ -122,8 +119,10 @@ public class UserResource {
 			@QueryParam("queryOffset") String queryOffset)
 			throws TopcatException, MalformedURLException, ParseException {
 
+		IcatClient icatClient = new IcatClient(icatUrl);
+
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userName", icatClientService.getUserName(icatUrl, sessionId));
+		params.put("userName", icatClient.getUserName(sessionId));
 		params.put("queryOffset", queryOffset);
 
 		List<Download> downloads = new ArrayList<Download>();
@@ -173,7 +172,9 @@ public class UserResource {
 			throw new NotFoundException("could not find download");
 		}
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl);
+
+		String userName = icatClient.getUserName(sessionId);
 		if (!download.getUserName().equals(userName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
@@ -223,7 +224,9 @@ public class UserResource {
             throw new NotFoundException("could not find download");
         }
 
-        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        IcatClient icatClient = new IcatClient(icatUrl);
+
+        String userName = icatClient.getUserName(sessionId);
 		if (!download.getUserName().equals(userName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
@@ -278,7 +281,9 @@ public class UserResource {
 	public Response getCart(@PathParam("facilityName") String facilityName, @QueryParam("icatUrl") String icatUrl,
 			@QueryParam("sessionId") String sessionId) throws TopcatException, MalformedURLException, ParseException {
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl);
+
+		String userName = icatClient.getUserName(sessionId);
 		Cart cart = cartRepository.getCart(userName, facilityName);
 
 		if (cart != null) {
@@ -337,7 +342,9 @@ public class UserResource {
 
 		logger.info("addCartItems() called");
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl);
+
+		String userName = icatClient.getUserName(sessionId);
 		Cart cart = cartRepository.getCart(userName, facilityName);
 
 		if (cart == null) {
@@ -375,7 +382,7 @@ public class UserResource {
 			}
 		}
 
-		for (CartItem cartItem : icatClientService.getCartItems(icatUrl, sessionId, entityTypeEntityIds)) {
+		for (CartItem cartItem : icatClient.getCartItems(sessionId, entityTypeEntityIds)) {
 			cartItem.setCart(cart);
 			em.persist(cartItem);
 			for (ParentEntity parentEntity : cartItem.getParentEntities()) {
@@ -436,7 +443,9 @@ public class UserResource {
 			@QueryParam("icatUrl") String icatUrl, @QueryParam("sessionId") String sessionId,
 			@QueryParam("items") String items) throws TopcatException, MalformedURLException, ParseException {
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl);
+
+		String userName = icatClient.getUserName(sessionId);
 		Cart cart = cartRepository.getCart(userName, facilityName);
 		if (cart == null) {
 			return emptyCart(facilityName, userName);
@@ -549,9 +558,12 @@ public class UserResource {
 			throw new BadRequestException("transport is required");
 		}
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl);
+
+		String userName = icatClient.getUserName(sessionId);
+
 		Cart cart = cartRepository.getCart(userName, facilityName);
-		String fullName = icatClientService.getFullName(icatUrl, sessionId);
+		String fullName = icatClient.getFullName(sessionId);
 		Long downloadId = null;
 		IdsClient idsClient = new IdsClient(transportUrl);
 
