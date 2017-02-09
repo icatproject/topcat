@@ -110,9 +110,9 @@ public class IcatClientTest {
 
     class IcatClientUserIsAdmin extends IcatClient {
 
-    	public IcatClientUserIsAdmin(String url){
-    		super(url);
-    	}
+		public IcatClientUserIsAdmin(String url){
+			super(url);
+		}
 
 		protected String[] getAdminUserNames() throws Exception {
 			return new String[] {"simple/root"};
@@ -121,9 +121,9 @@ public class IcatClientTest {
 
     class IcatClientUserNotAdmin extends IcatClient {
 
-    	public IcatClientUserNotAdmin(String url){
-    		super(url);
-    	}
+		public IcatClientUserNotAdmin(String url){
+			super(url);
+		}
 
 		protected String[] getAdminUserNames() throws Exception {
 			return new String[] {"db/test"};
