@@ -91,6 +91,25 @@ public class IcatClientTest {
 		assertTrue(fullName.length() > 0);
 	}
 
+	@Test
+	public void testGetSize() throws Exception {
+		IcatClient icatClient = new IcatClient("https://localhost:8181");
+
+		List<Long> emptyIds = new ArrayList<Long>();
+
+		assertEquals((long) 0, (long) icatClient.getSize(sessionId, emptyIds, emptyIds, emptyIds));
+
+		List<Long> ids = new ArrayList<Long>();
+		ids.add((long) 1);
+		ids.add((long) 2);
+		ids.add((long) 3);
+
+		assertTrue(icatClient.getSize(sessionId, ids, emptyIds, emptyIds) > (long) 0);
+		assertTrue(icatClient.getSize(sessionId, emptyIds, ids, emptyIds) > (long) 0);
+		assertTrue(icatClient.getSize(sessionId, emptyIds, emptyIds, ids) > (long) 0);
+		assertTrue(icatClient.getSize(sessionId, ids, ids, ids) > (long) 0);
+	}
+
 	private JsonObject parseJsonObject(String json) throws Exception {
         InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
         JsonReader jsonReader = Json.createReader(jsonInputStream);

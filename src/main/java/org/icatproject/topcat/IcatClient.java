@@ -131,16 +131,18 @@ public class IcatClient {
 			Long out = (long) 0;
 			String query, response, url;
 
+			datafileIds = new ArrayList<Long>(datafileIds);
+
 			for(Long investigationId : investigationIds){
 				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + investigationId;
-				url = "entityManager?" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
+				url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
 				response = httpClient.get(url, new HashMap<String, String>()).toString();
 				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
 			}
 
 			for(Long datasetId : datasetIds){
 				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + datasetId;
-				url = "entityManager?" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
+				url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
 				response = httpClient.get(url, new HashMap<String, String>()).toString();
 				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
 			}
@@ -154,11 +156,11 @@ public class IcatClient {
 
 			List<String> passedUrls = new ArrayList<String>();
 
-			while(investigationIds.size() > 0){
+			while(datafileIds.size() > 0){
 				if (currentCandidateEntityIds.length() != 0) {
 					currentCandidateEntityIds.append(",");
 				}
-				currentCandidateEntityIds.append(investigationIds.get(0));
+				currentCandidateEntityIds.append(datafileIds.get(0));
 				currentCandidateUrl = "entityManager?sessionId="  + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(queryPrefix + currentCandidateEntityIds.toString() + querySuffix , "UTF8");
 				if(httpClient.urlLength(currentCandidateUrl) > 2048){
 					currentCandidateEntityIds = new StringBuffer();
@@ -170,7 +172,7 @@ public class IcatClient {
 				} else {
 					currentPassedUrl = currentCandidateUrl;
 					currentCandidateUrl = null;
-					investigationIds.remove(0);
+					datafileIds.remove(0);
 				}
 			}
 
@@ -179,9 +181,8 @@ public class IcatClient {
 			}
 
 			for(String passedUrl : passedUrls){
-				for(JsonValue entityValue : parseJsonArray(httpClient.get(passedUrl, new HashMap<String, String>()).toString())){
-					out += ((JsonNumber) entityValue).longValue();
-				}
+				response = httpClient.get(passedUrl, new HashMap<String, String>()).toString();
+				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
 			}
 
 			return out;
