@@ -45,81 +45,42 @@ public class IcatClientTest {
 		assertFalse(icatClient.isAdmin("bogus-session-id"));
 	}
 
-	/*
 	@Test
-	public void testGetCartItems1() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
+	public void testGetEntities() throws Exception {
+		IcatClient icatClient = new IcatClientUserIsAdmin("https://localhost:8181");
 
-		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
+		List<Long> ids = new ArrayList<Long>();
 
-		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(0, cartItems.size());
+		List<JsonObject> results = icatClient.getEntities(sessionId, "investigation", ids);
+		assertEquals(0, results.size());
+		results = icatClient.getEntities(sessionId, "dataset", ids);
+		assertEquals(0, results.size());
+		results = icatClient.getEntities(sessionId, "datafile", ids);
+		assertEquals(0, results.size());
 
-		entityTypeEntityIds.get("investigation").add((long) 1);
-		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(1, cartItems.size());
+		ids.add((long) 1);
 
+		results = icatClient.getEntities(sessionId, "investigation", ids);
+		assertEquals(1, results.size());
 
-		entityTypeEntityIds.get("dataset").add((long) 1);
-		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(2, cartItems.size());
-		
-		entityTypeEntityIds.get("datafile").add((long) 1);
-		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(3, cartItems.size());
+		results = icatClient.getEntities(sessionId, "dataset", ids);
+		assertEquals(1, results.size());
+		assertNotNull(results.get(0).getJsonObject("investigation"));
 
-		entityTypeEntityIds.get("investigation").add((long) 2);
-		entityTypeEntityIds.get("dataset").add((long) 3);
-		entityTypeEntityIds.get("datafile").add((long) 4);
-		entityTypeEntityIds.get("datafile").add((long) 5);
-		entityTypeEntityIds.get("datafile").add((long) 6);
-		entityTypeEntityIds.get("datafile").add((long) 7);
-		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(9, cartItems.size());
-	}
+		results = icatClient.getEntities(sessionId, "datafile", ids);
+		assertEquals(1, results.size());
+		assertNotNull(results.get(0).getJsonObject("dataset"));
+		assertNotNull(results.get(0).getJsonObject("dataset").getJsonObject("investigation"));
 
-	@Test
-	public void testGetCartItems2() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
-
-		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
-		for(long i = 1; i <= 10000; i++){
-			entityTypeEntityIds.get("datafile").add(i);
+		for(long i = 2; i <= 10001; i++){
+			ids.add((long) i);
 		}
-		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(10000, cartItems.size());
+
+		results = icatClient.getEntities(sessionId, "datafile", ids);
+		assertEquals(10001, results.size());
+
 	}
 
-	@Test
-	public void testGetCartItems3() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
-
-		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
-		entityTypeEntityIds.get("investigation").add((long) 1);
-		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(0, cartItems.get(0).getParentEntities().size());
-	}
-
-	@Test
-	public void testGetCartItems4() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
-
-		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
-		entityTypeEntityIds.get("dataset").add((long) 1);
-		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(1, cartItems.get(0).getParentEntities().size());
-	}
-
-	@Test
-	public void testGetCartItems5() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
-
-		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
-		entityTypeEntityIds.get("datafile").add((long) 1);
-		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
-		assertEquals(2, cartItems.get(0).getParentEntities().size());
-	}
-	*/
 
 	@Test
 	public void testGetFullName() throws Exception {
