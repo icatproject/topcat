@@ -46,13 +46,10 @@ public class IcatClientTest {
 	}
 
 	@Test
-	public void testGetCartItems() throws Exception {
-		IcatClient icatClient = new IcatClientUserIsAdmin("https://localhost:8181");
+	public void testGetCartItems1() throws Exception {
+		IcatClient icatClient = new IcatClient("https://localhost:8181");
 
-		Map<String, List<Long>> entityTypeEntityIds = new HashMap<String, List<Long>>();
-		entityTypeEntityIds.put("investigation", new ArrayList<Long>());
-		entityTypeEntityIds.put("dataset", new ArrayList<Long>());
-		entityTypeEntityIds.put("datafile", new ArrayList<Long>());
+		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
 
 		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(0, cartItems.size());
@@ -61,11 +58,11 @@ public class IcatClientTest {
 		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(1, cartItems.size());
 
+
 		entityTypeEntityIds.get("dataset").add((long) 1);
 		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(2, cartItems.size());
-
-
+		
 		entityTypeEntityIds.get("datafile").add((long) 1);
 		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(3, cartItems.size());
@@ -79,14 +76,49 @@ public class IcatClientTest {
 		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(9, cartItems.size());
 
-		entityTypeEntityIds.put("investigation", new ArrayList<Long>());
-		entityTypeEntityIds.put("dataset", new ArrayList<Long>());
-		entityTypeEntityIds.put("datafile", new ArrayList<Long>());
+		
+	}
+
+	@Test
+	public void testGetCartItems2() throws Exception {
+		IcatClient icatClient = new IcatClient("https://localhost:8181");
+
+		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
 		for(long i = 1; i <= 10000; i++){
 			entityTypeEntityIds.get("datafile").add(i);
 		}
-		cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
+		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(10000, cartItems.size());
+	}
+
+	@Test
+	public void testGetCartItems3() throws Exception {
+		IcatClient icatClient = new IcatClient("https://localhost:8181");
+
+		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
+		entityTypeEntityIds.get("investigation").add((long) 1);
+		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
+		assertEquals(0, cartItems.get(0).getParentEntities().size());
+	}
+
+	@Test
+	public void testGetCartItems4() throws Exception {
+		IcatClient icatClient = new IcatClient("https://localhost:8181");
+
+		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
+		entityTypeEntityIds.get("dataset").add((long) 1);
+		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
+		assertEquals(1, cartItems.get(0).getParentEntities().size());
+	}
+
+	@Test
+	public void testGetCartItems5() throws Exception {
+		IcatClient icatClient = new IcatClient("https://localhost:8181");
+
+		Map<String, List<Long>> entityTypeEntityIds = createEmptyEntityTypeEntityIds();
+		entityTypeEntityIds.get("datafile").add((long) 1);
+		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
+		assertEquals(2, cartItems.get(0).getParentEntities().size());
 	}
 
 	@Test
@@ -96,7 +128,6 @@ public class IcatClientTest {
 
 		assertNotNull(fullName);
 		assertTrue(fullName.length() > 0);
-
 	}
 
 	private JsonObject parseJsonObject(String json) throws Exception {
@@ -105,6 +136,14 @@ public class IcatClientTest {
         JsonObject out = jsonReader.readObject();
         jsonReader.close();
         return out;
+    }
+
+    private Map<String, List<Long>> createEmptyEntityTypeEntityIds(){
+    	Map<String, List<Long>> out = new HashMap<String, List<Long>>();
+		out.put("investigation", new ArrayList<Long>());
+		out.put("dataset", new ArrayList<Long>());
+		out.put("datafile", new ArrayList<Long>());
+		return out;
     }
 
 
