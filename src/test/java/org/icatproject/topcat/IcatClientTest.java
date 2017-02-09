@@ -114,7 +114,7 @@ public class IcatClientTest {
     		super(url);
     	}
 
-    	protected String[] getAdminUserNames() throws Exception {
+		protected String[] getAdminUserNames() throws Exception {
 			return new String[] {"simple/root"};
 		}
     }
@@ -125,7 +125,7 @@ public class IcatClientTest {
     		super(url);
     	}
 
-    	protected String[] getAdminUserNames() throws Exception {
+		protected String[] getAdminUserNames() throws Exception {
 			return new String[] {"db/test"};
 		}
     }
