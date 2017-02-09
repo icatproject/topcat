@@ -126,9 +126,69 @@ public class IcatClient {
 		return out;
 	}
 
-	// public Long getSize(String sessionId, String entityType, Long entityId){
+	public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+		try {
+			Long out = (long) 0;
+			String query, response, url;
 
-	// }
+			for(Long investigationId : investigationIds){
+				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + investigationId;
+				url = "entityManager?" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
+				response = httpClient.get(url, new HashMap<String, String>()).toString();
+				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+			}
+
+			for(Long datasetId : datasetIds){
+				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + datasetId;
+				url = "entityManager?" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
+				response = httpClient.get(url, new HashMap<String, String>()).toString();
+				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+			}
+
+			String queryPrefix = "select sum(datafile.fileSize) from Datafile datafile where datafile.id in (";
+			String querySuffix = ")";
+
+			StringBuffer currentCandidateEntityIds = new StringBuffer();
+			String currentPassedUrl = null;
+			String currentCandidateUrl = null;
+
+			List<String> passedUrls = new ArrayList<String>();
+
+			while(investigationIds.size() > 0){
+				if (currentCandidateEntityIds.length() != 0) {
+					currentCandidateEntityIds.append(",");
+				}
+				currentCandidateEntityIds.append(investigationIds.get(0));
+				currentCandidateUrl = "entityManager?sessionId="  + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(queryPrefix + currentCandidateEntityIds.toString() + querySuffix , "UTF8");
+				if(httpClient.urlLength(currentCandidateUrl) > 2048){
+					currentCandidateEntityIds = new StringBuffer();
+					if(currentPassedUrl == null){
+						break;
+					}
+					passedUrls.add(currentPassedUrl);
+					currentPassedUrl = null;
+				} else {
+					currentPassedUrl = currentCandidateUrl;
+					currentCandidateUrl = null;
+					investigationIds.remove(0);
+				}
+			}
+
+			if(currentPassedUrl != null){
+				passedUrls.add(currentPassedUrl);
+			}
+
+			for(String passedUrl : passedUrls){
+				for(JsonValue entityValue : parseJsonArray(httpClient.get(passedUrl, new HashMap<String, String>()).toString())){
+					out += ((JsonNumber) entityValue).longValue();
+				}
+			}
+
+			return out;
+		} catch (Exception e) {
+			throw new BadRequestException(e.getMessage());
+		}
+	}
 
 	protected String[] getAdminUserNames() throws Exception {
 		return PropertyHandler.getInstance().getAdminUserNames();
