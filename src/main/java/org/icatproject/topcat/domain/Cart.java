@@ -36,11 +36,6 @@ import org.eclipse.persistence.annotations.CascadeOnDelete;
         )
 )
 @CascadeOnDelete
-@NamedQueries({
-        @NamedQuery(name = "Cart.findAll", query = "SELECT c FROM Cart c"),
-        @NamedQuery(name = "Cart.findById", query = "SELECT c FROM Cart c WHERE c.id = :id"),
-        @NamedQuery(name = "Cart.findByFacilityNameAndUserName", query = "SELECT c FROM Cart c WHERE c.facilityName = :facilityName AND c.userName = :userName")
-})
 @XmlRootElement
 public class Cart implements Serializable {
     private static final long serialVersionUID = 1L;

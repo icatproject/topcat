@@ -53,12 +53,13 @@ public class IcatClient {
 		return false;
 	}
 
-	public List<CartItem> getCartItems(String icatSessionId, Map<String, List<Long>> entityTypeEntityIds) throws TopcatException {
+	//todo: merge into UserResource addCartItems
+	public List<CartItem> getCartItems(String sessionId, Map<String, List<Long>> entityTypeEntityIds) throws TopcatException {
 		List<CartItem> out = new ArrayList<CartItem>();
 
 		for (String entityType : entityTypeEntityIds.keySet()) {
 			List<Long> entityIds = entityTypeEntityIds.get(entityType);
-			for (JsonObject entity : getEntities(icatSessionId, entityType, entityIds)) {
+			for (JsonObject entity : getEntities(sessionId, entityType, entityIds)) {
 				String name = entity.getString("name");
 				Long entityId = Long.valueOf(entity.getInt("id"));
 
@@ -103,6 +104,10 @@ public class IcatClient {
             throw new BadRequestException(e.getMessage());
     	}
 	}
+
+	// public Long getSize(String sessionId, String entityType, Long entityId){
+
+	// }
 
 	protected String[] getAdminUserNames() throws Exception {
 		return PropertyHandler.getInstance().getAdminUserNames();

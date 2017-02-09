@@ -394,6 +394,35 @@ public class UserResource {
 		em.flush();
 		em.refresh(cart);
 
+		//remove any entities that have a parent added to the cart
+        Map<Long, Boolean> investigationIds = new HashMap<Long, Boolean>();
+        Map<Long, Boolean> datasetIds = new HashMap<Long, Boolean>();
+
+        for(CartItem cartItem : cart.getCartItems()){
+            if(cartItem.getEntityType().equals(EntityType.valueOf("investigation"))){
+                investigationIds.put(cartItem.getEntityId(), true);
+            } else if(cartItem.getEntityType().equals(EntityType.valueOf("dataset"))){
+                datasetIds.put(cartItem.getEntityId(), true);
+            }
+        }
+
+
+
+        for(CartItem cartItem : cart.getCartItems()){
+            for(ParentEntity parentEntity : cartItem.getParentEntities()){
+                if(parentEntity.getEntityType().equals(EntityType.valueOf("investigation")) && investigationIds.get(parentEntity.getEntityId()) != null){
+                    em.remove(cartItem);
+                    break;
+                } else if(parentEntity.getEntityType().equals(EntityType.valueOf("dataset")) && datasetIds.get(parentEntity.getEntityId()) != null){
+                    em.remove(cartItem);
+                    break;
+                }
+            }
+        }
+
+		em.flush();
+		em.refresh(cart);
+
 		return Response.ok().entity(cart).build();
 	}
 
