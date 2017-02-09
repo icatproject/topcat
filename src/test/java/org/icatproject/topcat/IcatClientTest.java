@@ -45,6 +45,7 @@ public class IcatClientTest {
 		assertFalse(icatClient.isAdmin("bogus-session-id"));
 	}
 
+	/*
 	@Test
 	public void testGetCartItems1() throws Exception {
 		IcatClient icatClient = new IcatClient("https://localhost:8181");
@@ -118,6 +119,7 @@ public class IcatClientTest {
 		List<CartItem> cartItems = icatClient.getCartItems(sessionId, entityTypeEntityIds);
 		assertEquals(2, cartItems.get(0).getParentEntities().size());
 	}
+	*/
 
 	@Test
 	public void testGetFullName() throws Exception {

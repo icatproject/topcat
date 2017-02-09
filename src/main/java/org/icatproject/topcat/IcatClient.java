@@ -53,48 +53,6 @@ public class IcatClient {
 		return false;
 	}
 
-	//todo: merge into UserResource addCartItems
-	public List<CartItem> getCartItems(String sessionId, Map<String, List<Long>> entityTypeEntityIds) throws TopcatException {
-		List<CartItem> out = new ArrayList<CartItem>();
-
-		for (String entityType : entityTypeEntityIds.keySet()) {
-			List<Long> entityIds = entityTypeEntityIds.get(entityType);
-			for (JsonObject entity : getEntities(sessionId, entityType, entityIds)) {
-				String name = entity.getString("name");
-				Long entityId = Long.valueOf(entity.getInt("id"));
-
-				CartItem cartItem = new CartItem();
-				cartItem.setEntityType(EntityType.valueOf(entityType));
-				cartItem.setEntityId(entityId);
-				cartItem.setName(name);
-
-
-				if (entityType.equals("datafile")) {
-					ParentEntity parentEntity = new ParentEntity();
-					parentEntity.setEntityType(EntityType.valueOf("dataset"));
-					parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getInt("id")));
-					cartItem.getParentEntities().add(parentEntity);
-
-					parentEntity = new ParentEntity();
-					parentEntity.setEntityType(EntityType.valueOf("investigation"));
-					parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getJsonObject("investigation").getInt("id")));
-					cartItem.getParentEntities().add(parentEntity);
-
-				} else if (entityType.equals("dataset")) {
-					ParentEntity parentEntity = new ParentEntity();
-					parentEntity.setEntityType(EntityType.valueOf("investigation"));
-					parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("investigation").getInt("id")));
-					cartItem.getParentEntities().add(parentEntity);
-				}
-
-				out.add(cartItem);
-
-			}
-		}
-
-		return out;
-	}
-
 	public String getFullName(String sessionId) throws TopcatException {
 		try {
 			String query = "select user.fullName from User user where user.name = :user";
@@ -105,15 +63,7 @@ public class IcatClient {
     	}
 	}
 
-	// public Long getSize(String sessionId, String entityType, Long entityId){
-
-	// }
-
-	protected String[] getAdminUserNames() throws Exception {
-		return PropertyHandler.getInstance().getAdminUserNames();
-	}
-
-	private List<JsonObject> getEntities(String sessionId, String entityType, List<Long> entityIds) throws TopcatException {
+	public List<JsonObject> getEntities(String sessionId, String entityType, List<Long> entityIds) throws TopcatException {
 		List<JsonObject> out = new ArrayList<JsonObject>();
 		try {
 			entityIds = new ArrayList<Long>(entityIds);
@@ -174,6 +124,14 @@ public class IcatClient {
 		}
 
 		return out;
+	}
+
+	// public Long getSize(String sessionId, String entityType, Long entityId){
+
+	// }
+
+	protected String[] getAdminUserNames() throws Exception {
+		return PropertyHandler.getInstance().getAdminUserNames();
 	}
 
 	//todo: merge into Util methods in 2.3.0

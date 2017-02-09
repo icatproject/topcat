@@ -13,8 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
+import javax.json.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.DELETE;
@@ -355,65 +354,65 @@ public class UserResource {
 			em.flush();
 		}
 
-		Map<String, List<Long>> entityTypeEntityIds = new HashMap<String, List<Long>>();
-		entityTypeEntityIds.put("investigation", new ArrayList<Long>());
-		entityTypeEntityIds.put("dataset", new ArrayList<Long>());
-		entityTypeEntityIds.put("datafile", new ArrayList<Long>());
+		Map<Long, Boolean> isInvestigationIdIndex = new HashMap<Long, Boolean>();
+        Map<Long, Boolean> isDatasetIdIndex = new HashMap<Long, Boolean>();
+        Map<Long, Boolean> isDatafileIdIndex = new HashMap<Long, Boolean>();
+
+        for(CartItem cartItem : cart.getCartItems()){
+            if(cartItem.getEntityType().equals(EntityType.valueOf("investigation"))){
+                isInvestigationIdIndex.put(cartItem.getEntityId(), true);
+            } else if(cartItem.getEntityType().equals(EntityType.valueOf("dataset"))){
+                isDatasetIdIndex.put(cartItem.getEntityId(), true);
+            } else {
+            	isDatafileIdIndex.put(cartItem.getEntityId(), true);
+            }
+        }
+
+		List<Long> investigationIdsToAdd = new ArrayList<Long>();
+		List<Long> datasetIdsToAdd = new ArrayList<Long>();
+		List<Long> datafileIdsToAdd = new ArrayList<Long>();
+
 
 		for (String item : items.split("\\s*,\\s*")) {
 			String[] pair = item.split("\\s+");
 			if (pair.length == 2) {
 				String entityType = pair[0];
 				Long entityId = Long.parseLong(pair[1]);
-				List<Long> entityIds = entityTypeEntityIds.get(entityType);
-				boolean isAlreadyInCart = false;
-
-				for (CartItem cartItem : cart.getCartItems()) {
-					if (cartItem.getEntityType().equals(EntityType.valueOf(entityType))
-							&& cartItem.getEntityId().equals(entityId)) {
-						isAlreadyInCart = true;
-						break;
-					}
+				if(entityType.equals("investigation") && isInvestigationIdIndex.get(entityId) != null){
+					continue;
+				} else if(entityType.equals("dataset") && isDatasetIdIndex.get(entityId) != null){
+					continue;
+				} else if(entityType.equals("datafile") && isDatafileIdIndex.get(entityId) != null){
+					continue;
 				}
 
-				if (!isAlreadyInCart) {
-					entityIds.add(entityId);
+				if(entityType.equals("investigation")){
+					investigationIdsToAdd.add(entityId);
+					isInvestigationIdIndex.put(entityId, true);
+				} else if(entityType.equals("dataset")){
+					datasetIdsToAdd.add(entityId);
+					isDatasetIdIndex.put(entityId, true);
+				} else {
+					datafileIdsToAdd.add(entityId);
 				}
 			}
 		}
 
-		for (CartItem cartItem : icatClient.getCartItems(sessionId, entityTypeEntityIds)) {
-			cartItem.setCart(cart);
-			em.persist(cartItem);
-			for (ParentEntity parentEntity : cartItem.getParentEntities()) {
-				parentEntity.setCartItem(cartItem);
-				em.persist(parentEntity);
-			}
-		}
+		addEntitiesToCart(icatClient, sessionId, cart, "investigation", investigationIdsToAdd);
+		addEntitiesToCart(icatClient, sessionId, cart, "dataset", datasetIdsToAdd);
+		addEntitiesToCart(icatClient, sessionId, cart, "datafile", datafileIdsToAdd);
 
 		em.flush();
 		em.refresh(cart);
 
 		//remove any entities that have a parent added to the cart
-        Map<Long, Boolean> investigationIds = new HashMap<Long, Boolean>();
-        Map<Long, Boolean> datasetIds = new HashMap<Long, Boolean>();
-
-        for(CartItem cartItem : cart.getCartItems()){
-            if(cartItem.getEntityType().equals(EntityType.valueOf("investigation"))){
-                investigationIds.put(cartItem.getEntityId(), true);
-            } else if(cartItem.getEntityType().equals(EntityType.valueOf("dataset"))){
-                datasetIds.put(cartItem.getEntityId(), true);
-            }
-        }
-
-
 
         for(CartItem cartItem : cart.getCartItems()){
             for(ParentEntity parentEntity : cartItem.getParentEntities()){
-                if(parentEntity.getEntityType().equals(EntityType.valueOf("investigation")) && investigationIds.get(parentEntity.getEntityId()) != null){
+                if(parentEntity.getEntityType().equals(EntityType.valueOf("investigation")) && isInvestigationIdIndex.get(parentEntity.getEntityId()) != null){
                     em.remove(cartItem);
                     break;
-                } else if(parentEntity.getEntityType().equals(EntityType.valueOf("dataset")) && datasetIds.get(parentEntity.getEntityId()) != null){
+                } else if(parentEntity.getEntityType().equals(EntityType.valueOf("dataset")) && isDatasetIdIndex.get(parentEntity.getEntityId()) != null){
                     em.remove(cartItem);
                     break;
                 }
@@ -424,6 +423,48 @@ public class UserResource {
 		em.refresh(cart);
 
 		return Response.ok().entity(cart).build();
+	}
+
+
+	private void addEntitiesToCart(IcatClient icatClient, String sessionId, Cart cart, String entityType, List<Long> entityIds) throws TopcatException {
+		if(entityIds.size() == 0){
+			return;
+		}	
+
+		for (JsonObject entity : icatClient.getEntities(sessionId, entityType, entityIds)) {
+			String name = entity.getString("name");
+			Long entityId = Long.valueOf(entity.getInt("id"));
+
+			CartItem cartItem = new CartItem();
+			cartItem.setCart(cart);
+			cartItem.setEntityType(EntityType.valueOf(entityType));
+			cartItem.setEntityId(entityId);
+			cartItem.setName(name);
+			em.persist(cartItem);
+
+
+			if (entityType.equals("datafile")) {
+				ParentEntity parentEntity = new ParentEntity();
+				parentEntity.setCartItem(cartItem);
+				parentEntity.setEntityType(EntityType.valueOf("dataset"));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getInt("id")));
+				cartItem.getParentEntities().add(parentEntity);
+				em.persist(parentEntity);
+
+				parentEntity = new ParentEntity();
+				parentEntity.setEntityType(EntityType.valueOf("investigation"));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getJsonObject("investigation").getInt("id")));
+				cartItem.getParentEntities().add(parentEntity);
+				em.persist(parentEntity);
+
+			} else if (entityType.equals("dataset")) {
+				ParentEntity parentEntity = new ParentEntity();
+				parentEntity.setEntityType(EntityType.valueOf("investigation"));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("investigation").getInt("id")));
+				cartItem.getParentEntities().add(parentEntity);
+				em.persist(parentEntity);
+			}
+		}
 	}
 
 	/**
