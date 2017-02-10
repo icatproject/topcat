@@ -19,18 +19,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.icatproject.topcat.utils.PropertyHandler;
+import org.icatproject.topcat.repository.CacheRepository;
 
 public class IcatClient {
 
 	private Logger logger = LoggerFactory.getLogger(IcatClient.class);
 
     private HttpClient httpClient;
+    private String sessionId;
    
-    public IcatClient(String url){
+    public IcatClient(String url, String sessionId){
         this.httpClient = new HttpClient(url + "/icat");
+        this.sessionId = sessionId;
     }
 
-    public String getUserName(String sessionId) throws TopcatException {
+    public String getUserName() throws TopcatException {
     	try {
     		return parseJsonObject(httpClient.get("session/" + sessionId, new HashMap<String, String>()).toString()).getString("userName");
     	} catch (Exception e){
@@ -38,10 +41,10 @@ public class IcatClient {
     	}
     }
 
-	public Boolean isAdmin(String icatSessionId) throws TopcatException {
+	public Boolean isAdmin() throws TopcatException {
 		try {
 			String[] adminUserNames = getAdminUserNames();
-			String userName = getUserName(icatSessionId);
+			String userName = getUserName();
 			int i;
 
 			for (i = 0; i < adminUserNames.length; i++) {
@@ -53,7 +56,7 @@ public class IcatClient {
 		return false;
 	}
 
-	public String getFullName(String sessionId) throws TopcatException {
+	public String getFullName() throws TopcatException {
 		try {
 			String query = "select user.fullName from User user where user.name = :user";
 			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
@@ -63,7 +66,7 @@ public class IcatClient {
     	}
 	}
 
-	public List<JsonObject> getEntities(String sessionId, String entityType, List<Long> entityIds) throws TopcatException {
+	public List<JsonObject> getEntities(String entityType, List<Long> entityIds) throws TopcatException {
 		List<JsonObject> out = new ArrayList<JsonObject>();
 		try {
 			entityIds = new ArrayList<Long>(entityIds);
@@ -126,7 +129,7 @@ public class IcatClient {
 		return out;
 	}
 
-	public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+	public Long getSize(CacheRepository cacheRepository, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
 		try {
 			Long out = (long) 0;
 			String query, response, url;
@@ -134,17 +137,41 @@ public class IcatClient {
 			datafileIds = new ArrayList<Long>(datafileIds);
 
 			for(Long investigationId : investigationIds){
-				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + investigationId;
-				url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-				response = httpClient.get(url, new HashMap<String, String>()).toString();
-				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+				String key = "getSize:investigation:" + investigationId;
+				Long size = null;
+
+				if(cacheRepository != null){
+					size = (Long) cacheRepository.get(key);
+				}
+
+				if(size == null){
+					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + investigationId;
+					url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
+					response = httpClient.get(url, new HashMap<String, String>()).toString();
+					size = ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+					cacheRepository.put(key, size);
+				}
+
+				out += size;
 			}
 
 			for(Long datasetId : datasetIds){
-				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + datasetId;
-				url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-				response = httpClient.get(url, new HashMap<String, String>()).toString();
-				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+				String key = "getSize:dataset:" + datasetId;
+				Long size = null;
+
+				if(cacheRepository != null){
+					size = (Long) cacheRepository.get(key);
+				}
+
+				if(size == null){
+					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + datasetId;
+					url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
+					response = httpClient.get(url, new HashMap<String, String>()).toString();
+					size = ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+					cacheRepository.put(key, size);
+				}
+
+				out += size;
 			}
 
 			String queryPrefix = "select sum(datafile.fileSize) from Datafile datafile where datafile.id in (";

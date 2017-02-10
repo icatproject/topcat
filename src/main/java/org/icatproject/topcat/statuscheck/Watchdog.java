@@ -19,7 +19,7 @@ import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.utils.PropertyHandler;
 import org.icatproject.topcat.utils.MailBean;
 import org.icatproject.topcat.utils.ConvertUtils;
-import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.repository.*;
 import org.icatproject.topcat.IdsClient;
 import org.icatproject.topcat.IcatClient;
 
@@ -43,6 +43,9 @@ public class Watchdog {
 
   @EJB
   private DownloadRepository downloadRepository;
+
+  @EJB
+  private CacheRepository cacheRepository;
 
   @EJB
   MailBean mailBean;
@@ -178,8 +181,8 @@ public class Watchdog {
     String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
     download.setPreparedId(preparedId);
 
-    IcatClient icatClient = new IcatClient(download.getIcatUrl());
-    Long size = icatClient.getSize(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+    IcatClient icatClient = new IcatClient(download.getIcatUrl(), download.getSessionId());
+    Long size = icatClient.getSize(cacheRepository, download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
     download.setSize(size);
 
     if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {

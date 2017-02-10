@@ -9,12 +9,18 @@ import org.junit.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import javax.json.*;
+import javax.ejb.EJB;
 
 import org.icatproject.topcat.httpclient.HttpClient;
 import org.icatproject.topcat.domain.*;
 import java.net.URLEncoder;
 
+import org.icatproject.topcat.repository.CacheRepository;
+
 public class IcatClientTest {
+
+	@EJB
+	private CacheRepository cacheRepository;
 
 	private static String sessionId;
 
@@ -30,44 +36,46 @@ public class IcatClientTest {
 
 	@Test
 	public void testGetUserName() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
-		assertEquals("simple/root", icatClient.getUserName(sessionId));
+		IcatClient icatClient = new IcatClient("https://localhost:8181", sessionId);
+		assertEquals("simple/root", icatClient.getUserName());
 	}
 
 	@Test
 	public void testIsAdmin() throws Exception {
-		IcatClient icatClient = new IcatClientUserIsAdmin("https://localhost:8181");
-		assertTrue(icatClient.isAdmin(sessionId));
-		assertFalse(icatClient.isAdmin("bogus-session-id"));
+		IcatClient icatClient = new IcatClientUserIsAdmin("https://localhost:8181", sessionId);
+		assertTrue(icatClient.isAdmin());
+		icatClient = new IcatClientUserIsAdmin("https://localhost:8181", "bogus-session-id");
+		assertFalse(icatClient.isAdmin());
 
-		icatClient = new IcatClientUserNotAdmin("https://localhost:8181");
-		assertFalse(icatClient.isAdmin(sessionId));
-		assertFalse(icatClient.isAdmin("bogus-session-id"));
+		icatClient = new IcatClientUserNotAdmin("https://localhost:8181", sessionId);
+		assertFalse(icatClient.isAdmin());
+		icatClient = new IcatClientUserNotAdmin("https://localhost:8181", "bogus-session-id");
+		assertFalse(icatClient.isAdmin());
 	}
 
 	@Test
 	public void testGetEntities() throws Exception {
-		IcatClient icatClient = new IcatClientUserIsAdmin("https://localhost:8181");
+		IcatClient icatClient = new IcatClientUserIsAdmin("https://localhost:8181", sessionId);
 
 		List<Long> ids = new ArrayList<Long>();
 
-		List<JsonObject> results = icatClient.getEntities(sessionId, "investigation", ids);
+		List<JsonObject> results = icatClient.getEntities("investigation", ids);
 		assertEquals(0, results.size());
-		results = icatClient.getEntities(sessionId, "dataset", ids);
+		results = icatClient.getEntities("dataset", ids);
 		assertEquals(0, results.size());
-		results = icatClient.getEntities(sessionId, "datafile", ids);
+		results = icatClient.getEntities("datafile", ids);
 		assertEquals(0, results.size());
 
 		ids.add((long) 1);
 
-		results = icatClient.getEntities(sessionId, "investigation", ids);
+		results = icatClient.getEntities("investigation", ids);
 		assertEquals(1, results.size());
 
-		results = icatClient.getEntities(sessionId, "dataset", ids);
+		results = icatClient.getEntities("dataset", ids);
 		assertEquals(1, results.size());
 		assertNotNull(results.get(0).getJsonObject("investigation"));
 
-		results = icatClient.getEntities(sessionId, "datafile", ids);
+		results = icatClient.getEntities("datafile", ids);
 		assertEquals(1, results.size());
 		assertNotNull(results.get(0).getJsonObject("dataset"));
 		assertNotNull(results.get(0).getJsonObject("dataset").getJsonObject("investigation"));
@@ -76,7 +84,7 @@ public class IcatClientTest {
 			ids.add((long) i);
 		}
 
-		results = icatClient.getEntities(sessionId, "datafile", ids);
+		results = icatClient.getEntities("datafile", ids);
 		assertEquals(10001, results.size());
 
 	}
@@ -84,31 +92,33 @@ public class IcatClientTest {
 
 	@Test
 	public void testGetFullName() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
-		String fullName = icatClient.getFullName(sessionId);
+		IcatClient icatClient = new IcatClient("https://localhost:8181", sessionId);
+		String fullName = icatClient.getFullName();
 
 		assertNotNull(fullName);
 		assertTrue(fullName.length() > 0);
 	}
 
+	/*
 	@Test
 	public void testGetSize() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181");
+		IcatClient icatClient = new IcatClient("https://localhost:8181", sessionId);
 
 		List<Long> emptyIds = new ArrayList<Long>();
 
-		assertEquals((long) 0, (long) icatClient.getSize(sessionId, emptyIds, emptyIds, emptyIds));
+		assertEquals((long) 0, (long) icatClient.getSize(cacheRepository, emptyIds, emptyIds, emptyIds));
 
 		List<Long> ids = new ArrayList<Long>();
 		ids.add((long) 1);
 		ids.add((long) 2);
 		ids.add((long) 3);
 
-		assertTrue(icatClient.getSize(sessionId, ids, emptyIds, emptyIds) > (long) 0);
-		assertTrue(icatClient.getSize(sessionId, emptyIds, ids, emptyIds) > (long) 0);
-		assertTrue(icatClient.getSize(sessionId, emptyIds, emptyIds, ids) > (long) 0);
-		assertTrue(icatClient.getSize(sessionId, ids, ids, ids) > (long) 0);
+		assertTrue(icatClient.getSize(cacheRepository, ids, emptyIds, emptyIds) > (long) 0);
+		assertTrue(icatClient.getSize(cacheRepository, emptyIds, ids, emptyIds) > (long) 0);
+		assertTrue(icatClient.getSize(cacheRepository, emptyIds, emptyIds, ids) > (long) 0);
+		assertTrue(icatClient.getSize(cacheRepository, ids, ids, ids) > (long) 0);
 	}
+	*/
 
 	private JsonObject parseJsonObject(String json) throws Exception {
         InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
@@ -129,8 +139,8 @@ public class IcatClientTest {
 
     class IcatClientUserIsAdmin extends IcatClient {
 
-		public IcatClientUserIsAdmin(String url){
-			super(url);
+		public IcatClientUserIsAdmin(String url, String sessionId){
+			super(url, sessionId);
 		}
 
 		protected String[] getAdminUserNames() throws Exception {
@@ -140,8 +150,8 @@ public class IcatClientTest {
 
     class IcatClientUserNotAdmin extends IcatClient {
 
-		public IcatClientUserNotAdmin(String url){
-			super(url);
+		public IcatClientUserNotAdmin(String url, String sessionId){
+			super(url, sessionId);
 		}
 
 		protected String[] getAdminUserNames() throws Exception {

@@ -73,9 +73,9 @@ public class AdminResource {
             throws MalformedURLException, TopcatException {
         logger.info("isValidSession() called");
 
-        IcatClient icatClient = new IcatClient(icatUrl);
+        IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-        String isAdmin = icatClient.isAdmin(sessionId) ? "true" : "false";
+        String isAdmin = icatClient.isAdmin() ? "true" : "false";
 
         return Response.ok().entity(isAdmin).build();
     }
@@ -215,9 +215,9 @@ public class AdminResource {
     }
 
     private void onlyAllowAdmin(String icatUrl, String sessionId) throws TopcatException, MalformedURLException {
-        IcatClient icatClient = new IcatClient(icatUrl);
+        IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-        if(icatUrl == null || sessionId == null || !icatClient.isAdmin(sessionId)){
+        if(icatUrl == null || sessionId == null || !icatClient.isAdmin()){
             throw new ForbiddenException("please provide a valid icatUrl and sessionId");
         }
     }

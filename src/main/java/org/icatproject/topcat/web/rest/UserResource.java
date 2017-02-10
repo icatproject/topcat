@@ -29,19 +29,9 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.icatproject.topcat.domain.Cart;
-import org.icatproject.topcat.domain.CartItem;
-import org.icatproject.topcat.domain.Download;
-import org.icatproject.topcat.domain.DownloadItem;
-import org.icatproject.topcat.domain.DownloadStatus;
-import org.icatproject.topcat.domain.EntityType;
-import org.icatproject.topcat.domain.ParentEntity;
-import org.icatproject.topcat.exceptions.BadRequestException;
-import org.icatproject.topcat.exceptions.ForbiddenException;
-import org.icatproject.topcat.exceptions.NotFoundException;
-import org.icatproject.topcat.exceptions.TopcatException;
-import org.icatproject.topcat.repository.CartRepository;
-import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.domain.*;
+import org.icatproject.topcat.exceptions.*;
+import org.icatproject.topcat.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +51,9 @@ public class UserResource {
 
 	@EJB
 	private CartRepository cartRepository;
+
+	@EJB
+	private CacheRepository cacheRepository;
 
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;
@@ -118,10 +111,10 @@ public class UserResource {
 			@QueryParam("queryOffset") String queryOffset)
 			throws TopcatException, MalformedURLException, ParseException {
 
-		IcatClient icatClient = new IcatClient(icatUrl);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userName", icatClient.getUserName(sessionId));
+		params.put("userName", icatClient.getUserName());
 		params.put("queryOffset", queryOffset);
 
 		List<Download> downloads = new ArrayList<Download>();
@@ -171,9 +164,9 @@ public class UserResource {
 			throw new NotFoundException("could not find download");
 		}
 
-		IcatClient icatClient = new IcatClient(icatUrl);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-		String userName = icatClient.getUserName(sessionId);
+		String userName = icatClient.getUserName();
 		if (!download.getUserName().equals(userName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
@@ -223,9 +216,9 @@ public class UserResource {
             throw new NotFoundException("could not find download");
         }
 
-        IcatClient icatClient = new IcatClient(icatUrl);
+        IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-        String userName = icatClient.getUserName(sessionId);
+        String userName = icatClient.getUserName();
 		if (!download.getUserName().equals(userName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
@@ -280,9 +273,9 @@ public class UserResource {
 	public Response getCart(@PathParam("facilityName") String facilityName, @QueryParam("icatUrl") String icatUrl,
 			@QueryParam("sessionId") String sessionId) throws TopcatException, MalformedURLException, ParseException {
 
-		IcatClient icatClient = new IcatClient(icatUrl);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-		String userName = icatClient.getUserName(sessionId);
+		String userName = icatClient.getUserName();
 		Cart cart = cartRepository.getCart(userName, facilityName);
 
 		if (cart != null) {
@@ -341,9 +334,9 @@ public class UserResource {
 
 		logger.info("addCartItems() called");
 
-		IcatClient icatClient = new IcatClient(icatUrl);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-		String userName = icatClient.getUserName(sessionId);
+		String userName = icatClient.getUserName();
 		Cart cart = cartRepository.getCart(userName, facilityName);
 
 		if (cart == null) {
@@ -398,9 +391,9 @@ public class UserResource {
 			}
 		}
 
-		addEntitiesToCart(icatClient, sessionId, cart, "investigation", investigationIdsToAdd);
-		addEntitiesToCart(icatClient, sessionId, cart, "dataset", datasetIdsToAdd);
-		addEntitiesToCart(icatClient, sessionId, cart, "datafile", datafileIdsToAdd);
+		addEntitiesToCart(icatClient, cart, "investigation", investigationIdsToAdd);
+		addEntitiesToCart(icatClient, cart, "dataset", datasetIdsToAdd);
+		addEntitiesToCart(icatClient, cart, "datafile", datafileIdsToAdd);
 
 		em.flush();
 		em.refresh(cart);
@@ -426,12 +419,12 @@ public class UserResource {
 	}
 
 
-	private void addEntitiesToCart(IcatClient icatClient, String sessionId, Cart cart, String entityType, List<Long> entityIds) throws TopcatException {
+	private void addEntitiesToCart(IcatClient icatClient, Cart cart, String entityType, List<Long> entityIds) throws TopcatException {
 		if(entityIds.size() == 0){
 			return;
 		}	
 
-		for (JsonObject entity : icatClient.getEntities(sessionId, entityType, entityIds)) {
+		for (JsonObject entity : icatClient.getEntities(entityType, entityIds)) {
 			String name = entity.getString("name");
 			Long entityId = Long.valueOf(entity.getInt("id"));
 
@@ -513,9 +506,9 @@ public class UserResource {
 			@QueryParam("icatUrl") String icatUrl, @QueryParam("sessionId") String sessionId,
 			@QueryParam("items") String items) throws TopcatException, MalformedURLException, ParseException {
 
-		IcatClient icatClient = new IcatClient(icatUrl);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-		String userName = icatClient.getUserName(sessionId);
+		String userName = icatClient.getUserName();
 		Cart cart = cartRepository.getCart(userName, facilityName);
 		if (cart == null) {
 			return emptyCart(facilityName, userName);
@@ -628,12 +621,12 @@ public class UserResource {
 			throw new BadRequestException("transport is required");
 		}
 
-		IcatClient icatClient = new IcatClient(icatUrl);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-		String userName = icatClient.getUserName(sessionId);
+		String userName = icatClient.getUserName();
 
 		Cart cart = cartRepository.getCart(userName, facilityName);
-		String fullName = icatClient.getFullName(sessionId);
+		String fullName = icatClient.getFullName();
 		Long downloadId = null;
 		IdsClient idsClient = new IdsClient(transportUrl);
 
@@ -717,9 +710,9 @@ public class UserResource {
 			}
 		}
 
-		IcatClient icatClient = new IcatClient(icatUrl);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-		Long size = icatClient.getSize(sessionId, investigationIds, datasetIds, datafileIds);
+		Long size = icatClient.getSize(cacheRepository, investigationIds, datasetIds, datafileIds);
 
 		return Response.ok().entity(size.toString()).build();
 	}
