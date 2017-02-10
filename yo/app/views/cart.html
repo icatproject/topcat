@@ -21,7 +21,7 @@
     </div>
     <div class="modal-footer">
         <div>
-            <b>Total size: <span us-spinner="{radius:2, width:2, length: 2}"  spinner-on="cartController.totalSize === undefined" class="grid-cell-spinner" style="display: inline-block; height: 14px; width: 14px"></span> <span ng-if="cartController.totalSize !== undefined">{{cartController.totalSize|bytes}}</span></b>
+            <b>Total size: <span ng-if="cartController.totalSize === undefined" class="loading collapsed"></span> <span ng-if="cartController.totalSize !== undefined">{{cartController.totalSize|bytes}}</span></b>
         </div>
         <br>
 

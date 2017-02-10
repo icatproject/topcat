@@ -179,7 +179,6 @@
         });
 
         getTotalSize().then(function(totalSize){
-            console.log('totalSize', totalSize);
             that.totalSize = totalSize;
         });
 

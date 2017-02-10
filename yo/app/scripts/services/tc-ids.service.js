@@ -36,35 +36,16 @@
     			'string, number, object': function(type, id, options){
             var key = 'getSize:' + type + ":" + id;
             return this.cache().getPromise(key, function(){
-              /*
               var idsParamName = helpers.uncapitalize(type) + "Ids";
               var params = {
-                server: facility.config().icatUrl,
+                icatUrl: facility.config().icatUrl,
                 sessionId: facility.icat().session().sessionId
               };
               params[idsParamName] = id;
               options.lowPriority = true;
-              return that.get('getSize', params,  options).then(function(size){
+              return facility.tc().get('user/getSize', params, options).then(function(size){
                 return parseInt('' + size);
               });
-              */
-              options.lowPriority = true;
-
-              if(type == 'investigation'){
-                return facility.icat().query([
-                  "select sum(datafile.fileSize) from Datafile datafile, ",
-                  "datafile.dataset as dataset,",
-                  "dataset.investigation as investigation",
-                  "where investigation.id = ?", id
-                ], options);
-              } else {
-                return facility.icat().query([
-                  "select sum(datafile.fileSize) from Datafile datafile, ",
-                  "datafile.dataset as dataset",
-                  "where dataset.id = ?", id
-                ], options);
-              }
-
             });
     			},
     			'string, number, promise': function(type, id, timeout){
@@ -99,7 +80,7 @@
 
                 var params = generateParams(currentInvestigationIds, currentDatasetIds, currentDatafileIds)
 
-                promises.push(that.get('getSize', params, options).then(function(size){
+                promises.push(facility.tc().get('user/getSize', params, options).then(function(size){
                   out = out + parseInt(size);
                 }));
 
@@ -109,12 +90,12 @@
               }
 
               function urlLengthIsOk(investigationIds, datasetIds, datafileIds){
-                return that.getUrlLength('getSize', generateParams(investigationIds, datasetIds, datafileIds)) <= 1024;
+                return facility.tc().getUrlLength('getSize', generateParams(investigationIds, datasetIds, datafileIds)) <= 1024;
               }
 
               function generateParams(investigationIds, datasetIds, datafileIds){
                 var out = {
-                  server: facility.config().icatUrl,
+                  icatUrl: facility.config().icatUrl,
                   sessionId: facility.icat().session().sessionId
                 };
 

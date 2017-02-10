@@ -686,11 +686,43 @@ public class UserResource {
 		return emptyCart(facilityName, userName, downloadId);
 	}
 
-	// @GET
-	// @Path("/getSize")
-	// @Produces({ MediaType.APPLICATION_JSON })
-	// public Response getCart(@QueryParam("facilityName") String facilityName, @QueryParam("icatUrl") String icatUrl,
-	// 		@QueryParam("sessionId") String sessionId) throws TopcatException, MalformedURLException, ParseException {
+	@GET
+	@Path("/getSize")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getSize(
+		@QueryParam("icatUrl") String icatUrl,
+		@QueryParam("sessionId") String sessionId,
+		@QueryParam("investigationIds") String investigationIdsString,
+		@QueryParam("datasetIds") String datasetIdsString,
+		@QueryParam("datafileIds") String datafileIdsString) throws TopcatException {
+
+		List<Long> investigationIds = new ArrayList<Long>();
+		if(investigationIdsString != null){
+			for(String investigationIdString : investigationIdsString.split("\\s*,\\s*")){
+				investigationIds.add(Long.valueOf(investigationIdString));
+			}
+		}
+
+		List<Long> datasetIds = new ArrayList<Long>();
+		if(datasetIdsString != null){
+			for(String datasetIdString : datasetIdsString.split("\\s*,\\s*")){
+				datasetIds.add(Long.valueOf(datasetIdString));
+			}
+		}
+
+		List<Long> datafileIds = new ArrayList<Long>();
+		if(datafileIdsString != null){
+			for(String datafileIdString : datafileIdsString.split("\\s*,\\s*")){
+				datafileIds.add(Long.valueOf(datafileIdString));
+			}
+		}
+
+		IcatClient icatClient = new IcatClient(icatUrl);
+
+		Long size = icatClient.getSize(sessionId, investigationIds, datasetIds, datafileIds);
+
+		return Response.ok().entity(size.toString()).build();
+	}
 
 
 	private Response emptyCart(String facilityName, String userName, Long downloadId) {

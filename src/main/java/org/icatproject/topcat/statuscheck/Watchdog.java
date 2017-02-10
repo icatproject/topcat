@@ -21,6 +21,7 @@ import org.icatproject.topcat.utils.MailBean;
 import org.icatproject.topcat.utils.ConvertUtils;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.IdsClient;
+import org.icatproject.topcat.IcatClient;
 
 import org.icatproject.topcat.exceptions.NotFoundException;
 
@@ -177,7 +178,8 @@ public class Watchdog {
     String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
     download.setPreparedId(preparedId);
 
-    long size = idsClient.getSize(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+    IcatClient icatClient = new IcatClient(download.getIcatUrl());
+    Long size = icatClient.getSize(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
     download.setSize(size);
 
     if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {
