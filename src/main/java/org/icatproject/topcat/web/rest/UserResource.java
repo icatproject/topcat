@@ -630,6 +630,9 @@ public class UserResource {
 		Long downloadId = null;
 		IdsClient idsClient = new IdsClient(transportUrl);
 
+		if(email != null && email.equals("")){
+			email = null;
+		}
 		
 
 		if (cart != null) {

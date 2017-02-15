@@ -106,7 +106,7 @@
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
                         if(!completedDownloads[key] && download.status == 'COMPLETE'){
-                            if(completedDownloadsInit){
+                            if(completedDownloadsInit  && !download.isTwoLevel){
                                 if(download.transport == 'https'){
                                     var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
                                     var iframe = $('<iframe>').attr('src', url).css({

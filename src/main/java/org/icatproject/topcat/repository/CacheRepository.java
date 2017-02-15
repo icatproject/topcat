@@ -15,8 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import org.icatproject.topcat.IcatClient;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
 
 
 @LocalBean
@@ -28,16 +27,11 @@ public class CacheRepository {
 	private static final Logger logger = LoggerFactory.getLogger(ConfVarRepository.class);
 
 	public Object get(String key){
+		System.out.println("get");
 		Cache cache = getCache(key);
+		System.out.println("Cache cache = getCache(key);");
 		if(cache != null){
-			try {
-	            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(cache.getValue()));
-	            Object object  = objectInputStream.readObject();
-	            objectInputStream.close();
-	            return object;
-	        } catch(Exception e){
-	            return null;
-	        }
+			return cache.getValue();
 		} else {
 			return null;
 		}
@@ -46,16 +40,13 @@ public class CacheRepository {
 	public void put(String key, Serializable value){
 		Cache cache = getCache(key);
 		if(cache == null){
+			System.out.println("cache is null");
 			cache = new Cache();
 			cache.setKey(key);
 		}
-		try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(value);
-            objectOutputStream.close();
-            cache.setValue(byteArrayOutputStream.toByteArray());
-        } catch(Exception e){}
+		System.out.println("cache.setValue(value)");
+		cache.setValue(value);
+		System.out.println("em.persist(cache);");
 		em.persist(cache);
 		em.flush();
 	}

@@ -366,7 +366,8 @@
         "STATUS": {
             "COMPLETE": "Available",
             "RESTORING": "Restoring from Tape",
-            "PREPARING": "Preparing"
+            "PREPARING": "Preparing",
+            "EXPIRED": "Expired"
         },
         "EMPTY" : "No Downloads",
         "REMOVE_DOWNLOAD" : {

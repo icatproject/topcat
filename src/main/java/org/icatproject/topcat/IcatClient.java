@@ -132,7 +132,9 @@ public class IcatClient {
 	public Long getSize(CacheRepository cacheRepository, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
 		try {
 			Long out = (long) 0;
-			String query, response, url;
+			String query, url;
+			Response response;
+			InternalException internalException;
 
 			datafileIds = new ArrayList<Long>(datafileIds);
 
@@ -140,15 +142,25 @@ public class IcatClient {
 				String key = "getSize:investigation:" + investigationId;
 				Long size = null;
 
-				if(cacheRepository != null){
-					size = (Long) cacheRepository.get(key);
+				internalException = (InternalException) cacheRepository.get(key + ":internalException");
+
+				if(internalException != null){
+					throw internalException;
 				}
+				
+				size = (Long) cacheRepository.get(key);
+
 
 				if(size == null){
 					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + investigationId;
 					url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-					response = httpClient.get(url, new HashMap<String, String>()).toString();
-					size = ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+					response = httpClient.get(url, new HashMap<String, String>());
+					if(response.getCode() >= 400){
+						internalException = new InternalException(response.toString());
+						cacheRepository.put(key + ":internalException", internalException);
+						throw internalException;
+					}
+					size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
 					cacheRepository.put(key, size);
 				}
 
@@ -159,15 +171,24 @@ public class IcatClient {
 				String key = "getSize:dataset:" + datasetId;
 				Long size = null;
 
-				if(cacheRepository != null){
-					size = (Long) cacheRepository.get(key);
+				internalException = (InternalException) cacheRepository.get(key + ":internalException");
+
+				if(internalException != null){
+					throw internalException;
 				}
+				
+				size = (Long) cacheRepository.get(key);
 
 				if(size == null){
 					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + datasetId;
 					url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-					response = httpClient.get(url, new HashMap<String, String>()).toString();
-					size = ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+					response = httpClient.get(url, new HashMap<String, String>());
+					if(response.getCode() >= 400){
+						internalException = new InternalException(response.toString());
+						cacheRepository.put(key + ":internalException", internalException);
+						throw internalException;
+					}
+					size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
 					cacheRepository.put(key, size);
 				}
 
@@ -208,11 +229,16 @@ public class IcatClient {
 			}
 
 			for(String passedUrl : passedUrls){
-				response = httpClient.get(passedUrl, new HashMap<String, String>()).toString();
-				out += ((JsonNumber) parseJsonArray(response).get(0)).longValue();
+				response = httpClient.get(passedUrl, new HashMap<String, String>());
+				if(response.getCode() >= 400){
+					throw new InternalException(response.toString());
+				}
+				out += ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
 			}
 
 			return out;
+		} catch(TopcatException e){
+			throw e;
 		} catch (Exception e) {
 			throw new BadRequestException(e.getMessage());
 		}
