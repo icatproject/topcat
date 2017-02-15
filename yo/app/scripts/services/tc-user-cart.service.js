@@ -101,6 +101,12 @@
                     }
                 });
 
+                if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
+                    cartItem.getSize({
+                        bypassInterceptors: true
+                    });
+                }
+
             });
 
             helpers.mixinPluginMethods('cart', this);
