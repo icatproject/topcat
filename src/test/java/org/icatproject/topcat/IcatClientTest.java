@@ -6,8 +6,6 @@ import java.lang.reflect.*;
 import static org.junit.Assert.*;
 import org.junit.*;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import javax.json.*;
 import javax.ejb.EJB;
 
@@ -31,7 +29,7 @@ public class IcatClientTest {
 		HttpClient httpClient = new HttpClient("https://localhost:8181/icat");
 		String data = "json=" + URLEncoder.encode("{\"plugin\":\"simple\", \"credentials\":[{\"username\":\"root\"}, {\"password\":\"root\"}]}", "UTF8");
 		String response = httpClient.post("session", new HashMap<String, String>(), data).toString();
-		sessionId = parseJsonObject(response).getString("sessionId");
+		sessionId = Utils.parseJsonObject(response).getString("sessionId");
 	}
 
 	@Test
@@ -119,14 +117,6 @@ public class IcatClientTest {
 		assertTrue(icatClient.getSize(cacheRepository, ids, ids, ids) > (long) 0);
 	}
 	*/
-
-	private JsonObject parseJsonObject(String json) throws Exception {
-        InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
-        JsonReader jsonReader = Json.createReader(jsonInputStream);
-        JsonObject out = jsonReader.readObject();
-        jsonReader.close();
-        return out;
-    }
 
     private Map<String, List<Long>> createEmptyEntityTypeEntityIds(){
     	Map<String, List<Long>> out = new HashMap<String, List<Long>>();

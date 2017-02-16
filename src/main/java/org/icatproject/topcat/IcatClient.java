@@ -11,8 +11,6 @@ import org.icatproject.topcat.httpclient.*;
 import org.icatproject.topcat.exceptions.*;
 import org.icatproject.topcat.domain.*;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import javax.json.*;
 
 import org.slf4j.Logger;
@@ -34,7 +32,7 @@ public class IcatClient {
 
     public String getUserName() throws TopcatException {
     	try {
-    		return parseJsonObject(httpClient.get("session/" + sessionId, new HashMap<String, String>()).toString()).getString("userName");
+    		return Utils.parseJsonObject(httpClient.get("session/" + sessionId, new HashMap<String, String>()).toString()).getString("userName");
     	} catch (Exception e){
             throw new BadRequestException(e.getMessage());
     	}
@@ -61,7 +59,7 @@ public class IcatClient {
 			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
     		String response = httpClient.get(url, new HashMap<String, String>()).toString();
     		try {
-    			return parseJsonArray(response).getString(0);
+    			return Utils.parseJsonArray(response).getString(0);
     		} catch(Exception e){
     			return "";
     		}
@@ -120,7 +118,7 @@ public class IcatClient {
 			}
 
 			for(String passedUrl : passedUrls){
-				for(JsonValue entityValue : parseJsonArray(httpClient.get(passedUrl, new HashMap<String, String>()).toString())){
+				for(JsonValue entityValue : Utils.parseJsonArray(httpClient.get(passedUrl, new HashMap<String, String>()).toString())){
 					JsonObject entity = (JsonObject) entityValue;
 					out.add(entity.getJsonObject(entityType.substring(0, 1).toUpperCase() + entityType.substring(1)));
 				}
@@ -165,7 +163,7 @@ public class IcatClient {
 						throw internalException;
 					}
 					try {
-						size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+						size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
 					} catch(Exception e) {
 						size = (long) 0;
 					}
@@ -198,7 +196,7 @@ public class IcatClient {
 						throw internalException;
 					}
 					try {
-						size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+						size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
 					} catch(Exception e) {
 						size = (long) 0;
 					}
@@ -247,7 +245,7 @@ public class IcatClient {
 					throw new InternalException(response.toString());
 				}
 				try{
-					out += ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+					out += ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
 				} catch(Exception e) {}
 			}
 
@@ -263,21 +261,5 @@ public class IcatClient {
 		return Properties.getInstance().getProperty("adminUserNames", "").split("[ ]*,[ ]*");
 	}
 
-	//todo: merge into Util methods in 2.3.0
-	private JsonObject parseJsonObject(String json) throws Exception {
-        InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
-        JsonReader jsonReader = Json.createReader(jsonInputStream);
-        JsonObject out = jsonReader.readObject();
-        jsonReader.close();
-        return out;
-    }
-
-    private JsonArray parseJsonArray(String json) throws Exception {
-        InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
-        JsonReader jsonReader = Json.createReader(jsonInputStream);
-        JsonArray out = jsonReader.readArray();
-        jsonReader.close();
-        return out;
-    }
 }
 

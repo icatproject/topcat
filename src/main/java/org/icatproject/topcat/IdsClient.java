@@ -80,7 +80,7 @@ public class IdsClient {
         try {
             Response response = httpClient.get("isPrepared?zip=true&preparedId=" + preparedId, new HashMap<String, String>());
             if(response.getCode() >= 400){
-                throw new NotFoundException(parseJson(response.toString()).getString("message"));
+                throw new NotFoundException(Utils.parseJsonObject(response.toString()).getString("message"));
             }
             return response.toString().equals("true");
         } catch (TopcatException e){
@@ -225,15 +225,6 @@ public class IdsClient {
         }
 
         return offsetPrefix + idsBuffer;
-    }
-
-    //todo: merge into Util methods in 2.3.0
-    private JsonObject parseJson(String json) throws Exception {
-        InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
-        JsonReader jsonReader = Json.createReader(jsonInputStream);
-        JsonObject out = jsonReader.readObject();
-        jsonReader.close();
-        return out;
     }
 
 }
