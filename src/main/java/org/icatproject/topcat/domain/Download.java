@@ -3,6 +3,7 @@ package org.icatproject.topcat.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -62,8 +63,11 @@ public class Download implements Serializable {
     @Column(name = "FILE_NAME", nullable = false)
     private String fileName;
 
-    @Column(name = "PREPARED_ID", nullable = false)
+    @Column(name = "PREPARED_ID")
     private String preparedId;
+
+    @Column(name = "SESSION_ID", nullable = false)
+    private String sessionId;
 
     @Column(name = "EMAIL")
     private String email;
@@ -172,6 +176,14 @@ public class Download implements Serializable {
 
     public void setPreparedId(String preparedId) {
         this.preparedId = preparedId;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getEmail() {
@@ -286,6 +298,36 @@ public class Download implements Serializable {
         sb.append("DownloadItems:" + this.getDownloadItems().size());
 
         return sb.toString();
+    }
+
+        public List<Long> getInvestigationIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (DownloadItem downloadItem : getDownloadItems()) {
+            if (downloadItem.getEntityType() == EntityType.investigation) {
+                out.add(downloadItem.getEntityId());
+            }
+        }
+        return out;
+    }
+
+    public List<Long> getDatasetIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (DownloadItem downloadItem : getDownloadItems()) {
+            if (downloadItem.getEntityType() == EntityType.dataset) {
+                out.add(downloadItem.getEntityId());
+            }
+        }
+        return out;
+    }
+
+    public List<Long> getDatafileIds(){
+        List<Long> out = new ArrayList<Long>();
+        for (DownloadItem downloadItem : getDownloadItems()) {
+            if (downloadItem.getEntityType() == EntityType.datafile) {
+                out.add(downloadItem.getEntityId());
+            }
+        }
+        return out;
     }
 
     /*@Override

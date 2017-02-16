@@ -91,6 +91,62 @@
         $rootScope.$on('download:change', refreshDownloadCount);
         refreshDownloadCount();
 
+        var completedDownloads = {};
+        var completedDownloadsInit = false;
+        this.isCompletedDownloadPopoverOpen = false;
+        function checkoutForNewlyCompletedDownloads(){
+            var promises = [];
+            var data = [];
+
+            _.each(tc.userFacilities(), function(facility){
+                var smartclient = facility.smartclient();
+                var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
+
+                promises.push(facility.user().downloads("where download.isDeleted = false", {bypassInterceptors: true}).then(function(downloads){
+                    _.each(downloads, function(download){
+                        var key = facility.config().name + ":" + download.id;
+                        if(!completedDownloads[key] && download.status == 'COMPLETE'){
+                            if(completedDownloadsInit  && !download.isTwoLevel){
+                                if(download.transport == 'https'){
+                                    var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                                    var iframe = $('<iframe>').attr('src', url).css({
+                                        position: 'absolute',
+                                        left: '-1000000px',
+                                        height: '1px',
+                                        width: '1px'
+                                    });
+
+                                    $('body').append(iframe);
+                                } else {
+                                    that.isCompletedDownloadPopoverOpen = true;
+                                    $timeout(function(){
+                                        $timeout(function(){
+                                            that.isCompletedDownloadPopoverOpen = false;
+                                        });
+                                    });
+                                }
+                            }
+                            completedDownloads[key] = true;
+                        }
+
+                        if(download.transport == 'smartclient' && download.status != 'COMPLETE'){
+                            smartclientPing.then(function(isServer){
+                                download.isServer = isServer;
+                            });
+                        }
+                    });
+                    data = _.flatten([data, downloads]);
+                }));
+            });
+
+            $q.all(promises).then(function(){
+                completedDownloadsInit = true;
+                $rootScope.$broadcast('downloads:update', data);
+            });
+        }
+        $interval(checkoutForNewlyCompletedDownloads, 1000);
+        checkoutForNewlyCompletedDownloads();
+
         this.changeLanguage = function(langKey) {
             $translate.use(langKey);
         };
@@ -190,6 +246,7 @@
             });
             $q.all(promises).then(function(){
                 smartClientPingDone = true;
+                $rootScope.$broadcast('downloads:');
             });
         }
 

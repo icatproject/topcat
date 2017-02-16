@@ -104,8 +104,9 @@
                 "END_DATE": "End Date",
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
-                "SIZE" : "Size",
-                "FILE_COUNT": "File Count",
+                "DATAFILE_COUNT": "File Count",
+                "DATASET_COUNT": "Dataset Count",
+                "SIZE": "Size",
                 "FACILITY" : "Facility",
                 "RUN_NUMBER" : "Run Number"
             },
@@ -120,8 +121,9 @@
                 "COMPLETE": "complete",
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
-                "SIZE" : "Size",
-                "FILE_COUNT": "File Count",
+
+                "DATAFILE_COUNT": "File Count",
+                "SIZE": "Size",
                 "RUN_NUMBER_RANGE" : "Run Numbers",
                 "FACILITY" : "Facility"
             },
@@ -209,6 +211,7 @@
             "NAME": "Name",
             "SIZE": "Size",
             "FILE_COUNT": "File Count",
+            "DATASET_COUNT": "Dataset Count",
             "DATASET": "Dataset",
             "INVESTIGATION": "Visit",
             "CREATE_TIME": "Create Time",
@@ -348,6 +351,7 @@
     "DOWNLOAD" : {
         "TITLE" : "Downloads",
         "NEW_MESSAGE": "A new download has been added",
+        "COMPLETED_MESSAGE": "A new download is now available",
         "COLUMN" : {
             "FULL_NAME": "Name",
             "USER_NAME": "Username",
@@ -363,7 +367,9 @@
         },
         "STATUS": {
             "COMPLETE": "Available",
-            "RESTORING": "Restoring from Tape"
+            "RESTORING": "Restoring from Tape",
+            "PREPARING": "Preparing",
+            "EXPIRED": "Expired"
         },
         "EMPTY" : "No Downloads",
         "REMOVE_DOWNLOAD" : {
@@ -498,7 +504,8 @@
             "TITLE" : "Title",
             "SUMMARY" : "Summary",
             "START_DATE" : "Start Date",
-            "END_DATE" : "End Date"
+            "END_DATE" : "End Date",
+            "SIZE": "Total File Size"
         },
         "INVESTIGATION_USERS" : {
             "TABTITLE" : "Visit Users",
@@ -520,7 +527,8 @@
             "NAME" : "Name",
             "DESCRIPTION" : "Description",
             "START_DATE" : "Start Date",
-            "END_DATE" : "End Date"
+            "END_DATE" : "End Date",
+            "SIZE": "Total File Size"
         },
         "DATASET_TYPE" : {
             "TABTITLE" : "Dataset Type",
@@ -531,7 +539,7 @@
             "TABTITLE" : "Datafile Details",
             "NAME" : "Name",
             "DESCRIPTION" : "Description",
-            "SIZE" : "File Size",
+            "FILE_SIZE" : "File Size",
             "LOCATION" : "Location",
             "PARAMETERS" : "Parameters"
         }

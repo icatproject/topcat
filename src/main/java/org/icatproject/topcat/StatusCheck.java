@@ -19,10 +19,11 @@ import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.Properties;
 import org.icatproject.topcat.Utils;
-import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.repository.*;
 import org.icatproject.topcat.IdsClient;
+import org.icatproject.topcat.IcatClient;
 
-import org.icatproject.topcat.exceptions.NotFoundException;
+import org.icatproject.topcat.exceptions.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,9 @@ public class StatusCheck {
 
   @Resource(name = "mail/topcat")
   private Session mailSession;
+  
+  @EJB
+  private CacheRepository cacheRepository;
 
   @Schedule(hour="*", minute="*")
   private void poll() {
@@ -66,15 +70,16 @@ public class StatusCheck {
       int pollDelay = Integer.valueOf(properties.getProperty("poll.delay", "600"));
       int pollIntervalWait = Integer.valueOf(properties.getProperty("poll.interval.wait", "600"));
 
-      TypedQuery<Download> query = em.createQuery("select download from Download download where (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false)", Download.class);
+      TypedQuery<Download> query = em.createQuery("select download from Download download where download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false))", Download.class);
       List<Download> downloads = query.getResultList();
 
       for(Download download : downloads){
         Date lastCheck = lastChecks.get(download.getId());
         Date now = new Date();
         long createdSecondsAgo = (now.getTime() - download.getCreatedAt().getTime()) / 1000;
-
-        if(createdSecondsAgo >= pollDelay){
+        if(download.getStatus() == DownloadStatus.PREPARING){
+          prepareDownload(download);
+        } else if(createdSecondsAgo >= pollDelay){
           if(lastCheck == null){
             performCheck(download);
           } else {
@@ -87,9 +92,9 @@ public class StatusCheck {
       }
     } catch(Exception e){
       logger.error(e.getMessage());
+    } finally {
+      busy.set(false);
     }
-
-    busy.set(false);
   }
 
   private void performCheck(Download download) {
@@ -112,7 +117,8 @@ public class StatusCheck {
       } else {
         lastChecks.put(download.getId(), new Date());
       }
-    } catch(NotFoundException e) {
+    } catch(TopcatException e) {
+      logger.error("marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
       download.setStatus(DownloadStatus.EXPIRED);
       em.persist(download);
       em.flush();
@@ -173,6 +179,29 @@ public class StatusCheck {
     } else {
       logger.debug("Email not sent. Email not enabled");
     }
+  }
+
+  private void prepareDownload(Download download) throws Exception {
+    IdsClient idsClient = new IdsClient(download.getTransportUrl());
+    String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+    download.setPreparedId(preparedId);
+
+    IcatClient icatClient = new IcatClient(download.getIcatUrl(), download.getSessionId());
+    try {
+      Long size = icatClient.getSize(cacheRepository, download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+      download.setSize(size);
+    } catch(Exception e) {
+      download.setSize(-1);
+    }
+
+    if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {
+      download.setStatus(DownloadStatus.RESTORING);
+    } else {
+      download.setStatus(DownloadStatus.COMPLETE);
+      download.setCompletedAt(new Date());
+    }
+
+    downloadRepository.save(download);
   }
 
 }

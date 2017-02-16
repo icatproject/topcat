@@ -38,12 +38,12 @@
             return this.cache().getPromise(key, function(){
               var idsParamName = helpers.uncapitalize(type) + "Ids";
               var params = {
-                server: facility.config().icatUrl,
+                icatUrl: facility.config().icatUrl,
                 sessionId: facility.icat().session().sessionId
               };
               params[idsParamName] = id;
               options.lowPriority = true;
-              return that.get('getSize', params,  options).then(function(size){
+              return facility.tc().get('user/getSize', params, options).then(function(size){
                 return parseInt('' + size);
               });
             });
@@ -63,6 +63,8 @@
               var currentDatafileIds  = [];
               var promises = [];
 
+              options.lowPriority = true;
+
               while(investigationIds.length > 0 || datasetIds.length > 0 || datafileIds.length > 0){
                 while(investigationIds.length > 0 && urlLengthIsOk(currentInvestigationIds.concat([investigationIds[0]]), currentDatasetIds, currentDatafileIds)){
                   currentInvestigationIds.push(investigationIds.shift());
@@ -78,7 +80,7 @@
 
                 var params = generateParams(currentInvestigationIds, currentDatasetIds, currentDatafileIds)
 
-                promises.push(that.get('getSize', params, options).then(function(size){
+                promises.push(facility.tc().get('user/getSize', params, options).then(function(size){
                   out = out + parseInt(size);
                 }));
 
@@ -88,12 +90,12 @@
               }
 
               function urlLengthIsOk(investigationIds, datasetIds, datafileIds){
-                return that.getUrlLength('getSize', generateParams(investigationIds, datasetIds, datafileIds)) <= 1024;
+                return facility.tc().getUrlLength('getSize', generateParams(investigationIds, datasetIds, datafileIds)) <= 1024;
               }
 
               function generateParams(investigationIds, datasetIds, datafileIds){
                 var out = {
-                  server: facility.config().icatUrl,
+                  icatUrl: facility.config().icatUrl,
                   sessionId: facility.icat().session().sessionId
                 };
 

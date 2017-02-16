@@ -8,7 +8,14 @@ import java.security.SecureRandom;
 import javax.net.ssl.SSLContext;
 
 public class TestHelpers {
-   public static void installTrustManager() {
+
+    static boolean installed = false;
+
+    public static void installTrustManager() {
+        if(installed){
+            return;
+        }
+
         // Create a trust manager that does not validate certificate chains
         // Equivalent to --no-certificate-check in wget
         // Only needed if system does not have access to correct CA keys
@@ -34,6 +41,7 @@ public class TestHelpers {
         }
         // log message
         System.out.println("Trust manager set up successfully");
- 
+        
+        installed = true;
     }
 }

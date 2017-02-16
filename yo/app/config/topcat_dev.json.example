@@ -34,7 +34,7 @@
                             "link": true
                         },
                         {
-                            "field": "size|bytes"
+                            "field": "datasetCount"
                         },
                         {
                             "field": "investigationInstrument.fullName"
@@ -55,7 +55,7 @@
                             "link": true
                         },
                         {
-                            "field": "size|bytes"
+                            "field": "datafileCount"
                         },
                         {
                             "field": "investigation.title",
@@ -162,46 +162,39 @@
         },
         "pages" : [
             {
-                "url" : "/about",
-                "stateName": "about",
+                "name" : "about",
                 "addToNavBar": {
-                    "linkLabel" : "MAIN_NAVIGATION.ABOUT",
+                    "label" : "About",
                     "align" : "left"
                 }
 
             },
             {
-                "url" : "/contact",
-                "stateName": "contact",
+                "name" : "contact",
                 "addToNavBar": {
-                    "linkLabel" : "MAIN_NAVIGATION.CONTACT",
+                    "label": "Contact",
                     "align" : "left"
                 }
 
             },
             {
-                "url" : "/help",
-                "stateName": "help",
+                "name" : "help",
                 "addToNavBar": {
-                    "linkLabel" : "MAIN_NAVIGATION.HELP",
+                    "label" : "Help",
                     "align" : "left"
                 }
             },
             {
-                "url" : "/globus-help",
-                "stateName": "globus-help"
+                "name" : "globus-help"
             },
             {
-                "url" : "/cookie-policy",
-                "stateName": "cookie-policy"
+                "name" : "cookie-policy"
             },
             {
-                "url" : "/smartclient-start-server",
-                "stateName": "smartclient-start-server"
+                "name" : "smartclient-start-server"
             },
             {
-                "url" : "/smartclient-complete",
-                "stateName": "smartclient-complete"
+                "name" : "smartclient-complete"
             }
 
         ]
@@ -227,11 +220,6 @@
                 {
                     "title": "DB",
                     "plugin": "db"
-                },
-                {
-                    "title": "CAS",
-                    "plugin": "cas",
-                    "casUrl": "https://authbeta.diamond.ac.uk/cas" 
                 }
             ],
             "downloadTransportTypes": [
@@ -650,7 +638,7 @@
                             "field": "investigationInstrument.fullName"
                         },
                         {
-                            "field": "size|bytes"
+                            "field": "datasetCount"
                         },
                         {
                             "field": "startDate",
@@ -691,7 +679,7 @@
                                 "breadcrumb": true
                             },
                             {
-                                "field": "size|bytes"
+                                "field": "datasetCount"
                             },
                             {
                                 "field": "investigationInstrument.fullName"
@@ -732,6 +720,9 @@
                                 {
                                     "field": "endDate",
                                     "template": "{{item.value | date:'yyyy-MM-dd'}}"
+                                },
+                                {
+                                    "field": "size"
                                 }
                             ]
                         },
@@ -772,7 +763,7 @@
                                 "link": true
                             },
                             {
-                                "field": "size|bytes"
+                                "field": "datafileCount"
                             },
                             {
                                 "field": "createTime",
@@ -805,6 +796,9 @@
                                     "label": "METATABS.DATASET.END_DATE",
                                     "field": "endDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
+                                },
+                                {
+                                    "field": "size"
                                 }
                             ]
                         },
@@ -870,7 +864,7 @@
         {
             "name": "ISIS",
             "title": "ISIS",
-            "idsUrl": "https://isisicatds.stfc.ac.uk",
+            "idsUrl": "https://idsdev2.isis.cclrc.ac.uk",
             "hierarchy": [
                 "facility",
                 "instrument",
@@ -889,7 +883,7 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "idsUrl": "https://idsdev.isis.cclrc.ac.uk"
+                    "idsUrl": "https://idsdev2.isis.cclrc.ac.uk"
                 }
               
             ],

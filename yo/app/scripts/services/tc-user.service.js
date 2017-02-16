@@ -57,6 +57,9 @@
                 'string': function(queryOffset){
                     return this.downloads({queryOffset: helpers.buildQuery([queryOffset])}, {});
                 },
+                'string, object': function(queryOffset, options){
+                    return this.downloads({queryOffset: helpers.buildQuery([queryOffset])}, options);
+                },
                 'promise': function(timeout){
                     return this.downloads(params, {timeout: timeout});
                 },
@@ -281,21 +284,6 @@
                         cartCache = cart;
                         $rootScope.$broadcast('download:change');
                         $rootScope.$broadcast('cart:change');
-
-                        that.downloads(["where download.id = ?", cart.downloadId]).then(function(downloads){
-                            var download = downloads[0];
-                            if(download.transport === 'https' && download.status == 'COMPLETE'){
-                                var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
-                                var iframe = $('<iframe>').attr('src', url).css({
-                                    position: 'absolute',
-                                    left: '-1000000px',
-                                    height: '1px',
-                                    width: '1px'
-                                });
-
-                                $('body').append(iframe);
-                            }
-                        });
 
                         return cart;
                     });

@@ -165,7 +165,7 @@
                 var promises = [];
                 _.each(carts, function(cart){
                     promises.push(cart.getSize(getTotalSizeTimeout.promise).then(function(size){
-                        out = out + size
+                        out = out + size;
                     }));
                 });
                 $q.all(promises).then(function(){
