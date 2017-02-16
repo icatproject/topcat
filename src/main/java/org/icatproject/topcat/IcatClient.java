@@ -18,7 +18,6 @@ import javax.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.icatproject.topcat.utils.PropertyHandler;
 import org.icatproject.topcat.repository.CacheRepository;
 
 public class IcatClient {
@@ -261,7 +260,7 @@ public class IcatClient {
 	}
 
 	protected String[] getAdminUserNames() throws Exception {
-		return PropertyHandler.getInstance().getAdminUserNames();
+		return Properties.getInstance().getProperty("adminUserNames", "").split("[ ]*,[ ]*");
 	}
 
 	//todo: merge into Util methods in 2.3.0
