@@ -60,7 +60,12 @@ public class IcatClient {
 		try {
 			String query = "select user.fullName from User user where user.name = :user";
 			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-    		return parseJsonArray(httpClient.get(url, new HashMap<String, String>()).toString()).getString(0);
+    		String response = httpClient.get(url, new HashMap<String, String>()).toString();
+    		try {
+    			return parseJsonArray(response).getString(0);
+    		} catch(Exception e){
+    			return "";
+    		}
     	} catch (Exception e){
             throw new BadRequestException(e.getMessage());
     	}
@@ -160,8 +165,13 @@ public class IcatClient {
 						cacheRepository.put(key + ":internalException", internalException);
 						throw internalException;
 					}
-					size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+					try {
+						size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+					} catch(Exception e) {
+						size = (long) 0;
+					}
 					cacheRepository.put(key, size);
+					
 				}
 
 				out += size;
@@ -188,7 +198,11 @@ public class IcatClient {
 						cacheRepository.put(key + ":internalException", internalException);
 						throw internalException;
 					}
-					size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+					try {
+						size = ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+					} catch(Exception e) {
+						size = (long) 0;
+					}
 					cacheRepository.put(key, size);
 				}
 
@@ -233,7 +247,9 @@ public class IcatClient {
 				if(response.getCode() >= 400){
 					throw new InternalException(response.toString());
 				}
-				out += ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+				try{
+					out += ((JsonNumber) parseJsonArray(response.toString()).get(0)).longValue();
+				} catch(Exception e) {}
 			}
 
 			return out;

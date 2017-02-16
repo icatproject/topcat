@@ -59,4 +59,9 @@ public class Cache implements Serializable {
     public void setLastAccessTime(Date lastAccessTime) {
         this.lastAccessTime = lastAccessTime;
     }
+
+    @PrePersist
+    private void init() {
+        this.lastAccessTime = new Date();
+    }
 }

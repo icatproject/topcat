@@ -25,7 +25,7 @@
                         return facility.icat().logout(true);
                     } else {
                         return facility.user().downloads("download.isDeleted = false and download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING").then(function(downloads){
-                            return tc.icat().logout(downloads.length > 0);
+                            return facility.icat().logout(downloads.length > 0);
                         });
                     }
                 }));
