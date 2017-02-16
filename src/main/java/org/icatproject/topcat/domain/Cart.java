@@ -36,11 +36,6 @@ import org.eclipse.persistence.annotations.CascadeOnDelete;
         )
 )
 @CascadeOnDelete
-@NamedQueries({
-        @NamedQuery(name = "Cart.findAll", query = "SELECT c FROM Cart c"),
-        @NamedQuery(name = "Cart.findById", query = "SELECT c FROM Cart c WHERE c.id = :id"),
-        @NamedQuery(name = "Cart.findByFacilityNameAndUserName", query = "SELECT c FROM Cart c WHERE c.facilityName = :facilityName AND c.userName = :userName")
-})
 @XmlRootElement
 public class Cart implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -127,36 +122,6 @@ public class Cart implements Serializable {
 
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
-    }
-
-    public List<Long> getInvestigationIds(){
-        List<Long> out = new ArrayList<Long>();
-        for (CartItem cartItem : getCartItems()) {
-            if (cartItem.getEntityType() == EntityType.investigation) {
-                out.add(cartItem.getEntityId());
-            }
-        }
-        return out;
-    }
-
-    public List<Long> getDatasetIds(){
-        List<Long> out = new ArrayList<Long>();
-        for (CartItem cartItem : getCartItems()) {
-            if (cartItem.getEntityType() == EntityType.dataset) {
-                out.add(cartItem.getEntityId());
-            }
-        }
-        return out;
-    }
-
-    public List<Long> getDatafileIds(){
-        List<Long> out = new ArrayList<Long>();
-        for (CartItem cartItem : getCartItems()) {
-            if (cartItem.getEntityType() == EntityType.datafile) {
-                out.add(cartItem.getEntityId());
-            }
-        }
-        return out;
     }
 
     public String toString() {

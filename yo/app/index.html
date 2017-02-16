@@ -172,9 +172,11 @@
                                 </li>
                                 <li ng-if="indexController.userFacilities.length > 0 && indexController.downloadCount">
                                     <p class="navbar-text">
-                                        <span ng-click="indexController.showDownloads()" uib-popover="{{'DOWNLOAD.NEW_MESSAGE' | translate}}" popover-trigger="none" popover-placement="bottom" popover-append-to-body="true" popover-popup-close-delay="1500" popover-is-open="indexController.isDownloadsPopoverOpen">
-                                            <span class="glyphicon glyphicon-download-alt"></span>
-                                            Downloads
+                                        <span uib-popover="{{'DOWNLOAD.COMPLETED_MESSAGE' | translate}}" popover-trigger="none" popover-placement="bottom" popover-append-to-body="true" popover-popup-close-delay="1500" popover-is-open="indexController.isCompletedDownloadPopoverOpen">
+                                            <span ng-click="indexController.showDownloads()" uib-popover="{{'DOWNLOAD.NEW_MESSAGE' | translate}}" popover-trigger="none" popover-placement="bottom" popover-append-to-body="true" popover-popup-close-delay="1500" popover-is-open="indexController.isDownloadsPopoverOpen">
+                                                <span class="glyphicon glyphicon-download-alt"></span>
+                                                Downloads
+                                            </span>
                                         </span>
                                     </p>
                                 </li>

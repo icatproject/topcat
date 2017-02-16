@@ -8,11 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
+
+import javax.json.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.DELETE;
@@ -28,25 +29,14 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.icatproject.topcat.domain.Cart;
-import org.icatproject.topcat.domain.CartItem;
-import org.icatproject.topcat.domain.Download;
-import org.icatproject.topcat.domain.DownloadItem;
-import org.icatproject.topcat.domain.DownloadStatus;
-import org.icatproject.topcat.domain.EntityType;
-import org.icatproject.topcat.domain.ParentEntity;
-import org.icatproject.topcat.domain.StringValue;
-import org.icatproject.topcat.exceptions.BadRequestException;
-import org.icatproject.topcat.exceptions.ForbiddenException;
-import org.icatproject.topcat.exceptions.NotFoundException;
-import org.icatproject.topcat.exceptions.TopcatException;
-import org.icatproject.topcat.icatclient.ICATClientBean;
-import org.icatproject.topcat.repository.CartRepository;
-import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.domain.*;
+import org.icatproject.topcat.exceptions.*;
+import org.icatproject.topcat.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.icatproject.topcat.IdsClient;
+import org.icatproject.topcat.IcatClient;
 
 @Stateless
 @LocalBean
@@ -63,7 +53,7 @@ public class UserResource {
 	private CartRepository cartRepository;
 
 	@EJB
-	private ICATClientBean icatClientService;
+	private CacheRepository cacheRepository;
 
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;
@@ -121,8 +111,10 @@ public class UserResource {
 			@QueryParam("queryOffset") String queryOffset)
 			throws TopcatException, MalformedURLException, ParseException {
 
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userName", icatClientService.getUserName(icatUrl, sessionId));
+		params.put("userName", icatClient.getUserName());
 		params.put("queryOffset", queryOffset);
 
 		List<Download> downloads = new ArrayList<Download>();
@@ -172,7 +164,9 @@ public class UserResource {
 			throw new NotFoundException("could not find download");
 		}
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
+		String userName = icatClient.getUserName();
 		if (!download.getUserName().equals(userName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
@@ -222,7 +216,9 @@ public class UserResource {
             throw new NotFoundException("could not find download");
         }
 
-        String userName = icatClientService.getUserName(icatUrl, sessionId);
+        IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
+        String userName = icatClient.getUserName();
 		if (!download.getUserName().equals(userName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
@@ -277,7 +273,9 @@ public class UserResource {
 	public Response getCart(@PathParam("facilityName") String facilityName, @QueryParam("icatUrl") String icatUrl,
 			@QueryParam("sessionId") String sessionId) throws TopcatException, MalformedURLException, ParseException {
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
+		String userName = icatClient.getUserName();
 		Cart cart = cartRepository.getCart(userName, facilityName);
 
 		if (cart != null) {
@@ -336,7 +334,9 @@ public class UserResource {
 
 		logger.info("addCartItems() called");
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
+		String userName = icatClient.getUserName();
 		Cart cart = cartRepository.getCart(userName, facilityName);
 
 		if (cart == null) {
@@ -347,46 +347,117 @@ public class UserResource {
 			em.flush();
 		}
 
-		Map<String, List<Long>> entityTypeEntityIds = new HashMap<String, List<Long>>();
-		entityTypeEntityIds.put("investigation", new ArrayList<Long>());
-		entityTypeEntityIds.put("dataset", new ArrayList<Long>());
-		entityTypeEntityIds.put("datafile", new ArrayList<Long>());
+		Map<Long, Boolean> isInvestigationIdIndex = new HashMap<Long, Boolean>();
+        Map<Long, Boolean> isDatasetIdIndex = new HashMap<Long, Boolean>();
+        Map<Long, Boolean> isDatafileIdIndex = new HashMap<Long, Boolean>();
+
+        for(CartItem cartItem : cart.getCartItems()){
+            if(cartItem.getEntityType().equals(EntityType.valueOf("investigation"))){
+                isInvestigationIdIndex.put(cartItem.getEntityId(), true);
+            } else if(cartItem.getEntityType().equals(EntityType.valueOf("dataset"))){
+                isDatasetIdIndex.put(cartItem.getEntityId(), true);
+            } else {
+            	isDatafileIdIndex.put(cartItem.getEntityId(), true);
+            }
+        }
+
+		List<Long> investigationIdsToAdd = new ArrayList<Long>();
+		List<Long> datasetIdsToAdd = new ArrayList<Long>();
+		List<Long> datafileIdsToAdd = new ArrayList<Long>();
+
 
 		for (String item : items.split("\\s*,\\s*")) {
 			String[] pair = item.split("\\s+");
 			if (pair.length == 2) {
 				String entityType = pair[0];
 				Long entityId = Long.parseLong(pair[1]);
-				List<Long> entityIds = entityTypeEntityIds.get(entityType);
-				boolean isAlreadyInCart = false;
-
-				for (CartItem cartItem : cart.getCartItems()) {
-					if (cartItem.getEntityType().equals(EntityType.valueOf(entityType))
-							&& cartItem.getEntityId().equals(entityId)) {
-						isAlreadyInCart = true;
-						break;
-					}
+				if(entityType.equals("investigation") && isInvestigationIdIndex.get(entityId) != null){
+					continue;
+				} else if(entityType.equals("dataset") && isDatasetIdIndex.get(entityId) != null){
+					continue;
+				} else if(entityType.equals("datafile") && isDatafileIdIndex.get(entityId) != null){
+					continue;
 				}
 
-				if (!isAlreadyInCart) {
-					entityIds.add(entityId);
+				if(entityType.equals("investigation")){
+					investigationIdsToAdd.add(entityId);
+					isInvestigationIdIndex.put(entityId, true);
+				} else if(entityType.equals("dataset")){
+					datasetIdsToAdd.add(entityId);
+					isDatasetIdIndex.put(entityId, true);
+				} else {
+					datafileIdsToAdd.add(entityId);
 				}
 			}
 		}
 
-		for (CartItem cartItem : icatClientService.getCartItems(icatUrl, sessionId, entityTypeEntityIds)) {
-			cartItem.setCart(cart);
-			em.persist(cartItem);
-			for (ParentEntity parentEntity : cartItem.getParentEntities()) {
-				parentEntity.setCartItem(cartItem);
-				em.persist(parentEntity);
-			}
-		}
+		addEntitiesToCart(icatClient, cart, "investigation", investigationIdsToAdd);
+		addEntitiesToCart(icatClient, cart, "dataset", datasetIdsToAdd);
+		addEntitiesToCart(icatClient, cart, "datafile", datafileIdsToAdd);
+
+		em.flush();
+		em.refresh(cart);
+
+		//remove any entities that have a parent added to the cart
+
+        for(CartItem cartItem : cart.getCartItems()){
+            for(ParentEntity parentEntity : cartItem.getParentEntities()){
+                if(parentEntity.getEntityType().equals(EntityType.valueOf("investigation")) && isInvestigationIdIndex.get(parentEntity.getEntityId()) != null){
+                    em.remove(cartItem);
+                    break;
+                } else if(parentEntity.getEntityType().equals(EntityType.valueOf("dataset")) && isDatasetIdIndex.get(parentEntity.getEntityId()) != null){
+                    em.remove(cartItem);
+                    break;
+                }
+            }
+        }
 
 		em.flush();
 		em.refresh(cart);
 
 		return Response.ok().entity(cart).build();
+	}
+
+
+	private void addEntitiesToCart(IcatClient icatClient, Cart cart, String entityType, List<Long> entityIds) throws TopcatException {
+		if(entityIds.size() == 0){
+			return;
+		}	
+
+		for (JsonObject entity : icatClient.getEntities(entityType, entityIds)) {
+			String name = entity.getString("name");
+			Long entityId = Long.valueOf(entity.getInt("id"));
+
+			CartItem cartItem = new CartItem();
+			cartItem.setCart(cart);
+			cartItem.setEntityType(EntityType.valueOf(entityType));
+			cartItem.setEntityId(entityId);
+			cartItem.setName(name);
+			em.persist(cartItem);
+
+
+			if (entityType.equals("datafile")) {
+				ParentEntity parentEntity = new ParentEntity();
+				parentEntity.setCartItem(cartItem);
+				parentEntity.setEntityType(EntityType.valueOf("dataset"));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getInt("id")));
+				cartItem.getParentEntities().add(parentEntity);
+				em.persist(parentEntity);
+
+				parentEntity = new ParentEntity();
+				parentEntity.setEntityType(EntityType.valueOf("investigation"));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getJsonObject("investigation").getInt("id")));
+				cartItem.getParentEntities().add(parentEntity);
+				em.persist(parentEntity);
+
+			} else if (entityType.equals("dataset")) {
+				ParentEntity parentEntity = new ParentEntity();
+				parentEntity.setEntityType(EntityType.valueOf("investigation"));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("investigation").getInt("id")));
+				cartItem.getParentEntities().add(parentEntity);
+				em.persist(parentEntity);
+			}
+		}
 	}
 
 	/**
@@ -435,7 +506,9 @@ public class UserResource {
 			@QueryParam("icatUrl") String icatUrl, @QueryParam("sessionId") String sessionId,
 			@QueryParam("items") String items) throws TopcatException, MalformedURLException, ParseException {
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
+		String userName = icatClient.getUserName();
 		Cart cart = cartRepository.getCart(userName, facilityName);
 		if (cart == null) {
 			return emptyCart(facilityName, userName);
@@ -548,73 +621,105 @@ public class UserResource {
 			throw new BadRequestException("transport is required");
 		}
 
-		String userName = icatClientService.getUserName(icatUrl, sessionId);
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
+		String userName = icatClient.getUserName();
+
 		Cart cart = cartRepository.getCart(userName, facilityName);
-		String fullName = icatClientService.getFullName(icatUrl, sessionId);
+		String fullName = icatClient.getFullName();
 		Long downloadId = null;
 		IdsClient idsClient = new IdsClient(transportUrl);
 
+		if(email != null && email.equals("")){
+			email = null;
+		}
 		
 
 		if (cart != null) {
 			em.refresh(cart);
-			String preparedId = idsClient.prepareData(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
-			long size = idsClient.getSize(sessionId, cart.getInvestigationIds(), cart.getDatasetIds(), cart.getDatafileIds());
-			if (preparedId != null) {
-				Download download = new Download();
-				download.setPreparedId(preparedId);
-				download.setFacilityName(cart.getFacilityName());
-				download.setFileName(fileName);
-				download.setUserName(cart.getUserName());
-				download.setFullName(fullName);
-				download.setTransport(transport);
-				download.setTransportUrl(transportUrl);
-				download.setIcatUrl(icatUrl);
-				download.setEmail(email);
-				download.setIsEmailSent(false);
-				download.setSize(size);
-				Boolean isTwoLevel = idsClient.isTwoLevel();
-				download.setIsTwoLevel(isTwoLevel);
+			
+			Download download = new Download();
+			download.setSessionId(sessionId);
+			download.setFacilityName(cart.getFacilityName());
+			download.setFileName(fileName);
+			download.setUserName(cart.getUserName());
+			download.setFullName(fullName);
+			download.setTransport(transport);
+			download.setTransportUrl(transportUrl);
+			download.setIcatUrl(icatUrl);
+			download.setEmail(email);
+			download.setIsEmailSent(false);
+			download.setSize(0);
+			Boolean isTwoLevel = idsClient.isTwoLevel();
+			download.setIsTwoLevel(isTwoLevel);
+			download.setStatus(DownloadStatus.PREPARING);
 
-				if (isTwoLevel || !transport.equals("https")) {
-					download.setStatus(DownloadStatus.RESTORING);
-				} else {
-					download.setStatus(DownloadStatus.COMPLETE);
-					download.setCompletedAt(new Date());
-				}
+			List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
 
-				List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
-
-				for (CartItem cartItem : cart.getCartItems()) {
-					DownloadItem downloadItem = new DownloadItem();
-					downloadItem.setEntityId(cartItem.getEntityId());
-					downloadItem.setEntityType(cartItem.getEntityType());
-					downloadItem.setDownload(download);
-					downloadItems.add(downloadItem);
-				}
-
-				download.setDownloadItems(downloadItems);
-
-				try {
-					em.persist(download);
-					em.flush();
-					em.refresh(download);
-					downloadId = download.getId();
-					em.remove(cart);
-					em.flush();
-				} catch (Exception e) {
-					logger.debug(e.getMessage());
-					throw new BadRequestException("Unable to submit for cart for download");
-				}
-
-			} else {
-				throw new BadRequestException("Unable to submit for cart for download");
+			for (CartItem cartItem : cart.getCartItems()) {
+				DownloadItem downloadItem = new DownloadItem();
+				downloadItem.setEntityId(cartItem.getEntityId());
+				downloadItem.setEntityType(cartItem.getEntityType());
+				downloadItem.setDownload(download);
+				downloadItems.add(downloadItem);
 			}
 
+			download.setDownloadItems(downloadItems);
+
+			try {
+				em.persist(download);
+				em.flush();
+				em.refresh(download);
+				downloadId = download.getId();
+				em.remove(cart);
+				em.flush();
+			} catch (Exception e) {
+				logger.debug(e.getMessage());
+				throw new BadRequestException("Unable to submit for cart for download");
+			}
 		}
 
 		return emptyCart(facilityName, userName, downloadId);
 	}
+
+	@GET
+	@Path("/getSize")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getSize(
+		@QueryParam("icatUrl") String icatUrl,
+		@QueryParam("sessionId") String sessionId,
+		@QueryParam("investigationIds") String investigationIdsString,
+		@QueryParam("datasetIds") String datasetIdsString,
+		@QueryParam("datafileIds") String datafileIdsString) throws TopcatException {
+
+		List<Long> investigationIds = new ArrayList<Long>();
+		if(investigationIdsString != null){
+			for(String investigationIdString : investigationIdsString.split("\\s*,\\s*")){
+				investigationIds.add(Long.valueOf(investigationIdString));
+			}
+		}
+
+		List<Long> datasetIds = new ArrayList<Long>();
+		if(datasetIdsString != null){
+			for(String datasetIdString : datasetIdsString.split("\\s*,\\s*")){
+				datasetIds.add(Long.valueOf(datasetIdString));
+			}
+		}
+
+		List<Long> datafileIds = new ArrayList<Long>();
+		if(datafileIdsString != null){
+			for(String datafileIdString : datafileIdsString.split("\\s*,\\s*")){
+				datafileIds.add(Long.valueOf(datafileIdString));
+			}
+		}
+
+		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+
+		Long size = icatClient.getSize(cacheRepository, investigationIds, datasetIds, datafileIds);
+
+		return Response.ok().entity(size.toString()).build();
+	}
+
 
 	private Response emptyCart(String facilityName, String userName, Long downloadId) {
 		JsonObjectBuilder emptyCart = Json.createObjectBuilder().add("facilityName", facilityName)

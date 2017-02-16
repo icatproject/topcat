@@ -27,6 +27,29 @@
 				}).join("\n");
 			}
 
+			if(this.entityType == 'investigation'){
+				this.getDatasetCount = helpers.overload({
+					'object': function(options){
+						var that = this;
+						options.lowPriority = true;
+
+						var query = "select count(dataset) from Dataset dataset, dataset.investigation as investigation where investigation.id = ?";
+			
+						var key = 'getDatasetCount:' + this.entityType + ":" + this.id;
+            			return icat.cache().getPromise(key, function(){ return icat.query([query, that.id], options); }).then(function(response){
+							that.datasetCount = response[0];
+							return that.datasetCount;
+						});
+					},
+					'promise': function(timeout){
+						return this.getDatasetCount({timeout: timeout});
+					},
+					'': function(){
+						return this.getDatasetCount({});
+					}
+				});
+			}
+
 			if(this.entityType.match(/^(investigation|dataset)$/)){
 				this.getSize = helpers.overload({
 					'object': function(options){
@@ -43,6 +66,33 @@
 						return this.getSize({});
 					}
 				});
+
+				this.getDatafileCount = helpers.overload({
+					'object': function(options){
+						var that = this;
+						options.lowPriority = true;
+
+						var query;
+						if(this.entityType == 'investigation'){
+							query = "select count(datafile) from Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = ?";
+						} else {
+							query = "select count(datafile) from Datafile datafile, datafile.dataset as dataset where dataset.id = ?";
+						}
+
+						var key = 'getDatafileCount:' + this.entityType + ":" + this.id;
+            			return icat.cache().getPromise(key, function(){ return icat.query([query, that.id], options); }).then(function(response){
+							that.datafileCount = response[0];
+							return that.datafileCount;
+						});
+					},
+					'promise': function(timeout){
+						return this.getDatafileCount({timeout: timeout});
+					},
+					'': function(){
+						return this.getDatafileCount({});
+					}
+				});
+
 			}
 
 			if(this.entityType == 'datafile'){

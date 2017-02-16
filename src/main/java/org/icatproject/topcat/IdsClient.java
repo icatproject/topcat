@@ -90,20 +90,6 @@ public class IdsClient {
         }
     }
 
-    public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
-        try {
-            Long out = 0L;
-
-            for(String offset : chunkOffsets("getSize?sessionId=" + sessionId + "&", investigationIds, datasetIds, datafileIds)){
-                out += Long.parseLong(httpClient.get(offset, new HashMap<String, String>()).toString());
-            }
-
-            return out;
-        } catch (Exception e){
-            throw new BadRequestException(e.getMessage());
-        }
-    }
-
     public boolean isTwoLevel() throws TopcatException {
         try {
             return httpClient.get("isTwoLevel", new HashMap<String, String>()).toString().equals("true");
@@ -241,6 +227,7 @@ public class IdsClient {
         return offsetPrefix + idsBuffer;
     }
 
+    //todo: merge into Util methods in 2.3.0
     private JsonObject parseJson(String json) throws Exception {
         InputStream jsonInputStream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
         JsonReader jsonReader = Json.createReader(jsonInputStream);

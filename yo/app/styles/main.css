@@ -103,6 +103,11 @@ body {
   background-size: auto 100%;
 }
 
+.loading.collapsed {
+  height: 14px;
+  width: 14px;
+}
+
 .has-archived {
   margin-top: 20px;
 }

@@ -5,32 +5,7 @@
     var app = angular.module('topcat');
 
     app.service('helpers', function($http, $q, $timeout, $interval, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema, plugins){
-    	var helpers = this;
-
-    	this.setupMetatabs = function(metaTabs, entityType){
-    		_.each(metaTabs, function(metaTab){
-                _.each(metaTab.items, function(item){
-                    var field = item.field;
-                    if(!field) return;
-                    var matches;
-                    if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
-                        var variableName = matches[1];
-                        entityType = icatSchema.variableEntityTypes[variableName];
-                        if(!entityType){
-                            console.error("Unknown variableName: " + variableName, item)
-                        }
-                        entityType = entityType;
-                        field = matches[2];
-                    }
-
-                    if(!item.label && item.label !== ''){
-                        var entityTypeNamespace = helpers.constantify(entityType);
-                        var fieldNamespace = helpers.constantify(field);
-                        item.label = "METATABS." + entityTypeNamespace + "." + fieldNamespace;
-                    }
-                });
-            });
-    	};
+    	var helpers = this;	
 
     	this.setupColumnDef = function(columnDef, entityType, translateTitleNameSpace, translateStatusNameSpace){
             var type = columnDef.type;
@@ -90,7 +65,8 @@
             }
 
             if(field === 'size') {
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span><span>{{row.entity.size|bytes}}</span></div>';
+
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.size|bytes}}</div>';
             	columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }
@@ -99,10 +75,22 @@
                 columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents">{{row.entity.fileSize|bytes}}</div>';
             }
 
+            if(field === 'datafileCount') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.datafileCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.datafileCount + (row.entity.datafileCount == 1 ? " file" :  " files")}}</div>';
+                columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
+            }
+
+            if(field === 'datasetCount') {
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.datasetCount === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.datasetCount + (row.entity.datasetCount == 1 ? " dataset" :  " datasets")}}</div>';
+                columnDef.enableSorting = false;
+                columnDef.enableFiltering = false;
+            }
+
+
             if(field === 'status') {
                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.status === undefined  && $root.requestCounter != 0" class="loading"></span><span ng-if="row.entity.status">{{"' + translateStatusNameSpace + '." + row.entity.status | translate}}</span></div>';
             }
-
 
             if(columnDef.title){
                 columnDef.displayName = columnDef.title;

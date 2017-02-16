@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('DownloadsController', function($state, $scope, $translate, $timeout, $uibModalInstance, $q, $interval, tc, uiGridConstants, helpers){
+    app.controller('DownloadsController', function($state, $rootScope, $scope, $translate, $timeout, $uibModalInstance, $q, $interval, tc, uiGridConstants, helpers){
         var that = this;
         var pagingConfig = tc.config().paging;
         var timeout = $q.defer();
@@ -48,36 +48,12 @@
         var data = [];
 
 
-        var refreshPromise = $interval(refresh, 1000 * 60);
-        $scope.$on('$destroy', function(){ $interval.cancel(refreshPromise); });
-        refresh();
+        $scope.$on('$destroy', $rootScope.$on('downloads:update', function($event, _data){
+            data =  _data;
+            that.gridOptions.data = _.select(data, filter);
+            that.gridOptions.data.sort(sorter);
+        }));
 
-
-        function refresh(){
-            timeout.resolve();
-            timeout = $q.defer();
-            var promises = [];
-            data = [];
-            _.each(tc.userFacilities(), function(facility){
-                var smartclient = facility.smartclient();
-                var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
-                promises.push(facility.user().downloads(timeout.promise, "where download.isDeleted = false").then(function(results){
-                    _.each(results, function(download){
-                        if(download.transport == 'smartclient' && download.status != 'COMPLETE'){
-                            smartclientPing.then(function(isServer){
-                                download.isServer = isServer;
-                            });
-                        }
-                    });
-                    data = _.flatten([data, results]);
-                }));
-            });
-
-            $q.all(promises).then(function(){
-                that.gridOptions.data = _.select(data, filter);
-                that.gridOptions.data.sort(sorter);
-            });
-        };
     
         this.remove = function(download){
             var _data = [];
@@ -104,7 +80,6 @@
             gridApi.core.on.sortChanged($scope, function(grid, sortColumns){
                 $timeout(function(){
                     sorter = helpers.generateEntitySorter(sortColumns);
-                    refresh();
                 });
             });
 
@@ -112,7 +87,6 @@
             gridApi.core.on.filterChanged($scope, function(){
                 var _timeout = $timeout(function(){
                     filter = helpers.generateEntityFilter(that.gridOptions);
-                    refresh();
                 });
             });
         };
