@@ -1,7 +1,7 @@
 'use strict';
 
 describe('tc icat query builder service', function () {
-    
+
     var icat;
 
     beforeEach(function() {
@@ -16,11 +16,11 @@ describe('tc icat query builder service', function () {
     beforeEach(inject(function(tc){
         icat = tc.icat('LILS');
     }));
-    
+
     describe('impliedPathsToImpliedSteps()', function(){
 
         it('should return correct steps', function(){
-            
+
             var entityTypeExpectations = {
                 'investigation': [
                     {
@@ -139,6 +139,33 @@ describe('tc icat query builder service', function () {
 
         });
 
+    });
+
+    describe('build()', function() {
+        describe('with left join', function() {
+            it('should ensure a left join', function() {
+                var queryBuilder = icat.queryBuilder('dataset');
+                queryBuilder.leftJoin('datasetParameter');
+                queryBuilder.leftJoin('datasetParameterType');
+                queryBuilder.where('datasetParameterType.name = \'blah\'');
+                var query = queryBuilder.build();
+                expect(query).toContain('from Dataset dataset'
+                                        + ' LEFT OUTER JOIN dataset.parameters datasetParameter'
+                                        + ' LEFT OUTER JOIN datasetParameter.type datasetParameterType'
+                                        + ' where');
+            });
+        });
+        describe('without left join', function() {
+            it('should not have a left join', function() {
+                var queryBuilder = icat.queryBuilder('dataset');
+                queryBuilder.where('datasetParameterType.name = \'blah\'');
+                var query = queryBuilder.build();
+                expect(query).toContain('from Dataset dataset'
+                                        + ' , dataset.parameters as datasetParameter'
+                                        + ' , datasetParameter.type as datasetParameterType'
+                                        + ' where');
+            });
+        });
     });
 
 });
