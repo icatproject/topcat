@@ -141,12 +141,6 @@ Vagrant.configure(2) do |config|
     sudo dos2unix /usr/bin/topcat
     topcat build_install
     asadmin -t set applications.application.topcat-2.2.1-SNAPSHOT.deployment-order=140
-<<<<<<< HEAD
-=======
-    
-
-    #mysql -u root --password=secret --host=127.0.0.1 icat < /vagrant/provision/icat.sql
->>>>>>> issue#303
 
     gem install faker rest-client
     ruby /vagrant/tools/lorum_facility_generator.rb

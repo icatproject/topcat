@@ -682,6 +682,33 @@ public class UserResource {
 		return emptyCart(facilityName, userName, downloadId);
 	}
 
+
+
+	/**
+	 * Retrieves the total file size (in bytes) for any investigation, datasets or datafiles.
+	 *
+	 * @summary getSize
+	 *
+	 * @param icatUrl
+	 *            a url to a valid ICAT REST api.
+	 * 
+	 * @param sessionId
+	 *            a valid session id which takes the form
+	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
+	 *
+	 * @param investigationIds
+	 *            a comma-separated-list of investigation ids.
+	 *
+	 * @param datasetIds
+	 *            a comma-separated-list of datset ids.
+	 *
+	 * @param datafileIds
+	 *            a comma-separated-list of datafile ids.
+	 *
+	 * 
+	 * @throws TopcatException
+	 *             if anything else goes wrong.
+	 */
 	@GET
 	@Path("/getSize")
 	@Produces({ MediaType.APPLICATION_JSON })

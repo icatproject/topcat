@@ -170,7 +170,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<licence>cHJvamVjdHxvcmcuaWNhdHByb2plY3QudG9wY2F0fDIwMTctMDItMTZ8dHJ1ZXwtMSNNQzBDRlFDRzlYMjJrMi82cUpVVUNQVUQ5USs2eXZFMElnSVVLRjdwZmdIUzFBNFA4QVNrMDIydGtMQUVzNkE9</licence>
+					<licence>cHJvamVjdHxvcmcuaWNhdHByb2plY3QudG9wY2F0fDIwMjAtMDItMjF8dHJ1ZXwtMSNNQ3dDRkMvZm5DODhmU3NlaDF4d2JsUVk4NkJ5dUEza0FoUTFVT2QxeGsybHRyZWk5RjBwcE1ncjRBdXhUQT09</licence>
 					<output>
 						<html>
 							<location>site/miredot</location>
