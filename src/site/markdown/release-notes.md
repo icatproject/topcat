@@ -3,8 +3,17 @@
 ## 2.2.1
 
 * Properly chunk GET requests
-* If user doesn't have a fullName in Icat the username will be used instead.
+* If a user doesn't have a fullName in Icat the username will be used instead.
 * Removed getStatus from Cart - you will need to remove your cart's status field from Topcat.json
+* The prepareData and getStatus calls are now as background thread on the server, so speeding up the user's cart submission time.
+* Topcat now performs a much more performant getSize request (for investigations and datasets), which gets cached server side.
+* When a user adds an item to a cart the corresonding getSize call will made to warm the cache up.
+* Client side getStatus calls has been removed from the Download (cart) dialog. This was used to determine if an email field needs to be show or not. Now, if the IDS is two tier this email field will alwauys be shown.
+* As well as the asynchronously loaded 'size' grid field, there now two more new asynchronous fields (which are much more effient alternatives to 'size'):
+    * fileCount fields can now be added to investigation or dataset grids
+    * datasetCount fields can now be added to investigation grids
+* A 'size' field now be added to the metatabs. However, in order to display this field you have to explicitly click a button.
+* **There are database migrations that need applying**
 
 ## 2.2.0
 
@@ -107,7 +116,7 @@ Changes to the WS interface
     * Add the column DOWNLOAD_SERVICE_URL to the table TOPCAT_ICAT_SERVER 
     * Add the column PREPARED_ID to the table TOPCAT_USER_DOWNLOAD 
     * Add the column DISPLAY_NAME to the table ICAT_AUTHENTICATION 
-    * Rename the table ICAT_AUTHENTICATION to TOPCAT_ICAT_AUTHENTICATION 
+    * Rename the table ICAT_AUTHENTICATION to TOPCAT_ICAT_AUTHENTICATION
 
         
 

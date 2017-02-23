@@ -616,7 +616,13 @@ An example configuration:
             "breadcrumb": true
         },
         {
-            "field": "size|bytes"
+            "field": "size"
+        },
+        {
+            "field": "datasetCount"
+        },
+        {
+            "field": "datafileCount"
         },
         {
             "field": "investigationInstrument.fullName"
@@ -639,6 +645,10 @@ An example configuration:
       * "columnDefs" - the column definitions of the grid.
           * "field" - The field you want to display in the column.
               * the dot notation e.g. "investigationInstrument.fullName" refers to "[variable name].[field name]" - see the "standard jpql variables" for more info.
+              * there are also 3 special field names which get loaded in asynchronously.
+                  * size - the sum of all the descendant files fileSize (applies to the investigation and dataset entities).
+                  * datasetCount - the total number of descendant datasets (applies to the investigation entity).
+                  * datafileCount - the total number of descendant datafiles (applies to the investigation and dataset entities).
           * "link" - whether or not to link to the next entity in the hierachy.
           * "breadcrumb" - whether or not you want to use the field value as title in the breadcrumb. By default this will be 'title' or 'name' if the entity has these fields.
           * "excludeFuture" - will preload the date 'to' filter with the current time, thus elliminating any rows in the future.
