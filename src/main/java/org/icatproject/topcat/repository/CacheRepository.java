@@ -1,15 +1,18 @@
 package org.icatproject.topcat.repository;
 
-import java.util.List;
+import java.util.*;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 import javax.ejb.Stateless;
+import javax.ejb.Schedule;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.icatproject.topcat.domain.Cache;
+import org.icatproject.topcat.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +30,11 @@ public class CacheRepository {
 	private static final Logger logger = LoggerFactory.getLogger(ConfVarRepository.class);
 
 	public Object get(String key){
-		System.out.println("get");
 		Cache cache = getCache(key);
-		System.out.println("Cache cache = getCache(key);");
 		if(cache != null){
+			cache.setLastAccessTime(new Date());
+			em.persist(cache);
+			em.flush();
 			return cache.getValue();
 		} else {
 			return null;
@@ -40,14 +44,36 @@ public class CacheRepository {
 	public void put(String key, Serializable value){
 		Cache cache = getCache(key);
 		if(cache == null){
-			System.out.println("cache is null");
 			cache = new Cache();
 			cache.setKey(key);
 		}
-		System.out.println("cache.setValue(value)");
 		cache.setValue(value);
-		System.out.println("em.persist(cache);");
 		em.persist(cache);
+		em.flush();
+	}
+
+	@Schedule(hour="*", minute="0")
+	public void prune(){
+		Properties properties = Properties.getInstance();
+      	Integer maxCacheSize = Integer.valueOf(properties.getProperty("maxCacheSize", "10000"));
+
+		TypedQuery<Cache> query = em.createQuery("select cache from Cache cache order by cache.lastAccessTime desc", Cache.class);
+		query.setMaxResults(maxCacheSize);
+
+		List<Cache> caches;
+		int page = 1;
+		while(true){
+			query.setFirstResult(maxCacheSize * page);
+			caches = query.getResultList();
+			if(caches.size() > 0){
+				for(Cache cache : caches){
+					em.remove(cache);
+				}
+			} else {
+				break;
+			}
+		}
+
 		em.flush();
 	}
 
