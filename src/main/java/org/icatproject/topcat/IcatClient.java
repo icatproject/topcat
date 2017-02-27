@@ -145,16 +145,7 @@ public class IcatClient {
 
 			for(Long investigationId : investigationIds){
 				String key = "getSize:investigation:" + investigationId;
-				Long size = null;
-
-				internalException = (InternalException) cacheRepository.get(key + ":internalException");
-
-				if(internalException != null){
-					throw internalException;
-				}
-				
-				size = (Long) cacheRepository.get(key);
-
+				Long size = (Long) cacheRepository.get(key);
 
 				if(size == null){
 					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + investigationId;
@@ -179,15 +170,7 @@ public class IcatClient {
 
 			for(Long datasetId : datasetIds){
 				String key = "getSize:dataset:" + datasetId;
-				Long size = null;
-
-				internalException = (InternalException) cacheRepository.get(key + ":internalException");
-
-				if(internalException != null){
-					throw internalException;
-				}
-				
-				size = (Long) cacheRepository.get(key);
+				Long size = (Long) cacheRepository.get(key);
 
 				if(size == null){
 					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + datasetId;
