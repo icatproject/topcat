@@ -143,12 +143,6 @@ public class IcatClient {
 			for(Long investigationId : investigationIds){
 				String key = "getSize:investigation:" + investigationId;
 				Long size = null;
-
-				internalException = (InternalException) cacheRepository.get(key + ":internalException");
-
-				if(internalException != null){
-					throw internalException;
-				}
 				
 				size = (Long) cacheRepository.get(key);
 
@@ -177,12 +171,6 @@ public class IcatClient {
 			for(Long datasetId : datasetIds){
 				String key = "getSize:dataset:" + datasetId;
 				Long size = null;
-
-				internalException = (InternalException) cacheRepository.get(key + ":internalException");
-
-				if(internalException != null){
-					throw internalException;
-				}
 				
 				size = (Long) cacheRepository.get(key);
 
