@@ -21,7 +21,13 @@
     </div>
     <div class="modal-footer">
         <div>
-            <b>Total size: <span ng-if="cartController.totalSize === undefined" class="loading collapsed"></span> <span ng-if="cartController.totalSize !== undefined">{{cartController.totalSize|bytes}}</span></b>
+            <b>Number of files: <span ng-if="!cartController.isLoaded" class="loading collapsed"></span> {{cartController.datafileCount}} / {{cartController.maxDatafileCount}} (max)</b>
+            <span class="label label-danger" ng-if="cartController.isLoaded && cartController.datafileCount > cartController.maxDatafileCount">Too many files</span>
+        </div>
+        <div>
+            <b>Total size: <span ng-if="!cartController.isLoaded" class="loading collapsed"></span> <span ng-if="!cartController.isValid && cartController.isLoaded && cartController.totalSize == 0">[Not Calculated]</span> <span ng-if="!cartController.isLoaded || cartController.totalSize > 0">{{cartController.totalSize|bytes}}</span> / {{cartController.maxTotalSize|bytes}} (max)</b>
+
+            <span class="label label-danger" ng-if="cartController.isLoaded && cartController.totalSize > cartController.maxTotalSize">Too big</span>
         </div>
         <br>
 
@@ -29,6 +35,7 @@
             ng-repeat="button in cartController.buttons"
             ng-click="button.click()"
             ng-show="button.show() === undefined ? true : button.show()"
+            ng-disabled="button.disabled()"
             type="button"
             class="{{button.class}}"
             translate="{{button.translate}}"

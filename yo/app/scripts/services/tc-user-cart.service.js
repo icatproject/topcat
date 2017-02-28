@@ -49,6 +49,39 @@
                 }
             });
 
+            this.getDatafileCount = helpers.overload({
+                'object': function(options){
+                    var defered = $q.defer();
+                    console.log('defered', defered);
+                    var out = 0;
+
+                    return helpers.throttle(10, 1, options.timeout, this.cartItems, function(cartItem){
+                        if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
+                            return cartItem.entity(options).then(function(entity){
+                                return entity.getDatafileCount(options).then(function(datafileCount){
+                                    out += datafileCount;
+                                    defered.notify(out);
+                                });
+                            });
+                        } else {
+                            out++;
+                            defered.notify(out);
+                            return $q.resolve();
+                        }
+                    }).then(function(){
+                        return defered.resolve(out);
+                    });
+
+                    return defered.promise;
+                },
+                'promise': function(timeout){
+                    return this.getDatafileCount({timeout: timeout});
+                },
+                '': function(){
+                  return this.getDatafileCount({});
+                }
+            });
+
             _.each(this.cartItems, function(cartItem){
                 cartItem.facilityName = facility.config().name;
 
@@ -101,13 +134,17 @@
                     }
                 });
 
-                if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
-                    cartItem.getSize({
-                        bypassInterceptors: true
-                    });
-                }
-
             });
+
+            // helpers.throttle(10, 10, null, this.cartItems, function(cartItem){
+            //     if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
+            //         return cartItem.getSize({
+            //             bypassInterceptors: true
+            //         });
+            //     } else {
+            //         return $q.resolve();
+            //     }
+            // });
 
             helpers.mixinPluginMethods('cart', this);
         }

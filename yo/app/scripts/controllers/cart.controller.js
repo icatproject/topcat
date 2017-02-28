@@ -30,7 +30,12 @@
         });
 
         this.gridOptions = gridOptions;
-        this.totalSize = undefined;
+        this.datafileCount = 0;
+        this.totalSize = 0;
+        this.isLoaded = false;
+        this.isValid = false;
+        this.maxDatafileCount = tc.config().cart.maxDatafileCount;
+        this.maxTotalSize = tc.config().cart.maxTotalSize;
 
         var existingButtons = [
             {
@@ -38,6 +43,7 @@
                 click: function(){
                     that.removeAll();
                 },
+                disabled: function(){ return false; },
                 class: "btn btn-primary",
                 translate: "CART.REMOVE_ALL_BUTTON.TEXT",
                 translateTooltip: "CART.REMOVE_ALL_BUTTON.TOOLTIP.TEXT"
@@ -46,6 +52,9 @@
                 name: "download-cart",
                 click: function(){
                     that.download();
+                },
+                disabled: function(){
+                    return !that.isValid;
                 },
                 class: "btn btn-primary",
                 translate: "CART.DOWNLOAD_CART_BUTTON.TEXT",
@@ -56,6 +65,7 @@
                 click: function(){
                     that.cancel();
                 },
+                disabled: function(){ return false; },
                 class: "btn btn-warning",
                 translate: "CART.CANCEL_BUTTON.TEXT",
                 translateTooltip: "CART.CANCEL_BUTTON.TOOLTIP.TEXT"
@@ -67,6 +77,7 @@
             return {
                 name: otherButton.name,
                 click: otherButton.click,
+                disabled: otherButton.disabled || function(){ return false; },
                 class: otherButton.options.class || "btn btn-primary",
                 translate: "CART." + otherButton.name.toUpperCase().replace(/-/g, '_') + "_BUTTON.TEXT",
                 translateValues: otherButton.options.translateValues,
@@ -84,6 +95,8 @@
         };
 
         this.remove = function(cartItem){
+            resetGetTotalsTimeout();
+
             var data = [];
             _.each(that.gridOptions.data, function(currentCartItem){
                 if(currentCartItem.id != cartItem.id) data.push(currentCartItem);
@@ -94,14 +107,14 @@
                     $uibModalInstance.dismiss('cancel');
                 } else {
                     cartItemsCache = null;
-                    getTotalSize().then(function(totalSize){
-                        that.totalSize = totalSize;
-                    });
+                    getTotals();
                 }
             });
         };
 
         this.removeAll = function(){
+             resetGetTotalsTimeout();
+
             var cartPromises = [];
             _.each(tc.userFacilities(), function(facility){
                 cartPromises.push(facility.user().deleteAllCartItems(timeout.promise));
@@ -152,35 +165,109 @@
             return defered.promise;
         }
 
-        var getTotalSizeTimeout;
-        function getTotalSize(){
-            if(getTotalSizeTimeout){
-                getTotalSizeTimeout.resolve();
+        var getTotalsTimeout;
+        function resetGetTotalsTimeout(){
+            if(getTotalsTimeout){
+                console.log('resolve');
+                getTotalsTimeout.resolve();
             }
-            getTotalSizeTimeout = $q.defer();
-            timeout.promise.then(function(){ getTotalSizeTimeout.resolve(); });
-            var defered = $q.defer();
-            getCarts().then(function(carts){
+            getTotalsTimeout = $q.defer();
+            timeout.promise.then(function(){ getTotalsTimeout.resolve(); });
+        }
+
+        function getDatafileCount(){
+            return getCarts().then(function(carts){
                 var out = 0;
                 var promises = [];
+
+                var isTimedOut = false;
+                getTotalsTimeout.promise.then(function(){
+                    isTimedOut = true;
+                });
+
                 _.each(carts, function(cart){
-                    promises.push(cart.getSize(getTotalSizeTimeout.promise).then(function(size){
-                        out = out + size;
+                    if(isTimedOut) return false;
+
+                    var promise = cart.getDatafileCount(getTotalsTimeout.promise);
+
+                    promise.then(function(){}, function(){}, function(value){
+                        console.log("notify", value);
+                    });
+
+
+                    promises.push(promise.then(function(fileCount){
+                        that.datafileCount += fileCount;
+                        out += fileCount;
+                    }, function(){
+
+                    }, function(fileCount){
+                        that.datafileCount = fileCount;
+                        console.log('notify', fileCount);
                     }));
                 });
-                $q.all(promises).then(function(){
-                    defered.resolve(out);
+                return $q.all(promises).then(function(){
+                    return out;
                 });
             });
-            return defered.promise;
+        };
+
+        function getTotalSize(){
+            return getCarts().then(function(carts){
+                var out = 0;
+                var promises = [];
+
+                var isTimedOut = false;
+                getTotalsTimeout.promise.then(function(){
+                    isTimedOut = true;
+                });
+
+                _.each(carts, function(cart){
+                    if(isTimedOut) return false;
+                    
+                    promises.push(cart.getSize(getTotalsTimeout.promise).then(function(size){
+                        that.totalSize = that.totalSize + size;
+                        out += size;
+                    }));
+                });
+                return $q.all(promises).then(function(){
+                    return out;
+                });
+            });
         }
+
+        function getTotals(){
+            resetGetTotalsTimeout();
+            that.isLoaded = false;
+            that.isValid = false;
+            that.totalSize = 0;
+            that.datafileCount = 0;
+
+            return getDatafileCount().then(function(datafileCount){
+                that.datafileCount = datafileCount;
+                if(datafileCount < that.maxDatafileCount){
+                    return getTotalSize().then(function(totalSize){
+                        that.totalSize = totalSize;
+                        that.isLoaded = true;
+
+                        if(totalSize < that.maxTotalSize){
+                            that.isValid = true;
+                        } else {
+                            return $q.reject("Total size too big");
+                        }
+                    });
+                } else {
+                    that.isLoaded = true;
+                    return $q.reject("Too many files");
+                }
+            });
+
+        }
+
         timeout.promise.then(function(){
-            if(getTotalSizeTimeout) getTotalSizeTimeout.resolve();
+            if(getTotalsTimeout) getTotalsTimeout.resolve();
         });
 
-        getTotalSize().then(function(totalSize){
-            that.totalSize = totalSize;
-        });
+        getTotals();
 
         function getPage(){
             var defered = $q.defer();

@@ -745,6 +745,37 @@
 			return defered.promise;
 		};
 
+        this.throttle = function(size, delay, timeout, items, fn){
+            var defered = $q.defer();
+            var chunks = _.chunk(items, size);
+
+
+
+            function processChunks(){
+                var chunk = chunks.pop();
+                if(chunk){
+                    $q.all(_.map(chunk, function(item){ return fn(item); })).then(function(){
+                        if(timeout){
+                            var promise = $timeout(processChunks, delay);
+                            timeout.then(function(){
+                                $timeout.cancel(promise);    
+                            });
+                        } else {
+                            $timeout(processChunks, delay);
+                        }
+                    }, function(){
+                        defered.reject();
+                    });
+                } else {
+                    defered.resolve();
+                }
+            }
+
+            processChunks();
+
+            return defered.promise;
+        };
+
 		(function(){
 			var methods = {
 	            get: $http.get,
@@ -759,6 +790,13 @@
 	            };
 	        });
 
+            var allMethod = $q.all;
+            $q.all = function(){
+                var out = allMethod.apply(this, arguments);
+                extendPromise(out);
+                return out;
+            };
+
 	        var deferMethod = $q.defer;
 	        $q.defer = function(){
 	        	var out = deferMethod.apply(this, arguments);
@@ -771,9 +809,9 @@
 		            return this.then(function(data){
 		                console.log('(success)', data); 
 		            }, function(data){
-		                console.log('(error)', data);   
+		                console.log('(error)', data);
 		            }, function(data){
-		                console.log('(notify)', data);  
+		                console.log('(notify)', data);
 		            });
 		        };
 
