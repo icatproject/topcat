@@ -286,26 +286,26 @@
         	};
 
             this.getSize = helpers.overload({
-              'string, number, object': function(type, id, options){
-                var key = 'getSize:' + type + ":" + id;
+              'string, number, object': function(entityType, entityId, options){
+                var key = 'getSize:' + entityType + ":" + entityId;
                 return this.cache().getPromise(key, function(){
-                  var idsParamName = helpers.uncapitalize(type) + "Ids";
                   var params = {
                     icatUrl: facility.config().icatUrl,
-                    sessionId: that.session().sessionId
+                    sessionId: that.session().sessionId,
+                    entityType: entityType,
+                    entityId: entityId
                   };
-                  params[idsParamName] = id;
                   options.lowPriority = true;
                   return facility.tc().get('user/getSize', params, options).then(function(size){
                     return parseInt('' + size);
                   });
                 });
               },
-              'string, number, promise': function(type, id, timeout){
-                return this.getSize(type, id, {timeout: timeout});
+              'string, number, promise': function(entityType, entityId, timeout){
+                return this.getSize(entityType, entityId, {timeout: timeout});
               },
-              'string, number': function(type, id){
-                return this.getSize(type, id, {});
+              'string, number': function(entityType, entityId){
+                return this.getSize(entityType, entityId, {});
               }
             });
 

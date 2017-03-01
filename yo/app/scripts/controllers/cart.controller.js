@@ -29,6 +29,8 @@
             cellTemplate : '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.remove(row.entity)" translate="CART.ACTIONS.LINK.REMOVE.TEXT" class="btn btn-primary btn-xs" uib-tooltip="' + $translate.instant('CART.ACTIONS.LINK.REMOVE.TOOLTIP.TEXT') + '" tooltip-placement="left" tooltip-append-to-body="true"></a></div>'
         });
 
+        $rootScope.$broadcast('cart:open');
+
         this.gridOptions = gridOptions;
         this.datafileCount = 0;
         this.totalSize = 0;
@@ -168,7 +170,6 @@
         var getTotalsTimeout;
         function resetGetTotalsTimeout(){
             if(getTotalsTimeout){
-                console.log('resolve');
                 getTotalsTimeout.resolve();
             }
             getTotalsTimeout = $q.defer();

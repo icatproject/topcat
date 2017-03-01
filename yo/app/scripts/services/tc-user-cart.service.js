@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcUserCart', function($q, helpers, tcIcatEntity){
+    app.service('tcUserCart', function($q, $rootScope, $timeout, helpers, tcIcatEntity){
 
     	this.create = function(attributes, user){
     		return new Cart(attributes, user);
@@ -14,6 +14,7 @@
         function Cart(attributes, user){
             _.merge(this, attributes);
             var facility = user.facility();
+            var that = this;
 
             this.isCartItem = function(entityType, entityId){
                 var out = false;
@@ -38,6 +39,7 @@
                             defered.notify(out);
                         });
                     }).then(function(){
+                        defered.notify(out);
                         return defered.resolve(out);
                     });
 
@@ -69,6 +71,7 @@
                             return $q.resolve();
                         }
                     }).then(function(){
+                        defered.notify(out);
                         return defered.resolve(out);
                     });
 
@@ -136,15 +139,33 @@
 
             });
 
-            // helpers.throttle(10, 10, null, this.cartItems, function(cartItem){
-            //     if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
-            //         return cartItem.getSize({
-            //             bypassInterceptors: true
-            //         });
-            //     } else {
-            //         return $q.resolve();
-            //     }
-            // });
+            
+
+            $timeout(function(){
+                var timeout = $q.defer();
+
+                var stopListeningForCartOpen = $rootScope.$on('cart:open', function(){
+                    stopListeningForCartOpen();
+                    stopListeningForCartChange();
+                    timeout.resolve();
+                    console.log('cart open');
+                });
+
+                var stopListeningForCartChange = $rootScope.$on('cart:change', function(){
+                    stopListeningForCartOpen();
+                    stopListeningForCartChange();
+                    timeout.resolve();
+                    console.log('cart change');
+                });
+
+                helpers.throttle(10, 10, timeout.promise, that.cartItems, function(cartItem){
+                    return cartItem.getSize({
+                        timeout: timeout.promise,
+                        bypassInterceptors: true
+                    });
+                });
+            });
+            
 
             helpers.mixinPluginMethods('cart', this);
         }
