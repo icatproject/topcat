@@ -285,11 +285,34 @@
         		return tcIcatQueryBuilder.create(this, entityType);
         	};
 
+            this.getSize = helpers.overload({
+              'string, number, object': function(type, id, options){
+                var key = 'getSize:' + type + ":" + id;
+                return this.cache().getPromise(key, function(){
+                  var idsParamName = helpers.uncapitalize(type) + "Ids";
+                  var params = {
+                    icatUrl: facility.config().icatUrl,
+                    sessionId: that.session().sessionId
+                  };
+                  params[idsParamName] = id;
+                  options.lowPriority = true;
+                  return facility.tc().get('user/getSize', params, options).then(function(size){
+                    return parseInt('' + size);
+                  });
+                });
+              },
+              'string, number, promise': function(type, id, timeout){
+                return this.getSize(type, id, {timeout: timeout});
+              },
+              'string, number': function(type, id){
+                return this.getSize(type, id, {});
+              }
+            });
+
           	helpers.generateRestMethods(this, facility.config().icatUrl + '/icat/');
 
             helpers.mixinPluginMethods('icat', this);
         }
-
 
 	});
 

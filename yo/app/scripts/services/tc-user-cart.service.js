@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcUserCart', function($q, helpers){
+    app.service('tcUserCart', function($q, helpers, tcIcatEntity){
 
     	this.create = function(attributes, user){
     		return new Cart(attributes, user);
@@ -29,17 +29,19 @@
 
             this.getSize = helpers.overload({
                 'object': function(options){
-                    var investigationIds = [];
-                    var datasetIds = [];
-                    var datafileIds = [];
+                    var defered = $q.defer();
+                    var out = 0;
 
-                    _.each(this.cartItems, function(cartItem){
-                        if(cartItem.entityType == 'investigation') investigationIds.push(cartItem.entityId);
-                        if(cartItem.entityType == 'dataset') datasetIds.push(cartItem.entityId);
-                        if(cartItem.entityType == 'datafile') datafileIds.push(cartItem.entityId);
+                    helpers.throttle(10, 1, options.timeout, this.cartItems, function(cartItem){
+                        return facility.icat().getSize(cartItem.entityType, cartItem.entityId,options).then(function(size){
+                            out += size;
+                            defered.notify(out);
+                        });
+                    }).then(function(){
+                        return defered.resolve(out);
                     });
 
-                    return user.facility().ids().getSize(investigationIds, datasetIds, datafileIds, options);
+                    return defered.promise;
                 },
                 'promise': function(timeout){
                     return this.getSize({timeout: timeout});
@@ -52,16 +54,14 @@
             this.getDatafileCount = helpers.overload({
                 'object': function(options){
                     var defered = $q.defer();
-                    console.log('defered', defered);
                     var out = 0;
 
-                    return helpers.throttle(10, 1, options.timeout, this.cartItems, function(cartItem){
+                    helpers.throttle(10, 1, options.timeout, this.cartItems, function(cartItem){
                         if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
-                            return cartItem.entity(options).then(function(entity){
-                                return entity.getDatafileCount(options).then(function(datafileCount){
-                                    out += datafileCount;
-                                    defered.notify(out);
-                                });
+                            var entity = tcIcatEntity.create({entityType: cartItem.entityType, id: cartItem.entityId}, facility);
+                            return entity.getDatafileCount(options).then(function(datafileCount){
+                                out += datafileCount;
+                                defered.notify(out); 
                             });
                         } else {
                             out++;

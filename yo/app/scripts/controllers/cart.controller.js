@@ -176,8 +176,9 @@
         }
 
         function getDatafileCount(){
+            var out = {};
+
             return getCarts().then(function(carts){
-                var out = 0;
                 var promises = [];
 
                 var isTimedOut = false;
@@ -188,32 +189,26 @@
                 _.each(carts, function(cart){
                     if(isTimedOut) return false;
 
+                    out[cart.id] = 0;
+
                     var promise = cart.getDatafileCount(getTotalsTimeout.promise);
 
-                    promise.then(function(){}, function(){}, function(value){
-                        console.log("notify", value);
-                    });
-
-
-                    promises.push(promise.then(function(fileCount){
-                        that.datafileCount += fileCount;
-                        out += fileCount;
-                    }, function(){
-
-                    }, function(fileCount){
-                        that.datafileCount = fileCount;
-                        console.log('notify', fileCount);
+                    promises.push(promise.then(function(){}, function(){}, function(fileCount){
+                        out[cart.id] = fileCount;
+                        that.datafileCount = _.sum(out);
                     }));
                 });
+
                 return $q.all(promises).then(function(){
-                    return out;
+                    return _.sum(out);
                 });
             });
         };
 
         function getTotalSize(){
+            var out = {};
+
             return getCarts().then(function(carts){
-                var out = 0;
                 var promises = [];
 
                 var isTimedOut = false;
@@ -223,14 +218,19 @@
 
                 _.each(carts, function(cart){
                     if(isTimedOut) return false;
-                    
-                    promises.push(cart.getSize(getTotalsTimeout.promise).then(function(size){
-                        that.totalSize = that.totalSize + size;
-                        out += size;
+
+                    out[cart.id] = 0;
+
+                    var promise = cart.getSize(getTotalsTimeout.promise);
+
+                    promises.push(promise.then(function(){}, function(){}, function(size){
+                        out[cart.id] = size;
+                        that.totalSize = _.sum(out);
                     }));
                 });
+
                 return $q.all(promises).then(function(){
-                    return out;
+                    return _.sum(out);
                 });
             });
         }
