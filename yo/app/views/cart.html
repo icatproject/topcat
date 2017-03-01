@@ -22,12 +22,12 @@
     <div class="modal-footer">
         <div>
             <b>Number of files: <span ng-if="!cartController.isLoaded" class="loading collapsed"></span> {{cartController.datafileCount}} / {{cartController.maxDatafileCount}} (max)</b>
-            <span class="label label-danger" ng-if="cartController.datafileCount > cartController.maxDatafileCount">Too many files</span>
+            <span class="label label-danger" ng-if="cartController.datafileCount > cartController.maxDatafileCount">Too many files - you have exceeded limit of {{cartController.maxDatafileCount}} files - please remove some files</span>
         </div>
         <div>
             <b>Total size: <span ng-if="!cartController.isLoaded" class="loading collapsed"></span> <span ng-if="!cartController.isValid && cartController.isLoaded && cartController.totalSize == 0">[Not Calculated]</span> <span ng-if="!cartController.isLoaded || cartController.totalSize > 0">{{cartController.totalSize|bytes}}</span> / {{cartController.maxTotalSize|bytes}} (max)</b>
 
-            <span class="label label-danger" ng-if="cartController.totalSize > cartController.maxTotalSize">Too big</span>
+            <span class="label label-danger" ng-if="cartController.totalSize > cartController.maxTotalSize">Too big - you have exceeded limit of {{cartController.maxTotalSize|bytes}} - please remove some files</span>
         </div>
         <br>
 
