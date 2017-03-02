@@ -1,6 +1,7 @@
 package org.icatproject.topcat.statuscheck;
 
 import java.net.URL;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -108,6 +109,8 @@ public class Watchdog {
       } else {
         lastChecks.put(download.getId(), new Date());
       }
+    } catch (IOException e){
+      logger.error("performCheck IOException: " + e.toString());
     } catch(TopcatException e) {
       logger.error("marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
       download.setStatus(DownloadStatus.EXPIRED);
@@ -115,7 +118,7 @@ public class Watchdog {
       em.flush();
       lastChecks.remove(download.getId());
     } catch(Exception e){
-      logger.error(e.toString());
+      logger.error("performCheck Exception: " + e.toString());
     }
   }
 

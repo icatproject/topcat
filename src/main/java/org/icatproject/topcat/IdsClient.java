@@ -76,13 +76,15 @@ public class IdsClient {
         }
     }
 
-    public boolean isPrepared(String preparedId) throws TopcatException {
+    public boolean isPrepared(String preparedId) throws TopcatException, IOException {
         try {
             Response response = httpClient.get("isPrepared?zip=true&preparedId=" + preparedId, new HashMap<String, String>());
             if(response.getCode() >= 400){
                 throw new NotFoundException(parseJson(response.toString()).getString("message"));
             }
             return response.toString().equals("true");
+        } catch(IOException e){
+            throw e;
         } catch (TopcatException e){
             throw e;
         } catch (Exception e){
