@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcUserCart', function($q, helpers){
+    app.service('tcUserCart', function($q, $rootScope, $timeout, helpers, tcIcatEntity){
 
     	this.create = function(attributes, user){
     		return new Cart(attributes, user);
@@ -14,6 +14,7 @@
         function Cart(attributes, user){
             _.merge(this, attributes);
             var facility = user.facility();
+            var that = this;
 
             this.isCartItem = function(entityType, entityId){
                 var out = false;
@@ -29,23 +30,58 @@
 
             this.getSize = helpers.overload({
                 'object': function(options){
-                    var investigationIds = [];
-                    var datasetIds = [];
-                    var datafileIds = [];
+                    var defered = $q.defer();
+                    var out = 0;
 
-                    _.each(this.cartItems, function(cartItem){
-                        if(cartItem.entityType == 'investigation') investigationIds.push(cartItem.entityId);
-                        if(cartItem.entityType == 'dataset') datasetIds.push(cartItem.entityId);
-                        if(cartItem.entityType == 'datafile') datafileIds.push(cartItem.entityId);
+                    helpers.throttle(10, 1, options.timeout, this.cartItems, function(cartItem){
+                        return facility.icat().getSize(cartItem.entityType, cartItem.entityId,options).then(function(size){
+                            out += size;
+                            defered.notify(out);
+                        });
+                    }).then(function(){
+                        defered.notify(out);
+                        return defered.resolve(out);
                     });
 
-                    return user.facility().ids().getSize(investigationIds, datasetIds, datafileIds, options);
+                    return defered.promise;
                 },
                 'promise': function(timeout){
                     return this.getSize({timeout: timeout});
                 },
                 '': function(){
                     return this.getSize({});
+                }
+            });
+
+            this.getDatafileCount = helpers.overload({
+                'object': function(options){
+                    var defered = $q.defer();
+                    var out = 0;
+
+                    helpers.throttle(10, 1, options.timeout, this.cartItems, function(cartItem){
+                        if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
+                            var entity = tcIcatEntity.create({entityType: cartItem.entityType, id: cartItem.entityId}, facility);
+                            return entity.getDatafileCount(options).then(function(datafileCount){
+                                out += datafileCount;
+                                defered.notify(out); 
+                            });
+                        } else {
+                            out++;
+                            defered.notify(out);
+                            return $q.resolve();
+                        }
+                    }).then(function(){
+                        defered.notify(out);
+                        return defered.resolve(out);
+                    });
+
+                    return defered.promise;
+                },
+                'promise': function(timeout){
+                    return this.getDatafileCount({timeout: timeout});
+                },
+                '': function(){
+                  return this.getDatafileCount({});
                 }
             });
 
@@ -101,13 +137,35 @@
                     }
                 });
 
-                if(cartItem.entityType == 'investigation' || cartItem.entityType == 'dataset'){
-                    cartItem.getSize({
+            });
+
+            
+
+            $timeout(function(){
+                var timeout = $q.defer();
+
+                var stopListeningForCartOpen = $rootScope.$on('cart:open', function(){
+                    stopListeningForCartOpen();
+                    stopListeningForCartChange();
+                    timeout.resolve();
+                    console.log('cart open');
+                });
+
+                var stopListeningForCartChange = $rootScope.$on('cart:change', function(){
+                    stopListeningForCartOpen();
+                    stopListeningForCartChange();
+                    timeout.resolve();
+                    console.log('cart change');
+                });
+
+                helpers.throttle(10, 10, timeout.promise, that.cartItems, function(cartItem){
+                    return cartItem.getSize({
+                        timeout: timeout.promise,
                         bypassInterceptors: true
                     });
-                }
-
+                });
             });
+            
 
             helpers.mixinPluginMethods('cart', this);
         }

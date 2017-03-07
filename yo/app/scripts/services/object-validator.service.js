@@ -122,6 +122,8 @@
                          }
                     },
                     cart: {
+                        maxDatafileCount: {_type: 'number' },
+                        maxTotalSize: {_type: 'number' },
                         gridOptions: {
                             columnDefs: {
                                 _type: 'array',

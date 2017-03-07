@@ -696,16 +696,12 @@ public class UserResource {
 	 *            a valid session id which takes the form
 	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
 	 *
-	 * @param investigationIds
-	 *            a comma-separated-list of investigation ids.
+	 * @param entityType
+	 *            the type of entity 'investigation', 'dataset' or 'datafile'.
 	 *
-	 * @param datasetIds
+	 * @param entityId
 	 *            a comma-separated-list of datset ids.
 	 *
-	 * @param datafileIds
-	 *            a comma-separated-list of datafile ids.
-	 *
-	 * 
 	 * @throws TopcatException
 	 *             if anything else goes wrong.
 	 */
@@ -715,34 +711,12 @@ public class UserResource {
 	public Response getSize(
 		@QueryParam("icatUrl") String icatUrl,
 		@QueryParam("sessionId") String sessionId,
-		@QueryParam("investigationIds") String investigationIdsString,
-		@QueryParam("datasetIds") String datasetIdsString,
-		@QueryParam("datafileIds") String datafileIdsString) throws TopcatException {
-
-		List<Long> investigationIds = new ArrayList<Long>();
-		if(investigationIdsString != null){
-			for(String investigationIdString : investigationIdsString.split("\\s*,\\s*")){
-				investigationIds.add(Long.valueOf(investigationIdString));
-			}
-		}
-
-		List<Long> datasetIds = new ArrayList<Long>();
-		if(datasetIdsString != null){
-			for(String datasetIdString : datasetIdsString.split("\\s*,\\s*")){
-				datasetIds.add(Long.valueOf(datasetIdString));
-			}
-		}
-
-		List<Long> datafileIds = new ArrayList<Long>();
-		if(datafileIdsString != null){
-			for(String datafileIdString : datafileIdsString.split("\\s*,\\s*")){
-				datafileIds.add(Long.valueOf(datafileIdString));
-			}
-		}
+		@QueryParam("entityType") String entityType,
+		@QueryParam("entityId") Long entityId) throws TopcatException {
 
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-		Long size = icatClient.getSize(cacheRepository, investigationIds, datasetIds, datafileIds);
+		Long size = icatClient.getSize(cacheRepository, entityType, entityId);
 
 		return Response.ok().entity(size.toString()).build();
 	}

@@ -293,43 +293,6 @@ An example breadcrumb configuration:
 ```
   * "maxTitleLength" - the maximum length after which it will get truncated with ellipses.
 
-$h3 topcat.json: "site" > "serviceStatus"
-
-Allows the displaying of a message that the user can dismiss and then carry on using the system
-
-An example configuration:
-
-```
-{
-  "site": {
-    "serviceStatus": {
-        "show": true,
-        "message": "<strong>Service status:</strong> Site is down for maintenance"
-    }
-  }
-}
-```
-  * "show" - specifies whether the message should be shown or not. Can be true or false.
-  * "message" - the actual message to be displayed as a html string.
-
-$h3 topcat.json: "site" > "maintenanceMode"
-
-Allows the displaying of a message that the user can't dismiss, and disables the frontend interface i.e. the user can't do anything
-
-An example configuration:
-
-```
-{
-  "site": {
-    "maintenanceMode": {
-        "show": false,
-        "message": "This server in undergoing maintenance."
-    }
-  }
-}
-```
-  * "show" - specifies whether the message should be shown or not. Can be true or false.
-  * "message" - the actual message to be displayed as a html string.
 
 $h3 topcat.json: "site" > "search"
 
@@ -388,12 +351,15 @@ An example (partial) configuration:
 {
   "site": {
     "cart":{
+        "maxDatafileCount": 1000000,
+        "maxTotalSize": 1000000000000,
         "gridOptions": {...}
     }
   }
 }
 ```
-
+* maxDatafileCount - the maximum number of datafiles that can be added to a cart, this includes all files in the hierachy of each entity e.g. if you added a dataset to the cart this includes all the files inside that dataset.
+* maxTotalSize - the total size of the potentual download.
 * "gridOptions" - the grid options for the "cartItem" Topcat entity type. See "gridOptions configuration" for more information.
 
 $h3 topcat.json: "site" >  "myDownloads" 

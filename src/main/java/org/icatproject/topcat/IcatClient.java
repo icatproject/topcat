@@ -131,113 +131,57 @@ public class IcatClient {
 		return out;
 	}
 
-	public Long getSize(CacheRepository cacheRepository, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+
+	public Long getSize(CacheRepository cacheRepository, String entityType, Long entityId) throws TopcatException {
 		try {
-			Long out = (long) 0;
-			String query, url;
-			Response response;
-			InternalException internalException;
+			String key = "getSize:" + entityType + ":" + entityId;
+			Long size = (Long) cacheRepository.get(key);
 
-			datafileIds = new ArrayList<Long>(datafileIds);
-
-			for(Long investigationId : investigationIds){
-				String key = "getSize:investigation:" + investigationId;
-				Long size = (Long) cacheRepository.get(key);
-
-				if(size == null){
-					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + investigationId;
-					url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-					response = httpClient.get(url, new HashMap<String, String>());
-					if(response.getCode() >= 400){
-						internalException = new InternalException(response.toString());
-						cacheRepository.put(key + ":internalException", internalException);
-						throw internalException;
-					}
-					try {
-						size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
-					} catch(Exception e) {
-						size = (long) 0;
-					}
-					cacheRepository.put(key, size);
-					
-				}
-
-				out += size;
+			if(size != null){
+				return size;
 			}
 
-			for(Long datasetId : datasetIds){
-				String key = "getSize:dataset:" + datasetId;
-				Long size = (Long) cacheRepository.get(key);
+			String query = null;
 
-				if(size == null){
-					query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + datasetId;
-					url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-					response = httpClient.get(url, new HashMap<String, String>());
-					if(response.getCode() >= 400){
-						internalException = new InternalException(response.toString());
-						cacheRepository.put(key + ":internalException", internalException);
-						throw internalException;
-					}
-					try {
-						size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
-					} catch(Exception e) {
-						size = (long) 0;
-					}
-					cacheRepository.put(key, size);
-				}
-
-				out += size;
+			if(entityType.equals("investigation")){
+				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + entityId;
+			} else if(entityType.equals("dataset")){
+				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + entityId;
+			} else if(entityType.equals("datafile")){
+				query = "select datafile.fileSize from  Datafile datafile where datafile.id = " + entityId;
+			} else {
+				throw new BadRequestException("Unknown or supported entity \"" + entityType + "\" for getSize");
 			}
 
-			String queryPrefix = "select sum(datafile.fileSize) from Datafile datafile where datafile.id in (";
-			String querySuffix = ")";
+			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
+			String response = httpClient.get(url, new HashMap<String, String>()).toString();
+			size = ((JsonNumber) Utils.parseJsonArray(response).get(0)).longValue();
+			cacheRepository.put(key, size);
 
-			StringBuffer currentCandidateEntityIds = new StringBuffer();
-			String currentPassedUrl = null;
-			String currentCandidateUrl = null;
-
-			List<String> passedUrls = new ArrayList<String>();
-
-			while(datafileIds.size() > 0){
-				if (currentCandidateEntityIds.length() != 0) {
-					currentCandidateEntityIds.append(",");
-				}
-				currentCandidateEntityIds.append(datafileIds.get(0));
-				currentCandidateUrl = "entityManager?sessionId="  + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(queryPrefix + currentCandidateEntityIds.toString() + querySuffix , "UTF8");
-				if(httpClient.urlLength(currentCandidateUrl) > 2048){
-					currentCandidateEntityIds = new StringBuffer();
-					if(currentPassedUrl == null){
-						break;
-					}
-					passedUrls.add(currentPassedUrl);
-					currentPassedUrl = null;
-				} else {
-					currentPassedUrl = currentCandidateUrl;
-					currentCandidateUrl = null;
-					datafileIds.remove(0);
-				}
-			}
-
-			if(currentPassedUrl != null){
-				passedUrls.add(currentPassedUrl);
-			}
-
-			for(String passedUrl : passedUrls){
-				response = httpClient.get(passedUrl, new HashMap<String, String>());
-				if(response.getCode() >= 400){
-					throw new InternalException(response.toString());
-				}
-				try{
-					out += ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
-				} catch(Exception e) {}
-			}
-
-			return out;
+			return size;
 		} catch(TopcatException e){
 			throw e;
 		} catch (Exception e) {
 			throw new BadRequestException(e.getMessage());
 		}
+	}
+
+	public Long getSize(CacheRepository cacheRepository, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+		Long out = 0L;
+
+		for(Long investigationId : investigationIds){
+			out += getSize(cacheRepository, "investigation", investigationId);
+		}
+
+		for(Long datasetId : datasetIds){
+			out += getSize(cacheRepository, "dataset", datasetId);
+		}
+
+		for(Long datafileId : datafileIds){
+			out += getSize(cacheRepository, "datafile", datafileId);
+		}
+		
+		return out;
 	}
 
 	protected String[] getAdminUserNames() throws Exception {

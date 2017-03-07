@@ -55,7 +55,7 @@
 					'object': function(options){
 						var that = this;
 						this.isGettingSize = true;
-						return facility.ids().getSize(this.entityType, this.id, options).then(function(size){
+						return icat.getSize(this.entityType, this.id, options).then(function(size){
 							that.size = size;
 							that.isGettingSize = false;
 							return size;
