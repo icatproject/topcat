@@ -815,13 +815,6 @@
 	        	return out;
 	        };
 
-            var allMethod = $q.all;
-            $q.all = function(){
-                var out = allMethod.apply(this, arguments);
-                extendPromise(out);
-                return out;
-            };
-
 	        function extendPromise(promise){
 				promise.log = function(){
                     var start = (new Date()).getTime();
