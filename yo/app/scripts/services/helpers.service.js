@@ -750,12 +750,6 @@
 
 		};
 
-		this.resolvedPromise = function(value){
-			var defered = $q.defer();
-			defered.resolve(value);
-			return defered.promise;
-		};
-
         this.throttle = function(size, delay, timeout, items, fn){
             var defered = $q.defer();
             var chunks = _.chunk(items, size);
@@ -814,6 +808,20 @@
 	        	extendPromise(out.promise);
 	        	return out;
 	        };
+
+            var resolveMethod = $q.resolve;
+            $q.resolve = function(){
+                var out = resolveMethod.apply(this, arguments);
+                extendPromise(out);
+                return out;
+            };
+
+            var rejectMethod = $q.reject;
+            $q.reject = function(){
+                var out = rejectMethod.apply(this, arguments);
+                extendPromise(out);
+                return out;
+            };
 
 	        function extendPromise(promise){
 				promise.log = function(){

@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('BreadcrumbController', function($scope, $state, $q, $timeout, tc){
+    app.controller('BreadcrumbController', function($scope, $state, $q, $timeout, tc, helpers){
         var that = this;
         var timeout = $q.defer();
         $scope.$on('$destroy', function(){
@@ -65,12 +65,12 @@
                 out.template = template;
 
                 if(entityType == 'proposal'){
-                    promises.push(facility.icat().entity("investigation", ["where investigation.name = ?", entityId, "limit 0, 1"], timeout).then(function(entity){
-                        out.entity = entity;
+                    promises.push(facility.icat().query(["select investigation from Investigation investigation where investigation.name = ?", entityId, "limit 0, 1"], timeout).then(function(entities){
+                        out.entity = entities[0];
                     }));
                 } else {
-                    promises.push(facility.icat().entity(entityType, ["where ?.id = ?", entityType.safe(), entityId, "limit 0, 1"], timeout).then(function(entity){
-                        out.entity = entity;
+                    promises.push(facility.icat().query(["select ? from ? ? where ?.id = ?", entityType.safe(), helpers.capitalize(entityType).safe(), entityType.safe(), entityType.safe(), entityId, "limit 0, 1"], timeout).then(function(entities){
+                        out.entity = entities[0];
                     }));
                 }
 

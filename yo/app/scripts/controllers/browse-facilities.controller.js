@@ -22,9 +22,9 @@
         }
         
         _.each(tc.userFacilities(), function(facility){
-            facility.icat().entity("facility", ["where facility.id = ?", facility.config().id]).then(function(_facility){
-                _facility.facilityName = facility.config().name;
-                gridOptions.data.push(_facility);
+            facility.icat().query(["select facility from Facility facility where facility.id = ?", facility.config().id]).then(function(facilities){
+                facilities[0].facilityName = facility.config().name;
+                gridOptions.data.push(facilities[0]);
             });
         });
 

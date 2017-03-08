@@ -142,9 +142,9 @@
                             if(isAdmin) document.cookie = "isAdmin=true";
                         }));
 
-                        promises.push(that.entity('user', ["where user.name = ?", username]).then(function(user){
-                            if(user){
-                                $sessionStorage.sessions[facilityName].fullName = user.fullName;
+                        promises.push(that.query(["select user from User user where user.name = ?", username]).then(function(users){
+                            if(users[0]){
+                                $sessionStorage.sessions[facilityName].fullName = users[0].fullName;
                             } else {
                                 $sessionStorage.sessions[facilityName].fullName = username;
                             }
@@ -288,43 +288,6 @@
                     return this.write(entities, {});
                 }
             });
-
-
-            this.entities = helpers.overload({
-            	'string, array, object': function(type, query, options){
-            		return this.query([[
-            			'select ' + type + ' from ' + helpers.capitalize(type) + ' ' + type
-            		], query], options);
-            	},
-            	'string, promise, array': function(type, timeout, query){
-            		return this.entities(type, query, {timeout: timeout});
-            	},
-            	'string, promise, string': function(type, timeout, query){
-            		return this.entities(type, [query], {timeout: timeout});
-            	},
-            	'string, array': function(type, query){
-            		return this.entities(type, query, {});
-            	},
-            	'string, string': function(type, query){
-            		return this.entities(type, [query], {});
-            	},
-            	'string, promise': function(type, timeout){
-            		return this.entities(type, [], {timeout: timeout});
-            	},
-            	'string': function(type){
-            		return this.entities(type, [], {});
-            	}
-            });
-
-            this.entity = function(){
-          		var out = $q.defer();
-          		this.entities.apply(this, arguments).then(function(results){
-          			out.resolve(results[0]);
-          		}, function(results){
-          			out.reject(results);
-          		});
-          		return out.promise;
-          	};
 
           	this.queryBuilder = function(entityType){
         		return tcIcatQueryBuilder.create(this, entityType);

@@ -126,12 +126,13 @@
 					if(dataset){
 						defered.resolve(_.merge(dataset, {entityType: 'dataset'}));
 					} else {
-						icat.entity('dataset', [
+						icat.query([
+							'select dataset from Dataset dataset',
 							', dataset.datafiles datafile',
 							'where datafile.id = ?', datafile.id
-						], options).then(function(dataset){
-							datafile.dataset = dataset;
-							defered.resolve(dataset);
+						], options).then(function(datasets){
+							datafile.dataset = datasets[0];
+							defered.resolve(dataset[0]);
 						}, function(response){
 							defered.reject(response);
 						});
@@ -144,12 +145,13 @@
 					if(investigation){
 						defered.resolve(_.merge(investigation, {entityType: 'investigation'}));
 					} else {
-						icat.entity('investigation', [
+						icat.query([
+							'select investigation from Investigation investigation',
 							', investigation.datasets dataset',
 							'where dataset.id = ?', dataset.id
-						], options).then(function(investigation){
-							dataset.investigation = investigation;
-							defered.resolve(investigation);
+						], options).then(function(investigations){
+							dataset.investigation = investigations[0];
+							defered.resolve(investigations[0]);
 						}, function(response){
 							defered.reject(response);
 						});
@@ -162,15 +164,16 @@
 					if(facilityCycle){
 						defered.resolve(facilityCycle);
 					} else {
-						icat.entity('facilityCycle', [
+						icat.query([
+							'select facilityCycle from FacilityCycle facilityCycle',
 							', facilityCycle.facility facility,',
 							'facility.investigations investigation',
 							'where facility.id = ?', facility.config().id,
 							'and investigation.id = ?', investigation.id,
 							'and investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate'
-						], options).then(function(facilityCycle){
-							investigation.facilityCycle = facilityCycle;
-							defered.resolve(facilityCycle);
+						], options).then(function(facilityCycles){
+							investigation.facilityCycle = facilityCycles[0];
+							defered.resolve(facilityCycles[0]);
 						}, function(response){
 							defered.reject(response);
 						});
@@ -179,7 +182,7 @@
 				},
 				facilityCycle: function(facilityCycle, childEntity, options){
 					if(!_.includes(['investigation', 'dataset', 'datafile'], childEntity.entityType)){
-						return helpers.resolvedPromise(null);
+						return $q.resolve(null);
 					}
 					return childEntity.thisOrParent('investigation').then(function(investigation){
 						var defered = $q.defer();
@@ -187,15 +190,16 @@
 						if(instrument){
 							defered.resolve(instrument);
 						} else {
-							icat.entity('instrument', [
+							icat.query([
+								'select instrument from Instrument instrument',
 								', instrument.investigationInstruments investigationInstrument,',
 								'investigationInstrument.investigation investigation,',
 								'instrument.facility facility',
 								'where facility.id = ?', facility.config().id,
 								'and investigation.id = ?', investigation.id,
-							], options).then(function(instrument){
-								facilityCycle.instrument = instrument;
-								defered.resolve(instrument);
+							], options).then(function(instruments){
+								facilityCycle.instrument = instruments[0];
+								defered.resolve(instruments[0]);
 							}, function(response){
 								defered.reject(response);
 							});
@@ -258,7 +262,7 @@
 
 			this.thisOrParent = function(entityType){
 				if(this.entityType == entityType){
-					return helpers.resolvedPromise(this);
+					return $q.resolve(this);
 				} else {
 					return this.parent(entityType, this);
 				}
@@ -296,7 +300,7 @@
 					var out = _.clone($state.params);
 					delete out.uiGridState;
 					out[helpers.uncapitalize(this.entityType) + "Id"] = this.id;
-					return helpers.resolvedPromise(out);
+					return $q.resolve(out);
 				} else {
 					return this.thisAndAncestors().then(function(thisAndAncestors){
 						var out = {};
