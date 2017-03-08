@@ -125,7 +125,7 @@ exec %{
 
   asadmin -t set applications.application.topcat-2.3.0-SNAPSHOT.deployment-order=140
 
-  cd yo
+  cd ../yo
 
   cp app/config/topcat_dev.json.example app/config/topcat_dev.json
 
