@@ -10,7 +10,7 @@ A web based GUI able to search across multiple ICAT instances and download data 
 
 Information on how to install Topcat can be found here:
 
-* https://repo.icatproject.org/site/topcat/2.1.0/installation.html
+* https://repo.icatproject.org/site/topcat/2.2.1/installation.html
 
 ## Development
 
@@ -35,10 +35,6 @@ You will be able to log into the "TEST" facility with the following credentials:
 * Authentication Type: Simple
 * Username: root
 * Password: root
-
-You can edit Topcat's main configuration by editing:
-
-* [yo/app/config/topcat_dev.json](https://github.com/icatproject/topcat/tree/master/yo/app/config/topcat_dev.json)
 
 You can rebuild the server side (i.e. anything Java related) by:
 
