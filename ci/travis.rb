@@ -95,12 +95,19 @@ exec %{
   cd ../
   asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
   
+
+  cd tools
+  gem install rest-client
+  gem install faker
+  ruby lorum_facility_generator.rb
+  ruby #{install_provision_dir}/populate_lucene.rb
+  cd ../
+
   curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
   sudo apt-get --assume-yes install nodejs maven phantomjs
   sudo npm install -g bower
   sudo npm install -g grunt-cli
 
-  cd ../
   mvn clean install
   cp ./target/topcat-*.zip ./install
   cd install
@@ -118,14 +125,8 @@ exec %{
 
   asadmin -t set applications.application.topcat-2.3.0-SNAPSHOT.deployment-order=140
 
-  cd ../tools
-  gem install rest-client
-  gem install faker
-  ruby lorum_facility_generator.rb
 
-  ruby #{install_provision_dir}/populate_lucene.rb
-
-  cd ../yo
+  cd yo
 
   cp app/config/topcat_dev.json.example app/config/topcat_dev.json
 
