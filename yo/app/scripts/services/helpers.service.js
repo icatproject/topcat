@@ -357,7 +357,6 @@
             }
     	};
 
-
         this.generateEntitySorter = function(sortColumns){
             var sorters = [];
 
