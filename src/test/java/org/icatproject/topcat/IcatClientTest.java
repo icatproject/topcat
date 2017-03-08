@@ -15,12 +15,16 @@ import java.net.URLEncoder;
 
 import org.icatproject.topcat.repository.CacheRepository;
 
+import java.sql.*;
+
 public class IcatClientTest {
 
 	@EJB
 	private CacheRepository cacheRepository;
 
 	private static String sessionId;
+
+	private Connection connection;
 
 	@Before
 	public void setup() throws Exception {
@@ -30,6 +34,8 @@ public class IcatClientTest {
 		String data = "json=" + URLEncoder.encode("{\"plugin\":\"simple\", \"credentials\":[{\"username\":\"root\"}, {\"password\":\"root\"}]}", "UTF8");
 		String response = httpClient.post("session", new HashMap<String, String>(), data).toString();
 		sessionId = Utils.parseJsonObject(response).getString("sessionId");
+
+		connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/icat", "root", "secret");
 	}
 
 	@Test
@@ -64,25 +70,39 @@ public class IcatClientTest {
 		results = icatClient.getEntities("datafile", ids);
 		assertEquals(0, results.size());
 
-		ids.add((long) 1);
+		List<Long>  investigationIds = new ArrayList<Long>();
+		ResultSet investigations = connection.createStatement().executeQuery("SELECT * from INVESTIGATION limit 0, 1");
+		investigations.next();
+		investigationIds.add(investigations.getLong("ID"));
 
-		results = icatClient.getEntities("investigation", ids);
+		results = icatClient.getEntities("investigation", investigationIds);
 		assertEquals(1, results.size());
 
-		results = icatClient.getEntities("dataset", ids);
+		List<Long>  datasetIds = new ArrayList<Long>();
+		ResultSet datasets = connection.createStatement().executeQuery("SELECT * from DATASET limit 0, 1");
+		datasets.next();
+		datasetIds.add(datasets.getLong("ID"));
+
+		results = icatClient.getEntities("dataset", datasetIds);
 		assertEquals(1, results.size());
 		assertNotNull(results.get(0).getJsonObject("investigation"));
 
-		results = icatClient.getEntities("datafile", ids);
+		List<Long>  datafileIds = new ArrayList<Long>();
+		ResultSet datafiles = connection.createStatement().executeQuery("SELECT * from DATAFILE");
+		datafiles.next();
+		datafileIds.add(datafiles.getLong("ID"));
+
+		results = icatClient.getEntities("datafile", datafileIds);
 		assertEquals(1, results.size());
 		assertNotNull(results.get(0).getJsonObject("dataset"));
 		assertNotNull(results.get(0).getJsonObject("dataset").getJsonObject("investigation"));
 
 		for(long i = 2; i <= 10001; i++){
-			ids.add((long) i);
+			datafiles.next();
+			datafileIds.add(datafiles.getLong("ID"));
 		}
 
-		results = icatClient.getEntities("datafile", ids);
+		results = icatClient.getEntities("datafile", datafileIds);
 		assertEquals(10001, results.size());
 
 	}
