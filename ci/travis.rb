@@ -96,7 +96,7 @@ exec %{
   asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
   
 
-  cd tools
+  cd ../tools
   gem install rest-client
   gem install faker
   ruby lorum_facility_generator.rb
@@ -124,7 +124,6 @@ exec %{
   cd ../
 
   asadmin -t set applications.application.topcat-2.3.0-SNAPSHOT.deployment-order=140
-
 
   cd yo
 
