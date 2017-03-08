@@ -34,7 +34,7 @@
                             "link": true
                         },
                         {
-                            "field": "datasetCount"
+                            "field": "size|bytes"
                         },
                         {
                             "field": "investigationInstrument.fullName"
@@ -55,7 +55,7 @@
                             "link": true
                         },
                         {
-                            "field": "datafileCount"
+                            "field": "size|bytes"
                         },
                         {
                             "field": "investigation.title",
@@ -125,6 +125,8 @@
             ]
         },
         "cart":{
+            "maxDatafileCount": 100000,
+            "maxTotalSize": 100000000,
             "gridOptions": {
                 "columnDefs": [
                     {
@@ -172,7 +174,7 @@
             {
                 "name" : "contact",
                 "addToNavBar": {
-                    "label": "Contact",
+                    "label" : "Contact",
                     "align" : "left"
                 }
 
@@ -189,12 +191,6 @@
             },
             {
                 "name" : "cookie-policy"
-            },
-            {
-                "name" : "smartclient-start-server"
-            },
-            {
-                "name" : "smartclient-complete"
             }
 
         ]
@@ -563,7 +559,7 @@
         {
             "name": "DLS",
             "title": "DIAMOND",
-            "icatUrl": "https://icat02.diamond.ac.uk",
+            "icatUrl": "https://icatapi-preprod.diamond.ac.uk",
             "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
             "hierarchy": [
                 "facility",
@@ -638,7 +634,7 @@
                             "field": "investigationInstrument.fullName"
                         },
                         {
-                            "field": "datasetCount"
+                            "field": "size|bytes"
                         },
                         {
                             "field": "startDate",
@@ -679,7 +675,7 @@
                                 "breadcrumb": true
                             },
                             {
-                                "field": "datasetCount"
+                                "field": "size|bytes"
                             },
                             {
                                 "field": "investigationInstrument.fullName"
@@ -720,9 +716,6 @@
                                 {
                                     "field": "endDate",
                                     "template": "{{item.value | date:'yyyy-MM-dd'}}"
-                                },
-                                {
-                                    "field": "size"
                                 }
                             ]
                         },
@@ -763,7 +756,7 @@
                                 "link": true
                             },
                             {
-                                "field": "datafileCount"
+                                "field": "size|bytes"
                             },
                             {
                                 "field": "createTime",
@@ -796,9 +789,6 @@
                                     "label": "METATABS.DATASET.END_DATE",
                                     "field": "endDate",
                                     "template": "{{content.value | date:'yyyy-MM-dd'}}"
-                                },
-                                {
-                                    "field": "size"
                                 }
                             ]
                         },
@@ -864,7 +854,7 @@
         {
             "name": "ISIS",
             "title": "ISIS",
-            "idsUrl": "https://idsdev2.isis.cclrc.ac.uk",
+            "idsUrl": "https://isisicatds.stfc.ac.uk",
             "hierarchy": [
                 "facility",
                 "instrument",
@@ -883,7 +873,7 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "idsUrl": "https://idsdev2.isis.cclrc.ac.uk"
+                    "idsUrl": "https://idsdev.isis.cclrc.ac.uk"
                 }
               
             ],
