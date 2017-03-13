@@ -103,7 +103,16 @@
 
                 cartItem.entity = helpers.overload({
                     'object': function(options){
-                        return facility.icat().query(["select ? from ? ? where ?.id = ?", this.entityType.safe(), helpers.capitalize(this.entityType).safe(), this.entityType.safe(), this.entityType.safe(), this.entityId], options);
+                        return facility.icat().query([
+                            "select ? from ? ? where ?.id = ?",
+                            this.entityType.safe(),
+                            helpers.capitalize(this.entityType).safe(),
+                            this.entityType.safe(),
+                            this.entityType.safe(),
+                            this.entityId
+                        ], options).then(function(entities){
+                            return entities[0];
+                        });
                     },
                     'promise': function(timeout){
                         return this.entity({timeout: timeout});
