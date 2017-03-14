@@ -780,6 +780,11 @@
             return defered.promise;
         };
 
+        /**
+         * A defered asynchronous call
+         * 
+         * @interface Promise
+         */
 		(function(){
 			var methods = {
 	            get: $http.get,

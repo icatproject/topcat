@@ -12,7 +12,7 @@
     	};
 
         /**
-         * @interface tUser
+         * @interface User
          */
         function User(facility){
             var that = this;
