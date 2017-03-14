@@ -49,7 +49,7 @@
             * Returns an object that represents the facility's Icat.
             * 
             * @method
-            * @name  Fcaility#icat
+            * @name  Facility#icat
             * @return {Icat}
             */
             this.icat = function(){
@@ -61,14 +61,22 @@
             * Returns an object that represents the facility's primary Ids.
             * 
             * @method
-            * @name  Fcaility#ids
-            * @return {Ids}
+            * @name  Facility#ids
+            * @return {IDS}
             */
             this.ids = function(){
                 if(!ids) ids = tcIds.create(this, this.config().idsUrl);
                 return ids;
             };
 
+            /**
+            * Returns an object that represents the facility's Ids for a particular transport type.
+            * 
+            * @method
+            * @name  Facility#downloadTransportTypeIds
+            * @param name {string} the name of the transport type e.g. 'https', 'globus' or 'smartclient'
+            * @return {IDS}
+            */
             var downloadTransportTypeIdsIndex;
             this.downloadTransportTypeIds = function(type){
                 if(!downloadTransportTypeIdsIndex){
@@ -80,16 +88,37 @@
                 return downloadTransportTypeIdsIndex[type];
             };
 
+            /**
+             * Returns an object that represents a user with admin access.
+             *
+             * @method
+             * @name Facility#admin
+             * @return {Admin} 
+             */
             this.admin = function(){
                 if(!admin) admin = tcAdmin.create(this);
                 return admin;
             }
 
+            /**
+             * Returns an object that represents a general user.
+             *
+             * @method
+             * @name Facility#user
+             * @return {User} 
+             */
             this.user = function(){
                 if(!user) user = tcUser.create(this);
                 return user;
             }
 
+             /**
+             * Returns an object that represents a smartclient.
+             *
+             * @method
+             * @name Facility#smartclient
+             * @return {Smartclient} 
+             */
             this.smartclient = function(){
               if(!smartclient) smartclient = tcSmartclient.create(this);
               return smartclient;

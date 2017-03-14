@@ -212,7 +212,7 @@
 		});
   
     /**
-     * Returns an object that represents a facility.
+     * Returns an object that represents an Icat.
      *
      * This is a convenience method for <code>tc.facility(name).icat()</code>.
      * 
