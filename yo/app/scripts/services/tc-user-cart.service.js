@@ -10,7 +10,10 @@
     	this.create = function(attributes, user){
     		return new Cart(attributes, user);
     	};
-          
+
+        /**
+         * @interface Cart
+         */
         function Cart(attributes, user){
             _.merge(this, attributes);
             var facility = user.facility();

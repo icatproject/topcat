@@ -11,6 +11,9 @@
     		return new User(facility);
     	};
 
+        /**
+         * @interface tUser
+         */
         function User(facility){
             var that = this;
 

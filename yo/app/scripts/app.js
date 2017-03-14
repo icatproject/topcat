@@ -163,15 +163,6 @@
         }
     });
 
-    /**
-     * @ngdoc overview
-     * @name topcat
-     * @description
-     * # topcat
-     *
-     * Main module of the application.
-     */
-
     var app = angular.module('topcat', [
         'ngResource',
         'ngSanitize',

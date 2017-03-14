@@ -11,6 +11,9 @@
     		return new Icat(facility);
     	};
 
+        /**
+         * @interface Icat
+         **/
     	function Icat(facility){
             var that = this;
             var cache;

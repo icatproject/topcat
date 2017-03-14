@@ -11,6 +11,9 @@
     		return new Facility(tc, name);
     	};
 
+        /**
+         * @interface Facility
+         */
         function Facility(tc, name){
             var icat;
             var ids;

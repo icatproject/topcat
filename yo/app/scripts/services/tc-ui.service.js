@@ -11,6 +11,9 @@
     		return new Ui(tc);
     	};
 
+        /**
+         * @interface UI
+         */
         function Ui(tc){
 
             var mainTabs = [];

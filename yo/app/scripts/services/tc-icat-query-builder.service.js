@@ -21,6 +21,9 @@
     		return new IcatQueryBuilder(icat, entityType);
     	};
 
+        /**
+         * @interface IcatQueryBuilder
+         */
     	function IcatQueryBuilder(icat, entityType){
             var that = this;
     		var facility = icat.facility();

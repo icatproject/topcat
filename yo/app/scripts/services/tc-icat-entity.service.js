@@ -12,6 +12,9 @@
     		return new IcatEntity(attributes, facility);
     	};
 
+    	/**
+         * @interface IcatEntity
+         */
 		function IcatEntity(attributes, facility){
 			_.merge(this, attributes);
 			var that = this;

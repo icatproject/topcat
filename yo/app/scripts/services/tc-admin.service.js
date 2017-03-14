@@ -11,6 +11,9 @@
     		return new Admin(facility);
     	};
 
+        /**
+         * @interface Admin
+         */
         function Admin(facility){
             var that = this;
 

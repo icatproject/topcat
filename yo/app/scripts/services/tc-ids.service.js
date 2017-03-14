@@ -11,6 +11,9 @@
     		return new Ids(facility, url);
     	};
 
+      /**
+       * @interface IDS
+       */
     	function Ids(facility, url){
         var that = this;
         var cache;

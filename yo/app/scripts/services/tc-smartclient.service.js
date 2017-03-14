@@ -12,6 +12,9 @@
     		return new Smartclient(facility);
     	};
 
+        /**
+         * @interface Smartclient
+         */
     	function Smartclient(facility){
 
     		var idsUrl = _.select(facility.config().downloadTransportTypes, function(downloadTransportType){

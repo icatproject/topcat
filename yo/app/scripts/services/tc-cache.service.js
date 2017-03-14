@@ -10,6 +10,9 @@
         return new Cache(name);
       };
 
+      /**
+       * @interface Cache
+       */
       function Cache(name){
         var store = $cacheFactory(name);
 

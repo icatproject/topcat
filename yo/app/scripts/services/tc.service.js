@@ -1,3 +1,9 @@
+/**
+ * @interface tc
+ *
+ * This is the main entry point for Javascript API. It has been exposed globally so can be accessed 
+ * in the Browsers console simply by typing 'tc'.
+**/
 
 (function() {
   'use strict';
@@ -11,6 +17,12 @@
     var cache;
     var ui;
 
+
+    /**
+     * @method
+     * @name tc#facility
+     * @param {string} name The name of the facility
+     **/
   	this.facility = function(name){
   		if(!facilities[name]) facilities[name] = tcFacility.create(tc, name);
   		return facilities[name];
