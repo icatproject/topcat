@@ -23,10 +23,24 @@
               return cache;
             };
 
+            /**
+             * Returns the Facility that this particular Icat belongs to.
+             * 
+             * @method
+             * @name  Icat#facility
+             * @return {Facility}
+             */
     		this.facility = function(){
     			return facility;
     		};
 
+            /**
+             * Returns the current version of this Icat.
+             *
+             * @method
+             * @name Icat#version
+             * @return {Promise<string>}
+             */
     		this.version = function(){
     			var out = $q.defer();
     			this.get('version').then(function(data){
@@ -35,6 +49,13 @@
     			return out.promise;
     		};
 
+            /**
+             * Returns and object containing the data stored within this session.
+             *
+             * @method
+             * @name Icat#session
+             * @return {object}
+             */
     		this.session = function(){
     			var facilityName = facility.config().name;
     			if($sessionStorage.sessions && $sessionStorage.sessions[facilityName]){
@@ -43,11 +64,37 @@
     			return {};
     		};
 
+
+            /**
+             * Refreshes the session's time to live.
+             *
+             * @method
+             * @name Icat#refreshSession
+             * @return {Promise}
+             */
     		this.refreshSession = function(){
     			return this.put('session/' + this.session().sessionId);
     		};
 
-
+            /**
+             * Logs a user into this Icat with a username and password.
+             *
+             * @method
+             * @name Icat#login
+             * @param plugin {string} The type of authentication mechanism
+             * @param username {string}
+             * @param password {string}
+             * @return {Promise}
+             */
+            /**
+             * Logs a user into this Icat with token; used for single sign in systems like CAS.
+             *
+             * @method
+             * @name Icat#login
+             * @param plugin {string} The type of authentication mechanism
+             * @param token {string}
+             * @return {Promise}
+             */
     		this.login = function(plugin, arg2, arg3){
                 
     			var params;
