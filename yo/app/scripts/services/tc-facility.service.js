@@ -21,6 +21,13 @@
             var user;
             var smartclient;
             
+            /**
+             * Returns the facility specific configuration from topcat.json
+             *
+             * @method
+             * @name  Facility#config
+             * @return {object}
+             */
             this.config = function(){
                 var out = _.select(APP_CONFIG.facilities, function(facility){ return name == facility.name; })[0];
                 var sessions = $sessionStorage.sessions || {};
@@ -38,11 +45,25 @@
                 return tc;
             };
 
+           /**
+            * Returns an object that represents the facility's Icat.
+            * 
+            * @method
+            * @name  Fcaility#icat
+            * @return {Icat}
+            */
             this.icat = function(){
                 if(!icat) icat = tcIcat.create(this);
                 return icat;
             };
 
+            /**
+            * Returns an object that represents the facility's primary Ids.
+            * 
+            * @method
+            * @name  Fcaility#ids
+            * @return {Ids}
+            */
             this.ids = function(){
                 if(!ids) ids = tcIds.create(this, this.config().idsUrl);
                 return ids;
