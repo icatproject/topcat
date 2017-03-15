@@ -452,48 +452,113 @@
     	        	return this.query([query], {});
     	        }
             });
-
+            
             this.write = helpers.overload({
+                /**
+                 * Creates or updates entities for this Icat.
+                 * 
+                 * @method
+                 * @name Icat#write
+                 * @param  {object[]} entities an array of entities to be written to this Icat
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<number[]>} a deferred array of entity ids that have been created
+                 */
                 'array, object': function(entities, options){
                     return this.post('entityManager', {
                         sessionId: this.session().sessionId,
                         entities: JSON.stringify(entities)
                     }, options);
                 },
+                /**
+                 * Creates or updates entities for this Icat.
+                 * 
+                 * @method
+                 * @name Icat#write
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param  {object[]} entities an array of entities to be written to this Icat
+                 * @return {Promise<number[]>} a deferred array of entity ids that have been created
+                 */
                 'promise, array': function(timeout, entities){
                     return this.write(entities, {timeout: timeout});
                 },
+                /**
+                 * Creates or updates entities for this Icat.
+                 * 
+                 * @method
+                 * @name Icat#write
+                 * @param  {object[]} entities an array of entities to be written to this Icat
+                 * @return {Promise<number[]>} a deferred array of entity ids that have been created
+                 */
                 'array': function(entities){
                     return this.write(entities, {});
                 }
             });
 
+            /**
+             * Returns a new IcatQueryBuilder for this Icat.
+             *
+             * @method
+             * @name Icat#queryBuilder
+             * @param  {string} entityType the type of entities you wish to return e.g. 'dataset' or 'investigation' etc
+             * @return {IcatQueryBuilder}
+             */
           	this.queryBuilder = function(entityType){
         		return tcIcatQueryBuilder.create(this, entityType);
         	};
 
             this.getSize = helpers.overload({
-              'string, number, object': function(entityType, entityId, options){
-                var key = 'getSize:' + entityType + ":" + entityId;
-                return this.cache().getPromise(key, function(){
-                  var params = {
-                    icatUrl: facility.config().icatUrl,
-                    sessionId: that.session().sessionId,
-                    entityType: entityType,
-                    entityId: entityId
-                  };
-                  options.lowPriority = true;
-                  return facility.tc().get('user/getSize', params, options).then(function(size){
-                    return parseInt('' + size);
-                  });
-                });
-              },
-              'string, number, promise': function(entityType, entityId, timeout){
-                return this.getSize(entityType, entityId, {timeout: timeout});
-              },
-              'string, number': function(entityType, entityId){
-                return this.getSize(entityType, entityId, {});
-              }
+                /**
+                 * Gets the total file size of a particular entity.
+                 *
+                 * @method
+                 * @name  Icat#getSize
+                 * @param  {string} entityType the type of entity can be 'investigation', 'dataset' or 'datafile'
+                 * @param  {number} entityId the id of the entity
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<number>} the defered size in bytes
+                 */
+                'string, number, object': function(entityType, entityId, options){
+                    var key = 'getSize:' + entityType + ":" + entityId;
+                    return this.cache().getPromise(key, function(){
+                      var params = {
+                        icatUrl: facility.config().icatUrl,
+                        sessionId: that.session().sessionId,
+                        entityType: entityType,
+                        entityId: entityId
+                      };
+                      options.lowPriority = true;
+                      return facility.tc().get('user/getSize', params, options).then(function(size){
+                        return parseInt('' + size);
+                      });
+                    });
+                },
+
+                /**
+                 * Gets the total file size of a particular entity.
+                 *
+                 * @method
+                 * @name  Icat#getSize
+                 * @param  {string} entityType the type of entity can be 'investigation', 'dataset' or 'datafile'
+                 * @param  {number} entityId the id of the entity
+                 * @param  {promise} timeout if resolved will cancel the request
+                 * @return {Promise<number>} the defered size in bytes
+                 */
+                'string, number, promise': function(entityType, entityId, timeout){
+                    return this.getSize(entityType, entityId, {timeout: timeout});
+                },
+
+                /**
+                 * Gets the total file size of a particular entity.
+                 *
+                 * @method
+                 * @name  Icat#getSize
+                 * @param  {string} entityType the type of entity can be 'investigation', 'dataset' or 'datafile'
+                 * @param  {number} entityId the id of the entity
+                 * @return {Promise<number>} the defered size in bytes
+                 */
+                'string, number': function(entityType, entityId){
+                    return this.getSize(entityType, entityId, {});
+                }
             });
 
           	helpers.generateRestMethods(this, facility.config().icatUrl + '/icat/');
