@@ -81,9 +81,9 @@
              *
              * @method
              * @name Icat#login
-             * @param plugin {string} The type of authentication mechanism
-             * @param username {string}
-             * @param password {string}
+             * @param {string} plugin The type of authentication mechanism
+             * @param {string} username
+             * @param {string} password
              * @return {Promise}
              */
             /**
@@ -91,8 +91,8 @@
              *
              * @method
              * @name Icat#login
-             * @param plugin {string} The type of authentication mechanism
-             * @param token {string}
+             * @param {string} plugin The type of authentication mechanism
+             * @param {string} token
              * @return {Promise}
              */
     		this.login = function(plugin, arg2, arg3){
@@ -208,6 +208,14 @@
     			});
     		};
 
+            /**
+             * Used to verify the person is the owner of the session.
+             *
+             * @method
+             * @name  Icat#verifyPassword
+             * @param  {string} password
+             * @return {Promise<boolean>}
+             */
             this.verifyPassword = function(password){
                 var params = {
                     json: JSON.stringify({
@@ -225,7 +233,16 @@
                 });
             };
 
+
             this.logout = helpers.overload({
+                /**
+                 * Destroys a users session
+                 * 
+                 * @method
+                 * @name  Icat#logout
+                 * @param {boolean} isSoft if true the session will only be destroyed in the browser but not on the server
+                 * @return Promise
+                 */
             	'boolean': function(isSoft){
             		var promises = [];
             		if(!isSoft && this.session().sessionId){
@@ -277,13 +294,45 @@
             			$rootScope.$broadcast('session:change');
             		});
             	},
+                /**
+                 * Destroys a users session
+                 * 
+                 * @method
+                 * @name  Icat#logout
+                 * @return Promise
+                 */
             	'': function(){
             		return this.logout(false);
             	}
             });
 
-
             this.query = helpers.overload({
+                /**
+                 * Performs Icat JPQL queries and returns the results.
+                 *
+                 * @method
+                 * @name Icat#query
+                 * @param  {array} query the jqpl expression
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<IcatEntity[]>} a deferred array of entities
+                 * @example
+                 * 
+                 * var investigationId = 3456;
+                 * var defered = $q.defer();
+                 * var page = 2;
+                 * var pageSize = 10;
+                 * 
+                 * tc.icat('LILS').query([
+                 *     "select dataset from Dataset dataset, dataset.investigation as investigation",
+                 *     "where id = ?", investigationId,
+                 *     "limit ?, ?", page, pageSize
+                 * ], {
+                 *     cache: false,
+                 *     timeout: defered.promise
+                 * }).then(function(datasets){
+                 *      console.log(datasets);
+                 * });
+                 */
             	'array, object': function(query, options){    	
     	        	var defered = $q.defer();
                     var query = helpers.buildQuery(query);
@@ -310,15 +359,95 @@
 
                     return defered.promise;
             	},
+
+                /**
+                 * Performs Icat JPQL queries and returns the results.
+                 *
+                 * @method
+                 * @name Icat#query
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param  {array} query the jqpl expression
+                 * @return {Promise<IcatEntity[]>} a deferred array of entities
+                 * @example
+                 * 
+                 * var investigationId = 3456;
+                 * var defered = $q.defer();
+                 * var page = 2;
+                 * var pageSize = 10;
+                 * 
+                 * tc.icat('LILS').query(defered.promise, [
+                 *     "select dataset from Dataset dataset, dataset.investigation as investigation",
+                 *     "where id = ?", investigationId,
+                 *     "limit ?, ?", page, pageSize
+                 * ]).then(function(datasets){
+                 *      console.log(datasets);
+                 * });
+                 */
             	'promise, array': function(timeout, query){
     	        	return this.query(query, {timeout: timeout});
     	        },
+
+                /**
+                 * Performs Icat JPQL queries and returns the results.
+                 *
+                 * @method
+                 * @name Icat#query
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param  {string} query the jqpl expression
+                 * @return {Promise<IcatEntity[]>} a deferred array of entities
+                 * @example
+                 * 
+                 * var defered = $q.defer();
+                 * var query = "select dataset from Dataset dataset, dataset.investigation as investigation where investigation.id = 2342";
+                 * 
+                 * tc.icat('LILS').query(defered.promise, query).then(function(datasets){
+                 *      console.log(datasets);
+                 * });
+                 */
     	        'promise, string': function(timeout, query){
     	        	return this.query([query], {timeout: timeout});
     	        },
+
+                /**
+                 * Performs Icat JPQL queries and returns the results.
+                 *
+                 * @method
+                 * @name Icat#query
+                 * @param  {array} query the jqpl expression
+                 * @return {Promise<IcatEntity[]>} a deferred array of entities
+                 * @example
+                 * 
+                 * var investigationId = 3456;
+                 * var page = 2;
+                 * var pageSize = 10;
+                 * 
+                 * tc.icat('LILS').query([
+                 *     "select dataset from Dataset dataset, dataset.investigation as investigation",
+                 *     "where id = ?", investigationId,
+                 *     "limit ?, ?", page, pageSize
+                 * ]).then(function(datasets){
+                 *      console.log(datasets);
+                 * });
+                 */
             	'array': function(query){
     	        	return this.query(query, {});
     	        },
+
+                /**
+                 * Performs Icat JPQL queries and returns the results.
+                 *
+                 * @method
+                 * @name Icat#query
+                 * @param  {string} query the jqpl expression
+                 * @return {Promise<IcatEntity[]>} a deferred array of entities
+                 * @example
+                 * 
+                 * var query = "select dataset from Dataset dataset, dataset.investigation as investigation where investigation.id = 2342";
+                 * 
+                 * tc.icat('LILS').query(query).then(function(datasets){
+                 *      console.log(datasets);
+                 * });
+                 */
     	        'string': function(query){
     	        	return this.query([query], {});
     	        }

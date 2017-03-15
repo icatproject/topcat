@@ -74,7 +74,7 @@
             * 
             * @method
             * @name  Facility#downloadTransportTypeIds
-            * @param name {string} the name of the transport type e.g. 'https', 'globus' or 'smartclient'
+            * @param {string} name the name of the transport type e.g. 'https', 'globus' or 'smartclient'
             * @return {IDS}
             */
             var downloadTransportTypeIdsIndex;

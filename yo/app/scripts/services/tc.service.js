@@ -96,9 +96,9 @@
        *
        * @method
        * @name  tc#search
-       * @param facilityNames {string[]} the names of the facilities to search across as they appear on the database
-       * @param query {object} {@link https://repo.icatproject.org/site/icat/server/4.8.0/miredot/index.html#280599542|as specified in the Icat documentation}
-       * @param options {object} {@ https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Anular documentation}
+       * @param {string[]} facilityNames the names of the facilities to search across as they appear on the database
+       * @param {object} query {@link https://repo.icatproject.org/site/icat/server/4.8.0/miredot/index.html#280599542|as specified in the Icat documentation}
+       * @param {object} options {@ https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
        * @return {Promise<IcatEntity[]>}
        */
 			'array, object, object': function(facilityNames, query, options){
@@ -180,9 +180,9 @@
       /**
        * @method
        * @name  tc#search
-       * @param facilityNames {string[]} the names of the facilities to search across as they appear on the database
+       * @param {string[]} facilityNames the names of the facilities to search across as they appear on the database
        * @param {Promise} timeout will cancel request if resolved
-       * @param query {object} {@link https://repo.icatproject.org/site/icat/server/4.8.0/miredot/index.html#280599542|as specified in the Icat documentation}
+       * @param {object} query {@link https://repo.icatproject.org/site/icat/server/4.8.0/miredot/index.html#280599542|as specified in the Icat documentation}
        * @return {Promise<IcatEntity[]>}
        */
 			'array, promise, object': function(facilityNames, timeout, query){
@@ -191,8 +191,8 @@
       /**
        * @method
        * @name  tc#search
-       * @param facilityNames {string[]} the names of the facilities to search across as they appear on the database
-       * @param query {object} {@link https://repo.icatproject.org/site/icat/server/4.8.0/miredot/index.html#280599542|as specified in the Icat documentation}
+       * @param {string[]} facilityNames the names of the facilities to search across as they appear on the database
+       * @param {object} query {@link https://repo.icatproject.org/site/icat/server/4.8.0/miredot/index.html#280599542|as specified in the Icat documentation}
        * @return {Promise<IcatEntity[]>}
        */
 			'array, object': function(facilityNames, query){
@@ -201,9 +201,9 @@
       /**
        * @method
        * @name  tc#search
-       * @param facilityNames {string[]} the names of the facilities to search across as they appear on the database
-       * @param target {string} the entity type e.g. 'investigation', 'dataset' or 'datafile'
-       * @param text the search phrase
+       * @param {string[]} facilityNames the names of the facilities to search across as they appear on the database
+       * @param {string} target the entity type e.g. 'investigation', 'dataset' or 'datafile'
+       * @param {string} text the search phrase
        * @return {Promise<IcatEntity[]>}
        */
 			'array, string, string': function(facilityNames, target, text){
@@ -218,7 +218,7 @@
      * 
      * @method
      * @name  tc#icat
-     * @param  facilityName {string} the name of the facility
+     * @param  {string} facilityName the name of the facility
      * @return {Icat}
      */
 		this.icat = function(facilityName){ return this.facility(facilityName).icat(); };
@@ -230,7 +230,7 @@
      * 
      * @method
      * @name  tc#ids 
-     * @param  facilityName {string} the name of the facility
+     * @param  {string} facilityName the name of the facility
      * @return {IDS}
      */
 		this.ids = function(facilityName){ return this.facility(facilityName).ids(); };
@@ -242,7 +242,7 @@
      * 
      * @method
      * @name  tc#admin
-     * @param  facilityName {string} the name of the facility
+     * @param  {string} facilityName the name of the facility
      * @return {Admin}
      */
 		this.admin = function(facilityName){ return this.facility(facilityName).admin(); };
@@ -254,7 +254,7 @@
      * 
      * @method
      * @name  tc#user
-     * @param  facilityName {string} the name of the facility
+     * @param  {string} facilityName the name of the facility
      * @return {User}
      */
 		this.user = function(facilityName){ return this.facility(facilityName).user(); };
@@ -266,7 +266,7 @@
      * 
      * @method
      * @name  tc#smartclient
-     * @param  facilityName {string} the name of the facility
+     * @param  {string} facilityName the name of the facility
      * @return {Smartclient}
      */
     this.smartclient = function(facilityName){ return this.facility(facilityName).smartclient(); };
@@ -334,8 +334,8 @@
          *
          * @method
          * @name  tc#getConfVar
-         * @param name {string} the name of the json object
-         * @param options {object} {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Anular documentation}
+         * @param {string} name the name of the json object
+         * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
          * @return {Promise<object>} resolves when purging is complete
          */
         'string, object': function(name, options){
@@ -352,8 +352,8 @@
          *
          * @method
          * @name  tc#getConfVar
-         * @param name {string} the name of the json object
-         * @param timeout {Promise} will cancel request if resolved
+         * @param {string} name the name of the json object
+         * @param {Promise} timeout will cancel request if resolved
          * @return {Promise<object>} resolves when purging is complete
          */
         'string, promise': function(name, timeout){
@@ -364,7 +364,7 @@
          *
          * @method
          * @name  tc#getConfVar
-         * @param name {string} the name of the json object
+         * @param {string} name the name of the json object
          * @return {Promise<object>} resolves when purging is complete
          */
         'string': function(name){
