@@ -23,6 +23,8 @@
 
         /**
          * @interface IcatQueryBuilder
+         *
+         * Allows incrementally builds a JPQL query and magically works out the joins.
          */
     	function IcatQueryBuilder(icat, entityType){
             var that = this;
@@ -39,9 +41,35 @@
             var limitOffset;
             var limitCount;
 
-    		this.where = function(where){
+            /**
+             * Adds in a where clause.
+             *
+             * @method
+             * @name  IcatQueryBuilder#where
+             * @param  {array} expression
+             * @return {IcatQueryBuilder} the current IcatQueryBuilder object to allow for chaining
+             * 
+             * @example
+             *
+             * var investigationId = 3;
+             * 
+             * tc.icat('LILS').queryBuilder('datafile').where(["investigation.id = ?", investigationId]).run().log()
+             */
+            /**
+             * Adds in a where clause.
+             *
+             * @method
+             * @name  IcatQueryBuilder#where
+             * @param  {string} expression
+             * @return {IcatQueryBuilder} the current IcatQueryBuilder object to allow for chaining
+             * 
+             * @example
+             * 
+             * tc.icat('LILS').queryBuilder('datafile').where("investigation.id = 3").run().log()
+             */
+    		this.where = function(expression){
                 if(whereList.length > 0) whereList.push('and');
-    			whereList.push(where);
+    			whereList.push(expression);
     			return this;
     		};
 
