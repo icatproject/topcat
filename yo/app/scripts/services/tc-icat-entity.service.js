@@ -201,6 +201,14 @@
 
 			if(this.entityType.match(/^(investigation|dataset|datafile)$/)){
 				this.getStatus = helpers.overload({
+					/**
+					 *	Returns whether or not this investigation, dataset or datafile is available or not. Only applies to investigations, datasets or datafiles on a two tier IDS. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getStatus
+					 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+					 * @return {Promise<string>} the deferred availability of this investigation, dataset or datafile. Can be either 'ONLINE', 'ARCHIVE' or 'RESTORING'
+					 */
 					'object': function(options){
 						var that = this;
 						return facility.ids().getStatus(this.entityType, this.id, options).then(function(status){
@@ -208,9 +216,26 @@
 							return status;
 						});
 					},
+
+					/**
+					 *	Returns whether or not this investigation, dataset or datafile is available or not. Only applies to investigations, datasets or datafiles on a two tier IDS. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getStatus
+					 * @param  {Promise} timeout if resolved will cancel the request
+					 * @return {Promise<string>} the deferred availability of this investigation, dataset or datafile. Can be either 'ONLINE', 'ARCHIVE' or 'RESTORING'
+					 */
 					'promise': function(timeout){
 						return this.getStatus({timeout: timeout});
 					},
+
+					/**
+					 *	Returns whether or not this investigation, dataset or datafile is available or not. Only applies to investigations, datasets or datafiles on a two tier IDS. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getStatus
+					 * @return {Promise<string>} the deferred availability of this investigation, dataset or datafile. Can be either 'ONLINE', 'ARCHIVE' or 'RESTORING'
+					 */
 					'': function(){
 						return this.getStatus({});
 					}
@@ -411,6 +436,12 @@
 				}
 			};
 
+			/**
+			 * Redirects the user the to the relevant position in the "Browse" hierarchy.
+			 * 
+			 * @method
+			 * @name IcatEntity#browse
+			 */
 			this.browse = function(){
 				var that = this;
 				this.stateParams().then(function(params){
@@ -435,6 +466,14 @@
 			}
 
 			this.addToCart = helpers.overload({
+				/**
+				 *	Adds this entity to the Cart and returns the updated Cart. Only applies to investigations, datasets or datafiles. 
+				 * 
+				 * @method
+				 * @name IcatEntity#addToCart
+				 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+				 * @return {Promise<Cart>} the updated cart
+				 */
 				'object': function(options){
 					return facility.user().cart(options).then().then(function(_cart){
 						return facility.user().addCartItem(that.entityType.toLowerCase(), that.id, options).then(function(cart){
@@ -446,29 +485,70 @@
 					});
 					
 				},
+
+				/**
+				 *	Adds this entity to the Cart and returns the updated Cart. Only applies to investigations, datasets or datafiles. 
+				 * 
+				 * @method
+				 * @name IcatEntity#addToCart
+				 * @param  {Promise} timeout if resolved will cancel the request
+				 * @return {Promise<Cart>} the updated cart
+				 */
 				'promise': function(timeout){
 					return this.addToCart({timeout: timeout});
 				},
+
+				/**
+				 *	Adds this entity to the Cart and returns the updated Cart. Only applies to investigations, datasets or datafiles. 
+				 * 
+				 * @method
+				 * @name IcatEntity#addToCart
+				 * @return {Promise<Cart>} the updated cart
+				 */
 				'': function(){
 					return this.addToCart({});
 				}
 			});
 
 			this.deleteFromCart = helpers.overload({
+				/**
+				 *	Deletes this entity from the Cart and returns the updated Cart. Only applies to investigations, datasets or datafiles. 
+				 * 
+				 * @method
+				 * @name IcatEntity#deleteFromCart
+				 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+				 * @return {Promise<Cart>} the updated cart
+				 */
 				'object': function(options){
 					$rootScope.$broadcast('cart:delete');
 					return facility.user().deleteCartItem(this.entityType.toLowerCase(), this.id, options);
 				},
+
+				/**
+				 *	Deletes this entity from the Cart and returns the updated Cart. Only applies to investigations, datasets or datafiles. 
+				 * 
+				 * @method
+				 * @name IcatEntity#addToCart
+				 * @param  {Promise} timeout if resolved will cancel the request
+				 * @return {Promise<Cart>} the updated cart
+				 */
 				'promise': function(timeout){
 					return this.deleteFromCart({timeout: timeout});
 				},
+
+				/**
+				 *	Deletes this entity from the Cart and returns the updated Cart. Only applies to investigations, datasets or datafiles. 
+				 * 
+				 * @method
+				 * @name IcatEntity#addToCart
+				 * @return {Promise<Cart>} the updated cart
+				 */
 				'': function(){
 					return this.deleteFromCart({});
 				}
 			});
 
 			var findCache = {};
-
 			this.find = function(expression){
 				if(findCache[expression]) return findCache[expression];
 				if(expression == '') return [];
@@ -492,8 +572,6 @@
 				} else {
 					entityField = expression;
 				}
-
-				
 
 				var that = this;
 				var variablePath = [];
