@@ -349,6 +349,12 @@
                     		var type = _.keys(result)[0];
                     		if(helpers.typeOf(result) != 'object' || !type) return result;
             				var out = result[type];
+                            /**
+                             *  The type of entity e.g. 'investigation', 'facility' or 'facilityCycle' etc...
+                             * 
+                             * @name  IcatEntity#entityType
+                             * @type {string}
+                             */
             				out.entityType = helpers.uncapitalize(type);
             				out = tcIcatEntity.create(out, facility);
             				return out;

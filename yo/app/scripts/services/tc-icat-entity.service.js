@@ -13,6 +13,8 @@
     	};
 
     	/**
+    	 * Represents the Icat entities as described in the {@link https://repo.icatproject.org/site/icat/server/4.8.0/schema.html|Icat schema documentation} where it describes the attributes for each IcatEntity.
+    	 *
          * @interface IcatEntity
          */
 		function IcatEntity(attributes, facility){
@@ -32,6 +34,14 @@
 
 			if(this.entityType == 'investigation'){
 				this.getDatasetCount = helpers.overload({
+					/**
+					 *	Returns the total number of datasets for this investigation. Only applies to investigations. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getDatasetCount
+					 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+					 * @return {Promise<number>} the deferred number of datasets in this investigation
+					 */
 					'object': function(options){
 						var that = this;
 						options.lowPriority = true;
@@ -40,13 +50,36 @@
 			
 						var key = 'getDatasetCount:' + this.entityType + ":" + this.id;
             			return icat.cache().getPromise(key, function(){ return icat.query([query, that.id], options); }).then(function(response){
+							/**
+							 * The total number of datasets for this investigation. Only applies to investigations and only gets set after calling <code>getDatasetCount()</code>.
+							 * 
+							 * @name  IcatEntity#datasetCount
+							 * @type {number}
+							 */
 							that.datasetCount = response[0];
 							return that.datasetCount;
 						});
 					},
+
+					/**
+					 *	Returns the total number of datasets for this investigation. Only applies to investigations. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getDatasetCount
+					 * @param  {Promise} timeout if resolved will cancel the request
+					 * @return {Promise<number>} the deferred number of datasets in this investigation
+					 */
 					'promise': function(timeout){
 						return this.getDatasetCount({timeout: timeout});
 					},
+
+					/**
+					 *	Returns the total number of datasets for this investigation. Only applies to investigations. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getDatasetCount
+					 * @return {Promise<number>} the deferred number of datasets in this investigation
+					 */
 					'': function(){
 						return this.getDatasetCount({});
 					}
@@ -55,24 +88,63 @@
 
 			if(this.entityType.match(/^(investigation|dataset)$/)){
 				this.getSize = helpers.overload({
+					/**
+					 *	Returns the total size of an investigation or dataset. Only applies to investigations and datasets. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getSize
+					 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+					 * @return {Promise<number>} the deferred total size of this investigation or dataset
+					 */
 					'object': function(options){
 						var that = this;
 						this.isGettingSize = true;
 						return icat.getSize(this.entityType, this.id, options).then(function(size){
+							/**
+							 * total size of an investigation or dataset. Only applies to investigations and datasets, and only gets set after calling <code>getSize()</code>.
+							 * 
+							 * @name  IcatEntity#size
+							 * @type {number}
+							 */
 							that.size = size;
 							that.isGettingSize = false;
 							return size;
 						});
 					},
+
+					/**
+					 *	Returns the total size of an investigation or dataset. Only applies to investigations and datasets. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getSize
+					 * @param  {Promise} timeout if resolved will cancel the request
+					 * @return {Promise<number>} the deferred total size of this investigation or dataset
+					 */
 					'promise': function(timeout){
 						return this.getSize({timeout: timeout});
 					},
+
+					/**
+					 *	Returns the total size of an investigation or dataset. Only applies to investigations and datasets. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getSize
+					 * @return {Promise<number>} the deferred total size of this investigation or dataset
+					 */
 					'': function(){
 						return this.getSize({});
 					}
 				});
 
 				this.getDatafileCount = helpers.overload({
+					/**
+					 *	Returns the total number of datafiles for this investigation or dataset. Only applies to investigations or datasets. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getDatafileCount
+					 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+					 * @return {Promise<number>} the deferred number of datafiles in this investigation or dataset
+					 */
 					'object': function(options){
 						var that = this;
 						options.lowPriority = true;
@@ -86,13 +158,36 @@
 
 						var key = 'getDatafileCount:' + this.entityType + ":" + this.id;
             			return icat.cache().getPromise(key, function(){ return icat.query([query, that.id], options); }).then(function(response){
+							/**
+							 * total number of datafiles for this investigation or dataset. Only applies to investigations or datasets, and only gets set after calling <code>getDatfileCount()</code>.
+							 * 
+							 * @name  IcatEntity#datasetCount
+							 * @type {number}
+							 */
 							that.datafileCount = response[0];
 							return that.datafileCount;
 						});
 					},
+
+					/**
+					 *	Returns the total number of datafiles for this investigation or dataset. Only applies to investigations or datasets. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getDatafileCount
+					 * @param  {Promise} timeout if resolved will cancel the request
+					 * @return {Promise<number>} the deferred number of datafiles in this investigation or dataset
+					 */
 					'promise': function(timeout){
 						return this.getDatafileCount({timeout: timeout});
 					},
+
+					/**
+					 *	Returns the total number of datafiles for this investigation or dataset. Only applies to investigations or datasets. 
+					 * 
+					 * @method
+					 * @name IcatEntity#getDatafileCount
+					 * @return {Promise<number>} the deferred number of datafiles in this investigation or dataset
+					 */
 					'': function(){
 						return this.getDatafileCount({});
 					}
