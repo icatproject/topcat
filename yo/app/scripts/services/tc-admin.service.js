@@ -42,7 +42,7 @@
                  *
                  * @method
                  * @name  Admin#isValidSession
-                 * @param {File[]} files the files to be uploaded
+                 * @param {Promise} timeout if resolved will cancel the request
                  * @return {Promise<boolean>}
                  */
                 'promise': function(timeout){
