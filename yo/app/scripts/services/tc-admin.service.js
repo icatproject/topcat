@@ -22,23 +22,42 @@
             };
 
             this.isValidSession = helpers.overload({
-                'string, object': function(sessionId, options){
+                /**
+                 * Returns whether or not the user's session has admin priviliges.
+                 *
+                 * @method
+                 * @name  Admin#isValidSession
+                 * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<boolean>}
+                 */
+                'object': function(options){
                     return this.get('isValidSession', {
                         icatUrl: facility.config().icatUrl,
-                        sessionId: sessionId
-                    });
+                        sessionId: facility.icat().session().sessionId
+                    }, options);
                 },
-                'string, promise': function(sessionId, timeout){
-                    return this.isValidSession(sessionId, {timeout: timeout});
-                },
-                'string': function(sessionId){
-                    return this.isValidSession(sessionId, {});
-                },
+
+                /**
+                 * Returns whether or not the user's session has admin priviliges.
+                 *
+                 * @method
+                 * @name  Admin#isValidSession
+                 * @param {File[]} files the files to be uploaded
+                 * @return {Promise<boolean>}
+                 */
                 'promise': function(timeout){
-                    return this.isValidSession(facility.icat().session().sessionId, {timeout: timeout});
+                    return this.isValidSession({timeout: timeout});
                 },
+
+                /**
+                 * Returns whether or not the user's session has admin priviliges.
+                 *
+                 * @method
+                 * @name  Admin#isValidSession
+                 * @return {Promise<boolean>}
+                 */
                 '': function(){
-                    return this.isValidSession(facility.icat().session().sessionId, {});
+                    return this.isValidSession({});
                 }
             });
 
