@@ -27,13 +27,14 @@
                  *
                  * @method
                  * @name  Admin#isValidSession
+                 * @param {string} sessionId the session id to be tested
                  * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
                  * @return {Promise<boolean>}
                  */
-                'object': function(options){
+                'string, object': function(sessionId, options){
                     return this.get('isValidSession', {
                         icatUrl: facility.config().icatUrl,
-                        sessionId: facility.icat().session().sessionId
+                        sessionId: sessionId
                     }, options);
                 },
 
@@ -42,11 +43,12 @@
                  *
                  * @method
                  * @name  Admin#isValidSession
+                 * @param {string} sessionId the session id to be tested
                  * @param {Promise} timeout if resolved will cancel the request
                  * @return {Promise<boolean>}
                  */
-                'promise': function(timeout){
-                    return this.isValidSession({timeout: timeout});
+                'string, promise': function(sessionId, timeout){
+                    return this.isValidSession(sessionId, {timeout: timeout});
                 },
 
                 /**
@@ -54,13 +56,15 @@
                  *
                  * @method
                  * @name  Admin#isValidSession
+                 * @param {string} sessionId the session id to be tested
                  * @return {Promise<boolean>}
                  */
-                '': function(){
-                    return this.isValidSession({});
+                'string': function(){
+                    return this.isValidSession(sessionId, {});
                 }
             });
 
+            //simplify and refactor
             this.downloads = helpers.overload({
                 'object, object': function(params, options){
                     params.queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
@@ -202,6 +206,7 @@
                 }
             });
 
+            //is this needed?
             this.getConfVar = helpers.overload({
                 'string, object': function(name, options){
                     return tc.getConfVar(name, options);
