@@ -96,6 +96,23 @@
                 return this;
             };
             
+            /**
+             * Adds in a limit clause to the JPQL expression
+             *
+             * @method
+             * @name  IcatQueryBuilder#limit
+             * @param  {string} offset the number of entities you want to skip
+             * @param  {string} count the max number entities you want returned
+             * @return {IcatQueryBuilder} the current IcatQueryBuilder object to allow for chaining
+             */
+            /**
+             * Adds in a limit clause to the JPQL expression
+             *
+             * @method
+             * @name  IcatQueryBuilder#limit
+             * @param  {string} count the max number entities you want returned
+             * @return {IcatQueryBuilder} the current IcatQueryBuilder object to allow for chaining
+             */
             this.limit = function(arg1, arg2){
                 if(arg2){
                     limitOffset = arg1;
@@ -251,6 +268,14 @@
             };
 
     		this.run = helpers.overload({
+                /**
+                 * Runs the query on the Icat server.
+                 * 
+                 * @method
+                 * @name IcatQueryBuilder#run
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<IcatEntity[]>} a deferred array of icat entities
+                 */
     			'object': function(options){
                     var out = icat.query([this.build()], options);
                     if(entityType == 'proposal'){
@@ -288,23 +313,65 @@
     				    return out;
                     }
     			},
+
+                /**
+                 * Runs the query on the Icat server.
+                 * 
+                 * @method
+                 * @name IcatQueryBuilder#run
+                 * @param  {Promise} timeout if resolved the request will be cancelled
+                 * @return {Promise<IcatEntity[]>} a deferred array of icat entities
+                 */
     			'promise': function(timeout){
     				return this.run({timeout: timeout});
     			},
+
+                /**
+                 * Runs the query on the Icat server.
+                 * 
+                 * @method
+                 * @name IcatQueryBuilder#run
+                 * @return {Promise<IcatEntity[]>} a deferred array of icat entities
+                 */
     			'': function(){
     				return this.run({});
     			}
     		});
 
             this.count = helpers.overload({
+                /**
+                 * Counts the number of results that will be returned.
+                 * 
+                 * @method
+                 * @name IcatQueryBuilder#count
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<number>} the number results to be returned (deferred)
+                 */
                 'object': function(options){
                     return icat.query([this.build('count')], options).then(function(results){
                         return results[0];
                     });
                 },
+
+                /**
+                 * Counts the number of results that will be returned.
+                 * 
+                 * @method
+                 * @name IcatQueryBuilder#count
+                 * @param  {Promise} timeout if resolved the request will be cancelled
+                 * @return {Promise<number>} the number results to be returned (deferred)
+                 */
                 'promise': function(timeout){
                     return this.count({timeout: timeout});
                 },
+
+                /**
+                 * Counts the number of results that will be returned.
+                 * 
+                 * @method
+                 * @name IcatQueryBuilder#count
+                 * @return {Promise<number>} the number results to be returned (deferred)
+                 */
                 '': function(){
                     return this.count({});
                 }
