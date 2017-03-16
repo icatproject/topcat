@@ -73,12 +73,29 @@
     			return this;
     		};
 
-            this.orderBy = function(orderBy, direction){
+            /**
+             * Orders the results to be returned by a field name.
+             * 
+             * @method
+             * @name  IcatQueryBuilder#orderBy
+             * @param  {string} fieldName the field name which you wish to order by 
+             * @param  {string} direction can be either 'asc' (ascending) or 'desc' (descending)
+             * @return {IcatQueryBuilder} the current IcatQueryBuilder object to allow for chaining
+             */
+            /**
+             * Orders the results to be returned by a field name in ascending order.
+             * 
+             * @method
+             * @name  IcatQueryBuilder#orderBy
+             * @param  {string} fieldName the field name which you wish to order by 
+             * @return {IcatQueryBuilder} the current IcatQueryBuilder object to allow for chaining
+             */
+            this.orderBy = function(fieldName, direction){
                 if(!direction) direction = 'asc';
-                orderByList.push(orderBy + ' ' + direction);
+                orderByList.push(fieldName + ' ' + direction);
                 return this;
             };
-
+            
             this.limit = function(arg1, arg2){
                 if(arg2){
                     limitOffset = arg1;
