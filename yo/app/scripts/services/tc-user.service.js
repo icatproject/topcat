@@ -64,7 +64,7 @@
                  * Returns the current user's downloads. 
                  *
                  * @method
-                 * @name  Admin#downloads
+                 * @name  User#downloads
                  * @param {Promise} timeout if resolved will cancel the request
                  * @param  {array} queryOffset any JPQL from the where clause onwards
                  * @return {Promise<object[]>} a deferred list of downloads
@@ -77,7 +77,7 @@
                  * Returns the current user's downloads. 
                  *
                  * @method
-                 * @name  Admin#downloads
+                 * @name  User#downloads
                  * @param  {array} queryOffset any JPQL from the where clause onwards
                  * @return {Promise<object[]>} a deferred list of downloads
                  */
@@ -89,7 +89,7 @@
                  * Returns the current user's downloads. 
                  *
                  * @method
-                 * @name  Admin#downloads
+                 * @name  User#downloads
                  * @param {Promise} timeout if resolved will cancel the request
                  * @param  {string} queryOffset any JPQL from the where clause onwards
                  * @return {Promise<object[]>} a deferred list of downloads
@@ -102,7 +102,7 @@
                  * Returns the current user's downloads. 
                  *
                  * @method
-                 * @name  Admin#downloads
+                 * @name  User#downloads
                  * @param  {string} queryOffset any JPQL from the where clause onwards
                  * @return {Promise<object[]>} a deferred list of downloads
                  */
@@ -114,7 +114,7 @@
                  * Returns the current user's downloads. 
                  *
                  * @method
-                 * @name  Admin#downloads
+                 * @name  User#downloads
                  * @param {Promise} timeout if resolved will cancel the request
                  * @return {Promise<object[]>} a deferred list of downloads
                  */
@@ -126,7 +126,7 @@
                  * Returns the current user's downloads. 
                  *
                  * @method
-                 * @name  Admin#downloads
+                 * @name  User#downloads
                  * @return {Promise<object[]>} a deferred list of downloads
                  */
                 '': function(){

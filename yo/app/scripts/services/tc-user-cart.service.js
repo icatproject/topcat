@@ -298,14 +298,12 @@
                     stopListeningForCartOpen();
                     stopListeningForCartChange();
                     timeout.resolve();
-                    console.log('cart open');
                 });
 
                 var stopListeningForCartChange = $rootScope.$on('cart:change', function(){
                     stopListeningForCartOpen();
                     stopListeningForCartChange();
                     timeout.resolve();
-                    console.log('cart change');
                 });
 
                 helpers.throttle(10, 10, timeout.promise, that.cartItems, function(cartItem){
