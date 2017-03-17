@@ -546,7 +546,7 @@
                  * @name  Icat#getSize
                  * @param  {string} entityType the type of entity can be 'investigation', 'dataset' or 'datafile'
                  * @param  {number} entityId the id of the entity
-                 * @param  {promise} timeout if resolved will cancel the request
+                 * @param  {Promise} timeout if resolved will cancel the request
                  * @return {Promise<number>} the defered size in bytes
                  */
                 'string, number, promise': function(entityType, entityId, timeout){

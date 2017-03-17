@@ -19,6 +19,15 @@
             var facility = user.facility();
             var that = this;
 
+            /**
+             * Tests to see if item is already in Cart.
+             *
+             * @method
+             * @name  Cart#isCartItem
+             * @param  {string}  entityType can be 'investigation', 'dataset' or 'datafile'
+             * @param  {number}  entityId the id of the entity
+             * @return {boolean}
+             */
             this.isCartItem = function(entityType, entityId){
                 var out = false;
                 entityType = entityType.toLowerCase();
@@ -32,6 +41,14 @@
             };
 
             this.getSize = helpers.overload({
+                /**
+                 * Gets the total size of the Cart.
+                 *
+                 * @method
+                 * @name  Cart#getSize
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<number>} the total size in bytes (defered)
+                 */
                 'object': function(options){
                     var defered = $q.defer();
                     var out = 0;
@@ -48,15 +65,40 @@
 
                     return defered.promise;
                 },
+
+                /**
+                 * Gets the total size of the Cart.
+                 *
+                 * @method
+                 * @name  Cart#getSize
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<number>} the total size in bytes (defered)
+                 */
                 'promise': function(timeout){
                     return this.getSize({timeout: timeout});
                 },
+
+                /**
+                 * Gets the total size of the Cart.
+                 *
+                 * @method
+                 * @name  Cart#getSize
+                 * @return {Promise<number>} the total size in bytes (defered)
+                 */
                 '': function(){
                     return this.getSize({});
                 }
             });
 
             this.getDatafileCount = helpers.overload({
+                /**
+                 * The total number of datafiles being requested in this Cart.
+                 *
+                 * @method
+                 * @name  Cart#getDatafileCount
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<number>} the total number of datafiles being requested (defered)
+                 */
                 'object': function(options){
                     var defered = $q.defer();
                     var out = 0;
@@ -80,15 +122,36 @@
 
                     return defered.promise;
                 },
+
+                /**
+                 * The total number of datafiles being requested in this Cart.
+                 *
+                 * @method
+                 * @name  Cart#getDatafileCount
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<number>} the total number of datafiles being requested (defered)
+                 */
                 'promise': function(timeout){
                     return this.getDatafileCount({timeout: timeout});
                 },
+
+                /**
+                 * The total number of datafiles being requested in this Cart.
+                 *
+                 * @method
+                 * @name  Cart#getDatafileCount
+                 * @return {Promise<number>} the total number of datafiles being requested (defered)
+                 */
                 '': function(){
                   return this.getDatafileCount({});
                 }
             });
 
             _.each(this.cartItems, function(cartItem){
+                /**
+                 * @interface CartItem
+                 */
+
                 cartItem.facilityName = facility.config().name;
 
                 cartItem.delete = helpers.overload({
