@@ -154,13 +154,38 @@
 
                 cartItem.facilityName = facility.config().name;
 
+                /**
+                 * Deletes this item from the cart and returns the updated Cart.
+                 *
+                 * @method
+                 * @name  CartItem#delete
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>} the updated Cart (defered)
+                 */
                 cartItem.delete = helpers.overload({
                     'object': function(options){
                         return user.deleteCartItem(this.id, options);
                     },
+
+                    /**
+                     * Deletes this item from the cart and returns the updated Cart.
+                     *
+                     * @method
+                     * @name  CartItem#delete
+                     * @param  {Promise} timeout if resolved will cancel the request
+                     * @return {Promise<Cart>} the updated Cart (defered)
+                     */
                     'promise': function(timeout){
                         return this.delete({timeout: timeout});
                     },
+
+                    /**
+                     * Deletes this item from the cart and returns the updated Cart.
+                     *
+                     * @method
+                     * @name  CartItem#delete
+                     * @return {Promise<Cart>} the updated Cart (defered)
+                     */
                     '': function(){
                         return this.delete({});
                     }
