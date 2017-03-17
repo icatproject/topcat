@@ -22,6 +22,21 @@
                 return mainTabs;
             };
 
+            /**
+             * Adds a new tab to the main tabs.
+             * 
+             * @method
+             * @name UI#registerMainTab
+             * @param  {string} name the name of the new tab e.g. 'new-tab' (use hyphens as separators)
+             * @param  {view} view a url which points to an Angular template
+             * @param  {object} [options]
+             * @example
+             * tc.ui().registerMainTab('my-machines', '/views/my-machines.html', {
+             *    insertAfter: 'my-data',
+             *    controller: 'MyMachinesController as myMachinesController',
+             *    multiFacility: true
+             * });
+             */
             this.registerMainTab = helpers.overload({
                 'string, string, object': function(name, view, options){
                     mainTabs.push({name: name, view: view, options: options});
@@ -58,6 +73,21 @@
                 return adminTabs;
             };
 
+            /**
+             * Adds a new tab to the admin tabs.
+             * 
+             * @method
+             * @name UI#registerAdminTab
+             * @param  {string} name the name of the new tab e.g. 'new-tab' (use hyphens as separators)
+             * @param  {view} view a url which points to an Angular template
+             * @param  {object} [options]
+             * @example
+             * tc.ui().registerAdminTab('machine-types', pluginUrl + 'views/admin-machine-types.html', {
+             *     insertAfter: 'downloads',
+             *     controller: 'AdminMachineTypesController as adminMachineTypesController',
+             *     multiFacility: true
+             * });
+             */
             this.registerAdminTab = helpers.overload({
                 'string, string, object': function(name, view, options){
                     adminTabs.push({name: name, view: view, options: options});
