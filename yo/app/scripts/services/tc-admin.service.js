@@ -242,6 +242,15 @@
             });
 
             this.restoreDownload = helpers.overload({
+                 /**
+                 * Restores a (soft deleted) download.
+                 *
+                 * @method
+                 * @name Admin#restoreDownload
+                 * @param  {string|number} id the id of the download
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise}
+                 */
                 'string, object': function(id, options){
                     return this.put('download/' + id + '/isDeleted', {
                         icatUrl: facility.config().icatUrl,
@@ -249,9 +258,28 @@
                         value: 'false'
                     }, options);
                 },
+
+                /**
+                 * Restores a (soft deleted) download.
+                 *
+                 * @method
+                 * @name Admin#restoreDownload
+                 * @param  {string|number} id the id of the download
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise}
+                 */
                 'string, promise': function(id, timeout){
                     return this.restoreDownload(id, {timeout: timeout});
                 },
+
+                /**
+                 * Restores a (soft deleted) download.
+                 *
+                 * @method
+                 * @name Admin#restoreDownload
+                 * @param  {string|number} id the id of the download
+                 * @return {Promise}
+                 */
                 'string': function(id){
                     return this.restoreDownload(id, {});
                 },
@@ -267,18 +295,58 @@
             });
 
             this.setDownloadStatus = helpers.overload({
-                'number, string, object': function(id, status, options){
+                /**
+                 * Sets the status of a download.
+                 *
+                 * @method
+                 * @name Admin#setDownloadStatus 
+                 * @param  {string|number} id the id of the download
+                 * @status {string} can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise}
+                 */
+                'string, string, object': function(id, status, options){
                     return this.put('download/' + id + '/status', {
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         value: status
                     }, options);
                 },
-                'number, string, promise': function(id, status, timeout){
+
+                /**
+                 * Sets the status of a download.
+                 *
+                 * @method
+                 * @name Admin#setDownloadStatus 
+                 * @param  {string|number} id the id of the download
+                 * @status {string} can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise}
+                 */
+                'string, string, promise': function(id, status, timeout){
                     return this.setDownloadStatus(id, status, {timeout: timeout});
                 },
-                'number, string': function(id, status){
+
+                /**
+                 * Sets the status of a download.
+                 *
+                 * @method
+                 * @name Admin#setDownloadStatus 
+                 * @param  {string|number} id the id of the download
+                 * @status {string} can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @return {Promise}
+                 */
+                'string, string': function(id, status){
                     return this.setDownloadStatus(id, status, {});
+                },
+                'number, string, object': function(id, status, options){
+                    return this.setDownloadStatus("" + id, status, options);
+                },
+                'number, string, promise': function(id, status, timeout){
+                    return this.setDownloadStatus("" + id, status, {timeout: timeout});
+                },
+                'number, string': function(id, status){
+                    return this.setDownloadStatus("" + id, status, {});
                 }
             });
 
