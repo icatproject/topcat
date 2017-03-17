@@ -193,6 +193,14 @@
 
 
                 cartItem.entity = helpers.overload({
+                    /**
+                     * Gets the corresponding IcatEntity.
+                     *
+                     * @method
+                     * @name  CartItem#entity
+                     * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                     * @return {Promise<IcatEntity>}
+                     */
                     'object': function(options){
                         return facility.icat().query([
                             "select ? from ? ? where ?.id = ?",
@@ -205,15 +213,40 @@
                             return entities[0];
                         });
                     },
+
+                    /**
+                     * Gets the corresponding IcatEntity.
+                     *
+                     * @method
+                     * @name  CartItem#entity
+                     * @param  {Promise} timeout if resolved will cancel the request
+                     * @return {Promise<IcatEntity>}
+                     */
                     'promise': function(timeout){
                         return this.entity({timeout: timeout});
                     },
+
+                    /**
+                     * Gets the corresponding IcatEntity.
+                     *
+                     * @method
+                     * @name  CartItem#entity
+                     * @return {Promise<IcatEntity>}
+                     */
                     '': function(){
                         return this.entity({});
                     }
                 });
 
                 cartItem.getSize = helpers.overload({
+                    /**
+                     * Gets the size of this item.
+                     *
+                     * @method
+                     * @name  CartItem#getSize
+                     * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                     * @return {Promise<number>} the size in bytes (defered)
+                     */
                     'object': function(options){
                         var that = this;
 
@@ -229,9 +262,26 @@
                             }
                         });
                     },
+
+                    /**
+                     * Gets the size of this item.
+                     *
+                     * @method
+                     * @name  CartItem#getSize
+                     * @param  {Promise} timeout if resolved will cancel the request
+                     * @return {Promise<number>} the size in bytes (defered)
+                     */
                     'promise': function(timeout){
                         return this.getSize({timeout: timeout});
                     },
+
+                    /**
+                     * Gets the size of this item.
+                     *
+                     * @method
+                     * @name  CartItem#getSize
+                     * @return {Promise<number>} the size in bytes (defered)
+                     */
                     '': function(){
                         return this.getSize({});
                     }
