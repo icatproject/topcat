@@ -526,17 +526,12 @@
 
 		this.overload = function(variations){
 
-			return function(){
+			var fn = function(){
 				var that = this;
 				var args = arguments;
 				var argTypeOfs = _.map(args,  function(arg){ return helpers.typeOf(arg); });
 				var found = false;
 				var out;
-				if(!variations.default){
-					variations.default = function(){
-						throw "Could not satisfy overloaded function '" + argTypeOfs.join(', ') + "'.";
-					};
-				}
 
 				_.each(variations, function(fn, pattern){
 					if(pattern == 'default') return false;
@@ -551,11 +546,24 @@
 				if(argTypeOfs.length == 0 && variations['']){
 					out = variations[''].apply(that, args);
 				} else if(!found){
-					out = variations.default.apply(that, args);
+                    if(variations.default){
+					   out = variations.default.apply(that, args);
+                    } else {
+                        if(this){
+                            _.each(this, function(value, name){
+                                if(value == fn) throw "Could not satisfy overloaded method " + name + "(" + argTypeOfs.join(', ') + ").";
+                            });
+                        } else {
+                            throw "Could not satisfy overloaded function (" + argTypeOfs.join(', ') + ").";
+                        }
+                        
+                    }
 				}
 
 				return out;
 			};
+
+            return fn;
 		}
 
 		this.jpqlSanitize = function(data){

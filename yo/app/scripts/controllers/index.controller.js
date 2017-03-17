@@ -102,7 +102,7 @@
                 var smartclient = facility.smartclient();
                 var smartclientPing = smartclient.isEnabled() ? smartclient.ping(timeout.promise) : $q.reject();
 
-                promises.push(facility.user().downloads("where download.isDeleted = false", {bypassInterceptors: true}).then(function(downloads){
+                promises.push(facility.user().downloads(["where download.isDeleted = false"], {bypassInterceptors: true}).then(function(downloads){
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
                         if(!completedDownloads[key] && download.status == 'COMPLETE'){
@@ -229,7 +229,7 @@
                 promises.push(smartclient.ping(options).then(function(smartclientIsAvailable){
                     if(smartclientIsAvailable){
                         return smartclient.login(options).then(function(){
-                            return facility.user().downloads({queryOffset: "where download.isDeleted = false and download.transport = 'smartclient' and download.status != org.icatproject.topcat.domain.DownloadStatus.COMPLETE"}, options).then(function(downloads){
+                            return facility.user().downloads(["where download.isDeleted = false and download.transport = 'smartclient' and download.status != org.icatproject.topcat.domain.DownloadStatus.COMPLETE"], options).then(function(downloads){
                                 var promises = []
                                 _.each(downloads, function(download){
                                     promises.push(smartclient.getData(download.preparedId, options).then(function(){

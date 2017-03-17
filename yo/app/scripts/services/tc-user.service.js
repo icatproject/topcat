@@ -7,9 +7,9 @@
 
     app.service('tcUser', function($q, $rootScope, helpers, tcUserCart){
 
-    	this.create = function(facility){
-    		return new User(facility);
-    	};
+        this.create = function(facility){
+            return new User(facility);
+        };
 
         /**
          * @interface User
@@ -22,13 +22,24 @@
             };
 
             this.downloads = helpers.overload({
-                'object, object': function(params, options){
-                    params.queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
+                /**
+                 * Returns the current user's downloads. 
+                 *
+                 * @method
+                 * @name  User#downloads
+                 * @param  {array} queryOffset any JPQL from the where clause onwards
+                 * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
+                'array, object': function(queryOffset, options){
+                    queryOffset = helpers.buildQuery(queryOffset);
+                    queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (queryOffset ? " AND " + queryOffset.replace(/^\s*where\s*/, '') : "");
 
-                    return this.get('downloads', _.merge({
+                    return this.get('downloads', {
                         icatUrl: facility.config().icatUrl,
-                        sessionId: facility.icat().session().sessionId
-                    }, params), options).then(function(downloads){
+                        sessionId: facility.icat().session().sessionId,
+                        queryOffset: queryOffset
+                    }, options).then(function(downloads){
                         _.each(downloads, function(download){
 
                             download.delete = helpers.overload({
@@ -48,26 +59,78 @@
                         return downloads;
                     });
                 },
+
+                /**
+                 * Returns the current user's downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param  {array} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'promise, array': function(timeout, queryOffset){
-                    return this.downloads({queryOffset: helpers.buildQuery(queryOffset)}, {timeout: timeout});
+                    return this.downloads(queryOffset, {timeout: timeout});
                 },
+
+                /**
+                 * Returns the current user's downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param  {array} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'array': function(queryOffset){
-                    return this.downloads({queryOffset: helpers.buildQuery(queryOffset)}, {});
+                    return this.downloads(queryOffset, {});
                 },
+
+                 /**
+                 * Returns the current user's downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param  {string} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'promise, string': function(timeout, queryOffset){
-                    return this.downloads({queryOffset: helpers.buildQuery([queryOffset])}, {timeout: timeout});
+                    return this.downloads([queryOffset], {timeout: timeout});
                 },
+
+                /**
+                 * Returns the current user's downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param  {string} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'string': function(queryOffset){
-                    return this.downloads({queryOffset: helpers.buildQuery([queryOffset])}, {});
+                    return this.downloads([queryOffset]);
                 },
-                'string, object': function(queryOffset, options){
-                    return this.downloads({queryOffset: helpers.buildQuery([queryOffset])}, options);
-                },
+
+                /**
+                 * Returns the current user's downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'promise': function(timeout){
-                    return this.downloads(params, {timeout: timeout});
+                    return this.downloads({timeout: timeout});
                 },
+
+                /**
+                 * Returns the current user's downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 '': function(){
-                    return this.downloads({}, {});
+                    return this.downloads([], {});
                 }
             });
 

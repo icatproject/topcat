@@ -78,10 +78,11 @@
                     queryOffset = helpers.buildQuery(queryOffset);
                     queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (queryOffset ? " AND " + queryOffset.replace(/^\s*where\s*/, '') : "");
 
-                    return this.get('downloads', _.merge({
+                    return this.get('downloads', {
                         icatUrl: facility.config().icatUrl,
-                        sessionId: facility.icat().session().sessionId
-                    }, {queryOffset: queryOffset}), options).then(function(downloads){
+                        sessionId: facility.icat().session().sessionId,
+                        queryOffset: queryOffset
+                    }, options).then(function(downloads){
                         _.each(downloads, function(download){
 
                             download.delete = helpers.overload({
@@ -157,7 +158,7 @@
                  *
                  * @method
                  * @name  Admin#downloads
-                 * @param  {stringy} queryOffset any JPQL from the where clause onwards
+                 * @param  {string} queryOffset any JPQL from the where clause onwards
                  * @return {Promise<object[]>} a deferred list of downloads
                  */
                 'string': function(queryOffset){
