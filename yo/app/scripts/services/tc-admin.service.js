@@ -301,7 +301,7 @@
                  * @method
                  * @name Admin#setDownloadStatus 
                  * @param  {string|number} id the id of the download
-                 * @status {string} can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @sparam {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
                  * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
                  * @return {Promise}
                  */
@@ -319,7 +319,7 @@
                  * @method
                  * @name Admin#setDownloadStatus 
                  * @param  {string|number} id the id of the download
-                 * @status {string} can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
                  * @param  {Promise} timeout if resolved will cancel the request
                  * @return {Promise}
                  */
@@ -333,7 +333,7 @@
                  * @method
                  * @name Admin#setDownloadStatus 
                  * @param  {string|number} id the id of the download
-                 * @status {string} can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
                  * @return {Promise}
                  */
                 'string, string': function(id, status){
@@ -351,6 +351,16 @@
             });
 
             this.setConfVar = helpers.overload({
+                /**
+                 * Stores a value on Topcat.
+                 *
+                 * @method
+                 * @name Admin#setConfVar
+                 * @param  {string} name the name of the value
+                 * @param {object} value the value to be stored
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise}
+                 */
                 'string, object, object': function(name, value, options){
                     return this.put('confVars/' + name, {
                         icatUrl: facility.config().icatUrl,
@@ -358,24 +368,32 @@
                         value: JSON.stringify(value)
                     }, options);
                 },
+
+                /**
+                 * Stores a value on Topcat.
+                 *
+                 * @method
+                 * @name Admin#setConfVar
+                 * @param  {string} name the name of the value
+                 * @param {object} value the value to be stored
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise}
+                 */
                 'string, object, promise': function(name, value, timeout){
                     return this.setConfVar(name, value, {timeout: timeout});
                 },
+
+                /**
+                 * Stores a value on Topcat.
+                 *
+                 * @method
+                 * @name Admin#setConfVar
+                 * @param  {string} name the name of the value
+                 * @param {object} value the value to be stored
+                 * @return {Promise}
+                 */
                 'string, object': function(name, value){
                     return this.setConfVar(name, value, {});
-                }
-            });
-
-            //is this needed?
-            this.getConfVar = helpers.overload({
-                'string, object': function(name, options){
-                    return tc.getConfVar(name, options);
-                },
-                'string, promise': function(name, timeout){
-                    return this.getConfVar(name, {timeout: timeout});
-                },
-                'string': function(name){
-                    return this.getConfVar(name, {});
                 }
             });
 
