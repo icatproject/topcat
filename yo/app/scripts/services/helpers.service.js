@@ -828,6 +828,14 @@
             };
 
 	        function extendPromise(promise){
+
+                /**
+                 * Logs the response to the browsers console; useful for debugging.
+                 *
+                 * @method
+                 * @name Promise#log
+                 * @return {Promise}
+                 */
 				promise.log = function(){
                     var start = (new Date()).getTime();
 		            return this.then(function(data){
@@ -841,6 +849,16 @@
 		            });
 		        };
 
+                /**
+                 * Defines callback functions for the promise.
+                 *
+                 * @method
+                 * @name Promise#then
+                 * @param {Function} successCallback gets called the response is success
+                 * @param {Function} [errorCallback] gets called when the reponse errors
+                 * @param {Function} [notifyCallback] gets called to indicate some kind of progress
+                 * @return {Promise}
+                 */
 		        var then = promise.then;
 		        promise.then = function(){
 		        	return extendPromise(then.apply(this, arguments));
