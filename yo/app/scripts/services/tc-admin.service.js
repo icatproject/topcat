@@ -59,20 +59,29 @@
                  * @param {string} sessionId the session id to be tested
                  * @return {Promise<boolean>}
                  */
-                'string': function(){
+                'string': function(sessionId){
                     return this.isValidSession(sessionId, {});
                 }
             });
 
-            //simplify and refactor
             this.downloads = helpers.overload({
-                'object, object': function(params, options){
-                    params.queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (params.queryOffset ? " AND " + params.queryOffset.replace(/^\s*where\s*/, '') : "");
+                /**
+                 * Returns all downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param  {array} queryOffset any JPQL from the where clause onwards
+                 * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
+                'array, object': function(queryOffset, options){
+                    queryOffset = helpers.buildQuery(queryOffset);
+                    queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (queryOffset ? " AND " + queryOffset.replace(/^\s*where\s*/, '') : "");
 
                     return this.get('downloads', _.merge({
                         icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId
-                    }, params), options).then(function(downloads){
+                    }, {queryOffset: queryOffset}), options).then(function(downloads){
                         _.each(downloads, function(download){
 
                             download.delete = helpers.overload({
@@ -104,27 +113,91 @@
                         return downloads;
                     });
                 },
+
+                /**
+                 * Returns all downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param  {array} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'promise, array': function(timeout, queryOffset){
-                    return this.downloads({queryOffset: helpers.buildQuery(queryOffset)}, {timeout: timeout});
+                    return this.downloads(queryOffset, {timeout: timeout});
                 },
+
+                /**
+                 * Returns all downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param  {array} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'array': function(queryOffset){
-                    return this.downloads({queryOffset: helpers.buildQuery(queryOffset)}, {});
+                    return this.downloads(queryOffset, {});
                 },
+
+                 /**
+                 * Returns all downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param  {string} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'promise, string': function(timeout, queryOffset){
                     return this.downloads([queryOffset], {timeout: timeout});
                 },
+
+                /**
+                 * Returns all downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param  {stringy} queryOffset any JPQL from the where clause onwards
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'string': function(queryOffset){
                     return this.downloads([queryOffset]);
                 },
+
+                /**
+                 * Returns all downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 'promise': function(timeout){
                     return this.downloads(params, {timeout: timeout});
                 },
+
+                /**
+                 * Returns all downloads. 
+                 *
+                 * @method
+                 * @name  Admin#downloads
+                 * @return {Promise<object[]>} a deferred list of downloads
+                 */
                 '': function(){
                     return this.downloads({}, {});
                 }
             });
 
             this.deleteDownload = helpers.overload({
+                /**
+                 * Soft deletes a download.
+                 *
+                 * @method
+                 * @name Admin#deleteDownload
+                 * @param  {string|number} id the id of the download
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise}
+                 */
                 'string, object': function(id, options){
                     return this.put('download/' + id + '/isDeleted', {
                         icatUrl: facility.config().icatUrl,
@@ -132,9 +205,28 @@
                         value: 'true'
                     }, options);
                 },
+
+                /**
+                 * Soft deletes a download.
+                 *
+                 * @method
+                 * @name Admin#deleteDownload
+                 * @param  {string|number} id the id of the download
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise}
+                 */
                 'string, promise': function(id, timeout){
                     return this.deleteDownload(id, {timeout: timeout});
                 },
+
+                /**
+                 * Soft deletes a download.
+                 *
+                 * @method
+                 * @name Admin#deleteDownload
+                 * @param  {string|number} id the id of the download
+                 * @return {Promise}
+                 */
                 'string': function(id){
                     return this.deleteDownload(id, {});
                 },
