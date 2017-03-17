@@ -122,6 +122,23 @@
 
             this.cartButtons = function(){ return cartButtons; };
 
+            /**
+             * Adds a new button to the Cart.
+             * 
+             * @method
+             * @name UI#registerCartButton
+             * @param  {string} name the name of the new button e.g. 'new-button' (use hyphens as separators)
+             * @param  {object} [options]
+             * @param  {Function} click gets called when button is clicked
+             * @example
+             * tc.ui().registerCartButton('make-data-public', {insertBefore: 'cancel'}, function(){
+             *     $uibModal.open({
+             *         templateUrl : pluginUrl + 'views/make-data-public.html',
+             *         controller: 'MakeDataPublicController as makeDataPublicController',
+             *         size : 'md'
+             *     });
+             * });
+             */
             this.registerCartButton = helpers.overload({
                 'string, object, function': function(name, options, click){
                     cartButtons.push({name: name, options: options, click: click});
