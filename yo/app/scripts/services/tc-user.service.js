@@ -135,6 +135,13 @@
             });
 
             this.deleteDownload = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#deleteDownload
+                 * @param  {string|number} id
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise}
+                 */
                 'string, object': function(id, options){
                     return this.put('download/' + id + '/isDeleted', {
                         icatUrl: facility.config().icatUrl,
@@ -145,9 +152,24 @@
                         $rootScope.$broadcast('download:change');
                     });
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteDownload
+                 * @param  {string|number} id
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise}
+                 */
                 'string, promise': function(id, timeout){
                     return this.deleteDownload(id, {timeout: timeout});
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteDownload
+                 * @param  {string|number} id
+                 * @return {Promise}
+                 */
                 'string': function(id){
                     return this.deleteDownload(id, {});
                 },
@@ -163,6 +185,14 @@
             });
 
             this.setDownloadStatus = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#setDownloadStatus
+                 * @param  {string|number} id
+                 * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise}
+                 */
                 'string, string, object': function(id, status, options){
                     return this.put('download/' + id + '/status', {
                         icatUrl: facility.config().icatUrl,
@@ -170,9 +200,26 @@
                         value: status
                     }, options);
                 },
+
+                /**
+                 * @method
+                 * @name  User#setDownloadStatus
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @param  {string|number} id
+                 * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @return {Promise}
+                 */
                 'promise, string, string': function(timeout, id, status){
                     return this.setDownloadStatus(id, status, {timeout: timeout});
                 },
+
+                /**
+                 * @method
+                 * @name  User#setDownloadStatus
+                 * @param  {string|number} id
+                 * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
+                 * @return {Promise}
+                 */
                 'string, string': function(id, status){
                     return this.setDownloadStatus(id, status, {});
                 },
@@ -189,6 +236,12 @@
 
             var cartCache;
             this.cart = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#cart
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>}
+                 */
                 'object': function(options){
                     if(cartCache){
                         var defered = $q.defer();
@@ -205,15 +258,35 @@
                         return cart;
                     });
                 },
+
+                /**
+                 * @method
+                 * @name  User#cart
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<Cart>}
+                 */
                 'promise': function(timeout){
                     return this.cart({timeout: timeout})
                 },
+
+                /**
+                 * @method
+                 * @name  User#cart
+                 * @return {Promise<Cart>}
+                 */
                 '': function(){
                     return this.cart({});
                 }
             });
 
             this.addCartItems = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#addCartItems
+                 * @param {array} items
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>}
+                 */
                 'array, object': function(items, options){
                     return this.cart(options).then(function(cart){
                         var filteredItems = [];
@@ -241,27 +314,74 @@
                         return cart;
                     });
                 },
+
+                /**
+                 * @method
+                 * @name  User#addCartItems
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @param {array} items
+                 * @return {Promise<Cart>}
+                 */
                 'promise, array': function(timeout, items){
                     return this.addCartItems(items, {timeout: timeout});
                 },
+
+                /**
+                 * @method
+                 * @name  User#addCartItems
+                 * @param {array} items
+                 * @return {Promise<Cart>}
+                 */
                 'array': function(items){
                     return this.addCartItems(items, {});
                 }
             });
 
             this.addCartItem = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#addCartItem
+                 * @param {string} entityType
+                 * @param {number} entityId
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>}
+                 */
                 'string, number, object': function(entityType, entityId, options){
                     return this.addCartItems([{entityType: entityType, entityId: entityId}], options);
                 },
+
+                /**
+                 * @method
+                 * @name  User#addCartItem
+                 * @param {string} entityType
+                 * @param {number} entityId
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<Cart>}
+                 */
                 'string, number, promise': function(entityType, entityId, timeout){
                     return this.addCartItem(entityType, entityId, {timeout: timeout})
                 },
+
+                /**
+                 * @method
+                 * @name  User#addCartItem
+                 * @param {string} entityType
+                 * @param {number} entityId
+                 * @return {Promise<Cart>}
+                 */
                 'string, number': function(entityType, entityId){
                     return this.addCartItem(entityType, entityId, {});
                 }
             });
 
             this.deleteCartItems = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#deleteCartItems
+                 * @param {array} items
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>}
+                 */
                 'array, object': function(items, options){
                     if(typeof items[0] == 'object'){
                         items = _.map(items, function(item){ return item.entityType + " " + item.entityId; });
@@ -279,21 +399,58 @@
                         return cart;
                     });
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteCartItems
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @param {array} items
+                 * @return {Promise<Cart>}
+                 */
                 'promise, array': function(timeout, items){
                     return this.deleteCartItems(items, {timeout: timeout});
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteCartItems
+                 * @param {array} items
+                 * @return {Promise<Cart>}
+                 */
                 'array': function(items){
                     return this.deleteCartItems(items, {});
                 }
             });
 
             this.deleteCartItem = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#deleteCartItem
+                 * @param {string|number} id
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>}
+                 */
                 'number, object': function(id, options){
                     return this.deleteCartItems([id], options);
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteCartItem
+                 * @param {string|number} id
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<Cart>}
+                 */
                 'number, promise': function(id, timeout){
                     return this.deleteCartItem(id, {timeout: timeout});
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteCartItem
+                 * @param {string|number} id
+                 * @return {Promise<Cart>}
+                 */
                 'number': function(id){
                     return this.deleteCartItem(id, {});
                 },
@@ -309,6 +466,12 @@
             });
 
             this.deleteAllCartItems = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#deleteAllCartItems
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>}
+                 */
                 'object': function(options){
                     return this.delete('cart/' + facility.config().name + '/cartItems', {
                         icatUrl: facility.config().icatUrl,
@@ -321,15 +484,37 @@
                         return cart;
                     });
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteAllCartItems
+                 * @param {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<Cart>}
+                 */
                 'promise': function(timeout){
                     return this.deleteAllCartItems({timeout: timeout})
                 },
+
+                /**
+                 * @method
+                 * @name  User#deleteAllCartItems
+                 * @return {Promise<Cart>}
+                 */
                 '': function(){
                     return this.deleteAllCartItems({});
                 }
             });
 
             this.submitCart = helpers.overload({
+                /**
+                 * @method
+                 * @name  User#submitCart
+                 * @param  {string} fileName
+                 * @param  {string} transport
+                 * @param  {string} email
+                 * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                 * @return {Promise<Cart>}
+                 */
                 'string, string, string, object': function(fileName, transport, email, options){
                     var transportTypeIndex = {};
                     _.each(facility.config().downloadTransportTypes, function(downloadTransportTypes){
@@ -354,9 +539,28 @@
                         return cart;
                     });
                 },
+
+                /**
+                 * @method
+                 * @name  User#submitCart
+                 * @param  {string} fileName
+                 * @param  {string} transport
+                 * @param  {string} email
+                 * @param  {Promise} timeout if resolved will cancel the request
+                 * @return {Promise<Cart>}
+                 */
                 'string, string, string, promise': function(fileName, transport, email, timeout){
                     return this.submitCart(fileName, transport, email, {timeout: timeout});
                 },
+
+                /**
+                 * @method
+                 * @name  User#submitCart
+                 * @param  {string} fileName
+                 * @param  {string} transport
+                 * @param  {string} email
+                 * @return {Promise<Cart>}
+                 */
                 'string, string, string': function(fileName, transport, email){
                     return this.submitCart(fileName, transport, email, {});
                 }
