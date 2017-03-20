@@ -9,7 +9,7 @@ Next we need to clone the Topcat repository:
 
 	git clone https://github.com/icatproject/topcat.git
 
-We'll now build out vagrant box:
+We'll now build our vagrant box:
 
 	cd topcat
 	vagrant up

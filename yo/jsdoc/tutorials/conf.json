@@ -7,6 +7,12 @@
 	    	},
 	    	"generating-a-skeleton-plugin": {
 	    		"title": "Generating a Skeleton Plugin"
+	    	},
+	    	"the-structure-of-a-plugin": {
+	    		"title": "The Structure of a Plugin"
+	    	},
+	    	"the-basics-of-angular": {
+	    		"title": "The Basics of Angular"
 	    	}
 	    }
 	}
