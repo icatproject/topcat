@@ -126,7 +126,9 @@ Vagrant.configure(2) do |config|
     source /home/vagrant/.rvm/scripts/rvm
     rvm install 2.3.1
     rvm use 2.3.1 --default
-    gem install rest-client
+    gem install faker rest-client
+    ruby /vagrant/tools/lorum_facility_generator.rb
+    ruby /vagrant/provision/populate_lucene.rb
 
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v4 boolean true"
     sudo debconf-set-selections <<< "iptables-persistent iptables-persistent/autosave_v6 boolean true"
@@ -141,10 +143,6 @@ Vagrant.configure(2) do |config|
     sudo dos2unix /usr/bin/topcat
     topcat build_install
     asadmin -t set applications.application.topcat-2.2.1-SNAPSHOT.deployment-order=140
-
-    gem install faker rest-client
-    ruby /vagrant/tools/lorum_facility_generator.rb
-    ruby /vagrant/provision/populate_lucene.rb
 
   }
 end
