@@ -1,8 +1,9 @@
 /**
- * @interface tc
  *
  * This is the main entry point for Javascript API. It has been exposed globally so can be accessed 
  * in the Browsers console simply by typing 'tc'.
+ *
+ * @interface tc
 **/
 
 (function() {

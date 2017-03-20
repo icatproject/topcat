@@ -5,4 +5,3 @@ dist
 bower_components
 yo/*.html
 .DS_Store
-docs

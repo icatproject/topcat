@@ -191,6 +191,7 @@
 	                <directoryRoots>
 	                    <directoryRoot>${basedir}/yo/app/scripts</directoryRoot>
 	                </directoryRoots>
+	                <configFile>${basedir}/yo/jsdoc/conf.json</configFile>
 	            </configuration>
 	        </plugin>
 		</plugins>

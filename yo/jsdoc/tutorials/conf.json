@@ -1,0 +1,13 @@
+{
+	"how-to-create-a-plugin": {
+	    "title": "How to create a plugin",
+	    "children": {
+	    	"getting-started": {
+	    		"title": "Getting Started"
+	    	},
+	    	"generating-a-skeleton-plugin": {
+	    		"title": "Generating a Skeleton Plugin"
+	    	}
+	    }
+	}
+}
