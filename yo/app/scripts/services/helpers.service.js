@@ -4,6 +4,10 @@
 
     var app = angular.module('topcat');
 
+    /**
+     * @interface helpers
+     */
+
     app.service('helpers', function($http, $q, $timeout, $interval, $rootScope, $injector, $compile, uiGridConstants, icatSchema, topcatSchema, plugins){
     	var helpers = this;	
 
