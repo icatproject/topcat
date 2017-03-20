@@ -15,5 +15,11 @@
 	    		"title": "The Basics of Angular"
 	    	}
 	    }
+	},
+	"exploring-the-api": {
+		"title": "Exploring the API"
+	},
+	"debugging-tips": {
+		"title": "Debugging Tips"
 	}
 }
