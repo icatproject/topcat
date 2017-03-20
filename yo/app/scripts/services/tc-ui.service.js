@@ -167,6 +167,14 @@
 
             this.pages = function(){ return pages; };
             
+            /**
+             *
+             * @method
+             * @name  UI#registerPage
+             * @param {string} name
+             * @param {string} view
+             * @param {object} [options]
+             */
             this.registerPage = helpers.overload({
                 'string, string, object': function(name, view, options){
                     pages.push({name: name, view: view, options: options});
@@ -203,6 +211,13 @@
 
             this.externalGridFilters = function(){ return externalGridFilters; };
 
+            /**
+             *
+             * @method
+             * @name  UI#registerExternalGridFilter
+             * @param {string[]} states
+             * @param {object} [options]
+             */
             this.registerExternalGridFilter = helpers.overload({
                 'array, object': function(states, options){
                     _.each(states, function(state){
