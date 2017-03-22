@@ -29,10 +29,15 @@
             stopListeningForCartChanges();
         });
 
+        var browseGridAlternative = tc.ui().browseGridAlternatives[entityType];
+        if(browseGridAlternative){
+            this.gridAlternativeView = browseGridAlternative.view;
+            this.gridAlternativeController = browseGridAlternative.options.controller;
+        }
+
         helpers.setupIcatGridOptions(gridOptions, entityType);
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
-
 
         _.each(this.gridOptions.columnDefs, function(columnDef){
             if(columnDef.sort){

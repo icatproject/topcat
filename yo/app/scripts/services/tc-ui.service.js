@@ -231,6 +231,20 @@
                 }
             });
 
+            this.browseGridAlternatives = {};
+
+            this.registerBrowseGridAlternative = helpers.overload({
+                'string, string, object': function(entityType, view, options){
+                    this.browseGridAlternatives[entityType] = {
+                        view: view,
+                        options: options
+                    };
+                },
+                'string, string': function(){
+                    this.registerBrowseGridAlternative(entityType, view, {});
+                }
+            });
+
         }
 
     });
