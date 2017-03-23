@@ -103,6 +103,8 @@
                 "END_DATE": "End Date",
                 "DOI": "Doi",
                 "RELEASE_DATE": "Release Date",
+                "DATAFILE_COUNT": "File Count",
+                "DATASET_COUNT": "Dataset Count",
                 "SIZE" : "Size",
                 "FACILITY" : "Facility",
                 "RUN_NUMBER" : "Run Number"
@@ -118,6 +120,7 @@
                 "COMPLETE": "complete",
                 "CREATE_TIME": "Create Time",
                 "MOD_TIME": "Modified Time",
+                "DATAFILE_COUNT": "File Count",
                 "SIZE" : "Size",
                 "RUN_NUMBER_RANGE" : "Run Numbers",
                 "FACILITY" : "Facility"
