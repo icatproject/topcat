@@ -152,6 +152,15 @@
 
             this.entityActionButtons = function(){ return entityActionButtons; };
 
+            /**
+             * Adds a button to the end of the grid.
+             *
+             * @method
+             * @name  UI#registerEntityActionButton
+             * @param  {string} name
+             * @param  {object} [options]
+             * @param  {Function} click
+             */
             this.registerEntityActionButton = helpers.overload({
                 'string, object, function': function(name, options, click){
                     options.entityTypes = options.entityTypes || ['investigation', 'dataset', 'datafile'];
@@ -233,6 +242,12 @@
 
             this.browseGridAlternatives = {};
 
+            /**]
+             * @param  {[type
+             * [description]} entityType [description]
+             * @param  {[type]} view       [description]
+             * @param  {object} [options]    [description]
+             */
             this.registerBrowseGridAlternative = helpers.overload({
                 'string, string, object': function(entityType, view, options){
                     this.browseGridAlternatives[entityType] = {
