@@ -242,11 +242,15 @@
 
             this.browseGridAlternatives = {};
 
-            /**]
-             * @param  {[type
-             * [description]} entityType [description]
-             * @param  {[type]} view       [description]
-             * @param  {object} [options]    [description]
+            /**
+             * Allows you to replace the grid component within the browse 
+             * section at specific entity level.
+             *
+             * @method
+             * @name UI#registerBrowseGridAlternative
+             * @param  {string} entityType
+             * @param  {string} view
+             * @param  {object} [options]
              */
             this.registerBrowseGridAlternative = helpers.overload({
                 'string, string, object': function(entityType, view, options){

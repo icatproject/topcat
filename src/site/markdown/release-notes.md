@@ -1,4 +1,15 @@
-#Release Notes
+# Release Notes
+
+## 2.3.0
+
+* Now supports file uploads
+* The javascript API now has some documentation
+* There has been an increase in plugability
+* The page functionality has been removed from lang.json and the facility specific images have been remove from the core product. Instead there is a special directory within the release directory called 'content', which after running ./setup install will add any of these files in this directory to the application. As well as adding html pages you can add any media you like. For instance you can use this mechanism to override the favicon.
+* You can now add custom html to the sign in page. E.g. this could be used for adding a 'Forgot password' or 'Register' links.
+* The ability to cancel or restore a download within the admin interface.
+* Bug fixes.
+
 
 ## 2.2.1
 
