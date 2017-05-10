@@ -93,6 +93,10 @@ public class HttpClient {
 	    		} catch(Exception e2){}
 	    	}
 
+	    	if(responseCode >= 400){
+	    		logger.info("send error: " + method + " " + url.toString() + " -> (" + responseCode + ") " + responseBody);
+	    	}
+
 		    return new Response(responseCode, responseHeaders, responseBody);
     	} finally {
 			if (connection != null) {
