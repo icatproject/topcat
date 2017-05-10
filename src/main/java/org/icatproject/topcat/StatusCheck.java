@@ -60,7 +60,7 @@ public class StatusCheck {
   @EJB
   private CacheRepository cacheRepository;
 
-  @Schedule(hour="*", minute="*")
+  @Schedule(hour="*", minute="*", second="*")
   private void poll() {
     if(!busy.compareAndSet(false, true)){
       return;

@@ -93,8 +93,20 @@
 
         var completedDownloads = {};
         var completedDownloadsInit = false;
+        var isSessionChanging = false;
+
+        $rootScope.$on('session:changing', function(e){
+            isSessionChanging = true;
+        });
+
+        $rootScope.$on('session:changed', function(e, _completedDownloads){
+            completedDownloads = _completedDownloads;
+            isSessionChanging = false;
+        });
+
         this.isCompletedDownloadPopoverOpen = false;
         function checkoutForNewlyCompletedDownloads(){
+
             var promises = [];
             var data = [];
 
@@ -106,7 +118,7 @@
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
                         if(!completedDownloads[key] && download.status == 'COMPLETE'){
-                            if(completedDownloadsInit  && !download.isTwoLevel){
+                            if(!isSessionChanging && completedDownloadsInit  && !download.isTwoLevel){
                                 if(download.transport == 'https'){
                                     var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
                                     var iframe = $('<iframe>').attr('src', url).css({

@@ -17,6 +17,7 @@
     	function Icat(facility){
             var that = this;
             var cache;
+            var tc = facility.tc();
 
             this.cache = function(){
               if(!cache) cache = tcCache.create('icat:' + facility.config().name);
@@ -128,6 +129,8 @@
                     };
     			};
 
+                $rootScope.$broadcast('session:changing');
+
     			return this.post('session', params).then(function(response){
     				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
     				var facilityName = facility.config().name;
@@ -200,8 +203,19 @@
                             }
                         }));
 
+                        var completedDownloads = {};
+                        _.each(tc.userFacilities(), function(facility){
+                            promises.push(facility.user().downloads(["where download.isDeleted = false"]).then(function(downloads){
+                                _.each(downloads, function(download){
+                                    var key = facility.config().name + ":" + download.id;
+                                    completedDownloads[key] = true;
+                                });
+                            }));
+                        });
+
                         return $q.all(promises).then(function(){
-                          $rootScope.$broadcast('session:change');
+                            $rootScope.$broadcast('session:change');
+                            $rootScope.$broadcast('session:changed', completedDownloads);
                         });
                     });
 
@@ -286,7 +300,6 @@
                     if(tc.adminFacilities().length == 0){
                         document.cookie = 'isAdmin=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                     }
-
 
             		return $q.all(promises).then(function(){
             			$rootScope.$broadcast('session:change');
