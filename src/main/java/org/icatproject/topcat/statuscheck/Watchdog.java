@@ -111,7 +111,7 @@ public class Watchdog {
       }
     } catch (IOException e){
       logger.error("performCheck IOException: " + e.toString());
-    } catch(TopcatException e) {
+    } catch(TopcatException e){
       logger.error("marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
       download.setStatus(DownloadStatus.EXPIRED);
       em.persist(download);

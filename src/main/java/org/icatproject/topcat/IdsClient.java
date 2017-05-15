@@ -70,7 +70,15 @@ public class IdsClient {
                 data.append("&datafileIds=" + datafileIdsBuffer);
             }
 
-            return httpClient.post("prepareData", new HashMap<String, String>(), data.toString()).toString();
+            Response out = httpClient.post("prepareData", new HashMap<String, String>(), data.toString());
+
+            if(out.getCode() >= 400){
+                throw new BadRequestException("Could not prepareData got " + out.getCode() + " response: " + out.toString());
+            }
+
+            return out.toString();
+        } catch(TopcatException e){
+            throw e;
         } catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }
