@@ -63,6 +63,7 @@ public class HttpClient {
 		    connection.setRequestMethod(method);
     		connection.setUseCaches(false);
     		connection.setDoInput(true);
+    		connection.setReadTimeout(10 * 60 * 1000);
 
     		for(Map.Entry<String, String> entry : headers.entrySet()) {
 				connection.setRequestProperty(entry.getKey(), entry.getValue());
