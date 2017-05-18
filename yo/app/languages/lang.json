@@ -353,6 +353,7 @@
         "NEW_MESSAGE": "A new download has been added",
         "COMPLETED_MESSAGE": "A new download is now available",
         "COLUMN" : {
+            "ID": "Id",
             "FULL_NAME": "Name",
             "USER_NAME": "Username",
             "PREPARED_ID": "Prepared Id",
