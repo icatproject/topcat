@@ -29,6 +29,16 @@
             stopListeningForCartChanges();
         });
 
+        $scope.$on('global:refresh', function(){
+            page = 1;
+            getPage().then(function(results){
+                gridOptions.data = results;
+                updateTotalItems();
+                updateSelections();
+                updateScroll(results.length);
+            });
+        });
+
         var browseGridAlternative = tc.ui().browseGridAlternatives[entityType];
         if(browseGridAlternative){
             this.gridAlternativeView = browseGridAlternative.view;

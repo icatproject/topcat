@@ -373,6 +373,21 @@
         }
     });
 
+    /**
+     * Clears all caches and broadcasts a global:refresh event (on $rootScope).
+     *
+     * @method
+     * @name  tc#refresh
+     */
+    this.refresh = function(){
+      this.cache().removeAll();
+      _.each(this.facilities(), function(facility){
+        facility.icat().cache().removeAll();
+        facility.ids().cache().removeAll();
+      });
+      $rootScope.$broadcast('global:refresh');
+    };
+
 		helpers.generateRestMethods(this, this.config().topcatUrl + "/topcat/");
 
     helpers.mixinPluginMethods('tc', this);

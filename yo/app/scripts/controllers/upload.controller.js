@@ -4,13 +4,13 @@
 
     var app = angular.module('topcat');
 
-    app.controller('UploadController', function($state, $uibModalInstance, tc, inform){
+    app.controller('UploadController', function($state, $uibModalInstance, $rootScope, tc, inform){
         var that = this;
         var facility = tc.facility($state.params.facilityName);
         var icat = facility.icat();
         var ids = facility.ids();
         var investigationId = parseInt($state.params.investigationId);
-        var datasetTypeId = facility.config().idsUploadDatasetTypeId
+        var datasetTypeId = facility.config().idsUploadDatasetTypeId;
 
         this.name = "";
         this.files = [];
@@ -33,7 +33,8 @@
                         }
                     ]).then(function(datasetIds){
                         ids.upload(datasetIds[0], that.files).then(function(){
-                            window.location.reload();
+                            tc.refresh();
+                            $rootScope.$broadcast('upload:complete');
                         }, handleError);
                     }, handleError);
                 }
