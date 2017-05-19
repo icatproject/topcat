@@ -177,10 +177,8 @@
                             _type: 'array',
                             _item: {
                                 title: { _type: 'string'  },
-                                plugin: { _type: 'string'  },
-                                casUrl: { _type: 'string', _mandatory: function(o){
-                                    return o.plugin == 'cas';
-                                }}
+                                plugin: { _type: 'string'},
+                                external: { _type: 'boolean', _mandatory: false  }
                             }
                         },
                         downloadTransportTypes: {
