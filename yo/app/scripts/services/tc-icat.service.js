@@ -77,150 +77,142 @@
     			return this.put('session/' + this.session().sessionId);
     		};
 
-            /**
-             * Logs a user into this Icat with a username and password.
-             *
-             * @method
-             * @name Icat#login
-             * @param {string} plugin The type of authentication mechanism
-             * @param {string} username
-             * @param {string} password
-             * @return {Promise}
-             */
-            /**
-             * Logs a user into this Icat with token; used for single sign in systems like CAS.
-             *
-             * @method
-             * @name Icat#login
-             * @param {string} plugin The type of authentication mechanism
-             * @param {string} token
-             * @return {Promise}
-             */
-    		this.login = function(plugin, arg2, arg3){
-                
-    			var params;
-
-                if(plugin == 'cas'){
-                    var service = arg2;
-                    var ticket = arg3;
-
-                    params = {
-                        json: JSON.stringify({
-                            plugin: plugin,
-                            credentials: [
-                                {service: service},
-                                {ticket: ticket}
-                            ]
-                        })
+            this.login = helpers.overload({
+                /**
+                 * Logs a user into this Icat with a username and password.
+                 *
+                 * @method
+                 * @name Icat#login
+                 * @param {string} plugin The type of authentication mechanism
+                 * @param {object} credentials
+                 * @return {Promise}
+                 */
+                'string, object': function(plugin, credentials){
+                    var params = {
+                        plugin: plugin,
+                        credentials: []
                     };
-                } else {
-                    var username = arg2;
-                    var password = arg3;
-                    if(username === undefined) username = "anon";
 
-                    params = {
-        				json: JSON.stringify({
-                            plugin: plugin,
-                            credentials: [
-                                {username: username},
-                                {password: password}
-                            ]
-                        })
-                    };
-    			};
-
-                $rootScope.$broadcast('session:changing');
-
-    			return this.post('session', params).then(function(response){
-    				if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
-    				var facilityName = facility.config().name;
-                    var sessionId = response.sessionId;
-
-                    $sessionStorage.sessions[facilityName] = { sessionId: sessionId }
-
-                    return that.get('session/' + response.sessionId).then(function(response){
-                        var username = response.userName;
-
-                        $sessionStorage.sessions[facilityName].username = username;
-                        $sessionStorage.sessions[facilityName].plugin = plugin;
-
-                        var promises = [];
-
-                        var name = facility.config().name;
-                        promises.push(that.query([
-                            "SELECT facility FROM Facility facility WHERE facility.name = ?", name
-                        ]).then(function(results){
-                            var facility = results[0];
-                            if(facility){
-                                $sessionStorage.sessions[facilityName].facilityId = facility.id;
-                            } else {
-                                console.error("Could not find facility by name '" + name + "'");
-                            }
-                        }));
-
-                        var idsUploadDatasetType = facility.config().idsUploadDatasetType;
-                        if(idsUploadDatasetType){
-                            promises.push(that.query([
-                                "SELECT datasetType FROM DatasetType datasetType, datasetType.facility as facility", 
-                                "WHERE facility.name = ?", name,
-                                "AND datasetType.name = ?", idsUploadDatasetType
-                            ]).then(function(results){
-                                var datasetType = results[0];
-                                if(datasetType){
-                                    $sessionStorage.sessions[facilityName].idsUploadDatasetTypeId = datasetType.id;
-                                } else {
-                                    console.error("Could not find IDS upload dataset type with name '" + idsUploadDatasetType + "'");
-                                }
-                            }));
-                        }
-
-                        var idsUploadDatafileFormat = facility.config().idsUploadDatafileFormat;
-                        if(idsUploadDatafileFormat){
-                            promises.push(that.query([
-                                "SELECT datasetType FROM DatafileFormat datasetType, datasetType.facility as facility", 
-                                "WHERE facility.name = ?", name,
-                                "AND datasetType.name = ?", idsUploadDatafileFormat
-                            ]).then(function(results){
-                                var datasetType = results[0];
-                                if(datasetType){
-                                    $sessionStorage.sessions[facilityName].idsUploadDatafileFormatId = datasetType.id;
-                                } else {
-                                    console.error("Could not find IDS upload datafile format with name '" + idsUploadDatafileFormat + "'");
-                                }
-                            }));
-                        }
-
-                        promises.push(facility.admin().isValidSession(sessionId).then(function(isAdmin){
-                            $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
-                            if(isAdmin) document.cookie = "isAdmin=true";
-                        }));
-
-                        promises.push(that.query(["select user from User user where user.name = ?", username]).then(function(users){
-                            if(users[0]){
-                                $sessionStorage.sessions[facilityName].fullName = users[0].fullName;
-                            } else {
-                                $sessionStorage.sessions[facilityName].fullName = username;
-                            }
-                        }));
-
-                        var completedDownloads = {};
-                        _.each(tc.userFacilities(), function(facility){
-                            promises.push(facility.user().downloads(["where download.isDeleted = false"]).then(function(downloads){
-                                _.each(downloads, function(download){
-                                    var key = facility.config().name + ":" + download.id;
-                                    completedDownloads[key] = true;
-                                });
-                            }));
-                        });
-
-                        return $q.all(promises).then(function(){
-                            $rootScope.$broadcast('session:change');
-                            $rootScope.$broadcast('session:changed', completedDownloads);
-                        });
+                    _.each(credentials, function(value, name){
+                        var credential = {}
+                        credential[name] = value;
+                        params.credentials.push(credential);
                     });
 
-    			});
-    		};
+                    params = {json: JSON.stringify(params)};
+
+                    $rootScope.$broadcast('session:changing');
+
+                    return this.post('session', params).then(function(response){
+                        if(!$sessionStorage.sessions) $sessionStorage.sessions = {};
+                        var facilityName = facility.config().name;
+                        var sessionId = response.sessionId;
+
+                        $sessionStorage.sessions[facilityName] = { sessionId: sessionId }
+
+                        return that.get('session/' + response.sessionId).then(function(response){
+                            var username = response.userName;
+
+                            $sessionStorage.sessions[facilityName].username = username;
+                            $sessionStorage.sessions[facilityName].plugin = plugin;
+
+                            var promises = [];
+
+                            var name = facility.config().name;
+                            promises.push(that.query([
+                                "SELECT facility FROM Facility facility WHERE facility.name = ?", name
+                            ]).then(function(results){
+                                var facility = results[0];
+                                if(facility){
+                                    $sessionStorage.sessions[facilityName].facilityId = facility.id;
+                                } else {
+                                    console.error("Could not find facility by name '" + name + "'");
+                                }
+                            }));
+
+                            var idsUploadDatasetType = facility.config().idsUploadDatasetType;
+                            if(idsUploadDatasetType){
+                                promises.push(that.query([
+                                    "SELECT datasetType FROM DatasetType datasetType, datasetType.facility as facility", 
+                                    "WHERE facility.name = ?", name,
+                                    "AND datasetType.name = ?", idsUploadDatasetType
+                                ]).then(function(results){
+                                    var datasetType = results[0];
+                                    if(datasetType){
+                                        $sessionStorage.sessions[facilityName].idsUploadDatasetTypeId = datasetType.id;
+                                    } else {
+                                        console.error("Could not find IDS upload dataset type with name '" + idsUploadDatasetType + "'");
+                                    }
+                                }));
+                            }
+
+                            var idsUploadDatafileFormat = facility.config().idsUploadDatafileFormat;
+                            if(idsUploadDatafileFormat){
+                                promises.push(that.query([
+                                    "SELECT datasetType FROM DatafileFormat datasetType, datasetType.facility as facility", 
+                                    "WHERE facility.name = ?", name,
+                                    "AND datasetType.name = ?", idsUploadDatafileFormat
+                                ]).then(function(results){
+                                    var datasetType = results[0];
+                                    if(datasetType){
+                                        $sessionStorage.sessions[facilityName].idsUploadDatafileFormatId = datasetType.id;
+                                    } else {
+                                        console.error("Could not find IDS upload datafile format with name '" + idsUploadDatafileFormat + "'");
+                                    }
+                                }));
+                            }
+
+                            promises.push(facility.admin().isValidSession(sessionId).then(function(isAdmin){
+                                $sessionStorage.sessions[facilityName].isAdmin = isAdmin;
+                                if(isAdmin) document.cookie = "isAdmin=true";
+                            }));
+
+                            promises.push(that.query(["select user from User user where user.name = ?", username]).then(function(users){
+                                if(users[0]){
+                                    $sessionStorage.sessions[facilityName].fullName = users[0].fullName;
+                                } else {
+                                    $sessionStorage.sessions[facilityName].fullName = username;
+                                }
+                            }));
+
+                            var completedDownloads = {};
+                            _.each(tc.userFacilities(), function(facility){
+                                promises.push(facility.user().downloads(["where download.isDeleted = false"]).then(function(downloads){
+                                    _.each(downloads, function(download){
+                                        var key = facility.config().name + ":" + download.id;
+                                        completedDownloads[key] = true;
+                                    });
+                                }));
+                            });
+
+                            return $q.all(promises).then(function(){
+                                $rootScope.$broadcast('session:change');
+                                $rootScope.$broadcast('session:changed', completedDownloads);
+                                $rootScope.$broadcast('session:add', that);
+                            });
+                        });
+
+                    });
+
+                },
+                /**
+                 * Logs a user into this Icat with a username and password.
+                 *
+                 * @method
+                 * @name Icat#login
+                 * @param {string} plugin The type of authentication mechanism
+                 * @param {string} username
+                 * @param {string} password
+                 * @return {Promise}
+                 */
+                'string, string, string': function(plugin, username, password){
+                    return this.login(plugin, {
+                        username: username,
+                        password: password
+                    });
+                }
+            });
+
 
             /**
              * Used to verify the person is the owner of the session.
@@ -265,34 +257,7 @@
     		            }));
             		}
 
-                    if(this.session().plugin == 'cas'){
-                        var authenticationTypesIndex = {};
-                        _.each(facility.config().authenticationTypes, function(authenticationType){
-                            authenticationTypesIndex[authenticationType.plugin] = authenticationType;
-                        });
-
-                        var authenticationType = authenticationTypesIndex['cas'];
-
-                        var casIframe = $('<iframe>').attr({
-                            src: authenticationType.casUrl + '/logout'
-                        }).css({
-                            position: 'relative',
-                            left: '-1000000px',
-                            height: '1px',
-                            width: '1px'
-                        });
-
-                        $(document.body).append(casIframe);
-
-                        var defered = $q.defer();
-                        promises.push(defered.promise);
-
-                        $(casIframe).on('load', function(){
-                            defered.resolve();
-                            $(casIframe).remove();
-                        });
-
-                    }
+                    $rootScope.$broadcast('session:remove', this);
 
             		delete $sessionStorage.sessions[facility.config().name];
     				$sessionStorage.$apply();
