@@ -43,7 +43,7 @@
         this.openParameterModal = function(){
             var modal = $uibModal.open({
                 templateUrl : 'views/search-parameter.html',
-                size : 'sm',
+                size : 'md',
                 controller: 'SearchParameterController as searchParameterController'
             }).result.then(function(parameter){
                 that.parameters.push(parameter);

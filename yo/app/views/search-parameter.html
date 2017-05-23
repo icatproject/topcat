@@ -5,37 +5,152 @@
     <div class="modal-body">
         
         <div class="form-group has-feedback">
-            <label class="control-label sr-only" for="searchText"></label>
+            <label class="control-label">Parameter Type</label>
             <select
                 class="form-control input-sm"
                 ng-options="item as item.name for item in searchParameterController.parameterTypes"
                 ng-model="searchParameterController.parameterType"
                 required>
-                <option style="display:none" value="">Parameter Type</option>
             </select>
 
         </div>
 
         <div class="form-group" ng-if="searchParameterController.parameterType.valueType == 'STRING' && searchParameterController.parameterType.permissibleStringValues.length > 0">
+            <label class="control-label">Value</label>
             <select
                 class="form-control input-sm"
                 ng-options="item.value as item.value for item in searchParameterController.parameterType.permissibleStringValues"
                 ng-model="searchParameterController.textValue"
-                required>
-                <option style="display:none" value="">Value</option>
+                required>>
             </select>
         </div>
         <div class="form-group" ng-if="searchParameterController.parameterType.valueType == 'STRING' && searchParameterController.parameterType.permissibleStringValues.length == 0">
+            <label class="control-label">Value</label>
             <input type="text" class="form-control input-sm" id="value" placeholder="Value" ng-model="searchParameterController.textValue"  required />
         </div>
-        <div class="form-group" ng-if="searchParameterController.parameterType.valueType == 'NUMERIC'">
-            <input type="number" class="form-control input-sm" id="value" placeholder="Value" ng-model="searchParameterController.numberValue" required />
+
+        <div
+            class="form-group"
+            ng-if="searchParameterController.parameterType.valueType == 'NUMERIC' || searchParameterController.parameterType.valueType == 'DATE_AND_TIME'">
+            <label class="control-label">Operator</label>
+            <select
+                class="form-control input-sm"
+                ng-model="searchParameterController.operator">
+                <option value="match_value">Match Value</option>
+                <option value="in_range">In Range</option>
+            </select>
         </div>
-        <div class="form-group" ng-if="searchParameterController.parameterType.valueType == 'DATE_AND_TIME'">
+
+
+        <div
+            class="form-group"
+            ng-if="searchParameterController.parameterType.valueType == 'NUMERIC' && searchParameterController.operator == 'match_value'">
+            <label class="control-label">Value</label>
+            <input
+                type="number"
+                class="form-control input-sm"
+                id="value"
+                placeholder="Value"
+                ng-model="searchParameterController.numberValue"
+                required>
+        </div>
+        <div
+            class="form-group"
+            ng-if="searchParameterController.parameterType.valueType == 'NUMERIC' && searchParameterController.operator == 'in_range'">
+            <label class="control-label">Value From</label>
+            <input
+                type="number"
+                class="form-control input-sm"
+                id="value"
+                placeholder="Value"
+                ng-model="searchParameterController.numberFromValue"
+                required>
+        </div>
+        <div
+            class="form-group"
+            ng-if="searchParameterController.parameterType.valueType == 'NUMERIC' && searchParameterController.operator == 'in_range'">
+            <label class="control-label">Value To</label>
+            <input
+                type="number"
+                class="form-control input-sm"
+                id="value"
+                placeholder="Value"
+                ng-model="searchParameterController.numberToValue"
+                required>
+        </div>
+
+
+        <div
+            class="form-group"
+            ng-if="searchParameterController.parameterType.valueType == 'DATE_AND_TIME' && searchParameterController.operator == 'match_value'"">
+            <label class="control-label">Value</label>
             <p class="input-group">
-                <input type="text" class="form-control input-sm" uib-datepicker-popup="{{searchParameterController.dateFormat}}" ng-model="searchParameterController.dateValue" is-open="searchParameterController.isDateValueOpen"  close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" required />
+                <input 
+                    type="text"
+                    class="form-control input-sm"
+                    uib-datepicker-popup="{{searchParameterController.dateFormat}}"
+                    ng-model="searchParameterController.dateValue"
+                    is-open="searchParameterController.isDateValueOpen"
+                    close-text="Close"
+                    placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" 
+                    required>
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default input-sm" ng-click="searchParameterController.openDateValue()"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button
+                        type="button"
+                        class="btn btn-default input-sm"
+                        ng-click="searchParameterController.openDateValue()">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </span>
+            </p>
+
+        </div>
+        <div
+            class="form-group"
+            ng-if="searchParameterController.parameterType.valueType == 'DATE_AND_TIME' && searchParameterController.operator == 'in_range'"">
+            <label class="control-label">Value From</label>
+            <p class="input-group">
+                <input 
+                    type="text"
+                    class="form-control input-sm"
+                    uib-datepicker-popup="{{searchParameterController.dateFormat}}"
+                    ng-model="searchParameterController.dateFromValue"
+                    is-open="searchParameterController.isDateFromValueOpen"
+                    close-text="Close"
+                    placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" 
+                    required>
+                <span class="input-group-btn">
+                    <button
+                        type="button"
+                        class="btn btn-default input-sm"
+                        ng-click="searchParameterController.openDateFromValue()">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </span>
+            </p>
+
+        </div>
+        <div
+            class="form-group"
+            ng-if="searchParameterController.parameterType.valueType == 'DATE_AND_TIME' && searchParameterController.operator == 'in_range'"">
+            <label class="control-label">Value To</label>
+            <p class="input-group">
+                <input 
+                    type="text"
+                    class="form-control input-sm"
+                    uib-datepicker-popup="{{searchParameterController.dateFormat}}"
+                    ng-model="searchParameterController.dateToValue"
+                    is-open="searchParameterController.isDateToValueOpen"
+                    close-text="Close"
+                    placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" 
+                    required>
+                <span class="input-group-btn">
+                    <button
+                        type="button"
+                        class="btn btn-default input-sm"
+                        ng-click="searchParameterController.openDateToValue()">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
                 </span>
             </p>
 
