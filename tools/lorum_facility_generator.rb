@@ -127,7 +127,7 @@ parameter_type_count.times do |i|
 	permissible_string_value_count.times.map{ |i|
 		{
 			:PermissibleStringValue => {
-				:type => {:id => parameter_type_id}
+				:type => {:id => parameter_type_id},
 				:value => Faker::Hacker.abbreviation
 			}
 		}
