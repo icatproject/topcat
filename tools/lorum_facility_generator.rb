@@ -15,6 +15,9 @@ datasets_per_investigation_count = 3
 co_investigators_per_investigation_count = 3
 datafiles_per_dataset_count = 100
 
+parameter_type_count = 3
+permissible_string_value_count = 10
+
 one_day_ago = (Time.now - (24 * 60 * 60)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 seven_days_from_now = (Time.now + (7 * 24 * 60 * 60)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
@@ -106,6 +109,33 @@ dataset_type_ids = write(dataset_types_count.times.map do |i|
 		}
 	}
 end)
+
+
+investigation_parameter_type_ids = []
+
+parameter_type_count.times do |i|
+	parameter_type_id = write({
+		:ParameterType => {
+			:name => "Investigation ParameterType #{i + 1}",
+			:valueType => "STRING",
+			:facility => {:id => facility_id},
+			:units => "foo"
+		}
+	}).first
+
+
+	permissible_string_value_count.times.map{ |i|
+		{
+			:PermissibleStringValue => {
+				:type => {:id => parameter_type_id}
+				:value => Faker::Hacker.abbreviation
+			}
+		}
+	}
+
+	investigation_parameter_type_ids << parameter_type_id
+end
+
 
 proposals_count.times do |i|
 	name = "Proposal #{i + 1}"

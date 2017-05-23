@@ -4,21 +4,23 @@
 
     var app = angular.module('topcat');
 
-    app.controller('SearchParameterController', function($uibModalInstance, $filter){
+    app.controller('SearchParameterController', function($uibModalInstance, $filter, tc){
+        var that = this;
 
-        this.name = "";
-        this.valueType = "";
         this.textValue = "";
         this.numberValue = 0;
         this.dateValue = new Date();
         this.isDateValueOpen = false;
         this.dateFormat = 'yyyy-MM-dd';
 
-        this.parameterTypes = [
-             {'name' : 'Text', 'id' : 'text'},
-             {'name' : 'Number', 'id' : 'number'},
-             {'name' : 'Date', 'id' : 'date'},
-        ];
+        this.parameterTypes = [];
+
+        _.each(tc.userFacilities(), function(facility){
+            facility.icat().query("select parameterType from ParameterType parameterType include parameterType.permissibleStringValues").then(function(parameterTypes){
+                that.parameterTypes = that.parameterTypes.concat(parameterTypes);
+                that.parameterTypes = _.sortBy(that.parameterTypes, 'name');
+            });
+        });
 
         this.openDateValue = function(){
             this.isDateValueOpen = true;
@@ -26,19 +28,16 @@
 
         this.submit = function(){
             var value;
-            if(this.valueType == 'text'){
+            if(this.parameterType.valueType == 'STRING'){
                 value = this.textValue;
-            } else if(this.valueType == 'number'){
+            } else if(this.parameterType.valueType == 'NUMERIC'){
                 value = this.numberValue;
-            } else if(this.valueType == 'date'){
+            } else if(this.parameterType.valueType == 'DATE_AND_TIME'){
                 value = $filter('date')(this.dateValue, this.dateFormat);
             }
 
-            if(_.isUndefined(this.name) || _.isUndefined(this.valueType) ||  _.isUndefined(value)) return;
-
             $uibModalInstance.close({
-                name: this.name,
-                valueType: this.valueType,
+                parameterType: this.parameterType,
                 value: value
             });
         };

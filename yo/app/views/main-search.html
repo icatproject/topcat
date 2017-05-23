@@ -60,7 +60,7 @@
 
                     <div class="form-group" ng-repeat="parameter in searchController.parameters">
                         <div class="input-group">
-                            <div class="form-control">{{parameter.name}} = {{parameter.value}}</div>
+                            <div class="form-control">{{parameter.parameterType.name}} = {{parameter.value}}</div>
                             <div class="input-group-addon" ng-click="searchController.removeParameter(parameter)"><span class="glyphicon glyphicon-remove"></span></div>
                         </div>
                     </div>
