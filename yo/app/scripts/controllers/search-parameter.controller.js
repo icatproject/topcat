@@ -12,8 +12,8 @@
         this.dateValue = new Date();
         this.isDateValueOpen = false;
         this.dateFormat = 'yyyy-MM-dd';
-
         this.parameterTypes = [];
+        this.permissibleStringValues = [];
 
         _.each(tc.userFacilities(), function(facility){
             facility.icat().query("select parameterType from ParameterType parameterType include parameterType.permissibleStringValues").then(function(parameterTypes){

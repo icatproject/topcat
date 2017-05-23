@@ -111,30 +111,22 @@ dataset_type_ids = write(dataset_types_count.times.map do |i|
 end)
 
 
-investigation_parameter_type_ids = []
-
-parameter_type_count.times do |i|
-	parameter_type_id = write({
+investigation_parameter_type_ids = write(parameter_type_count.times.map { |i|
+	{
 		:ParameterType => {
 			:name => "Investigation ParameterType #{i + 1}",
 			:valueType => "STRING",
 			:facility => {:id => facility_id},
-			:units => "foo"
-		}
-	}).first
-
-
-	permissible_string_value_count.times.map{ |i|
-		{
-			:PermissibleStringValue => {
-				:type => {:id => parameter_type_id},
-				:value => Faker::Hacker.abbreviation
+			:units => "foo",
+			:permissibleStringValues => permissible_string_value_count.times.map{ |j|
+				{
+					:value => "#{i} - #{j}"
+				}
 			}
 		}
 	}
+})
 
-	investigation_parameter_type_ids << parameter_type_id
-end
 
 
 proposals_count.times do |i|
