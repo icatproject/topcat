@@ -557,7 +557,7 @@ module.exports = function (grunt) {
     'cssmin',
     'filerev',
     'usemin',
-    'htmlmin'
+    //'htmlmin'
   ]);
 
   grunt.registerTask('docs', 'dgeni-alive');
