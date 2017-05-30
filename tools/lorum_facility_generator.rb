@@ -122,7 +122,10 @@ investigation_parameter_type_ids = write(parameter_type_count.times.map { |i|
 				{
 					:value => "#{i} - #{j}"
 				}
-			}
+			},
+			:applicableToInvestigation => true,
+			:applicableToDataset => true,
+			:applicableToDatafile => true
 		}
 	}
 })

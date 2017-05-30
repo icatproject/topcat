@@ -16,14 +16,21 @@
         this.dateToValue = new Date();
         this.isDateValueOpen = false;
         this.isDateFromValueOpen = false;
-         this.isDateToValueOpen = false;
+        this.isDateToValueOpen = false;
         this.dateFormat = 'yyyy-MM-dd';
         this.parameterTypes = [];
         this.permissibleStringValues = [];
         this.operator = "match_value";
 
         _.each(tc.userFacilities(), function(facility){
-            facility.icat().query("select parameterType from ParameterType parameterType include parameterType.permissibleStringValues").then(function(parameterTypes){
+            facility.icat().query([
+                "select parameterType from ParameterType parameterType",
+                "where",
+                "parameterType.applicableToInvestigation = true or",
+                "parameterType.applicableToDataset = true or",
+                "parameterType.applicableToDatafile = true",
+                "include parameterType.permissibleStringValues"
+            ]).then(function(parameterTypes){
                 that.parameterTypes = that.parameterTypes.concat(parameterTypes);
                 that.parameterTypes = _.sortBy(that.parameterTypes, 'name');
             });
