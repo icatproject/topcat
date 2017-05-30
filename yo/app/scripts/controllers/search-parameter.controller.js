@@ -65,7 +65,8 @@
             }
 
             $uibModalInstance.close({
-                parameterType: this.parameterType,
+                name: this.parameterType.name,
+                valueType: this.parameterType.valueType,
                 operator: this.operator,
                 value: value,
                 valueFrom: valueFrom,

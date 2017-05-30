@@ -46,6 +46,7 @@
                 size : 'md',
                 controller: 'SearchParameterController as searchParameterController'
             }).result.then(function(parameter){
+                console.log('openParameterModal parameter', parameter)
                 that.parameters.push(parameter);
             });
         };
@@ -89,7 +90,7 @@
             var _facilities = _.select(facilities, function(facility){ return facility.selected; });
             _facilities = _.map(_facilities, function(facility){ return facility.name; });
             if(_facilities.length > 0) params.facilities = JSON.stringify(_facilities);
-            if(this.parameters.length > 0) params.parameters = JSON.stringify(_.map(this.parameters, function(parameter){ return _.pick(parameter, ['name', 'valueType', 'value']); }));
+            if(this.parameters.length > 0) params.parameters = JSON.stringify(this.parameters);
             if(this.samples.length > 0) params.samples = JSON.stringify(this.samples);
 
             $state.go('home.search.results', params);

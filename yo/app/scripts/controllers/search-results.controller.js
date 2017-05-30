@@ -22,17 +22,27 @@
     }
     if(parameters.length > 0){
         queryCommon.parameters = _.map(parameters, function(parameter){
-          var out = {};
-          out.name = parameter.name;
-          if(parameter.valueType === 'text'){
+          var out = {
+            name: parameter.name,
+            units: '*'
+          };
+          
+          if(parameter.valueType === 'STRING'){
               out.stringValue = parameter.value;
-          } else if(parameter.valueType === 'number'){
-              out.lowerNumericValue = parameter.value;
-              out.upperNumericValue = parameter.value;
-          } else if(parameter.valueType === 'date'){
-              var date = parameter.value.replace(/-/g, '') + "0000";
-              out.lowerDateValue = date;
-              out.upperDateValue = date;
+          } else if(parameter.valueType === 'NUMERIC' && parameter.operator == 'match_value'){
+            out.lowerNumericValue = parameter.value;
+            out.upperNumericValue = parameter.value;
+          } else if(parameter.valueType === 'NUMERIC' && parameter.operator == 'in_range'){
+            out.lowerNumericValue = parameter.valueFrom;
+            out.upperNumericValue = parameter.valueTo;
+          } else if(parameter.valueType === 'DATE_AND_TIME' && parameter.operator == 'match_value'){
+              var date = parameter.value.replace(/-/g, '');
+              out.lowerDateValue = date  + "0000";
+              out.upperDateValue = date + "2359";
+          } else if(parameter.valueType === 'DATE_AND_TIME' && parameter.operator == 'in_range'){
+              var date = parameter.valueFrom.replace(/-/g, '');
+              out.lowerDateValue = parameter.valueFrom.replace(/-/g, '')  + "0000";
+              out.upperDateValue = parameter.valueTo.replace(/-/g, '') + "2359";
           }
           return out;
         });

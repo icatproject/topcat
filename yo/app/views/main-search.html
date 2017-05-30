@@ -57,13 +57,25 @@
                             <span class="form-control" translate="ENTITIES.DATAFILE.NAME"></span>
                         </div>
                     </div>
-
-                    <div class="form-group" ng-repeat="parameter in searchController.parameters">
-                        <div class="input-group">
-                            <div class="form-control">{{parameter.parameterType.name}} = {{parameter.value}}</div>
-                            <div class="input-group-addon" ng-click="searchController.removeParameter(parameter)"><span class="glyphicon glyphicon-remove"></span></div>
+                    <div class="panel panel-default" ng-repeat="parameter in searchController.parameters">
+                        <div class="panel-heading">
+                            <i
+                                class="glyphicon glyphicon-remove pull-right"
+                                ng-click="searchController.removeParameter(parameter)"></i>
+                            {{parameter.name}}
+                        </div>
+                        <div
+                            class="panel-body"
+                            ng-if="parameter.valueType == 'STRING' || parameter.operator == 'match_value'">
+                            {{parameter.value}}
+                        </div>
+                        <div
+                            class="panel-body"
+                            ng-if="parameter.valueType != 'STRING' && parameter.operator == 'in_range'">
+                            {{parameter.valueFrom}} - {{parameter.valueTo}}
                         </div>
                     </div>
+
                     <div class="form-group" ng-repeat="sample in searchController.samples">
                         <div class="input-group">
                             <div class="form-control">{{sample}}</div>
