@@ -5,6 +5,7 @@ command_name = ARGV[0]
 def build_install
 	system(%Q{
 		rm -rf ~/topcat_tmp
+		mkdir ~/topcat_tmp
 		cp /vagrant/pom.xml ~/topcat_tmp
 		cp -r /vagrant/yo ~/topcat_tmp
 		cp -r /vagrant/src ~/topcat_tmp

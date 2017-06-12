@@ -32,8 +32,12 @@ Vagrant.configure(2) do |config|
     sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/javac /usr/bin/javac
 
 
-    wget --quiet download.java.net/glassfish/4.0/release/glassfish-4.0.zip
-    unzip -q glassfish-4.0.zip
+    # wget --quiet download.java.net/glassfish/4.0/release/glassfish-4.0.zip
+    # unzip -q glassfish-4.0.zip
+
+    wget --quiet wget https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.2.172/payara-4.1.2.172.zip
+    unzip payara-4.1.2.172.zip
+    mv payara41 glassfish4
  
     wget --quiet http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
     unzip -q mysql-connector-java-5.1.37.zip
@@ -49,7 +53,7 @@ Vagrant.configure(2) do |config|
     asadmin set server.http-service.access-log.format="common"
     asadmin set server.http-service.access-logging-enabled=true
     asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
-    asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+    #asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
     asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
     asadmin delete-ssl --type http-listener http-listener-2
     asadmin delete-network-listener http-listener-2
@@ -60,32 +64,32 @@ Vagrant.configure(2) do |config|
 
     mkdir /home/vagrant/bin
 
-    wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.1.0/authn.simple-1.1.0-distro.zip
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
 
-    unzip -q authn.simple-1.1.0-distro.zip
+    unzip -q authn.simple-1.2.0-distro.zip
     cp /vagrant/provision/authn_simple.properties authn.simple/authn_simple.properties
     cp /vagrant/provision/authn_simple-setup.properties authn.simple/authn_simple-setup.properties
     cd authn.simple
     ./setup configure
     ./setup install
     cd ../
-    asadmin -t set applications.application.authn.simple-1.1.0.deployment-order=80
+    asadmin -t set applications.application.authn.simple-1.2.0.deployment-order=80
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.8.0/icat.server-4.8.0-distro.zip
-    unzip -q icat.server-4.8.0-distro.zip
-    cp /vagrant/provision/icat.properties icat.server/icat.properties
-    cp /vagrant/provision/icat-setup.properties icat.server/icat-setup.properties
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.9.0-distro.zip
+    unzip -q icat.server-4.9.0-distro.zip
+    cp /vagrant/provision/icat.properties icat.server/run.properties
+    cp /vagrant/provision/icat-setup.properties icat.server/setup.properties
     cd icat.server
     ./setup configure
     ./setup install
     cd ../
-    asadmin -t set applications.application.icat.server-4.8.0.deployment-order=100
+    asadmin -t set applications.application.icat.server-4.9.0.deployment-order=100
 
 
-    wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
-    unzip -q ids.server-1.6.0-distro.zip
-    cp /vagrant/provision/ids.properties ids.server/ids.properties
-    cp /vagrant/provision/ids-setup.properties ids.server/ids-setup.properties
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-20170606.155903-3-distro.zip
+    unzip -q ids.server-1.8.0-20170606.155903-3-distro.zip
+    cp /vagrant/provision/ids.properties ids.server/run.properties
+    cp /vagrant/provision/ids-setup.properties ids.server/setup.properties
     cp /vagrant/provision/ids.storage_file.main.properties glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
     cp /vagrant/provision/ids.storage_file-setup.properties glassfish4/glassfish/domains/domain1/config/ids.storage_file-setup.properties
     mkdir data
@@ -94,7 +98,7 @@ Vagrant.configure(2) do |config|
     cd ids.server
     ./setup configure
     ./setup install
-    asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
+    asadmin -t set applications.application.ids.server-1.8.0.deployment-order=120
 
     cd ../
 
