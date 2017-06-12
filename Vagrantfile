@@ -32,15 +32,12 @@ Vagrant.configure(2) do |config|
     sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/javac /usr/bin/javac
 
 
-    wget --quiet download.java.net/glassfish/4.0/release/glassfish-4.0.zip
-    unzip -q glassfish-4.0.zip
+    # wget --quiet download.java.net/glassfish/4.0/release/glassfish-4.0.zip
+    # unzip -q glassfish-4.0.zip
  
-    wget --quiet http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
-    unzip -q mysql-connector-java-5.1.37.zip
-    cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar ./glassfish4/glassfish/domains/domain1/lib/ext
-
-    wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.3/ids.storage_file-1.3.3.jar
-    cp /home/vagrant/ids.storage_file-1.3.3.jar glassfish4/glassfish/domains/domain1/lib/applibs
+    wget --quiet wget https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.2.172/payara-4.1.2.172.zip
+    unzip payara-4.1.2.172.zip
+    mv payara41 glassfish4
 
     echo 'export PATH="$PATH:$HOME/glassfish4/glassfish/bin"' >> .profile
     source .profile
@@ -49,48 +46,57 @@ Vagrant.configure(2) do |config|
     asadmin set server.http-service.access-log.format="common"
     asadmin set server.http-service.access-logging-enabled=true
     asadmin set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=128
-    asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+    # asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
     asadmin set server.ejb-container.property.disable-nonportable-jndi-names="true"
     asadmin delete-ssl --type http-listener http-listener-2
     asadmin delete-network-listener http-listener-2
     asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
     asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
     asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
-  
+
+    wget --quiet http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
+    unzip -q mysql-connector-java-5.1.37.zip
+    cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar ./glassfish4/glassfish/domains/domain1/lib/ext
+
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-20170606.173228-2-distro.zip
+    unzip -q ids.storage_file-1.4.0-20170606.173228-2-distro.zip
+    cp /vagrant/provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
+    mkdir data
+    mkdir data/ids
+    mkdir data/ids/cache
+    cd ids.storage_file
+    ./setup install
+    cd ../
+
+    
 
     mkdir /home/vagrant/bin
 
-    wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.1.0/authn.simple-1.1.0-distro.zip
-
-    unzip -q authn.simple-1.1.0-distro.zip
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
+    unzip -q authn.simple-1.2.0-distro.zip
     cp /vagrant/provision/authn_simple.properties authn.simple/authn_simple.properties
     cp /vagrant/provision/authn_simple-setup.properties authn.simple/authn_simple-setup.properties
     cd authn.simple
     ./setup configure
     ./setup install
     cd ../
-    asadmin -t set applications.application.authn.simple-1.1.0.deployment-order=80
+    asadmin -t set applications.application.authn.simple-1.2.0.deployment-order=80
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.8.0/icat.server-4.8.0-distro.zip
-    unzip -q icat.server-4.8.0-distro.zip
-    cp /vagrant/provision/icat.properties icat.server/icat.properties
-    cp /vagrant/provision/icat-setup.properties icat.server/icat-setup.properties
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.9.0-distro.zip
+    unzip -q icat.server-4.9.0-distro.zip
+    cp /vagrant/provision/icat.properties icat.server/run.properties
+    cp /vagrant/provision/icat-setup.properties icat.server/setup.properties
     cd icat.server
     ./setup configure
     ./setup install
     cd ../
-    asadmin -t set applications.application.icat.server-4.8.0.deployment-order=100
+    asadmin -t set applications.application.icat.server-4.9.0.deployment-order=100
 
 
-    wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
-    unzip -q ids.server-1.6.0-distro.zip
-    cp /vagrant/provision/ids.properties ids.server/ids.properties
-    cp /vagrant/provision/ids-setup.properties ids.server/ids-setup.properties
-    cp /vagrant/provision/ids.storage_file.main.properties glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
-    cp /vagrant/provision/ids.storage_file-setup.properties glassfish4/glassfish/domains/domain1/config/ids.storage_file-setup.properties
-    mkdir data
-    mkdir data/ids
-    mkdir data/ids/cache
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-20170606.155903-3-distro.zip
+    unzip -q ids.server-1.8.0-20170606.155903-3-distro.zip
+    cp /vagrant/provision/ids.properties ids.server/run.properties
+    cp /vagrant/provision/ids-setup.properties ids.server/setup.properties
     cd ids.server
     ./setup configure
     ./setup install
@@ -142,7 +148,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat
     sudo dos2unix /usr/bin/topcat
     topcat build_install
-    asadmin -t set applications.application.topcat-2.2.1-SNAPSHOT.deployment-order=140
+    asadmin -t set applications.application.topcat-2.3.0-SNAPSHOT.deployment-order=140
 
   }
 end

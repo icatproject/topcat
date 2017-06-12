@@ -297,6 +297,7 @@
 		    <groupId>com.phasebash.jsdoc</groupId>
 		    <artifactId>jsdoc3-maven-plugin</artifactId>
 		    <version>1.2.0</version>
+		    <scope>test</scope>
 		</dependency>
 
 	</dependencies>
