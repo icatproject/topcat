@@ -39,8 +39,7 @@ exec %{
   unzip payara-4.1.2.172.zip
   mv payara41 glassfish4
 
-  echo 'export PATH="$PATH:$HOME/glassfish4/glassfish/bin"' >> .profile
-  source .profile
+  export PATH="$PATH:#{install_dir}/glassfish4/glassfish/bin"
 
   asadmin start-domain
   asadmin set server.http-service.access-log.format="common"
