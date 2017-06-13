@@ -73,8 +73,8 @@ exec %{
   cd ../
   asadmin -t set applications.application.authn.simple-1.2.0.deployment-order=80
 
-  wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.8.0-distro.zip
-  unzip -q icat.server-4.89.0-distro.zip
+  wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.9.0-distro.zip
+  unzip -q icat.server-4.9.0-distro.zip
   cp ./provision/icat.properties ./icat.server/run.properties
   cp ./provision/icat-setup.properties ./icat.server/setup.properties
   mkdir -p data/icat
