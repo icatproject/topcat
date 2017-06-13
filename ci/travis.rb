@@ -51,20 +51,20 @@ exec %{
   asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
   asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
 
-  wget --quiet http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
-  unzip -q mysql-connector-java-5.1.37.zip
+  wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
+  unzip  mysql-connector-java-5.1.37.zip
   cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar glassfish4/glassfish/domains/domain1/lib/ext
 
-  wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-20170606.173228-2-distro.zip
-  unzip -q ids.storage_file-1.4.0-20170606.173228-2-distro.zip
+  wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-20170606.173228-2-distro.zip
+  unzip  ids.storage_file-1.4.0-20170606.173228-2-distro.zip
   cp ./provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
   mkdir -p data/ids/cache
   cd ids.storage_file
   ./setup install
   cd ../
 
-  wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
-  unzip -q authn.simple-1.2.0-distro.zip
+  wget  https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
+  unzip  authn.simple-1.2.0-distro.zip
   cp ./provision/authn_simple.properties ./authn.simple/authn_simple.properties
   cp ./provision/authn_simple-setup.properties ./authn.simple/authn_simple-setup.properties
   cd ./authn.simple
@@ -73,8 +73,8 @@ exec %{
   cd ../
   asadmin -t set applications.application.authn.simple-1.2.0.deployment-order=80
 
-  wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.9.0-distro.zip
-  unzip -q icat.server-4.9.0-distro.zip
+  wget  https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.9.0-distro.zip
+  unzip  icat.server-4.9.0-distro.zip
   cp ./provision/icat.properties ./icat.server/run.properties
   cp ./provision/icat-setup.properties ./icat.server/setup.properties
   mkdir -p data/icat
