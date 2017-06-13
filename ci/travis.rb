@@ -64,6 +64,13 @@ exec %{
   ./setup install
   cd ../
 
+
+
+
+}.strip.split(/\s*\n\s*/).join(' && ')
+
+
+
   # wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.3/ids.storage_file-1.3.3.jar
   # cp ./ids.storage_file-1.3.3.jar glassfish4/glassfish/domains/domain1/lib/applibs
 
@@ -138,8 +145,3 @@ exec %{
   # cp app/config/topcat_dev.json.example app/config/topcat_dev.json
 
   # grunt test
-
-
-}.strip.split(/\s*\n\s*/).join(' && ')
-
-
