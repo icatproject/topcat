@@ -31,10 +31,6 @@ Vagrant.configure(2) do |config|
     sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/java /usr/bin/java
     sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/javac /usr/bin/javac
 
-
-    # wget --quiet download.java.net/glassfish/4.0/release/glassfish-4.0.zip
-    # unzip -q glassfish-4.0.zip
- 
     wget --quiet wget https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.2.172/payara-4.1.2.172.zip
     unzip payara-4.1.2.172.zip
     mv payara41 glassfish4
@@ -61,9 +57,7 @@ Vagrant.configure(2) do |config|
     wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-20170606.173228-2-distro.zip
     unzip -q ids.storage_file-1.4.0-20170606.173228-2-distro.zip
     cp /vagrant/provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
-    mkdir data
-    mkdir data/ids
-    mkdir data/ids/cache
+    mkdir -p data/ids/cache
     cd ids.storage_file
     ./setup install
     cd ../
@@ -86,11 +80,22 @@ Vagrant.configure(2) do |config|
     unzip -q icat.server-4.9.0-distro.zip
     cp /vagrant/provision/icat.properties icat.server/run.properties
     cp /vagrant/provision/icat-setup.properties icat.server/setup.properties
+    mkdir -p data/icat
     cd icat.server
     ./setup configure
     ./setup install
     cd ../
     asadmin -t set applications.application.icat.server-4.9.0.deployment-order=100
+
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.0.0/icat.lucene-1.0.0-distro.zip
+    unzip -q icat.lucene-1.0.0-distro.zip
+    mkdir -p data/lucene
+    cp /vagrant/provision/lucene-setup.properties icat.lucene/setup.properties
+    cd icat.lucene
+    cp run.properties.example run.properties
+    cp logback.xml.example logback.xml
+    ./setup install
+    cd ../
 
 
     wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-20170606.155903-3-distro.zip

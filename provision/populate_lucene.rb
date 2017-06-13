@@ -23,7 +23,7 @@ sessionId = JSON.parse(RestClient::Request.execute({
 ['Investigation', 'Dataset', 'Datafile'].each do |entityName|
 	RestClient::Request.execute({
 		:method => :post,
-		:url => "https://localhost:8181/icat/lucene/db/#{entityName}/",
+		:url => "https://localhost:8181/icat/lucene/db/#{entityName}/0",
 		:payload => {:sessionId => sessionId},
 		:verify_ssl => OpenSSL::SSL::VERIFY_NONE
 	})
