@@ -35,7 +35,7 @@ exec %{
   sudo a2enmod rewrite
   sudo /etc/init.d/apache2 restart
 
-  wget --quiet wget https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.2.172/payara-4.1.2.172.zip
+  wget --quiet https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.2.172/payara-4.1.2.172.zip
   unzip payara-4.1.2.172.zip
   mv payara41 glassfish4
 

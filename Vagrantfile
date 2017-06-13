@@ -31,7 +31,7 @@ Vagrant.configure(2) do |config|
     sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/java /usr/bin/java
     sudo ln -s /usr/lib/jvm/java-8-openjdk-i386/bin/javac /usr/bin/javac
 
-    wget --quiet wget https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.2.172/payara-4.1.2.172.zip
+    wget --quiet https://s3-eu-west-1.amazonaws.com/payara.fish/Payara+Downloads/Payara+4.1.2.172/payara-4.1.2.172.zip
     unzip payara-4.1.2.172.zip
     mv payara41 glassfish4
 
