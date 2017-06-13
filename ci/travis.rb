@@ -63,15 +63,30 @@ exec %{
   ./setup install
   cd ../
 
+  wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
+  unzip -q authn.simple-1.2.0-distro.zip
+  cp ./provision/authn_simple.properties ./authn.simple/authn_simple.properties
+  cp ./provision/authn_simple-setup.properties ./authn.simple/authn_simple-setup.properties
+  cd ./authn.simple
+  ./setup configure
+  ./setup install
+  cd ../
+  asadmin -t set applications.application.authn.simple-1.2.0.deployment-order=80
 
-
+  wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.8.0-distro.zip
+  unzip -q icat.server-4.89.0-distro.zip
+  cp ./provision/icat.properties ./icat.server/run.properties
+  cp ./provision/icat-setup.properties ./icat.server/setup.properties
+  mkdir -p data/icat
+  cd ./icat.server
+  sudo ./setup configure
+  sudo ./setup install
+  cd ../
+  asadmin -t set applications.application.icat.server-4.9.0.deployment-order=100
 
 }.strip.split(/\s*\n\s*/).join(' && ')
 
 
-
-  # wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.storage_file/1.3.3/ids.storage_file-1.3.3.jar
-  # cp ./ids.storage_file-1.3.3.jar glassfish4/glassfish/domains/domain1/lib/applibs
 
   # wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.1.0/authn.simple-1.1.0-distro.zip
   # unzip -q authn.simple-1.1.0-distro.zip
