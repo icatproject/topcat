@@ -63,7 +63,7 @@ exec %{
   ./setup install
   cd ../
 
-  wget  https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
+  wget  https://repo.icatproject.org/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
   unzip  authn.simple-1.2.0-distro.zip
   cp ./provision/authn_simple.properties ./authn.simple/authn_simple.properties
   cp ./provision/authn_simple-setup.properties ./authn.simple/authn_simple-setup.properties
