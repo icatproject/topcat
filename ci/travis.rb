@@ -94,6 +94,15 @@ exec %{
   ./setup install
   cd ../
 
+  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-20170606.155903-3-distro.zip
+  unzip ids.server-1.8.0-20170606.155903-3-distro.zip
+  cp ./provision/ids.properties ids.server/run.properties
+  cp ./provision/ids-setup.properties ids.server/setup.properties
+  cd ids.server
+  ./setup configure
+  ./setup install
+  asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
+
 }.strip.split(/\s*\n\s*/).join(' && ')
 
 
