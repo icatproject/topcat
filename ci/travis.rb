@@ -77,6 +77,7 @@ exec %{
   unzip  icat.server-4.9.0-distro.zip
   cp ./provision/icat.properties ./icat.server/run.properties
   cp ./provision/icat-setup.properties ./icat.server/setup.properties
+  cp ./provision/logback.xml ./icat.server/logback.xml
   mkdir -p data/icat
   cd ./icat.server
   sudo ./setup configure
