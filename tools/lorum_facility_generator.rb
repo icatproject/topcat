@@ -38,6 +38,9 @@ $session_id = JSON.parse(RestClient::Request.execute({
 }).body)['sessionId']
 
 def write(entities)
+	puts "adding:"
+	puts entities.to_json
+	puts ""
 	JSON.parse(RestClient::Request.execute({
 		:method => :post, 
 		:url => "#{$icat_url}/icat/entityManager",
