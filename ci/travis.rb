@@ -103,57 +103,41 @@ exec %{
   ./setup install
   asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
 
+  cd ../tools
+  gem install rest-client
+  gem install faker
+  ruby lorum_facility_generator.rb
+  ruby #{install_provision_dir}/populate_lucene.rb
+  cd ../
+
+  curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+  sudo apt-get --assume-yes install nodejs maven phantomjs
+  sudo npm install -g bower
+  sudo npm install -g grunt-cli
+
+  mvn clean install
+  cp ./target/topcat-*.zip ./install
+  cd install
+  unzip -o topcat-*.zip
+  cp provision/topcat.properties ./topcat
+  cp provision/topcat-setup.properties ./topcat
+  cp ../yo/app/config/topcat_dev.json.example ./topcat/topcat.json
+  cp ../yo/app/languages/lang.json ./topcat
+  cp ../yo/app/styles/topcat.css ./topcat
+  cd topcat
+  dos2unix ./setup
+  chmod 0755 ./setup
+  sudo ./setup install
+  cd ../
+
+  asadmin -t set applications.application.topcat-2.3.0-SNAPSHOT.deployment-order=140
+
+  cd ../yo
+
+  cp app/config/topcat_dev.json.example app/config/topcat_dev.json
+
+  grunt test
+
+
 }.strip.split(/\s*\n\s*/).join(' && ')
 
-
-  # wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
-  # unzip -q ids.server-1.6.0-distro.zip
-  # cp provision/ids.properties ./ids.server/ids.properties
-  # cp provision/ids-setup.properties ./ids.server/ids-setup.properties
-  # cp provision/ids.storage_file.main.properties glassfish4/glassfish/domains/domain1/config/ids.storage_file.main.properties
-  # cp provision/ids.storage_file-setup.properties glassfish4/glassfish/domains/domain1/config/ids.storage_file-setup.properties
-  # mkdir data
-  # mkdir data/ids
-  # mkdir data/ids/cache
-  # mkdir data/preparedfiles
-  # cd ./ids.server
-  # sudo ./setup configure
-  # sudo ./setup install
-  # cd ../
-  # asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
-  
-
-  # cd ../tools
-  # gem install rest-client
-  # gem install faker
-  # ruby lorum_facility_generator.rb
-  # ruby #{install_provision_dir}/populate_lucene.rb
-  # cd ../
-
-  # curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
-  # sudo apt-get --assume-yes install nodejs maven phantomjs
-  # sudo npm install -g bower
-  # sudo npm install -g grunt-cli
-
-  # mvn clean install
-  # cp ./target/topcat-*.zip ./install
-  # cd install
-  # unzip -o topcat-*.zip
-  # cp provision/topcat.properties ./topcat
-  # cp provision/topcat-setup.properties ./topcat
-  # cp ../yo/app/config/topcat_dev.json.example ./topcat/topcat.json
-  # cp ../yo/app/languages/lang.json ./topcat
-  # cp ../yo/app/styles/topcat.css ./topcat
-  # cd topcat
-  # dos2unix ./setup
-  # chmod 0755 ./setup
-  # sudo ./setup install
-  # cd ../
-
-  # asadmin -t set applications.application.topcat-2.3.0-SNAPSHOT.deployment-order=140
-
-  # cd ../yo
-
-  # cp app/config/topcat_dev.json.example app/config/topcat_dev.json
-
-  # grunt test
