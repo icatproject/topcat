@@ -101,7 +101,7 @@ exec %{
   cd ids.server
   ./setup configure
   ./setup install
-  asadmin -t set applications.application.ids.server-1.6.0.deployment-order=120
+  asadmin -t set applications.application.ids.server-1.8.0-SNAPSHOT.deployment-order=120
 
   cd ../tools
   gem install rest-client
