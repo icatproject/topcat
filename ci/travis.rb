@@ -84,29 +84,18 @@ exec %{
   cd ../
   asadmin -t set applications.application.icat.server-4.9.0.deployment-order=100
 
+  wget https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.0.0/icat.lucene-1.0.0-distro.zip
+  unzip icat.lucene-1.0.0-distro.zip
+  mkdir -p data/lucene
+  cp ./provision/lucene-setup.properties icat.lucene/setup.properties
+  cd icat.lucene
+  cp run.properties.example run.properties
+  cp logback.xml.example logback.xml
+  ./setup install
+  cd ../
+
 }.strip.split(/\s*\n\s*/).join(' && ')
 
-
-
-  # wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/authn.simple/1.1.0/authn.simple-1.1.0-distro.zip
-  # unzip -q authn.simple-1.1.0-distro.zip
-  # cp ./provision/authn_simple.properties ./authn.simple/authn_simple.properties
-  # cp ./provision/authn_simple-setup.properties ./authn.simple/authn_simple-setup.properties
-  # cd ./authn.simple
-  # ./setup configure
-  # ./setup install
-  # cd ../
-  # asadmin -t set applications.application.authn.simple-1.1.0.deployment-order=80
-
-  # wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.8.0/icat.server-4.8.0-distro.zip
-  # unzip -q icat.server-4.8.0-distro.zip
-  # cp ./provision/icat.properties ./icat.server/icat.properties
-  # cp ./provision/icat-setup.properties ./icat.server/icat-setup.properties
-  # cd ./icat.server
-  # sudo ./setup configure
-  # sudo ./setup install
-  # cd ../
-  # asadmin -t set applications.application.icat.server-4.8.0.deployment-order=100
 
   # wget --quiet https://www.icatproject.org/mvn/repo/org/icatproject/ids.server/1.6.0/ids.server-1.6.0-distro.zip
   # unzip -q ids.server-1.6.0-distro.zip
