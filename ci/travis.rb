@@ -101,6 +101,7 @@ exec %{
   cd ids.server
   ./setup configure
   ./setup install
+  cd ../
   asadmin -t set applications.application.ids.server-1.8.0-SNAPSHOT.deployment-order=120
 
   cd ../tools
