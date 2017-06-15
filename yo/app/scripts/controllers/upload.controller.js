@@ -12,56 +12,55 @@
         var investigationId = parseInt($state.params.investigationId);
         var datasetTypeId = facility.config().idsUploadDatasetTypeId;
 
+        this.isUploading = false;
         this.name = "";
         this.files = [];
         this.datasetId = parseInt($state.params.datasetId);
 
         this.upload = function(){
-            if(this.files.length > 0 && (this.datasetId || this.name != "")){
-
-                var fileNames = {};
-                var duplicateFileName = null;
-                _.each(this.files, function(file){
-                    if(fileNames[file.name]){
-                        duplicateFileName = file.name;
-                        return false;
-                    } else {
-                        fileNames[file.name] = true;
-                    }
-                });
-
-                if(duplicateFileName){
-                    inform.add("Duplicate filename detected: " + duplicateFileName, {
-                        'ttl': 3000,
-                        'type': 'danger'
-                    });
-                    return;
+            var fileNames = {};
+            var duplicateFileName = null;
+            _.each(this.files, function(file){
+                if(fileNames[file.name]){
+                    duplicateFileName = file.name;
+                    return false;
+                } else {
+                    fileNames[file.name] = true;
                 }
+            });
 
+            if(duplicateFileName){
+                inform.add("Duplicate filename detected: " + duplicateFileName, {
+                    'ttl': 3000,
+                    'type': 'danger'
+                });
+                return;
+            }
 
-            	if(this.datasetId){
-            		ids.upload(this.datasetId, this.files).then(function(datafileIds){
-            			tc.refresh();
+            this.isUploading = true;
+
+        	if(this.datasetId){
+        		ids.upload(this.datasetId, this.files).then(function(datafileIds){
+        			tc.refresh();
+                    $rootScope.$broadcast('upload:complete', datafileIds);
+                    $uibModalInstance.dismiss('cancel');
+        		}, handleError);
+        	} else {
+                icat.write([
+                    {
+                        Dataset: {
+                            investigation: {id: investigationId},
+                            type: {id: datasetTypeId},
+                            name: that.name
+                        }
+                    }
+                ]).then(function(datasetIds){
+                    ids.upload(datasetIds[0], that.files).then(function(datafileIds){
+                        tc.refresh();
                         $rootScope.$broadcast('upload:complete', datafileIds);
                         $uibModalInstance.dismiss('cancel');
-            		}, handleError);
-            	} else {
-                    icat.write([
-                        {
-                            Dataset: {
-                                investigation: {id: investigationId},
-                                type: {id: datasetTypeId},
-                                name: that.name
-                            }
-                        }
-                    ]).then(function(datasetIds){
-                        ids.upload(datasetIds[0], that.files).then(function(datafileIds){
-                            tc.refresh();
-                            $rootScope.$broadcast('upload:complete', datafileIds);
-                            $uibModalInstance.dismiss('cancel');
-                        }, handleError);
                     }, handleError);
-                }
+                }, handleError);
             }
         };
 
@@ -70,6 +69,8 @@
         };
 
         function handleError(response){
+            that.isUploading = false;
+
             inform.add(response.message, {
                 'ttl': 3000,
                 'type': 'danger'

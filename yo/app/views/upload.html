@@ -1,3 +1,4 @@
+
 <div class="modal-content">
     <div class="modal-header">
         <h3 class="modal-title" translate="UPLOAD.TITLE"></h3>
@@ -8,12 +9,21 @@
             <input type="text" class="form-control" ng-model="uploadController.name">
         </div>
         <div class="form-group">
-        <label class="control-label">Files</label>
+            <label class="control-label">Files</label>
             <div upload-area ng-model="uploadController.files" take-up-remaining-height></div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="uploadController.upload()" translate="UPLOAD.BUTTON.UPLOAD.TEXT"></button>
+        </div>
+        <div class="modal-footer">
+            <span ng-if="uploadController.isUploading" class="loading collapsed"></span>
+            <button
+                type="submit"
+                class="btn btn-primary"
+                ng-click="uploadController.upload()"
+                translate="UPLOAD.BUTTON.UPLOAD.TEXT"
+                ng-disabled="(!uploadController.datasetId && uploadController.name == '')  || uploadController.files.length == 0 || uploadController.isUploading"
+                ></button>
 
-        <button class="btn btn-warning" ng-click="uploadController.cancel()" translate="UPLOAD.BUTTON.CANCEL.TEXT"></button>
+            <button class="btn btn-warning" ng-click="uploadController.cancel()" translate="UPLOAD.BUTTON.CANCEL.TEXT"></button>
+        </div>
     </div>
 </div>
+
