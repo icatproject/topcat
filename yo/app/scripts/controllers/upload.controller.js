@@ -19,8 +19,10 @@
         this.upload = function(){
             if(this.files.length > 0){
             	if(this.datasetId){
-            		ids.upload(this.datasetId, this.files).then(function(){
-            			window.location.reload();
+            		ids.upload(this.datasetId, this.files).then(function(datafileIds){
+            			tc.refresh();
+                        $rootScope.$broadcast('upload:complete', datafileIds);
+                        $uibModalInstance.dismiss('cancel');
             		}, handleError);
             	} else if(this.name != "") {
                     icat.write([
@@ -32,9 +34,10 @@
                             }
                         }
                     ]).then(function(datasetIds){
-                        ids.upload(datasetIds[0], that.files).then(function(){
+                        ids.upload(datasetIds[0], that.files).then(function(datafileIds){
                             tc.refresh();
-                            $rootScope.$broadcast('upload:complete');
+                            $rootScope.$broadcast('upload:complete', datafileIds);
+                            $uibModalInstance.dismiss('cancel');
                         }, handleError);
                     }, handleError);
                 }

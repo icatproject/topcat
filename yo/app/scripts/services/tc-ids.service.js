@@ -108,12 +108,18 @@
 
             options.transformRequest = [];
 
+            var datafileIds = [];
+
             _.each(files, function(file){
               options.queryParams.name = file.name
-              promises.push(that.put('put', file.data, options));
+              promises.push(that.put('put', file.data, options).then(function(info){
+                datafileIds.push(info.id);
+              }));
             });
             
-            return $q.all(promises);
+            return $q.all(promises).then(function(){
+              return datafileIds;
+            });
           }
 
           /**
