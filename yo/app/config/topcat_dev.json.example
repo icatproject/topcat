@@ -126,7 +126,7 @@
         },
         "cart":{
             "maxDatafileCount": 100000,
-            "maxTotalSize": 100000000,
+            "maxTotalSize": 10000000000,
             "gridOptions": {
                 "columnDefs": [
                     {
@@ -201,6 +201,8 @@
             "title": "Lorum Ipsum Light Source",
             "idsUrl": "https://localhost:8181",
             "icatUrl": "https://localhost:8181",
+            "idsUploadDatafileFormat": "upload",
+            "idsUploadDatasetType": "DatasetType 1",
             "hierarchy": [
                 "facility",
                 "proposal",
@@ -460,6 +462,7 @@
                 "dataset": {
                     "gridOptions": {
                         "enableSelection": true,
+                        "enableUpload": true,
                         "columnDefs": [
                             {
                                 "field": "name",
@@ -511,6 +514,7 @@
                     "gridOptions": {
                         "enableSelection": true,
                         "enableDownload": true,
+                        "enableUpload": true,
                         "columnDefs": [
                             {
                                 "field": "name"
@@ -854,7 +858,7 @@
         {
             "name": "ISIS",
             "title": "ISIS",
-            "idsUrl": "https://isisicatds.stfc.ac.uk",
+            "idsUrl": "https://idsdev2.isis.cclrc.ac.uk",
             "hierarchy": [
                 "facility",
                 "instrument",
@@ -1218,6 +1222,21 @@
         }
     ],
     "plugins":[
-        
-    ]
+        "http://localhost:10080/topcat_doi_plugin",
+        "http://localhost:10080/topcat_daaas_plugin"
+    ],
+    "doi": {
+        "publisher": "Lorum Ipsum Light Source",
+        "licences": [
+            {
+                "name": "MIT",
+                "terms": "asdaadsadadsa asdasdsdas",
+                "url": "https://scd.stfc.ac.uk"
+            },
+            {
+                "name": "Creative Commons"
+            }
+        ],
+        "afterUploadMintDoi": true
+    }
 }
