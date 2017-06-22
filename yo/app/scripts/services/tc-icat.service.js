@@ -94,7 +94,7 @@
                     };
 
                     _.each(credentials, function(value, name){
-                        var credential = {}
+                        var credential = {};
                         credential[name] = value;
                         params.credentials.push(credential);
                     });
@@ -212,33 +212,6 @@
                     });
                 }
             });
-
-
-            /**
-             * Used to verify the person is the owner of the session.
-             *
-             * @method
-             * @name  Icat#verifyPassword
-             * @param  {string} password
-             * @return {Promise<boolean>}
-             */
-            this.verifyPassword = function(password){
-                var params = {
-                    json: JSON.stringify({
-                        plugin: this.session().plugin,
-                        credentials: [
-                            {username: this.session().username.replace(/^[^\/]*\//, '')},
-                            {password: password}
-                        ]
-                    })
-                };
-                return this.post('session', params).then(function(response){
-                    return true;
-                }, function(){
-                    return false;
-                });
-            };
-
 
             this.logout = helpers.overload({
                 /**
