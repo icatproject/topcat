@@ -242,8 +242,21 @@
 				});
 			}
 
+			this.realHierarchy = function(){
+				var out = _.clone(facility.config().hierarchy);
+				var position = _.indexOf(out, 'proposal');
+				if(position >= -1){
+					if(out[position + 1] == 'investigation'){
+						out.splice(position, 1);
+					} else {
+						out[position] = 'investigation';
+					}
+				}
+				return out;
+			};
+
 			this.parent = function(){
-				var hierarchy = facility.config().hierarchy;
+				var hierarchy = this.realHierarchy();
 				var positionInHierarchy = _.indexOf(hierarchy, this.entityType);
 				var parentEntityType = hierarchy[positionInHierarchy - 1];
 				if(parentEntityType != 'facility'){
@@ -281,6 +294,9 @@
 				return this.ancestors().then(function(ancestors){
 					var out = [];
 					_.each(ancestors.concat([that]), function(entity){
+						if(entity.entityType == 'investigation'){
+							out["proposalId"] = entity.name;
+						}
 						out[entity.entityType + "Id"] = entity.id;
 					});
 					return _.merge(out, {facilityName: facilityName});
@@ -449,7 +465,6 @@
 									out.push(value);
 								}
 							} else {
-
 								out.push(entity);
 							}
 						}
