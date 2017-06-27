@@ -338,7 +338,17 @@
 
 			this.thisAndAncestors = function(){
 				var hierarchy = _.clone(facility.config().hierarchy);
+				
 				hierarchy.shift();
+				var investigationPosition = _.indexOf(hierarchy, 'investigation');
+				var proposalPosition = _.indexOf(hierarchy, 'proposal');
+
+				if(investigationPosition > -1 && proposalPosition > -1){
+					hierarchy.splice(proposalPosition, 1);
+				} else if(proposalPosition > -1){
+					hierarchy[proposalPosition] = 'investigation';
+				}
+
 				var path = this.findPath(hierarchy) || [];
 				var out = [];
 
