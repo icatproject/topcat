@@ -242,6 +242,149 @@
 				});
 			}
 
+			var parentQueries = {
+				datafile: {
+					dataset: function(ids){
+						return [
+							'select dataset from Datafile datafile, datafile.dataset as dataset',
+							'where datafile.id = ?', ids.datafile
+						];
+					}
+				},
+				dataset: {
+					investigation: function(ids){
+						return [
+							'select investigation from Dataset dataset, dataset.investigation as investigation',
+							'where dataset.id = ?', ids.dataset
+						];
+					}
+				},
+				investigation: {
+					instrument: function(ids){
+						return [
+							'select instrument from',
+							'Investigation investigation,',
+							'investigation.investigationInstruments as investigationInstrument,',
+							'investigationInstrument.instrument as instrument',
+							'where investigation.id = ?', ids.investigation 
+						];
+					},
+					facilityCycle: function(ids){
+						return [
+							'select facilityCycle from Investigation investigation,',
+							'investigation.facility as facility,',
+							'facility.facilityCycles as facilityCycle',
+							'where investigation.startDate BETWEEN facilityCycle.startDate AND facilityCycle.endDate',
+							'and investigation.id = ?', ids.investigation
+						]
+					}
+				},
+				facilityCycle: {
+					instrument: function(ids){
+						return [
+							'select instrument from',
+							'Investigation investigation,',
+							'investigation.investigationInstruments as investigationInstrument,',
+							'investigationInstrument.instrument as instrument',
+							'where investigation.id = ?', ids.investigation
+						];
+					}
+				}
+			};
+
+			this.isValidPath = function(hierarchy, path){
+				hierarchy = _.clone(hierarchy);
+				for(var i = 0; i < path.length; i++){
+					if(hierarchy[0] == path[i]){
+						hierarchy.shift();
+					}
+					if(hierarchy.length == 0) break;
+				}
+				return hierarchy.length == 0 && path.length - (i + 1)  == 0;
+			};
+
+			this.findPath = function(hierarchy){
+				var out = null;
+
+				function traverse(entityName, path){
+					if(out) return;
+
+					if(!path) path = [];
+					
+					path = _.clone(path);
+
+					path.unshift(entityName);
+
+					if(that.isValidPath(hierarchy, path)) {
+						out = path;
+						return;
+					}
+
+					var entityParentQueries = parentQueries[entityName];
+					if(entityParentQueries){
+						_.each(entityParentQueries, function(entityParentQuery, entityName){
+							traverse(entityName, path);
+						});
+					}
+				}
+
+				_.each(parentQueries, function(parentQuery, entityName){
+					if(out) return false;
+					traverse(entityName);
+				});
+
+				return out;
+			};		
+
+			this.parent2 = function(ids){
+				ids = ids || {};
+				var hierarchy = facility.config().hierarchy;
+				var position = _.indexOf(hierarchy, this.entityType);
+				hierarchy = [hierarchy[position - 1], hierarchy[position]]
+				var path = this.findPath(hierarchy);
+				
+				if(path){
+					return parent(this, ids);
+				} else {
+					return $q.resolve(null);
+				}
+
+				function parent(entity, ids){
+					if(path.length == 0) return entity;
+					ids[entity.entityType] = entity.id;
+					var parentEntityName = path.pop();
+					var query = parentQueries[entity.entityType][parentEntityName](ids);
+					return icat.query(query).then(function(entities){
+						return parent(entities[0], ids);
+					});
+				}
+			};
+
+			this.ancestors2 = function(){
+				var hierarchy = _.clone(facility.config().hierarchy);
+				hierarchy.shift();
+				var path = this.findPath(hierarchy) || [];
+				var out = [];
+
+				while(path.length > 0){
+					if(path.pop() == this.entityType) break;
+				}
+
+				return parent(this, {});
+
+				function parent(entity, ids){
+					out.push(entity);
+					if(path.length == 0) return $q.resolve(out);
+					ids[entity.entityType] = entity.id;
+					var parentEntityName = path.pop();
+					var query = parentQueries[entity.entityType][parentEntityName](ids);
+					return icat.query(query).then(function(entities){
+						return parent(entities[0], ids);
+					});
+				}
+			};
+
+
 			var parentFunctions = {
 				datafile: function(datafile, options){
 					var defered = $q.defer();
@@ -413,7 +556,7 @@
 
 			this.thisAndAncestors = function(){
 				var that = this;
-				return this.ancestors().then(function(ancestors){
+				return this.ancestors2().then(function(ancestors){
 					return _.flatten([that, ancestors]);
 				});
 			};
