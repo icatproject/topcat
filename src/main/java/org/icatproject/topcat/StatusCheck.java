@@ -71,7 +71,7 @@ public class StatusCheck {
       int pollDelay = Integer.valueOf(properties.getProperty("poll.delay", "600"));
       int pollIntervalWait = Integer.valueOf(properties.getProperty("poll.interval.wait", "600"));
 
-      TypedQuery<Download> query = em.createQuery("select download from Download download where download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false))", Download.class);
+      TypedQuery<Download> query = em.createQuery("select download from Download download where download.isDeleted != false and download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false))", Download.class);
       List<Download> downloads = query.getResultList();
 
       for(Download download : downloads){
