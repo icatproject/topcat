@@ -65,6 +65,7 @@ public class IdsClient {
 
             StringBuffer data = new StringBuffer();
             data.append("sessionId=" + sessionId);
+            data.append("&zip=true");
             if(investigationIdsBuffer.length() > 0){
                 data.append("&investigationIds=" + investigationIdsBuffer);
             }
