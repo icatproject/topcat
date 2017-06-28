@@ -32,27 +32,47 @@ public class HttpClient {
 		return (this.url + "/" + offset).length();
 	}
 
+	public Response get(String offset, Map<String, String> headers, int readTimeout) throws Exception {
+		return send("GET", offset, headers, null, readTimeout);
+	}
+
 	public Response get(String offset, Map<String, String> headers) throws Exception {
-		return send("GET", offset, headers);
+		return get(offset, headers, -1);
+	}
+
+	public Response post(String offset, Map<String, String> headers, String data, int readTimeout) throws Exception {
+		return send("POST", offset, headers, data, readTimeout);
 	}
 
 	public Response post(String offset, Map<String, String> headers, String data) throws Exception {
-		return send("POST", offset, headers, data);
+		return post(offset, headers, data, -1);
+	}
+
+	public Response delete(String offset, Map<String, String> headers, int readTimeout) throws Exception {
+		return send("DELETE", offset, headers, null, readTimeout);
 	}
 
 	public Response delete(String offset, Map<String, String> headers) throws Exception {
-		return send("DELETE", offset, headers);
+		return delete(offset, headers, -1);
+	}
+
+	public Response put(String offset, Map<String, String> headers, String data, int readTimeout) throws Exception {
+		return send("PUT", offset, headers, data, readTimeout);
 	}
 
 	public Response put(String offset, Map<String, String> headers, String data) throws Exception {
-		return send("PUT", offset, headers, data);
+		return put(offset, headers, data, -1);
+	}
+
+	public Response head(String offset, Map<String, String> headers, int readTimeout) throws Exception {
+		return send("HEAD", offset, headers, null, readTimeout);
 	}
 
 	public Response head(String offset, Map<String, String> headers) throws Exception {
-		return send("HEAD", offset, headers);
+		return head(offset, headers, -1);
 	}
 
-	private Response send(String method, String offset, Map<String, String> headers, String body) throws Exception {
+	private Response send(String method, String offset, Map<String, String> headers, String body, int readTimeout) throws Exception {
 		StringBuilder url = new StringBuilder(this.url + "/" + offset);
 
 		HttpURLConnection connection = null;
@@ -63,6 +83,9 @@ public class HttpClient {
 		    connection.setRequestMethod(method);
     		connection.setUseCaches(false);
     		connection.setDoInput(true);
+    		if(readTimeout > -1){
+    			connection.setReadTimeout(readTimeout);
+    		}
 
     		for(Map.Entry<String, String> entry : headers.entrySet()) {
 				connection.setRequestProperty(entry.getKey(), entry.getValue());
@@ -103,10 +126,6 @@ public class HttpClient {
 				connection.disconnect();
 			}
 		}
-	}
-
-	private Response send(String method, String offset, Map<String, String> headers) throws Exception {
-		return send(method, offset, headers, null);
 	}
 
 	private String inputStreamToString(InputStream inputStream) throws IOException {

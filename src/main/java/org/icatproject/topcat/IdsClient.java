@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.icatproject.topcat.httpclient.*;
 import org.icatproject.topcat.exceptions.*;
+import org.icatproject.topcat.Properties;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -20,9 +21,13 @@ public class IdsClient {
     private Logger logger = LoggerFactory.getLogger(IdsClient.class);
 
     private HttpClient httpClient;
+
+    private int timeout;
    
     public IdsClient(String url){
         this.httpClient = new HttpClient(url + "/ids");
+        Properties properties = Properties.getInstance();
+        this.timeout = Integer.valueOf(properties.getProperty("ids.timeout", "-1"));
     }
 
     public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
@@ -70,7 +75,7 @@ public class IdsClient {
                 data.append("&datafileIds=" + datafileIdsBuffer);
             }
 
-            Response out = httpClient.post("prepareData", new HashMap<String, String>(), data.toString());
+            Response out = httpClient.post("prepareData", new HashMap<String, String>(), data.toString(), timeout);
 
             if(out.getCode() >= 400){
                 throw new BadRequestException("Could not prepareData got " + out.getCode() + " response: " + out.toString());
@@ -86,7 +91,7 @@ public class IdsClient {
 
     public boolean isPrepared(String preparedId) throws TopcatException, IOException {
         try {
-            Response response = httpClient.get("isPrepared?zip=true&preparedId=" + preparedId, new HashMap<String, String>());
+            Response response = httpClient.get("isPrepared?zip=true&preparedId=" + preparedId, new HashMap<String, String>(), timeout);
             if(response.getCode() >= 400){
                 throw new NotFoundException(Utils.parseJsonObject(response.toString()).getString("message"));
             }
