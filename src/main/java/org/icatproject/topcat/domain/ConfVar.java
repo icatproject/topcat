@@ -3,6 +3,7 @@ package org.icatproject.topcat.domain;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Lob;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -17,7 +18,8 @@ public class ConfVar implements Serializable {
 	@Column(name = "NAME")
     private String name;
 
-    @Column(name = "VALUE", columnDefinition = "text")
+    @Lob
+    @Column(name = "VALUE")
     private String value;
 
     public String getName() {
