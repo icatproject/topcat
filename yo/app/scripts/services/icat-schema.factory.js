@@ -140,7 +140,8 @@
 						},
 						'datafileFormat': {
 							'entityType': 'datafileFormat',
-							'cardinality': '0,1'
+							'cardinality': '0,1',
+							'variableName': 'datafileFormat'
 						},
 						'sourceDatafiles': {
 							'entityType': 'relatedDatafile',

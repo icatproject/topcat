@@ -84,6 +84,7 @@
 
             if(entity.type == 'datafile'){
                 queryBuilder.include('datafileParameterType');
+                queryBuilder.include('datafileFormat');
             }
 
             queryBuilder.run(timeout.promise).then(function(entity){
