@@ -18,7 +18,6 @@ home           = /home/fisher/pf/glassfish4
 port           = 4848
 
 # Email setup see http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-javamail-resource.htm#GSRFM00035
-mail.enable = true
 mail.host=smtp.example.com
 mail.user=user@example.com
 mail.from=no-reply@example.com

@@ -30,24 +30,12 @@ $h3 Upgrade 2.1.0 schema to 2.2.0
 For MySQL:
 
 ```
-  CREATE TABLE `CONFVAR` (
-    `NAME` varchar(255) NOT NULL,
-    `VALUE` text,
-    PRIMARY KEY (`NAME`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
   ALTER TABLE `DOWNLOAD` ADD `THE_SIZE` bigint(20) DEFAULT NULL;
 ```
 
 For Oracle:
 
 ```
-  CREATE TABLE CONFVAR (
-    NAME varchar(255) NOT NULL,
-    VALUE clob,
-    PRIMARY KEY (NAME)
-  );
-
   ALTER TABLE DOWNLOAD ADD THE_SIZE NUMBER(19, 0) DEFAULT 0 NOT NULL;
 ```
 
@@ -99,7 +87,6 @@ Note: '#'s are comments.
   port           = 4848
 
   # Email setup see http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-javamail-resource.htm#GSRFM00035
-  mail.enable = true
   mail.host=smtp.example.com
   mail.user=user@example.com
   mail.from=no-reply@example.com

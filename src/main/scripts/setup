@@ -30,8 +30,7 @@ if arg == "INSTALL":
 
         actions.registerDB("topcat", props["db.driver"], props["db.url"], props["db.username"], props["db.password"])
 
-        if props["mail.enable"].lower() == 'true':
-            actions.createMailResource("mail/topcat", props["mail.host"], props["mail.user"], props["mail.from"], props["mail.property"])
+        actions.createMailResource("mail/topcat", props["mail.host"], props["mail.user"], props["mail.from"], props["mail.property"])
  
         files = []
         files.append(["topcat.json", "config"])
