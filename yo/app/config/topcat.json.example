@@ -163,38 +163,33 @@
         },
         "pages" : [
             {
-                "url" : "/about",
-                "stateName": "about",
+                "name" : "about",
                 "addToNavBar": {
-                    "linkLabel" : "MAIN_NAVIGATION.ABOUT",
+                    "label" : "About",
                     "align" : "left"
                 }
 
             },
             {
-                "url" : "/contact",
-                "stateName": "contact",
+                "name" : "contact",
                 "addToNavBar": {
-                    "linkLabel" : "MAIN_NAVIGATION.CONTACT",
+                    "label" : "Contact",
                     "align" : "left"
                 }
 
             },
             {
-                "url" : "/help",
-                "stateName": "help",
+                "name" : "help",
                 "addToNavBar": {
-                    "linkLabel" : "MAIN_NAVIGATION.HELP",
+                    "label" : "Help",
                     "align" : "left"
                 }
             },
             {
-                "url" : "/globus-help",
-                "stateName": "globus-help"
+                "name" : "globus-help"
             },
             {
-                "url" : "/cookie-policy",
-                "stateName": "cookie-policy"
+                "name" : "cookie-policy"
             }
 
         ]
