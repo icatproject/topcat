@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 @Stateless
 @LocalBean
-@Singleton
 public class ConfVarRepository {
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;
