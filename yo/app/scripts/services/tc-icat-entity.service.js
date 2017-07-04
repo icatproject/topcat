@@ -550,7 +550,6 @@
 									out.push(value);
 								}
 							} else {
-
 								out.push(entity);
 							}
 						}

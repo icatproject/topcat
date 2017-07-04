@@ -144,9 +144,7 @@
                 defered.notify(results);
               });
             } else {
-              $timeout(function(){
-                defered.resolve(out);
-              });
+              defered.resolve(out);
             }
             
             return defered.promise.then(function(value){
