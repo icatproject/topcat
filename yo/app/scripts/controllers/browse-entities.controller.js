@@ -284,6 +284,7 @@
         $templateCache.put('ui-grid/selectionRowHeaderButtons', '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" uib-tooltip="{{grid.appScope.selectTooltip}}" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>');
         isAncestorInCart().then(function(isAncestorInCart){
             if(isAncestorInCart){
+                that.isAllSelected = true;
                 that.selectTooltip = $translate.instant('BROWSE.SELECTOR.ANCESTER_IN_CART_TOOLTIP.TEXT');
             }
         });
@@ -296,35 +297,43 @@
 
         this.toggleSelectAll = function(){
             if(this.isAllSelected){
-                this.unselectAll().then(function(){
-                    that.isAllSelected = false;
-                });
+                this.unselectAll();
             } else {
-                this.selectAll().then(function(){
-                    that.isAllSelected = true;
-                });
+                this.selectAll();
             }
         };
 
         this.selectAll = function(){
-            return generateQueryBuilder().run(canceler.promise).then(function(entities){
-                return tc.user(facilityName).addCartItems(canceler.promise, _.map(entities, function(entity){
-                    return {
-                        entityType: entity.entityType,
-                        entityId: entity.id
-                    };
-                }));
+            isAncestorInCart().then(function(isAncestorInCart){
+                if(!isAncestorInCart){
+                    return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                        return tc.user(facilityName).addCartItems(canceler.promise, _.map(entities, function(entity){
+                            return {
+                                entityType: entity.entityType,
+                                entityId: entity.id
+                            };
+                        })).then(function(){
+                            that.isAllSelected = true;
+                        });
+                    });
+                }
             });
         };
 
         this.unselectAll = function(){
-             return generateQueryBuilder().run(canceler.promise).then(function(entities){
-                return tc.user(facilityName).deleteCartItems(canceler.promise, _.map(entities, function(entity){
-                    return {
-                        entityType: entity.entityType,
-                        entityId: entity.id
-                    };
-                }));
+            isAncestorInCart().then(function(isAncestorInCart){
+                if(!isAncestorInCart){
+                    return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                        return tc.user(facilityName).deleteCartItems(canceler.promise, _.map(entities, function(entity){
+                            return {
+                                entityType: entity.entityType,
+                                entityId: entity.id
+                            };
+                        })).then(function(){
+                            that.isAllSelected = false;
+                        });
+                    });
+                }
             });
         };
 

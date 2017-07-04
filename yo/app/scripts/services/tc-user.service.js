@@ -387,7 +387,6 @@
                         items = _.map(items, function(item){ return item.entityType + " " + item.entityId; });
                     }
 
-                    var promises = [];
                     var currentItems = [];
                     var currentUrlLength;
                     var chunks = [];
@@ -410,7 +409,7 @@
                     if(currentItems.length > 0) chunks.push(currentItems);
 
                     function deleteChunks(){
-                        promises.push(that.delete('cart/' + facility.config().name + '/cartItems', {
+                        return that.delete('cart/' + facility.config().name + '/cartItems', {
                             icatUrl: facility.config().icatUrl,
                             sessionId: facility.icat().session().sessionId,
                             items: chunks.pop()
@@ -421,9 +420,9 @@
                                 cart = tcUserCart.create(cart, that);
                                 cartCache = cart;
                                 $rootScope.$broadcast('cart:change');
-                                return cart;
+                                return $q.resolve(cart);
                             }
-                        }));
+                        });
                     }
 
                     return deleteChunks();
