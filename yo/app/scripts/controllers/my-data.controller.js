@@ -15,6 +15,7 @@
         var filterQuery = [];
         var totalItems;
         var gridApi;
+        var facilityName = $state.params.facilityName;
         var canceler = $q.defer();
         var stopListeningForCartChanges =  $rootScope.$on('cart:change', function(){
             updateSelections();
@@ -26,7 +27,7 @@
 
 
         this.facilities = tc.userFacilities();
-        if($state.params.facilityName == ''){
+        if(facilityName == ''){
           $state.go('home.my-data', {facilityName: this.facilities[0].config().name});
           return;
         }
@@ -144,8 +145,6 @@
                 }
             });
 
-            out.limit((page - 1) * pageSize, pageSize);
-
             _.each(externalGridFilters, function(externalGridFilter){
                 externalGridFilter.modifyQuery.apply(that, [out]);
             });
@@ -197,7 +196,7 @@
 
         function getPage(){
             that.isLoading = true;
-            return generateQueryBuilder().run(canceler.promise).then(function(entities){
+            return generateQueryBuilder().limit((page - 1) * pageSize, pageSize).run(canceler.promise).then(function(entities){
                 that.isLoading = false;
                 _.each(entities, function(entity){
 
@@ -240,6 +239,46 @@
             });
         }
 
+        $templateCache.put('ui-grid/selectionSelectAllButtons',
+            "<div class=\"ui-grid-selection-row-header-buttons ui-grid-icon-ok\" ng-class=\"{'ui-grid-all-selected': grid.appScope.isAllSelected}\" ng-click=\"grid.appScope.toggleSelectAll()\"></div>"
+        );
+
+        this.isAllSelected = false;
+
+        this.toggleSelectAll = function(){
+            if(this.isAllSelected){
+                this.unselectAll().then(function(){
+                    that.isAllSelected = false;
+                });
+            } else {
+                this.selectAll().then(function(){
+                    that.isAllSelected = true;
+                });
+            }
+        };
+
+        this.selectAll = function(){
+            return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                return tc.user(facilityName).addCartItems(canceler.promise, _.map(entities, function(entity){
+                    return {
+                        entityType: entity.entityType,
+                        entityId: entity.id
+                    };
+                }));
+            });
+        };
+
+        this.unselectAll = function(){
+             return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                return tc.user(facilityName).deleteCartItems(canceler.promise, _.map(entities, function(entity){
+                    return {
+                        entityType: entity.entityType,
+                        entityId: entity.id
+                    };
+                }));
+            });
+        };
+
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
 
@@ -281,6 +320,7 @@
                 if(_.find(gridApi.selection.getSelectedRows(), identity)){
                     row.entity.addToCart(canceler.promise);
                 } else {
+                    that.isAllSelected = false;
                     row.entity.deleteFromCart(canceler.promise);
                 }
             }

@@ -205,6 +205,7 @@
                             entityType: { _type: 'string' },
                             gridOptions: {
                                 enableSelection: { _type: 'boolean', _mandatory: false },
+                                enableSelectAll: { _type: 'boolean', _mandatory: false },
                                 columnDefs: {
                                     _type: 'array',
                                     _item: {
