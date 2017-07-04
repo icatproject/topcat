@@ -148,8 +148,6 @@
                 }
             });
 
-            out.limit((page - 1) * pageSize, pageSize);
-
             _.each(externalGridFilters, function(externalGridFilter){
                 externalGridFilter.modifyQuery.apply(that, [out]);
             });
@@ -163,7 +161,7 @@
         var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
         function getPage(){
             that.isLoading = true;
-            return generateQueryBuilder().run(canceler.promise).then(function(entities){
+            return generateQueryBuilder().limit((page - 1) * pageSize, pageSize).run(canceler.promise).then(function(entities){
                 that.isLoading = false;
                 _.each(entities, function(entity){
                     if(isSizeColumnDef && entity.getSize){
@@ -290,6 +288,32 @@
             }
         });
 
+        $templateCache.put('ui-grid/selectionSelectAllButtons',
+            '<div class="btn-group" uib-dropdown dropdown-append-to-body><button type="button" class="btn btn-default dropdown-toggle btn-xs" uib-dropdown-toggle aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-option-vertical"></span>  </button>  <ul class="dropdown-menu" uib-dropdown-menu><li><a ng-click="grid.appScope.selectAll()">Select All</a></li><li><a ng-click="grid.appScope.unselectAll()">Unselect All</a></li></ul></div>'
+        );
+
+        this.selectAll = function(){
+            generateQueryBuilder().run(canceler.promise).then(function(entities){
+                tc.user(facilityName).addCartItems(canceler.promise, _.map(entities, function(entity){
+                    return {
+                        entityType: entity.entityType,
+                        entityId: entity.id
+                    };
+                }));
+            });
+        };
+
+        this.unselectAll = function(){
+             generateQueryBuilder().run(canceler.promise).then(function(entities){
+                tc.user(facilityName).deleteCartItems(canceler.promise, _.map(entities, function(entity){
+                    return {
+                        entityType: entity.entityType,
+                        entityId: entity.id
+                    };
+                }));
+            });
+        };
+
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
             restoreState();
@@ -329,6 +353,7 @@
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 isAncestorInCart().then(function(isAncestorInCart){
+                    console.log('gridApi.selection.getSelectAllState', gridApi.selection.getSelectAllState());
                     if(!isAncestorInCart){
                         var identity = _.pick(row.entity, ['facilityName', 'id']);
                         if(_.find(gridApi.selection.getSelectedRows(), identity)){
@@ -347,7 +372,10 @@
             });
 
             gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows){
+                
+
                 isAncestorInCart().then(function(isAncestorInCart){
+                    console.log('gridApi.selection.getSelectAllState', gridApi.selection.getSelectAllState());
                     if(!isAncestorInCart){
                         var entitiesToAdd = [];
                         var entitiesToRemove = [];

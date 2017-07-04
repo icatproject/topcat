@@ -163,7 +163,7 @@
 	        	gridOptions.useExternalFiltering = true;
 	    	}
 	        var enableSelection = gridOptions.enableSelection === true && entityType.match(/^investigation|dataset|datafile$/) !== null;
-	        gridOptions.enableSelectAll = false;
+	        gridOptions.enableSelectAll = enableSelection;
 	        gridOptions.enableRowSelection = enableSelection;
 	        gridOptions.enableRowHeaderSelection = enableSelection;
 	        gridOptions.enableFiltering = true;
