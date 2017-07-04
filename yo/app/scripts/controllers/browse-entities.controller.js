@@ -289,12 +289,26 @@
         });
 
         $templateCache.put('ui-grid/selectionSelectAllButtons',
-            '<div class="btn-group" uib-dropdown dropdown-append-to-body><button type="button" class="btn btn-default dropdown-toggle btn-xs" uib-dropdown-toggle aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-option-vertical"></span>  </button>  <ul class="dropdown-menu" uib-dropdown-menu><li><a ng-click="grid.appScope.selectAll()">Select All</a></li><li><a ng-click="grid.appScope.unselectAll()">Unselect All</a></li></ul></div>'
+            "<div class=\"ui-grid-selection-row-header-buttons ui-grid-icon-ok\" ng-class=\"{'ui-grid-all-selected': grid.appScope.isAllSelected}\" ng-click=\"grid.appScope.toggleSelectAll()\"></div>"
         );
 
+        this.isAllSelected = false;
+
+        this.toggleSelectAll = function(){
+            if(this.isAllSelected){
+                this.unselectAll().then(function(){
+                    that.isAllSelected = false;
+                });
+            } else {
+                this.selectAll().then(function(){
+                    that.isAllSelected = true;
+                });
+            }
+        };
+
         this.selectAll = function(){
-            generateQueryBuilder().run(canceler.promise).then(function(entities){
-                tc.user(facilityName).addCartItems(canceler.promise, _.map(entities, function(entity){
+            return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                return tc.user(facilityName).addCartItems(canceler.promise, _.map(entities, function(entity){
                     return {
                         entityType: entity.entityType,
                         entityId: entity.id
@@ -304,8 +318,8 @@
         };
 
         this.unselectAll = function(){
-             generateQueryBuilder().run(canceler.promise).then(function(entities){
-                tc.user(facilityName).deleteCartItems(canceler.promise, _.map(entities, function(entity){
+             return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                return tc.user(facilityName).deleteCartItems(canceler.promise, _.map(entities, function(entity){
                     return {
                         entityType: entity.entityType,
                         entityId: entity.id
@@ -353,7 +367,6 @@
 
             gridApi.selection.on.rowSelectionChanged($scope, function(row) {
                 isAncestorInCart().then(function(isAncestorInCart){
-                    console.log('gridApi.selection.getSelectAllState', gridApi.selection.getSelectAllState());
                     if(!isAncestorInCart){
                         var identity = _.pick(row.entity, ['facilityName', 'id']);
                         if(_.find(gridApi.selection.getSelectedRows(), identity)){
@@ -362,6 +375,7 @@
                             tc.user(facilityName).cart(canceler.promise).then(function(cart){
                                 if(cart.isCartItem(row.entity.entityType, row.entity.id)){
                                     row.entity.deleteFromCart(canceler.promise);
+                                    that.isAllSelected = false;
                                 }
                             });
                         }
@@ -375,7 +389,6 @@
                 
 
                 isAncestorInCart().then(function(isAncestorInCart){
-                    console.log('gridApi.selection.getSelectAllState', gridApi.selection.getSelectAllState());
                     if(!isAncestorInCart){
                         var entitiesToAdd = [];
                         var entitiesToRemove = [];
