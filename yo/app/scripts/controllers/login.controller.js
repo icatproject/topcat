@@ -20,13 +20,6 @@
             $rootScope.$broadcast('login:leave');
         });
 
-        this.facilityChanged = function(){
-            facility = tc.facility(this.facilityName);
-            this.authenticationType = facility.config().authenticationTypes[0];
-            this.authenticationTypes = facility.config().authenticationTypes;
-        };
-        if(this.nonUserFacilities.length > 0) this.facilityChanged();
-
         this.login = function(){
             if(this.authenticationType.external){
                 $rootScope.$broadcast('login:external:' + this.authenticationType.plugin, facility, this.authenticationType);
@@ -65,6 +58,17 @@
                 });
             }
         };
+
+        this.facilityChanged = function(){
+            facility = tc.facility(this.facilityName);
+            this.authenticationType = facility.config().authenticationTypes[0];
+            this.authenticationTypes = facility.config().authenticationTypes;
+
+            if(this.authenticationTypes.length == 1 && this.authenticationType.external){
+                this.login();
+            }
+        };
+        if(this.nonUserFacilities.length > 0) this.facilityChanged();
 
     });
 

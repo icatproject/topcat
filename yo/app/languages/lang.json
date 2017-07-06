@@ -272,7 +272,7 @@
             }
         },
         "MAKE_DATA_PUBLIC_BUTTON" : {
-            "TEXT" : "Make Data Public",
+            "TEXT" : "Publish",
             "TOOLTIP" : {
                 "TEXT" : "Make this data available to the public and create DOI"
             }
@@ -333,7 +333,7 @@
             }
         },
         "MAKE_DATA_PUBLIC": {
-            "TITLE": "Make Data Public",
+            "TITLE": "Publish",
             "PREVIOUS_BUTTON": {
                 "TEXT": "Previous"
             },
@@ -610,5 +610,8 @@
                 "TEXT": "Cancel"
             }
         }
+    },
+    "DOI": {
+        "LANDING_PAGE_DOWNLOAD_INFO": "You must be logged in to access this data."
     }
 }

@@ -240,6 +240,16 @@ write([
 			:facility => {:id => facility_id}
 		},
 		
+	},
+	{
+		:ParameterType => {
+			:name => "createdBy",
+			:valueType => "STRING",
+			:units => "createdBy",
+			:applicableToDataCollection => true,
+			:facility => {:id => facility_id}
+		},
+
 	}
 ])
 
