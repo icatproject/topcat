@@ -64,7 +64,7 @@
             this.authenticationType = facility.config().authenticationTypes[0];
             this.authenticationTypes = facility.config().authenticationTypes;
 
-            if(this.authenticationTypes.length == 1 && this.authenticationType.external){
+            if(this.facilities.length <= 1 && this.authenticationTypes.length == 1 && this.authenticationType.external){
                 this.login();
             }
         };

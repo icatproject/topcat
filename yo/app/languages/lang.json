@@ -613,5 +613,11 @@
     },
     "DOI": {
         "LANDING_PAGE_DOWNLOAD_INFO": "You must be logged in to access this data."
+    },
+    "DAAAS": {
+        "MY_MACHINES": "Analysis Environments",
+        "CREATE_NEW_MACHINE": "Create Analysis Environments",
+        "MACHINE_NOT_AVAILABLE": "No more analysis environments of this type are available - please try again later.",
+        "CREATING_MACHINE": "Please wait while your analysis environment gets created."
     }
 }
