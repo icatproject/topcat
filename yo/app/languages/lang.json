@@ -589,6 +589,12 @@
             "TEXT": "Configure job"
         }
     },
+    "PERMISSIONS_ENTITY_ACTION_BUTTON": {
+        "TEXT": "Permissions",
+        "TOOLTIP": {
+            "TEXT": "Grant users access to this visit"
+        }
+    },
     "LANDING_PAGE": {
         "DOWNLOAD": {
             "TITLE": "Download",
