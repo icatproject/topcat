@@ -122,8 +122,9 @@
                          }
                     },
                     cart: {
-                        maxDatafileCount: {_type: 'number' },
-                        maxTotalSize: {_type: 'number' },
+                        enableLimits: {_type: 'boolean', _mandatory: false},
+                        maxDatafileCount: {_type: 'number', _mandatory: function(o){ return o.enableLimits } },
+                        maxTotalSize: {_type: 'number', _mandatory: function(o){ return o.enableLimits } },
                         gridOptions: {
                             columnDefs: {
                                 _type: 'array',

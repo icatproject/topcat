@@ -36,6 +36,7 @@
         this.totalSize = 0;
         this.isLoaded = false;
         this.isValid = false;
+        this.enableLimits = tc.config().cart.enableLimits;
         this.maxDatafileCount = tc.config().cart.maxDatafileCount;
         this.maxTotalSize = tc.config().cart.maxTotalSize;
 
@@ -56,7 +57,7 @@
                     that.download();
                 },
                 disabled: function(){
-                    return !that.isValid;
+                    return this.enableLimits && !that.isValid;
                 },
                 class: "btn btn-primary",
                 translate: "CART.DOWNLOAD_CART_BUTTON.TEXT",
@@ -237,6 +238,8 @@
         }
 
         function getTotals(){
+            if(!that.enableLimits) return;
+
             resetGetTotalsTimeout();
             that.isLoaded = false;
             that.isValid = false;
