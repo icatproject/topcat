@@ -22,7 +22,7 @@
                 ng-disabled="(!uploadController.datasetId && uploadController.name == '')  || uploadController.files.length == 0 || uploadController.isUploading"
                 ></button>
 
-            <button class="btn btn-warning" ng-click="uploadController.cancel()" translate="UPLOAD.BUTTON.CANCEL.TEXT"></button>
+            <button class="btn btn-warning" ng-click="uploadController.cancel()" translate="UPLOAD.BUTTON.CANCEL.TEXT" ng-disabled="uploadController.isUploading"></button>
         </div>
     </div>
 </div>

@@ -121,7 +121,7 @@ public class StatusCheck {
     } catch (IOException e){
       logger.error("performCheck IOException: " + e.toString());
     } catch(TopcatException e) {
-      logger.error("marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
+      logger.error("performCheck TopcatException: marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
       download.setStatus(DownloadStatus.EXPIRED);
       em.persist(download);
       em.flush();
@@ -185,26 +185,38 @@ public class StatusCheck {
   }
 
   private void prepareDownload(Download download) throws Exception {
-    IdsClient idsClient = new IdsClient(download.getTransportUrl());
-    String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
-    download.setPreparedId(preparedId);
 
-    IcatClient icatClient = new IcatClient(download.getIcatUrl(), download.getSessionId());
     try {
-      Long size = icatClient.getSize(cacheRepository, download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
-      download.setSize(size);
-    } catch(Exception e) {
-      download.setSize(-1);
+      IdsClient idsClient = new IdsClient(download.getTransportUrl());
+      String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+      download.setPreparedId(preparedId);
+
+      IcatClient icatClient = new IcatClient(download.getIcatUrl(), download.getSessionId());
+      try {
+        Long size = icatClient.getSize(cacheRepository, download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+        download.setSize(size);
+      } catch(Exception e) {
+        download.setSize(-1);
+      }
+
+      if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {
+        download.setStatus(DownloadStatus.RESTORING);
+      } else {
+        download.setStatus(DownloadStatus.COMPLETE);
+        download.setCompletedAt(new Date());
+      }
+
+      downloadRepository.save(download);
+    } catch(TopcatException e) {
+      logger.error("prepareDownload TopcatException: marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
+      download.setStatus(DownloadStatus.EXPIRED);
+      em.persist(download);
+      em.flush();
+      lastChecks.remove(download.getId());
+    } catch(Exception e){
+      logger.error("prepareDownload Exception: " + e.toString());
     }
 
-    if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {
-      download.setStatus(DownloadStatus.RESTORING);
-    } else {
-      download.setStatus(DownloadStatus.COMPLETE);
-      download.setCompletedAt(new Date());
-    }
-
-    downloadRepository.save(download);
   }
 
 }

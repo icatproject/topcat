@@ -272,7 +272,7 @@
             }
         },
         "MAKE_DATA_PUBLIC_BUTTON" : {
-            "TEXT" : "Make Data Public",
+            "TEXT" : "Publish",
             "TOOLTIP" : {
                 "TEXT" : "Make this data available to the public and create DOI"
             }
@@ -333,7 +333,7 @@
             }
         },
         "MAKE_DATA_PUBLIC": {
-            "TITLE": "Make Data Public",
+            "TITLE": "Publish",
             "PREVIOUS_BUTTON": {
                 "TEXT": "Previous"
             },
@@ -589,6 +589,12 @@
             "TEXT": "Configure job"
         }
     },
+    "PERMISSIONS_ENTITY_ACTION_BUTTON": {
+        "TEXT": "Permissions",
+        "TOOLTIP": {
+            "TEXT": "Grant users access to this visit"
+        }
+    },
     "LANDING_PAGE": {
         "DOWNLOAD": {
             "TITLE": "Download",
@@ -610,5 +616,14 @@
                 "TEXT": "Cancel"
             }
         }
+    },
+    "DOI": {
+        "LANDING_PAGE_DOWNLOAD_INFO": "You must be logged in to access this data."
+    },
+    "DAAAS": {
+        "MY_MACHINES": "Analysis Environments",
+        "CREATE_NEW_MACHINE": "Create Analysis Environments",
+        "MACHINE_NOT_AVAILABLE": "No more analysis environments of this type are available - please try again later.",
+        "CREATING_MACHINE": "Please wait while your analysis environment gets created."
     }
 }
