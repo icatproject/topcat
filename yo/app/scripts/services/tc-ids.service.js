@@ -94,7 +94,9 @@
            * @return {Promise}
            */
           'number, array, object': function(datasetId, files, options){
-            var promises = [];
+            var defered = $q.defer();
+
+            files = _.clone(files);
 
             options.queryParams = {
               sessionId: facility.icat().session().sessionId,
@@ -110,16 +112,28 @@
 
             var datafileIds = [];
 
-            _.each(files, function(file){
-              options.queryParams.name = file.name
-              promises.push(that.put('put', file.data, options).then(function(info){
-                datafileIds.push(info.id);
-              }));
-            });
+            function upload(){
+              if(files.length > 0){
+                var file = files.shift();
+
+                options.queryParams.name = file.name;
+
+                file.read().then(function(data){
+                  that.put('put', data, options).then(function(info){
+                    datafileIds.push(info.id);
+                    file.isUploaded = true;
+                    upload();
+                  }, function(response){
+                    defered.reject(response);
+                  })
+                });
+              } else {
+                defered.resolve(datafileIds);
+              }
+            }
+            upload();
             
-            return $q.all(promises).then(function(){
-              return datafileIds;
-            });
+            return defered.promise;
           }
 
           /**

@@ -16,7 +16,7 @@
         };
     });
 
-    app.controller('UploadAreaController', function($scope, $element){
+    app.controller('UploadAreaController', function($scope, $element, $q){
         $($element).addClass('upload-area');
 
         $($element).on('dragenter', function(e){
@@ -39,17 +39,7 @@
         $($element).on("drop", function(e){
             $(this).removeClass('enter');
             _.each(e.originalEvent.dataTransfer.files, function(file){
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    $scope.files.push({
-                        name: file.name,
-                        size: file.size,
-                        data: new Uint8Array(reader.result)
-                    });
-                };
-
-                reader.readAsArrayBuffer(file);
+                $scope.files.push(new File(file));
             });
             e.preventDefault();
             e.stopPropagation();    
@@ -58,6 +48,26 @@
         this.deleteFile = function(file){
             _.pull($scope.files, file);
         };
+
+
+        function File(file){
+            this.name = file.name;
+            this.size = file.size;
+
+            this.read = function(){
+                var defered = $q.defer();
+
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    defered.resolve(new Uint8Array(reader.result));
+                };
+
+                reader.readAsArrayBuffer(file);
+
+                return defered.promise;
+            };
+        }
 
     });
 
