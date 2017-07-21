@@ -98,17 +98,12 @@
 
             files = _.clone(files);
 
-            options.queryParams = {
+            var queryParams = {
               sessionId: facility.icat().session().sessionId,
               datasetId: datasetId,
               datafileFormatId: facility.config().idsUploadDatafileFormatId,
-            }
-
-            options.headers =  {
-              'Content-Type': 'application/octet-stream'
             };
 
-            options.transformRequest = [];
 
             var datafileIds = [];
 
@@ -116,17 +111,28 @@
               if(files.length > 0){
                 var file = files.shift();
 
-                options.queryParams.name = file.name;
+                queryParams.name = file.name;
 
-                file.read().then(function(data){
-                  that.put('put', data, options).then(function(info){
-                    datafileIds.push(info.id);
-                    file.isUploaded = true;
-                    upload();
-                  }, function(response){
-                    defered.reject(response);
-                  })
+                var flow = new Flow({
+                  uploadMethod: 'PUT',
+                  method: 'octet',
+                  headers: {'Content-Type': 'application/octet-stream'},
+                  target: url + '/ids/put?' + helpers.urlEncode(queryParams),
+                  testChunks: false
                 });
+
+                flow.addFile(file);
+
+                flow.on('complete', function(){
+                  upload();
+                });
+
+                flow.on('error', function(message){
+                  defered.reject(JSON.parse(message));
+                });
+
+                flow.upload();
+
               } else {
                 defered.resolve(datafileIds);
               }

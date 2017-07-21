@@ -39,35 +39,15 @@
         $($element).on("drop", function(e){
             $(this).removeClass('enter');
             _.each(e.originalEvent.dataTransfer.files, function(file){
-                $scope.files.push(new File(file));
+                $scope.files.push(file);
             });
             e.preventDefault();
-            e.stopPropagation();    
+            e.stopPropagation();
         });
 
         this.deleteFile = function(file){
             _.pull($scope.files, file);
         };
-
-
-        function File(file){
-            this.name = file.name;
-            this.size = file.size;
-
-            this.read = function(){
-                var defered = $q.defer();
-
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    defered.resolve(new Uint8Array(reader.result));
-                };
-
-                reader.readAsArrayBuffer(file);
-
-                return defered.promise;
-            };
-        }
 
     });
 
