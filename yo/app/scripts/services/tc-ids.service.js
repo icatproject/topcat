@@ -171,7 +171,7 @@
           }
         });
 
-        var chunkSize = 1000000;
+        var chunkSize = 100000;
 
         this.upload = helpers.overload({
           /**
@@ -202,6 +202,11 @@
             function upload(){
               if(files.length > 0){
                 var file = files.shift();
+                var dataUploaded = 0;
+
+                _.each(files, function(file){
+                  file.percentageUploaded = 0;
+                });
 
                 queryParams.name = file.name;
                 queryParams.contentLength = file.size;
@@ -236,6 +241,8 @@
                       binary += String.fromCharCode(bytes[i]);
                     }
                     connection.send(binary);
+                    dataUploaded += binary.length;
+                    file.percentageUploaded = _.round(dataUploaded / (file.size / 100), 2);
                     if(chunks.length > 0){
                       readChunk();
                     } 
@@ -256,7 +263,7 @@
                 connection.onopen = function(){
                   readChunk();
                 };
-                
+
               } else {
                 defered.resolve(datafileIds);
               }

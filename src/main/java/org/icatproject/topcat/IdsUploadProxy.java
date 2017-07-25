@@ -88,6 +88,7 @@ public class IdsUploadProxy {
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
+            connection.setChunkedStreamingMode(1000);
             contentLength = Long.parseLong(queryStringParams.get("contentLength"));
             connection.setRequestProperty("Content-Length", contentLength.toString());
             connection.setRequestProperty("Content-Type", "application/octet-stream");

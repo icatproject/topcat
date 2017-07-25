@@ -2,7 +2,7 @@
 <p ng-if="files.length == 0">Drag and drop files here.</p>
 
 <div class="input-group" style="margin-top: 7px;" ng-repeat="file in files">
-    <span class="form-control">{{file.name}} {{file.size|bytes}}</span>
+    <span class="form-control">{{file.name}} {{file.size|bytes}} <span ng-if="file.percentageUploaded !== undefined"> - {{file.percentageUploaded | number : 2}}% uploaded</span></span>
     <label class="input-group-addon">
         <button class="btn btn-primary btn-xs" style="font-size: 8px;" ng-click="uploadAreaController.deleteFile(file)"><i class="glyphicon glyphicon-remove"></i></button>
     </label>
