@@ -3,6 +3,9 @@ package org.icatproject.topcat;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import javax.json.*;
+import java.net.URLDecoder;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Utils {
 
@@ -31,6 +34,30 @@ public class Utils {
         JsonArray out = jsonReader.readArray();
         jsonReader.close();
         return out;
+    }
+
+    public static Map<String, String> parseQueryString(String queryString) throws Exception {
+        Map<String, String> out = new HashMap<String, String>();
+        String[] pairs = queryString.split("&"); 
+        for (String pair : pairs){
+            String[] splitPair = pair.split("=");
+            String name = URLDecoder.decode(splitPair[0], "UTF-8");  
+            String value = URLDecoder.decode(splitPair[1], "UTF-8");  
+            out.put(name, value);  
+        }  
+        return out;
+    }
+
+
+    public static String inputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder out = new StringBuilder();
+        int currentChar;
+        while ((currentChar = bufferedReader.read()) > -1) {
+            out.append(Character.toChars(currentChar));
+        }
+        bufferedReader.close();
+        return out.toString();
     }
 
 }

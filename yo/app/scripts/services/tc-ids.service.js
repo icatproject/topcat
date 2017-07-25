@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcIds', function($q, helpers, tcCache){
+    app.service('tcIds', function($q, $interval, helpers, tcCache){
 
     	this.create = function(facility, url){
     		return new Ids(facility, url);
@@ -82,7 +82,7 @@
           }
         });
 
-        this.upload = helpers.overload({
+        this.upload2 = helpers.overload({
           /**
            * Uploads files to a dataset.
            *
@@ -133,6 +133,130 @@
 
                 flow.upload();
 
+              } else {
+                defered.resolve(datafileIds);
+              }
+            }
+            upload();
+            
+            return defered.promise;
+          }
+
+          /**
+           * Uploads files to a dataset.
+           *
+           * @method
+           * @name IDS#upload
+           * @param {number} datasetId the id of the dataset you wish to upload to 
+           * @param {File[]} files the files to be uploaded
+           * @param {Promise} timeout if resolved will cancel the request
+           * @return {Promise}
+           */
+          ,
+          'promise, number, array': function(timeout, datasetId, files){
+            return this.upload(datasetId, files, {timeout: timeout});
+          },
+
+          /**
+           * Uploads files to a dataset.
+           *
+           * @method
+           * @name IDS#upload
+           * @param {number} datasetId the id of the dataset you wish to upload to 
+           * @param {File[]} files the files to be uploaded
+           * @return {Promise}
+           */
+          'number, array': function(datasetId, files){
+            return this.upload(datasetId, files, {});
+          }
+        });
+
+        var chunkSize = 1000000;
+
+        this.upload = helpers.overload({
+          /**
+           * Uploads files to a dataset.
+           *
+           * @method
+           * @name IDS#upload
+           * @param {number} datasetId the id of the dataset you wish to upload to 
+           * @param {File[]} files the files to be uploaded
+           * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+           * @return {Promise}
+           */
+          'number, array, object': function(datasetId, files, options){
+            var defered = $q.defer();
+
+            files = _.clone(files);
+
+            var queryParams = {
+              idsUrl: url,
+              sessionId: facility.icat().session().sessionId,
+              datasetId: datasetId,
+              datafileFormatId: facility.config().idsUploadDatafileFormatId,
+            };
+
+
+            var datafileIds = [];
+
+            function upload(){
+              if(files.length > 0){
+                var file = files.shift();
+
+                queryParams.name = file.name;
+                queryParams.contentLength = file.size;
+
+                var currentUrl = "ws://localhost:8080/topcat/user/upload?" + _.map(queryParams, function(v, k){ return encodeURIComponent(k) + "=" + encodeURIComponent(v) }).join('&');
+
+                var connection = new WebSocket(currentUrl);
+
+                var chunks = [];
+                var i = 0;
+                while(true){
+                  if(i * chunkSize > file.size){
+                    break;
+                  }
+                  var from = i * chunkSize;
+                  var to = (i + 1) * chunkSize;
+                  if(to > file.size) to = file.size;
+                  chunks.push(file.slice(from, to));
+                  i++;
+                }
+
+                function readChunk(){
+                  var chunk = chunks.shift();
+
+                  var reader = new FileReader();
+      
+                  reader.onload = function(e) {
+                    var binary = "";
+                    var bytes = new Uint8Array(reader.result);
+                    var length = bytes.byteLength;
+                    for (var i = 0; i < length; i++) {
+                      binary += String.fromCharCode(bytes[i]);
+                    }
+                    connection.send(binary);
+                    if(chunks.length > 0){
+                      readChunk();
+                    } 
+                  };
+                  
+                  reader.readAsArrayBuffer(chunk);
+
+                }
+
+
+                connection.onmessage = function(response){
+                  datafileIds.push(JSON.parse(response.data).id);
+                  connection.close();
+                  upload();
+                };
+
+
+                connection.onopen = function(){
+                  readChunk();
+                };
+                
               } else {
                 defered.resolve(datafileIds);
               }

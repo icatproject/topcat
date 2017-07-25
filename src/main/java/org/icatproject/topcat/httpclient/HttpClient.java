@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.io.*;
 
 import java.nio.charset.StandardCharsets;
+import org.icatproject.topcat.Utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,10 +110,10 @@ public class HttpClient {
 
 	    	String responseBody = "";
 	    	try {
-	    		responseBody = inputStreamToString(connection.getInputStream());
+	    		responseBody = Utils.inputStreamToString(connection.getInputStream());
 	    	} catch(Exception e1){
 	    		try {
-	    			responseBody = inputStreamToString(connection.getErrorStream());
+	    			responseBody = Utils.inputStreamToString(connection.getErrorStream());
 	    		} catch(Exception e2){}
 	    	}
 
@@ -127,17 +128,5 @@ public class HttpClient {
 			}
 		}
 	}
-
-	private String inputStreamToString(InputStream inputStream) throws IOException {
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-	    StringBuilder out = new StringBuilder();
-	    int currentChar;
-	    while ((currentChar = bufferedReader.read()) > -1) {
-	    	out.append(Character.toChars(currentChar));
-	    }
-	    bufferedReader.close();
-	    return out.toString();
-	}
-
 
 }

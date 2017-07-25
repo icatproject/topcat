@@ -22,14 +22,6 @@
 		<servlet-name>Jersey Web Application</servlet-name>
 		<url-pattern>/topcat/*</url-pattern>
 	</servlet-mapping>
-	<filter>
-		<filter-name>noCache</filter-name>
-		<filter-class>com.samaxes.filter.NoCacheFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>noCache</filter-name>
-		<url-pattern>*.json</url-pattern>
-	</filter-mapping>
 
 	<mime-mapping>
         <extension>json</extension>
