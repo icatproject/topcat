@@ -215,21 +215,17 @@
 
                 var connection = new WebSocket(currentUrl);
 
-                var chunks = [];
-                var i = 0;
-                while(true){
-                  if(i * chunkSize > file.size){
-                    break;
-                  }
-                  var from = i * chunkSize;
-                  var to = (i + 1) * chunkSize;
-                  if(to > file.size) to = file.size;
-                  chunks.push(file.slice(from, to));
-                  i++;
-                }
+                var chunkIndex = 0;
 
                 function readChunk(){
-                  var chunk = chunks.shift();
+                  if(chunkIndex * chunkSize > file.size){
+                    return;
+                  }
+
+                  var from = chunkIndex * chunkSize;
+                  var to = (chunkIndex + 1) * chunkSize;
+                  if(to > file.size) to = file.size;
+                  var chunk = file.slice(from, to);
 
                   var reader = new FileReader();
       
@@ -243,9 +239,8 @@
                     connection.send(binary);
                     dataUploaded += binary.length;
                     file.percentageUploaded = _.round(dataUploaded / (file.size / 100), 2);
-                    if(chunks.length > 0){
-                      readChunk();
-                    } 
+                    chunkIndex++;
+                    readChunk();
                   };
                   
                   reader.readAsArrayBuffer(chunk);
@@ -255,7 +250,6 @@
 
                 connection.onmessage = function(response){
                   datafileIds.push(JSON.parse(response.data).id);
-                  connection.close();
                   upload();
                 };
 
