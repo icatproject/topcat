@@ -82,94 +82,6 @@
           }
         });
 
-        this.upload2 = helpers.overload({
-          /**
-           * Uploads files to a dataset.
-           *
-           * @method
-           * @name IDS#upload
-           * @param {number} datasetId the id of the dataset you wish to upload to 
-           * @param {File[]} files the files to be uploaded
-           * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
-           * @return {Promise}
-           */
-          'number, array, object': function(datasetId, files, options){
-            var defered = $q.defer();
-
-            files = _.clone(files);
-
-            var queryParams = {
-              sessionId: facility.icat().session().sessionId,
-              datasetId: datasetId,
-              datafileFormatId: facility.config().idsUploadDatafileFormatId,
-            };
-
-
-            var datafileIds = [];
-
-            function upload(){
-              if(files.length > 0){
-                var file = files.shift();
-
-                queryParams.name = file.name;
-
-                var flow = new Flow({
-                  uploadMethod: 'PUT',
-                  method: 'octet',
-                  headers: {'Content-Type': 'application/octet-stream'},
-                  target: url + '/ids/put?' + helpers.urlEncode(queryParams),
-                  testChunks: false
-                });
-
-                flow.addFile(file);
-
-                flow.on('complete', function(){
-                  upload();
-                });
-
-                flow.on('error', function(message){
-                  defered.reject(JSON.parse(message));
-                });
-
-                flow.upload();
-
-              } else {
-                defered.resolve(datafileIds);
-              }
-            }
-            upload();
-            
-            return defered.promise;
-          }
-
-          /**
-           * Uploads files to a dataset.
-           *
-           * @method
-           * @name IDS#upload
-           * @param {number} datasetId the id of the dataset you wish to upload to 
-           * @param {File[]} files the files to be uploaded
-           * @param {Promise} timeout if resolved will cancel the request
-           * @return {Promise}
-           */
-          ,
-          'promise, number, array': function(timeout, datasetId, files){
-            return this.upload(datasetId, files, {timeout: timeout});
-          },
-
-          /**
-           * Uploads files to a dataset.
-           *
-           * @method
-           * @name IDS#upload
-           * @param {number} datasetId the id of the dataset you wish to upload to 
-           * @param {File[]} files the files to be uploaded
-           * @return {Promise}
-           */
-          'number, array': function(datasetId, files){
-            return this.upload(datasetId, files, {});
-          }
-        });
 
         var chunkSize = 100000;
 
@@ -211,7 +123,14 @@
                 queryParams.name = file.name;
                 queryParams.contentLength = file.size;
 
-                var currentUrl = "ws://localhost:8080/topcat/user/upload?" + _.map(queryParams, function(v, k){ return encodeURIComponent(k) + "=" + encodeURIComponent(v) }).join('&');
+                var topcatUrl = facility.tc().config().topcatUrl;
+                if(topcatUrl.match(/^https:\/\//)){
+                  topcatUrl = "wss://" + topcatUrl.replace(/^https:\/\//, '');
+                } else {
+                  topcatUrl = "ws://" + topcatUrl.replace(/^http:\/\//, '');
+                }
+
+                var currentUrl = topcatUrl + "/topcat/user/upload?" + _.map(queryParams, function(v, k){ return encodeURIComponent(k) + "=" + encodeURIComponent(v) }).join('&');
 
                 var connection = new WebSocket(currentUrl);
 
@@ -244,12 +163,12 @@
                   };
                   
                   reader.readAsArrayBuffer(chunk);
-
                 }
 
 
                 connection.onmessage = function(response){
                   datafileIds.push(JSON.parse(response.data).id);
+                  connection.close();
                   upload();
                 };
 

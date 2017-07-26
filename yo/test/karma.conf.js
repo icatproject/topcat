@@ -48,6 +48,7 @@ module.exports = function(config) {
       'bower_components/angular-bind-html-compile/angular-bind-html-compile.js',
       'bower_components/angular-loading-bar/build/loading-bar.js',
       'bower_components/angular-cookie/angular-cookie.js',
+      'bower_components/flow.js/dist/flow.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/karma-read-json/karma-read-json.js',
       // endbower
