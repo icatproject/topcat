@@ -16,6 +16,15 @@
         this.name = "";
         this.files = [];
         this.datasetId = parseInt($state.params.datasetId);
+        this.maxTotalFileSize = facility.config().idsUploadMaxTotalFileSize;
+
+        this.totalFileSize = function(){
+            var out = 0;
+            _.each(this.files, function(file){
+                out += file.size;
+            });
+            return out;
+        };
 
         this.upload = function(){
             var fileNames = {};

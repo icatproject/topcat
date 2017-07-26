@@ -168,7 +168,7 @@
                         icatUrl: { _type: 'string', _mandatory: false },
                         idsUploadDatafileFormat: { _type: 'string', _mandatory: false },
                         idsUploadDatasetType: { _type: 'string', _mandatory: false },
-                        idsUploadTotalFileSizeLimit: { _type: 'number', _mandatory: false },
+                        idsUploadMaxTotalFileSize: { _type: 'number', _mandatory: false },
                         hierarchy: {
                             _type: 'array',
                             _item: {
