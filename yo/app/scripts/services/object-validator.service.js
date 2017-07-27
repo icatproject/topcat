@@ -93,7 +93,7 @@
                         enableParameters: { _type: 'boolean', _mandatory: false },
                         enableSamples: { _type: 'boolean', _mandatory: false },
                         gridOptions: {}
-                     },
+                    },
                     browse: {
                         gridOptions: {
                             columnDefs: {
@@ -168,6 +168,7 @@
                         icatUrl: { _type: 'string', _mandatory: false },
                         idsUploadDatafileFormat: { _type: 'string', _mandatory: false },
                         idsUploadDatasetType: { _type: 'string', _mandatory: false },
+                        idsUploadMaxTotalFileSize: { _type: 'number', _mandatory: false },
                         hierarchy: {
                             _type: 'array',
                             _item: {
