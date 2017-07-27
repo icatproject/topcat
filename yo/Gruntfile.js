@@ -461,50 +461,7 @@ module.exports = function (grunt) {
           return 'node ./node_modules/protractor/bin/webdriver-manager ' + option + ' --standalone';
         }
       }
-    },
-
-
-
-    "dgeni-alive": {
-      options: {
-        // optional basePath for correct path calculation
-        basePath: '',
-        // optional dgeni packages
-        packages: [
-          'dgeni-packages/ngdoc',
-          'dgeni-alive/src/packages/ngdoc-ext' 
-        ],
-        // optional serve section for running local http server with live docs
-        serve: {
-          // the server port
-          // can also be written as a function, e.g.
-          port: 10000,
-          // open the browser
-          //openBrowser: true // or command to run favorite browser
-        }
-      },
-      api: {
-        // product title
-        title: 'My Docs',
-        // product version
-        version: '2.3.0',
-        // do not expand paths
-        expand: false,
-        // where to put docs
-        dest: 'docs/',
-        // where to look for sources
-        // grunt globbing is supported
-        src: [
-          'app/scripts/**/*.js'
-        ],
-        // Any paths that contain your overriden templates relative to the grunt file
-        templatePaths: [
-          //'dgeni'
-        ]
-      }
     }
-
-
 
   });
 
@@ -560,7 +517,7 @@ module.exports = function (grunt) {
     //'htmlmin'
   ]);
 
-  grunt.registerTask('docs', 'dgeni-alive');
+  grunt.registerTask('docs');
 
   grunt.registerTask('default', [
     'newer:jshint',
