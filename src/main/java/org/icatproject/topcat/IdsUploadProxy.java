@@ -100,7 +100,6 @@ public class IdsUploadProxy {
             outputStream.writeBytes(data);
             outputStream.flush();
             bytesWritten += new Long(data.length());
-            logger.info("bytesWritten: " + bytesWritten + " contentLength: " + contentLength);
             if(bytesWritten >= contentLength){
                 outputStream.close();
                 String responseBody = Utils.inputStreamToString(connection.getInputStream());
