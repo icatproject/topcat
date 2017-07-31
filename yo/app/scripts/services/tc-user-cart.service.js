@@ -287,6 +287,55 @@
                     }
                 });
 
+                cartItem.getDatafileCount = helpers.overload({
+                    /**
+                     * Gets the size of this item.
+                     *
+                     * @method
+                     * @name  CartItem#datafileCount
+                     * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+                     * @return {Promise<number>} the size in bytes (defered)
+                     */
+                    'object': function(options){
+                        var that = this;
+
+                        return this.entity(options).then(function(entity){
+                            if(cartItem.entityType == 'datafile'){
+                                that.datafileCount = 1;
+                                return $q.resolve(that.datafileCount);
+                            } else {
+                                return entity.getDatafileCount(options).then(function(datafileCount){
+                                    that.datafileCount = datafileCount;
+                                    return datafileCount;
+                                });
+                            }
+                        });
+                    },
+
+                    /**
+                     * Gets the size of this item.
+                     *
+                     * @method
+                     * @name  CartItem#datafileCount
+                     * @param  {Promise} timeout if resolved will cancel the request
+                     * @return {Promise<number>} the size in bytes (defered)
+                     */
+                    'promise': function(timeout){
+                        return this.getDatafileCount({timeout: timeout});
+                    },
+
+                    /**
+                     * Gets the size of this item.
+                     *
+                     * @method
+                     * @name  CartItem#datafileCount
+                     * @return {Promise<number>} the size in bytes (defered)
+                     */
+                    '': function(){
+                        return this.getDatafileCount({});
+                    }
+                });
+
             });
 
             

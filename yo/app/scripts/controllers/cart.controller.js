@@ -286,6 +286,7 @@
                     if(!out) out = [];
                     _.each(out, function(cartItem){
                         cartItem.getSize(timeout.promise);
+                        cartItem.getDatafileCount(timeout.promise);
                     });
                     defered.resolve(out);
                 });
