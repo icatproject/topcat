@@ -627,5 +627,13 @@
         "CREATE_NEW_MACHINE": "Create Analysis Environments",
         "MACHINE_NOT_AVAILABLE": "No more analysis environments of this type are available - please try again later.",
         "CREATING_MACHINE": "Please wait while your analysis environment gets created."
+    },
+    "FILE_SIZE_UNITS": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB",
+        "TB": "TB",
+        "PB": "PB"
     }
 }

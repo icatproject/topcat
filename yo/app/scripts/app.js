@@ -174,7 +174,6 @@
         'truncate',
         'inform',
         'inform-exception',
-        'prettyBytes',
         'ngStorage',
         'pascalprecht.translate',
         'ui.grid',

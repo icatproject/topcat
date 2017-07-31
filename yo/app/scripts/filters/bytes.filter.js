@@ -1,14 +1,14 @@
 (function() {
     'use strict';
 
-    angular.module('bytes', []).filter('bytes', function(tc) {
+    angular.module('bytes', []).filter('bytes', function($translate, tc) {
         return function(value) {
             var bytes = parseInt(value || "0");
             var power = tc.config().enableKiloBinaryBytes ? 1024 : 1000;
-            var units = ['B', 'MB', 'GB', 'TB', 'PB'];
-            var unit = units.shift();
+            var units = ['KB', 'MB', 'GB', 'TB', 'PB'];
+            var unit = 'B';
 
-            while(units.length > 0 && (bytes / power) > 1){
+            while(units.length > 0 && bytes > power){
                 bytes = bytes / power;
                 unit = units.shift();
             }
@@ -19,7 +19,7 @@
                 bytes = bytes + "0";
             }
 
-            return bytes + " " + unit;
+            return bytes + " " + $translate.instant('FILE_SIZE_UNITS.' + unit);
         };
     });
 

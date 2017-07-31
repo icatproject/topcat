@@ -18,7 +18,6 @@
     "ui-router-extras": "0.0.13",
     "angular-inform": "0.0.18",
     "lodash": "3.10.1",
-    "angular-pretty-bytes": "1.0.1",
     "ngstorage": "0.3.10",
     "angular-translate": "2.8.1",
     "angular-translate-loader-static-files": "2.8.1",
