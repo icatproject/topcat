@@ -18,7 +18,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-string-replace');
   grunt.loadNpmTasks('grunt-protractor-runner');
   grunt.loadNpmTasks('grunt-exec');
-  grunt.loadNpmTasks('dgeni-alive');
 
   // Configurable paths for the application
   var appConfig = {
