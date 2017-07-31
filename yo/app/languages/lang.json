@@ -223,7 +223,8 @@
             "INVESTIGATION": "Visit",
             "DATASET": "Dataset",
             "DATAFILE": "Datafile"
-        }
+        },
+        "RESULTS_DESCRIPTION": "Please note: only the top 300 results will be displayed for each entity type i.e. Visit, Dataset or Datafile"
     },
     "MY_DATA" : {
         "TITLE" : "My Data",
