@@ -153,7 +153,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat
     sudo dos2unix /usr/bin/topcat
     topcat build_install
-    asadmin -t set applications.application.topcat-2.3.0-SNAPSHOT.deployment-order=140
+    asadmin -t set applications.application.topcat-2.4.0-SNAPSHOT.deployment-order=140
 
   }
 end
