@@ -63,6 +63,7 @@
                     topcatUrl: { _type: 'string', _mandatory: false },
                     home: { _type: 'string' },
                     enableEuCookieLaw: { _type: 'boolean' },
+                    enableKiloBinaryBytes: { _type: 'boolean',  _mandatory: false },
                     paging: { 
                         pagingType: { _type: 'string' },
                         paginationNumberOfRows: { _type: 'number' },

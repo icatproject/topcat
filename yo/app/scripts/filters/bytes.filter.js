@@ -1,26 +1,28 @@
 (function() {
     'use strict';
 
-    /**
-     * This is a wrapper filter for pretty bytes. The pretty bytes does not take a string
-     * so we have to do a parseInt
-     */
-    angular.module('bytes', []).
-        filter('bytes', ['$filter', function( $filter) {
-            var prettyBytesFilter = $filter('prettyBytes');
-            return function(value) {
-                if (value === null || typeof value === 'undefined') {
-                    return null;
-                }
+    angular.module('bytes', []).filter('bytes', function(tc) {
+        return function(value) {
+            var bytes = parseInt(value || "0");
+            var power = tc.config().enableKiloBinaryBytes ? 1024 : 1000;
+            var units = ['B', 'MB', 'GB', 'TB', 'PB'];
+            var unit = units.shift();
 
-                //-1 is a failure
-                if (value === -1) {
-                    return value;
-                }
+            while(units.length > 0 && (bytes / power) > 1){
+                bytes = bytes / power;
+                unit = units.shift();
+            }
 
-                var bytes = parseInt(value);
+            bytes = "" + _.ceil(bytes, 2);
 
-                return prettyBytesFilter(bytes);
-            };
-        }]);
+            if(bytes.match(/\.\d$/)){
+                bytes = bytes + "0";
+            }
+
+            return bytes + " " + unit;
+        };
+    });
+
 })();
+
+
