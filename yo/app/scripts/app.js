@@ -50,6 +50,8 @@
                         if(!facility.icatUrl){
                             promises.push($.get(facility.idsUrl + "/ids/getIcatUrl").then(function(icatUrl){
                                 facility.icatUrl = icatUrl;
+                            }, function(){
+                                alert("Could not aquire icat url from " + facility.idsUrl + "/ids/getIcatUrl");
                             }));
                         }
                     });
