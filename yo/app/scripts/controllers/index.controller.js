@@ -189,12 +189,6 @@
             });
         };
 
-        this.serviceStatus = tc.config().serviceStatus;
-
-        tc.getConfVar('serviceStatus').then(function(serviceStatus){
-            that.serviceStatus = serviceStatus;
-        });
-
         if(!ipCookie('hideCookieMessage')){
             this.enableEuCookieLaw =  tc.config().enableEuCookieLaw;
             this.hideCookieMessage = function(){
@@ -212,8 +206,6 @@
 
 
         $rootScope.requestCounter = 0;
-
-        this.maintenanceMode = tc.config().maintenanceMode;
 
         var smartClientPingDone = true;
         function pingSmartclient(){
@@ -248,6 +240,46 @@
         }
 
         $interval(pingSmartclient, 1000 * 60);
+
+        this.maintenanceMode = tc.config().maintenanceMode;
+        this.serviceStatus = tc.config().serviceStatus;
+
+        tc.getConfVar('serviceStatus').then(function(serviceStatus){
+            that.serviceStatus = serviceStatus;
+        });
+
+
+        if(tc.adminFacilities().length == 0){
+            $interval(function(){
+                tc.getConfVar('maintenanceMode').then(function(maintenanceMode){
+                    if(!that.maintenanceMode.show && maintenanceMode.show){
+                        var promises = [];
+
+                        _.each(tc.userFacilities(), function(facility){
+                            promises.push(facility.icat().logout());
+                        });
+
+                        $q.all(promises).then(function(){
+                            var internalLoginCount = 0;
+
+                            _.each(tc.facilities(), function(facility){
+                                _.each(facility.config().authenticationTypes, function(authenticationType){
+                                    if(!authenticationType.external){
+                                        internalLoginCount++;
+                                    }
+                                });
+                            });
+
+                            if(internalLoginCount == 0){
+                                alert("You've been logged out as this site has gone down for maintenance.");
+                            }
+
+                            window.location.reload();
+                        });
+                    }
+                });
+            }, 60 * 1000);
+        }
 
     });
 

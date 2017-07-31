@@ -207,6 +207,7 @@
                             entityType: { _type: 'string' },
                             gridOptions: {
                                 enableSelection: { _type: 'boolean', _mandatory: false },
+                                enableSelectAll: { _type: 'boolean', _mandatory: false },
                                 columnDefs: {
                                     _type: 'array',
                                     _item: {
@@ -285,12 +286,11 @@
 
                 if(entityType == 'investigation' || entityType == 'dataset' || entityType == 'datafile'){
                     schema.facilities._item.browse[entityType].gridOptions.enableSelection = { _type: 'boolean', _mandatory: false };
+                    schema.facilities._item.browse[entityType].gridOptions.enableSelectAll = { _type: 'boolean', _mandatory: false };
                 }
                 if(entityType == 'dataset' || entityType == 'datafile'){
-                    schema.facilities._item.browse[entityType].gridOptions.enableUpload = { _type: 'boolean', _mandatory: false };
-                }
-                if(entityType == 'datafile'){
                     schema.facilities._item.browse[entityType].gridOptions.enableDownload = { _type: 'boolean', _mandatory: false };
+                    schema.facilities._item.browse[entityType].gridOptions.enableUpload = { _type: 'boolean', _mandatory: false };
                 }
 
             });

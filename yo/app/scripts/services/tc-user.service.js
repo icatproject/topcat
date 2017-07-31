@@ -386,18 +386,46 @@
                     if(typeof items[0] == 'object'){
                         items = _.map(items, function(item){ return item.entityType + " " + item.entityId; });
                     }
-                    items = items.join(',');
 
-                    return this.delete('cart/' + facility.config().name + '/cartItems', {
-                        icatUrl: facility.config().icatUrl,
-                        sessionId: facility.icat().session().sessionId,
-                        items: items
-                    }, options).then(function(cart){
-                        cart = tcUserCart.create(cart, that);
-                        cartCache = cart;
-                        $rootScope.$broadcast('cart:change');
-                        return cart;
-                    });
+                    var currentItems = [];
+                    var currentUrlLength;
+                    var chunks = [];
+
+                    while(items.length > 0){
+                        currentUrlLength = this.deleteUrlLength('cart/' + facility.config().name + '/cartItems', {
+                            icatUrl: facility.config().icatUrl,
+                            sessionId: facility.icat().session().sessionId,
+                            items: currentItems.concat([items[items.length - 1]]).join(',')
+                        });
+
+                        if(currentUrlLength < 1000){
+                            currentItems.push(items.pop());
+                        } else {
+                            chunks.push(currentItems);
+                            currentItems = [];
+                        }
+                    }
+
+                    if(currentItems.length > 0) chunks.push(currentItems);
+
+                    function deleteChunks(){
+                        return that.delete('cart/' + facility.config().name + '/cartItems', {
+                            icatUrl: facility.config().icatUrl,
+                            sessionId: facility.icat().session().sessionId,
+                            items: chunks.pop()
+                        }, options).then(function(cart){
+                            if(chunks.length > 0){
+                                return deleteChunks();
+                            } else {
+                                cart = tcUserCart.create(cart, that);
+                                cartCache = cart;
+                                $rootScope.$broadcast('cart:change');
+                                return $q.resolve(cart);
+                            }
+                        });
+                    }
+
+                    return deleteChunks();
                 },
 
                 /**

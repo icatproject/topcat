@@ -148,8 +148,6 @@
                 }
             });
 
-            out.limit((page - 1) * pageSize, pageSize);
-
             _.each(externalGridFilters, function(externalGridFilter){
                 externalGridFilter.modifyQuery.apply(that, [out]);
             });
@@ -163,7 +161,7 @@
         var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
         function getPage(){
             that.isLoading = true;
-            return generateQueryBuilder().run(canceler.promise).then(function(entities){
+            return generateQueryBuilder().limit((page - 1) * pageSize, pageSize).run(canceler.promise).then(function(entities){
                 that.isLoading = false;
                 _.each(entities, function(entity){
                     if(isSizeColumnDef && entity.getSize){
@@ -286,9 +284,58 @@
         $templateCache.put('ui-grid/selectionRowHeaderButtons', '<div class="ui-grid-selection-row-header-buttons ui-grid-icon-ok" ng-class="{\'ui-grid-row-selected\': row.isSelected}" ng-click="selectButtonClick(row, $event)" uib-tooltip="{{grid.appScope.selectTooltip}}" tooltip-placement="right" tooltip-append-to-body="true">&nbsp;</div>');
         isAncestorInCart().then(function(isAncestorInCart){
             if(isAncestorInCart){
+                that.isAllSelected = true;
                 that.selectTooltip = $translate.instant('BROWSE.SELECTOR.ANCESTER_IN_CART_TOOLTIP.TEXT');
             }
         });
+
+        $templateCache.put('ui-grid/selectionSelectAllButtons',
+            "<div class=\"ui-grid-selection-row-header-buttons ui-grid-icon-ok\" ng-class=\"{'ui-grid-all-selected': grid.appScope.isAllSelected}\" ng-click=\"grid.appScope.toggleSelectAll()\"></div>"
+        );
+
+        this.isAllSelected = false;
+
+        this.toggleSelectAll = function(){
+            if(this.isAllSelected){
+                this.unselectAll();
+            } else {
+                this.selectAll();
+            }
+        };
+
+        this.selectAll = function(){
+            isAncestorInCart().then(function(isAncestorInCart){
+                if(!isAncestorInCart){
+                    return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                        return tc.user(facilityName).addCartItems(canceler.promise, _.map(entities, function(entity){
+                            return {
+                                entityType: entity.entityType,
+                                entityId: entity.id
+                            };
+                        })).then(function(){
+                            that.isAllSelected = true;
+                        });
+                    });
+                }
+            });
+        };
+
+        this.unselectAll = function(){
+            isAncestorInCart().then(function(isAncestorInCart){
+                if(!isAncestorInCart){
+                    return generateQueryBuilder().run(canceler.promise).then(function(entities){
+                        return tc.user(facilityName).deleteCartItems(canceler.promise, _.map(entities, function(entity){
+                            return {
+                                entityType: entity.entityType,
+                                entityId: entity.id
+                            };
+                        })).then(function(){
+                            that.isAllSelected = false;
+                        });
+                    });
+                }
+            });
+        };
 
         gridOptions.onRegisterApi = function(_gridApi) {
             gridApi = _gridApi;
@@ -337,6 +384,7 @@
                             tc.user(facilityName).cart(canceler.promise).then(function(cart){
                                 if(cart.isCartItem(row.entity.entityType, row.entity.id)){
                                     row.entity.deleteFromCart(canceler.promise);
+                                    that.isAllSelected = false;
                                 }
                             });
                         }
@@ -347,6 +395,8 @@
             });
 
             gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows){
+                
+
                 isAncestorInCart().then(function(isAncestorInCart){
                     if(!isAncestorInCart){
                         var entitiesToAdd = [];

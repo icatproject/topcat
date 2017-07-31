@@ -163,7 +163,7 @@
 	        	gridOptions.useExternalFiltering = true;
 	    	}
 	        var enableSelection = gridOptions.enableSelection === true && entityType.match(/^investigation|dataset|datafile$/) !== null;
-	        gridOptions.enableSelectAll = false;
+	        gridOptions.enableSelectAll = gridOptions.enableSelectAll === true && enableSelection;
 	        gridOptions.enableRowSelection = enableSelection;
 	        gridOptions.enableRowHeaderSelection = enableSelection;
 	        gridOptions.enableFiltering = true;
@@ -289,12 +289,18 @@
                     click: function(entity){
                         var sessionId = entity.facility.icat().session().sessionId;
                         var id = entity.id;
-                        var name = entity.location.replace(/^.*\//, '');
+                        var name;
+                        if(entity.entityType == 'datafile'){
+                            name = entity.location.replace(/^.*\//, '');
+                        } else {
+                            name = entity.name;
+                        }
+
                         var idsUrl = entity.facility.config().idsUrl + [
                             '/ids/getData?sessionId=' + encodeURIComponent(sessionId),
-                            'datafileIds=' + id,
+                            '' + entity.entityType + 'Ids=' + id,
                             'compress=false',
-                            'zip=false',
+                            'zip=' + entity.entityType != 'datafile' ? 'true' : 'false',
                             'outfile=' + encodeURIComponent(name)
                         ].join('&');
 
