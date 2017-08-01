@@ -120,6 +120,8 @@ public class StatusCheck {
       }
     } catch (IOException e){
       logger.error("performCheck IOException: " + e.toString());
+    } catch(NotFoundException e){
+      logger.error("performCheck NotFoundException: " + e.getMessage());
     } catch(TopcatException e) {
       logger.error("performCheck TopcatException: marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
       download.setStatus(DownloadStatus.EXPIRED);
@@ -207,6 +209,8 @@ public class StatusCheck {
       }
 
       downloadRepository.save(download);
+    } catch(NotFoundException e){
+      logger.error("prepareDownload NotFoundException: " + e.getMessage());
     } catch(TopcatException e) {
       logger.error("prepareDownload TopcatException: marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
       download.setStatus(DownloadStatus.EXPIRED);

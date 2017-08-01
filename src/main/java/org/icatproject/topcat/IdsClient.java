@@ -77,8 +77,9 @@ public class IdsClient {
             }
 
             Response out = httpClient.post("prepareData", new HashMap<String, String>(), data.toString(), timeout);
-
-            if(out.getCode() >= 400){
+            if(out.getCode() == 404){
+                throw new NotFoundException("Could not prepareData got a 404 response");
+            } else if(out.getCode() >= 400){
                 throw new BadRequestException("Could not prepareData got " + out.getCode() + " response: " + out.toString());
             }
 
@@ -93,8 +94,10 @@ public class IdsClient {
     public boolean isPrepared(String preparedId) throws TopcatException, IOException {
         try {
             Response response = httpClient.get("isPrepared?zip=true&preparedId=" + preparedId, new HashMap<String, String>(), timeout);
-            if(response.getCode() >= 400){
-                throw new NotFoundException(Utils.parseJsonObject(response.toString()).getString("message"));
+            if(response.getCode() == 404){
+                throw new NotFoundException("Could not run isPrepared got a 404 response");
+            } else if(response.getCode() >= 400){
+                throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
             }
             return response.toString().equals("true");
         } catch(IOException e){
@@ -108,7 +111,15 @@ public class IdsClient {
 
     public boolean isTwoLevel() throws TopcatException {
         try {
-            return httpClient.get("isTwoLevel", new HashMap<String, String>()).toString().equals("true");
+            Response response = httpClient.get("isTwoLevel", new HashMap<String, String>());
+
+            if(response.getCode() == 404){
+                throw new NotFoundException("Could not run isTwoLevel got a 404 response");
+            } else if(response.getCode() >= 400){
+                throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
+            }
+
+            return response.toString().equals("true");
         } catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }

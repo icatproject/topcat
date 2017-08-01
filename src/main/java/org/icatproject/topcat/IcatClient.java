@@ -32,7 +32,15 @@ public class IcatClient {
 
     public String getUserName() throws TopcatException {
     	try {
-    		return Utils.parseJsonObject(httpClient.get("session/" + sessionId, new HashMap<String, String>()).toString()).getString("userName");
+    		Response response = httpClient.get("session/" + sessionId, new HashMap<String, String>());
+    		if(response.getCode() == 404){
+                throw new NotFoundException("Could not run getUserName got a 404 response");
+            } else if(response.getCode() >= 400){
+                throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
+            }
+    		return Utils.parseJsonObject(response.toString()).getString("userName");
+    	} catch (TopcatException e){
+            throw e;
     	} catch (Exception e){
             throw new BadRequestException(e.getMessage());
     	}
@@ -57,12 +65,17 @@ public class IcatClient {
 		try {
 			String query = "select user.fullName from User user where user.name = :user";
 			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-    		String response = httpClient.get(url, new HashMap<String, String>()).toString();
-    		try {
-    			return Utils.parseJsonArray(response).getString(0);
-    		} catch(Exception e){
-    			return "";
-    		}
+    		Response response = httpClient.get(url, new HashMap<String, String>());
+    		
+    		if(response.getCode() == 404){
+                throw new NotFoundException("Could not run getFullName got a 404 response");
+            } else if(response.getCode() >= 400){
+                throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
+            }
+
+    		return Utils.parseJsonArray(response.toString()).getString(0);
+    	} catch (TopcatException e){
+            throw e;
     	} catch (Exception e){
             throw new BadRequestException(e.getMessage());
     	}
@@ -118,12 +131,21 @@ public class IcatClient {
 			}
 
 			for(String passedUrl : passedUrls){
-				for(JsonValue entityValue : Utils.parseJsonArray(httpClient.get(passedUrl, new HashMap<String, String>()).toString())){
+				Response response = httpClient.get(passedUrl, new HashMap<String, String>());
+
+				if(response.getCode() == 404){
+	                throw new NotFoundException("Could not run getEntities got a 404 response");
+	            } else if(response.getCode() >= 400){
+	                throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
+	            }
+
+				for(JsonValue entityValue : Utils.parseJsonArray(response.toString())){
 					JsonObject entity = (JsonObject) entityValue;
 					out.add(entity.getJsonObject(entityType.substring(0, 1).toUpperCase() + entityType.substring(1)));
 				}
 			}
-
+		} catch (TopcatException e){
+            throw e;
 		} catch (Exception e) {
 			throw new BadRequestException(e.getMessage());
 		}
@@ -154,8 +176,15 @@ public class IcatClient {
 			}
 
 			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-			String response = httpClient.get(url, new HashMap<String, String>()).toString();
-			size = ((JsonNumber) Utils.parseJsonArray(response).get(0)).longValue();
+			Response response = httpClient.get(url, new HashMap<String, String>());
+
+			if(response.getCode() == 404){
+                throw new NotFoundException("Could not run getSize got a 404 response");
+            } else if(response.getCode() >= 400){
+                throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
+            }
+
+			size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
 			cacheRepository.put(key, size);
 
 			return size;
