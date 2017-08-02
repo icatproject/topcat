@@ -716,7 +716,7 @@ $h2 lang.json
 
 Allows you to replace text/phrases within Topcat's interface with your own prefered alternatives e.g. rather than term "Investigation" you might prefer "Visit".
 
-A hierachy of translation strings. Self explainitory. 
+Within lang.json is a json object that represents a hierarchy of translation strings, with a bit of experimentation you can modify any virtually any text on Topcat's front end.
 
 $h2 topcat.css
 
