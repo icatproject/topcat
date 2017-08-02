@@ -378,27 +378,22 @@ An example configuration:
   "site": {
     "pages" : [
       {
-        "url" : "/about",
-        "stateName": "about",
+        "name" : "about",
         "addToNavBar": {
-            "linkLabel" : "MAIN_NAVIGATION.ABOUT",
-            "align" : "left"
-        },
-        "contents": "PAGE.ABOUT.HTML"
+          "label" : "About",
+          "align" : "left"
+        }
       }
     ]
   }
 }
 ```
 
-  * "url" - The url of the page.
-  * "stateName" - A unique token that represents that state.
+  * "name" - A unique name for that page this will correspond to a [name].html page (see the "content" directory section). Separate words with hyphens.
   * "addToNavBar" - Specified whether or not as link should be added to the top bar.
-      * "linkLabel" - the label (i.e. text) for the link.
+      * "label" - the label (i.e. text) for the link.
       * "align" - whether the link should be on the "left" or "right" hand side.
-  * "contents" - the html contents of the page specified in lang.json file. If not defined it will try and work the translation variable based on the stateName. e.g.
-      * stateName: "about" -> contents: "PAGE.ABOUT.HTML"
-      * stateName: "globus-help" -> contents: "PAGE.GLOBUS_HELP.HTML"
+
 
 $h3 topcat.json: "facilities" > [facility] > "hierachy"
 
@@ -692,6 +687,30 @@ Topcat defines the following jpql variables - which if used from any icat entity
 
 
 To get a better understanding of what these jpql variables refer to please view the [icat schema documentation](https://icatproject.org/mvn/site/icat/server/4.6.1/schema.html).
+
+$h2 The "content" directory
+
+After unzipping a Topcat release you will be presented with a directory called "content.example", which you need to make a copy of called "content" i.e.
+
+```bash
+cp -R content.example content
+```
+
+This newly created directory allows you to either replace or add files within the war file (which is actually the same format as a zip file), to view the existing contents of this war (i.e. zip) file by running the following:
+
+```bash
+unzip -l topcat-2.4.0.war
+```
+
+after running:
+
+```
+./setup install
+```
+
+the contents of the "content" directory will be injected into the war file just before deploying.
+
+You can use this feature to created "pages" directory, which where the html content (specified within topcat.json's "pages" section keep), you can also this feature to replace/add any other content e.g. the favicon.
 
 $h2 lang.json
 

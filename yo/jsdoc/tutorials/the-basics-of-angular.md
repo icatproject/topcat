@@ -3,7 +3,7 @@ Angular is an MVC ([Model View Controller](https://en.wikipedia.org/wiki/Model%E
 
 ## Views
 
-Coming soon...
+Present the data passed to it via controller.
 
 ## Controllers
 
