@@ -693,26 +693,28 @@ $h2 The "content" directory
 After unzipping a Topcat release you will be presented with a directory called "content.example", which you need to make a copy of called "content" i.e.
 
 ```bash
-cp -R content.example content
+  cp -R content.example content
 ```
 
 This newly created directory allows you to either replace or add files within the war file (which is actually the same format as a zip file), to view the existing contents of this war (i.e. zip) file by running the following:
 
 ```bash
-unzip -l topcat-2.4.0.war
+  unzip -l topcat-2.4.0.war
 ```
 
 after running:
 
-```
-./setup install
+```bash
+  ./setup install
 ```
 
 the contents of the "content" directory will be injected into the war file just before deploying.
 
-You can use this feature to created "pages" directory, which where the html content (specified within topcat.json's "pages" section keep), you can also this feature to replace/add any other content e.g. the favicon.
+You can use this feature to create a "pages" directory, which is where the html content specified within topcat.json's "pages" section is defined, you can also this feature to replace or add any other content e.g. the favicon.
 
 $h2 lang.json
+
+Allows you to replace text/phrases within Topcat's interface with your own prefered alternatives e.g. rather than term "Investigation" you might prefer "Visit".
 
 A hierachy of translation strings. Self explainitory. 
 

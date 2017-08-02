@@ -34,8 +34,6 @@ module.exports = function(config) {
       'bower_components/ui-router-extras/release/ct-ui-router-extras.js',
       'bower_components/angular-inform/dist/angular-inform.js',
       'bower_components/lodash/lodash.js',
-      'bower_components/pretty-bytes/pretty-bytes.js',
-      'bower_components/angular-pretty-bytes/angular-pretty-bytes.js',
       'bower_components/ngstorage/ngStorage.js',
       'bower_components/angular-translate/angular-translate.js',
       'bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',

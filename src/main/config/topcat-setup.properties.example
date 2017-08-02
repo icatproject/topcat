@@ -5,6 +5,13 @@
 !db.username = APP
 !db.password = APP
 
+# Oracle
+!db.driver      = oracle.jdbc.pool.OracleDataSource
+!db.url         = jdbc:oracle:thin:@//fgfdfg-ff.foo.ac.uk:1521/oracal.bar.ac.uk
+!db.url         = jdbc:oracle:thin:@//localhost:1521/XE
+!db.username    = icat
+!db.password    = secret
+
 # MySQL Database
 db.target      = mysql
 db.url         = jdbc:mysql://localhost:3306/topcat
