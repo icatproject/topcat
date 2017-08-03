@@ -1,5 +1,19 @@
 # Release Notes
 
+# 2.4.0
+
+* If the the Icat/IDS returns a 404 error Topcat will now longer mark a download as expired. This used to happen if the Java EE container (e.g. Glassfish) was running but the application had not fully booted up yet.
+* Now support file sizes in powers of 1000 bytes or 1024 bytes.
+* In topcat.properties adminUsernames can be list of space separated usernames (following Icat stack conventions) as well as the existing comma-space separated.
+* Search limits are described in the interface.
+* If the IDS is not available and Topcat tries run getIcatUrl call, Topcat will notify the user via an alert box.
+* A file count column can now be added to the Cart.
+* When a Topcat goes into maintenance mode users (within  a minute) will be automatically logged out.
+* If using a single tier, in addition to datafiles you can now add 'Download' buttons to investigations and datasets in the 'Browse' section.
+* Improved caching in cart.
+* Iproved calculation of file size/count.
+
+
 ## 2.3.0
 
 * Now supports file uploads
