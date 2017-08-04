@@ -3,25 +3,24 @@ Angular is an MVC ([Model View Controller](https://en.wikipedia.org/wiki/Model%E
 
 ## Views
 
-Present the data passed to it via controller.
+A view takes the model (i.e the data) passed to it via controller, and presents it to the end user. Via Angular's two way binding mechanism the view can also alter underlying model, which in turn will update the view it self.
 
 ## Controllers
 
-Coming soon...
+The presents the model to the view and provides behavior via methods.
 
 ## Models
 
-Coming soon...
+Models in Angular are just simple Javascript objects e.g. Strings or Arrays. 
 
 ## Two way binding
 
-Coming soon...
+This Angular's killer feature, this is what makes Angular a framework of choice for many people. Essentially, it is the idea that the view's inputs get bound to underlying model, such that if any changes to view is made (e.g. tying in text) the model will get updated, and if any changes to model are made the view gets updated.
 
 ## Services
 
-Coming soon...
+Services are singletons that contain functionality you want to share between your controllers e.g. to retrieve data from a web server.
 
 ## Directives
 
-Coming soon...
-
+Directives allow you extend the DOM's functionality by creating custom tags and/or attributes.

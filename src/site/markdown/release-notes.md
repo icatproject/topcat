@@ -11,7 +11,7 @@
 * When a Topcat goes into maintenance mode users (within  a minute) will be automatically logged out.
 * If using a single tier, in addition to datafiles you can now add 'Download' buttons to investigations and datasets in the 'Browse' section.
 * Improved caching in cart.
-* Iproved calculation of file size/count.
+* Improved calculation of file size/count.
 
 
 ## 2.3.0
