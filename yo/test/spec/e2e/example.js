@@ -14,7 +14,7 @@ describe('angularjs homepage', function() {
     passwordElement.sendKeys('root');
     submitElement.click();
 
-    browser.waitForAngular();
+    //browser.waitForAngular();
 
     expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/#/my-data/LILS');
 
