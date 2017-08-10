@@ -16,7 +16,7 @@ describe('angularjs homepage', function() {
 
     browser.waitForAngular();
 
-    expect(browser.getCurrentUrl()).toEqual('http://localhost:10080/#/my-data/LILS');
+    expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/#/my-data/LILS');
 
   });
 });
