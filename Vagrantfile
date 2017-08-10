@@ -121,7 +121,7 @@ Vagrant.configure(2) do |config|
     sudo /etc/init.d/apache2 restart
 
     
-    curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get --assume-yes install nodejs maven phantomjs
     sudo update-ca-certificates -f
     sudo npm install -g bower

@@ -11,6 +11,7 @@ def build_install
 		cp -r /vagrant/src ~/topcat_tmp
 		cp -r /vagrant/provision ~/topcat_tmp
 		cd ~/topcat_tmp
+		rm -rf ~/topcat_tmp/yo/node_modules
 		mvn clean install
 		cp ~/topcat_tmp/target/topcat-*.zip ~/
 		cd ~/
