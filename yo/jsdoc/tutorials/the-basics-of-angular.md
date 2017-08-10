@@ -24,3 +24,8 @@ Services are singletons that contain functionality you want to share between you
 ## Directives
 
 Directives allow you extend the DOM's functionality by creating custom tags and/or attributes.
+
+## Finding out more
+
+You can find out more by visiting Angular's site [here](https://angularjs.org/).
+

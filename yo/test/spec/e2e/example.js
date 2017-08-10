@@ -2,12 +2,17 @@
 
 describe('angularjs homepage', function() {
   it('should greet the named user', function() {
-    browser.get('http://www.angularjs.org');
+    browser.get('/');
 
-    element(by.model('yourName')).sendKeys('Julie'); // jshint ignore:line
+    var userNameElement = element(by.model('loginController.userName'));
+    var passwordElement = element(by.model('loginController.password'));
+    var submitElement = element(by.id('login'));
 
-    var greeting = element(by.binding('yourName'));
+    userNameElement.sendKeys('root');
+    passwordElement.sendKeys('root');
+    submitElement.click();
 
-    expect(greeting.getText()).toEqual('Hello Julie!');
+    expect(browser.getCurrentUrl()).toEqual('http://localhost:10080/#/my-data/LILS');
+
   });
 });
