@@ -12,7 +12,7 @@ before_script:
 script:
   - ci/travis.rb
 addons:
-  - firefox: "44.0.2"
+  firefox: "44.0.2"
   apt:
     sources:
       - google-chrome
