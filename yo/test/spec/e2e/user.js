@@ -15,11 +15,11 @@ describe('user', function() {
     expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/#/my-data/LILS');
     expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(false);
 
-    element(by.linkText('Proposal 1 - 5')).click();
+    element(by.css('a[ng-click="grid.appScope.browse(row.entity)"]')).click();
 
     browser.waitForAngular();
 
-    element(by.linkText('Dataset 1')).click();
+    element(by.css('a[ng-click="grid.appScope.browse(row.entity)"]')).click();
 
     element(by.className('ui-grid-icon-ok')).click();
 
