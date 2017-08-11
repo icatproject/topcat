@@ -1,7 +1,7 @@
 'use strict';
 
-describe('angularjs homepage', function() {
-  it('should greet the named user', function() {
+describe('user', function() {
+  it('creates download', function() {
     browser.get('/');
 
     browser.waitForAngular();
@@ -17,6 +17,9 @@ describe('angularjs homepage', function() {
     browser.waitForAngular();
 
     expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/#/my-data/LILS');
+
+
+    
 
   });
 });
