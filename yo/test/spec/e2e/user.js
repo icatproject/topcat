@@ -1,7 +1,7 @@
 'use strict';
 
 describe('user', function() {
-  it('creates download', function() {
+  it('creates download and then deletes it', function() {
     browser.get('/');
 
     browser.waitForAngular();
@@ -43,5 +43,12 @@ describe('user', function() {
 
     expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(true);
     
+    element(by.className('glyphicon-download-alt')).click();
+
+    element(by.css('a[translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT"]')).click();
+
+    expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(false);
+    
+
   });
 });
