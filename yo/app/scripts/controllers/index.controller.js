@@ -74,6 +74,7 @@
         this.isDownloadsPopoverOpen = false;
         $rootScope.$on('cart:submit', function(){
             that.isDownloadsPopoverOpen = true;
+            refreshDownloadCount();
         });
         function refreshDownloadCount(){
             that.downloadCount = 0;
