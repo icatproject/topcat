@@ -8,7 +8,7 @@ python:
 before_script:
   - chmod 0755 ci/travis.rb
   - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start -screen 0 1280x1024x16"
+  - sh -e /etc/init.d/xvfb start -screen 0 1280x1024x16
 script:
   - ci/travis.rb
 addons:

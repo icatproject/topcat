@@ -39,7 +39,7 @@ describe('user', function() {
 
     browser.wait(function(){
         return element(by.className('glyphicon-download-alt')).isPresent();
-    });
+    }, 1000 * 10, ".glyphicon-download-alt not present");
 
     element(by.className('glyphicon-download-alt')).click();
 
