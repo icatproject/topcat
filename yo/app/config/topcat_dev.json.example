@@ -1,8 +1,9 @@
 {    
     "site": {
-        "topcatUrl": "https://localhost:8181",
+        "topcatUrl": "http://localhost:8080",
         "home" : "my-data",
         "enableEuCookieLaw" : true,
+        "enableKiloBinaryBytes": false,
         "paging" : {
             "pagingType": "scroll",
             "paginationNumberOfRows": 10,
@@ -20,7 +21,7 @@
             "maxTitleLength": 30
         },
         "search": {
-            "enableParameters": false,
+            "enableParameters": true,
             "enableSamples": false,
             "gridOptions": {
                 "investigation": {
@@ -139,6 +140,9 @@
                         "field": "size"
                     },
                     {
+                        "field": "datafileCount"
+                    },
+                    {
                         "field": "facilityName"
                     }
                 ]
@@ -199,8 +203,11 @@
         {
             "name": "LILS",
             "title": "Lorum Ipsum Light Source",
-            "idsUrl": "https://localhost:8181",
-            "icatUrl": "https://localhost:8181",
+            "idsUrl": "http://localhost:8080",
+            "icatUrl": "http://localhost:8080",
+            "idsUploadDatafileFormat": "upload",
+            "idsUploadDatasetType": "DatasetType 1",
+            "idsUploadMaxTotalFileSize": 10000000000,
             "hierarchy": [
                 "facility",
                 "proposal",
@@ -220,12 +227,12 @@
             ],
             "downloadTransportTypes": [
                 {
-                    "type" : "https",
-                    "idsUrl": "https://localhost:18181"
+                    "type" : "http",
+                    "idsUrl": "http://localhost:8080"
                 },
                 {
                     "type" : "globus",
-                    "idsUrl": "https://localhost:18181"
+                    "idsUrl": "http://localhost:8080"
                 }
             ],
             "admin":{
@@ -460,6 +467,7 @@
                 "dataset": {
                     "gridOptions": {
                         "enableSelection": true,
+                        "enableUpload": true,
                         "columnDefs": [
                             {
                                 "field": "name",
@@ -560,7 +568,7 @@
             "name": "DLS",
             "title": "DIAMOND",
             "icatUrl": "https://icatapi-preprod.diamond.ac.uk",
-            "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
+            "idsUrl": "https://ids-preprod.diamond.ac.uk",
             "hierarchy": [
                 "facility",
                 "proposal",
@@ -581,11 +589,11 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
+                    "idsUrl": "https://ids-preprod.diamond.ac.uk"
                 },
                 {
                     "type" : "globus",
-                    "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
+                    "idsUrl": "https://globusdls-preprod.fds.rl.ac.uk"
                 }
             ],
             "admin":{
@@ -854,7 +862,7 @@
         {
             "name": "ISIS",
             "title": "ISIS",
-            "idsUrl": "https://isisicatds.stfc.ac.uk",
+            "idsUrl": "https://idsdev2.isis.cclrc.ac.uk:8181",
             "hierarchy": [
                 "facility",
                 "instrument",
@@ -873,7 +881,7 @@
             "downloadTransportTypes": [
                 {
                     "type" : "https",
-                    "idsUrl": "https://idsdev.isis.cclrc.ac.uk"
+                    "idsUrl": "https://idsdev2.isis.cclrc.ac.uk:8181"
                 }
               
             ],
