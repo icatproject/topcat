@@ -7,6 +7,11 @@ exports.config = {
     'spec/e2e/*.js'
   ],
 
+  plugins: [{
+    package: 'protractor-console',
+    logLevels: ['severe']
+  }],
+
 
   capabilities: {
     'browserName': 'chrome',

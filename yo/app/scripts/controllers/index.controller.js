@@ -74,18 +74,21 @@
         this.isDownloadsPopoverOpen = false;
         $rootScope.$on('cart:submit', function(){
             that.isDownloadsPopoverOpen = true;
-            refreshDownloadCount();
         });
         function refreshDownloadCount(){
             that.downloadCount = 0;
             _.each(tc.userFacilities(), function(facility){
+                console.log("refreshing download count");
                 facility.user().downloads("where download.isDeleted = false").then(function(downloads){
                     that.downloadCount = downloads.length;
+                    console.log("refreshed download count", downloads);
                     $timeout(function(){
                         $timeout(function(){
                             that.isDownloadsPopoverOpen = false;
                         });
                     });
+                }, function(response){
+                    console.log("refreshing download count - failed", response);
                 });
             });
         };
