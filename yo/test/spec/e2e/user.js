@@ -37,7 +37,7 @@ describe('user', function() {
 
     element(by.css('button[translate="CART.DOWNLOAD.MODAL.BUTTON.OK.TEXT"]')).click();
 
-    //browser.sleep(5000);
+    browser.sleep(5000);
     browser.waitForAngular();
 
     expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(true);
