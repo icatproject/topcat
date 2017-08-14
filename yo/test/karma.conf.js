@@ -69,6 +69,10 @@ module.exports = function(config) {
       {
         pattern: 'app/config/*.json',
         included: false
+      },
+      {
+        pattern: 'app/languages/*.json',
+        included: false
       }
     ],
 
@@ -77,7 +81,9 @@ module.exports = function(config) {
     ],
 
     proxies:  {
-      'data/config': 'app/data/config'
+      'data/config': 'app/data/config',
+      '/config/': '/base/app/config/',
+      '/languages/': '/base/app/languages/'
     },
 
     // web server port

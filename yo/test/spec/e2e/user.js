@@ -44,7 +44,7 @@ describe('user', function() {
     
     element(by.className('glyphicon-download-alt')).click();
 
-    //browser.sleep(5000);
+    browser.sleep(1000);
 
     element(by.css('a[translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT"]')).click();
 
