@@ -25,7 +25,7 @@ describe('user', function() {
 
     browser.waitForAngular();
 
-    browser.sleep(5000);
+    //browser.sleep(5000);
 
     element(by.className('glyphicon-shopping-cart')).click();
 
@@ -37,13 +37,14 @@ describe('user', function() {
 
     element(by.css('button[translate="CART.DOWNLOAD.MODAL.BUTTON.OK.TEXT"]')).click();
 
-    browser.sleep(5000);
+    //browser.sleep(5000);
+    browser.waitForAngular();
 
     expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(true);
     
     element(by.className('glyphicon-download-alt')).click();
 
-    browser.sleep(5000);
+    //browser.sleep(5000);
 
     element(by.css('a[translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT"]')).click();
 
