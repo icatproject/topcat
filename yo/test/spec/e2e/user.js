@@ -37,14 +37,15 @@ describe('user', function() {
 
     element(by.css('button[translate="CART.DOWNLOAD.MODAL.BUTTON.OK.TEXT"]')).click();
 
-    browser.sleep(5000);
-    browser.waitForAngular();
+    browser.wait(function(){
+        return element(by.className('glyphicon-download-alt')).isPresent();
+    });
 
-    expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(true);
-    
     element(by.className('glyphicon-download-alt')).click();
 
-    browser.sleep(1000);
+    browser.wait(function(){
+        return element(by.css('a[translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT"]')).isPresent();
+    });
 
     element(by.css('a[translate="DOWNLOAD.ACTIONS.LINK.REMOVE.TEXT"]')).click();
 
