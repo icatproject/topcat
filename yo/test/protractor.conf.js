@@ -10,7 +10,7 @@ exports.config = {
 
   capabilities: {
     'browserName': 'chrome',
-    'chromeOptions': {'args': ['--disable-extensions']}
+    'chromeOptions': {'args': ['--disable-extensions', '--window-size=1024,800']}
   },
 
   directConnect: true,
