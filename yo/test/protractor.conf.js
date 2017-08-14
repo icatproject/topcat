@@ -9,7 +9,7 @@ exports.config = {
 
   plugins: [{
     package: 'protractor-console',
-    logLevels: ['debug']
+    logLevels: ['info']
   }],
 
 
