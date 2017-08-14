@@ -227,12 +227,12 @@
             ],
             "downloadTransportTypes": [
                 {
-                    "type" : "https",
-                    "idsUrl": "https://localhost:18181"
+                    "type" : "http",
+                    "idsUrl": "http://localhost:8080"
                 },
                 {
                     "type" : "globus",
-                    "idsUrl": "https://localhost:18181"
+                    "idsUrl": "http://localhost:8080"
                 }
             ],
             "admin":{
