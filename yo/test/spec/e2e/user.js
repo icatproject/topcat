@@ -25,7 +25,9 @@ describe('user', function() {
 
     browser.waitForAngular();
 
-    //browser.sleep(5000);
+    browser.wait(function(){
+        return element(by.className('glyphicon-shopping-cart')).isPresent();
+    }, 1000 * 10, ".glyphicon-shopping-cart not present");
 
     element(by.className('glyphicon-shopping-cart')).click();
 
