@@ -4,7 +4,7 @@ describe('user', function() {
   it('creates download and then deletes it', function() {
     browser.get('/');
 
-    browser.waitForAngular();
+    //browser.waitForAngular();
 
     // element(by.model('loginController.userName')).sendKeys('root');
     // element(by.model('loginController.password')).sendKeys('root');
