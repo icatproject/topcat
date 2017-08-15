@@ -5,6 +5,8 @@ rvm:
   - 2.3
 python:
   - "3.1"
+node_js:
+  - 7
 before_script:
   - chmod 0755 ci/travis.rb
   - export DISPLAY=:99.0

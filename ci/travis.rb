@@ -111,9 +111,8 @@ exec %{
   ruby lorum_facility_generator.rb
   ruby #{install_provision_dir}/populate_lucene.rb
   cd ../
-
-  curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
-  sudo apt-get --assume-yes install nodejs maven phantomjs
+  
+  sudo apt-get --assume-yes install  maven phantomjs
   sudo npm install -g bower
   sudo npm install -g grunt-cli
 
