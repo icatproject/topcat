@@ -111,10 +111,9 @@ exec %{
   ruby lorum_facility_generator.rb
   ruby #{install_provision_dir}/populate_lucene.rb
   cd ../
-  
-  sudo apt-get --assume-yes install  maven phantomjs
-  sudo npm install -g bower
-  sudo npm install -g grunt-cli
+
+  npm install -g bower
+  npm install -g grunt-cli
 
   mvn clean install
   cp ./target/topcat-*.zip ./install
@@ -128,7 +127,7 @@ exec %{
   cd topcat
   dos2unix ./setup
   chmod 0755 ./setup
-  sudo ./setup install
+  ./setup install
   cd ../
 
   asadmin -t set applications.application.topcat-2.4.0-SNAPSHOT.deployment-order=140
