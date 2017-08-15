@@ -3,7 +3,7 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
     
-    browser.get('http://localhost:8080/#/login');
+    browser.get('/#/login');
 
     browser.waitForAngular();
 
