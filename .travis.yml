@@ -27,6 +27,7 @@ after_failure:
   - cat target/surefire-reports/*.txt
   - cat install/glassfish4/glassfish/domains/domain1/logs/*.log
   - cat yo/npm-debug.log
+  - node -v
 cache:
   directories:
     - $HOME/.m2/repository
