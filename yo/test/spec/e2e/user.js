@@ -3,7 +3,7 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
     
-    browser.get('/#/login');
+    browser.get('/');
 
     browser.waitForAngular();
 
