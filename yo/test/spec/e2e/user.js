@@ -2,9 +2,12 @@
 
 describe('user', function() {
   it('creates download and then deletes it', function() {
+    
+    browser.waitForAngularEnabled();
+
     browser.get('/');
 
-    browser.waitForAngularEnabled();
+    
 
     browser.waitForAngular();
 
