@@ -5,7 +5,7 @@ describe('user', function() {
     
     
 
-    browser.get('/', 10000);
+    browser.get('/#/login');
 
     browser.waitForAngular();
 
