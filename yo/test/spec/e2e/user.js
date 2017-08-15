@@ -3,13 +3,13 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
     
-    browser.waitForAngularEnabled();
-
-    browser.get('/');
-
     
 
+    browser.get('/', 10000);
+
     browser.waitForAngular();
+
+    
 
     element(by.model('loginController.userName')).sendKeys('root');
     element(by.model('loginController.password')).sendKeys('root');
