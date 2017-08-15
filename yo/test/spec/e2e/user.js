@@ -4,13 +4,15 @@ describe('user', function() {
   it('creates download and then deletes it', function() {
     browser.get('/');
 
-    //browser.waitForAngular();
+    browser.waitForAngularEnabled();
 
-    // element(by.model('loginController.userName')).sendKeys('root');
-    // element(by.model('loginController.password')).sendKeys('root');
-    // element(by.id('login')).click();
+    browser.waitForAngular();
 
-    // browser.waitForAngular();
+    element(by.model('loginController.userName')).sendKeys('root');
+    element(by.model('loginController.password')).sendKeys('root');
+    element(by.id('login')).click();
+
+    browser.waitForAngular();
 
     // expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/#/my-data/LILS');
     // expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(false);

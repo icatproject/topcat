@@ -7,10 +7,10 @@ exports.config = {
     'spec/e2e/*.js'
   ],
 
-  plugins: [{
-    package: 'protractor-console',
-    logLevels: ['debug']
-  }],
+  // plugins: [{
+  //   package: 'protractor-console',
+  //   logLevels: ['debug']
+  // }],
 
 
   capabilities: {
