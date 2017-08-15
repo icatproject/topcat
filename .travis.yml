@@ -7,7 +7,6 @@ python:
   - "3.1"
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install 6.10.0
-
 env:
   - TRAVIS_NODE_VERSION="0.12"
 before_script:
