@@ -1,6 +1,6 @@
 exports.config = {
   // The address of a running selenium server.
-  //seleniumAddress: 'http://localhost:4444/wd/hub',
+  seleniumAddress: 'http://localhost:4444/wd/hub',
 
   // Spec patterns are relative to the location of this config.
   specs: [
@@ -14,7 +14,8 @@ exports.config = {
 
 
   capabilities: {
-    'browserName': 'firefox'
+    'browserName': 'chrome',
+    'chromeOptions': {'args': ['--disable-extensions', '--window-size=1280,1024']}
   },
 
   directConnect: true,

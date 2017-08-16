@@ -39,7 +39,16 @@ def build_install_plugin(name)
 			cd ~/#{name}_tmp
 			mvn clean install
 			cd target
-			asadmin deploy --force=true $(ls *.war)
+			if ls *.zip 1> /dev/null 2>&1; then
+				cp #{name}-*.zip ~/
+				cd ~/
+				unzip -o #{name}-*.zip
+				cd #{name}
+				cp -R #{plugin_dir}/config ./
+				./setup install
+			else
+				asadmin deploy --force=true $(ls *.war)
+			fi
 		})
 	else
 		puts "No such plugin directory '#{plugin_dir}'"

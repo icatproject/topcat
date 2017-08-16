@@ -214,7 +214,7 @@ public class IcatClient {
 	}
 
 	protected String[] getAdminUserNames() throws Exception {
-		return Properties.getInstance().getProperty("adminUserNames", "").split("([ ]*,[ ]*|[ ]*)");
+		return Properties.getInstance().getProperty("adminUserNames", "").split("([ ]*,[ ]*|[ ]+)");
 	}
 
 }
