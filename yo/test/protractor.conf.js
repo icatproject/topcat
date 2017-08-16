@@ -1,6 +1,6 @@
 exports.config = {
   // The address of a running selenium server.
-  seleniumAddress: 'http://localhost:4444/wd/hub',
+  //seleniumAddress: 'http://localhost:4444/wd/hub',
 
   // Spec patterns are relative to the location of this config.
   specs: [
@@ -14,8 +14,7 @@ exports.config = {
 
 
   capabilities: {
-    'browserName': 'chrome',
-    'chromeOptions': {'args': ['--disable-extensions', '--window-size=1280,1024']}
+    'browserName': 'firefox'
   },
 
   directConnect: true,
@@ -25,11 +24,11 @@ exports.config = {
   // with relative paths will be prepended with this.
   baseUrl: 'http://localhost:8080',
 
-  jasmineNodeOpts: {
-    onComplete: null,
-    isVerbose: true,
-    showColors: true,
-    includeStackTrace: true,
-    defaultTimeoutInterval: 600000
-  }
+  // jasmineNodeOpts: {
+  //   onComplete: null,
+  //   isVerbose: true,
+  //   showColors: true,
+  //   includeStackTrace: true,
+  //   defaultTimeoutInterval: 600000
+  // }
 };
