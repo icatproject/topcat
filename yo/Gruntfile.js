@@ -448,10 +448,10 @@ module.exports = function (grunt) {
                   // Arguments passed to the command
               }
           },
-        firefox: {
+        chrome: {
             options: {
                   args: {
-                      browser: 'firefox'
+                      browser: 'chrome'
                   }
               }
         }
