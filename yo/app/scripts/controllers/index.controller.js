@@ -118,25 +118,13 @@
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
                         if(!completedDownloads[key] && download.status == 'COMPLETE'){
-                            if(!isSessionChanging && completedDownloadsInit  && !download.isTwoLevel){
-                                if(download.transport == 'https'){
-                                    var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
-                                    var iframe = $('<iframe>').attr('src', url).css({
-                                        position: 'absolute',
-                                        left: '-1000000px',
-                                        height: '1px',
-                                        width: '1px'
-                                    });
-
-                                    $('body').append(iframe);
-                                } else {
-                                    that.isCompletedDownloadPopoverOpen = true;
+                            if(!isSessionChanging && completedDownloadsInit  && download.isTwoLevel){
+                                that.isCompletedDownloadPopoverOpen = true;
+                                $timeout(function(){
                                     $timeout(function(){
-                                        $timeout(function(){
-                                            that.isCompletedDownloadPopoverOpen = false;
-                                        });
+                                        that.isCompletedDownloadPopoverOpen = false;
                                     });
-                                }
+                                });
                             }
                             completedDownloads[key] = true;
                         }
@@ -156,9 +144,9 @@
                 $rootScope.$broadcast('downloads:update', data);
             });
         }
-        // Check downloads status every 60 seconds. This is probably still too frequently!
         $interval(checkoutForNewlyCompletedDownloads, 60 * 1000);
         checkoutForNewlyCompletedDownloads();
+        $rootScope.$on('downloads:dialog_opened', checkoutForNewlyCompletedDownloads);
 
         this.changeLanguage = function(langKey) {
             $translate.use(langKey);

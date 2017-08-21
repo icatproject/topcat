@@ -91,6 +91,8 @@
             });
         };
 
+        $rootScope.$broadcast('downloads:dialog_opened');
+
     });
 
 })();
