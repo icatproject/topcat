@@ -78,10 +78,8 @@
         function refreshDownloadCount(){
             that.downloadCount = 0;
             _.each(tc.userFacilities(), function(facility){
-                console.log("refreshing download count");
                 facility.user().downloads("where download.isDeleted = false").then(function(downloads){
                     that.downloadCount = downloads.length;
-                    console.log("refreshed download count", downloads);
                     $timeout(function(){
                         $timeout(function(){
                             that.isDownloadsPopoverOpen = false;
@@ -122,25 +120,13 @@
                     _.each(downloads, function(download){
                         var key = facility.config().name + ":" + download.id;
                         if(!completedDownloads[key] && download.status == 'COMPLETE'){
-                            if(!isSessionChanging && completedDownloadsInit  && !download.isTwoLevel){
-                                if(download.transport == 'https'){
-                                    var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
-                                    var iframe = $('<iframe>').attr('src', url).css({
-                                        position: 'absolute',
-                                        left: '-1000000px',
-                                        height: '1px',
-                                        width: '1px'
-                                    });
-
-                                    $('body').append(iframe);
-                                } else {
-                                    that.isCompletedDownloadPopoverOpen = true;
+                            if(!isSessionChanging && completedDownloadsInit  && download.isTwoLevel){
+                                that.isCompletedDownloadPopoverOpen = true;
+                                $timeout(function(){
                                     $timeout(function(){
-                                        $timeout(function(){
-                                            that.isCompletedDownloadPopoverOpen = false;
-                                        });
+                                        that.isCompletedDownloadPopoverOpen = false;
                                     });
-                                }
+                                });
                             }
                             completedDownloads[key] = true;
                         }
@@ -160,8 +146,9 @@
                 $rootScope.$broadcast('downloads:update', data);
             });
         }
-        $interval(checkoutForNewlyCompletedDownloads, 1000);
+        $interval(checkoutForNewlyCompletedDownloads, 60 * 1000);
         checkoutForNewlyCompletedDownloads();
+        $rootScope.$on('downloads:dialog_opened', checkoutForNewlyCompletedDownloads);
 
         this.changeLanguage = function(langKey) {
             $translate.use(langKey);

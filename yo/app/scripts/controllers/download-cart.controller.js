@@ -94,7 +94,22 @@
 
             var promises = [];
             _.each(this.downloads, function(download){
-                promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email, timeout.promise));
+                promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email, timeout.promise).then(function(response){
+                    return download.facility.user().downloads(["where download.id = ?",response.downloadId]).then(function(downloads){
+                        var download = downloads[0];
+                        if(download.transport == 'https' && download.status == 'COMPLETE'){
+                            var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                            var iframe = $('<iframe>').attr('src', url).css({
+                                position: 'absolute',
+                                left: '-1000000px',
+                                height: '1px',
+                                width: '1px'
+                            });
+
+                            $('body').append(iframe);
+                        }
+                    });
+                }));
             });
             $q.all(promises).then(function(){
                 $uibModalStack.dismissAll();

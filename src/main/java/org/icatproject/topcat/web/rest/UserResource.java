@@ -605,10 +605,14 @@ public class UserResource {
 	@POST
 	@Path("/cart/{facilityName}/submit")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response submitCart(@PathParam("facilityName") String facilityName, @FormParam("icatUrl") String icatUrl,
-			@FormParam("sessionId") String sessionId, @FormParam("transport") String transport,
-			@FormParam("transportUrl") String transportUrl, @FormParam("email") String email,
-			@FormParam("fileName") String fileName, @FormParam("zipType") String zipType)
+	public Response submitCart(@PathParam("facilityName") String facilityName,
+			@FormParam("icatUrl") String icatUrl,
+			@FormParam("sessionId") String sessionId,
+			@FormParam("transport") String transport,
+			@FormParam("transportUrl") String transportUrl,
+			@FormParam("email") String email,
+			@FormParam("fileName") String fileName,
+			@FormParam("zipType") String zipType)
 			throws TopcatException, MalformedURLException, ParseException {
 
 		logger.info("submitCart called");
@@ -650,9 +654,6 @@ public class UserResource {
 			download.setEmail(email);
 			download.setIsEmailSent(false);
 			download.setSize(0);
-			Boolean isTwoLevel = idsClient.isTwoLevel();
-			download.setIsTwoLevel(isTwoLevel);
-			download.setStatus(DownloadStatus.PREPARING);
 
 			List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
 
@@ -665,6 +666,17 @@ public class UserResource {
 			}
 
 			download.setDownloadItems(downloadItems);
+
+			Boolean isTwoLevel = idsClient.isTwoLevel();
+			download.setIsTwoLevel(isTwoLevel);
+
+			if(isTwoLevel){
+				download.setStatus(DownloadStatus.PREPARING);
+			} else {
+				String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+      			download.setPreparedId(preparedId);
+				download.setStatus(DownloadStatus.COMPLETE);
+			}
 
 			try {
 				em.persist(download);
