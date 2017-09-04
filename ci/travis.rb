@@ -55,7 +55,7 @@ exec %{
   unzip  mysql-connector-java-5.1.37.zip
   cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar glassfish4/glassfish/domains/domain1/lib/ext
 
-  wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-20170606.173228-2-distro.zip
+  wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-distro.zip
   unzip  ids.storage_file-1.4.0-distro.zip
   cp ./provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
   mkdir -p data/ids/cache
