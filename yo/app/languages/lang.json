@@ -566,7 +566,8 @@
         "MAIN_TAB" : {
             "DOWNLOADS": "Downloads",
             "MESSAGES": "Messages",
-            "MACHINE_TYPES": "Machine Types"
+            "MACHINE_TYPES": "Machine Types",
+            "MACHINES": "Machines"
         }
     },
     "TIME": {

@@ -627,11 +627,11 @@
 
 		this.uncapitalize = function(text){
 			return ('' + text).replace(/^(.)/, function(s){ return s.toLowerCase(); });
-		}
+		};
 
 		this.capitalize = function(text){
 			return ('' + text).replace(/^(.)/, function(s){ return s.toUpperCase(); });
-		}
+		};
 
 		this.constantify = function(text){
 			return ('' + text).replace(/([A-Z])/g, '_$1').replace(/-/g, '_').replace(/^_/, '').toUpperCase();

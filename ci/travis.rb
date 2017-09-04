@@ -56,7 +56,7 @@ exec %{
   cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar glassfish4/glassfish/domains/domain1/lib/ext
 
   wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-20170606.173228-2-distro.zip
-  unzip  ids.storage_file-1.4.0-20170606.173228-2-distro.zip
+  unzip  ids.storage_file-1.4.0-distro.zip
   cp ./provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
   mkdir -p data/ids/cache
   cd ids.storage_file
@@ -95,15 +95,15 @@ exec %{
   ./setup install
   cd ../
 
-  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-20170606.155903-3-distro.zip
-  unzip ids.server-1.8.0-20170606.155903-3-distro.zip
+  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-distro.zip
+  unzip ids.server-1.8.0-distro.zip
   cp ./provision/ids.properties ids.server/run.properties
   cp ./provision/ids-setup.properties ids.server/setup.properties
   cd ids.server
   ./setup configure
   ./setup install
   cd ../
-  asadmin -t set applications.application.ids.server-1.8.0-SNAPSHOT.deployment-order=120
+  asadmin -t set applications.application.ids.server-1.8.0.deployment-order=120
 
   cd ../tools
   gem install rest-client
