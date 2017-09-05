@@ -9,16 +9,13 @@ describe('user', function() {
 
     browser.driver.wait(element(by.css('.is-init')).isPresent());
     
-    // browser.get('http://localhost:8080/#/login');
-    
+    element(by.model('loginController.userName')).sendKeys('root');
+    element(by.model('loginController.password')).sendKeys('root');
+    element(by.id('login')).click();
 
-    // element(by.model('loginController.userName')).sendKeys('root');
-    // element(by.model('loginController.password')).sendKeys('root');
-    // element(by.id('login')).click();
+    browser.waitForAngular();
 
-    // browser.waitForAngular();
-
-    // expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/#/my-data/LILS');
+    expect(browser.getCurrentUrl()).toEqual('http://localhost:8080/#/my-data/LILS');
     // expect(element(by.className('glyphicon-download-alt')).isPresent()).toEqual(false);
 
     // element(by.css('a[ng-click="grid.appScope.browse(row.entity)"]')).click();
