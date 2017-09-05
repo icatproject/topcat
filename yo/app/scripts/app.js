@@ -533,7 +533,10 @@
             if(plugin.setup) $injector.invoke(plugin.setup);
         });
 
-        window.angular.resumeBootstrap = true;
+        // $timeout(function(){
+        //     $('body').append($('<span>').addClass('is-init'));
+        // }, 100);
+
     });
 
 })();
