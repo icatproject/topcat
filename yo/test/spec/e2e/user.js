@@ -3,13 +3,13 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
 
-    browser.waitForAngularEnabled(true);
+    browser.ignoreSynchronization = true;
 
-    browser.get('http://localhost:8080/#/login');
+    browser.get('http://localhost:8080/#/login', function(){
+        return browser.waitForDeferredAngular();
+    });
 
-    
-
-    //browser.driver.wait(element(by.css('.is-init')).isPresent());
+    browser.driver.wait(element(by.css('.is-init')).isPresent());
     
     // browser.get('http://localhost:8080/#/login');
     
