@@ -3,20 +3,15 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
 
-    browser.get('/');
+    browser.waitForAngularEnabled(true);
 
-    browser.waitForAngularEnabled();
-
-    browser.waitForAngular();
+    browser.get('http://localhost:8080/#/login');
 
     
 
-    // browser.driver.wait(element(by.css('.is-init')).isPresent());
+    //browser.driver.wait(element(by.css('.is-init')).isPresent());
     
     // browser.get('http://localhost:8080/#/login');
-
-    
-
     
 
     // element(by.model('loginController.userName')).sendKeys('root');
