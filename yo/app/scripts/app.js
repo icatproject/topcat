@@ -528,7 +528,7 @@
         RouteCreatorService.createStates();
     });
 
-    app.run(function($injector){
+    app.run(function($injector, $timeout){
         _.each(plugins, function(plugin){
             if(plugin.setup) $injector.invoke(plugin.setup);
         });
