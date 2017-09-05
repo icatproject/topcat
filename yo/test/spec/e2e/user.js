@@ -5,9 +5,7 @@ describe('user', function() {
 
     browser.ignoreSynchronization = true;
 
-    browser.get('http://localhost:8080/#/login', function(){
-        return browser.waitForDeferredAngular();
-    });
+    browser.get('http://localhost:8080/#/login');
 
     browser.driver.wait(element(by.css('.is-init')).isPresent());
     
