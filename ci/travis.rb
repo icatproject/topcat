@@ -95,7 +95,7 @@ exec %{
   ./setup install
   cd ../
 
-  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-distro.zip
+  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0/ids.server-1.8.0-distro.zip
   unzip ids.server-1.8.0-distro.zip
   cp ./provision/ids.properties ids.server/run.properties
   cp ./provision/ids-setup.properties ids.server/setup.properties
