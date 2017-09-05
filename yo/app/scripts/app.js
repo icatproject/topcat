@@ -532,6 +532,8 @@
         _.each(plugins, function(plugin){
             if(plugin.setup) $injector.invoke(plugin.setup);
         });
+
+        window.angular.resumeBootstrap = true;
     });
 
 })();
