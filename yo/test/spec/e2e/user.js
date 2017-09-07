@@ -3,9 +3,9 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
 
-    browser.sleep(10000);
-
     browser.get('http://localhost:8080/#/login');
+
+    browser.sleep(10000);
 
     var until = protractor.ExpectedConditions;
     browser.wait(until.presenceOf(element(by.css('.is-init'))));
