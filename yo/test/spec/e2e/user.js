@@ -3,7 +3,7 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
 
-    browser.sleep(3000);
+    browser.sleep(10000);
 
     browser.get('http://localhost:8080/#/login');
 
