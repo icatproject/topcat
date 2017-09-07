@@ -7,7 +7,13 @@ describe('user', function() {
 
     browser.get('http://localhost:8080/#/login');
 
-    browser.driver.wait(element(by.css('.is-init')).isPresent());
+    browser.driver.wait(element(by.css('body.deferred-bootstrap-loading')).isPresent()).then(function(){
+        browser.ignoreSynchronization = false;
+    });
+
+
+
+    browser.waitForAngular();
     
     // element(by.model('loginController.userName')).sendKeys('root');
     // element(by.model('loginController.password')).sendKeys('root');

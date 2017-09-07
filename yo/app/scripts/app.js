@@ -532,11 +532,6 @@
         _.each(plugins, function(plugin){
             if(plugin.setup) $injector.invoke(plugin.setup);
         });
-
-        $timeout(function(){
-            $('body').append($('<span>').addClass('is-init'));
-        }, 100);
-
     });
 
 })();
