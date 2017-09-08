@@ -205,9 +205,6 @@
             "title": "Lorum Ipsum Light Source",
             "idsUrl": "http://localhost:8080",
             "icatUrl": "http://localhost:8080",
-            "idsUploadDatafileFormat": "upload",
-            "idsUploadDatasetType": "DatasetType 1",
-            "idsUploadMaxTotalFileSize": 10000000000,
             "hierarchy": [
                 "facility",
                 "proposal",
