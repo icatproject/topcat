@@ -54,8 +54,8 @@ Vagrant.configure(2) do |config|
     unzip -q mysql-connector-java-5.1.37.zip
     cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar ./glassfish4/glassfish/domains/domain1/lib/ext
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0-SNAPSHOT/ids.storage_file-1.4.0-20170606.173228-2-distro.zip
-    unzip -q ids.storage_file-1.4.0-20170606.173228-2-distro.zip
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0/ids.storage_file-1.4.0-distro.zip
+    unzip -q ids.storage_file-1.4.0-distro.zip
     cp /vagrant/provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
     mkdir -p data/ids/cache
     cd ids.storage_file
@@ -98,14 +98,14 @@ Vagrant.configure(2) do |config|
     cd ../
 
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0-SNAPSHOT/ids.server-1.8.0-20170606.155903-3-distro.zip
-    unzip -q ids.server-1.8.0-20170606.155903-3-distro.zip
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0/ids.server-1.8.0-distro.zip
+    unzip -q ids.server-1.8.0-distro.zip
     cp /vagrant/provision/ids.properties ids.server/run.properties
     cp /vagrant/provision/ids-setup.properties ids.server/setup.properties
     cd ids.server
     ./setup configure
     ./setup install
-    asadmin -t set applications.application.ids.server-1.8.0-SNAPSHOT.deployment-order=120
+    asadmin -t set applications.application.ids.server-1.8.0.deployment-order=120
 
     cd ../
 

@@ -265,3 +265,37 @@ write([
 
 	}
 ])
+
+
+facility_id = 1
+
+colours = ["red", "blue", "green", "yellow", "cyan", "white"]
+
+parameter_type_id = write([
+	{
+		:ParameterType => {
+			:name => "colour",
+			:valueType => "STRING",
+			:units => "colour",
+			:applicableToDatafile => true,
+			:facility => {:id => facility_id},
+			:permissibleStringValues => colours.map{|colour| {:value => colour} }
+		}
+	}
+]).first
+
+datafile_ids = get("select datafile.id from Datafile datafile limit 0, 300");
+
+
+write(datafile_ids.map{ |datafile_id|
+	{
+		:DatafileParameter => {
+			:datafile => {:id => datafile_id},
+			:type => {:id => parameter_type_id},
+			:stringValue => colours[(rand * (colours.length - 1)).floor]
+		}
+	}
+})
+
+
+
