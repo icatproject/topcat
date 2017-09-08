@@ -10,9 +10,9 @@ A web based GUI able to search across multiple ICAT instances and download data 
 
 Information on how to install Topcat can be found here:
 
-* https://repo.icatproject.org/site/topcat/2.2.1/installation.html
+* https://repo.icatproject.org/site/topcat/2.3.0/installation.html
 
-## Development
+## Development within a VM
 
 You can create a Topcat development environment via Vagrant (https://www.vagrantup.com/):
 
@@ -54,6 +54,26 @@ mvn clean install
 your new build will be in:
 
 * target/
+
+## Native development
+
+If you chose not to use vagrant then you need to setup node and npm yourself. Go to a suitable directory to act as parent to your distribution and: 
+
+```
+wget https://nodejs.org/dist/v6.11.3/node-v6.11.3-linux-x64.tar.xz
+tar --xz -xf node-v6.11.3-linux-x64.tar.xz && rm node-v6.11.3-linux-x64.tar.xz
+```
+to get what is currently the LTS version of node and npm. Then add to $PATH the directory: node-v6.11.3-linux-x64/bin and
+
+```
+npm install -g bower
+npm install -g grunt-cli
+```
+to install bower and grunt-cli "globally". Then go to where you have checked out topcat and do the usual
+```
+mvn clean install
+```
+
 
 ## Licence
 
