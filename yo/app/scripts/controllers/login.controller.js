@@ -12,6 +12,9 @@
         this.nonUserFacilities = tc.nonUserFacilities();
         if(this.nonUserFacilities[0]) this.facilityName = this.nonUserFacilities[0].config().name;
         this.authenticationTypes = [];
+        this.userName = "";
+        this.password = "";
+
         var facility;
 
         $rootScope.$broadcast('login:enter');
