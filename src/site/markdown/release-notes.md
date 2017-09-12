@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.3.1
+
+* Very minor fix to make the anonymous plugin work.
+
 ## 2.3.0
 
 * Now supports file uploads
