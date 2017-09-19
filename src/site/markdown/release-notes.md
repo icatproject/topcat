@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.3.2
+
+* Very minor fix to work with strict mode in older browsers.
+
 ## 2.3.1
 
 * Very minor fix to make the anonymous plugin work.
