@@ -135,7 +135,7 @@
 
               var chunkIndex = 0;
 
-              function readChunk(){
+              var readChunk = function(){
                 if(chunkIndex * chunkSize > file.size){
                   return;
                 }
@@ -172,7 +172,7 @@
                   reader.readAsArrayBuffer(chunk);
                 }
   
-              }
+              };
 
               connection.onmessage = function(response){
                 datafileIds.push(JSON.parse(response.data).id);
