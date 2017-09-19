@@ -11,7 +11,7 @@
             timeout.resolve();
         });
         var breadcrumbConfig = tc.config().breadcrumb;
-        this.maxBreadcrumbTitleLength = breadcrumbConfig  && breadcrumbConfig.maxTitleLength ? breadcrumbConfig .maxTitleLength : 1000000;
+        this.maxBreadcrumbTitleLength = breadcrumbConfig  && breadcrumbConfig.maxTitleLength ? breadcrumbConfig.maxTitleLength : 1000000;
 
         var facility = tc.facility($state.params.facilityName);
         var hierarchy = _.clone(facility.config().hierarchy);
