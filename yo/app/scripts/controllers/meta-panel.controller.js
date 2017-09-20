@@ -25,7 +25,27 @@
                 config = facility.config().browse[entity.type].metaTabs;
             }
 
-            if(!config) return;
+            var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;
+            if(entityHash == previousEntityHash){
+                that.tabs = [];
+                previousEntityHash = undefined;
+                return;
+            }
+            previousEntityHash = entityHash;
+            
+            if(!config) {
+                // Build a return a single tab that reports "No metadata available"
+                // TODO add translations
+                var tab = {
+                    title: "No metadata",
+                    items: [{
+                        label: "",
+                        value: "There is no metadata to display for this entity"
+                    }]
+                }
+                that.tabs = [tab]
+                return;
+            };
 
             var entityType = entity.type;
             _.each(config, function(metaTab){
@@ -54,14 +74,6 @@
                 });
             });
 
-            var entityHash = entity.facilityName + ":" + entity.type + ":" + entity.id;
-            if(entityHash == previousEntityHash){
-                that.tabs = [];
-                previousEntityHash = undefined;
-                return;
-            }
-            previousEntityHash = entityHash;
-            
             var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
 
             if(entity.type == 'instrument'){
