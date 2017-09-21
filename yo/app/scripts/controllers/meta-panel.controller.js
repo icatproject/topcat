@@ -34,8 +34,7 @@
             previousEntityHash = entityHash;
             
             if(!config) {
-                // Build a return a single tab that reports "No metadata available"
-                // TODO add translations
+                // Build a single tab that reports "No metadata available"
                 var tab = {
                     title: $translate.instant("METATABS.NO_METADATA.TABTITLE"),
                     items: [{
