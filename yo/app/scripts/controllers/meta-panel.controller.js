@@ -37,10 +37,10 @@
                 // Build a return a single tab that reports "No metadata available"
                 // TODO add translations
                 var tab = {
-                    title: "No metadata",
+                    title: $translate.instant("METATABS.NO_METADATA.TABTITLE"),
                     items: [{
                         label: "",
-                        value: "There is no metadata to display for this entity"
+                        value: $translate.instant("METATABS.NO_METADATA.VALUE")
                     }]
                 }
                 that.tabs = [tab]

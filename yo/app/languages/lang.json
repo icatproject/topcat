@@ -548,6 +548,10 @@
             "FILE_SIZE" : "File Size",
             "LOCATION" : "Location",
             "PARAMETERS" : "Parameters"
+        },
+        "NO_METADATA" : {
+            "TABTITLE" : "No metadata",
+            "VALUE" : "There are no metadata to display for this entity"
         }
     },
     "FOOTER" : {
