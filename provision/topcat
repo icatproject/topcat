@@ -45,6 +45,7 @@ def build_install_plugin(name)
 				unzip -o #{name}-*.zip
 				cd #{name}
 				cp -R #{plugin_dir}/config ./
+				dos2unix ./setup
 				./setup install
 			else
 				asadmin deploy --force=true $(ls *.war)

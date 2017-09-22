@@ -167,7 +167,7 @@
 	        gridOptions.enableRowSelection = enableSelection;
 	        gridOptions.enableRowHeaderSelection = enableSelection;
 	        gridOptions.enableFiltering = true;
-	        gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
+	        // gridOptions.rowTemplate = '<div ng-click="grid.appScope.showTabs(row)" ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>';
 
     		_.each(gridOptions.columnDefs, function(columnDef, i){
                 columnDef.enableHiding = false;
@@ -262,6 +262,7 @@
 
 	            columnDef.cellTemplate = columnDef.cellTemplate || [
 	                '<div class="ui-grid-cell-contents">',
+                        '<a ng-if="colRenderIndex == 0" ng-click="grid.appScope.showTabs(row)" class="btn btn-xs glyphicon glyphicon-info-sign" uib-tooltip="{{&quot;BROWSE.INTERFACE.TOGGLE_METATABS_TOOLTIP.TEXT&quot; | translate}}" tooltip-placement="right"></a>',
 	                    '<span ng-if="!(' + showCondition + ') && $root.requestCounter != 0" class="loading">&nbsp;</span>',
                         '<span ',
                             'ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" ',

@@ -499,6 +499,7 @@ module.exports = function (grunt) {
     'postcss',
     'connect:test',
     'karma',
+    // BR removed to make life easier on Windows :-) Then put it back again :-(
     'protractor'
   ]);
 

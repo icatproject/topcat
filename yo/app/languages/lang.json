@@ -173,6 +173,9 @@
             "ARIA": {
                 "SORT_ASCENDING": ": activate to sort column ascending",
                 "SORT_DESCENDING": ": activate to sort column descending"
+            },
+            "TOGGLE_METATABS_TOOLTIP": {
+                "TEXT": "Show/hide details"
             }
         },
         "NO_RESULTS" : "Nothing to display",
@@ -545,6 +548,10 @@
             "FILE_SIZE" : "File Size",
             "LOCATION" : "Location",
             "PARAMETERS" : "Parameters"
+        },
+        "NO_METADATA" : {
+            "TABTITLE" : "No metadata",
+            "VALUE" : "There are no metadata to display for this entity"
         }
     },
     "FOOTER" : {
