@@ -341,5 +341,13 @@ body[ng-cloak=""] > * {
 }
 
 body[ng-cloak=""] #loading_message { 
-    display: block !important;
+    display: flex !important;
+    height: 40em;
+    align-items: center;
+    justify-content: center;
+}
+
+#loading_message p {
+  margin: 0;
+  font-size: 20px;
 }
