@@ -327,3 +327,19 @@ a[ng-click]{
 .upload-area.enter{
   background: yellow;
 }
+
+body[ng-cloak=""] { 
+    display: block !important;
+}
+
+body[ng-cloak=""] > * { 
+    display: none  !important;
+}
+
+#loading_message {
+    display: none  !important;
+}
+
+body[ng-cloak=""] #loading_message { 
+    display: block !important;
+}

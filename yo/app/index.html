@@ -127,6 +127,9 @@
 
     </head>
     <body ng-cloak ng-controller="IndexController as indexController">
+        <!-- Displayed during loading, hidden once ng-cloak removed from body -->
+        <div id="loading_message">Loading...</div>
+
         <!-- Begin page content -->
         <div class="container-fluid">
             <div class="page-header"  ng-hide="indexController.maintenanceMode.show">
