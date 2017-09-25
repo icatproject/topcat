@@ -97,7 +97,7 @@
                         enableSamples: { _type: 'boolean', _mandatory: false },
                         enableInvestigation: { _type: 'boolean', _mandatory: false },
                         enableDataset: { _type: 'boolean', _mandatory: false },
-                        enableDatfile: { _type: 'boolean', _mandatory: false },
+                        enableDatafile: { _type: 'boolean', _mandatory: false },
                         gridOptions: {}
                     },
                     browse: {
