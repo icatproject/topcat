@@ -24,11 +24,20 @@
         this.dateFormat = 'yyyy-MM-dd';
         this.parameters = $state.params.parameters ? JSON.parse($state.params.parameters) : [];
         this.samples = $state.params.samples ? JSON.parse($state.params.samples) : [];
-        this.investigation = $state.params.investigation != 'false';
-        this.dataset = $state.params.dataset != 'false';
-        this.datafile = $state.params.datafile != 'false';
-        this.enableParameters = tc.config().search.enableParameters;
-        this.enableSamples = tc.config().search.enableSamples;
+        this.enableTextBox = tc.config().search.enableTextBox !== false;
+        this.enableDateRange = tc.config().search.enableDateRange !== false;
+        this.enableParameters = tc.config().search.enableParameters !== false;
+        this.enableSamples = tc.config().search.enableSamples !== false;
+        this.enableInvestigation = tc.config().search.enableInvestigation !== false;
+        this.enableDataset = tc.config().search.enableDataset !== false;
+        this.enableDatafile = tc.config().search.enableDatafile !== false;
+        this.investigation = $state.params.investigation != 'false' && this.enableInvestigation;
+        this.dataset = $state.params.dataset != 'false' && this.enableDataset;
+        this.datafile = $state.params.datafile != 'false' && this.enableDatafile;
+        this.entityCount = 0;
+        if(this.enableInvestigation) this.entityCount++;
+        if(this.enableDataset) this.entityCount++;
+        if(this.enableDatafile) this.entityCount++;
 
         this.openStartDate = function(){
             this.isStartDateOpen = true;
