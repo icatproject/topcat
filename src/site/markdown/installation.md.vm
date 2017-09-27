@@ -291,8 +291,13 @@ An example (partial) configuration:
 {
   "site": {
     "search": {
-        "enableParameters": false,
-        "enableSamples": false,
+        "enableTextBox": true,
+        "enableDateRange": true,
+        "enableParameters": true,
+        "enableSamples": true,
+        "enableInvestigation": true,
+        "enableDataset": true,
+        "enableDatafile": true,
         "gridOptions": {
             "investigation": {...},
             "dataset": {...},
@@ -302,8 +307,13 @@ An example (partial) configuration:
   }
 }
 ```
+  * "enableTextBox" - specifies whether the main search text box feature should be enabled or not. Can be true or false.
+  * "enableDateRange" - specifies whether the date range feature should be enabled or not. Can be true or false.
   * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false.
   * "enableSamples" - specifies whether the sample search feature should be enabled or not. Can be true or false.
+  * "enableInvestigation" - specifies whether investigation search should be enabled or not. Can be true or false.
+  * "enableDataset" - specifies whether dataset search should be enabled or not. Can be true or false.
+  * "enableDatafile" - specifies whether datafile search should be enabled or not. Can be true or false.
   * gridOptions
       * investigation - the grid options for the "investigation" Icat entity type. See "gridOptions configuration" for more information.
       * dataset - the grid options for the "dataset" Icat entity type. See "gridOptions configuration" for more information.
