@@ -11,10 +11,12 @@
 	    	"the-structure-of-a-plugin": {
 	    		"title": "The Structure of a Plugin"
 	    	},
+	    	"the-structure-of-plugin-js": {
+	    		"title": "The structure of plugin.js"
+	    	},
 	    	"the-basics-of-angular": {
 	    		"title": "The Basics of Angular"
-	    	}
-	    	,
+	    	},
 	    	"angular-debugging-tips": {
 	    		"title": "Angular Debugging Tips"
 	    	}
