@@ -141,7 +141,7 @@ def expire_download():
 		"value": "EXPIRED"
 	})
 
-def expire_pending_nagios_downloads():
+def expire_all_pending_downloads():
 	downloads = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", {
 		"icatUrl": icat_url,
 		"sessionId": session_id,
@@ -161,7 +161,7 @@ while True:
 	print " * 1: Get a list of all the file locations for a download."
 	print " * 2: Create preparedId for a download and generate update SQL."
 	print " * 3: Set a download status to 'EXPIRED'."
-	print " * 4: Expire all pending Nagios downloads."
+	print " * 4: Expire all pending downloads."
 	print " * 5: Exit"
 
 	option_number = raw_input("Enter option number: ");
@@ -173,7 +173,7 @@ while True:
 	elif option_number == "3":
 		expire_download()
 	elif option_number == "4":
-		expire_pending_nagios_downloads()
+		expire_all_pending_downloads()
 	elif option_number == "5":
 		break
 	else:
