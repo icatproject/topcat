@@ -65,7 +65,7 @@
             var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
 
             if(entity.type == 'instrument'){
-                queryBuilder.include('instrumentScientistUser');
+                queryBuilder.include('instrumentScientist');
             }
 
             if(entity.type == 'investigation'){
