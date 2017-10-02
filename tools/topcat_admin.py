@@ -142,10 +142,17 @@ def expire_download():
 	})
 
 def expire_all_pending_downloads():
+	query = "(download.status like 'PREPARING' or download.status like 'RESTORING') and download.isDeleted = false"
+
+	facility_name = raw_input("Facility name (optional): ")
+
+	if facility_name != "":
+		query += " and download.facilityName = '" + facility_name + "'"
+
 	downloads = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", {
 		"icatUrl": icat_url,
 		"sessionId": session_id,
-		"queryOffset": "download.facilityName = 'NEWDIAMOND' and (download.status like 'PREPARING' or download.status like 'RESTORING') and download.isDeleted = false"
+		"queryOffset": query
 	}).text)
 	for download in  downloads:
 		requests.put(topcat_url + "/topcat/admin/download/" + str(download["id"]) +  "/status", {
