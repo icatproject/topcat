@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.3.3
+
+* Very minor fix to display instrument scientists in meta tabs.
+
 ## 2.3.2
 
 * Very minor fix to work with strict mode in older browsers.
