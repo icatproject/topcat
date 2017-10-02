@@ -61,6 +61,15 @@ auth = json.dumps({
 
 session_id = json.loads(requests.post(icat_url + "/icat/session", {"json": auth}).text)["sessionId"]
 
+def show_download():
+	download_id = raw_input("Enter download id: ")
+	print requests.get(topcat_url + "/topcat/admin/downloads", {
+		"icatUrl": icat_url,
+		"sessionId": session_id,
+		"queryOffset": "where download.id = " + download_id
+	}).text
+
+
 def list_file_locations():
 	download_id = raw_input("Enter download id: ")
 	output_file_name = raw_input("Output file name (optional): ")
@@ -165,23 +174,27 @@ def expire_all_pending_downloads():
 while True:
 	print ""
 	print "What do you want to do?"
-	print " * 1: Get a list of all the file locations for a download."
-	print " * 2: Create preparedId for a download and generate update SQL."
-	print " * 3: Set a download status to 'EXPIRED'."
-	print " * 4: Expire all pending downloads."
-	print " * 5: Exit"
+	print " * 1: Show download."
+	print " * 2: Get a list of all the file locations for a download."
+	print " * 3: Create preparedId for a download and generate update SQL."
+	print " * 4: Set a download status to 'EXPIRED'."
+	print " * 5: Expire all pending downloads."
+	print " * 6: Exit"
 
 	option_number = raw_input("Enter option number: ");
 
+
 	if option_number == "1":
-		list_file_locations()
+		show_download()
 	elif option_number == "2":
-		prepare_download()
+		list_file_locations()
 	elif option_number == "3":
-		expire_download()
+		prepare_download()
 	elif option_number == "4":
-		expire_all_pending_downloads()
+		expire_download()
 	elif option_number == "5":
+		expire_all_pending_downloads()
+	elif option_number == "6":
 		break
 	else:
 		print ""
