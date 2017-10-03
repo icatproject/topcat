@@ -1,8 +1,15 @@
 
 import requests
-import faker
 import json
 import time
+import random
+
+
+
+
+from faker import Faker
+
+fake = Faker()
 
 icat_url = "http://localhost:8080"
 users_count = 100
@@ -32,17 +39,17 @@ auth = json.dumps({
 session_id = json.loads(requests.post(icat_url + "/icat/session", {"json": auth}).text)["sessionId"]
 
 def write(entities):
-	json.loads(requests.post(icat_url + "/icat/session", {
+	return json.loads(requests.post(icat_url + "/icat/entityManager", {
 		"icatUrl": icat_url,
 		"sessionId": session_id,
 		"entities": json.dumps(entities)
 	}).text)
 
 def get(query):
-	json.loads(requests.get(icat_url + "/icat/entityManager", {
+	return json.loads(requests.get(icat_url + "/icat/entityManager", {
 		"icatUrl": icat_url,
 		"sessionId": session_id,
-		"entities": json.dumps(entities)
+		"query": query
 	}).text)
 
 
@@ -53,139 +60,142 @@ facility_id = write([{
 	}
 }])[0]
 
-# user_ids = write(users_count.times.map do |i|
-# 	{
-# 		:User => {
-# 			:fullName => Faker::Name.name,
-# 			:name => "db/user#{i + 1}",
-# 			:email => Faker::Internet.email
-# 		}
-# 	}
-# end)
 
-# instrument_ids = write(instruments_count.times.map do |i|
-# 	{
-# 		:Instrument => {
-# 			:fullName => "Instrument #{i + 1}",
-# 			:name => "I#{i + 1}",
-# 			:facility => {:id => facility_id}
-# 		}
-# 	}
-# end)
+user_entities = []
+for i in range(0, users_count):
+	user_entities.append({
+		"User": {
+			"fullName": fake.name(),
+			"name": "db/user" + str(i),
+			"email":  fake.email()
+		}
+	})
+user_ids = write(user_entities)
 
-# investigation_type_ids = write(investigation_types_count.times.map do |i|
-# 	{
-# 		:InvestigationType => {
-# 			:name => "InvestigationType #{i + 1}",
-# 			:description => Faker::Lorem.words.join(' '),
-# 			:facility => {:id => facility_id}
-# 		}
-# 	}
-# end)
+print user_ids
 
-# dataset_type_ids = write(dataset_types_count.times.map do |i|
-# 	{
-# 		:DatasetType => {
-# 			:name => "DatasetType #{i + 1}",
-# 			:description => Faker::Lorem.words.join(' '),
-# 			:facility => {:id => facility_id}
-# 		}
-# 	}
-# end)
+instrument_entities = []
+for i in range(0, instruments_count):
+	instrument_entities.append({
+		"Instrument": {
+			"fullName": "Instrument " + str(i),
+			"name": "I" + str(i),
+			"facility": {"id": facility_id}
+		}
+	})
+instrument_ids = write(instrument_entities)
+	
+
+investigation_types_entities = []
+for i in range(0, investigation_types_count):
+	investigation_types_entities.append({
+		"InvestigationType":  {
+			"name":  "InvestigationType " + str(i),
+			"description":  " ".join(fake.words()),
+			"facility":  {"id":  facility_id}
+		}
+	})
+investigation_type_ids = write(investigation_types_entities)
+	
 
 
-# investigation_parameter_type_ids = write(parameter_type_count.times.map { |i|
-# 	{
-# 		:ParameterType => {
-# 			:name => "Investigation ParameterType #{i + 1}",
-# 			:valueType => "STRING",
-# 			:facility => {:id => facility_id},
-# 			:units => "foo",
-# 			:permissibleStringValues => permissible_string_value_count.times.map{ |j|
-# 				{
-# 					:value => "#{i} - #{j}"
-# 				}
-# 			},
-# 			:applicableToInvestigation => true,
-# 			:applicableToDataset => true,
-# 			:applicableToDatafile => true
-# 		}
-# 	}
-# })
+dataset_types_entities = []
+for i in range(0, dataset_types_count):
+	dataset_types_entities.append({
+		"DatasetType":  {
+			"name":  "DatasetType #{i + 1}",
+			"description":  " ".join(fake.words()),
+			"facility":  {"id":  facility_id}
+		}
+	})
+dataset_type_ids = write(dataset_types_entities)
+print dataset_type_ids
 
 
+parameter_type_entities = []
+for i in range(0, parameter_type_count):
+	parameter_type_entities.append({
+		"ParameterType":  {
+			"name":  "Investigation ParameterType " + str(i),
+			"valueType":  "STRING",
+			"facility":  {"id":  facility_id},
+			"units":  "foo",
+			"permissibleStringValues":  map(lambda j: {"value": str(i) + ", " + str(j)}, range(0, permissible_string_value_count)),
+			"applicableToInvestigation":  True,
+			"applicableToDataset":  True,
+			"applicableToDatafile":  True
+		}
+	})
+investigation_parameter_type_ids = write(parameter_type_entities)
+	
 
-# proposals_count.times do |i|
-# 	name = "Proposal #{i + 1}"
-# 	investigations_per_proposal_count.times do |j|
-# 		investigation_type_id = investigation_type_ids[(rand * investigation_types_count).floor]
-# 		instrument_id = instrument_ids[(rand * instruments_count).floor]
-		
-# 		investigation_user_ids = []
-# 		while (investigation_user_ids.count < co_investigators_per_investigation_count + 1) && (investigation_user_ids.count <= users_count)
-# 			user_id = user_ids[(rand * users_count).floor]
-# 			investigation_user_ids << user_id if !investigation_user_ids.include?(user_id)
-# 		end
+for i in range(0, proposals_count):
+	name = "Proposal " + str(i)
+	for j in range(0, investigations_per_proposal_count):
 
-# 		investigation_users = investigation_user_ids.map do |user_id|
-# 			{
-# 				:user => {:id => user_id},
-# 				:role => "CO_INVESTIGATOR"
-# 			}
-# 		end
+		investigation_type_id = random.choice(investigation_type_ids)
 
-# 		investigation_users[0][:role] = "PRINCIPAL_INVESTIGATOR"
+		instrument_id = random.choice(instrument_ids)
+		investigation_user_ids = []
+		while len(investigation_user_ids) < co_investigators_per_investigation_count + 1 and len(investigation_user_ids) <= users_count:
+			user_id = random.choice(user_ids)
+			if user_id not in investigation_user_ids:
+				investigation_user_ids.append(user_id)
+		investigation_user_entities = []
+		for user_id in investigation_user_ids:
+			investigation_user_entities.append({
+				"user":  {"id":  user_id},
+				"role":  "CO_INVESTIGATOR"
+			})
+		investigation_user_entities[0]["role"] = "PRINCIPAL_INVESTIGATOR"
 
-# 		investigation_id = write([{
-# 			:Investigation => {
-# 				:name => name,
-# 				:visitId => "#{name} - #{j + 1}",
-# 				:title => Faker::Lorem.words.join(' '),
-# 				:startDate => one_day_ago,
-# 				:endDate => seven_days_from_now,
-# 				:facility => {:id => facility_id},
-# 				:type => {:id => investigation_type_id},
-# 				:investigationInstruments => [
-# 					{:instrument => {:id => instrument_id}}
-# 				],
-# 				:investigationUsers => investigation_users
-# 			}
-# 		}]).first
+		investigation_id = write([{
+			"Investigation":  {
+				"name":  name,
+				"visitId":  name + " - " + str(i) + " " + str(j),
+				"title":   " ".join(fake.words()),
+				"startDate":  one_day_ago,
+				"endDate":  seven_days_from_now,
+				"facility":  {"id":  facility_id},
+				"type":  {"id":  investigation_type_id},
+				"investigationInstruments":  [
+					{"instrument":  {"id":  instrument_id}}
+				],
+				"investigationUsers":  investigation_user_entities
+			}
+		}])[0]
 
-# 		datasets_per_investigation_count.times.each do |k|
-# 			dataset_type_id = dataset_type_ids[(rand * dataset_types_count).floor]
+		for k in range(0, datasets_per_investigation_count):
 
-# 			dataset_id = write([{
-# 				:Dataset => {
-# 					:name => "Dataset #{k + 1}",
-# 					:type => {:id => dataset_type_id},
-# 					:investigation => {:id => investigation_id}
-# 				}
-# 			}]).first
+			dataset_type_id = random.choice(dataset_type_ids)
 
-# 			write(datafiles_per_dataset_count.times.map do |l|
-# 				{
-# 					:Datafile => {
-# 						:name => "Datafile #{l + 1}",
-# 						:description => Faker::Lorem.words.join(' '),
-# 						:location => Faker::Lorem.words.join('/'),
-# 						:fileSize => (rand * 1000000).floor,
-# 						:dataset => {:id => dataset_id}
-# 					}
-# 				}
-# 			end)
+			dataset_id = write([{
+				"Dataset":  {
+					"name":  "Dataset " + str(k + 1),
+					"type":  {"id":  dataset_type_id},
+					"investigation":  {"id":  investigation_id}
+				}
+			}])[0]
+			datafile_entities = []
+			for l in range(0, datafiles_per_dataset_count):
+				datafile_entities.append({
+					"Datafile":  {
+						"name":  "Datafile " + str(l + 1),
+						"description":  " ".join(fake.words()),
+						"location":  "/".join(fake.words()),
+						"fileSize":  0,
+						"dataset":  {"id":  dataset_id}
+					}
+				})
+			write(datafile_entities)
 
-# 		end
-
-# 	end
-# end
 
 # root_user_id = write([
 # 	{
-# 		:User => {
-# 			:fullName => Faker::Name.name,
-# 			:name => "simple/root",
-# 			:email => "root@example.com"
+# 		"User":  {
+# 			"fullName":  Faker::Name.name,
+# 			"name":  "simple/root",
+# 			"email":  "root@example.com"
 # 		}
 # 	}
 # ]).first
@@ -194,42 +204,42 @@ facility_id = write([{
 
 # investigation_ids.each do |investigation_id|
 # 	write([{
-# 		:InvestigationUser => {
-# 			:investigation => {:id => investigation_id},
-# 			:user => {:id => root_user_id},
-# 			:role => "CO_INVESTIGATOR"
+# 		"InvestigationUser":  {
+# 			"investigation":  {"id":  investigation_id},
+# 			"user":  {"id":  root_user_id},
+# 			"role":  "CO_INVESTIGATOR"
 # 		}
 # 	}])
 # end
 
 # write([
 # 	{
-# 		:ParameterType => {
-# 			:name => "title",
-# 			:valueType => "STRING",
-# 			:units => "title",
-# 			:applicableToDataCollection => true,
-# 			:facility => {:id => facility_id}
+# 		"ParameterType":  {
+# 			"name":  "title",
+# 			"valueType":  "STRING",
+# 			"units":  "title",
+# 			"applicableToDataCollection":  true,
+# 			"facility":  {"id":  facility_id}
 # 		},
 
 # 	},
 # 	{
-# 		:ParameterType => {
-# 			:name => "releaseDate",
-# 			:valueType => "DATE_AND_TIME",
-# 			:units => "releaseDate",
-# 			:applicableToDataCollection => true,
-# 			:facility => {:id => facility_id}
+# 		"ParameterType":  {
+# 			"name":  "releaseDate",
+# 			"valueType":  "DATE_AND_TIME",
+# 			"units":  "releaseDate",
+# 			"applicableToDataCollection":  true,
+# 			"facility":  {"id":  facility_id}
 # 		},
 		
 # 	},
 # 	{
-# 		:ParameterType => {
-# 			:name => "createdBy",
-# 			:valueType => "STRING",
-# 			:units => "createdBy",
-# 			:applicableToDataCollection => true,
-# 			:facility => {:id => facility_id}
+# 		"ParameterType":  {
+# 			"name":  "createdBy",
+# 			"valueType":  "STRING",
+# 			"units":  "createdBy",
+# 			"applicableToDataCollection":  true,
+# 			"facility":  {"id":  facility_id}
 # 		},
 
 # 	}
@@ -237,12 +247,12 @@ facility_id = write([{
 
 # write([
 # 	{
-# 		:DatafileFormat => {
-# 			:facility => {:id => facility_id},
-# 			:name => "upload",
-# 			:type => "misc",
-# 			:description => "Uploads by the Topcat's users",
-# 			:version => "1"
+# 		"DatafileFormat":  {
+# 			"facility":  {"id":  facility_id},
+# 			"name":  "upload",
+# 			"type":  "misc",
+# 			"description":  "Uploads by the Topcat's users",
+# 			"version":  "1"
 # 		},
 
 # 	}
@@ -255,23 +265,23 @@ facility_id = write([{
 
 # parameter_type_id = write([
 # 	{
-# 		:ParameterType => {
-# 			:name => "colour",
-# 			:valueType => "STRING",
-# 			:units => "colour",
-# 			:applicableToDatafile => true,
-# 			:facility => {:id => facility_id},
-# 			:permissibleStringValues => colours.map{|colour| {:value => colour} }
+# 		"ParameterType":  {
+# 			"name":  "colour",
+# 			"valueType":  "STRING",
+# 			"units":  "colour",
+# 			"applicableToDatafile":  true,
+# 			"facility":  {"id":  facility_id},
+# 			"permissibleStringValues":  colours.map{|colour| {:value":  colour} }
 # 		}
 # 	}
 # ]).first
 
 # write(datafile_ids.map{ |datafile_id|
 # 	{
-# 		:DatafileParameter => {
-# 			:datafile => {:id => datafile_id},
-# 			:type => {:id => parameter_type_id},
-# 			:stringValue => colours[(rand * (colours.length - 1)).floor]
+# 		"DatafileParameter":  {
+# 			"datafile":  {"id":  datafile_id},
+# 			"type":  {"id":  parameter_type_id},
+# 			"stringValue":  colours[(rand * (colours.length - 1)).floor]
 # 		}
 # 	}
 # })
@@ -288,24 +298,24 @@ facility_id = write([{
 
 # longitude_parameter_type_id = write([
 # 	{
-# 		:ParameterType => {
-# 			:name => "longitude",
-# 			:valueType => "NUMERIC",
-# 			:units => "longitude",
-# 			:applicableToDatafile => true,
-# 			:facility => {:id => facility_id}
+# 		"ParameterType":  {
+# 			"name":  "longitude",
+# 			"valueType":  "NUMERIC",
+# 			"units":  "longitude",
+# 			"applicableToDatafile":  true,
+# 			"facility":  {"id":  facility_id}
 # 		}
 # 	}
 # ]).first
 
 # latitude_parameter_type_id = write([
 # 	{
-# 		:ParameterType => {
-# 			:name => "latitude",
-# 			:valueType => "NUMERIC",
-# 			:units => "latitude",
-# 			:applicableToDatafile => true,
-# 			:facility => {:id => facility_id}
+# 		"ParameterType":  {
+# 			"name":  "latitude",
+# 			"valueType":  "NUMERIC",
+# 			"units":  "latitude",
+# 			"applicableToDatafile":  true,
+# 			"facility":  {"id":  facility_id}
 # 		}
 # 	}
 # ]).first
@@ -313,20 +323,20 @@ facility_id = write([{
 
 # write(datafile_ids.map{ |datafile_id|
 # 	{
-# 		:DatafileParameter => {
-# 			:datafile => {:id => datafile_id},
-# 			:type => {:id => longitude_parameter_type_id},
-# 			:numericValue => random_longitude
+# 		"DatafileParameter":  {
+# 			"datafile":  {"id":  datafile_id},
+# 			"type":  {"id":  longitude_parameter_type_id},
+# 			"numericValue":  random_longitude
 # 		}
 # 	}
 # })
 
 # write(datafile_ids.map{ |datafile_id|
 # 	{
-# 		:DatafileParameter => {
-# 			:datafile => {:id => datafile_id},
-# 			:type => {:id => latitude_parameter_type_id},
-# 			:numericValue => random_latitude
+# 		"DatafileParameter":  {
+# 			"datafile":  {"id":  datafile_id},
+# 			"type":  {"id":  latitude_parameter_type_id},
+# 			"numericValue":  random_latitude
 # 		}
 # 	}
 # })
@@ -348,12 +358,12 @@ facility_id = write([{
 
 # parameter_type_id = write([
 # 	{
-# 		:ParameterType => {
-# 			:name => "climate",
-# 			:valueType => "STRING",
-# 			:units => "climate",
-# 			:applicableToDatafile => true,
-# 			:facility => {:id => facility_id}
+# 		"ParameterType":  {
+# 			"name":  "climate",
+# 			"valueType":  "STRING",
+# 			"units":  "climate",
+# 			"applicableToDatafile":  true,
+# 			"facility":  {"id":  facility_id}
 # 		}
 # 	}
 # ]).first
@@ -361,10 +371,10 @@ facility_id = write([{
 
 # write(datafile_ids.map{ |datafile_id|
 # 	{
-# 		:DatafileParameter => {
-# 			:datafile => {:id => datafile_id},
-# 			:type => {:id => parameter_type_id},
-# 			:stringValue => random_climate
+# 		"DatafileParameter":  {
+# 			"datafile":  {"id":  datafile_id},
+# 			"type":  {"id":  parameter_type_id},
+# 			"stringValue":  random_climate
 # 		}
 # 	}
 # })
@@ -375,12 +385,12 @@ facility_id = write([{
 
 # parameter_type_id = write([
 # 	{
-# 		:ParameterType => {
-# 			:name => "start_date",
-# 			:valueType => "DATE_AND_TIME",
-# 			:units => "start_date",
-# 			:applicableToDatafile => true,
-# 			:facility => {:id => facility_id}
+# 		"ParameterType":  {
+# 			"name":  "start_date",
+# 			"valueType":  "DATE_AND_TIME",
+# 			"units":  "start_date",
+# 			"applicableToDatafile":  true,
+# 			"facility":  {"id":  facility_id}
 # 		}
 # 	}
 # ]).first
@@ -388,10 +398,10 @@ facility_id = write([{
 
 # write(datafile_ids.map{ |datafile_id|
 # 	{
-# 		:DatafileParameter => {
-# 			:datafile => {:id => datafile_id},
-# 			:type => {:id => parameter_type_id},
-# 			:dateTimeValue => random_start_date
+# 		"DatafileParameter":  {
+# 			"datafile":  {"id":  datafile_id},
+# 			"type":  {"id":  parameter_type_id},
+# 			"dateTimeValue":  random_start_date
 # 		}
 # 	}
 # })
