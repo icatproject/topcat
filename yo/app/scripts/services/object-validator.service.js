@@ -91,8 +91,13 @@
                         message: { _type: 'string' }
                     },
                     search: {
+                        enableTextBox: { _type: 'boolean', _mandatory: false },
+                        enableDateRange: { _type: 'boolean', _mandatory: false },
                         enableParameters: { _type: 'boolean', _mandatory: false },
                         enableSamples: { _type: 'boolean', _mandatory: false },
+                        enableInvestigation: { _type: 'boolean', _mandatory: false },
+                        enableDataset: { _type: 'boolean', _mandatory: false },
+                        enableDatafile: { _type: 'boolean', _mandatory: false },
                         gridOptions: {}
                     },
                     browse: {

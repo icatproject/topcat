@@ -267,7 +267,7 @@ write([
 ])
 
 
-facility_id = 1
+datafile_ids = get("select datafile.id from Datafile datafile limit 0, 300");
 
 colours = ["red", "blue", "green", "yellow", "cyan", "white"]
 
@@ -284,9 +284,6 @@ parameter_type_id = write([
 	}
 ]).first
 
-datafile_ids = get("select datafile.id from Datafile datafile limit 0, 300");
-
-
 write(datafile_ids.map{ |datafile_id|
 	{
 		:DatafileParameter => {
@@ -298,4 +295,122 @@ write(datafile_ids.map{ |datafile_id|
 })
 
 
+def random_longitude
+	(180 * 2 * rand) - 180
+end
+
+def random_latitude
+	(90 * 2 * rand) - 90
+end
+
+
+longitude_parameter_type_id = write([
+	{
+		:ParameterType => {
+			:name => "longitude",
+			:valueType => "NUMERIC",
+			:units => "longitude",
+			:applicableToDatafile => true,
+			:facility => {:id => facility_id}
+		}
+	}
+]).first
+
+latitude_parameter_type_id = write([
+	{
+		:ParameterType => {
+			:name => "latitude",
+			:valueType => "NUMERIC",
+			:units => "latitude",
+			:applicableToDatafile => true,
+			:facility => {:id => facility_id}
+		}
+	}
+]).first
+
+
+write(datafile_ids.map{ |datafile_id|
+	{
+		:DatafileParameter => {
+			:datafile => {:id => datafile_id},
+			:type => {:id => longitude_parameter_type_id},
+			:numericValue => random_longitude
+		}
+	}
+})
+
+write(datafile_ids.map{ |datafile_id|
+	{
+		:DatafileParameter => {
+			:datafile => {:id => datafile_id},
+			:type => {:id => latitude_parameter_type_id},
+			:numericValue => random_latitude
+		}
+	}
+})
+
+
+def random_climate
+	climates = ['warm', 'hot', 'cold', 'windy', 'rainy']
+	climate_count = (climates.count * rand).ceil
+
+	out = []
+
+	while out.count != climate_count
+		current_climate = climates[(rand * climates.count).to_i -  1]
+		out << current_climate if !out.include?(current_climate)
+	end
+
+	out.join(', ')
+end
+
+parameter_type_id = write([
+	{
+		:ParameterType => {
+			:name => "climate",
+			:valueType => "STRING",
+			:units => "climate",
+			:applicableToDatafile => true,
+			:facility => {:id => facility_id}
+		}
+	}
+]).first
+
+
+write(datafile_ids.map{ |datafile_id|
+	{
+		:DatafileParameter => {
+			:datafile => {:id => datafile_id},
+			:type => {:id => parameter_type_id},
+			:stringValue => random_climate
+		}
+	}
+})
+
+def random_start_date
+	Time.at(Time.now - (365 * 24 * 60 * 60 * rand).to_i).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+end
+
+parameter_type_id = write([
+	{
+		:ParameterType => {
+			:name => "start_date",
+			:valueType => "DATE_AND_TIME",
+			:units => "start_date",
+			:applicableToDatafile => true,
+			:facility => {:id => facility_id}
+		}
+	}
+]).first
+
+
+write(datafile_ids.map{ |datafile_id|
+	{
+		:DatafileParameter => {
+			:datafile => {:id => datafile_id},
+			:type => {:id => parameter_type_id},
+			:dateTimeValue => random_start_date
+		}
+	}
+})
 

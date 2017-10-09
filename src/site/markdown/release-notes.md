@@ -1,6 +1,6 @@
 # Release Notes
 
-# 2.4.0
+## 2.4.0
 
 * If the the Icat/IDS returns a 404 error Topcat will now longer mark a download as expired. This used to happen if the Java EE container (e.g. Glassfish) was running but the application had not fully booted up yet.
 * Now support file sizes in powers of 1000 bytes or 1024 bytes.
@@ -13,6 +13,17 @@
 * Improved caching in cart.
 * Improved calculation of file size/count.
 
+## 2.3.3
+
+* Very minor fix to display instrument scientists in meta tabs.
+
+## 2.3.2
+
+* Very minor fix to work with strict mode in older browsers.
+
+## 2.3.1
+
+* Very minor fix to make the anonymous plugin work.
 
 ## 2.3.0
 

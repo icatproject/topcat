@@ -4,13 +4,13 @@
             
             <div class="search-form">
                 <form role="form" novalidate>
-                    <div class="form-group has-feedback">
+                    <div class="form-group has-feedback" ng-if="searchController.enableTextBox">
                         <label class="control-label sr-only" for="searchText"></label>
                         <input type="text" class="form-control input-sm" id="searchText" translate translate-attr-placeholder="SEARCH.FORM.SEARCH_TEXT_PLACEHOLDER" ng-model="searchController.text" on-return-click-submit-button>
                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" ng-if="searchController.enableDateRange">
                         <p class="input-group">
                             <input type="text" class="form-control input-sm" uib-datepicker-popup="{{searchController.dateFormat}}" ng-model="searchController.startDate" is-open="searchController.isStartDateOpen"  close-text="Close" placeholder="{{'SEARCH.FORM.START_DATE_PLACEHOLDER' | translate}}" on-return-click-submit-button />
                             <span class="input-group-btn">
@@ -18,7 +18,7 @@
                             </span>
                         </p>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" ng-if="searchController.enableDateRange">
                         <p class="input-group">
                             <input type="text" class="form-control input-sm" uib-datepicker-popup="{{searchController.dateFormat}}" ng-model="searchController.endDate" is-open="searchController.isEndDateOpen" close-text="Close" placeholder="{{'SEARCH.FORM.END_DATE_PLACEHOLDER' | translate}}" on-return-click-submit-button />
                             <span class="input-group-btn">
@@ -37,21 +37,21 @@
                         </div>
                     </div>
                     
-                     <div class="form-group">
+                     <div class="form-group" ng-if="searchController.enableInvestigation && searchController.entityCount > 1">
                         <div class="input-group">
                             <label class="input-group-addon"><input type="checkbox" ng-model="searchController.investigation"></label>
                             <span class="form-control" translate="ENTITIES.INVESTIGATION.NAME"></span>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" ng-if="searchController.enableDataset && searchController.entityCount > 1">
                         <div class="input-group">
                             <label class="input-group-addon"><input type="checkbox" ng-model="searchController.dataset"></label>
                             <span class="form-control" translate="ENTITIES.DATASET.NAME"></span>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" ng-if="searchController.enableDatafile && searchController.entityCount > 1">
                         <div class="input-group">
                             <label class="input-group-addon"><input type="checkbox" ng-model="searchController.datafile"></label>
                             <span class="form-control" translate="ENTITIES.DATAFILE.NAME"></span>
