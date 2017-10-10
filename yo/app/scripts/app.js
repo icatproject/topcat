@@ -51,7 +51,13 @@
                             promises.push($.get(facility.idsUrl + "/ids/getIcatUrl").then(function(icatUrl){
                                 facility.icatUrl = icatUrl;
                             }, function(){
-                                alert("Could not aquire icat url from " + facility.idsUrl + "/ids/getIcatUrl");
+                                alert("Could not aquire icat url from " + facility.idsUrl + "/ids/getIcatUrl - skipping facility " + facility.name);
+                                config.facilities.splice(config.facilities.indexOf(facility), 1);
+                                if( config.facilities.length == 0 ){
+                                    alert("No reachable facilities found");
+                                } else {
+                                    return $.Deferred().resolve({}).promise();
+                                }
                             }));
                         }
                     });
