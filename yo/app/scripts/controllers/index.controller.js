@@ -156,7 +156,8 @@
                 $rootScope.$broadcast('downloads:update', data);
             });
         }
-        $interval(checkoutForNewlyCompletedDownloads, 1000);
+        // Check downloads status every 60 seconds. This is probably still too frequently!
+        $interval(checkoutForNewlyCompletedDownloads, 60 * 1000);
         checkoutForNewlyCompletedDownloads();
 
         this.changeLanguage = function(langKey) {

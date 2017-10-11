@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.3.4
+
+* Minor fix to check status of downloads once per minute rather than once per second.
+
 ## 2.3.3
 
 * Very minor fix to display instrument scientists in meta tabs.
