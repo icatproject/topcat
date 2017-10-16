@@ -38,7 +38,6 @@
 			<includes>
 				<include>*.war</include>
 			</includes>
-			<lineEnding>unix</lineEnding>
 		</fileSet>
 
 		<fileSet>
@@ -46,6 +45,13 @@
 			<directory>${project.basedir}/target</directory>
 			<includes>
 				<include>*.war</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<outputDirectory>topcat</outputDirectory>
+			<directory>${project.basedir}/target</directory>
+			<includes>
 				<include>*.json.example</include>
 				<include>*.css.example</include>
 			</includes>
@@ -57,6 +63,13 @@
 			<directory>${project.basedir}/yo/app</directory>
 			<includes>
 				<include>images/**/*</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<outputDirectory>topcat/content.example</outputDirectory>
+			<directory>${project.basedir}/yo/app</directory>
+			<includes>
 				<include>pages/*</include>
 			</includes>
 			<lineEnding>unix</lineEnding>
