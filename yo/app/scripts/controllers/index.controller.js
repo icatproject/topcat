@@ -79,7 +79,7 @@
             that.downloadCount = 0;
             _.each(tc.userFacilities(), function(facility){
                 facility.user().downloads("where download.isDeleted = false").then(function(downloads){
-                    that.downloadCount = downloads.length;
+                    that.downloadCount += downloads.length;
                     $timeout(function(){
                         $timeout(function(){
                             that.isDownloadsPopoverOpen = false;
