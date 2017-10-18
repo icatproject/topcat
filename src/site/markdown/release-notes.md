@@ -1,7 +1,15 @@
 # Release Notes
 
+## 2.3.5
+
+* fix issues with line-endings in distribution.
+* fix issues with download status checks.
+* fix issue with Downloads icon disappearing in some circumstances.
+
 ## 2.3.4
 
+* **NOTE**: the distribution zip for this release is unusable: a "fix" for Windows line-endings in text files corrupted the binary files
+(including the war file).
 * Minor fix to check status of downloads once per minute rather than once per second.
 
 ## 2.3.3
