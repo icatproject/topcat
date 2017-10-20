@@ -626,8 +626,9 @@ public class UserResource {
 		}
 
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
-
 		String userName = icatClient.getUserName();
+
+		logger.info("submitCart: get cart for user: " + userName + ", facility: " + facilityName + "...");
 
 		Cart cart = cartRepository.getCart(userName, facilityName);
 		String fullName = icatClient.getFullName();
@@ -686,7 +687,7 @@ public class UserResource {
 				em.remove(cart);
 				em.flush();
 			} catch (Exception e) {
-				logger.debug(e.getMessage());
+				logger.info("submitCart: exception during EntityManager operations: " + e.getMessage());
 				throw new BadRequestException("Unable to submit for cart for download");
 			}
 		}

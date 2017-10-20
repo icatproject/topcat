@@ -68,12 +68,21 @@ public class IcatClient {
     		Response response = httpClient.get(url, new HashMap<String, String>());
     		
     		if(response.getCode() == 404){
+    			logger.info("IcatClient.getFullName: got a 404 response");
                 throw new NotFoundException("Could not run getFullName got a 404 response");
             } else if(response.getCode() >= 400){
+            	String message = Utils.parseJsonObject(response.toString()).getString("message");
+    			logger.info("IcatClient.getFullName: got a " + response.getCode() + " response: " + message);
                 throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
             }
 
-    		return Utils.parseJsonArray(response.toString()).getString(0);
+    		JsonArray responseArray = Utils.parseJsonArray(response.toString());
+    		if( responseArray.size() == 0 ){
+    			logger.info("IcatClient.getFullName: client returned empty array, so returning empty string");
+    			return "";
+    		} else {
+    			return responseArray.getString(0);
+    		}
     	} catch (TopcatException e){
             throw e;
     	} catch (Exception e){
