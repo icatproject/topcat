@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.icatproject.topcat.IdsClient;
+import org.icatproject.topcat.Properties;
 import org.icatproject.topcat.IcatClient;
 
 @Stateless
@@ -64,8 +65,8 @@ public class UserResource {
 	 *
 	 * @summary getDownloads
 	 *
-	 * @param icatUrl
-	 *            a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
 	 * 
 	 * @param sessionId
 	 *            a valid session id which takes the form
@@ -96,7 +97,7 @@ public class UserResource {
 	 *         "userName":"simple/root"}]
 	 *
 	 * @throws MalformedURLException
-	 *             if icatUrl is invalid.
+	 *             if facilityName is invalid.
 	 *
 	 * @throws ParseException
 	 *             if a JPQL query is malformed.
@@ -107,10 +108,11 @@ public class UserResource {
 	@GET
 	@Path("/downloads")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getDownloads(@QueryParam("icatUrl") String icatUrl, @QueryParam("sessionId") String sessionId,
+	public Response getDownloads(@QueryParam("facilityName") String facilityName, @QueryParam("sessionId") String sessionId,
 			@QueryParam("queryOffset") String queryOffset)
 			throws TopcatException, MalformedURLException, ParseException {
 
+		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -130,8 +132,8 @@ public class UserResource {
 	 *
 	 * @summary deleteDownload
 	 *
-	 * @param icatUrl
-	 *            a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
 	 * 
 	 * @param sessionId
 	 *            a valid session id which takes the form
@@ -144,7 +146,7 @@ public class UserResource {
 	 *            either true or false.
 	 *
 	 * @throws MalformedURLException
-	 *             if icatUrl is invalid.
+	 *             if facilityName is invalid.
 	 *
 	 * @throws ParseException
 	 *             if a JPQL query is malformed.
@@ -155,7 +157,7 @@ public class UserResource {
 	@PUT
 	@Path("/download/{id}/isDeleted")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response deleteDownload(@PathParam("id") Long id, @FormParam("icatUrl") String icatUrl,
+	public Response deleteDownload(@PathParam("id") Long id, @FormParam("facilityName") String facilityName,
 			@FormParam("sessionId") String sessionId, @FormParam("value") Boolean value)
 			throws TopcatException, MalformedURLException, ParseException {
 
@@ -164,6 +166,7 @@ public class UserResource {
 			throw new NotFoundException("could not find download");
 		}
 
+		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
@@ -186,7 +189,8 @@ public class UserResource {
      *
      * @summary setDownloadStatus
      *
-     * @param icatUrl a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
@@ -194,7 +198,7 @@ public class UserResource {
      *
      * @param value the status value i.e. 'ONLINE', 'ARCHIVE' or 'RESTORING'.
      *
-     * @throws MalformedURLException if icatUrl is invalid.
+     * @throws MalformedURLException if facilityName is invalid.
      *
      * @throws ParseException if a JPQL query is malformed.
      * 
@@ -205,7 +209,7 @@ public class UserResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response setDownloadStatus(
         @PathParam("id") Long id,
-        @FormParam("icatUrl") String icatUrl,
+        @FormParam("facilityName") String facilityName,
         @FormParam("sessionId") String sessionId,
         @FormParam("value") String value)
         throws TopcatException, MalformedURLException, ParseException {
@@ -216,6 +220,7 @@ public class UserResource {
             throw new NotFoundException("could not find download");
         }
 
+        String icatUrl = getIcatUrl( facilityName );
         IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
         String userName = icatClient.getUserName();
@@ -239,15 +244,13 @@ public class UserResource {
 	 *
 	 * @summary getCart
 	 *
-	 * @param icatUrl
-	 *            a url to a valid ICAT REST api.
-	 * 
 	 * @param sessionId
 	 *            a valid session id which takes the form
 	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
 	 *
 	 * @param facilityName
 	 *            the name of the facility e.g. 'dls'.
+	 *            properties must map this to a url to a valid ICAT REST api.
 	 *
 	 * @return returns the cart object in the form:
 	 *         {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,
@@ -259,7 +262,7 @@ public class UserResource {
 	 *         :1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
 	 *
 	 * @throws MalformedURLException
-	 *             if icatUrl is invalid.
+	 *             if facilityName is invalid.
 	 *
 	 * @throws ParseException
 	 *             if a JPQL query is malformed.
@@ -270,9 +273,10 @@ public class UserResource {
 	@GET
 	@Path("/cart/{facilityName}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getCart(@PathParam("facilityName") String facilityName, @QueryParam("icatUrl") String icatUrl,
+	public Response getCart(@PathParam("facilityName") String facilityName, 
 			@QueryParam("sessionId") String sessionId) throws TopcatException, MalformedURLException, ParseException {
 
+        String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
@@ -292,15 +296,13 @@ public class UserResource {
 	 *
 	 * @summary addCartItems
 	 *
-	 * @param icatUrl
-	 *            a url to a valid ICAT REST api.
-	 * 
 	 * @param sessionId
 	 *            a valid session id which takes the form
 	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
 	 *
 	 * @param facilityName
 	 *            the name of the facility e.g. 'dls'.
+	 *            Properties must map this to a url to a valid ICAT REST api.
 	 *
 	 * @param items
 	 *            a list of entity type (i.e. datafile, dataset or
@@ -317,7 +319,7 @@ public class UserResource {
 	 *         :1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
 	 *
 	 * @throws MalformedURLException
-	 *             if icatUrl is invalid.
+	 *             if facilityName is invalid.
 	 *
 	 * @throws ParseException
 	 *             if a JPQL query is malformed.
@@ -328,12 +330,13 @@ public class UserResource {
 	@POST
 	@Path("/cart/{facilityName}/cartItems")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response addCartItems(@PathParam("facilityName") String facilityName, @FormParam("icatUrl") String icatUrl,
+	public Response addCartItems(@PathParam("facilityName") String facilityName, 
 			@FormParam("sessionId") String sessionId, @FormParam("items") String items)
 			throws TopcatException, MalformedURLException, ParseException {
 
 		logger.info("addCartItems() called");
 
+		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
@@ -466,15 +469,13 @@ public class UserResource {
 	 *
 	 * @summary deleteCartItems
 	 *
-	 * @param icatUrl
-	 *            a url to a valid ICAT REST api.
-	 * 
 	 * @param sessionId
 	 *            a valid session id which takes the form
 	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
 	 *
 	 * @param facilityName
 	 *            the name of the facility e.g. 'dls'.
+	 *            Properties must map this to a url to a valid ICAT REST api.
 	 *
 	 * @param items
 	 *            a list of entity type (i.e. datafile, dataset or
@@ -491,7 +492,7 @@ public class UserResource {
 	 *         :1,"updatedAt":"2016-03-30T10:52:32","userName":"simple/root"}
 	 *
 	 * @throws MalformedURLException
-	 *             if icatUrl is invalid.
+	 *             if facilityName is invalid.
 	 *
 	 * @throws ParseException
 	 *             if a JPQL query is malformed.
@@ -503,9 +504,10 @@ public class UserResource {
 	@Path("/cart/{facilityName}/cartItems")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response deleteCartItems(@PathParam("facilityName") String facilityName,
-			@QueryParam("icatUrl") String icatUrl, @QueryParam("sessionId") String sessionId,
+			@QueryParam("sessionId") String sessionId,
 			@QueryParam("items") String items) throws TopcatException, MalformedURLException, ParseException {
 
+		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
@@ -562,15 +564,13 @@ public class UserResource {
 	 *
 	 * @summary submitCart
 	 *
-	 * @param icatUrl
-	 *            a url to a valid ICAT REST api.
-	 * 
 	 * @param sessionId
 	 *            a valid session id which takes the form
 	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
 	 *
 	 * @param facilityName
 	 *            the name of the facility e.g. 'dls'.
+	 *            Properties must map this to a url to a valid ICAT REST api.
 	 *
 	 * @param transport
 	 *            the type of delivery method e.g. 'https' or 'globus' etc...
@@ -594,7 +594,7 @@ public class UserResource {
 	 *         "downloadId":3}
 	 *
 	 * @throws MalformedURLException
-	 *             if icatUrl is invalid.
+	 *             if facilityName is invalid.
 	 *
 	 * @throws ParseException
 	 *             if a JPQL query is malformed.
@@ -606,7 +606,6 @@ public class UserResource {
 	@Path("/cart/{facilityName}/submit")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response submitCart(@PathParam("facilityName") String facilityName,
-			@FormParam("icatUrl") String icatUrl,
 			@FormParam("sessionId") String sessionId,
 			@FormParam("transport") String transport,
 			@FormParam("transportUrl") String transportUrl,
@@ -625,6 +624,7 @@ public class UserResource {
 			throw new BadRequestException("transport is required");
 		}
 
+		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 		String userName = icatClient.getUserName();
 
@@ -702,8 +702,8 @@ public class UserResource {
 	 *
 	 * @summary getSize
 	 *
-	 * @param icatUrl
-	 *            a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
 	 * 
 	 * @param sessionId
 	 *            a valid session id which takes the form
@@ -722,11 +722,12 @@ public class UserResource {
 	@Path("/getSize")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getSize(
-		@QueryParam("icatUrl") String icatUrl,
+		@QueryParam("facilityName") String facilityName,
 		@QueryParam("sessionId") String sessionId,
 		@QueryParam("entityType") String entityType,
 		@QueryParam("entityId") Long entityId) throws TopcatException {
 
+		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		Long size = icatClient.getSize(cacheRepository, entityType, entityId);
@@ -748,6 +749,15 @@ public class UserResource {
 
 	private Response emptyCart(String facilityName, String userName) {
 		return emptyCart(facilityName, userName, null);
+	}
+	
+	private String getIcatUrl( String facilityName ) throws BadRequestException{
+		String icatUrl = Properties.getInstance().getProperty( "facility." + facilityName + ".icatUrl", "");
+		if( icatUrl.length() == 0 ){
+			logger.debug( "UserResource.getIcatUrl: no icat url found for facility '" + facilityName + "'");
+			throw new BadRequestException("Unknown icatUrl for facility");
+		}
+		return icatUrl;
 	}
 
 }

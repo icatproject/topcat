@@ -76,8 +76,20 @@ public class IdsUploadProxy {
 
             Map<String, String> queryStringParams = Utils.parseQueryString(session.getQueryString());
 
+            // Use the properties to get the idsUrl for the facilityName
+            String facilityName = queryStringParams.get("facilityName");
+            String idsUrl = "";
+            if( facilityName != null ){
+            	idsUrl = Properties.getInstance().getProperty("facility." + facilityName + ".idsUrl","");
+            } else {
+            	facilityName = "NOT_SUPPLIED";
+            }
+            if( idsUrl.length() == 0 ){
+            	logger.debug("IdsUploadProxy.Upload: no idsUrl defined for facility '" + facilityName + "'");
+            	// TODO throw a specific exception here, but what?
+            }
             StringBuilder url = new StringBuilder();
-            url.append(queryStringParams.get("idsUrl") + "/ids/put");
+            url.append(idsUrl + "/ids/put");
             url.append("?sessionId=" + URLEncoder.encode(queryStringParams.get("sessionId"), "UTF-8"));
             url.append("&name=" + URLEncoder.encode(queryStringParams.get("name"), "UTF-8"));
             url.append("&datafileFormatId=" + URLEncoder.encode(queryStringParams.get("datafileFormatId"), "UTF-8"));

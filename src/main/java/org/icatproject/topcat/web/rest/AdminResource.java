@@ -28,6 +28,7 @@ import org.icatproject.topcat.domain.DownloadStatus;
 import org.icatproject.topcat.domain.ConfVar;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.exceptions.NotFoundException;
+import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.repository.ConfVarRepository;
@@ -35,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.icatproject.topcat.IcatClient;
+import org.icatproject.topcat.Properties;
 
 @Stateless
 @LocalBean
@@ -54,13 +56,14 @@ public class AdminResource {
      *
      * @summary isValidSession
      *   
-     * @param icatUrl a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
      * @return "true" or "false" if the session has admin access or not.
      *
-     * @throws MalformedURLException if icatUrl is invalid.
+     * @throws MalformedURLException if facilityName is invalid.
      *
      * @throws TopcatException if anything else goes wrong.
      */
@@ -68,11 +71,12 @@ public class AdminResource {
     @Path("/isValidSession")
     @Produces({MediaType.APPLICATION_JSON})
     public Response isValidSession(
-            @QueryParam("icatUrl") String icatUrl,
+            @QueryParam("facilityName") String facilityName,
             @QueryParam("sessionId") String sessionId)
             throws MalformedURLException, TopcatException {
         logger.info("isValidSession() called");
 
+        String icatUrl = getIcatUrl( facilityName );
         IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
         String isAdmin = icatClient.isAdmin() ? "true" : "false";
@@ -85,7 +89,8 @@ public class AdminResource {
      *
      * @summary getDownloads
      *
-     * @param icatUrl a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
@@ -104,11 +109,12 @@ public class AdminResource {
     @Path("/downloads")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDownloads(
-        @QueryParam("icatUrl") String icatUrl,
+        @QueryParam("facilityName") String facilityName,
         @QueryParam("sessionId") String sessionId,
         @QueryParam("queryOffset") String queryOffset)
         throws TopcatException, MalformedURLException, ParseException {
 
+        String icatUrl = getIcatUrl( facilityName );
         onlyAllowAdmin(icatUrl, sessionId);
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -125,7 +131,8 @@ public class AdminResource {
      *
      * @summary setDownloadStatus
      *
-     * @param icatUrl a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
@@ -133,7 +140,7 @@ public class AdminResource {
      *
      * @param value the status value i.e. 'ONLINE', 'ARCHIVE' or 'RESTORING'.
      *
-     * @throws MalformedURLException if icatUrl is invalid.
+     * @throws MalformedURLException if facilityName is invalid.
      *
      * @throws ParseException if a JPQL query is malformed.
      * 
@@ -144,11 +151,12 @@ public class AdminResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response setDownloadStatus(
         @PathParam("id") Long id,
-        @FormParam("icatUrl") String icatUrl,
+        @FormParam("facilityName") String facilityName,
         @FormParam("sessionId") String sessionId,
         @FormParam("value") String value)
         throws TopcatException, MalformedURLException, ParseException {
 
+        String icatUrl = getIcatUrl( facilityName );
         onlyAllowAdmin(icatUrl, sessionId);
 
         Download download = downloadRepository.getDownload(id);
@@ -172,7 +180,8 @@ public class AdminResource {
      *
      * @summary deleteDownload
      *
-     * @param icatUrl a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
@@ -180,7 +189,7 @@ public class AdminResource {
      *
      * @param value either true or false.
      *
-     * @throws MalformedURLException if icatUrl is invalid.
+     * @throws MalformedURLException if facilityName is invalid.
      *
      * @throws ParseException if a JPQL query is malformed.
      * 
@@ -191,11 +200,12 @@ public class AdminResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response deleteDownload(
         @PathParam("id") Long id,
-        @FormParam("icatUrl") String icatUrl,
+        @FormParam("facilityName") String facilityName,
         @FormParam("sessionId") String sessionId,
         @FormParam("value") Boolean value)
         throws TopcatException, MalformedURLException, ParseException {
 
+        String icatUrl = getIcatUrl( facilityName );
         onlyAllowAdmin(icatUrl, sessionId);
 
         Download download = downloadRepository.getDownload(id);
@@ -218,7 +228,7 @@ public class AdminResource {
         IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
         if(icatUrl == null || sessionId == null || !icatClient.isAdmin()){
-            throw new ForbiddenException("please provide a valid icatUrl and sessionId");
+            throw new ForbiddenException("please provide a valid facilityName and sessionId");
         }
     }
 
@@ -228,7 +238,8 @@ public class AdminResource {
      *
      * @summary getConfVar
      *
-     * @param icatUrl a url to a valid ICAT REST api.
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
@@ -241,11 +252,12 @@ public class AdminResource {
     @Produces({MediaType.APPLICATION_JSON})
     public Response setConfVar(
         @PathParam("name") String name,
-        @FormParam("icatUrl") String icatUrl,
+        @FormParam("facilityName") String facilityName,
         @FormParam("sessionId") String sessionId,
         @FormParam("value") String value)
         throws TopcatException, MalformedURLException {
 
+        String icatUrl = getIcatUrl( facilityName );
         onlyAllowAdmin(icatUrl, sessionId);
 
         ConfVar confVar = confVarRepository.getConfVar(name);
@@ -261,5 +273,13 @@ public class AdminResource {
         return Response.ok().build();
     }
 
+	private String getIcatUrl( String facilityName ) throws BadRequestException{
+		String icatUrl = Properties.getInstance().getProperty( "facility." + facilityName + ".icatUrl", "");
+		if( icatUrl.length() == 0 ){
+			logger.debug( "UserResource.getIcatUrl: no icat url found for facility '" + facilityName + "'");
+			throw new BadRequestException("Unknown icatUrl for facility");
+		}
+		return icatUrl;
+	}
 
 }
