@@ -33,7 +33,7 @@
                  */
                 'string, object': function(sessionId, options){
                     return this.get('isValidSession', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: sessionId
                     }, options);
                 },
@@ -79,7 +79,7 @@
                     queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (queryOffset ? " AND " + queryOffset.replace(/^\s*where\s*/, '') : "");
 
                     return this.get('downloads', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         queryOffset: queryOffset
                     }, options).then(function(downloads){
@@ -201,7 +201,7 @@
                  */
                 'string, object': function(id, options){
                     return this.put('download/' + id + '/isDeleted', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         value: 'true'
                     }, options);
@@ -254,7 +254,7 @@
                  */
                 'string, object': function(id, options){
                     return this.put('download/' + id + '/isDeleted', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         value: 'false'
                     }, options);
@@ -308,7 +308,7 @@
                  */
                 'string, string, object': function(id, status, options){
                     return this.put('download/' + id + '/status', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         value: status
                     }, options);
@@ -364,7 +364,7 @@
                  */
                 'string, object, object': function(name, value, options){
                     return this.put('confVars/' + name, {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         value: JSON.stringify(value)
                     }, options);

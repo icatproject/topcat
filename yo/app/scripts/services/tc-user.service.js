@@ -36,7 +36,7 @@
                     queryOffset = "where download.facilityName = " + helpers.jpqlSanitize(facility.config().name) + (queryOffset ? " AND " + queryOffset.replace(/^\s*where\s*/, '') : "");
 
                     return this.get('downloads', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         queryOffset: queryOffset
                     }, options).then(function(downloads){
@@ -144,7 +144,7 @@
                  */
                 'string, object': function(id, options){
                     return this.put('download/' + id + '/isDeleted', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         id: id,
                         value: 'true'
@@ -195,7 +195,7 @@
                  */
                 'string, string, object': function(id, status, options){
                     return this.put('download/' + id + '/status', {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: facility.icat().session().sessionId,
                         value: status
                     }, options);
@@ -250,7 +250,6 @@
                     }
 
                     return this.get('cart/' + facility.config().name, {
-                        icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId
                     }, options).then(function(cart){
                         cart = tcUserCart.create(cart, that);
@@ -300,7 +299,6 @@
                         
                         if(items != ''){
                             return that.post('cart/' + facility.config().name + '/cartItems', {
-                                icatUrl: facility.config().icatUrl,
                                 sessionId: facility.icat().session().sessionId,
                                 items: items
                             }, options).then(function(cart){
@@ -393,7 +391,6 @@
 
                     while(items.length > 0){
                         currentUrlLength = this.deleteUrlLength('cart/' + facility.config().name + '/cartItems', {
-                            icatUrl: facility.config().icatUrl,
                             sessionId: facility.icat().session().sessionId,
                             items: currentItems.concat([items[items.length - 1]]).join(',')
                         });
@@ -410,7 +407,6 @@
 
                     function deleteChunks(){
                         return that.delete('cart/' + facility.config().name + '/cartItems', {
-                            icatUrl: facility.config().icatUrl,
                             sessionId: facility.icat().session().sessionId,
                             items: chunks.pop()
                         }, options).then(function(cart){
@@ -502,7 +498,6 @@
                  */
                 'object': function(options){
                     return this.delete('cart/' + facility.config().name + '/cartItems', {
-                        icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         items: "*"
                     }, options).then(function(cart){
@@ -551,7 +546,6 @@
                     var transportType = transportTypeIndex[transport];
 
                     return this.post('cart/' + facility.config().name + '/submit', {
-                        icatUrl: facility.config().icatUrl,
                         sessionId: facility.icat().session().sessionId,
                         fileName: fileName,
                         transport: transport,

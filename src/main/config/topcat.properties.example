@@ -1,3 +1,16 @@
+# List of Facility names
+# These names will be used by Topcat over the REST API;
+# each facility name in topcat.json must contain a match in this list,
+# and each name must be mapped to ICAT / IDS urls.
+# Edit these values to match your installation.
+
+facility.list = LILS YFH
+
+facility.LILS.icatUrl = http://localhost:8080
+facility.LILS.idsUrl = http://localhost:8080
+facility.YFH.icatUrl = https://your.facility.icatUrl.here
+facility.YFH.idsUrl = https://your.facility.idsUrl.here
+
 # enable send email
 mail.enable=true
 

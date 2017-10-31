@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
 
+import org.icatproject.topcat.exceptions.InternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,13 +81,15 @@ public class IdsUploadProxy {
             String facilityName = queryStringParams.get("facilityName");
             String idsUrl = "";
             if( facilityName != null ){
-            	idsUrl = Properties.getInstance().getProperty("facility." + facilityName + ".idsUrl","");
+            	try {
+            		idsUrl = FacilityMap.getInstance().getIdsUrl(facilityName);
+            	} catch (InternalException ie){
+            		logger.debug("IdsUploadProxy.Upload: error getting idsUrl for facility '" + facilityName + "': " + ie.getMessage());
+            		throw ie;
+            	}
             } else {
-            	facilityName = "NOT_SUPPLIED";
-            }
-            if( idsUrl.length() == 0 ){
-            	logger.debug("IdsUploadProxy.Upload: no idsUrl defined for facility '" + facilityName + "'");
-            	// TODO throw a specific exception here, but what?
+            	logger.debug("IdsUploadProxy.Upload: no facilityName supplied in request");
+            	throw new InternalException("No facilityName supplied in request");
             }
             StringBuilder url = new StringBuilder();
             url.append(idsUrl + "/ids/put");

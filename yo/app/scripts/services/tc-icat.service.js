@@ -478,7 +478,7 @@
                     var key = 'getSize:' + entityType + ":" + entityId;
                     return this.cache().getPromise(key, function(){
                       var params = {
-                        icatUrl: facility.config().icatUrl,
+                        facilityName: facility.config().name,
                         sessionId: that.session().sessionId,
                         entityType: entityType,
                         entityId: entityId

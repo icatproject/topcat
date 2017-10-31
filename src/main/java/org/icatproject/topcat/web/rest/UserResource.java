@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.icatproject.topcat.IdsClient;
-import org.icatproject.topcat.Properties;
+import org.icatproject.topcat.FacilityMap;
 import org.icatproject.topcat.IcatClient;
 
 @Stateless
@@ -752,12 +752,11 @@ public class UserResource {
 	}
 	
 	private String getIcatUrl( String facilityName ) throws BadRequestException{
-		String icatUrl = Properties.getInstance().getProperty( "facility." + facilityName + ".icatUrl", "");
-		if( icatUrl.length() == 0 ){
-			logger.debug( "UserResource.getIcatUrl: no icat url found for facility '" + facilityName + "'");
-			throw new BadRequestException("Unknown icatUrl for facility");
+		try {
+			return FacilityMap.getInstance().getIcatUrl(facilityName);
+		} catch (InternalException ie){
+			throw new BadRequestException( ie.getMessage() );
 		}
-		return icatUrl;
 	}
 
 }

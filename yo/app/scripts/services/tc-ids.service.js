@@ -101,7 +101,10 @@
           files = _.clone(files);
 
           var queryParams = {
-            idsUrl: url,
+            // Note: originally this passed the idsUrl directly to the proxy client;
+            // however, issue#359 proposes that the facilityName be passed instead,
+            // and the proxy should resolve that to a (possibly different) idsUrl via properties.
+            facilityName: facility.config().name,
             sessionId: facility.icat().session().sessionId,
             datasetId: datasetId,
             datafileFormatId: facility.config().idsUploadDatafileFormatId,

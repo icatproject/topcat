@@ -30,13 +30,13 @@ import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
+import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.repository.ConfVarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.icatproject.topcat.FacilityMap;
 import org.icatproject.topcat.IcatClient;
-import org.icatproject.topcat.Properties;
 
 @Stateless
 @LocalBean
@@ -274,12 +274,11 @@ public class AdminResource {
     }
 
 	private String getIcatUrl( String facilityName ) throws BadRequestException{
-		String icatUrl = Properties.getInstance().getProperty( "facility." + facilityName + ".icatUrl", "");
-		if( icatUrl.length() == 0 ){
-			logger.debug( "UserResource.getIcatUrl: no icat url found for facility '" + facilityName + "'");
-			throw new BadRequestException("Unknown icatUrl for facility");
+		try {
+			return FacilityMap.getInstance().getIcatUrl(facilityName);
+		} catch (InternalException ie){
+			throw new BadRequestException( ie.getMessage() );
 		}
-		return icatUrl;
 	}
 
 }
