@@ -97,9 +97,27 @@ Note: '#'s are comments.
 
 $h2 topcat.properties
 
+$h3 Upgrade from 2.3.5 to 2.4.0
+
+If you are upgrading from 2.3.5 or earlier to 2.4.0, the following properties should be added to your topcat.properties:
+`facility.list`, `facility.[facilityName].icatUrl`, `facility.[facilityName].idsUrl` (for each `facilityName` in `facility.list`).
+
 Note: '#'s are comments.
 
 ```
+  # List of Facility names
+  # These names will be used by Topcat over the REST API;
+  # each facility name in topcat.json must contain a match in this list,
+  # and each name must be mapped to ICAT / IDS urls.
+  # Edit these values to match your installation.
+
+  facility.list = LILS YFH
+
+  facility.LILS.icatUrl = http://localhost:8080
+  facility.LILS.idsUrl = http://localhost:8080
+  facility.YFH.icatUrl = https://your.facility.icatUrl.here
+  facility.YFH.idsUrl = https://your.facility.idsUrl.here
+
   # enable send email
   mail.enable=true
 

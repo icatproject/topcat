@@ -5,6 +5,8 @@
 * If the the Icat/IDS returns a 404 error Topcat will now longer mark a download as expired. This used to happen if the Java EE container (e.g. Glassfish) was running but the application had not fully booted up yet.
 * Now support file sizes in powers of 1000 bytes or 1024 bytes.
 * In topcat.properties adminUsernames can be list of space separated usernames (following Icat stack conventions) as well as the existing comma-space separated.
+* New mandatory proprties in topcat.properties: facility.list, facility.[facilityName].icatUrl, facility.[facilityName].idsUrl; this allows Topcat's Javascript
+  and JavaEE components to specify different ICAT/IDS urls for facilities if required, and removes a potential security risk.
 * Search limits are described in the interface.
 * If the IDS is not available and Topcat tries run getIcatUrl call, Topcat will notify the user via an alert box.
 * A file count column can now be added to the Cart.
