@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.3.6
+
+ * fix issue with DOI redirections.
+ 
 ## 2.3.5
 
 * fix issues with line-endings in distribution.
