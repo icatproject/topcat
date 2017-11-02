@@ -16,7 +16,7 @@
     				entity.browse();
     			});
     		} else {
-    			entity.browse();
+    			entities[0].browse();
     		}
     	});
     });
