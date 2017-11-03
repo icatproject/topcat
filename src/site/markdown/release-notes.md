@@ -7,6 +7,8 @@
 * In topcat.properties adminUsernames can be list of space separated usernames (following Icat stack conventions) as well as the existing comma-space separated.
 * New mandatory proprties in topcat.properties: facility.list, facility.[facilityName].icatUrl, facility.[facilityName].idsUrl; this allows Topcat's Javascript
   and JavaEE components to specify different ICAT/IDS urls for facilities if required, and removes a potential security risk.
+* Similarly, facility.[facilityName].downloadType.[transport] can be used to define transport-specific URLs for each facility. If the property is not found,
+  the facility's idsUrl is used.
 * Search limits are described in the interface.
 * If the IDS is not available and Topcat tries run getIcatUrl call, Topcat will notify the user via an alert box.
 * A file count column can now be added to the Cart.
