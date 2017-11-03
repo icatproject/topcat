@@ -11,6 +11,16 @@ facility.LILS.idsUrl = http://localhost:8080
 facility.YFH.icatUrl = https://your.facility.icatUrl.here
 facility.YFH.idsUrl = https://your.facility.idsUrl.here
 
+# Download transport URLs
+# topcat.json can specify one or more download transport types for each facility, egs "https", "globus";
+# each may have a distinct download URL (prefix). To specify the download URL for a specific facility
+# and transport type, set an appropriate property as below.
+# If the property is not defined, Topcat will use the facility's idsUrl by default.
+
+facility.LILS.downloadType.http = http://localhost:8080
+facility.YFH.downloadType.https = https://your.facility.downloadIdsUrl.here
+facility.YFH.downloadType.globus = https://your.facility.globusUrl.here
+
 # enable send email
 mail.enable=true
 

@@ -20,6 +20,7 @@ public class FacilityMap {
     
 	private Logger logger = LoggerFactory.getLogger(FacilityMap.class);
 	
+	private Properties properties;
 	private Map<String,String> facilityIcatUrl;
 	private Map<String,String> facilityIdsUrl;
 
@@ -28,7 +29,7 @@ public class FacilityMap {
 		facilityIcatUrl = new HashMap<String,String>();
 		facilityIdsUrl = new HashMap<String,String>();
 		
-		Properties properties = Properties.getInstance();
+		properties = Properties.getInstance();
 		
 		String[] facilities = properties.getProperty("facility.list","").split("([ ]*,[ ]*|[ ]+)");
 		
@@ -74,6 +75,19 @@ public class FacilityMap {
 			String error = "FacilityMap.getIcatUrl: unknown facility: " + facility;
 			logger.error( error );
 			throw new InternalException( error );
+		}
+		return url;
+	}
+	
+	public String getDownloadUrl( String facility, String downloadType ) throws InternalException{
+		String url = "";
+		// First, look for the property directly
+		url = properties.getProperty( "facility." + facility + ".downloadType." + downloadType, "" );
+		if( url.length() == 0 ){
+			// No such property, so fall back to the facility idsUrl
+			logger.info("FacilityMap.getDownloadUrl: no specific property for facility '" 
+					+ facility + "' and download type '" + downloadType + "'; returning idsUrl instead" );
+			url = this.getIdsUrl(facility);
 		}
 		return url;
 	}

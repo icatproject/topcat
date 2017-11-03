@@ -575,9 +575,6 @@ public class UserResource {
 	 * @param transport
 	 *            the type of delivery method e.g. 'https' or 'globus' etc...
 	 *
-	 * @param transportUrl
-	 *            a url to a valid IDS REST api.
-	 *
 	 * @param email
 	 *            an optional email to send download status messages to e.g. if
 	 *            the download is prepared
@@ -608,7 +605,6 @@ public class UserResource {
 	public Response submitCart(@PathParam("facilityName") String facilityName,
 			@FormParam("sessionId") String sessionId,
 			@FormParam("transport") String transport,
-			@FormParam("transportUrl") String transportUrl,
 			@FormParam("email") String email,
 			@FormParam("fileName") String fileName,
 			@FormParam("zipType") String zipType)
@@ -633,6 +629,7 @@ public class UserResource {
 		Cart cart = cartRepository.getCart(userName, facilityName);
 		String fullName = icatClient.getFullName();
 		Long downloadId = null;
+		String transportUrl = getDownloadUrl(facilityName, transport);
 		IdsClient idsClient = new IdsClient(transportUrl);
 
 		if(email != null && email.equals("")){
@@ -754,6 +751,14 @@ public class UserResource {
 	private String getIcatUrl( String facilityName ) throws BadRequestException{
 		try {
 			return FacilityMap.getInstance().getIcatUrl(facilityName);
+		} catch (InternalException ie){
+			throw new BadRequestException( ie.getMessage() );
+		}
+	}
+
+	private String getDownloadUrl( String facilityName, String downloadType ) throws BadRequestException{
+		try {
+			return FacilityMap.getInstance().getDownloadUrl(facilityName, downloadType);
 		} catch (InternalException ie){
 			throw new BadRequestException( ie.getMessage() );
 		}

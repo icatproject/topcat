@@ -550,8 +550,7 @@
                         fileName: fileName,
                         transport: transport,
                         email: email,
-                        zipType: transportType.zipType ? transportType.zipType : '',
-                        transportUrl: transportType.idsUrl
+                        zipType: transportType.zipType ? transportType.zipType : ''
                     }, options).then(function(cart){
                         cart = tcUserCart.create(cart, that);
                         cartCache = cart;
