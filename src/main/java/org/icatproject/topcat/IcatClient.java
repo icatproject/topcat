@@ -193,7 +193,13 @@ public class IcatClient {
                 throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
             }
 
-			size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
+			try {
+				size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
+			} catch (Exception e){
+				logger.info("getSize: can't extract number from response '" + response.toString() + "'; got exception: '" + e.getMessage() 
+					+ "'; replacing with 0; query was: '" + query + "'");
+				size = (long) 0;
+			}
 			cacheRepository.put(key, size);
 
 			return size;
