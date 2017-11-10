@@ -57,7 +57,12 @@ public class IcatClient {
 					return true;
 				}
 			}
-		} catch(Exception e){}
+		} catch(Exception e){
+			logger.info("isAdmin: " + e.getMessage());
+			// Ought to throw a BadRequestException here,
+			// but existing usage expects a return value of false in this case.
+			// throw new BadRequestException(e.getMessage());
+		}
 		return false;
 	}
 

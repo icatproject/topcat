@@ -114,7 +114,9 @@ public class HttpClient {
 	    	} catch(Exception e1){
 	    		try {
 	    			responseBody = Utils.inputStreamToString(connection.getErrorStream());
-	    		} catch(Exception e2){}
+	    		} catch(Exception e2){
+	    			logger.info("send: error reading input/error for: " + method + " " + url.toString() + " -> (" + responseCode + "): " + e2.getMessage());
+	    		}
 	    	}
 
 	    	if(responseCode >= 400){
