@@ -63,8 +63,8 @@ session_id = json.loads(requests.post(icat_url + "/icat/session", {"json": auth}
 
 def show_download():
 	download_id = raw_input("Enter download id: ")
-	print requests.get(topcat_url + "/topcat/admin/downloads", {
-		"icatUrl": icat_url,
+	print requests.get(topcat_url + "/topcat/admin/downloads", params={
+		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": "where download.id = " + download_id
 	}).text
@@ -73,8 +73,8 @@ def show_download():
 def list_file_locations():
 	download_id = raw_input("Enter download id: ")
 	output_file_name = raw_input("Output file name (optional): ")
-	download = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", {
-		"icatUrl": icat_url,
+	download = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", params={
+		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": "where download.id = " + download_id
 	}).text)[0]
@@ -82,17 +82,17 @@ def list_file_locations():
 	datafile_locations = []
 	for download_item in download_items:
 		if download_item["entityType"] == "investigation":
-			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", {
+			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", params={
 				"sessionId": session_id,
 				"query": "select datafile.location from Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + str(download_item["entityId"])
 			}).text))
 		elif download_item["entityType"] == "dataset":
-			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", {
+			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", params={
 				"sessionId": session_id,
 				"query": "select datafile.location from Datafile datafile, datafile.dataset as dataset where dataset.id = " + str(download_item["entityId"])
 			}).text))
 		elif download_item["entityType"] == "datafile":
-			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", {
+			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", params={
 				"sessionId": session_id,
 				"query": "select datafile.location from Datafile datafile where datafile.id = " + str(download_item["entityId"])
 			}).text))
@@ -112,8 +112,8 @@ def prepare_download():
 	investigation_ids = []
 	dataset_ids = []
 	datafile_ids = []
-	download = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", {
-		"icatUrl": icat_url,
+	download = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", params={
+		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": "where download.id = " + download_id
 	}).text)[0]
@@ -135,7 +135,7 @@ def prepare_download():
 		params["datasetIds"] = ",".join(map(str, dataset_ids))
 	if (len(datafile_ids) > 0):
 		params["datafileIds"] = ",".join(map(str, datafile_ids))
-	prepared_id = requests.post(ids_url + "/ids/prepareData", params).text
+	prepared_id = requests.post(ids_url + "/ids/prepareData", data=params).text
 	print ""
 	print "UPDATE DOWNLOAD set PREPARED_ID = '" + prepared_id + "', STATUS = 'RESTORING' WHERE ID = " + download_id
 
@@ -144,8 +144,8 @@ def prepare_download():
 
 def expire_download():
 	download_id = raw_input("Enter download id: ")
-	requests.put(topcat_url + "/topcat/admin/download/" + download_id +  "/status", {
-		"icatUrl": icat_url,
+	requests.put(topcat_url + "/topcat/admin/download/" + download_id +  "/status", data={
+		"facilityName": facility_name,
 		"sessionId": session_id,
 		"value": "EXPIRED"
 	})
@@ -158,14 +158,14 @@ def expire_all_pending_downloads():
 	if facility_name != "":
 		query += " and download.facilityName = '" + facility_name + "'"
 
-	downloads = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", {
-		"icatUrl": icat_url,
+	downloads = json.loads(requests.get(topcat_url + "/topcat/admin/downloads", params={
+		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": query
 	}).text)
 	for download in  downloads:
-		requests.put(topcat_url + "/topcat/admin/download/" + str(download["id"]) +  "/status", {
-			"icatUrl": icat_url,
+		requests.put(topcat_url + "/topcat/admin/download/" + str(download["id"]) +  "/status", data={
+			"facilityName": facility_name,
 			"sessionId": session_id,
 			"value": "EXPIRED"
 		})
