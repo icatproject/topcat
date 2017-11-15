@@ -161,6 +161,7 @@
         var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
         function getPage(){
             that.isLoading = true;
+            that.noPermission = false;
             return generateQueryBuilder().limit((page - 1) * pageSize, pageSize).run(canceler.promise).then(function(entities){
                 that.isLoading = false;
                 _.each(entities, function(entity){
@@ -179,6 +180,27 @@
                 }
                 isFirstPage = false;
                 return entities;
+            }, function(response){
+                // Query failed for some reason.
+                // This can happen if we are browsing facility A, then log out and log into facility B.
+                // Topcat queries A but gets a 403, and the browse view "hangs" with "Loading - please wait".
+                // This doesn't fix the problem, but does log it in the browser console.
+                // I can set a noPermission flag, and this can be used to control appearance of a div message in the view;
+                // but for some reason turning off the "Loading" div doesn't work - and I'm fed up trying to fix it!
+                //
+                // This handler can also be triggered by page refreshes when the browser cache is out of date;
+                // in these cases, the response value here is (usually) null. There is no obvious ill effect,
+                // so I have chosen not to log it.
+                if (response) {
+                    console.log('Browse entities getPage query failed: ' + response.code + ", " + response.message);
+                    // Not convinced this is the correct way to test for a 403, but this catches the "undefined sessionId" case.
+                    if (response.code == "SESSION") {
+                        console.log("Browse entities: response code was SESSION (403?)");
+                        that.isLoading = false;
+                        that.noPermission = true;
+                    }
+                }
+                return [];
             });
         }
 
@@ -197,7 +219,12 @@
             return generateQueryBuilder().count(canceler.promise).then(function(totalItems){
                 gridOptions.totalItems = totalItems;
                 that.totalItems = totalItems;
-            });
+            }, function(response){
+                // Query failed for some reason
+                if (response) {
+                    console.log('Browse entities total items query failed: ' + response.message);
+                }
+           });
         }
 
         function isAncestorInCart(){
@@ -315,6 +342,8 @@
                         })).then(function(){
                             that.isAllSelected = true;
                         });
+                    }, function(response){
+                        console.log("Browse entities selectAll query failed: " + response.message);
                     });
                 }
             });
@@ -332,6 +361,8 @@
                         })).then(function(){
                             that.isAllSelected = false;
                         });
+                    }, function(response){
+                        console.log("Browse entities unselectAll query failed: " + response.message);
                     });
                 }
             });

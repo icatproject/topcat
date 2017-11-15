@@ -34,8 +34,11 @@
         <div class="no-rows row" ng-show="!browseEntitiesController.isLoading && browseEntitiesController.gridOptions.data.length == 0">
             <div class="col-xs-12 empty-message" translate="BROWSE.NO_RESULTS"></div>
         </div>
-        <div class="no-rows row" ng-show="browseEntitiesController.isLoading">
+        <div class="no-rows row" ng-show="browseEntitiesController.isLoading && !browseEntitiesController.noPermission">
             <div class="col-xs-12 empty-message" translate="BROWSE.LOADING"></div>
+        </div>
+        <div class="no-rows row" ng-show="browseEntitiesController.noPermission">
+            <div class="col-xs-12 empty-message" translate="BROWSE.NO_PERMISSION"></div>
         </div>
     </div>
 

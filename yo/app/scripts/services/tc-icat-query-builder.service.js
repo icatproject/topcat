@@ -293,6 +293,10 @@
                                     proposal.investigations = investigations;
                                     proposal = tcIcatEntity.create(proposal, icat.facility());
                                     proposals.push(proposal);
+                                }, function(response){
+                                    if (response) {
+                                        console.log("Query builder: sub-proposal query for " + name + " failed: " + response.message);
+                                    }
                                 }));
                             });
                             
@@ -307,6 +311,13 @@
                                 defered.resolve(proposals);
                             });
                             
+                        }, function(response){
+                            if (response) {
+                                console.log("Query builder: proposal query failed: " + response.status + ", " + response.message);
+                                if (response.status == 403) {
+                                    console.log("Query builder: response was 403");
+                                }
+                            }
                         });
                         return defered.promise;
                     } else {
