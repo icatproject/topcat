@@ -82,6 +82,7 @@
                                 });
                             }, function(response){
                                 var msg = (response?(response.responseText?response.responseText:'no text'):'no response');
+                                console.log('GET ' + facility.icatUrl + '/icat/properties failed with ' + msg);
                                 alert("Could not get authenticators list from " + facility.icatUrl + "/icat/properties - skipping facility " + facility.name);
                                 config.facilities.splice(config.facilities.indexOf(facility), 1);
                                 if( config.facilities.length == 0 ){

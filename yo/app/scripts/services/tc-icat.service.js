@@ -193,10 +193,10 @@
                         });
 
                     }, function(response){
-                        // Initial POST /session failed; ICAT may be down
-                        var reason = response?response.message:' null response - may be 404 from ICAT?';
+                        // Initial POST /session failed; if response is empty, ICAT may be down
+                        var reason = response?response.message:'ICAT may be down';
                         console.error('Failed to log into ICAT for ' + facility.config().name + ': ' + reason);
-                        return $q.reject({message: 'Unable to log into ' + facility.config().name + '; ICAT may be down'});
+                        return $q.reject({message: 'Unable to log into ' + facility.config().name + ': ' + reason});
                     });
 
                 },
