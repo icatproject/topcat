@@ -109,6 +109,8 @@
                             $('body').append(iframe);
                         }
                     });
+                }, function(response){
+                    console.log('submitCart failed for file',download.fileName,'from facility',download.facility.config().name);
                 }));
             });
             $q.all(promises).then(function(){
