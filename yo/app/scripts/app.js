@@ -50,12 +50,15 @@
                         if(!facility.icatUrl){
                             promises.push($.get(facility.idsUrl + "/ids/getIcatUrl").then(function(icatUrl){
                                 facility.icatUrl = icatUrl;
-                            }, function(){
+                            }, function(response){
+                                var msg = (response?(response.responseText?response.responseText:'no text'):'no response');
+                                console.log('GET ' + facility.idsUrl + '/ids/getIcatUrl failed with ' + msg);
                                 alert("Could not aquire icat url from " + facility.idsUrl + "/ids/getIcatUrl - skipping facility " + facility.name);
                                 config.facilities.splice(config.facilities.indexOf(facility), 1);
                                 if( config.facilities.length == 0 ){
                                     alert("No reachable facilities found");
                                 } else {
+                                    // Return a new promise to treat this as a success
                                     return $.Deferred().resolve({}).promise();
                                 }
                             }));
@@ -77,6 +80,16 @@
                                         plugin: authenticator.mnemonic
                                     };
                                 });
+                            }, function(response){
+                                var msg = (response?(response.responseText?response.responseText:'no text'):'no response');
+                                alert("Could not get authenticators list from " + facility.icatUrl + "/icat/properties - skipping facility " + facility.name);
+                                config.facilities.splice(config.facilities.indexOf(facility), 1);
+                                if( config.facilities.length == 0 ){
+                                    alert("No reachable facilities found");
+                                } else {
+                                    // Return a new promise to treat this as a success
+                                    return $.Deferred().resolve({}).promise();
+                                }
                             }));
                         }
                     });
