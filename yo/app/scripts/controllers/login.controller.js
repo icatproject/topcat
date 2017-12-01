@@ -54,7 +54,9 @@
                         $state.go(name, params);
                     }
                 }, function(response){
-                    inform.add(response.message != null ? response.message : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {
+                    // Response can be null
+                    var msg = response?response.message:null;
+                    inform.add(msg != null ? msg : $translate.instant('LOGIN.DEFAULT_LOGIN_ERROR_MESSAGE'), {
                         'ttl': 0,
                         'type': 'danger'
                     });

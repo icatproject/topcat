@@ -751,7 +751,14 @@
                     }
 
                     function failure(response){
-                        out.reject(response.data);
+                        // BR: have observed "TypeError: response is null" errors;
+                        // probably not coming from here, but let's log anyway
+                        if(response == null){
+                            console.log("Failure response from " + methodName + " " + prefix + offset + " is null");
+                        } else if(response.data == null){
+                            console.log("Failure response from " + methodName +  " " + prefix + offset + " has no/null data");
+                        }
+                        out.reject(response?response.data:null);
                         if(options.lowPriority) lowPriorityCounter--;
                     }
 
