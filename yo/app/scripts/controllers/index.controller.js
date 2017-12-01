@@ -190,7 +190,9 @@
 
         var refreshSessionInterval = setInterval(function(){
             _.each(tc.userFacilities(), function(facility){
-                facility.icat().refreshSession();
+                facility.icat().refreshSession().catch(function(response){
+                    console.log("Refresh session failed for " + facility.config().name + ": " + response.message);
+                });
             });
         }, 1000 * 60 * 5);
         $scope.$on('$destroy', function(){ clearInterval(refreshSessionInterval); });
