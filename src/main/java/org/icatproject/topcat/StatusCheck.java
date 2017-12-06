@@ -71,7 +71,7 @@ public class StatusCheck {
       int pollDelay = Integer.valueOf(properties.getProperty("poll.delay", "600"));
       int pollIntervalWait = Integer.valueOf(properties.getProperty("poll.interval.wait", "600"));
 
-      TypedQuery<Download> query = em.createQuery("select download from Download download where download.isDeleted != true and download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport = 'https') or (download.email != null and download.isEmailSent = false))", Download.class);
+      TypedQuery<Download> query = em.createQuery("select download from Download download where download.isDeleted != true and download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport in ('https','http')) or (download.email != null and download.isEmailSent = false))", Download.class);
       List<Download> downloads = query.getResultList();
 
       for(Download download : downloads){
@@ -107,7 +107,7 @@ public class StatusCheck {
         em.flush();
         lastChecks.remove(download.getId());
         sendDownloadReadyEmail(download);
-      } else if(download.getTransport().equals("https") && idsClient.isPrepared(download.getPreparedId())){
+      } else if(download.getTransport().matches("https|http") && idsClient.isPrepared(download.getPreparedId())){
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         download.setIsEmailSent(true);
@@ -201,7 +201,7 @@ public class StatusCheck {
         download.setSize(-1);
       }
 
-      if (download.getIsTwoLevel() || !download.getTransport().equals("https")) {
+      if (download.getIsTwoLevel() || !download.getTransport().matches("https|http")) {
         download.setStatus(DownloadStatus.RESTORING);
       } else {
         download.setStatus(DownloadStatus.COMPLETE);
