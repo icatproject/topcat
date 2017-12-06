@@ -19,7 +19,7 @@
         this.isStaged = function(){
             var out = false;
             _.each(this.downloads, function(download){
-                if(download.transportType != 'https' && download.transportType != 'smartclient'){
+                if((!download.transportType.match(/https|http/)) && download.transportType != 'smartclient'){
                     out = true;
                     return false;
                 }
@@ -97,7 +97,7 @@
                 promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email, timeout.promise).then(function(response){
                     return download.facility.user().downloads(["where download.id = ?",response.downloadId]).then(function(downloads){
                         var download = downloads[0];
-                        if(download.transport == 'https' && download.status == 'COMPLETE'){
+                        if(download.transport.match(/https|http/) && download.status == 'COMPLETE'){
                             var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
                             var iframe = $('<iframe>').attr('src', url).css({
                                 position: 'absolute',

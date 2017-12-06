@@ -27,7 +27,7 @@
             enableHiding: false,
             cellTemplate : [
                 '<div class="ui-grid-cell-contents">',
-                    '<span ng-if="row.entity.transport == \'https\'">',
+                    '<span ng-if="row.entity.transport == \'https\' ||  row.entity.transport == \'http\'">',
                         '<a ng-if="row.entity.status == \'COMPLETE\'" href="{{row.entity.transportUrl + \'/ids/getData?preparedId=\' + row.entity.preparedId + \'&outname=\' + row.entity.fileName}}" translate="DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="{{\'DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="left" tooltip-append-to-body="true"></a>',
                         '<span ng-if="row.entity.status != \'COMPLETE\'" class="inline-block" uib-tooltip="{{\'DOWNLOAD.ACTIONS.LINK.NON_ACTIVE_DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="left" tooltip-append-to-body="true"><button translate="DOWNLOAD.ACTIONS.LINK.NON_ACTIVE_DOWNLOAD.TEXT" class="btn btn-primary btn-xs disabled"></button></span>',
                     '</span> ',
