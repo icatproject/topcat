@@ -24,6 +24,7 @@ exec %{
   cd install
 
   sudo apt-get --assume-yes install apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
+  sudo apt-get install libgconf2-dev -y
 
   echo "USE mysql; UPDATE user SET password=PASSWORD('secret') WHERE user='root'; FLUSH PRIVILEGES; " | mysql -u root
   echo "create database icat;" | mysql -u root --password=secret
