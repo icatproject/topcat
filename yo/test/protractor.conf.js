@@ -25,11 +25,13 @@ exports.config = {
   // with relative paths will be prepended with this.
   baseUrl: 'http://localhost:8080',
 
-  // jasmineNodeOpts: {
+  // Possible fix for arbitrary timeout failures?
+  // See <https://github.com/angular/protractor/issues/2963>
+  jasmineNodeOpts: {
   //   onComplete: null,
   //   isVerbose: true,
   //   showColors: true,
   //   includeStackTrace: true,
-  //   defaultTimeoutInterval: 600000
-  // }
+     defaultTimeoutInterval: 2500000
+  }
 };
