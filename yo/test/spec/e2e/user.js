@@ -5,12 +5,8 @@ describe('user', function() {
 
     browser.get('http://localhost:8080/#/login');
 
-    browser.sleep(10000);
-
     var until = protractor.ExpectedConditions;
     browser.wait(until.presenceOf(element(by.css('.is-init'))));
-
-    browser.sleep(3000);
 
     element(by.model('loginController.userName')).sendKeys('root');
     element(by.model('loginController.password')).sendKeys('root');
