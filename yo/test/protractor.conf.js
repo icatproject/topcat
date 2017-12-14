@@ -15,7 +15,7 @@ exports.config = {
 
   capabilities: {
     'browserName': 'chrome',
-    'chromeOptions': {'args': ['--disable-extensions',  '--start-maximized']}
+    'chromeOptions': {'args': ['--headless', '--disable-extensions',  '--start-maximized']}
   },
 
   directConnect: true,
