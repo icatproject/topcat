@@ -89,6 +89,20 @@ module.exports = function(config) {
     // web server port
     //port: 9876,
 
+    // Custom configuration to run Chrome headless;
+    // see  <http://cvuorinen.net/2017/05/running-angular-tests-in-headless-chrome/>
+    customLaunchers: {
+      ChromeHeadless: {
+        base: 'Chrome',
+        flags: [
+          '--headless',
+          '--disable-gpu',
+          // Without a remote debugging port, Google Chrome exits immediately.
+          '--remote-debugging-port=9222',
+        ],
+      }
+    },
+
     // Start these browsers, currently available:
     // - Chrome
     // - ChromeCanary
@@ -98,7 +112,7 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: [
-      'Chrome'
+      'ChromeHeadless'
     ],
 
     // Which plugins to enable

@@ -22,6 +22,7 @@ Vagrant.configure(2) do |config|
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password secret"
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password secret"
     sudo apt-get --assume-yes install mysql-server apache2 git software-properties-common python-software-properties unzip -q build-essential openjdk-8-jdk dos2unix ruby-dev
+    sudo apt-get install libgconf2-dev -y
     echo "create database icat;" | mysql -u root --password=secret
     echo "create database topcat;" | mysql -u root --password=secret
     echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION" | mysql -u root --password=secret

@@ -24,6 +24,7 @@ exec %{
   cd install
 
   sudo apt-get --assume-yes install apache2 git software-properties-common python-software-properties unzip build-essential dos2unix
+  sudo apt-get install libgconf2-dev -y
 
   echo "USE mysql; UPDATE user SET password=PASSWORD('secret') WHERE user='root'; FLUSH PRIVILEGES; " | mysql -u root
   echo "create database icat;" | mysql -u root --password=secret
@@ -50,6 +51,7 @@ exec %{
   asadmin delete-network-listener http-listener-2
   asadmin create-network-listener --listenerport 8181 --protocol http-listener-2 http-listener-2
   asadmin create-ssl --type http-listener --certname s1as --ssl3enabled=false --ssl3tlsciphers +TLS_RSA_WITH_AES_256_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA http-listener-2
+  asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=-1
 
   wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.37.zip
   unzip  mysql-connector-java-5.1.37.zip
@@ -121,7 +123,7 @@ exec %{
   unzip -o topcat-*.zip
   cp provision/topcat.properties ./topcat
   cp provision/topcat-setup.properties ./topcat
-  cp ../yo/app/config/topcat_dev.json.example ./topcat/topcat.json
+  cp ../yo/app/config/topcat_ci.json.example ./topcat/topcat.json
   cp ../yo/app/languages/lang.json ./topcat
   cp ../yo/app/styles/topcat.css ./topcat
   cd topcat
