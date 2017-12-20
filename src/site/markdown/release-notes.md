@@ -9,13 +9,17 @@
   and JavaEE components to specify different ICAT/IDS urls for facilities if required, and removes a potential security risk.
 * Similarly, facility.[facilityName].downloadType.[transport] can be used to define transport-specific URLs for each facility. If the property is not found,
   the facility's idsUrl is used.
+* If Topcat encounters problems in communicating with a facility's ICAT/IDS during startup, it
+  will alert the user and attempt to ignore the facility and continue to load other configured facilities.
 * Search limits are described in the interface.
-* If the IDS is not available and Topcat tries run getIcatUrl call, Topcat will notify the user via an alert box.
+* If the IDS is not available and Topcat tries to run a getIcatUrl call, Topcat will notify the user via an alert box.
 * A file count column can now be added to the Cart.
 * When a Topcat goes into maintenance mode users (within  a minute) will be automatically logged out.
 * If using a single tier, in addition to datafiles you can now add 'Download' buttons to investigations and datasets in the 'Browse' section.
 * Improved caching in cart.
 * Improved calculation of file size/count.
+* Downloads with transport type http should now work (and be treated similarly to https).
+* Login failure messages are more specific.
 
 ## 2.3.5
 
