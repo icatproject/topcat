@@ -6,6 +6,8 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  /* Stop shimmering at particular zoom levels and window heights */
+  overflow-x:scroll;
 }
 
 .footer {
