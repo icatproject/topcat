@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.3.2.1
+
+* Fix error when adding entities to cart wherein IDs were converted to large negative numbers as they
+were read as signed ints rather than longs.
+
 ## 2.3.2
 
 * Very minor fix to work with strict mode in older browsers.
