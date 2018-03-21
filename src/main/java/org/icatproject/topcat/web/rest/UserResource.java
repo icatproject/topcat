@@ -429,7 +429,7 @@ public class UserResource {
 
 		for (JsonObject entity : icatClient.getEntities(entityType, entityIds)) {
 			String name = entity.getString("name");
-			Long entityId = Long.valueOf(entity.getInt("id"));
+			Long entityId = Long.valueOf(entity.getJsonNumber("id").longValue());
 
 			CartItem cartItem = new CartItem();
 			cartItem.setCart(cart);
@@ -443,20 +443,20 @@ public class UserResource {
 				ParentEntity parentEntity = new ParentEntity();
 				parentEntity.setCartItem(cartItem);
 				parentEntity.setEntityType(EntityType.valueOf("dataset"));
-				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getInt("id")));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getJsonNumber("id").longValue()));
 				cartItem.getParentEntities().add(parentEntity);
 				em.persist(parentEntity);
 
 				parentEntity = new ParentEntity();
 				parentEntity.setEntityType(EntityType.valueOf("investigation"));
-				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getJsonObject("investigation").getInt("id")));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("dataset").getJsonObject("investigation").getJsonNumber("id").longValue()));
 				cartItem.getParentEntities().add(parentEntity);
 				em.persist(parentEntity);
 
 			} else if (entityType.equals("dataset")) {
 				ParentEntity parentEntity = new ParentEntity();
 				parentEntity.setEntityType(EntityType.valueOf("investigation"));
-				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("investigation").getInt("id")));
+				parentEntity.setEntityId(Long.valueOf(entity.getJsonObject("investigation").getJsonNumber("id").longValue()));
 				cartItem.getParentEntities().add(parentEntity);
 				em.persist(parentEntity);
 			}

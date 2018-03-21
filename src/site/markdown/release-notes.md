@@ -20,6 +20,7 @@
 * Improved calculation of file size/count.
 * Downloads with transport type http should now work (and be treated similarly to https).
 * Login failure messages are more specific.
+* Fix error when adding entities to cart wherein IDs were converted to large negative numbers as they were read as signed ints rather than longs.
 
 ## 2.3.5
 
