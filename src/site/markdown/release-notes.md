@@ -14,13 +14,14 @@
 * Search limits are described in the interface.
 * If the IDS is not available and Topcat tries to run a getIcatUrl call, Topcat will notify the user via an alert box.
 * A file count column can now be added to the Cart.
-* When a Topcat goes into maintenance mode users (within  a minute) will be automatically logged out.
+* When a Topcat goes into maintenance mode users (within a minute) will be automatically logged out.
 * If using a single tier, in addition to datafiles you can now add 'Download' buttons to investigations and datasets in the 'Browse' section.
 * Improved caching in cart.
 * Improved calculation of file size/count.
 * Downloads with transport type http should now work (and be treated similarly to https).
 * Login failure messages are more specific.
 * Fix error when adding entities to cart wherein IDs were converted to large negative numbers as they were read as signed ints rather than longs.
+* Fix "display shimmer" at certain zoom factors and window heights in some browsers.
 
 ## 2.3.5
 
