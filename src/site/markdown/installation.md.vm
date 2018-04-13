@@ -97,9 +97,9 @@ Note: '#'s are comments.
 
 $h2 topcat.properties
 
-$h3 Upgrade from 2.3.5 to 2.4.0
+$h3 Upgrade from 2.3.6 to 2.4.0
 
-If you are upgrading from 2.3.5 or earlier to 2.4.0, the following properties should be added to your topcat.properties:
+If you are upgrading from 2.3.6 or earlier to 2.4.0, the following properties should be added to your topcat.properties:
 `facility.list`, `facility.[facilityName].icatUrl`, `facility.[facilityName].idsUrl` (for each `facilityName` in `facility.list`).
 
 Where a facility offers multiple download transfer types (as specified in topcat.json), a specific URL (prefix) for a particular facility
@@ -122,17 +122,17 @@ Note: '#'s are comments.
   facility.YFH.icatUrl = https://your.facility.icatUrl.here
   facility.YFH.idsUrl = https://your.facility.idsUrl.here
 
-# Download transport URLs
-# topcat.json can specify one or more download transport types for each facility, egs "https", "globus";
-# each may have a distinct download URL (prefix). To specify the download URL for a specific facility
-# and transport type, set an appropriate property as below.
-# If the property is not defined, Topcat will use the facility's idsUrl by default.
+  # Download transport URLs
+  # topcat.json can specify one or more download transport types for each facility, egs "https", "globus";
+  # each may have a distinct download URL (prefix). To specify the download URL for a specific facility
+  # and transport type, set an appropriate property as below.
+  # If the property is not defined, Topcat will use the facility's idsUrl by default.
 
-facility.LILS.downloadType.http = http://localhost:8080
-facility.YFH.downloadType.https = https://your.facility.downloadIdsUrl.here
-facility.YFH.downloadType.globus = https://your.facility.globusUrl.here
+  facility.LILS.downloadType.http = http://localhost:8080
+  facility.YFH.downloadType.https = https://your.facility.downloadIdsUrl.here
+  facility.YFH.downloadType.globus = https://your.facility.globusUrl.here
 
-# enable send email
+  # enable send email
   mail.enable=true
 
   # The email subject. Tokens available are:
