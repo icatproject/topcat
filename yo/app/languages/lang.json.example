@@ -252,6 +252,7 @@
             "ENTITY_TYPE" : "Type",
             "FACILITY" : "Facility",
             "SIZE" : "Size",
+            "DATAFILE_COUNT" : "Datafile Count",
             "FACILITY_NAME" : "Facility",
             "ACTIONS" : "Action"
         },
@@ -613,5 +614,13 @@
                 "TEXT": "Cancel"
             }
         }
+    },
+    "FILE_SIZE_UNITS": {
+        "B": "B",
+        "KB": "kB",
+        "MB": "MB",
+        "GB": "GB",
+        "TB": "TB",
+        "PB": "PB"
     }
 }
