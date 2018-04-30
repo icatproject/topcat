@@ -28,7 +28,7 @@
             cellTemplate : [
                 '<div class="ui-grid-cell-contents">',
                     '<span ng-if="row.entity.transport == \'https\' ||  row.entity.transport == \'http\'">',
-                        '<a ng-if="row.entity.status == \'COMPLETE\'" href="{{row.entity.transportUrl + \'/ids/getData?preparedId=\' + row.entity.preparedId + \'&outname=\' + row.entity.fileName}}" translate="DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="{{\'DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="left" tooltip-append-to-body="true"></a>',
+                        '<a ng-if="row.entity.status == \'COMPLETE\'" href="{{grid.appScope.getIdsUrl(row.entity) + \'/ids/getData?preparedId=\' + row.entity.preparedId + \'&outname=\' + row.entity.fileName}}" translate="DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="{{\'DOWNLOAD.ACTIONS.LINK.HTTP_DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="left" tooltip-append-to-body="true"></a>',
                         '<span ng-if="row.entity.status != \'COMPLETE\'" class="inline-block" uib-tooltip="{{\'DOWNLOAD.ACTIONS.LINK.NON_ACTIVE_DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="left" tooltip-append-to-body="true"><button translate="DOWNLOAD.ACTIONS.LINK.NON_ACTIVE_DOWNLOAD.TEXT" class="btn btn-primary btn-xs disabled"></button></span>',
                     '</span> ',
                     '<a ng-if="row.entity.transport == \'globus\'" href="#globus-help" target="_blank" translate="DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TEXT" class="btn btn-primary btn-xs" uib-tooltip="{{\'DOWNLOAD.ACTIONS.LINK.GLOBUS_DOWNLOAD.TOOLTIP.TEXT\' | translate}}" tooltip-placement="left" tooltip-append-to-body="true"></a> ',
@@ -55,6 +55,15 @@
         }));
 
     
+        this.getIdsUrl = function(download){
+            var facility = tc.facility(download.facilityName);
+            var transportType = _.select(facility.config().downloadTransportTypes, function(downloadTransportType){
+                return downloadTransportType.type == download.transport;
+            });
+            var idsUrl = transportType && transportType[0] ? transportType[0].idsUrl : undefined;
+            return idsUrl;            
+        };
+
         this.remove = function(download){
             var _data = [];
             _.each(data, function(currentDownload){

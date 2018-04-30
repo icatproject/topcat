@@ -98,7 +98,13 @@
                     return download.facility.user().downloads(["where download.id = ?",response.downloadId]).then(function(downloads){
                         var download = downloads[0];
                         if(download.transport.match(/https|http/) && download.status == 'COMPLETE'){
-                            var url = download.transportUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+                            // Determine the idsUrl for the download from topcat config, using its facility and transport (type)
+                            var facility = tc.facility(download.facilityName);
+                            var transportType = _.select(facility.config().downloadTransportTypes, function(downloadTransportType){
+                                return downloadTransportType.type == download.transport;
+                            });
+                            var idsUrl = transportType && transportType[0] ? transportType[0].idsUrl : undefined;
+                            var url = idsUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
                             var iframe = $('<iframe>').attr('src', url).css({
                                 position: 'absolute',
                                 left: '-1000000px',
