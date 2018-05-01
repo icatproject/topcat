@@ -22,6 +22,11 @@
 * Login failure messages are more specific.
 * Fix error when adding entities to cart wherein IDs were converted to large negative numbers as they were read as signed ints rather than longs.
 * Fix "display shimmer" at certain zoom factors and window heights in some browsers.
+* **There are database migrations that need to be applied**
+
+## 2.3.6
+
+* fix issue with DOI redirections.
 
 ## 2.3.5
 
