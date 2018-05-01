@@ -194,7 +194,7 @@ public class StatusCheck {
       String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
       download.setPreparedId(preparedId);
 
-      IcatClient icatClient = new IcatClient(download.getIcatUrl(), download.getSessionId());
+      IcatClient icatClient = new IcatClient(getIcatUrl(download.getFacilityName()), download.getSessionId());
       try {
         Long size = icatClient.getSize(cacheRepository, download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
         download.setSize(size);
@@ -222,6 +222,10 @@ public class StatusCheck {
       logger.error("prepareDownload Exception: " + e.toString());
     }
 
+  }
+
+  private String getIcatUrl( String facilityName ) throws InternalException{
+      return FacilityMap.getInstance().getIcatUrl(facilityName);
   }
 
   private String getDownloadUrl( String facilityName, String downloadType ) throws InternalException{

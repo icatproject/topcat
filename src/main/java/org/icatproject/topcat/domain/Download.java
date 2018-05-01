@@ -54,9 +54,6 @@ public class Download implements Serializable {
     @Column(name = "TRANSPORT", nullable = false)
     private String transport;
 
-    @Column(name = "ICAT_URL", nullable = false)
-    private String icatUrl = "";
-
     @Column(name = "FILE_NAME", nullable = false)
     private String fileName;
 
@@ -141,14 +138,6 @@ public class Download implements Serializable {
 
     public void setTransport(String transport) {
         this.transport = transport;
-    }
-
-    public String getIcatUrl() {
-        return icatUrl;
-    }
-
-    public void setIcatUrl(String icatUrl) {
-        this.icatUrl = icatUrl;
     }
 
     public String getFileName() {
@@ -269,8 +258,6 @@ public class Download implements Serializable {
         sb.append("userName:" + userName);
         sb.append(" ");
         sb.append("transport:" + transport);
-        sb.append(" ");
-        sb.append("icatUrl:" + icatUrl);
         sb.append(" ");
         sb.append("fileName:" + fileName);
         sb.append(" ");

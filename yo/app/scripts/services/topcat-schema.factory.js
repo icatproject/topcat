@@ -31,7 +31,6 @@
 						'facilityName': 'string',
 						'fileName': 'string',
 						'fullName': 'string',
-						'icatUrl': 'string',
 						'isDeleted': 'boolean',
 						'isTwoLevel': 'boolean',
 						'preparedId': 'string',
