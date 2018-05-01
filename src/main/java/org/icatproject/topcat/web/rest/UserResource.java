@@ -93,7 +93,7 @@ public class UserResource {
 	 *         "icatUrl":"https://example.com","id":2,"isDeleted":false,
 	 *         "isTwoLevel":false,"preparedId":
 	 *         "6d3aaca5-da9f-4e6a-922d-eceeefcc07e0","status":"COMPLETE",
-	 *         "size":324675,"transport":"https","transportUrl":"https://example.com",
+	 *         "size":324675,"transport":"https",
 	 *         "userName":"simple/root"}]
 	 *
 	 * @throws MalformedURLException
@@ -647,7 +647,6 @@ public class UserResource {
 			download.setUserName(cart.getUserName());
 			download.setFullName(fullName);
 			download.setTransport(transport);
-			download.setTransportUrl(transportUrl);
 			download.setIcatUrl(icatUrl);
 			download.setEmail(email);
 			download.setIsEmailSent(false);

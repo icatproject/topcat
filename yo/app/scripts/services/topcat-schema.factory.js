@@ -37,7 +37,6 @@
 						'preparedId': 'string',
 						'status': 'string',
 						'transport': 'string',
-						'transportUrl': 'string',
 						'userName': 'string'
 					}
 				},
