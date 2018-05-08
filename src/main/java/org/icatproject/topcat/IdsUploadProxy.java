@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 
 @ApplicationScoped
-@ServerEndpoint("/topcat/user/upload")
+@ServerEndpoint("/topcat/ws/user/upload")
 public class IdsUploadProxy {
 
     private static final Logger logger = LoggerFactory.getLogger(IdsUploadProxy.class);
