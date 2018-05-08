@@ -23,6 +23,7 @@ import org.icatproject.topcat.Utils;
 import org.icatproject.topcat.repository.*;
 import org.icatproject.topcat.IdsClient;
 import org.icatproject.topcat.IcatClient;
+import org.icatproject.topcat.FacilityMap;
 
 import org.icatproject.topcat.exceptions.*;
 
@@ -100,7 +101,7 @@ public class StatusCheck {
 
   private void performCheck(Download download) {
     try {
-      IdsClient idsClient = new IdsClient(download.getTransportUrl());
+      IdsClient idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
       if(!download.getIsEmailSent() && download.getStatus() == DownloadStatus.COMPLETE){
         download.setIsEmailSent(true);
         em.persist(download);
@@ -133,7 +134,7 @@ public class StatusCheck {
     }
   }
 
-  private void sendDownloadReadyEmail(Download download){
+  private void sendDownloadReadyEmail(Download download) throws InternalException{
     EmailValidator emailValidator = EmailValidator.getInstance();
     Properties properties = Properties.getInstance();
 
@@ -146,7 +147,7 @@ public class StatusCheck {
           userName = fullName;
         }
 
-        String downloadUrl = download.getTransportUrl();
+        String downloadUrl = getDownloadUrl(download.getFacilityName(),download.getTransport());
         downloadUrl += "/ids/getData?preparedId=" + download.getPreparedId();
         downloadUrl += "&outname=" + download.getFileName();
 
@@ -189,11 +190,11 @@ public class StatusCheck {
   private void prepareDownload(Download download) throws Exception {
 
     try {
-      IdsClient idsClient = new IdsClient(download.getTransportUrl());
+      IdsClient idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
       String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
       download.setPreparedId(preparedId);
 
-      IcatClient icatClient = new IcatClient(download.getIcatUrl(), download.getSessionId());
+      IcatClient icatClient = new IcatClient(getIcatUrl(download.getFacilityName()), download.getSessionId());
       try {
         Long size = icatClient.getSize(cacheRepository, download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
         download.setSize(size);
@@ -223,4 +224,11 @@ public class StatusCheck {
 
   }
 
+  private String getIcatUrl( String facilityName ) throws InternalException{
+      return FacilityMap.getInstance().getIcatUrl(facilityName);
+  }
+
+  private String getDownloadUrl( String facilityName, String downloadType ) throws InternalException{
+      return FacilityMap.getInstance().getDownloadUrl(facilityName, downloadType);
+  }
 }

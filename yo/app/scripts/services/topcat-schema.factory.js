@@ -31,13 +31,11 @@
 						'facilityName': 'string',
 						'fileName': 'string',
 						'fullName': 'string',
-						'icatUrl': 'string',
 						'isDeleted': 'boolean',
 						'isTwoLevel': 'boolean',
 						'preparedId': 'string',
 						'status': 'string',
 						'transport': 'string',
-						'transportUrl': 'string',
 						'userName': 'string'
 					}
 				},

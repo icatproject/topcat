@@ -15,6 +15,10 @@ facility.YFH.idsUrl = https://your.facility.idsUrl.here
 # topcat.json can specify one or more download transport types for each facility, egs "https", "globus";
 # each may have a distinct download URL (prefix). To specify the download URL for a specific facility
 # and transport type, set an appropriate property as below.
+# Note that the transport type will be set in requests from the Topcat Javascript application,
+# but the URL to specify here should be the IDS url that will be used in the Java clients;
+# so it may be that the Javascript transport type https should be mapped here to an
+# internal http URL.
 # If the property is not defined, Topcat will use the facility's idsUrl by default.
 
 facility.LILS.downloadType.http = http://localhost:8080

@@ -90,10 +90,10 @@ public class UserResource {
 	 *         "downloadItems":[{"entityId":18064,"entityType":"datafile","id":2
 	 *         },{"entityId":18061,"entityType":"datafile","id":3}],"email":"",
 	 *         "facilityName":"test","fileName":"test_2016-3-18_16-05-59",
-	 *         "icatUrl":"https://example.com","id":2,"isDeleted":false,
+	 *         "id":2,"isDeleted":false,
 	 *         "isTwoLevel":false,"preparedId":
 	 *         "6d3aaca5-da9f-4e6a-922d-eceeefcc07e0","status":"COMPLETE",
-	 *         "size":324675,"transport":"https","transportUrl":"https://example.com",
+	 *         "size":324675,"transport":"https",
 	 *         "userName":"simple/root"}]
 	 *
 	 * @throws MalformedURLException
@@ -647,8 +647,6 @@ public class UserResource {
 			download.setUserName(cart.getUserName());
 			download.setFullName(fullName);
 			download.setTransport(transport);
-			download.setTransportUrl(transportUrl);
-			download.setIcatUrl(icatUrl);
 			download.setEmail(email);
 			download.setIsEmailSent(false);
 			download.setSize(0);
