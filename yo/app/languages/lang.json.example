@@ -226,7 +226,8 @@
             "INVESTIGATION": "Visit",
             "DATASET": "Dataset",
             "DATAFILE": "Datafile"
-        }
+        },
+        "RESULTS_DESCRIPTION": "Please note: only the top 300 results will be displayed for each entity type i.e. Visit, Dataset or Datafile"
     },
     "MY_DATA" : {
         "TITLE" : "My Data",
@@ -547,6 +548,10 @@
             "FILE_SIZE" : "File Size",
             "LOCATION" : "Location",
             "PARAMETERS" : "Parameters"
+        },
+        "NO_METADATA" : {
+            "TABTITLE" : "No metadata",
+            "VALUE" : "There are no metadata to display for this entity"
         }
     },
     "FOOTER" : {
