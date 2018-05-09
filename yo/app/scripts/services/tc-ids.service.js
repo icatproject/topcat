@@ -135,7 +135,7 @@
               topcatUrl = "ws://" + topcatUrl.replace(/^http:\/\//, '');
             }
 
-            var currentUrl = topcatUrl + "/topcat/user/upload?" + _.map(queryParams, function(v, k){ return encodeURIComponent(k) + "=" + encodeURIComponent(v) }).join('&');
+            var currentUrl = topcatUrl + "/topcat/ws/user/upload?" + _.map(queryParams, function(v, k){ return encodeURIComponent(k) + "=" + encodeURIComponent(v) }).join('&');
 
             var connection = new WebSocket(currentUrl);
 
