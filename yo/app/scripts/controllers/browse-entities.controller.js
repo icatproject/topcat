@@ -45,7 +45,9 @@
             this.gridAlternativeController = browseGridAlternative.options.controller;
         }
 
-        helpers.setupIcatGridOptions(gridOptions, entityType);
+        var showInfoButton = facility.config().browse[entityType] && facility.config().browse[entityType].metaTabs;
+
+        helpers.setupIcatGridOptions(gridOptions, entityType, showInfoButton);
         this.gridOptions = gridOptions;
         this.isScroll = isScroll;
 

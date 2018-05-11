@@ -156,7 +156,7 @@
 
     	};
 
-    	this.setupIcatGridOptions = function(gridOptions, entityType){
+    	this.setupIcatGridOptions = function(gridOptions, entityType, showInfoButton){
     		if(entityType != 'facility'){
     			gridOptions.useExternalPagination = true;
 	        	gridOptions.useExternalSorting = true;
@@ -262,7 +262,7 @@
 
 	            columnDef.cellTemplate = columnDef.cellTemplate || [
 	                '<div class="ui-grid-cell-contents">',
-                        '<a ng-if="colRenderIndex == 0" ng-click="grid.appScope.showTabs(row)" class="btn btn-xs glyphicon glyphicon-info-sign" uib-tooltip="{{&quot;BROWSE.INTERFACE.TOGGLE_METATABS_TOOLTIP.TEXT&quot; | translate}}" tooltip-placement="right"></a>',
+                        // '<a ng-if="colRenderIndex == 0" ng-click="grid.appScope.showTabs(row)" class="btn btn-xs glyphicon glyphicon-info-sign" uib-tooltip="{{&quot;BROWSE.INTERFACE.TOGGLE_METATABS_TOOLTIP.TEXT&quot; | translate}}" tooltip-placement="right"></a>',
 	                    '<span ng-if="!(' + showCondition + ') && $root.requestCounter != 0" class="loading">&nbsp;</span>',
                         '<span ',
                             'ng-if="row.entity.find(&quot;' + columnDef.field + '&quot;).length > 1" ',
@@ -281,6 +281,21 @@
 	                '</div>'
 	            ].join('');
 	        });
+
+            if(showInfoButton){
+                gridOptions.columnDefs.unshift({
+                    name: 'info',
+                    displayName: '',
+                    visible: 'true',
+                    width: 25,
+                    enableFiltering: false,
+                    enable: false,
+                    enableColumnMenu: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    cellTemplate: '<a ng-click="grid.appScope.showTabs(row)" class="btn btn-xs glyphicon glyphicon-info-sign" uib-tooltip="{{&quot;BROWSE.INTERFACE.TOGGLE_METATABS_TOOLTIP.TEXT&quot; | translate}}" tooltip-placement="right"></a>'
+                });
+            }
 
             var actionButtons = [];
 
