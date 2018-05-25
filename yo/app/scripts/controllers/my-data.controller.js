@@ -42,7 +42,10 @@
             data: [],
             appScopeProvider: this
         }, facility.config().myData.gridOptions);
-        helpers.setupIcatGridOptions(gridOptions, entityType);
+
+        var showInfoButton = facility.config().browse[entityType] && facility.config().browse[entityType].metaTabs;
+        
+        helpers.setupIcatGridOptions(gridOptions, entityType, showInfoButton);
         this.gridOptions = gridOptions;
         var includes = gridOptions.includes;
 

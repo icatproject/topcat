@@ -98,7 +98,15 @@
     function createGridOptions(type){
       var gridApi;
       var gridOptions = _.merge({data: [], appScopeProvider: that, enableSelectAll: false}, tc.config().search.gridOptions[type]);
-      helpers.setupIcatGridOptions(gridOptions, type);
+
+      // TODO: we need to get the facility's config to determine whether it defines browse[type].metaTabs
+      // so we know whether or not to add an Info button;
+      // but that's not available to this function at present.
+      // Indeed, we may not have a determined facility at the point where this function is called.
+      // Showing the button when there's no metadata is OK, but a bit misleading.
+
+      var showInfoButton = true;
+      helpers.setupIcatGridOptions(gridOptions, type, showInfoButton);
       gridOptions.useExternalPagination =  false;
       var filter = function(){ return true; };
       var sorter = function(){ return true; };
