@@ -374,7 +374,7 @@
                                 'uib-tooltip="{{actionButton.translateTooltip | translate}}" ',
                                 'tooltip-placement="left" ',
                                 'tooltip-append-to-body="true" ',
-                                'ng-show="actionButton.show() === undefined ? true : actionButton.show()"',
+                                'ng-show="actionButton.show(row.entity) === undefined ? true : actionButton.show(row.entity)"',
                                 'ng-click="actionButton.click(row.entity); $event.stopPropagation();">',
                             '</a>',
                         '</div>'
