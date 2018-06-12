@@ -22,6 +22,7 @@
 * Login failure messages are more specific.
 * Fix error when adding entities to cart wherein IDs were converted to large negative numbers as they were read as signed ints rather than longs.
 * Fix "display shimmer" at certain zoom factors and window heights in some browsers.
+* Topcat now passes the row entity to the show() method of entity action buttons; plugins can inspect this to control whether the button is shown for a particular row.
 * **There are database migrations that need to be applied**
 
 ## 2.3.6
