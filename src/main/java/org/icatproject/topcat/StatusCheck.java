@@ -22,7 +22,6 @@ import org.icatproject.topcat.Properties;
 import org.icatproject.topcat.Utils;
 import org.icatproject.topcat.repository.*;
 import org.icatproject.topcat.IdsClient;
-import org.icatproject.topcat.IcatClient;
 import org.icatproject.topcat.FacilityMap;
 
 import org.icatproject.topcat.exceptions.*;
@@ -194,9 +193,8 @@ public class StatusCheck {
       String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
       download.setPreparedId(preparedId);
 
-      IcatClient icatClient = new IcatClient(getIcatUrl(download.getFacilityName()), download.getSessionId());
       try {
-        Long size = icatClient.getSize(cacheRepository, download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
+        Long size = idsClient.getSize(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
         download.setSize(size);
       } catch(Exception e) {
         download.setSize(-1);
@@ -222,10 +220,6 @@ public class StatusCheck {
       logger.error("prepareDownload Exception: " + e.toString());
     }
 
-  }
-
-  private String getIcatUrl( String facilityName ) throws InternalException{
-      return FacilityMap.getInstance().getIcatUrl(facilityName);
   }
 
   private String getDownloadUrl( String facilityName, String downloadType ) throws InternalException{
