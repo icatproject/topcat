@@ -16,6 +16,8 @@ import javax.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.icatproject.topcat.repository.CacheRepository;
+
 public class IdsClient {
 
     private Logger logger = LoggerFactory.getLogger(IdsClient.class);
@@ -123,6 +125,105 @@ public class IdsClient {
         } catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }
+    }
+
+    public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+        try {
+            StringBuffer investigationIdsBuffer = new StringBuffer();
+            StringBuffer datasetIdsBuffer = new StringBuffer();
+            StringBuffer datafileIdsBuffer = new StringBuffer();
+            Long size;
+            
+            if(investigationIds != null){
+                for(Long investigationId : investigationIds){
+                    if(investigationIdsBuffer.length() != 0){
+                        investigationIdsBuffer.append(",");
+                    }
+                    investigationIdsBuffer.append(investigationId);
+                }
+            }
+
+            if(datasetIds != null){
+                for(Long datasetId : datasetIds){
+                    if(datasetIdsBuffer.length() != 0){
+                        datasetIdsBuffer.append(",");
+                    }
+                    datasetIdsBuffer.append(datasetId);
+                }
+            }
+
+            if(datafileIds != null){
+                for(Long datafileId : datafileIds){
+                    if(datafileIdsBuffer.length() != 0){
+                        datafileIdsBuffer.append(",");
+                    }
+                    datafileIdsBuffer.append(datafileId);
+                }
+            }
+
+            StringBuffer data = new StringBuffer();
+            data.append("sessionId=" + sessionId);
+            data.append("&zip=true");
+            if(investigationIdsBuffer.length() > 0){
+                data.append("&investigationIds=" + investigationIdsBuffer);
+            }
+            if(datasetIdsBuffer.length() > 0){
+                data.append("&datasetIds=" + datasetIdsBuffer);
+            }
+            if(datafileIdsBuffer.length() > 0){
+                data.append("&datafileIds=" + datafileIdsBuffer);
+            }
+
+            Response out = httpClient.post("getSize", new HashMap<String, String>(), data.toString(), timeout);
+            if(out.getCode() == 404){
+                throw new NotFoundException("Could not getSize got a 404 response");
+            } else if(out.getCode() >= 400){
+                throw new BadRequestException("Could not getSize got " + out.getCode() + " response: " + out.toString());
+            }
+
+            try {
+                size = Long.parseLong(out.toString());
+            } catch (Exception e){
+                logger.info("getSize: can't extract number from response '" + out.toString() + "'; got exception: '" + e.getMessage() 
+                    + "'; replacing with 0");
+                size = (long) 0;
+            }
+
+            return size;
+        } catch(TopcatException e){
+            throw e;
+        } catch (Exception e){
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    public Long getSize(CacheRepository cacheRepository, String sessionId, String entityType, Long entityId) throws TopcatException {
+
+        String key = "getSize:" + entityType + ":" + entityId;
+        Long size = (Long) cacheRepository.get(key);
+
+        if(size != null){
+            return size;
+        }
+
+        List<Long> investigationIds = new ArrayList<Long>();
+        List<Long> datasetIds = new ArrayList<Long>();
+        List<Long> datafileIds = new ArrayList<Long>();
+            
+        if(entityType.equals("investigation")){
+            investigationIds.add(entityId);
+        } else if(entityType.equals("dataset")){
+            datasetIds.add(entityId);
+        } else if(entityType.equals("datafile")){
+            datafileIds.add(entityId);
+        } else {
+            throw new BadRequestException("Unknown or supported entity \"" + entityType + "\" for getSize");
+        }
+
+        size = this.getSize(sessionId,investigationIds,datasetIds,datafileIds);
+        cacheRepository.put(key,size);
+        
+        return size;
     }
 
     private List<String> chunkOffsets(String offsetPrefix, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds){
