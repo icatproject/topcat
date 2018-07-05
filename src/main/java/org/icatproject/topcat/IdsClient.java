@@ -174,7 +174,7 @@ public class IdsClient {
                 data.append("&datafileIds=" + datafileIdsBuffer);
             }
 
-            Response out = httpClient.post("getSize", new HashMap<String, String>(), data.toString(), timeout);
+            Response out = httpClient.get("getSize?" + data.toString(), new HashMap<String, String>(), timeout);
             if(out.getCode() == 404){
                 throw new NotFoundException("Could not getSize got a 404 response");
             } else if(out.getCode() >= 400){
@@ -222,7 +222,7 @@ public class IdsClient {
 
         size = this.getSize(sessionId,investigationIds,datasetIds,datafileIds);
         cacheRepository.put(key,size);
-        
+
         return size;
     }
 
