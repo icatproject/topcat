@@ -19,12 +19,6 @@
     			translate: "MAIN_NAVIGATION.MAIN_TAB.BROWSE",
     			sref: "home.browse.facility",
     			showState: "home.browse"
-    		},
-    		{
-    			name: "search",
-    			translate: "MAIN_NAVIGATION.MAIN_TAB.SEARCH",
-    			sref: "home.search.start",
-    			showState: "home.search"
     		}
     	];
 
