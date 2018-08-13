@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.3.2.2
+
+* Allow configuration to control whether or not the Search tab is enabled, via site.search.enabled. The default value is false.
+
 ## 2.3.2.1
 
 * Fix error when adding entities to cart wherein IDs were converted to large negative numbers as they

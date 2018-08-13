@@ -62,6 +62,8 @@ The frontend configuration consists of three files:
   * **lang.json** - used to changed the words on topcat; either the actual language e.g. from English to French, or to substitute words that make more sense to your facility e.g. "Investigator" to "Scientist"
   * **topcat.css** - allows you to change Topcat's styling the page colours etc...
 
+**Note** that Topcat 2.3.2.2 has introduced a new property site.search.enabled. If this is missing or false then the Search tab will not appear.
+
 $h2 topcat-setup.properties
 
 Note: '#'s are comments.
@@ -297,6 +299,7 @@ An example (partial) configuration:
 {
   "site": {
     "search": {
+        "enabled": true,
         "enableParameters": false,
         "enableSamples": false,
         "gridOptions": {
@@ -308,6 +311,7 @@ An example (partial) configuration:
   }
 }
 ```
+  * "enabled" - if missing or false then the Search tab will not be added. (New in 2.3.2.2.)
   * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false.
   * "enableSamples" - specifies whether the sample search feature should be enabled or not. Can be true or false.
   * gridOptions
