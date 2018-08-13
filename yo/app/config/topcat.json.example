@@ -20,6 +20,7 @@
             "maxTitleLength": 30
         },
         "search": {
+            "enabled": false,
             "enableParameters": false,
             "enableSamples": false,
             "gridOptions": {

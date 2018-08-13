@@ -22,6 +22,15 @@
     		}
     	];
 
+        if( tc.config().search.enabled ){
+            existingTabs.push({
+                name: "search",
+                translate: "MAIN_NAVIGATION.MAIN_TAB.SEARCH",
+                sref: "home.search.start",
+                showState: "home.search"                
+            })
+        };
+
     	var otherTabs = _.map(tc.ui().mainTabs(), function(otherTab){
     		return {
     			name: otherTab.name,
