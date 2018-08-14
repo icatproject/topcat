@@ -90,6 +90,7 @@
                         message: { _type: 'string' }
                     },
                     search: {
+                        enabled: { _type: 'boolean', _mandatory: false },
                         enableParameters: { _type: 'boolean', _mandatory: false },
                         enableSamples: { _type: 'boolean', _mandatory: false },
                         gridOptions: {}
