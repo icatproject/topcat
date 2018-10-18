@@ -56,7 +56,7 @@ public class IcatClient {
 				}
 			}
 		} catch(Exception e){
-			logger.info("isAdmin: " + e.getMessage());
+			logger.error("isAdmin: " + e.getMessage());
 			// Ought to throw a BadRequestException here,
 			// but existing usage expects a return value of false in this case.
 			// throw new BadRequestException(e.getMessage());
@@ -71,18 +71,18 @@ public class IcatClient {
     		Response response = httpClient.get(url, new HashMap<String, String>());
     		
     		if(response.getCode() == 404){
-    			logger.info("IcatClient.getFullName: got a 404 response");
+    			logger.error("IcatClient.getFullName: got a 404 response");
                 throw new NotFoundException("Could not run getFullName got a 404 response");
             } else if(response.getCode() >= 400){
             	String message = Utils.parseJsonObject(response.toString()).getString("message");
-    			logger.info("IcatClient.getFullName: got a " + response.getCode() + " response: " + message);
+    			logger.error("IcatClient.getFullName: got a " + response.getCode() + " response: " + message);
                 throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
             }
 
     		JsonArray responseArray = Utils.parseJsonArray(response.toString());
-    		if( responseArray.size() == 0 ){
-    			logger.info("IcatClient.getFullName: client returned empty array, so returning empty string");
-    			return "";
+    		if( responseArray.size() == 0 || responseArray.isNull(0) ){
+    			logger.warn("IcatClient.getFullName: client returned no or null result, so returning userName");
+    			return getUserName();
     		} else {
     			return responseArray.getString(0);
     		}
@@ -164,7 +164,6 @@ public class IcatClient {
 
 		return out;
 	}
-
 
 	protected String[] getAdminUserNames() throws Exception {
 		return Properties.getInstance().getProperty("adminUserNames", "").split("([ ]*,[ ]*|[ ]+)");

@@ -35,6 +35,7 @@ if arg == "INSTALL":
         files = []
         files.append(["topcat.json", "config"])
         files.append(["lang.json", "languages"])
+        files.append(["topcat.css", "styles"])
 
         if os.path.exists("logback.xml"): files.append(["logback.xml", "WEB-INF/classes"])
 
