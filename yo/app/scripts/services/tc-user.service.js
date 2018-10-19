@@ -235,6 +235,12 @@
             });
 
             var cartCache;
+
+            this.clearCartCache = function(){
+                console.log("user for " + facility.config().name + ": clearing cartCache");
+                cartCache = null;
+            }
+            
             this.cart = helpers.overload({
                 /**
                  * @method
@@ -244,6 +250,7 @@
                  */
                 'object': function(options){
                     if(cartCache){
+                        console.log("user.cart(): cartCache exists, so using it");
                         var defered = $q.defer();
                         defered.resolve(cartCache);
                         return defered.promise;
@@ -253,6 +260,7 @@
                         sessionId: facility.icat().session().sessionId
                     }, options).then(function(cart){
                         cart = tcUserCart.create(cart, that);
+                        console.log("user.cart(): cartCache does not exist, so doing GET");
                         cartCache = cart;
                         return cart;
                     });

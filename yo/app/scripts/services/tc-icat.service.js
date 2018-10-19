@@ -108,10 +108,28 @@
                         var facilityName = facility.config().name;
                         var sessionId = response.sessionId;
 
+                        // Remember the old username, if any, before we wipe it
+                        var oldUsername;
+                        if($sessionStorage.sessions[facilityName] && $sessionStorage.sessions[facilityName].username) {
+                            oldUsername = $sessionStorage.sessions[facilityName].username;
+                            console.log("Old user for facility " + facilityName + " was " + username);
+                        } else {
+                            console.log("No old username found.");
+                        }
+
                         $sessionStorage.sessions[facilityName] = { sessionId: sessionId }
 
                         return that.get('session/' + response.sessionId).then(function(response){
                             var username = response.userName;
+
+                            // Test: can we detect a change in user for the same facility?
+                            if(oldUsername) {
+                                if(oldUsername == username){
+                                    console.log("Logging into facility " + facilityName + " again as user " + username);
+                                } else {
+                                    console.log("User change: facility " + facilityName + " from user " + oldUsername + " to " + username);
+                                }
+                            }
 
                             $sessionStorage.sessions[facilityName].username = username;
                             $sessionStorage.sessions[facilityName].plugin = plugin;
@@ -243,6 +261,9 @@
                     if(tc.adminFacilities().length == 0){
                         document.cookie = 'isAdmin=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                     }
+
+                    // Clear the facility user's cartCache so it can't leak to the next user
+                    facility.user().clearCartCache();
 
             		return $q.all(promises).then(function(){
             			$rootScope.$broadcast('session:change');
