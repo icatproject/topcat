@@ -108,28 +108,10 @@
                         var facilityName = facility.config().name;
                         var sessionId = response.sessionId;
 
-                        // Remember the old username, if any, before we wipe it
-                        var oldUsername;
-                        if($sessionStorage.sessions[facilityName] && $sessionStorage.sessions[facilityName].username) {
-                            oldUsername = $sessionStorage.sessions[facilityName].username;
-                            console.log("Old user for facility " + facilityName + " was " + username);
-                        } else {
-                            console.log("No old username found.");
-                        }
-
                         $sessionStorage.sessions[facilityName] = { sessionId: sessionId }
 
                         return that.get('session/' + response.sessionId).then(function(response){
                             var username = response.userName;
-
-                            // Test: can we detect a change in user for the same facility?
-                            if(oldUsername) {
-                                if(oldUsername == username){
-                                    console.log("Logging into facility " + facilityName + " again as user " + username);
-                                } else {
-                                    console.log("User change: facility " + facilityName + " from user " + oldUsername + " to " + username);
-                                }
-                            }
 
                             $sessionStorage.sessions[facilityName].username = username;
                             $sessionStorage.sessions[facilityName].plugin = plugin;
