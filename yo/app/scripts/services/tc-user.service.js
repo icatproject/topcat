@@ -235,6 +235,12 @@
             });
 
             var cartCache;
+
+            this.clearCartCache = function(){
+                console.log("user for " + facility.config().name + ": clearing cartCache");
+                cartCache = null;
+            }
+
             this.cart = helpers.overload({
                 /**
                  * @method

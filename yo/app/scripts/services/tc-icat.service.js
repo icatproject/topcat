@@ -244,6 +244,9 @@
                         document.cookie = 'isAdmin=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                     }
 
+                    // Clear the facility user's cartCache so it can't leak to the next user
+                    facility.user().clearCartCache();
+
             		return $q.all(promises).then(function(){
             			$rootScope.$broadcast('session:change');
             		}, function(){
