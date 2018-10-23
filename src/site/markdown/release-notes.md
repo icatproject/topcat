@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.4.1
+
+* fix issue #379 : restore copying topcat.css into styles/ in setup
+* fix issue #381 : IcatClient.getFullName returns UserName if no FullName is found
+* fix issue #384 : Cart no longer inherited by different user on same browser
+
+
 ## 2.4.0
 
 * If the the Icat/IDS returns a 404 error Topcat will now longer mark a download as expired. This used to happen if the Java EE container (e.g. Glassfish) was running but the application had not fully booted up yet.
