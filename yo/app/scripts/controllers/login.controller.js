@@ -45,6 +45,12 @@
                     } else {
                         var name;
                         var params = {};
+                        // Does the lastUserName match this one? If not, clear lastState
+                        if($sessionStorage.lastUserName && $sessionStorage.lastUserName != that.userName){
+                            console.log("New user '" + that.userName + "' different from previous '" + $sessionStorage.lastUserName + "'; clearing lastState");
+                            delete $sessionStorage.lastState;
+                        }
+                        $sessionStorage.lastUserName = that.userName;
                         if($sessionStorage.lastState){
                             name = $sessionStorage.lastState.name;
                             params = $sessionStorage.lastState.params;
