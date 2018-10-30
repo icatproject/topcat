@@ -722,10 +722,10 @@ public class UserResource {
 		@QueryParam("entityType") String entityType,
 		@QueryParam("entityId") Long entityId) throws TopcatException {
 
-		String icatUrl = getIcatUrl( facilityName );
-		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
+		String idsUrl = getIdsUrl( facilityName );
+		IdsClient idsClient = new IdsClient(idsUrl);
 
-		Long size = icatClient.getSize(cacheRepository, entityType, entityId);
+		Long size = idsClient.getSize(cacheRepository, sessionId, entityType, entityId);
 
 		return Response.ok().entity(size.toString()).build();
 	}
@@ -749,6 +749,14 @@ public class UserResource {
 	private String getIcatUrl( String facilityName ) throws BadRequestException{
 		try {
 			return FacilityMap.getInstance().getIcatUrl(facilityName);
+		} catch (InternalException ie){
+			throw new BadRequestException( ie.getMessage() );
+		}
+	}
+
+	private String getIdsUrl( String facilityName ) throws BadRequestException{
+		try {
+			return FacilityMap.getInstance().getIdsUrl(facilityName);
 		} catch (InternalException ie){
 			throw new BadRequestException( ie.getMessage() );
 		}

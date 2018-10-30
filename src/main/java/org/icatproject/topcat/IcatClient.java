@@ -16,8 +16,6 @@ import javax.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.icatproject.topcat.repository.CacheRepository;
-
 public class IcatClient {
 
 	private Logger logger = LoggerFactory.getLogger(IcatClient.class);
@@ -164,72 +162,6 @@ public class IcatClient {
 			throw new BadRequestException(e.getMessage());
 		}
 
-		return out;
-	}
-
-
-	public Long getSize(CacheRepository cacheRepository, String entityType, Long entityId) throws TopcatException {
-		try {
-			String key = "getSize:" + entityType + ":" + entityId;
-			Long size = (Long) cacheRepository.get(key);
-
-			if(size != null){
-				return size;
-			}
-
-			String query = null;
-
-			if(entityType.equals("investigation")){
-				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + entityId;
-			} else if(entityType.equals("dataset")){
-				query = "select sum(datafile.fileSize) from  Datafile datafile, datafile.dataset as dataset where dataset.id = " + entityId;
-			} else if(entityType.equals("datafile")){
-				query = "select datafile.fileSize from  Datafile datafile where datafile.id = " + entityId;
-			} else {
-				throw new BadRequestException("Unknown or supported entity \"" + entityType + "\" for getSize");
-			}
-
-			String url = "entityManager?sessionId=" + URLEncoder.encode(sessionId, "UTF8") + "&query=" + URLEncoder.encode(query, "UTF8");
-			Response response = httpClient.get(url, new HashMap<String, String>());
-
-			if(response.getCode() == 404){
-                throw new NotFoundException("Could not run getSize got a 404 response");
-            } else if(response.getCode() >= 400){
-                throw new BadRequestException(Utils.parseJsonObject(response.toString()).getString("message"));
-            }
-
-			try {
-				size = ((JsonNumber) Utils.parseJsonArray(response.toString()).get(0)).longValue();
-			} catch (Exception e){
-				logger.warn("getSize: can't extract number from response '" + response.toString() + "'; got exception: '" + e.getMessage() 
-					+ "'; replacing with 0; query was: '" + query + "'");
-				size = (long) 0;
-			}
-			cacheRepository.put(key, size);
-
-			return size;
-		} catch(TopcatException e){
-			throw e;
-		} catch (Exception e) {
-			throw new BadRequestException(e.getMessage());
-		}
-	}
-
-	public Long getSize(CacheRepository cacheRepository, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
-		Long out = 0L;
-
-		for(Long investigationId : investigationIds){
-			out += getSize(cacheRepository, "investigation", investigationId);
-		}
-
-		for(Long datasetId : datasetIds){
-			out += getSize(cacheRepository, "dataset", datasetId);
-		}
-
-		for(Long datafileId : datafileIds){
-			out += getSize(cacheRepository, "datafile", datafileId);
-		}
-		
 		return out;
 	}
 
