@@ -2,9 +2,11 @@
 
 ## 2.4.1
 
+* getSize calculations now use the IdsClient API (issue #386), which should improve performance.
 * fix issue #379 : restore copying topcat.css into styles/ in setup
 * fix issue #381 : IcatClient.getFullName returns UserName if no FullName is found
-* fix issue #384 : Cart no longer inherited by different user on same browser
+* fix issue #384 : Cart no longer inherited by different user on same browser; also, if
+  a different user logs in, the browse path is reset.
 
 
 ## 2.4.0
