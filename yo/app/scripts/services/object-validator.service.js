@@ -91,6 +91,7 @@
                         message: { _type: 'string' }
                     },
                     search: {
+                        disabled: { _type: 'boolean', _mandatory: false },
                         enableTextBox: { _type: 'boolean', _mandatory: false },
                         enableDateRange: { _type: 'boolean', _mandatory: false },
                         enableParameters: { _type: 'boolean', _mandatory: false },
