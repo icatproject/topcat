@@ -352,6 +352,7 @@ An example (partial) configuration:
 {
   "site": {
     "search": {
+        "disabled": false,
         "enableTextBox": true,
         "enableDateRange": true,
         "enableParameters": true,
@@ -368,6 +369,7 @@ An example (partial) configuration:
   }
 }
 ```
+  * "disabled" - if true then the Search tab will not be added. Can be omitted, defaulting to false.
   * "enableTextBox" - specifies whether the main search text box feature should be enabled or not. Can be true or false.
   * "enableDateRange" - specifies whether the date range feature should be enabled or not. Can be true or false.
   * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false.

@@ -7,6 +7,7 @@
 * fix issue #381 : IcatClient.getFullName returns UserName if no FullName is found
 * fix issue #384 : Cart no longer inherited by different user on same browser; also, if
   a different user logs in, the browse path is reset.
+* added optional "disabled" flag to site.search configuration in topcat.json. If present and true, the Search tab will not be added.
 
 
 ## 2.4.0
