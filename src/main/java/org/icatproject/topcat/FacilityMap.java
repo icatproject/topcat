@@ -72,7 +72,7 @@ public class FacilityMap {
 	public String getIdsUrl( String facility ) throws InternalException{
 		String url = facilityIdsUrl.get( facility );
 		if( url == null ){
-			String error = "FacilityMap.getIcatUrl: unknown facility: " + facility;
+			String error = "FacilityMap.getIdsUrl: unknown facility: " + facility;
 			logger.error( error );
 			throw new InternalException( error );
 		}

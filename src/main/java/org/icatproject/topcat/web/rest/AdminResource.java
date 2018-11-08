@@ -274,6 +274,10 @@ public class AdminResource {
     }
 
 	private String getIcatUrl( String facilityName ) throws BadRequestException{
+		// Pass nulls through - subsequent code may want to handle them
+		if( facilityName == null){
+			return null;
+		}
 		try {
 			return FacilityMap.getInstance().getIcatUrl(facilityName);
 		} catch (InternalException ie){
