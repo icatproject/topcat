@@ -5,7 +5,7 @@
 
     var app = angular.module('topcat');
 
-    app.controller('DoiRedirectController', function($state, inform, tc, helpers){
+    app.controller('DoiRedirectController', function($state, $translate, inform, tc, helpers){
     	var facilityName = $state.params.facilityName;
     	var entityType = $state.params.entityType;
     	var entityId = $state.params.entityId;
@@ -18,7 +18,13 @@
     			// If we *do* set a particular state, it has to happen before the inform.
     			// var state = tc.config().home == 'browse' ? 'home.browse.facility' : 'home.' + tc.config().home;
     	        // $state.go(state);
-    			inform.add("Cannot read the " + entityType + ". You may not have read access, or it may not be published yet", {
+    			var msg = $translate.instant("DOI.QUERY_EMPTY");
+    			if( msg != "DOI.QUERY_EMPTY" ){
+    				msg = msg.replace(/_ENTITY_TYPE_/g,entityType);
+    			} else {
+    				msg = "Cannot read the " + entityType + ". You may not have read access, or it may not be published yet.";
+    			}
+    			inform.add(msg, {
     				'ttl' : -1,
     				'type' : 'warning'
     			});

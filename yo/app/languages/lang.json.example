@@ -620,6 +620,10 @@
             }
         }
     },
+    "DOI": {
+        "LANDING_PAGE_DOWNLOAD_INFO": "You must be logged in to access this data.",
+        "QUERY_EMPTY": "The _ENTITY_TYPE_ cannot be read. You may not have read access, or it may not be published yet."
+    },
     "FILE_SIZE_UNITS": {
         "B": "B",
         "KB": "kB",
