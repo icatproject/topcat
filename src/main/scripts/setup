@@ -30,7 +30,15 @@ if arg == "INSTALL":
 
         actions.registerDB("topcat", props["db.driver"], props["db.url"], props["db.username"], props["db.password"])
 
-        actions.createMailResource("mail/topcat", props["mail.host"], props["mail.user"], props["mail.from"], props["mail.property"])
+        # Only create the mail resource if all mail properties are defined.
+        # NOTE: if the mail resource is not created, then mail.enable MUST be false in topcat.properties
+        
+        missing = [k for k in ("mail.host","mail.user","mail.from","mail.property") if k not in props];
+        if not missing:
+            print("Creating mail resource...");
+            actions.createMailResource("mail/topcat", props["mail.host"], props["mail.user"], props["mail.from"], props["mail.property"])
+        else:
+            print "Not creating mail resource as following is/are not set:", missing;
  
         files = []
         files.append(["topcat.json", "config"])

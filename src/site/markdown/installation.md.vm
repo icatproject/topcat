@@ -114,6 +114,9 @@ Note: '#'s are comments.
   mail.property=mail.smtp.port="25":mail.smtp.from="no-reply@example.com"
 ```
 
+The mail.xxx properties can be omitted if email support is not required in Topcat.
+In this case, mail.enable in topcat.properties MUST NOT be set to true. This is NOT checked during setup.
+
 $h2 topcat.properties
 
 $h3 Upgrade from 2.3.6 to 2.4.0
