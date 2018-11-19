@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.4.2-SNAPSHOT
+
+* improve DOI redirection failure message (issue #388)
+* mail configuration properties can be removed if not required (issue #389)
+
 ## 2.4.1
 
 * getSize calculations now use the IdsClient API (issue #386), which should improve performance.
