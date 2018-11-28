@@ -276,6 +276,7 @@ public class AdminResource {
 	private String getIcatUrl( String facilityName ) throws BadRequestException{
 		// Pass nulls through - subsequent code may want to handle them
 		if( facilityName == null){
+			logger.warn("AdminResource.getIcatUrl: facilityName is null. May be a request using the old API.");
 			return null;
 		}
 		try {
