@@ -64,6 +64,7 @@
                     home: { _type: 'string' },
                     enableEuCookieLaw: { _type: 'boolean' },
                     enableKiloBinaryBytes: { _type: 'boolean',  _mandatory: false },
+                    investigationSizeCacheLifetimeSeconds: { _type: 'number', _mandatory: false },
                     paging: { 
                         pagingType: { _type: 'string' },
                         paginationNumberOfRows: { _type: 'number' },

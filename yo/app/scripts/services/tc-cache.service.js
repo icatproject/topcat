@@ -23,7 +23,7 @@
            * @method
            * @name Cache#get
            * @param  {string} key the key by which the cached value is accessed
-           * @param  {number} seconds the length of time the cache tries to store the value for
+           * @param  {number} seconds the length of time the cache tries to store the value for (0 = forever)
            * @param  {Function} fn if no values has been cached it will run this function to create the value
            * @return {object}
            */
@@ -32,7 +32,11 @@
             var nowSeconds = (new Date).getTime() /  1000;
             var putSeconds = store.get("putSeconds:" + key);
 
-            if(out === undefined || (putSeconds && (nowSeconds - putSeconds) > seconds)){
+            // This condition needs some explanation! In essence, we want to store a new value:
+            // - if there is no value in the cache, or
+            // - if we specify an age limit but no age was stored, or
+            // - if we specify an age limit and it is too old
+            if(out === undefined || ((seconds > 0) && ((! putSeconds) || (nowSeconds - putSeconds) > seconds))){
               out = fn();
               store.put(key, out);
               if(seconds > 0){
@@ -119,7 +123,7 @@
            * @method
            * @name Cache#getPromise
            * @param  {string} key the key by which the cached value is accessed
-           * @param  {number} seconds the length of time the cache tries to store the value for
+           * @param  {number} seconds the length of time the cache tries to store the value for (0 = forever)
            * @param  {Function} fn if no values has been cached it will run this function to create a promise
            * @return {Promise<object>}
            */
@@ -131,7 +135,11 @@
 
             $rootScope.requestCounter++;
 
-            if(out === undefined || (putSeconds && (nowSeconds - putSeconds) > seconds)){
+            // This condition needs some explanation! In essence, we want to store a new value:
+            // - if there is no value in the cache, or
+            // - if we specify an age limit but no age was stored, or
+            // - if we specify an age limit and it is too old
+            if(out === undefined || ((seconds > 0) && ((! putSeconds) || (nowSeconds - putSeconds) > seconds))){
               fn().then(function(value){
                 store.put(key, value);
                 if(seconds > 0){

@@ -4,6 +4,7 @@
         "home" : "my-data",
         "enableEuCookieLaw" : true,
         "enableKiloBinaryBytes": false,
+        "investigationSizeCacheLifetimeSeconds" : 0,
         "paging" : {
             "pagingType": "scroll",
             "paginationNumberOfRows": 10,
