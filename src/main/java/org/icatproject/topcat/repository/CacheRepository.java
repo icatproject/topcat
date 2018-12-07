@@ -29,18 +29,36 @@ public class CacheRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConfVarRepository.class);
 
-	public Object get(String key){
+	public Object get(String key, Long seconds){
 		Cache cache = getCache(key);
 		if(cache != null){
-			cache.setLastAccessTime(new Date());
-			em.persist(cache);
-			em.flush();
-			return cache.getValue();
+			boolean tooOld = false;
+			if( seconds > 0 ) {
+				// seconds == 0 => immortal (unless pruned through lack of interest)
+				// Only do time calcs if we need to.
+				long now = new Date().getTime();
+				long creation = cache.getCreationTime().getTime();
+				tooOld = creation + (seconds * 1000) < now;
+			}
+			if( ! tooOld ){
+				cache.setLastAccessTime(new Date());
+				em.persist(cache);
+				em.flush();
+				return cache.getValue();
+			} else {
+				em.remove(cache);
+				em.flush();
+				return null;
+			}
 		} else {
 			return null;
 		}
 	}
 
+	public Object get(String key){
+		return this.get(key,0L);
+	}
+	
 	public void put(String key, Serializable value){
 		Cache cache = getCache(key);
 		if(cache == null){

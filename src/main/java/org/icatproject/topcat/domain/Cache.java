@@ -23,6 +23,10 @@ public class Cache implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastAccessTime;
 
+    @Column(name = "CREATION_TIME")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
+
     public String getKey() {
         return key;
     }
@@ -60,8 +64,17 @@ public class Cache implements Serializable {
         this.lastAccessTime = lastAccessTime;
     }
 
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
     @PrePersist
     private void init() {
         this.lastAccessTime = new Date();
+        this.creationTime = new Date();
     }
 }
