@@ -149,6 +149,18 @@
 
       };
 
+      function getEntityInfo(entity) {
+          if(isSizeColumnDef && entity.getSize){
+            entity.getSize(timeout.promise);
+          } 
+          if(isDatafileCountColumnDef && entity.getDatafileCount) {
+            entity.getDatafileCount(timeout.promise);
+          }
+          if(isDatasetCountColumnDef && entity.getDatasetCount) {
+            entity.getDatasetCount(timeout.promise);
+          }
+      }
+
       var query = _.merge(queryCommon, {target: type});
       var searchPromise = tc.search(facilities, timeout.promise, query);
       promises.push(searchPromise);
@@ -162,22 +174,10 @@
         function processResults(results){
           var out = _.select(results, filter);
           out.sort(sorter);
-          // Reverse the entity list, otherwise sizes get loaded from the bottom
-          // Make a copy of the list then reverse it
-          var reversedEntities = out.slice();
-          reversedEntities.reverse();
-          _.each(reversedEntities, function(entity){
-
-            if(isSizeColumnDef && entity.getSize){
-              entity.getSize(timeout.promise);
-            } 
-            if(isDatafileCountColumnDef && entity.getDatafileCount) {
-              entity.getDatafileCount(timeout.promise);
-            }
-            if(isDatasetCountColumnDef && entity.getDatasetCount) {
-              entity.getDatasetCount(timeout.promise);
-            }
-          });
+          // Traverse the entity list in reverse so sizes load in the correct order
+          for (var i = out.length - 1; i >= 0; i--) {
+            getEntityInfo(out[i]);
+          }
           return out;
         }
         return searchPromise.then(processResults, function(){}, processResults);
