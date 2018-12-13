@@ -162,7 +162,11 @@
         function processResults(results){
           var out = _.select(results, filter);
           out.sort(sorter);
-          _.each(out, function(entity){
+          // Reverse the entity list, otherwise sizes get loaded from the bottom
+          // Make a copy of the list then reverse it
+          var reversedEntities = out.slice();
+          reversedEntities.reverse();
+          _.each(reversedEntities, function(entity){
 
             if(isSizeColumnDef && entity.getSize){
               entity.getSize(timeout.promise);

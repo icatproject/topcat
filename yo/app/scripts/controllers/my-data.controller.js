@@ -201,7 +201,11 @@
             that.isLoading = true;
             return generateQueryBuilder().limit((page - 1) * pageSize, pageSize).run(canceler.promise).then(function(entities){
                 that.isLoading = false;
-                _.each(entities, function(entity){
+                // Reverse the entity list, otherwise sizes get loaded from the bottom
+                // Make a copy of the list then reverse it
+                var reversedEntities = entities.slice();
+                reversedEntities.reverse();
+                _.each(reversedEntities, function(entity){
 
                     if(isSizeColumnDef && entity.getSize){
                         entity.getSize(canceler.promise);
