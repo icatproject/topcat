@@ -31,6 +31,8 @@ public class FacilityMap {
 		
 		properties = Properties.getInstance();
 		
+		logger.info("FacilityMap: facility.list = '" + properties.getProperty("facility.list","") + "'");
+		
 		String[] facilities = properties.getProperty("facility.list","").split("([ ]*,[ ]*|[ ]+)");
 		
 		// Complain/log if property is not set
@@ -40,6 +42,7 @@ public class FacilityMap {
 		}
 		
 		for( String facility : facilities ){
+			logger.info("FacilityMap: looking for properties for facility '" + facility + "'...");
 			String icatUrl = properties.getProperty("facility." + facility + ".icatUrl","");
 			// Complain/log if property is not set
 			if( icatUrl.length() == 0 ){
@@ -47,6 +50,7 @@ public class FacilityMap {
 				logger.error( error );
 				throw new InternalException( error );
 			}
+			logger.info("FacilityMap: icatUrl for facility '" + facility + "' is '" + icatUrl + "'");
 			facilityIcatUrl.put( facility,  icatUrl );
 			String idsUrl = properties.getProperty("facility." + facility + ".idsUrl","");
 			// Complain/log if property is not set
@@ -55,6 +59,7 @@ public class FacilityMap {
 				logger.error( error );
 				throw new InternalException( error );
 			}
+			logger.info("FacilityMap: idsUrl for facility '" + facility + "' is '" + idsUrl + "'");
 			facilityIdsUrl.put( facility,  idsUrl );
 		}
 	}
