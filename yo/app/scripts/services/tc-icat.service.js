@@ -19,8 +19,16 @@
             var cache;
             var tc = facility.tc();
 
+            // Set up a dontCache filter function for zero-sized investigations, if required
+            var dontCache = null
+            if(tc.config().dontCacheZeroSizedInvestigations){
+            	dontCache = function(key,value){
+            		return ( value == 0 && key.startsWith("getSize:investigation") );
+            	}
+            }
+            
             this.cache = function(){
-              if(!cache) cache = tcCache.create('icat:' + facility.config().name);
+              if(!cache) cache = tcCache.create('icat:' + facility.config().name,dontCache);
               return cache;
             };
 

@@ -6,14 +6,15 @@
 
     app.service('tcCache', function($cacheFactory, $q, $timeout, $rootScope, helpers){
 
-      this.create = function(name){
-        return new Cache(name);
+      this.create = function(name,dontCache){
+    	// console.log('tcCache: creating cache ' + name);
+        return new Cache(name,dontCache);
       };
 
       /**
        * @interface Cache
        */
-      function Cache(name){
+      function Cache(name,dontCache){
         var store = $cacheFactory(name);
 
         this.get = helpers.overload({
@@ -37,11 +38,13 @@
             // - if we specify an age limit but no age was stored, or
             // - if we specify an age limit and it is too old
             if(out === undefined || ((seconds > 0) && ((! putSeconds) || (nowSeconds - putSeconds) > seconds))){
-              out = fn();
-              store.put(key, out);
-              if(seconds > 0){
-                store.put("putSeconds:" + key, nowSeconds);
-              }
+            	out = fn();
+            	if( ! (dontCache && dontCache(key,out)) ){
+            		store.put(key, out);
+            		if(seconds > 0){
+            		  store.put("putSeconds:" + key, nowSeconds);
+            		}
+            	}
             }
             return out;
           },
@@ -141,9 +144,11 @@
             // - if we specify an age limit and it is too old
             if(out === undefined || ((seconds > 0) && ((! putSeconds) || (nowSeconds - putSeconds) > seconds))){
               fn().then(function(value){
-                store.put(key, value);
-                if(seconds > 0){
-                  store.put("putSeconds:" + key, (new Date).getTime() /  1000);
+                if( ! (dontCache && dontCache(key,value)) ){
+                	store.put(key, value);
+                	if(seconds > 0){
+                		store.put("putSeconds:" + key, (new Date).getTime() /  1000);
+                	}
                 }
                 defered.resolve(value);
               }, function(results){
