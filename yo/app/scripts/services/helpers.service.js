@@ -659,7 +659,7 @@
 
         $interval(function(){
             if(lowPriorityCounter < 2 && lowPriorityQueue.length > 0){
-                lowPriorityQueue.pop().call();
+                lowPriorityQueue.shift().call();
             }
         }, 10);
 
