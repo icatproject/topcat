@@ -157,18 +157,6 @@
             return out; 
         }
 
-        function getEntityInfo(entity) {
-            if(isSizeColumnDef && entity.getSize){
-                entity.getSize(canceler.promise);
-            }
-            if(isDatafileCountColumnDef && entity.getDatafileCount){
-                entity.getDatafileCount(canceler.promise);
-            }
-            if(isDatasetCountColumnDef && entity.getDatasetCount){
-                entity.getDatasetCount(canceler.promise);
-            }
-        }
-
         var isFirstPage = true;
         var isSizeColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'size' }).length > 0;
         var isDatafileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datafileCount' }).length > 0;
@@ -177,11 +165,17 @@
             that.isLoading = true;
             return generateQueryBuilder().limit((page - 1) * pageSize, pageSize).run(canceler.promise).then(function(entities){
                 that.isLoading = false;
-
-                // Traverse the entity list in reverse so sizes load in the correct order
-                for (var i = entities.length - 1; i >= 0; i--) {
-                    getEntityInfo(entities[i]);
-                }
+                _.each(entities, function(entity){
+                    if(isSizeColumnDef && entity.getSize){
+                        entity.getSize(canceler.promise);
+                    }
+                    if(isDatafileCountColumnDef && entity.getDatafileCount){
+                        entity.getDatafileCount(canceler.promise);
+                    }
+                    if(isDatasetCountColumnDef && entity.getDatasetCount){
+                        entity.getDatasetCount(canceler.promise);
+                    }
+                });
                 if(isFirstPage && entities.length == 1 && facility.config(entities[0].entityType).browse[entityType].skipSingleEntities){
                     entities[0].browse();
                 }

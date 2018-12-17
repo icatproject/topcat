@@ -149,18 +149,6 @@
 
       };
 
-      function getEntityInfo(entity) {
-          if(isSizeColumnDef && entity.getSize){
-            entity.getSize(timeout.promise);
-          } 
-          if(isDatafileCountColumnDef && entity.getDatafileCount) {
-            entity.getDatafileCount(timeout.promise);
-          }
-          if(isDatasetCountColumnDef && entity.getDatasetCount) {
-            entity.getDatasetCount(timeout.promise);
-          }
-      }
-
       var query = _.merge(queryCommon, {target: type});
       var searchPromise = tc.search(facilities, timeout.promise, query);
       promises.push(searchPromise);
@@ -174,10 +162,18 @@
         function processResults(results){
           var out = _.select(results, filter);
           out.sort(sorter);
-          // Traverse the entity list in reverse so sizes load in the correct order
-          for (var i = out.length - 1; i >= 0; i--) {
-            getEntityInfo(out[i]);
-          }
+          _.each(out, function(entity){
+
+            if(isSizeColumnDef && entity.getSize){
+              entity.getSize(timeout.promise);
+            } 
+            if(isDatafileCountColumnDef && entity.getDatafileCount) {
+              entity.getDatafileCount(timeout.promise);
+            }
+            if(isDatasetCountColumnDef && entity.getDatasetCount) {
+              entity.getDatasetCount(timeout.promise);
+            }
+          });
           return out;
         }
         return searchPromise.then(processResults, function(){}, processResults);

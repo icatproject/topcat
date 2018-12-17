@@ -192,53 +192,52 @@
             canceler.promise.then(function(){ $timeout.cancel(timeout); });
         }
 
-        function getEntityInfo(entity) {
-            if(isSizeColumnDef && entity.getSize){
-                entity.getSize(canceler.promise);
-            }
-            if(isDatafileCountColumnDef && entity.getDatafileCount){
-                entity.getDatafileCount(canceler.promise);
-            }
-            if(isDatasetCountColumnDef && entity.getDatasetCount){
-                entity.getDatasetCount(canceler.promise);
-            }
-
-            _.each(gridOptions.columnDefs, function(columnDef){
-                //todo: this is a hack for ISIS - refactor to make more generic
-                if(columnDef.type == 'number' && columnDef.filters){
-                    var pair = columnDef.jpqlFilter.split(/\./);
-                    var entityType = pair[0];
-                    var entityField = pair[1];
-                    var fieldNameSuffix = helpers.capitalize(entityType) + helpers.capitalize(entityField);
-
-                    icat.queryBuilder(entityType).where([
-                        "investigation.id = ?", entity.id,
-                        "and datafileParameterType.name = 'run_number'"
-                    ]).min('numericValue', canceler.promise).then(function(min){
-                        entity['min' + fieldNameSuffix] = min;
-                    });
-
-                    icat.queryBuilder('datafileParameter').where([
-                        "investigation.id = ?", entity.id,
-                        "and datafileParameterType.name = 'run_number'"
-                    ]).max('numericValue', canceler.promise).then(function(max){
-                        entity['max' + fieldNameSuffix] = max;
-                    });
-                }
-            });
-        }
 
         var isSizeColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'size' }).length > 0;
         var isDatafileCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datafileCount' }).length > 0;
         var isDatasetCountColumnDef = _.select(gridOptions.columnDefs,  function(columnDef){ return columnDef.field == 'datasetCount' }).length > 0;
+
         function getPage(){
             that.isLoading = true;
             return generateQueryBuilder().limit((page - 1) * pageSize, pageSize).run(canceler.promise).then(function(entities){
                 that.isLoading = false;
-                // Traverse the entity list in reverse so sizes load in the correct order
-                for (var i = entities.length - 1; i >= 0; i--) {
-                    getEntityInfo(entities[i]);
-                }
+                _.each(entities, function(entity){
+
+                    if(isSizeColumnDef && entity.getSize){
+                        entity.getSize(canceler.promise);
+                    }
+                    if(isDatafileCountColumnDef && entity.getDatafileCount){
+                        entity.getDatafileCount(canceler.promise);
+                    }
+                    if(isDatasetCountColumnDef && entity.getDatasetCount){
+                        entity.getDatasetCount(canceler.promise);
+                    }
+
+                    _.each(gridOptions.columnDefs, function(columnDef){
+                        //todo: this is a hack for ISIS - refactor to make more generic
+                        if(columnDef.type == 'number' && columnDef.filters){
+                            var pair = columnDef.jpqlFilter.split(/\./);
+                            var entityType = pair[0];
+                            var entityField = pair[1];
+                            var fieldNameSuffix = helpers.capitalize(entityType) + helpers.capitalize(entityField);
+
+                            icat.queryBuilder(entityType).where([
+                                "investigation.id = ?", entity.id,
+                                "and datafileParameterType.name = 'run_number'"
+                            ]).min('numericValue', canceler.promise).then(function(min){
+                                entity['min' + fieldNameSuffix] = min;
+                            });
+
+                            icat.queryBuilder('datafileParameter').where([
+                                "investigation.id = ?", entity.id,
+                                "and datafileParameterType.name = 'run_number'"
+                            ]).max('numericValue', canceler.promise).then(function(max){
+                                entity['max' + fieldNameSuffix] = max;
+                            });
+                        }
+                    });
+
+                });
                 return entities;
             });
         }
