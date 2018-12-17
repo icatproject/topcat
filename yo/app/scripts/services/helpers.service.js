@@ -656,12 +656,55 @@
 
         var lowPriorityCounter = 0;
         var lowPriorityQueue = [];
+        
+        // Monitoring queue behaviour
+        var lowPriorityTimes = [];
+        var maxLowPriorityTime = 0;
+        var maxLowPriorityQueueLength = 0;
+        var maxLowPriorityTimeEver = 0;
+        var maxLowPriorityQueueLengthEver = 0;
+        
+        // flag to control monitoring
+        // This can be set in the browser console by doing tc.setMonitoring(true) (or false)
+        var monitorLowPriorityQueue = false;
+        this.setLowPriorityQueueMonitoring = function(truthVal){
+        	monitorLowPriorityQueue = truthVal;
+        }
 
         $interval(function(){
             if(lowPriorityCounter < 2 && lowPriorityQueue.length > 0){
-                lowPriorityQueue.pop().call();
+            	if( monitorLowPriorityQueue ){
+	            	if( lowPriorityQueue.length > maxLowPriorityQueueLength ) maxLowPriorityQueueLength = lowPriorityQueue.length;
+	            	if( maxLowPriorityQueueLength > maxLowPriorityQueueLengthEver) maxLowPriorityQueueLengthEver = maxLowPriorityQueueLength;
+	            	// If monitoring were ever turned on during queue changes,
+	            	// then it's possible that lowPriorityTimes may not have been saved for the current entry;
+	            	// so ignore it in that case
+	            	var lpTime = 0;
+	            	if( lowPriorityTimes.length > 0 ) {
+	            		lpTime = (new Date).getTime() - lowPriorityTimes.shift();
+	            	}
+	            	if( lpTime > maxLowPriorityTime ) maxLowPriorityTime = lpTime;
+	            	if( lpTime > maxLowPriorityTimeEver ) maxLowPriorityTimeEver = lpTime;
+            	}
+                lowPriorityQueue.shift().call();
             }
         }, 10);
+        
+        // Report queue stats every minute, reset every 10 mins
+        var lowPriorityQueueStatsResetCount = 0;
+	    $interval(function(){
+	        if( monitorLowPriorityQueue ){
+	        	console.log('LowPriorityQueue: max length (ever): ' 
+	        			+ maxLowPriorityQueueLength + ' (' + maxLowPriorityQueueLengthEver + ')'
+	        			+ '; max time (ever): ' + maxLowPriorityTime + ' (' + maxLowPriorityTimeEver + ')');
+	        	if(lowPriorityQueueStatsResetCount++ == 10){
+	        		lowPriorityQueueStatsResetCount = 0;
+	        		maxLowPriorityTime = 0;
+	        		maxLowPriorityQueueLength = 0;
+	        		console.log('LowPriorityQueue: resetting recent stats' );
+	        	}
+	        }
+        }, 1000 * 60);
 
 		this.generateRestMethods = function(that, prefix){
 			
@@ -778,6 +821,7 @@
                     }
 
                     if(options.lowPriority){
+                    	if( monitorLowPriorityQueue ) lowPriorityTimes.push((new Date).getTime());
                         lowPriorityQueue.push(call);
                     } else {
                         call();
