@@ -4,6 +4,8 @@
 
 * improve DOI redirection failure message (issue #388)
 * mail configuration properties can be removed if not required (issue #389)
+* configurable control of caching behaviour for investigations (issue #394)
+* **database migration required** (simplest: drop the Cache table)
 
 ## 2.4.1
 
