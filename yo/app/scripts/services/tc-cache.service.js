@@ -4,7 +4,7 @@
 
     var app = angular.module('topcat');
 
-    app.service('tcCache', function($cacheFactory, $q, $timeout, $rootScope, helpers){
+    app.service('tcCache', function($cacheFactory, $q, $timeout, $rootScope, $interval, helpers){
 
       this.create = function(name,dontCache){
     	// console.log('tcCache: creating cache ' + name);
@@ -16,6 +16,44 @@
        */
       function Cache(name,dontCache){
         var store = $cacheFactory(name);
+        
+        // Code for monitoring
+        var monitoringOn = false;
+        
+        // Count promises whose value is already cached by the time they finish
+        var wastedPromises = 0;
+        var recentWastedPromises = 0;
+        
+        // Cache hits/misses (long- and short-term)
+        var hits = 0;
+        var misses = 0;
+        var recentHits = 0;
+        var recentMisses = 0;
+        
+        this.setMonitoring = function(flag){
+        	monitoringOn = flag;
+        }
+        
+        // Report cache stats every minute, reset every 10 mins
+        var statsResetCount = 0;
+	    $interval(function(){
+	        if( monitoringOn ){
+	        	if( hits > 0 || misses > 0 ){
+	        		console.log(`Cache: ${name}: ${recentHits}/${recentMisses} hits/misses (all time: ${hits}/${misses})`);
+	        	}
+	        	if( wastedPromises > 0 ){
+	        		console.log(`Cache: ${name}: ${recentWastedPromises} wasted promises (all time: ${wastedPromises})`);
+	        	}
+	        	if(statsResetCount++ == 10){
+	        		statsResetCount = 0;
+	            	console.log(`Cache: ${name}: resetting recent stats`);
+	            	recentHits = 0;
+	            	recentMisses = 0;
+	            	recentWastedPromises = 0;
+	        	}
+	        }
+        }, 1000 * 60);
+        
 
         this.get = helpers.overload({
           /**
@@ -38,6 +76,8 @@
             // - if we specify an age limit but no age was stored, or
             // - if we specify an age limit and it is too old
             if(out === undefined || ((seconds > 0) && ((! putSeconds) || (nowSeconds - putSeconds) > seconds))){
+            	misses++;
+            	recentMisses++;
             	out = fn();
             	if( ! (dontCache && dontCache(key,out)) ){
             		store.put(key, out);
@@ -45,6 +85,9 @@
             		  store.put("putSeconds:" + key, nowSeconds);
             		}
             	}
+            } else {
+            	hits++;
+            	recentHits++;
             }
             return out;
           },
@@ -143,7 +186,18 @@
             // - if we specify an age limit but no age was stored, or
             // - if we specify an age limit and it is too old
             if(out === undefined || ((seconds > 0) && ((! putSeconds) || (nowSeconds - putSeconds) > seconds))){
+              misses++;
+              recentMisses++;
               fn().then(function(value){
+            	if( monitoringOn ){
+            		  var out2 = store.get(key);
+            		  if( out2 && out2 == value ){
+            			  wastedPromises++;
+            			  recentWastedPromises++;
+            			  // Restore following to see when this happens
+            			  // console.log(`Cache: ${name}: wasted promise ${wastedPromises} for key ${key}`);
+            		  }
+            	}
                 if( ! (dontCache && dontCache(key,value)) ){
                 	store.put(key, value);
                 	if(seconds > 0){
@@ -157,6 +211,8 @@
                 defered.notify(results);
               });
             } else {
+            	hits++;
+            	recentHits++;
               defered.resolve(out);
             }
             

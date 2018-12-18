@@ -398,6 +398,11 @@
      */
     this.setMonitoring = function(aBool){
     	helpers.setLowPriorityQueueMonitoring(aBool);
+    	this.cache().setMonitoring(aBool);
+        _.each(this.facilities(), function(facility){
+            facility.icat().cache().setMonitoring(aBool);
+            facility.ids().cache().setMonitoring(aBool);
+          });
     	console.log('Topcat: monitoring set to ' + aBool);
     }
 
