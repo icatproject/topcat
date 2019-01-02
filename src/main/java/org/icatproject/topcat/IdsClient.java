@@ -257,6 +257,7 @@ public class IdsClient {
             String offset = generateDataSelectionOffset(offsetPrefix, currentInvestigationIds, newInvestigationId, currentDatasetIds, newDatasetId, currentDatafileIds, newDatafileId);
 
             if(offset.length() > 1024){
+            	out.add(offset);
                 currentInvestigationIds = new ArrayList<Long>();
                 currentDatasetIds = new ArrayList<Long>();
                 currentDatafileIds = new ArrayList<Long>();
