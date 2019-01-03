@@ -21,7 +21,7 @@
     "ngstorage": "0.3.10",
     "angular-translate": "2.8.1",
     "angular-translate-loader-static-files": "2.8.1",
-    "angular-ui-grid": "3.0.7",
+    "angular-ui-grid": "4.0.2",
     "ng-device-detector": "1.1.8",
     "angular-moment": "0.10.2",
     "angularpoller": "git://github.com/emmaguo/angular-poller.git#e5103c8176f1e13200064fa650011b2877da8853",

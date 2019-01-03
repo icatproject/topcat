@@ -197,6 +197,7 @@ public class StatusCheck {
         Long size = idsClient.getSize(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
         download.setSize(size);
       } catch(Exception e) {
+    	logger.error("prepareDownload: setting size to -1 as getSize threw exception: " + e.getMessage());
         download.setSize(-1);
       }
 
