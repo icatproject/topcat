@@ -28,20 +28,34 @@ public class IdsClientTest {
 			// Careful: build process may have emptied the original entityIds lists
 			List<Long> entityIds = generateIds(i * 100, 1000);
 			boolean allFound = true;
+			boolean foundRepeats = false;
 			for( Long id : entityIds ) {
 				boolean foundInvestigation = false;
 				boolean foundDataset = false;
 				boolean foundDatafile = false;
 				for( String chunk : chunks ) {
 					// Only look if we haven't found it in a previous chunk
-					// TODO: worry about duplicates?
-					if( ! foundInvestigation ) foundInvestigation = chunkContains(chunk, "investigation",id);
-					if( ! foundDataset )       foundDataset       = chunkContains(chunk, "dataset",id);
-					if( ! foundDatafile )      foundDatafile      = chunkContains(chunk, "datafile",id);
+					// Also look for duplicates
+					if( ! foundInvestigation ) {
+						foundInvestigation = chunkContains(chunk, "investigation",id);
+					} else {
+						foundRepeats = chunkContains(chunk, "investigation",id);
+					}
+					if( ! foundDataset ) {
+						foundDataset       = chunkContains(chunk, "dataset",id);
+					} else {
+						foundRepeats = chunkContains(chunk, "investigation",id);
+					}
+					if( ! foundDatafile ) {
+						foundDatafile      = chunkContains(chunk, "datafile",id);
+					} else {
+						foundRepeats = chunkContains(chunk, "investigation",id);
+					}
 				}
 				allFound = allFound && foundInvestigation && foundDataset && foundDatafile;
 			}
 			assertTrue("Not all IDs found in chunks", allFound);
+			assertTrue("At least one ID was repeated", ! foundRepeats);
 		}
 
 		String expected = "test?investigationIds=1,2,3&datasetIds=4,5,6&datafileIds=7,8,9";
