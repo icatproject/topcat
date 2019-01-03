@@ -65,3 +65,13 @@ adminUserNames=simple/root, uows/elz087, asd345, ldap/fgh123
 # The maximum number objects that can be cached before pruning will take place
 maxCacheSize=100000
 
+# The following properties allow finer control over caching of Investigation sizes.
+# Investigations can change size over time, so setting a lifetime on cached values may be useful.
+# It may be useful not to cache zero-sized Investigations at all.
+# IMPORTANT: size requests are also cached in the browser, so check settings in topcat.json too.
+
+# Lifetime in seconds for cached Investigation sizes (default is 0, which means "immortal")
+# investigationSizeCacheLifetimeSeconds=600
+
+# Whether to cache zero-sized Investigations (default is false)
+# neverCacheZeroSizedInvestigations=false

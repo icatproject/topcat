@@ -25,6 +25,11 @@ $h2 Schema upgrade
 
 If you are using an older version of Topcat you may need to apply some migrations to your database. These can be found in the "migrations/" directory within the Topcat release.
 
+$h3 Upgrade 2.4.1 schema to 2.4.2
+
+The CACHE table now requires an extra column, CREATION_TIME. The simplest upgrade is to drop the
+existing table; this is done by the provided migration scripts.
+
 $h3 Upgrade 2.3.x schema to 2.4.0
 
 For MySQL:
@@ -119,6 +124,26 @@ In this case, mail.enable in topcat.properties MUST NOT be set to true. This is 
 
 $h2 topcat.properties
 
+$h3 New properties in 2.4.2
+
+New properties have been added to allow finer control over caching of Investigation sizes.
+Investigations can change size over time, so setting a lifetime on cached values may be useful.
+It may be useful not to cache zero-sized Investigations at all.
+Note that size requests are also cached in the browser, so check settings in topcat.json too.
+However, the browser cache is less persistent, and can be cleared by reloading the page, so
+browser cache consistency is less of an issue.
+
+These properties are optional, and the defaults preserve the original behaviour, so they need 
+not be added when upgrading.
+
+```
+  # Lifetime in seconds for cached Investigation sizes (default is 0, which means "immortal")
+  investigationSizeCacheLifetimeSeconds=600
+
+  # Whether to cache zero-sized Investigations (default is false)
+  neverCacheZeroSizedInvestigations=true
+```
+
 $h3 Upgrade from 2.3.6 to 2.4.0
 
 If you are upgrading from 2.3.6 or earlier to 2.4.0, the following properties should be added to your topcat.properties:
@@ -194,6 +219,20 @@ Note: '#'s are comments.
 
   # A list of usernames that can use the admin REST API and Topcat admin user interface
   adminUserNames=simple/root, uows/elz087, asd345, ldap/fgh123
+
+  # The maximum number objects that can be cached before pruning will take place
+  maxCacheSize=100000
+
+  # The following properties allow finer control over caching of Investigation sizes.
+  # Investigations can change size over time, so setting a lifetime on cached values may be useful.
+  # It may be useful not to cache zero-sized Investigations at all.
+  # IMPORTANT: size requests are also cached in the browser, so check settings in topcat.json too.
+
+  # Lifetime in seconds for cached Investigation sizes (default is 0, which means "immortal")
+  # investigationSizeCacheLifetimeSeconds=600
+
+  # Whether to cache zero-sized Investigations (default is false)
+  # neverCacheZeroSizedInvestigations=false
 ```
 
 $h2 topcat.json
@@ -224,6 +263,8 @@ If we expand the attributes in high level overview we can get a medium overview 
           "topcatUrl": "https://example.com",
           "home" : "my-data",
           "enableEuCookieLaw" : true,
+          "investigationSizeCacheLifetimeSeconds" : 0,
+          "dontCacheZeroSizedInvestigations": false,
           "paging" : {...},
           "breadcrumb": {...},
           "serviceStatus": {...},
@@ -260,6 +301,8 @@ from the above following attributes defined:
       * "topcatUrl" - the path to a valid Topcat REST API (optional).
       * "home" - the section the user gets redirected to after logging in can be "my-data", "browse" or "search"
       * "enableEuCookieLaw" - will show a cookie policy banner which the user can dismiss.
+      * "investigationSizeCacheLifetimeSeconds" - NEW in 2.4.2; if present and non-zero, the time after which browser-cached values for investigation sizes will be discarded
+      * "dontCacheZeroSizedInvestigations" - NEW in 2.4.2; if present and true, zero-sized investigations will not be cached in the browser.
       * "paging" - specifies the paging type configuration i.e. for either paged or infinite scroll
       * "breadcrumb" - specifies global breadcrumb options
       * "search" - specifies the structure of the search results and search fields for searching across facilities.

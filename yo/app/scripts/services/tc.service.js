@@ -387,6 +387,24 @@
       });
       $rootScope.$broadcast('global:refresh');
     };
+    
+    /**
+     * Enables/disables monitor reports in the browser console.
+     * When enabled, regular console messages show the max length and wait time for the low-priority queue.
+     * 
+     * @method
+     * @name tc#setMonitoring
+     * @param {bool} enable or disable monitoring
+     */
+    this.setMonitoring = function(aBool){
+    	helpers.setLowPriorityQueueMonitoring(aBool);
+    	this.cache().setMonitoring(aBool);
+        _.each(this.facilities(), function(facility){
+            facility.icat().cache().setMonitoring(aBool);
+            facility.ids().cache().setMonitoring(aBool);
+          });
+    	console.log('Topcat: monitoring set to ' + aBool);
+    }
 
 		helpers.generateRestMethods(this, this.config().topcatUrl + "/topcat/");
 

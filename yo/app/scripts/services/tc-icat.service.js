@@ -19,8 +19,16 @@
             var cache;
             var tc = facility.tc();
 
+            // Set up a dontCache filter function for zero-sized investigations, if required
+            var dontCache = null
+            if(tc.config().dontCacheZeroSizedInvestigations){
+            	dontCache = function(key,value){
+            		return ( value == 0 && key.startsWith("getSize:investigation") );
+            	}
+            }
+            
             this.cache = function(){
-              if(!cache) cache = tcCache.create('icat:' + facility.config().name);
+              if(!cache) cache = tcCache.create('icat:' + facility.config().name,dontCache);
               return cache;
             };
 
@@ -484,7 +492,13 @@
                  */
                 'string, number, object': function(entityType, entityId, options){
                     var key = 'getSize:' + entityType + ":" + entityId;
-                    return this.cache().getPromise(key, function(){
+                    // Allow config to set a lifetime for Investigation entries - issue #394
+                    var lifetime = 0;
+                    if (entityType == 'investigation'){
+                    	var investigationLifetime = tc.config().investigationSizeCacheLifetimeSeconds;
+                	    lifetime = investigationLifetime ? investigationLifetime : 0;
+                    }
+                    return this.cache().getPromise(key, lifetime, function(){
                       var params = {
                         facilityName: facility.config().name,
                         sessionId: that.session().sessionId,

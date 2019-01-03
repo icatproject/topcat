@@ -25,11 +25,17 @@ public class IdsClient {
     private HttpClient httpClient;
 
     private int timeout;
+    
+    private long investigationSizeCacheLifetime;
+    
+    private boolean neverCacheZeroSizedInvestigations;
    
     public IdsClient(String url){
         this.httpClient = new HttpClient(url + "/ids");
         Properties properties = Properties.getInstance();
         this.timeout = Integer.valueOf(properties.getProperty("ids.timeout", "-1"));
+        this.investigationSizeCacheLifetime = Long.valueOf(properties.getProperty("investigationSizeCacheLifetimeSeconds", "0"));
+        this.neverCacheZeroSizedInvestigations = Boolean.valueOf(properties.getProperty("neverCacheZeroSizedInvestigations", "false"));
     }
 
     public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
@@ -158,7 +164,16 @@ public class IdsClient {
     public Long getSize(CacheRepository cacheRepository, String sessionId, String entityType, Long entityId) throws TopcatException {
 
         String key = "getSize:" + entityType + ":" + entityId;
-        Long size = (Long) cacheRepository.get(key);
+        
+        // Set lifetime for investigation size caching from configuration (issue#394)
+        
+        Long lifetime;
+        if( "investigation".equals(entityType) ) {
+        	lifetime = this.investigationSizeCacheLifetime;
+        } else {
+        	lifetime = 0L;
+        }
+        Long size = (Long) cacheRepository.get(key,lifetime);
 
         if(size != null){
             return size;
@@ -179,7 +194,11 @@ public class IdsClient {
         }
 
         size = this.getSize(sessionId,investigationIds,datasetIds,datafileIds);
-        cacheRepository.put(key,size);
+        
+        // Never cache zero-sized investigations if so configured (issue#394)
+        if( ! (this.neverCacheZeroSizedInvestigations && size == 0 && "investigation".equals(entityType))) {
+        	cacheRepository.put(key,size);
+        }
 
         return size;
     }
