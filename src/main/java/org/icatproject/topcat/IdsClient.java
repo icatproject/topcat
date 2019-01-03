@@ -129,66 +129,24 @@ public class IdsClient {
 
     public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
         try {
-            StringBuffer investigationIdsBuffer = new StringBuffer();
-            StringBuffer datasetIdsBuffer = new StringBuffer();
-            StringBuffer datafileIdsBuffer = new StringBuffer();
-            Long size;
+            String prefix = "getSize?sessionId=" + sessionId + "&";
+            Long size = 0L;
             
-            if(investigationIds != null){
-                for(Long investigationId : investigationIds){
-                    if(investigationIdsBuffer.length() != 0){
-                        investigationIdsBuffer.append(",");
-                    }
-                    investigationIdsBuffer.append(investigationId);
+            for( String chunkedUrl : chunkOffsets(prefix,investigationIds,datasetIds,datafileIds)) {            	
+                Response out = httpClient.get(chunkedUrl, new HashMap<String, String>(), timeout);
+                if(out.getCode() == 404){
+                    throw new NotFoundException("Could not getSize got a 404 response");
+                } else if(out.getCode() >= 400){
+                    throw new BadRequestException("Could not getSize got " + out.getCode() + " response: " + out.toString());
+                }
+
+                try {
+                    size += Long.parseLong(out.toString());
+                } catch (Exception e){
+                    logger.info("getSize: can't extract number from response '" + out.toString() + "'; got exception: '" + e.getMessage() 
+                        + "'; replacing with 0");
                 }
             }
-
-            if(datasetIds != null){
-                for(Long datasetId : datasetIds){
-                    if(datasetIdsBuffer.length() != 0){
-                        datasetIdsBuffer.append(",");
-                    }
-                    datasetIdsBuffer.append(datasetId);
-                }
-            }
-
-            if(datafileIds != null){
-                for(Long datafileId : datafileIds){
-                    if(datafileIdsBuffer.length() != 0){
-                        datafileIdsBuffer.append(",");
-                    }
-                    datafileIdsBuffer.append(datafileId);
-                }
-            }
-
-            StringBuffer data = new StringBuffer();
-            data.append("sessionId=" + sessionId);
-            data.append("&zip=true");
-            if(investigationIdsBuffer.length() > 0){
-                data.append("&investigationIds=" + investigationIdsBuffer);
-            }
-            if(datasetIdsBuffer.length() > 0){
-                data.append("&datasetIds=" + datasetIdsBuffer);
-            }
-            if(datafileIdsBuffer.length() > 0){
-                data.append("&datafileIds=" + datafileIdsBuffer);
-            }
-
-            Response out = httpClient.get("getSize?" + data.toString(), new HashMap<String, String>(), timeout);
-            if(out.getCode() == 404){
-                throw new NotFoundException("Could not getSize got a 404 response");
-            } else if(out.getCode() >= 400){
-                throw new BadRequestException("Could not getSize got " + out.getCode() + " response: " + out.toString());
-            }
-
-            try {
-                size = Long.parseLong(out.toString());
-            } catch (Exception e){
-                logger.info("getSize: can't extract number from response '" + out.toString() + "'; got exception: '" + e.getMessage() 
-                    + "'; replacing with 0");
-                size = (long) 0;
-            }
-
             return size;
         } catch(TopcatException e){
             throw e;
@@ -228,8 +186,6 @@ public class IdsClient {
 
     private List<String> chunkOffsets(String offsetPrefix, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds){
         List<String> out = new ArrayList<String>();
-        StringBuilder buffer = null;
-
         List<Long> currentInvestigationIds = new ArrayList<Long>();
         List<Long> currentDatasetIds = new ArrayList<Long>();
         List<Long> currentDatafileIds = new ArrayList<Long>();
