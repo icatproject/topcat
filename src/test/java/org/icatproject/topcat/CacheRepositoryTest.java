@@ -26,4 +26,16 @@ public class CacheRepositoryTest {
 		//assertEquals( "Hello World!", (String) cacheRepository.get("test:1"));
 	}
 
+	@Test
+	public void testRemove() {
+		// BR: this test requires the cacheRepository bean to be created,
+		// and I don't know how to do that. I don't think Jody did either,
+		// as all other tests that use cacheRepository have been commented-out!
+		/*
+		String key = "test:remove";
+		cacheRepository.put(key, "Hello World");
+		cacheRepository.remove(key);
+		assertEquals(null,cacheRepository.get(key));
+		*/
+	}
 }
