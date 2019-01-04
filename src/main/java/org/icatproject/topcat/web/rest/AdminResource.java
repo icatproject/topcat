@@ -32,6 +32,7 @@ import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.repository.CacheRepository;
 import org.icatproject.topcat.repository.ConfVarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,8 @@ public class AdminResource {
     @EJB
     private ConfVarRepository confVarRepository;
 
+	@EJB
+	private CacheRepository cacheRepository;
 
     /**
      * Returns whether or not the session provided has admin access - i.e. can use this "v1/admin/* api."
@@ -224,6 +227,42 @@ public class AdminResource {
         return Response.ok().build();
     }
 
+    /**
+     * Removes any cached value for the size of the specified entity.
+     *
+     * @summary clearCachedSize
+     *
+     * @param entityType the type of the entity: "investigation", "dataset" or "datafile".
+     * 
+     * @param id the entity id.
+     *
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
+     * 
+     * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     *
+     * @throws MalformedURLException if facilityName is invalid.
+     *
+     * @throws TopcatException if anything else goes wrong.
+     */
+    @DELETE
+    @Path("/clearSize/{entityType}/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response clearCachedSize(
+        @PathParam("entityType") String entityType,
+        @PathParam("id") Long id,
+        @QueryParam("facilityName") String facilityName,
+        @QueryParam("sessionId") String sessionId)
+        throws TopcatException, MalformedURLException {
+    	
+        String icatUrl = getIcatUrl( facilityName );
+        onlyAllowAdmin(icatUrl, sessionId);
+
+        String key = "getSize:" + entityType + ":" + id;
+        cacheRepository.remove(key);
+        return Response.ok().build();
+    }
+    
     private void onlyAllowAdmin(String icatUrl, String sessionId) throws TopcatException, MalformedURLException {
         IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 

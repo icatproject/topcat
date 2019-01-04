@@ -69,6 +69,14 @@ public class CacheRepository {
 		em.persist(cache);
 		em.flush();
 	}
+	
+	public void remove(String key) {
+		Cache cache = getCache(key);
+		if( cache != null ){
+			em.remove(cache);
+		    em.flush();
+		}
+	}
 
 	@Schedule(hour="*", minute="0")
 	public void prune(){
