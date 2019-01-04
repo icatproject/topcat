@@ -5,6 +5,9 @@
 * improve DOI redirection failure message (issue #388)
 * mail configuration properties can be removed if not required (issue #389)
 * configurable control of caching behaviour for investigations (issue #394)
+* cache performance and low-priority queue behaviour can now be monitored from the browser console
+* fix issue #398 : split long getSize URLs into multiple requests
+* add REST call to clear cached size for an entity (issue #401)
 * **database migration required** (simplest: drop the Cache table)
 
 ## 2.4.1

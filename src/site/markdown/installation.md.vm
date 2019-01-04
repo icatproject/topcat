@@ -843,3 +843,22 @@ $h2 topcat.css
 
 As standard css file adding in custom css rules.
 
+$h2 Browser console monitoring
+
+(Added in 2.4.2)
+
+In the browser console, typing:
+
+```
+  tc.setMonitoring(true)
+```
+
+will start monitoring behaviour of the (browser-side) cache and the low-priority queue. At regular intervals,
+Topcat will report to the console recent and all-time counts of cache hits/misses, the maximum length of the
+low-priority queue (which is used to process getSize requests), and the maximum wait time (in milliseconds) of
+entries in the queue. Here, "recent" means "in the last 10 minutes".
+
+This information may be useful when experimenting with cache control configuration for investigation sizes.
+
+To turn off monitoring again, type `tc.setMonitoring(false)` into the console.
+
