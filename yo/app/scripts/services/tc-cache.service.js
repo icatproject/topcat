@@ -39,14 +39,17 @@
 	    $interval(function(){
 	        if( monitoringOn ){
 	        	if( hits > 0 || misses > 0 ){
-	        		console.log(`Cache: ${name}: ${recentHits}/${recentMisses} hits/misses (all time: ${hits}/${misses})`);
+	        		// Alas, jsdoc3 plugin can't cope with template strings, so have to do this the dull old way
+	        		// console.log(`Cache: ${name}: ${recentHits}/${recentMisses} hits/misses (all time: ${hits}/${misses})`);
+	        		console.log("Cache: " + name + ": " + recentHits + "/" + recentMisses + " hits/misses (all time: " + hits + "/" + misses + ")");
 	        	}
 	        	if( wastedPromises > 0 ){
-	        		console.log(`Cache: ${name}: ${recentWastedPromises} wasted promises (all time: ${wastedPromises})`);
+	        		// console.log(`Cache: ${name}: ${recentWastedPromises} wasted promises (all time: ${wastedPromises})`);
+	        		console.log("Cache: " + name + ": " + recentWastedPromises + " wasted promises (all time: " + wastedPromises + ")");
 	        	}
 	        	if(statsResetCount++ == 10){
 	        		statsResetCount = 0;
-	            	console.log(`Cache: ${name}: resetting recent stats`);
+	            	console.log("Cache: " + name + ": resetting recent stats");
 	            	recentHits = 0;
 	            	recentMisses = 0;
 	            	recentWastedPromises = 0;
