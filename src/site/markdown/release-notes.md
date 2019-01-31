@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.2-SNAPSHOT
+## 2.4.2 (31st Jan 2019)
 
 * improve DOI redirection failure message (issue #388)
 * mail configuration properties can be removed if not required (issue #389)
