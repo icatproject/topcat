@@ -506,7 +506,8 @@
 						},
 						'studyInvestigations': {
 							'entityType': 'studyInvestigation',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'studyInvestigation'
 						},
 						'samples': {
 							'entityType': 'sample',
