@@ -961,6 +961,9 @@
 					'fields':{
 					'name': 'string',
 					'fullName': 'string',
+					'familyName': 'string',
+					'givenName': 'string',
+					'affiliation': 'string',
 					'modId': 'string',
 					'createId': 'string',
 					'createTime': 'date',
