@@ -507,7 +507,7 @@
 						'studyInvestigations': {
 							'entityType': 'studyInvestigation',
 							'cardinality': '0,*',
-							'variableName': 'studyInvestigation'
+							'variableName': 'studyInvestigationPivot'
 						},
 						'samples': {
 							'entityType': 'sample',
@@ -944,7 +944,8 @@
 					'relationships':{
 						'study': {
 							'entityType': 'study',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'investigationStudy'
 						},
 						'investigation': {
 							'entityType': 'investigation',
