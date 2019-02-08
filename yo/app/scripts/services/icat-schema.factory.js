@@ -409,7 +409,8 @@
 					'type': 'string',
 					'modId': 'string',
 					'description': 'string',
-					'fullName': 'string'
+					'fullName': 'string',
+					'pid': 'string'
 					},
 					'relationships':{
 						'facility': {
@@ -697,7 +698,8 @@
 					'name': 'string',
 					'unitsFullName': 'string',
 					'applicableToDatafile': 'boolean',
-					'maximumNumericValue': 'number'
+					'maximumNumericValue': 'number',
+					'pid': 'string'
 					},
 					'relationships':{
 						'investigationParameters': {
@@ -826,6 +828,7 @@
 				'sample': {
 					'fields':{
 					'name': 'string',
+					'pid': 'string',
 					'modId': 'string',
 					'createId': 'string',
 					'createTime': 'date',
@@ -920,6 +923,7 @@
 					'name': 'string',
 					'createId': 'string',
 					'description': 'string',
+					'pid': 'string',
 					'createTime': 'date',
 					'modTime': 'date'
 					},
