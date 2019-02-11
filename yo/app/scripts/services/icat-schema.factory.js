@@ -949,7 +949,7 @@
 						'study': {
 							'entityType': 'study',
 							'cardinality': '1,1',
-							'variableName': 'investigationStudy'
+							'variableName': 'study'
 						},
 						'investigation': {
 							'entityType': 'investigation',
