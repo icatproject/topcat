@@ -426,6 +426,11 @@
 						'investigationInstruments': {
 							'entityType': 'investigationInstrument',
 							'cardinality': '0,*'
+						},
+						'shifts': {
+							'entityType': 'shift',
+							'cardinality': '0,*',
+							'variableName': 'instrumentShift'
 						}
 					}
 				},
@@ -912,6 +917,11 @@
 						'investigation': {
 							'entityType': 'investigation',
 							'cardinality': '1,1'
+						},
+						'instrument': {
+							'entityType': 'instrument',
+							'cardinality': '0,1',
+							'variableName': 'shiftInstrument'
 						}
 					}
 				},
