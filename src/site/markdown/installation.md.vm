@@ -9,6 +9,9 @@ $h2 Compatibility
 
 TopCAT requires Java 8+, icat.server 4.6+ and ids.server 1.5.0.+
 
+TopCAT 2.4.3 reflects schema changes added in icat.server 4.10. If your configuration requires any of these
+schema changes then you should install 2.4.3 or later.
+
 $h2 Prerequisites
 
   - The TopCAT distribution: [topcat-${project.version}-distro.zip](${repoUrl}/org/icatproject/topcat/${project.version}/topcat-${project.version}-distro.zip)
@@ -794,6 +797,7 @@ Topcat defines the following jpql variables - which if used from any icat entity
   * **instrument** - referencing the relative facility.instruments.
   * **instrumentScientist** - referencing the relative instrument.instrumentScientists.user.
   * **instrumentScientistPivot** - referencing the relative instrument.instrumentScientists.
+  * **instrumentShift** - referencing the relative instrument.shifts.
   * **investigation** - referencing the relative investigation.
   * **investigationGroup** - referencing the relative investigation.investigationGroups.grouping.
   * **investigationInstrument** - referencing the relative investigation.investigationInstruments.instrument.
@@ -804,10 +808,13 @@ Topcat defines the following jpql variables - which if used from any icat entity
   * **investigationUser** - referencing the relative investigation.investigationUsers.user.
   * **investigationUserPivot** - referencing the relative investigation.investigationUsers.
   * **publication** - referencing the relative investigation.publications.
+  * **shiftInstrument** - referencing the relative shift.instrument
+  * **study** - referencing the relative investigation.studyInvestigations.study.
+  * **studyInvestigationPivot** - referencing the relative investigation.studyInvestigations.
 
 
 
-To get a better understanding of what these jpql variables refer to please view the [icat schema documentation](https://icatproject.org/mvn/site/icat/server/4.6.1/schema.html).
+To get a better understanding of what these jpql variables refer to please view the [icat schema documentation](https://repo.icatproject.org/site/icat/server/4.9.3/schema.html).
 
 $h2 The "content" directory
 

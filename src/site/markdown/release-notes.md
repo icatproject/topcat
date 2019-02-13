@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.4.3-SNAPSHOT
+
+  * Update to reflect schema changes in icat.server 4.10 (issue #404)
+  * Make study variable name available to Investigation in topcat.json (issue #403)
+
 ## 2.4.2 (31st Jan 2019)
 
 * improve DOI redirection failure message (issue #388)
