@@ -59,6 +59,10 @@
                             console.error("Unknown variableName: " + variableName, item)
                         }
                         field = matches[2];
+                    } else {
+                    	// Fixes issue #407 : ensure translation label for unmatched fields is set to the current entity,
+                    	// rather than possibly inherited from the previous metaTab item.
+                    	entityType = entity.type;
                     }
 
                     if(field == 'size'){   
