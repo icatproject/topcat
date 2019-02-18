@@ -86,7 +86,6 @@
                 queryBuilder.include('publication');
                 queryBuilder.include('study');
                 queryBuilder.include('investigationUser');
-                queryBuilder.include('studyInvestigation');
             }
 
             if(entity.type == 'dataset'){
