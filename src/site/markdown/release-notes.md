@@ -4,6 +4,7 @@
 
   * Update to reflect schema changes in icat.server 4.10 (issue #404)
   * Make study variable name available to Investigation in topcat.json (issue #403)
+  * Fix problem with translation strings in metatabs (issue #407)
 
 ## 2.4.2 (31st Jan 2019)
 
