@@ -75,6 +75,16 @@ exec %{
   cd ../
   asadmin -t set applications.application.authn.simple-2.0.0.deployment-order=80
 
+  wget https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.1.0/icat.lucene-1.1.0-distro.zip
+  unzip icat.lucene-1.1.0-distro.zip
+  mkdir -p data/lucene
+  cp ./provision/lucene-setup.properties icat.lucene/setup.properties
+  cd icat.lucene
+  cp run.properties.example run.properties
+  cp logback.xml.example logback.xml
+  ./setup install
+  cd ../
+
   wget  https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.3/icat.server-4.9.3-distro.zip
   unzip  icat.server-4.9.3-distro.zip
   cp ./provision/icat.properties ./icat.server/run.properties
@@ -86,16 +96,6 @@ exec %{
   sudo ./setup install
   cd ../
   asadmin -t set applications.application.icat.server-4.9.3.deployment-order=100
-
-  wget https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.1.0/icat.lucene-1.1.0-distro.zip
-  unzip icat.lucene-1.1.0-distro.zip
-  mkdir -p data/lucene
-  cp ./provision/lucene-setup.properties icat.lucene/setup.properties
-  cd icat.lucene
-  cp run.properties.example run.properties
-  cp logback.xml.example logback.xml
-  ./setup install
-  cd ../
 
   wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.9.1/ids.server-1.9.1-distro.zip
   unzip ids.server-1.9.1-distro.zip
