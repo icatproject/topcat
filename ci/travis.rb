@@ -79,8 +79,8 @@ exec %{
   unzip icat.lucene-1.1.0-distro.zip
   mkdir -p data/lucene
   cp ./provision/lucene-setup.properties icat.lucene/setup.properties
+  cp ./provision/lucene-run.properties icat.lucene/run.properties
   cd icat.lucene
-  cp ./provision/lucene-run.properties run.properties
   cp logback.xml.example logback.xml
   ./setup install
   cd ../
