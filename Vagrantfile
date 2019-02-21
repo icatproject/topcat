@@ -56,6 +56,8 @@ Vagrant.configure(2) do |config|
     unzip -q mysql-connector-java-5.1.37.zip
     cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar ./glassfish4/glassfish/domains/domain1/lib/ext
 
+    # BR: not sure why ids.storage_file is installed this early. Is it needed before icat.lucene?
+	
     wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.1/ids.storage_file-1.4.1-distro.zip
     unzip -q ids.storage_file-1.4.1-distro.zip
     cp /vagrant/provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
