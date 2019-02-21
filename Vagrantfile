@@ -83,7 +83,7 @@ Vagrant.configure(2) do |config|
     mkdir -p data/lucene
     cp /vagrant/provision/lucene-setup.properties icat.lucene/setup.properties
     cd icat.lucene
-    cp run.properties.example run.properties
+    cp /vagrant/provision/lucene-run.properties run.properties
     cp logback.xml.example logback.xml
     ./setup install
     cd ../

@@ -80,7 +80,7 @@ exec %{
   mkdir -p data/lucene
   cp ./provision/lucene-setup.properties icat.lucene/setup.properties
   cd icat.lucene
-  cp run.properties.example run.properties
+  cp ./provision/lucene-run.properties run.properties
   cp logback.xml.example logback.xml
   ./setup install
   cd ../
