@@ -138,6 +138,8 @@ exec %{
 
   cp app/config/topcat_dev.json.example app/config/topcat_dev.json
 
+  node ./node_modules/protractor/bin/webdriver-manager update --standalone
+  
   grunt test
 
 
