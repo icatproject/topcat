@@ -56,8 +56,10 @@ Vagrant.configure(2) do |config|
     unzip -q mysql-connector-java-5.1.37.zip
     cp /home/vagrant/mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar ./glassfish4/glassfish/domains/domain1/lib/ext
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0/ids.storage_file-1.4.0-distro.zip
-    unzip -q ids.storage_file-1.4.0-distro.zip
+    # BR: not sure why ids.storage_file is installed this early. Is it needed before icat.lucene?
+	
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.1/ids.storage_file-1.4.1-distro.zip
+    unzip -q ids.storage_file-1.4.1-distro.zip
     cp /vagrant/provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
     mkdir -p data/ids/cache
     cd ids.storage_file
@@ -68,18 +70,28 @@ Vagrant.configure(2) do |config|
 
     mkdir /home/vagrant/bin
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
-    unzip -q authn.simple-1.2.0-distro.zip
-    cp /vagrant/provision/authn_simple.properties authn.simple/authn_simple.properties
-    cp /vagrant/provision/authn_simple-setup.properties authn.simple/authn_simple-setup.properties
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/authn.simple/2.0.0/authn.simple-2.0.0-distro.zip
+    unzip -q authn.simple-2.0.0-distro.zip
+    cp /vagrant/provision/authn_simple.properties authn.simple/run.properties
+    cp /vagrant/provision/authn_simple-setup.properties authn.simple/setup.properties
     cd authn.simple
     ./setup configure
     ./setup install
     cd ../
-    asadmin -t set applications.application.authn.simple-1.2.0.deployment-order=80
+    asadmin -t set applications.application.authn.simple-2.0.0.deployment-order=80
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.9.0-distro.zip
-    unzip -q icat.server-4.9.0-distro.zip
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.1.0/icat.lucene-1.1.0-distro.zip
+    unzip -q icat.lucene-1.1.0-distro.zip
+    mkdir -p data/lucene
+    cp /vagrant/provision/lucene-setup.properties icat.lucene/setup.properties
+    cd icat.lucene
+    cp /vagrant/provision/lucene-run.properties run.properties
+    cp logback.xml.example logback.xml
+    ./setup install
+    cd ../
+
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.3/icat.server-4.9.3-distro.zip
+    unzip -q icat.server-4.9.3-distro.zip
     cp /vagrant/provision/icat.properties icat.server/run.properties
     cp /vagrant/provision/icat-setup.properties icat.server/setup.properties
     mkdir -p data/icat
@@ -87,27 +99,17 @@ Vagrant.configure(2) do |config|
     ./setup configure
     ./setup install
     cd ../
-    asadmin -t set applications.application.icat.server-4.9.0.deployment-order=100
-
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.0.0/icat.lucene-1.0.0-distro.zip
-    unzip -q icat.lucene-1.0.0-distro.zip
-    mkdir -p data/lucene
-    cp /vagrant/provision/lucene-setup.properties icat.lucene/setup.properties
-    cd icat.lucene
-    cp run.properties.example run.properties
-    cp logback.xml.example logback.xml
-    ./setup install
-    cd ../
+    asadmin -t set applications.application.icat.server-4.9.3.deployment-order=100
 
 
-    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0/ids.server-1.8.0-distro.zip
-    unzip -q ids.server-1.8.0-distro.zip
+    wget --quiet https://repo.icatproject.org/repo/org/icatproject/ids.server/1.9.1/ids.server-1.9.1-distro.zip
+    unzip -q ids.server-1.9.1-distro.zip
     cp /vagrant/provision/ids.properties ids.server/run.properties
     cp /vagrant/provision/ids-setup.properties ids.server/setup.properties
     cd ids.server
     ./setup configure
     ./setup install
-    asadmin -t set applications.application.ids.server-1.8.0.deployment-order=120
+    asadmin -t set applications.application.ids.server-1.9.1.deployment-order=120
 
     cd ../
 
@@ -155,7 +157,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat
     sudo dos2unix /usr/bin/topcat
     topcat build_install
-    asadmin -t set applications.application.topcat-2.4.0-SNAPSHOT.deployment-order=140
+    asadmin -t set applications.application.topcat-2.4.3-SNAPSHOT.deployment-order=140
 
   }
 end
