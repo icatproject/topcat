@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.4.3-SNAPSHOT
+
+* update component versions for Vagrant and Travis
+
 ## 2.4.2 (31st Jan 2019)
 
 * improve DOI redirection failure message (issue #388)

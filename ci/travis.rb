@@ -57,26 +57,36 @@ exec %{
   unzip  mysql-connector-java-5.1.37.zip
   cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar glassfish4/glassfish/domains/domain1/lib/ext
 
-  wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.0/ids.storage_file-1.4.0-distro.zip
-  unzip  ids.storage_file-1.4.0-distro.zip
+  wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.1/ids.storage_file-1.4.1-distro.zip
+  unzip  ids.storage_file-1.4.1-distro.zip
   cp ./provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
   mkdir -p data/ids/cache
   cd ids.storage_file
   ./setup install
   cd ../
 
-  wget  https://repo.icatproject.org/repo/org/icatproject/authn.simple/1.2.0/authn.simple-1.2.0-distro.zip
-  unzip  authn.simple-1.2.0-distro.zip
-  cp ./provision/authn_simple.properties ./authn.simple/authn_simple.properties
-  cp ./provision/authn_simple-setup.properties ./authn.simple/authn_simple-setup.properties
+  wget  https://repo.icatproject.org/repo/org/icatproject/authn.simple/2.0.0/authn.simple-2.0.0-distro.zip
+  unzip  authn.simple-2.0.0-distro.zip
+  cp ./provision/authn_simple.properties ./authn.simple/run.properties
+  cp ./provision/authn_simple-setup.properties ./authn.simple/setup.properties
   cd ./authn.simple
   ./setup configure
   ./setup install
   cd ../
-  asadmin -t set applications.application.authn.simple-1.2.0.deployment-order=80
+  asadmin -t set applications.application.authn.simple-2.0.0.deployment-order=80
 
-  wget  https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.0/icat.server-4.9.0-distro.zip
-  unzip  icat.server-4.9.0-distro.zip
+  wget https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.1.0/icat.lucene-1.1.0-distro.zip
+  unzip icat.lucene-1.1.0-distro.zip
+  mkdir -p data/lucene
+  cp ./provision/lucene-setup.properties icat.lucene/setup.properties
+  cp ./provision/lucene-run.properties icat.lucene/run.properties
+  cd icat.lucene
+  cp logback.xml.example logback.xml
+  ./setup install
+  cd ../
+
+  wget  https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.3/icat.server-4.9.3-distro.zip
+  unzip  icat.server-4.9.3-distro.zip
   cp ./provision/icat.properties ./icat.server/run.properties
   cp ./provision/icat-setup.properties ./icat.server/setup.properties
   cp ./provision/logback.xml ./icat.server/logback.xml
@@ -85,27 +95,17 @@ exec %{
   sudo ./setup configure
   sudo ./setup install
   cd ../
-  asadmin -t set applications.application.icat.server-4.9.0.deployment-order=100
+  asadmin -t set applications.application.icat.server-4.9.3.deployment-order=100
 
-  wget https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.0.0/icat.lucene-1.0.0-distro.zip
-  unzip icat.lucene-1.0.0-distro.zip
-  mkdir -p data/lucene
-  cp ./provision/lucene-setup.properties icat.lucene/setup.properties
-  cd icat.lucene
-  cp run.properties.example run.properties
-  cp logback.xml.example logback.xml
-  ./setup install
-  cd ../
-
-  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.8.0/ids.server-1.8.0-distro.zip
-  unzip ids.server-1.8.0-distro.zip
+  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.9.1/ids.server-1.9.1-distro.zip
+  unzip ids.server-1.9.1-distro.zip
   cp ./provision/ids.properties ids.server/run.properties
   cp ./provision/ids-setup.properties ids.server/setup.properties
   cd ids.server
   ./setup configure
   ./setup install
   cd ../
-  asadmin -t set applications.application.ids.server-1.8.0.deployment-order=120
+  asadmin -t set applications.application.ids.server-1.9.1.deployment-order=120
 
   cd ../tools
   gem install rest-client
@@ -138,6 +138,8 @@ exec %{
 
   cp app/config/topcat_dev.json.example app/config/topcat_dev.json
 
+  node ./node_modules/protractor/bin/webdriver-manager update --standalone
+  
   grunt test
 
 
