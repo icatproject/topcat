@@ -935,7 +935,8 @@
 					'description': 'string',
 					'pid': 'string',
 					'createTime': 'date',
-					'modTime': 'date'
+					'modTime': 'date',
+					'endDate': 'date'
 					},
 					'relationships':{
 						'user': {
