@@ -409,7 +409,8 @@
 					'type': 'string',
 					'modId': 'string',
 					'description': 'string',
-					'fullName': 'string'
+					'fullName': 'string',
+					'pid': 'string'
 					},
 					'relationships':{
 						'facility': {
@@ -425,6 +426,11 @@
 						'investigationInstruments': {
 							'entityType': 'investigationInstrument',
 							'cardinality': '0,*'
+						},
+						'shifts': {
+							'entityType': 'shift',
+							'cardinality': '0,*',
+							'variableName': 'instrumentShift'
 						}
 					}
 				},
@@ -506,7 +512,8 @@
 						},
 						'studyInvestigations': {
 							'entityType': 'studyInvestigation',
-							'cardinality': '0,*'
+							'cardinality': '0,*',
+							'variableName': 'studyInvestigationPivot'
 						},
 						'samples': {
 							'entityType': 'sample',
@@ -696,7 +703,8 @@
 					'name': 'string',
 					'unitsFullName': 'string',
 					'applicableToDatafile': 'boolean',
-					'maximumNumericValue': 'number'
+					'maximumNumericValue': 'number',
+					'pid': 'string'
 					},
 					'relationships':{
 						'investigationParameters': {
@@ -825,6 +833,7 @@
 				'sample': {
 					'fields':{
 					'name': 'string',
+					'pid': 'string',
 					'modId': 'string',
 					'createId': 'string',
 					'createTime': 'date',
@@ -908,6 +917,11 @@
 						'investigation': {
 							'entityType': 'investigation',
 							'cardinality': '1,1'
+						},
+						'instrument': {
+							'entityType': 'instrument',
+							'cardinality': '0,1',
+							'variableName': 'shiftInstrument'
 						}
 					}
 				},
@@ -919,8 +933,10 @@
 					'name': 'string',
 					'createId': 'string',
 					'description': 'string',
+					'pid': 'string',
 					'createTime': 'date',
-					'modTime': 'date'
+					'modTime': 'date',
+					'endDate': 'date'
 					},
 					'relationships':{
 						'user': {
@@ -943,7 +959,8 @@
 					'relationships':{
 						'study': {
 							'entityType': 'study',
-							'cardinality': '1,1'
+							'cardinality': '1,1',
+							'variableName': 'study'
 						},
 						'investigation': {
 							'entityType': 'investigation',
@@ -955,6 +972,9 @@
 					'fields':{
 					'name': 'string',
 					'fullName': 'string',
+					'familyName': 'string',
+					'givenName': 'string',
+					'affiliation': 'string',
 					'modId': 'string',
 					'createId': 'string',
 					'createTime': 'date',
