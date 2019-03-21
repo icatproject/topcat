@@ -48,6 +48,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "install": "node ./node_modules/protractor/bin/webdriver-manager update --standalone"
+    "install": "node ./node_modules/protractor/bin/webdriver-manager update --standalone",
+    "webdriver-update": "webdriver-manager update"
   }
 }
