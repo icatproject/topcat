@@ -1,0 +1,13 @@
+# How to replace the loading spinner
+
+To replace the loading spinner with static text, add the following to topcat.css:
+
+```
+span.loading {
+	background: none;
+}
+
+span.loading:after {
+	content: "(...)";
+}
+```
