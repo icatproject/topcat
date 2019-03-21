@@ -1,1 +1,14 @@
 /* your custom css */
+
+/* Replace loading spinner with text */
+
+/*
+span.loading {
+	background: none;
+}
+
+span.loading:after {
+	content: "(...)";
+}
+*/
+
