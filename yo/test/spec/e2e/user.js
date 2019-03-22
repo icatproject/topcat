@@ -4,6 +4,7 @@ describe('user', function() {
   it('creates download and then deletes it', function() {
 
 	  // Force a failure here, one way or another.  MIGHT get more info out of Travis then...
+	  // ... and add this comment just to trigger another Travis run - last one was masked by the webdriver-manager update failure again!
     // browser.get('http://localhost:8080/#/login');
     browser.get('http://localhost:8080/#/login').then(function(){
         expect(1312).toEqual(1066);
