@@ -138,7 +138,7 @@ exec %{
 
   cp app/config/topcat_dev.json.example app/config/topcat_dev.json
 
-  npm run webdriver-update
+  node ./node_modules/protractor/bin/webdriver-manager update
   
   grunt test
 
