@@ -3,14 +3,17 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
 
-	  // Force a failure here, one way or another.  MIGHT get more info out of Travis then...
-	  // ... and add this comment just to trigger another Travis run - last one was masked by the webdriver-manager update failure again!
-    // browser.get('http://localhost:8080/#/login');
-    browser.get('http://localhost:8080/#/login').then(function(){
-        expect(1312).toEqual(1066);
-    }, function(){
-        expect(2525).toEqual(3540);
-    });
+    browser.get('http://localhost:8080/#/login');
+    
+    // In previous Travis/Protractor failures, it proved useful to force failure at this point -
+    // not only did it indicate whether or not browser.get() failed, it also gave the REAL reason.
+    // This may be useful again...
+    // 
+    // browser.get('http://localhost:8080/#/login').then(function(){
+    //     expect(1312).toEqual(1066);
+    // }, function(){
+    //     expect(2525).toEqual(3540);
+    // });
 
     var until = protractor.ExpectedConditions;
     browser.wait(until.presenceOf(element(by.css('.is-init'))));
