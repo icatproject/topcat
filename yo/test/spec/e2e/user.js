@@ -3,7 +3,13 @@
 describe('user', function() {
   it('creates download and then deletes it', function() {
 
-    browser.get('http://localhost:8080/#/login');
+	  // Force a failure here, one way or another.  MIGHT get more info out of Travis then...
+    // browser.get('http://localhost:8080/#/login');
+    browser.get('http://localhost:8080/#/login').then(function(){
+        expect(1312).toEqual(1066);
+    }, function(){
+        expect(2525).toEqual(3540);
+    });
 
     var until = protractor.ExpectedConditions;
     browser.wait(until.presenceOf(element(by.css('.is-init'))));
