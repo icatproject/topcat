@@ -20,12 +20,7 @@ describe('user', function() {
 
     element(by.model('loginController.userName')).sendKeys('root');
     element(by.model('loginController.password')).sendKeys('root');
-    element(by.id('login')).click().then(function(){
-        expect(1312).toEqual(1066);
-    }, function(){
-        expect(2525).toEqual(3540);
-    });
-
+    element(by.id('login')).click();
 
     browser.waitForAngular();
 
