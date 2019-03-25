@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.3-SNAPSHOT
+## 2.4.3 (25th Mar 2019)
 
   * update component versions for Vagrant and Travis
   * Update to reflect schema changes in icat.server 4.10 (issue #404)
