@@ -112,6 +112,11 @@
                     var defered = $q.defer();
                     reachablePluginsLength = config.plugins ? config.plugins.length : 0;
                     
+                    // Iteration counts and warning threshold
+                    var waitForPluginsIterations = 0;
+                    var waitForPluginScriptsIterations = 0;
+                    var tooManyIterations = 50;
+
                     if(config.plugins && config.plugins.length > 0){
                         _.each(config.plugins, function(pluginUrl){
                             var src = pluginUrl + "/scripts/plugin.js";
@@ -130,6 +135,10 @@
                     var pluginScriptCount = 0;
 
                     function waitForPlugins(){
+                    	// If we have reached tooManyIterations, log a warning
+                    	if( ++waitForPluginsIterations == tooManyIterations ){
+                    		console.log("[WARNING] wait for plugins has reached " + tooManyIterations + " iterations. Plugins may not be loading correctly.");
+                    	}
                         if(plugins.length == reachablePluginsLength){
                             pluginScriptRegisteryCounter = 0;
 
@@ -157,6 +166,10 @@
                     }
 
                     function waitForPluginScripts(){
+                    	// If we have reached tooManyIterations, log a warning
+                    	if( ++waitForPluginScriptsIterations == tooManyIterations ){
+                    		console.log("[WARNING] wait for plugin scripts has reached " + tooManyIterations + " iterations. Plugins may not be loading correctly.");
+                    	}
                         if(pluginScriptRegisteryCounter == pluginScriptCount){
                             defered.resolve(config);
                         } else {
@@ -253,7 +266,9 @@
                 if(allHaveLoaded){
                     _.each(plugins, function(plugin){
                         _.each(plugin.scripts, function(script){
-                            if(script instanceof Array) pluginScriptRegisteryCounter++; 
+                            if(script instanceof Array) {
+                            	pluginScriptRegisteryCounter++; 
+                            }
                         });
                     });
                 } else {
