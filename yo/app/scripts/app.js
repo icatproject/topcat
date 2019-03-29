@@ -111,10 +111,8 @@
                 }).then(function(config){
                     var defered = $q.defer();
                     reachablePluginsLength = config.plugins ? config.plugins.length : 0;
-                    // TEST
-                    console.log("Plugins: reachablePluginsLength set to " + reachablePluginsLength);
                     
-                    // TEST: iteration counts
+                    // Iteration counts and warning threshold
                     var waitForPluginsIterations = 0;
                     var waitForPluginScriptsIterations = 0;
                     var tooManyIterations = 50;
@@ -137,10 +135,8 @@
                     var pluginScriptCount = 0;
 
                     function waitForPlugins(){
-                    	// TEST
-                    	console.log("Plugins: entering waitForPlugins (" + ++waitForPluginsIterations + ")...");
                     	// If we have reached tooManyIterations, log a warning
-                    	if( waitForPluginsIterations == tooManyIterations ){
+                    	if( ++waitForPluginsIterations == tooManyIterations ){
                     		console.log("[WARNING] wait for plugins has reached " + tooManyIterations + " iterations. Plugins may not be loading correctly.");
                     	}
                         if(plugins.length == reachablePluginsLength){
@@ -158,32 +154,23 @@
                                         if(scriptUrl instanceof Array) scriptUrl = scriptUrl[0];
                                         $(document.body).append($("<script>").attr('src', scriptUrl));
                                         pluginScriptCount++;
-                                        // TEST: log when this happens
-                                        console.log("Added plugin script <" + scriptUrl + "> (" + pluginScriptCount + ")");
                                     });
                                 }
                                 
                                 waitForPluginScripts();
-                                // TEST
-                                console.log("Plugins: leaving waitForPlugins (" + waitForPluginsIterations + ")");
                             });
                             
                         } else {
-                        	// TEST
-                        	console.log("Plugins: waitForPlugins timeout");
                             $timeout(waitForPlugins, 50);
                         }
                     }
 
                     function waitForPluginScripts(){
-                    	console.log("Plugins: entering waitForPluginScripts (" + ++waitForPluginScriptsIterations + ")");
                     	// If we have reached tooManyIterations, log a warning
-                    	if( waitForPluginScriptsIterations == tooManyIterations ){
+                    	if( ++waitForPluginScriptsIterations == tooManyIterations ){
                     		console.log("[WARNING] wait for plugin scripts has reached " + tooManyIterations + " iterations. Plugins may not be loading correctly.");
                     	}
                         if(pluginScriptRegisteryCounter == pluginScriptCount){
-                        	// TEST: log when this happens
-                        	console.log("Finished waiting for plugin scripts (" + waitForPluginScriptsIterations + ")");
                             defered.resolve(config);
                         } else {
                             $timeout(waitForPluginScripts, 50);
@@ -253,8 +240,6 @@
                     if(!isMethodCalled){
                         isMethodCalled = true;
                         pluginScriptRegisteryCounter++;
-            			// TEST: log when this happens
-                        console.log("Counting method " + methodName + " (" + pluginScriptRegisteryCounter + ")");
                     }
                     var out = method.apply(this, arguments);
                     isMethodCalled = false;
@@ -279,25 +264,17 @@
                 });
 
                 if(allHaveLoaded){
-                	// TEST: log this case
-                	console.log("All plugin scripts have loaded");
                     _.each(plugins, function(plugin){
                         _.each(plugin.scripts, function(script){
                             if(script instanceof Array) {
                             	pluginScriptRegisteryCounter++; 
-                    			// TEST: log when this happens
-                                console.log("Counting plugin script (" + pluginScriptRegisteryCounter + ")");
                             }
                         });
                     });
                 } else {
-                	// TEST: log when this happens
-                	console.log("checkIfScriptsHaveLoaded: inner timeout");
                     setTimeout(checkIfScriptsHaveLoaded, 50);
                 }
             } else {
-            	// TEST: log when this happens
-            	console.log("checkIfScriptsHaveLoaded: outer timeout (" + plugins.length + "," + reachablePluginsLength + ")");
                 setTimeout(checkIfScriptsHaveLoaded, 50);
             }
         }
