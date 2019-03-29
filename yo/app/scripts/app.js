@@ -117,6 +117,7 @@
                     // TEST: iteration counts
                     var waitForPluginsIterations = 0;
                     var waitForPluginScriptsIterations = 0;
+                    var tooManyIterations = 50;
 
                     if(config.plugins && config.plugins.length > 0){
                         _.each(config.plugins, function(pluginUrl){
@@ -138,6 +139,10 @@
                     function waitForPlugins(){
                     	// TEST
                     	console.log("Plugins: entering waitForPlugins (" + ++waitForPluginsIterations + ")...");
+                    	// If we have reached tooManyIterations, log a warning
+                    	if( waitForPluginsIterations == tooManyIterations ){
+                    		console.log("[WARNING] wait for plugins has reached " + tooManyIterations + " iterations. Plugins may not be loading correctly.");
+                    	}
                         if(plugins.length == reachablePluginsLength){
                             pluginScriptRegisteryCounter = 0;
 
@@ -172,6 +177,10 @@
 
                     function waitForPluginScripts(){
                     	console.log("Plugins: entering waitForPluginScripts (" + ++waitForPluginScriptsIterations + ")");
+                    	// If we have reached tooManyIterations, log a warning
+                    	if( waitForPluginScriptsIterations == tooManyIterations ){
+                    		console.log("[WARNING] wait for plugin scripts has reached " + tooManyIterations + " iterations. Plugins may not be loading correctly.");
+                    	}
                         if(pluginScriptRegisteryCounter == pluginScriptCount){
                         	// TEST: log when this happens
                         	console.log("Finished waiting for plugin scripts (" + waitForPluginScriptsIterations + ")");
