@@ -22,6 +22,7 @@
     },
     "LOGIN": {
         "PAGE_TITLE": "Login",
+        "PREAMBLE": "",
         "FACILITY": "Facility",
         "AUTHENTICATION_TYPE": "Authentication Type",
         "USERNAME": "Username",

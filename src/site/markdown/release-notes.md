@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.4.4-SNAPSHOT
+
+  * Add optional preamble HTML to login page, defined in lang.json (issue #415)
+  
 ## 2.4.3 (25th Mar 2019)
 
   * update component versions for Vagrant and Travis
