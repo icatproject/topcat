@@ -84,7 +84,6 @@
         };
         
         this.showCredInputs = function(){
-        	return true;
         	// true if the currently-selected auth type requires credentials
         	// OR if any of the button-based authenticators do
         	if( this.authenticationType.plugin != 'anon' && !this.authenticationType.external ){
@@ -93,6 +92,10 @@
         		return _.some(this.buttonAuthTypes,function(authenticationType){return authenticationType.plugin != 'anon' && !authenticationType.external;});
         	};
         };
+        
+        this.requiresCreds = function(authenticationType){
+        	return authenticationType.plugin != 'anon' && ! authenticationType.external;
+        }
 
         this.facilityChanged = function(){
             facility = tc.facility(this.facilityName);
