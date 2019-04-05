@@ -33,6 +33,9 @@
                         <span ng-repeat="authenticationType in loginController.buttonAuthTypes">
                             <button type="submit" class="btn btn-primary" ng-click="loginController.buttonLogin(authenticationType)" ng-disabled="loginController.requiresCreds(authenticationType) && loginController.form.$invalid">{{authenticationType.title}}</button>
                         </span>
+                        <span ng-repeat="extraButton in loginController.extraButtons">
+                            <a class="btn btn-primary" href="{{extraButton.url}}">{{extraButton.title}}</a>
+                        </span>
                     </div>
                 </fieldset>
             </form>
