@@ -567,7 +567,8 @@ An example configuration:
 ```
 
   * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
-  * name - a name that is used to programmatically reference the plugin on the Icat server.
+  * plugin - a name that is used to programmatically reference the plugin on the Icat server.
+  * showAsButton - optional boolean: if true, a separate login button is added for this authenticator.
 
 $h3 topcat.json: "facilities" > [facility] > "downloadTransportTypes" 
 

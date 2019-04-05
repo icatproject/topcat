@@ -20,16 +20,19 @@
                         <select id="plugin" name="plugin" class="form-control" ng-model="loginController.authenticationType" ng-options="authenticationType as authenticationType.title for authenticationType in loginController.authenticationTypes" required>
                         </select>
                     </div>
-                    <div class="form-group" ng-if="loginController.authenticationType.plugin != 'anon' && !loginController.authenticationType.external">
+                    <div class="form-group" ng-if="loginController.showCredInputs()">
                         <label class="control-label" for="username">{{'LOGIN.USERNAME' | translate}}</label>
                         <input id="username" name="username" placeholder="{{'LOGIN.USERNAME' | translate}}" class="form-control" type="text" ng-model="loginController.userName" required>
                     </div>
-                    <div class="form-group" ng-if="loginController.authenticationType.plugin != 'anon' && !loginController.authenticationType.external">
+                    <div class="form-group" ng-if="loginController.showCredInputs()">
                         <label class="control-label" for="password">{{'LOGIN.PASSWORD' | translate}}</label>
                         <input id="password" name="password" placeholder="{{'LOGIN.PASSWORD' | translate}}" class="form-control" type="password" ng-model="loginController.password" required>
                     </div>
-                    <div class="form-group" ng-if="!(loginController.facilities.length <= 1 && loginController.authenticationType.external && loginController.authenticationTypes.length <= 1)">
-                        <button type="submit" id="login" class="btn btn-primary" ng-click="loginController.login()" ng-disabled="loginController.form.$invalid">{{'LOGIN.LOGIN_BUTTON' | translate}}</button>
+                    <div class="form-group" ng-if="!(loginController.facilities.length <= 1 && loginController.authenticationType.external && loginController.authenticationTypes.length + loginController.buttonAuthTypes.length <= 1)">
+                        <button ng-if="loginController.authenticationTypes.length > 0" type="submit" id="login" class="btn btn-primary" ng-click="loginController.login()" ng-disabled="loginController.requiresCreds(loginController.authenticationType) && loginController.form.$invalid">{{'LOGIN.LOGIN_BUTTON' | translate}}</button>
+                        <span ng-repeat="authenticationType in loginController.buttonAuthTypes">
+                            <button type="submit" class="btn btn-primary" ng-click="loginController.buttonLogin(authenticationType)" ng-disabled="loginController.requiresCreds(authenticationType) && loginController.form.$invalid">{{authenticationType.title}}</button>
+                        </span>
                     </div>
                 </fieldset>
             </form>

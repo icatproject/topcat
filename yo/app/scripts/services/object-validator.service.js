@@ -189,7 +189,8 @@
                             _item: {
                                 title: { _type: 'string'  },
                                 plugin: { _type: 'string'},
-                                external: { _type: 'boolean', _mandatory: false  }
+                                external: { _type: 'boolean', _mandatory: false  },
+                                showAsButton: { _type: 'boolean', _mandatory: false  }
                             }
                         },
                         downloadTransportTypes: {
