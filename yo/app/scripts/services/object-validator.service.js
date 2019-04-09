@@ -193,6 +193,14 @@
                                 showAsButton: { _type: 'boolean', _mandatory: false  }
                             }
                         },
+                        extraLoginButtons: {
+                        	_type: 'array',
+                        	_item: {
+                        		title: { _type: 'string' },
+                        		url: { _type: 'string' }
+                        	},
+                        	_mandatory: false
+                        },
                         downloadTransportTypes: {
                             _type: 'array',
                             _mandatory: false,

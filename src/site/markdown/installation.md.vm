@@ -570,6 +570,27 @@ An example configuration:
   * plugin - a name that is used to programmatically reference the plugin on the Icat server.
   * showAsButton - optional boolean: if true, a separate login button is added for this authenticator.
 
+$h3 topcat.json: "facilities" > [facility] > "extraLoginButtons" 
+
+Optional. Specifies extra buttons to be added to the login page, as links to (possibly external) resources.
+For example, to add a button to register an account with the ISIS User Office:
+
+```
+{
+  "facilities": [
+    {
+            "extraLoginButtons": [
+                {
+                    "title": "Register",
+                    "url": "https://users.facilities.rl.ac.uk/auth/CreateAccount.aspx"
+                }
+            ],
+            ...
+    }
+  ]
+}
+```
+
 $h3 topcat.json: "facilities" > [facility] > "downloadTransportTypes" 
 
 Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).

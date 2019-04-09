@@ -12,6 +12,7 @@
         this.nonUserFacilities = tc.nonUserFacilities();
         if(this.nonUserFacilities[0]) this.facilityName = this.nonUserFacilities[0].config().name;
         this.authenticationTypes = [];
+        this.extraButtons = [];
         this.buttonAuthTypes = [];
         this.userName = "";
         this.password = "";
@@ -100,6 +101,10 @@
         this.facilityChanged = function(){
             facility = tc.facility(this.facilityName);
             this.authenticationTypes = facility.config().authenticationTypes;
+            this.extraButtons = [];
+            if( facility.config().extraLoginButtons ){
+            	this.extraButtons = facility.config().extraLoginButtons;
+            }
             
             // Split authenticationTypes into those that have / don't have buttons
             this.buttonAuthTypes = _.select(this.authenticationTypes, function(authenticationType){return authenticationType.showAsButton;});
