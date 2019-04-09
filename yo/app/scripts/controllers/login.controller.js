@@ -29,6 +29,11 @@
             if(this.authenticationType.external){
                 $rootScope.$broadcast('login:external:' + this.authenticationType.plugin, facility, this.authenticationType);
             } else {
+            	// Note: when there are both choice-list and showAsButton authenticators,
+            	// it is possible to click a button auth when the username/password inputs have been flagged as invalid by the form.
+            	// In this case, username and/or password may be null. We need to guard against this.
+            	if (! this.userName ) this.userName = '';
+            	if (! this.password ) this.password = '';
                 facility.icat().login(this.authenticationType.plugin, this.userName, this.password).then(function(){
                     if($state.current.name == 'login-admin'){
                         var cookies = {};
