@@ -393,8 +393,9 @@
 			 * 
 			 * @method
 			 * @name IcatEntity#browse
+			 * @param {object} goOptions - passed to $state.go(); e.g. {location: 'replace'}, used by doi-redirection.
 			 */
-			this.browse = function(){
+			this.browse = function(goOptions){
 				var that = this;
 				this.stateParams().then(function(params){
 					var state = [];
@@ -404,7 +405,7 @@
 						if (('' + hierarchy[i - 1]).toLowerCase() == that.entityType.toLowerCase()) break;
 					}
 					state = "home.browse.facility." + state.join('-');
-					$state.go(state, params);
+					$state.go(state, params, goOptions);
 				});
 			};
 

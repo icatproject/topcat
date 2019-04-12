@@ -9,7 +9,11 @@
     	var facilityName = $state.params.facilityName;
     	var entityType = $state.params.entityType;
     	var entityId = $state.params.entityId;
-
+    	
+    	// We would like the eventual target to replace the original link in the browser history,
+    	// so that the Back button doesn't simply repeat the redirection.
+    	// Passing {location: 'replace'} as an option to the eventual call of $state.go() seems to work.
+    	
     	tc.icat(facilityName).query(["select ? from ? ? where ?.id = ", entityType.safe(), helpers.capitalize(entityType).safe(), entityType.safe(),entityType.safe(), entityId]).then(function(entities){
     		if( ! entities || ! entities[0] ){
     			// Query may return [] or null if the entity ID is unknown, [null] if user has no read access
@@ -30,10 +34,10 @@
     			});
     		} else if(entityType == 'datafile'){
     			entities[0].parent().then(function(entity){
-    				entity.browse();
+    				entity.browse({location:'replace'});
     			});
     		} else {
-    			entities[0].browse();
+    			entities[0].browse({location:'replace'});
     		}
     	});
     });
