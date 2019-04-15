@@ -27,6 +27,7 @@
         $rootScope.$on('http:error', function(){
             tc.purgeSessions().then(function(){
                 if(tc.userFacilities().length == 0 && tc.config().maintenanceMode && tc.config().maintenanceMode.show == false){
+                	console.log('Caught http:error, going to login state');
                     $state.go("login");
                 }
             });

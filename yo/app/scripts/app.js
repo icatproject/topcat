@@ -542,6 +542,7 @@
     app.run(function ($rootScope, $state, $sessionStorage) {
         //store the last state
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams){
+        	console.log("State Change: " + toState.name);
             if(!toState.name.match(/^(login|logout)/)){
                 $sessionStorage.lastState = {
                     name: toState.name,
@@ -552,8 +553,15 @@
 
         //listen for state change resolve authentication errors
         $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+        	console.log("State Change Error: from " + fromState.name + " to: " + toState.name);
             if (error && error.isAuthenticated === false) {
-                $state.go('login');
+            	// Handle doi-redirection case specially
+            	if( toState.name == 'doi-redirect' ){
+            		console.log('doi-redirect needs login');
+            		$state.go('login',null,{location:'replace'});
+            	} else {
+            		$state.go('login');
+            	}
             }
         });
     });
