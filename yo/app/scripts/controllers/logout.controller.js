@@ -33,7 +33,8 @@
         }
 
         $q.all(promises).then(function(){
-            $state.go('login');
+        	// Without location:replace browser Back button may not work - issue #424
+            $state.go('login',null,{location:'replace'});
         });
     });
 
