@@ -553,7 +553,10 @@
         //listen for state change resolve authentication errors
         $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
             if (error && error.isAuthenticated === false) {
-                $state.go('login');
+            	// We set location:'replace' so that this redirection is removed from the browser history;
+            	// without this, the Back button cannot be used to get to the previous or earlier pages.
+            	// See issue #424 for further details.
+            	$state.go('login',null,{location:'replace'});
             }
         });
     });
