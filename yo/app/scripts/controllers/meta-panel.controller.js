@@ -46,6 +46,8 @@
                 return;
             };
 
+            console.log("MetaPanel: entity type: " + entity.type);
+            var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
             var entityType = entity.type;
             _.each(config, function(metaTab){
                 _.each(metaTab.items, function(item){
@@ -55,9 +57,11 @@
                     if(matches = field.replace(/\|.+$/, '').match(/^([^\[\]]+).*?\.([^\.\[\]]+)$/)){
                         var variableName = matches[1];
                         entityType = icatSchema.variableEntityTypes[variableName];
+                        console.log("MetaPanel: var: " + variableName + "; type: " + entityType);
                         if(!entityType){
                             console.error("Unknown variableName: " + variableName, item)
                         }
+                        queryBuilder.include(entityType);
                         field = matches[2];
                     } else {
                     	// Fixes issue #407 : ensure translation label for unmatched fields is set to the current entity,
@@ -77,8 +81,11 @@
                 });
             });
 
-            var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
+            // var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
 
+            /*
+             * TEST
+             *
             if(entity.type == 'instrument'){
                 queryBuilder.include('instrumentScientist');
             }
@@ -102,6 +109,7 @@
                 queryBuilder.include('datafileParameterType');
                 queryBuilder.include('datafileFormat');
             }
+             */
 
             queryBuilder.run(timeout.promise).then(function(entity){
                 entity = entity[0];
