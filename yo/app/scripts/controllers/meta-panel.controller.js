@@ -46,8 +46,6 @@
                 return;
             };
 
-            console.log("MetaPanel: entity type: " + entity.type);
-            
             // Initialise the query for the metatab fields
             var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
             var entityType = entity.type;
@@ -61,7 +59,6 @@
                     	// For a compound expression, we need to extract the corresponding entity type (e.g. "investigationUser" maps to "user")
                         var variableName = matches[1];
                         entityType = icatSchema.variableEntityTypes[variableName];
-                        console.log("MetaPanel: var: " + variableName + "; type: " + entityType);
                         if(!entityType){
                             console.error("Unknown variableName: " + variableName, item)
                         }
@@ -89,36 +86,6 @@
                 });
             });
 
-            // var queryBuilder = facility.icat().queryBuilder(entity.type).where(entity.type + ".id = " + entity.id);
-
-            /*
-             * TEST
-             *
-            if(entity.type == 'instrument'){
-                queryBuilder.include('instrumentScientist');
-            }
-
-            if(entity.type == 'investigation'){
-                queryBuilder.include('user');
-                queryBuilder.include('investigationParameterType');
-                queryBuilder.include('sample');
-                queryBuilder.include('publication');
-                queryBuilder.include('study');
-                queryBuilder.include('investigationUser');
-            }
-
-            if(entity.type == 'dataset'){
-                queryBuilder.include('datasetParameterType');
-                queryBuilder.include('sample');
-                queryBuilder.include('datasetType');
-            }
-
-            if(entity.type == 'datafile'){
-                queryBuilder.include('datafileParameterType');
-                queryBuilder.include('datafileFormat');
-            }
-             */
-
             queryBuilder.run(timeout.promise).then(function(entity){
                 entity = entity[0];
 
@@ -131,18 +98,14 @@
                     _.each(tabConfig.items, function(itemConfig){
                         var find = entity.entityType;
                         var field = itemConfig.field;
-                        console.log("MP 1: find=" + find + ", field=" + field);
                         var matches;
                         if(matches = itemConfig.field.replace(/\|.+$/, '').match(/^(.*)?\.([^\.\[\]]+)$/)){
                             find = matches[1];
                             field = matches[2]
-                            console.log("MP 2: find=" + find + ", field=" + field);
                         }
                         if(!find.match(/\]$/)) find = find + '[]';
-                        console.log("MP 3: find=" + find);
                         _.each(entity.find(find), function(entity){
                             var value = entity.find(field)[0];
-                            console.log("MP 4: value=" + value);
                             if(value !== undefined || field == 'size'){
                                 tab.items.push({
                                     label: itemConfig.label ? $translate.instant(itemConfig.label) : null,
