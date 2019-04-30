@@ -7,6 +7,7 @@
   * Add extraLoginButtons to facility configuration (in topcat.json) (issue #419)
   * Remove DOI and some login redirections from browser history (issue #424)
   * Replace hard-wired entity inclusions in metatabs with calculated inclusions (issue #405)
+  * Allow ids.timeout to be in seconds or minutes as well as milliseconds (issue #349)
   
 ## 2.4.3 (25th Mar 2019)
 

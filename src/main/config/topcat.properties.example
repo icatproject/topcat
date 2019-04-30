@@ -75,3 +75,9 @@ maxCacheSize=100000
 
 # Whether to cache zero-sized Investigations (default is false)
 # neverCacheZeroSizedInvestigations=false
+
+# Timeout for IDS connections.
+# Optional (default is no timeout). Can be in seconds (suffix 's'), minutes ('m') or milliseconds (no suffix)
+# ids.timeout=180000
+# ids.timeout=180s
+# ids.timeout=3m

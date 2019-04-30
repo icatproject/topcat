@@ -65,6 +65,19 @@ public class IdsClientTest {
 		assertTrue("expected: " + expected + " actual: " + actual, expected.equals(actual));
 
 	}
+	
+	@Test
+	public void testParseTimeout() throws Exception {
+		IdsClient idsClient = new IdsClient("https://localhost:8181");
+		Method parseTimeout = idsClient.getClass().getDeclaredMethod("parseTimeout", String.class);
+		parseTimeout.setAccessible(true);
+		
+		assertEquals(parseTimeout.invoke(idsClient, "1000"), 1000);
+		assertEquals(parseTimeout.invoke(idsClient, "10s"), 10000);
+		assertEquals(parseTimeout.invoke(idsClient, "10m"), 600000);
+		assertEquals(parseTimeout.invoke(idsClient, "-1"), -1);
+		assertEquals(parseTimeout.invoke(idsClient, "rubbish"), -1);
+	}
 
 	private List<Long> generateIds(int offset, int count){
 		List<Long> out = new ArrayList<Long>();
