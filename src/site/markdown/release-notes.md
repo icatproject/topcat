@@ -6,6 +6,7 @@
   * Add showAsButton to authenticator configuration (in topcat.json) to give an authenticator its own login button (issue #418)
   * Add extraLoginButtons to facility configuration (in topcat.json) (issue #419)
   * Remove DOI and some login redirections from browser history (issue #424)
+  * Allow ids.timeout to be in seconds or minutes as well as milliseconds (issue #349)
   
 ## 2.4.3 (25th Mar 2019)
 
