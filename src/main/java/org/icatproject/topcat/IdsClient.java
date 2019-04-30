@@ -1,6 +1,8 @@
 package org.icatproject.topcat;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -29,11 +31,14 @@ public class IdsClient {
     private long investigationSizeCacheLifetime;
     
     private boolean neverCacheZeroSizedInvestigations;
+    
+    // Allow ids.timeout property to have optional "s" or "m" post-qualifier (for seconds or minutes - default is (still) milliseconds)
+    private static final Pattern IDS_TIMEOUT_PATTERN = Pattern.compile("(\\d+)([sm]?)");
    
     public IdsClient(String url){
         this.httpClient = new HttpClient(url + "/ids");
         Properties properties = Properties.getInstance();
-        this.timeout = Integer.valueOf(properties.getProperty("ids.timeout", "-1"));
+        this.timeout = parseTimeout(properties.getProperty("ids.timeout", "-1"));
         this.investigationSizeCacheLifetime = Long.valueOf(properties.getProperty("investigationSizeCacheLifetimeSeconds", "0"));
         this.neverCacheZeroSizedInvestigations = Boolean.valueOf(properties.getProperty("neverCacheZeroSizedInvestigations", "false"));
     }
@@ -329,6 +334,27 @@ public class IdsClient {
         }
 
         return offsetPrefix + idsBuffer;
+    }
+    
+    /**
+     * Parse the ids.timeout property. Expected format is a digit-string followed by an optional "m" or "s"
+     * (minutes, seconds). Default units and returned value are in milliseconds (for backward compatibility).
+     * @param timeoutStr
+     * @return
+     */
+    private Integer parseTimeout(String timeoutStr) {
+    	Integer idsTimeout = -1;
+    	Matcher m = IDS_TIMEOUT_PATTERN.matcher(timeoutStr);
+    	if( m.matches() ) {
+    		idsTimeout = Integer.valueOf(m.group(1));
+    		String qualifier = m.group(2);
+    		if( "s".equals(qualifier) ) {
+    			idsTimeout = idsTimeout * 1000;
+    		} else if( "m".equals(qualifier) ) {
+    			idsTimeout = idsTimeout * 1000 * 60;
+    		}
+    	}
+    	return idsTimeout;
     }
 
 }
