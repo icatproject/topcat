@@ -206,7 +206,9 @@
                             _mandatory: false,
                             _item: {
                                 type: { _type: 'string'  },
-                                idsUrl: { _type: 'string'  }
+                                idsUrl: { _type: 'string'  },
+                                displayName: { _type: 'string', _mandatory: false },
+                                description: { _type: 'string', _mandatory: false }
                             }
                         },
                         admin: {

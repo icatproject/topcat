@@ -26,7 +26,8 @@
                         <input type="text" class="form-control input-sm" placeholder="Filename" ng-model="download.fileName" />
                     </td>
                     <td>
-                        <select ng-options="item for item in download.transportTypes" ng-model="download.transportType" ng-change="download.updateIsTwoLevel()"></select>
+                        <select ng-options="item as item.displayName for item in download.transportTypes track by item.type" ng-model="download.transportType" ng-change="download.updateIsTwoLevel()"></select>
+                        <div ng-if="download.transportType.description">{{download.transportType.description}}</div>
                     </td>
                     <td>
                         <span ng-if="download.size === undefined" class="loading collapsed"></span><span>{{download.size | bytes}}</span>

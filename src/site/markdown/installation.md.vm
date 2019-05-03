@@ -619,11 +619,14 @@ An example configuration:
           },
           {
               "type" : "globus",
-              "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
+              "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
+              "displayName": "Globus access",
+              "description": "Use Globus to download your data"
           },
           {
               "type" : "scarf",
-              "idsUrl": "https://dls-ids01.scarf.rl.ac.uk"
+              "idsUrl": "https://dls-ids01.scarf.rl.ac.uk",
+              "displayName": "Download to Scarf"
           }
       ]
     ]
@@ -633,6 +636,8 @@ An example configuration:
 
   * type - the download method the will be used to retrieve the download.
   * idsUrl - a url to a valid IDS API that can handle the particular download transport type.
+  * displayName - optional; used in the choice list dialog. Defaults to the type.
+  * description - optional; when present, appears under the choice list.
 
 
 $h3 topcat.json: "facilities" > [facility] > "admin" 
