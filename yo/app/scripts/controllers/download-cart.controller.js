@@ -19,7 +19,7 @@
         this.isStaged = function(){
             var out = false;
             _.each(this.downloads, function(download){
-                if((!download.transportType.match(/https|http/)) && download.transportType != 'smartclient'){
+                if((!download.transportType.type.match(/https|http/)) && download.transportType.type != 'smartclient'){
                     out = true;
                     return false;
                 }
@@ -37,12 +37,19 @@
             facility.user().cart(timeout).then(function(cart){
                 
                 if(cart.cartItems.length > 0){
+                	// Each facility cart has its own list of download transport types;
+                	// transportTypes is used to populate the download choice list
                     var transportTypes = [];
 
-                    var transportType = facility.config().downloadTransportTypes[0].type;
+                    // Set up a transportType object for each transportType in the configuration
                     _.each(facility.config().downloadTransportTypes, function(current){
-                        transportTypes.push(current.type);
+                        transportTypes.push({
+                        	type: current.type,
+                        	displayName: current.displayName?current.displayName:current.type,
+                        	description: current.description
+                        });
                     });
+                    var transportType = transportTypes[0];
                     
                     var date = new Date();
                     var year = date.getFullYear();
@@ -64,7 +71,7 @@
                         transportTypes: transportTypes,
                         transportType: transportType,
                         updateIsTwoLevel: function(){
-                            this.facility.downloadTransportTypeIds(this.transportType).isTwoLevel(timeout.promise).then(function(isTwoLevel){
+                            this.facility.downloadTransportTypeIds(this.transportType.type).isTwoLevel(timeout.promise).then(function(isTwoLevel){
                                 download.isTwoLevel = isTwoLevel;
                             });
                         }
@@ -94,7 +101,7 @@
 
             var promises = [];
             _.each(this.downloads, function(download){
-                promises.push(download.facility.user().submitCart(download.fileName, download.transportType, that.email, timeout.promise).then(function(response){
+                promises.push(download.facility.user().submitCart(download.fileName, download.transportType.type, that.email, timeout.promise).then(function(response){
                     return download.facility.user().downloads(["where download.id = ?",response.downloadId]).then(function(downloads){
                         var download = downloads[0];
                         if(download.transport.match(/https|http/) && download.status == 'COMPLETE'){
