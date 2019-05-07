@@ -57,8 +57,8 @@ exec %{
   unzip  mysql-connector-java-5.1.37.zip
   cp ./mysql-connector-java-5.1.37/mysql-connector-java-5.1.37-bin.jar glassfish4/glassfish/domains/domain1/lib/ext
 
-  wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.1/ids.storage_file-1.4.1-distro.zip
-  unzip  ids.storage_file-1.4.1-distro.zip
+  wget  https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.2/ids.storage_file-1.4.2-distro.zip
+  unzip  ids.storage_file-1.4.2-distro.zip
   cp ./provision/ids.storage_file-setup.properties ids.storage_file/setup.properties
   mkdir -p data/ids/cache
   cd ids.storage_file
@@ -85,8 +85,8 @@ exec %{
   ./setup install
   cd ../
 
-  wget  https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.3/icat.server-4.9.3-distro.zip
-  unzip  icat.server-4.9.3-distro.zip
+  wget  https://repo.icatproject.org/repo/org/icatproject/icat.server/4.10.0/icat.server-4.10.0-distro.zip
+  unzip  icat.server-4.10.0-distro.zip
   cp ./provision/icat.properties ./icat.server/run.properties
   cp ./provision/icat-setup.properties ./icat.server/setup.properties
   cp ./provision/logback.xml ./icat.server/logback.xml
@@ -95,17 +95,17 @@ exec %{
   sudo ./setup configure
   sudo ./setup install
   cd ../
-  asadmin -t set applications.application.icat.server-4.9.3.deployment-order=100
+  asadmin -t set applications.application.icat.server-4.10.0.deployment-order=100
 
-  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.9.1/ids.server-1.9.1-distro.zip
-  unzip ids.server-1.9.1-distro.zip
+  wget https://repo.icatproject.org/repo/org/icatproject/ids.server/1.10.0/ids.server-1.10.0-distro.zip
+  unzip ids.server-1.10.0-distro.zip
   cp ./provision/ids.properties ids.server/run.properties
   cp ./provision/ids-setup.properties ids.server/setup.properties
   cd ids.server
   ./setup configure
   ./setup install
   cd ../
-  asadmin -t set applications.application.ids.server-1.9.1.deployment-order=120
+  asadmin -t set applications.application.ids.server-1.10.0.deployment-order=120
 
   cd ../tools
   gem install rest-client
