@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 
 import org.icatproject.topcat.domain.Download;
 import org.icatproject.topcat.domain.DownloadStatus;
+import org.icatproject.topcat.domain.DownloadType;
 import org.icatproject.topcat.domain.ConfVar;
 import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.exceptions.NotFoundException;
@@ -32,6 +33,7 @@ import org.icatproject.topcat.exceptions.BadRequestException;
 import org.icatproject.topcat.exceptions.ForbiddenException;
 import org.icatproject.topcat.exceptions.InternalException;
 import org.icatproject.topcat.repository.DownloadRepository;
+import org.icatproject.topcat.repository.DownloadTypeRepository;
 import org.icatproject.topcat.repository.CacheRepository;
 import org.icatproject.topcat.repository.ConfVarRepository;
 import org.slf4j.Logger;
@@ -47,6 +49,9 @@ public class AdminResource {
 
     @EJB
     private DownloadRepository downloadRepository;
+
+    @EJB
+    private DownloadTypeRepository downloadTypeRepository;
 
     @EJB
     private ConfVarRepository confVarRepository;
@@ -228,6 +233,47 @@ public class AdminResource {
     }
 
     /**
+     * Sets the specified downloadType's status.
+     * 
+     * @param downloadType - name of the download type (as configured in topcat.json - downloadTransportTypes[].type)
+     * @param facilityName - name of the facility
+     * @param sessionId - a valid ICAT sessionId
+     * @param disabled - boolean flag - use True to disable, False to enable
+     * @param message - message to display to users to indicate that/why this download type is disabled
+     * @throws MalformedURLException if facilityName is invalid
+     * @throws TopcatException if anything else goes wrong
+     */
+    @PUT
+    @Path("/downloadType/{type}/status")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response setDownloadTypeStatus(
+        @PathParam("type") String downloadTypeName,
+        @FormParam("facilityName") String facilityName,
+        @FormParam("sessionId") String sessionId,
+        @FormParam("disabled") Boolean disabled,
+        @FormParam("message") String message) 
+        throws MalformedURLException, TopcatException
+        {
+
+        String icatUrl = getIcatUrl( facilityName );
+        onlyAllowAdmin(icatUrl, sessionId);
+        
+        // Update existing entry, or create a new one
+        DownloadType downloadType = downloadTypeRepository.getDownloadType(facilityName, downloadTypeName);
+        if( downloadType == null ) {
+        	downloadType = new DownloadType();
+        	downloadType.setFacilityName(facilityName);
+        	downloadType.setDownloadType(downloadTypeName);
+        }
+        downloadType.setDisabled(disabled);
+        downloadType.setMessage(message);
+        
+        downloadTypeRepository.save(downloadType);
+        
+        return Response.ok().build();
+     }
+
+   /**
      * Removes any cached value for the size of the specified entity.
      *
      * @summary clearCachedSize
