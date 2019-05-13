@@ -95,6 +95,12 @@
                 if(!download.fileName){
                     throw "A download name must be provided.";
                 }
+                // Check the status of the download type
+                download.facility.user().getDownloadTypeStatus(download.transportType.type,timeout).then(function(status){
+                	if(status.disabled){
+                		throw downloadTypeStatus.message;
+                	}
+                });
             });
 
             this.isSubmitting = true;
