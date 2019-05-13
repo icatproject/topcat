@@ -80,7 +80,9 @@
         function handleError(response){
             that.isUploading = false;
 
-            inform.add(response.message, {
+        	var message = "(no response message received)";
+        	if( response && response.message ) message = response.message;
+            inform.add("Upload failed: " + message, {
                 'ttl': 3000,
                 'type': 'danger'
             });

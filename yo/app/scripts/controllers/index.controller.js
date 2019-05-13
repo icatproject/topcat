@@ -191,7 +191,9 @@
         var refreshSessionInterval = setInterval(function(){
             _.each(tc.userFacilities(), function(facility){
                 facility.icat().refreshSession().catch(function(response){
-                    console.log("Refresh session failed for " + facility.config().name + ": " + response.message);
+                	var message = "(no response message received)";
+                	if( response && response.message ) message = response.message;
+                    console.log("Refresh session failed for " + facility.config().name + ": " + message);
                 });
             });
         }, 1000 * 60 * 5);
