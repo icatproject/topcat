@@ -238,9 +238,9 @@
             	/**
             	 * @method
             	 * @name User#getDownloadTypeStatus
-            	 * @param {string} downloadTypeName
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
             	 * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
-            	 * @return {Promise<object>} disabled flag and string message
+            	 * @return {Promise<object>} a deferred object containing disabled flag and string message
             	 */
             	'string,object' : function(downloadType,options){
             		return this.get('downloadType/' + downloadType + '/status', {
@@ -257,9 +257,9 @@
             	/**
             	 * @method
             	 * @name User#getDownloadTypeStatus
-            	 * @param {string} downloadTypeName
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
                  * @param  {Promise} timeout if resolved will cancel the request
-            	 * @return {Promise<object>} disabled flag and string message
+            	 * @return {Promise<object>} a deferred object containing disabled flag and string message
             	 */
             	'string,promise' : function(downloadType,timeout){
             		return this.getDownloadTypeStatus(downloadType,{timeout: timeout});
@@ -267,8 +267,8 @@
             	/**
             	 * @method
             	 * @name User#getDownloadTypeStatus
-            	 * @param {string} downloadTypeName
-            	 * @return {Promise<object>} disabled flag and string message
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
+            	 * @return {Promise<object>} a deferred object containing disabled flag and string message
             	 */
             	'string': function(downloadType){
             		return this.getDownloadTypeStatus(downloadType,{});

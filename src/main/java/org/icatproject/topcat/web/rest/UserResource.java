@@ -735,8 +735,11 @@ public class UserResource {
 
 	/**
 	 * Query the enabled/disabled status of a download type. The default status is enabled.
-	 * @param downloadTypeName
-	 *            a download (transport) type name (as configured in topcat.json downloadTransportTypes[].type)
+	 * 
+	 * @summary getDownloadTypeStatus
+	 * 
+	 * @param type
+	 *            a download transport type name (as configured in topcat.json downloadTransportTypes[].type)
 	 * @param facilityName
 	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
 	 * 
@@ -752,14 +755,14 @@ public class UserResource {
 	@Path("/downloadType/{type}/status")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getDownloadTypeStatus(
-			@PathParam("type") String downloadTypeName,
+			@PathParam("type") String type,
 			@QueryParam("facilityName") String facilityName,
 			@QueryParam("sessionId") String sessionId)
 					throws TopcatException {
 		  
 		Boolean disabled = false;
 		String message = "";
-		DownloadType downloadType = downloadTypeRepository.getDownloadType(facilityName, downloadTypeName);
+		DownloadType downloadType = downloadTypeRepository.getDownloadType(facilityName, type);
 		  
 		if( downloadType != null ) {
 			disabled = downloadType.getDisabled();

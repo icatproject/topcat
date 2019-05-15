@@ -354,12 +354,12 @@
             this.setDownloadTypeStatus = helpers.overload({
             	/**
             	 * @method
-            	 * @name User#getDownloadTypeStatus
-            	 * @param {string} downloadTypeName
+            	 * @name Admin#setDownloadTypeStatus
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
             	 * @param {boolean} disabled - true to disable, false to enable
             	 * @param {string} message - displayed to user if they try to use this download type
             	 * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
-            	 * @return {Promise<object>} disabled flag and string message
+            	 * @return {Promise}
             	 */
             	'string,boolean,string,object' : function(downloadType,disabled,message,options){
             		return this.put('downloadType/' + downloadType + '/status', {
@@ -379,19 +379,23 @@
             	},
             	/**
             	 * @method
-            	 * @name User#getDownloadTypeStatus
-            	 * @param {string} downloadTypeName
+            	 * @name Admin#setDownloadTypeStatus
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
+            	 * @param {boolean} disabled - true to disable, false to enable
+            	 * @param {string} message - displayed to user if they try to use this download type
                  * @param  {Promise} timeout if resolved will cancel the request
-            	 * @return {Promise<object>} disabled flag and string message
+            	 * @return {Promise}
             	 */
             	'string,boolean,string,promise' : function(downloadType,disabled,message,timeout){
             		return this.setDownloadTypeStatus(downloadType,disabled,message,{timeout: timeout});
             	},
             	/**
             	 * @method
-            	 * @name User#getDownloadTypeStatus
-            	 * @param {string} downloadTypeName
-            	 * @return {Promise<object>} disabled flag and string message
+            	 * @name Admin#setDownloadTypeStatus
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
+            	 * @param {boolean} disabled - true to disable, false to enable
+            	 * @param {string} message - displayed to user if they try to use this download type
+            	 * @return {Promise}
             	 */
             	'string,boolean,string': function(downloadType,disabled,message){
             		return this.setDownloadTypeStatus(downloadType,disabled,message,{});

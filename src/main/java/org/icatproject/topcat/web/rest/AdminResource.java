@@ -235,11 +235,13 @@ public class AdminResource {
     /**
      * Sets the specified downloadType's status.
      * 
-     * @param downloadType - name of the download type (as configured in topcat.json - downloadTransportTypes[].type)
-     * @param facilityName - name of the facility
-     * @param sessionId - a valid ICAT sessionId
-     * @param disabled - boolean flag - use True to disable, False to enable
-     * @param message - message to display to users to indicate that/why this download type is disabled
+     * @summary setDownloadTypeStatus
+     * 
+     * @param type name of the download type (as configured in topcat.json - downloadTransportTypes[].type)
+     * @param facilityName name of the facility
+     * @param sessionId a valid ICAT sessionId
+     * @param disabled flag: use True to disable, False to enable
+     * @param message a message to display to users to indicate that/why this download type is disabled
      * @throws MalformedURLException if facilityName is invalid
      * @throws TopcatException if anything else goes wrong
      */
@@ -247,7 +249,7 @@ public class AdminResource {
     @Path("/downloadType/{type}/status")
     @Produces({MediaType.APPLICATION_JSON})
     public Response setDownloadTypeStatus(
-        @PathParam("type") String downloadTypeName,
+        @PathParam("type") String type,
         @FormParam("facilityName") String facilityName,
         @FormParam("sessionId") String sessionId,
         @FormParam("disabled") Boolean disabled,
@@ -259,11 +261,11 @@ public class AdminResource {
         onlyAllowAdmin(icatUrl, sessionId);
         
         // Update existing entry, or create a new one
-        DownloadType downloadType = downloadTypeRepository.getDownloadType(facilityName, downloadTypeName);
+        DownloadType downloadType = downloadTypeRepository.getDownloadType(facilityName, type);
         if( downloadType == null ) {
         	downloadType = new DownloadType();
         	downloadType.setFacilityName(facilityName);
-        	downloadType.setDownloadType(downloadTypeName);
+        	downloadType.setDownloadType(type);
         }
         downloadType.setDisabled(disabled);
         downloadType.setMessage(message);
