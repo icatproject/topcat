@@ -244,6 +244,7 @@
             	 */
             	'string,object' : function(downloadType,options){
             		return this.get('downloadType/' + downloadType + '/status', {
+                        facilityName: facility.config().name,
             			sessionId: facility.icat().session().sessionId
             		}, options).then(function(status){
             			return status;
