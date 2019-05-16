@@ -91,44 +91,78 @@
         });
 
         this.ok = function() {
+        	// Brian Ritchie, 2019-05-15:
+        	// Checking whether each download's type has been disabled requires promises.
+        	// This complicates the coding unpleasantly: we can't just throw the first disabled message we find - it happens too late to halt this function.
+        	// We need to move the rest of the code within $q.all(promiseChecks).then(...) - and replace all refs to "this" with "that"!
+        	//
+        	var promiseChecks = [];
+        	var disabledMessages = [];
             _.each(this.downloads, function(download){
                 if(!download.fileName){
                     throw "A download name must be provided.";
                 }
-            });
-
-            this.isSubmitting = true;
-
-            var promises = [];
-            _.each(this.downloads, function(download){
-                promises.push(download.facility.user().submitCart(download.fileName, download.transportType.type, that.email, timeout.promise).then(function(response){
-                    return download.facility.user().downloads(["where download.id = ?",response.downloadId]).then(function(downloads){
-                        var download = downloads[0];
-                        if(download.transport.match(/https|http/) && download.status == 'COMPLETE'){
-                            // Determine the idsUrl for the download from topcat config, using its facility and transport (type)
-                            var facility = tc.facility(download.facilityName);
-                            var transportType = _.select(facility.config().downloadTransportTypes, function(downloadTransportType){
-                                return downloadTransportType.type == download.transport;
-                            });
-                            var idsUrl = transportType && transportType[0] ? transportType[0].idsUrl : undefined;
-                            var url = idsUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
-                            var iframe = $('<iframe>').attr('src', url).css({
-                                position: 'absolute',
-                                left: '-1000000px',
-                                height: '1px',
-                                width: '1px'
-                            });
-
-                            $('body').append(iframe);
-                        }
-                    });
+                // Check the status of the download type
+                promiseChecks.push(download.facility.user().getDownloadTypeStatus(download.transportType.type,timeout).then(function(status){
+                	if(status.disabled){
+                		disabledMessages.push( status.message );
+                	}
                 }, function(response){
-                    console.log('submitCart failed for file',download.fileName,'from facility',download.facility.config().name);
+                	// getDownloadTypeStatus failed in some way
+                	var msg = "(no message)";
+                	if( response && response.message ) msg = response.message;
+                	console.log("getDownloadTypeStatus('" + download.transportType.type + "') failed: " + msg);
                 }));
             });
-            $q.all(promises).then(function(){
-                $uibModalStack.dismissAll();
-                $rootScope.$broadcast('cart:submit');
+            
+            $q.all(promiseChecks).then(function(){
+            	if( disabledMessages.length > 0 ){
+                	// In the general case, we ought to collect the possibly multiple disabled messages and display them in a new dialog.
+                	// However, this can only happen when Topcat has been configured for multiple facilities (and all have disabled download types,
+                	// and the user chooses more than one disabled type). No current production deployments use multiple facilities.
+                	// I have chosen just to throw a join of the messages; but note that "\n" probably does not add a newline, so
+            		// the results in the general case are likely to be ugly.
+            		throw disabledMessages.join(", \n");
+            	}
+
+	            that.isSubmitting = true;
+	
+	            var promises = [];
+	            _.each(that.downloads, function(download){
+	                promises.push(download.facility.user().submitCart(download.fileName, download.transportType.type, that.email, timeout.promise).then(function(response){
+	                    return download.facility.user().downloads(["where download.id = ?",response.downloadId]).then(function(downloads){
+	                        var download = downloads[0];
+	                        if(download.transport.match(/https|http/) && download.status == 'COMPLETE'){
+	                            // Determine the idsUrl for the download from topcat config, using its facility and transport (type)
+	                            var facility = tc.facility(download.facilityName);
+	                            var transportType = _.select(facility.config().downloadTransportTypes, function(downloadTransportType){
+	                                return downloadTransportType.type == download.transport;
+	                            });
+	                            var idsUrl = transportType && transportType[0] ? transportType[0].idsUrl : undefined;
+	                            var url = idsUrl + '/ids/getData?preparedId=' + download.preparedId + '&outname=' + download.fileName;
+	                            var iframe = $('<iframe>').attr('src', url).css({
+	                                position: 'absolute',
+	                                left: '-1000000px',
+	                                height: '1px',
+	                                width: '1px'
+	                            });
+	
+	                            $('body').append(iframe);
+	                        }
+	                    });
+	                }, function(response){
+	                    console.log('submitCart failed for file',download.fileName,'from facility',download.facility.config().name);
+	                }));
+	            });
+	            $q.all(promises).then(function(){
+	                $uibModalStack.dismissAll();
+	                $rootScope.$broadcast('cart:submit');
+	            });
+            }, function(response){
+            	// $q.all failed in some way
+            	var msg = "(no message)";
+            	if( response && response.message ) msg = response.message;
+            	console.log("$q.all(promiseChecks) failed: " + msg);
             });
         };
 

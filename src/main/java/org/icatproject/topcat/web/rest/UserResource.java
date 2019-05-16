@@ -51,6 +51,9 @@ public class UserResource {
 	private DownloadRepository downloadRepository;
 
 	@EJB
+	private DownloadTypeRepository downloadTypeRepository;
+
+	@EJB
 	private CartRepository cartRepository;
 
 	@EJB
@@ -730,6 +733,48 @@ public class UserResource {
 		return Response.ok().entity(size.toString()).build();
 	}
 
+	/**
+	 * Query the enabled/disabled status of a download type. The default status is enabled.
+	 * 
+	 * @summary getDownloadTypeStatus
+	 * 
+	 * @param type
+	 *            a download transport type name (as configured in topcat.json downloadTransportTypes[].type)
+	 * @param facilityName
+	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
+	 * 
+	 * @param sessionId
+	 *            a valid session id which takes the form
+	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
+	 *
+	 * @return JSON object with disabled (boolean) and message (string) fields
+	 * 
+	 * @throws TopcatException
+	 */
+	@GET
+	@Path("/downloadType/{type}/status")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response getDownloadTypeStatus(
+			@PathParam("type") String type,
+			@QueryParam("facilityName") String facilityName,
+			@QueryParam("sessionId") String sessionId)
+					throws TopcatException {
+		  
+		Boolean disabled = false;
+		String message = "";
+		DownloadType downloadType = downloadTypeRepository.getDownloadType(facilityName, type);
+		  
+		if( downloadType != null ) {
+			disabled = downloadType.getDisabled();
+			message = downloadType.getMessage();
+		}
+
+		JsonObjectBuilder responseJson = Json.createObjectBuilder()
+				.add("disabled", disabled)
+				.add("message", message);
+
+		return Response.ok().entity(responseJson.build().toString()).build();
+	}
 
 	private Response emptyCart(String facilityName, String userName, Long downloadId) {
 		JsonObjectBuilder emptyCart = Json.createObjectBuilder().add("facilityName", facilityName)

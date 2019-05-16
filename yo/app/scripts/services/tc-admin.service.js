@@ -351,6 +351,57 @@
                 }
             });
 
+            this.setDownloadTypeStatus = helpers.overload({
+            	/**
+            	 * @method
+            	 * @name Admin#setDownloadTypeStatus
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
+            	 * @param {boolean} disabled - true to disable, false to enable
+            	 * @param {string} message - displayed to user if they try to use this download type
+            	 * @param {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
+            	 * @return {Promise}
+            	 */
+            	'string,boolean,string,object' : function(downloadType,disabled,message,options){
+            		return this.put('downloadType/' + downloadType + '/status', {
+                        facilityName: facility.config().name,
+            			sessionId: facility.icat().session().sessionId,
+            			disabled: disabled,
+            			message: message
+            		}, options).then(function(response){
+            			return response;
+            		}, function(response){
+            			// error case - log but treat as not disabled
+            			var msg = '(no message)';
+            			if( response && response.message ) msg = response.msg
+            			console.log('user.setDownloadTypeStatus failed - treat as not disabled: ' + msg);
+            			return response;
+            		})
+            	},
+            	/**
+            	 * @method
+            	 * @name Admin#setDownloadTypeStatus
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
+            	 * @param {boolean} disabled - true to disable, false to enable
+            	 * @param {string} message - displayed to user if they try to use this download type
+                 * @param  {Promise} timeout if resolved will cancel the request
+            	 * @return {Promise}
+            	 */
+            	'string,boolean,string,promise' : function(downloadType,disabled,message,timeout){
+            		return this.setDownloadTypeStatus(downloadType,disabled,message,{timeout: timeout});
+            	},
+            	/**
+            	 * @method
+            	 * @name Admin#setDownloadTypeStatus
+            	 * @param {string} downloadType download type as defined in topcat.json (e.g. 'globus')
+            	 * @param {boolean} disabled - true to disable, false to enable
+            	 * @param {string} message - displayed to user if they try to use this download type
+            	 * @return {Promise}
+            	 */
+            	'string,boolean,string': function(downloadType,disabled,message){
+            		return this.setDownloadTypeStatus(downloadType,disabled,message,{});
+            	}
+            });
+
             this.setConfVar = helpers.overload({
                 /**
                  * Stores a value on Topcat.

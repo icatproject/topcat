@@ -170,6 +170,79 @@ def expire_all_pending_downloads():
 			"value": "EXPIRED"
 		})
 
+def manage_download_types():
+	download_types = facility["downloadTransportTypes"]
+	download_statuses = []
+	for download_type in download_types:
+		response = requests.get(topcat_url + "/topcat/user/downloadType/" + str(download_type["type"]) + "/status", params={
+				"facilityName": facility_name,
+				"sessionId": session_id
+			})
+		if response:
+			download_status = json.loads(response.text)
+			download_statuses.append(download_status)
+		else:
+			print "Response for '" + str(download_type["type"]) + "' not OK: " + str(response.status_code) + ", " + response.text
+			print "Treating this download type as enabled"
+			download_statuses.append({"disabled":False,"message":""})
+	while True:
+		print "Current download type statuses:"
+		for i in range(len(download_types)):
+			report = download_types[i]["type"]
+			if download_statuses[i]["disabled"]:
+				report += " (disabled, '" + download_statuses[i]["message"] + "')"
+			else:
+				report += " (enabled)"
+			print str(i+1) + ": " + report
+		print
+		# Will a Topcat administrator ever be dumb enough to input a non-number here?
+		try:
+			option_number = int(raw_input("Choose a number to toggle that download type's status, or 0 to exit: "))
+		except ValueError:
+			# this will trigger the Invalid Input response below
+			option_number = -1
+		if option_number == 0: break
+		option_number = option_number - 1
+		if option_number not in range(len(download_types)):
+			print "Invalid input"
+			# We break here rather than continue, so if correct input is impossible at least we escape
+			break
+		download_type = download_types[option_number]
+		download_status = download_statuses[option_number]
+		if download_status["disabled"]:
+			# Note: we don't reset the message - possible option to reuse it in future?
+			response = requests.put(topcat_url + "/topcat/admin/downloadType/" + str(download_type["type"]) + "/status", data={
+				"facilityName": facility_name,
+				"sessionId": session_id,
+				"disabled": False,
+				"message": download_status["message"]
+			})
+			if response:
+				print "Enabled download type " + download_type["type"]
+			else:
+				print "Request failed: " + str(response.status_code) + ", " + response.text
+		else:
+			message = raw_input("Set a message for the disabled download type: ")
+			if not len(message) > 0:
+				print "Message cannot be empty"
+				continue
+			response = requests.put(topcat_url + "/topcat/admin/downloadType/" + str(download_type["type"]) + "/status", data={
+				"facilityName": facility_name,
+				"sessionId": session_id,
+				"disabled": True,
+				"message": message
+			})
+			if response:
+				print "Disabled download type " + download_type["type"]
+			else:
+				print "Request failed: " + str(response.status_code) + ", " + response.text
+		# Update the local copy of the download status
+		# We ASSUME the request is OK
+		download_status = json.loads(requests.get(topcat_url + "/topcat/user/downloadType/" + str(download_type["type"]) + "/status", params={
+				"facilityName": facility_name,
+				"sessionId": session_id
+			}).text)
+		download_statuses[option_number] = download_status
 
 while True:
 	print ""
@@ -179,7 +252,8 @@ while True:
 	print " * 3: Create preparedId for a download and generate update SQL."
 	print " * 4: Set a download status to 'EXPIRED'."
 	print " * 5: Expire all pending downloads."
-	print " * 6: Exit"
+	print " * 6: Enable or disable download types."
+	print " * 7: Exit"
 
 	option_number = raw_input("Enter option number: ");
 
@@ -195,6 +269,8 @@ while True:
 	elif option_number == "5":
 		expire_all_pending_downloads()
 	elif option_number == "6":
+		manage_download_types()
+	elif option_number == "7":
 		break
 	else:
 		print ""
