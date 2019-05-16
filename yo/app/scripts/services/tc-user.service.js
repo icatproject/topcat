@@ -188,7 +188,7 @@
                 /**
                  * @method
                  * @name  User#setDownloadStatus
-                 * @param  {string|number} id
+                 * @param  {string|number} id the ID of the download
                  * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
                  * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
                  * @return {Promise}
@@ -205,7 +205,7 @@
                  * @method
                  * @name  User#setDownloadStatus
                  * @param  {Promise} timeout if resolved will cancel the request
-                 * @param  {string|number} id
+                 * @param  {string|number} id the ID of the download
                  * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
                  * @return {Promise}
                  */
@@ -216,7 +216,7 @@
                 /**
                  * @method
                  * @name  User#setDownloadStatus
-                 * @param  {string|number} id
+                 * @param  {string|number} id the ID of the download
                  * @param {string} status can be 'ONLINE', 'ARCHIVE' or 'RESTORING'
                  * @return {Promise}
                  */
@@ -579,9 +579,9 @@
                 /**
                  * @method
                  * @name  User#submitCart
-                 * @param  {string} fileName
-                 * @param  {string} transport
-                 * @param  {string} email
+                 * @param  {string} fileName name of file into which the cart will be downloaded
+                 * @param  {string} transport transport mechanism
+                 * @param  {string} email optional address to send email when download is available
                  * @param  {object} options {@link https://docs.angularjs.org/api/ng/service/$http#usage|as specified in the Angular documentation}
                  * @return {Promise<Cart>}
                  */
@@ -611,9 +611,9 @@
                 /**
                  * @method
                  * @name  User#submitCart
-                 * @param  {string} fileName
-                 * @param  {string} transport
-                 * @param  {string} email
+                 * @param  {string} fileName name of file into which the cart will be downloaded
+                 * @param  {string} transport transport mechanism
+                 * @param  {string} email optional address to send email when download is available
                  * @param  {Promise} timeout if resolved will cancel the request
                  * @return {Promise<Cart>}
                  */
@@ -624,9 +624,9 @@
                 /**
                  * @method
                  * @name  User#submitCart
-                 * @param  {string} fileName
-                 * @param  {string} transport
-                 * @param  {string} email
+                 * @param  {string} fileName name of file into which the cart will be downloaded
+                 * @param  {string} transport transport mechanism
+                 * @param  {string} email optional address to send email when download is available
                  * @return {Promise<Cart>}
                  */
                 'string, string, string': function(fileName, transport, email){

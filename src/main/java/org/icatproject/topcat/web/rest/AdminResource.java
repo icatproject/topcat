@@ -147,6 +147,8 @@ public class AdminResource {
      * @param id the download id in the database.
      *
      * @param value the status value i.e. 'ONLINE', 'ARCHIVE' or 'RESTORING'.
+     * 
+     * @return an empty Response
      *
      * @throws MalformedURLException if facilityName is invalid.
      *
@@ -196,6 +198,8 @@ public class AdminResource {
      * @param id the download id in the database.
      *
      * @param value either true or false.
+     * 
+     * @return an empty Response
      *
      * @throws MalformedURLException if facilityName is invalid.
      *
@@ -242,6 +246,7 @@ public class AdminResource {
      * @param sessionId a valid ICAT sessionId
      * @param disabled flag: use True to disable, False to enable
      * @param message a message to display to users to indicate that/why this download type is disabled
+     * @return an empty Response
      * @throws MalformedURLException if facilityName is invalid
      * @throws TopcatException if anything else goes wrong
      */
@@ -288,6 +293,8 @@ public class AdminResource {
 	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
+     * 
+     * @return an empty Response
      *
      * @throws MalformedURLException if facilityName is invalid.
      *
@@ -323,14 +330,18 @@ public class AdminResource {
     /**
      * Stores a configuration variable.
      *
-     * @summary getConfVar
+     * @summary setConfVar
      *
+     * @param name name of the configuration variable
+     * 
 	 * @param facilityName
 	 *            a facility name - properties must map this to a url to a valid ICAT REST api.
      * 
      * @param sessionId a valid session id which takes the form <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code> 
      *
      * @param value a string containing the configuration variable value.
+     * 
+     * @return an empty Response
      *
      * @throws TopcatException if anything else goes wrong.
      */

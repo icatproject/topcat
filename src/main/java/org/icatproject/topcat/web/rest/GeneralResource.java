@@ -63,7 +63,10 @@ public class GeneralResource {
      * Retrieves a configuration variable.
      *
      * @summary getConfVar
-     *
+     * 
+     * @param name name of the configuration variable
+     * 
+     * @return value of the configuration variable, or the empty string if it is not defined.
      *
      * @throws TopcatException if anything else goes wrong.
      */

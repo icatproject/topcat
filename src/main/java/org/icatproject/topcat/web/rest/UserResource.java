@@ -148,6 +148,8 @@ public class UserResource {
 	 * @param value
 	 *            either true or false.
 	 *
+	 * @return an empty Response
+	 * 
 	 * @throws MalformedURLException
 	 *             if facilityName is invalid.
 	 *
@@ -201,6 +203,8 @@ public class UserResource {
      *
      * @param value the status value i.e. 'ONLINE', 'ARCHIVE' or 'RESTORING'.
      *
+     * @return an empty Response
+     * 
      * @throws MalformedURLException if facilityName is invalid.
      *
      * @throws ParseException if a JPQL query is malformed.
@@ -711,8 +715,10 @@ public class UserResource {
 	 *            the type of entity 'investigation', 'dataset' or 'datafile'.
 	 *
 	 * @param entityId
-	 *            a comma-separated-list of datset ids.
+	 *            a comma-separated-list of entity ids
 	 *
+	 * @return total size of the entities (as a Long)
+	 * 
 	 * @throws TopcatException
 	 *             if anything else goes wrong.
 	 */
