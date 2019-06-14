@@ -11,10 +11,13 @@ def uninstall():
     actions.unregisterDB("topcat")
     actions.deleteMailResource("mail/topcat")
 
-actions, arg, props = getActions("topcat-setup.properties", ["db.driver", "db.url", "db.username", "db.password"])
+actions, arg, props = getActions("topcat-setup.properties", ["db.driver", "db.url", "db.username", "db.password"], binDir=True)
 
 prop_name = "topcat.properties"
 prop_list = []
+
+binDir = actions.getBinDir();
+binFiles = ["topcat_admin"]
 
 if arg in ["CONFIGURE", "INSTALL"]: 
     actions.configure(prop_name, prop_list) 
@@ -55,6 +58,11 @@ if arg == "INSTALL":
         
         actions.deploy(files=files, deploymentorder=140)
 
+        if not os.path.isdir(binDir): abort ("Please create directory " + binDir + " and try again.")
+        for file in binFiles:   
+            if platform.system() != "Windows": os.chmod(file, 0755)    
+            actions.installFile(file , binDir)
+            
     except Exception, e:
         abort(str(e))
 
@@ -63,6 +71,8 @@ else:  # UNINSTALL
 
     try:
         uninstall();
+        for file in binFiles:
+            actions.removeFile(file, binDir) 
 
     except Exception, e:
         abort(str(e))

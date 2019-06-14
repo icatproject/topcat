@@ -51,6 +51,14 @@
 		</fileSet>
 
 		<fileSet>
+			<outputDirectory>topcat</outputDirectory>
+			<directory>${project.basedir}/tools</directory>
+			<includes>
+				<include>topcat_admin</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
 			<outputDirectory>topcat/content.example</outputDirectory>
 			<directory>${project.basedir}/yo/app</directory>
 			<includes>
