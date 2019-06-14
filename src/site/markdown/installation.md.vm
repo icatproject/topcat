@@ -912,7 +912,8 @@ $h2 topcat_admin
 
 The topcat_admin script was added to Topcat in October 2017, but was not included in the distribution until version 2.4.4.
 It uses the new REST API for disabling/enabling download types (which cannot be done from the browser Admin interface at present.)
-The setup script will copy this script to the user's bin directory (it will ask the user to create the folder if it does not exist).
+The setup script will copy this script to the user's bin directory if it exists. (It does not insist that it exists, for
+backwards compatibility with installation processes that work with previous versions.)
 
 topcat_admin requires the Python requests module to be installed; setup neither checks nor ensures that this is the case.
 The script can be run from any suitable system; it need not be run on the Topcat server.

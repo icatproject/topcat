@@ -58,10 +58,13 @@ if arg == "INSTALL":
         
         actions.deploy(files=files, deploymentorder=140)
 
-        if not os.path.isdir(binDir): abort ("Please create directory " + binDir + " and try again.")
-        for file in binFiles:   
-            if platform.system() != "Windows": os.chmod(file, 0755)    
-            actions.installFile(file , binDir)
+        # If there's no binDir, don't count it as a failure
+        if os.path.isdir(binDir): 
+            for file in binFiles:   
+                if platform.system() != "Windows": os.chmod(file, 0755)    
+                actions.installFile(file , binDir)
+        else:
+            print "Not copying executables to", binDir, "as it does not exist. Create the folder and re-run if required."
             
     except Exception, e:
         abort(str(e))
@@ -71,8 +74,9 @@ else:  # UNINSTALL
 
     try:
         uninstall();
-        for file in binFiles:
-            actions.removeFile(file, binDir) 
+        if os.path.isdir(binDir): 
+            for file in binFiles:
+                actions.removeFile(file, binDir) 
 
     except Exception, e:
         abort(str(e))
