@@ -11,10 +11,13 @@ def uninstall():
     actions.unregisterDB("topcat")
     actions.deleteMailResource("mail/topcat")
 
-actions, arg, props = getActions("topcat-setup.properties", ["db.driver", "db.url", "db.username", "db.password"])
+actions, arg, props = getActions("topcat-setup.properties", ["db.driver", "db.url", "db.username", "db.password"], binDir=True)
 
 prop_name = "topcat.properties"
 prop_list = []
+
+binDir = actions.getBinDir();
+binFiles = ["topcat_admin"]
 
 if arg in ["CONFIGURE", "INSTALL"]: 
     actions.configure(prop_name, prop_list) 
@@ -55,6 +58,14 @@ if arg == "INSTALL":
         
         actions.deploy(files=files, deploymentorder=140)
 
+        # If there's no binDir, don't count it as a failure
+        if os.path.isdir(binDir): 
+            for file in binFiles:   
+                if platform.system() != "Windows": os.chmod(file, 0755)    
+                actions.installFile(file , binDir)
+        else:
+            print "Not copying executables to", binDir, "as it does not exist. Create the folder and re-run if required."
+            
     except Exception, e:
         abort(str(e))
 
@@ -63,6 +74,9 @@ else:  # UNINSTALL
 
     try:
         uninstall();
+        if os.path.isdir(binDir): 
+            for file in binFiles:
+                actions.removeFile(file, binDir) 
 
     except Exception, e:
         abort(str(e))

@@ -9,6 +9,7 @@
   * Allow ids.timeout to be in seconds or minutes as well as milliseconds (issue #349)
   * Add optional displayName and description to downloadTransportTypes (issue #427)
   * Add API to disable/enable download transport types (issue #434)
+  * Add topcat_admin script to the distribution (issue #437)
   
 ## 2.4.3 (25th Mar 2019)
 
