@@ -3,10 +3,23 @@
 import requests
 import getpass
 import json
+from urllib3.exceptions import InsecureRequestWarning
 
+# Kill the dragon!!
+# If, like me, you are fed up with SSL certificate issues preventing you from connecting to your own machine,
+# then set verifySsl to False here.
+verifySsl=True
+
+if not verifySsl:
+	# Allegedly, this more-specific version should work, but I find that it doesn't:
+	# requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+	# ... so just turn them all off:
+	requests.packages.urllib3.disable_warnings()
+	print "WARNING: SSL certificate verification (and warnings) disabled. This script will blindly trust whatever it connects to."
+	
 topcat_url = raw_input("Topcat url: ")
 
-topcatJson = json.loads(requests.get(topcat_url + "/config/topcat.json").text)
+topcatJson = json.loads(requests.get(topcat_url + "/config/topcat.json", verify=verifySsl).text)
 
 facilities = {}
 for current_facility in topcatJson["facilities"]:
@@ -30,9 +43,9 @@ ids_url = facility["idsUrl"]
 if "icat_url" in facility:
 	icat_url = facility["icatUrl"]
 else:
-	icat_url = requests.get(ids_url + "/ids/getIcatUrl").text
+	icat_url = requests.get(ids_url + "/ids/getIcatUrl", verify=verifySsl).text
 
-icat_properties = json.loads(requests.get(icat_url + "/icat/properties").text)
+icat_properties = json.loads(requests.get(icat_url + "/icat/properties", verify=verifySsl).text)
 
 
 authentication_plugins = []
@@ -59,7 +72,7 @@ auth = json.dumps({
 	]
 })
 
-session_id = json.loads(requests.post(icat_url + "/icat/session", {"json": auth}).text)["sessionId"]
+session_id = json.loads(requests.post(icat_url + "/icat/session", {"json": auth}, verify=verifySsl).text)["sessionId"]
 
 def show_download():
 	download_id = raw_input("Enter download id: ")
@@ -67,7 +80,7 @@ def show_download():
 		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": "where download.id = " + download_id
-	}).text
+	}, verify=verifySsl).text
 
 
 def list_file_locations():
@@ -77,7 +90,7 @@ def list_file_locations():
 		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": "where download.id = " + download_id
-	}).text)[0]
+	}, verify=verifySsl).text)[0]
 	download_items = download["downloadItems"]
 	datafile_locations = []
 	for download_item in download_items:
@@ -85,17 +98,17 @@ def list_file_locations():
 			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", params={
 				"sessionId": session_id,
 				"query": "select datafile.location from Datafile datafile, datafile.dataset as dataset, dataset.investigation as investigation where investigation.id = " + str(download_item["entityId"])
-			}).text))
+			}, verify=verifySsl).text))
 		elif download_item["entityType"] == "dataset":
 			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", params={
 				"sessionId": session_id,
 				"query": "select datafile.location from Datafile datafile, datafile.dataset as dataset where dataset.id = " + str(download_item["entityId"])
-			}).text))
+			}, verify=verifySsl).text))
 		elif download_item["entityType"] == "datafile":
 			datafile_locations.extend(json.loads(requests.get(icat_url + "/icat/entityManager", params={
 				"sessionId": session_id,
 				"query": "select datafile.location from Datafile datafile where datafile.id = " + str(download_item["entityId"])
-			}).text))
+			}, verify=verifySsl).text))
 	datafile_locations.sort()
 	if output_file_name != "":
 		file  = open(output_file_name, "w")
@@ -116,7 +129,7 @@ def prepare_download():
 		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": "where download.id = " + download_id
-	}).text)[0]
+	}, verify=verifySsl).text)[0]
 	download_items = download["downloadItems"]
 	for download_item in download_items:
 		if download_item["entityType"] == "investigation":
@@ -135,7 +148,7 @@ def prepare_download():
 		params["datasetIds"] = ",".join(map(str, dataset_ids))
 	if (len(datafile_ids) > 0):
 		params["datafileIds"] = ",".join(map(str, datafile_ids))
-	prepared_id = requests.post(ids_url + "/ids/prepareData", data=params).text
+	prepared_id = requests.post(ids_url + "/ids/prepareData", data=params, verify=verifySsl).text
 	print ""
 	print "UPDATE DOWNLOAD set PREPARED_ID = '" + prepared_id + "', STATUS = 'RESTORING' WHERE ID = " + download_id
 
@@ -148,7 +161,7 @@ def expire_download():
 		"facilityName": facility_name,
 		"sessionId": session_id,
 		"value": "EXPIRED"
-	})
+	}, verify=verifySsl)
 
 def expire_all_pending_downloads():
 	query = "(download.status like 'PREPARING' or download.status like 'RESTORING') and download.isDeleted = false"
@@ -162,13 +175,13 @@ def expire_all_pending_downloads():
 		"facilityName": facility_name,
 		"sessionId": session_id,
 		"queryOffset": query
-	}).text)
+	}, verify=verifySsl).text)
 	for download in  downloads:
 		requests.put(topcat_url + "/topcat/admin/download/" + str(download["id"]) +  "/status", data={
 			"facilityName": facility_name,
 			"sessionId": session_id,
 			"value": "EXPIRED"
-		})
+		}, verify=verifySsl)
 
 def manage_download_types():
 	download_types = facility["downloadTransportTypes"]
@@ -177,7 +190,7 @@ def manage_download_types():
 		response = requests.get(topcat_url + "/topcat/user/downloadType/" + str(download_type["type"]) + "/status", params={
 				"facilityName": facility_name,
 				"sessionId": session_id
-			})
+			}, verify=verifySsl)
 		if response:
 			download_status = json.loads(response.text)
 			download_statuses.append(download_status)
@@ -216,7 +229,7 @@ def manage_download_types():
 				"sessionId": session_id,
 				"disabled": False,
 				"message": download_status["message"]
-			})
+			}, verify=verifySsl)
 			if response:
 				print "Enabled download type " + download_type["type"]
 			else:
@@ -231,7 +244,7 @@ def manage_download_types():
 				"sessionId": session_id,
 				"disabled": True,
 				"message": message
-			})
+			}, verify=verifySsl)
 			if response:
 				print "Disabled download type " + download_type["type"]
 			else:
@@ -241,7 +254,7 @@ def manage_download_types():
 		download_status = json.loads(requests.get(topcat_url + "/topcat/user/downloadType/" + str(download_type["type"]) + "/status", params={
 				"facilityName": facility_name,
 				"sessionId": session_id
-			}).text)
+			}, verify=verifySsl).text)
 		download_statuses[option_number] = download_status
 
 while True:
