@@ -3,7 +3,8 @@
 import requests
 import getpass
 import json
-from urllib3.exceptions import InsecureRequestWarning
+# The following appears to be version-sensitive
+# from urllib3.exceptions import InsecureRequestWarning
 
 # Kill the dragon!!
 # If, like me, you are fed up with SSL certificate issues preventing you from connecting to your own machine,
@@ -235,10 +236,15 @@ def manage_download_types():
 			else:
 				print "Request failed: " + str(response.status_code) + ", " + response.text
 		else:
-			message = raw_input("Set a message for the disabled download type: ")
+			if download_status["message"]:
+				old_message = download_status["message"]
+				print "Current message for the disabled download type is: " + old_message
+			else:
+				old_message = ""
+				print "Current message for the disabled download type is: system default"
+			message = raw_input("New message (blank = use current): ")
 			if not len(message) > 0:
-				print "Message cannot be empty"
-				continue
+				message = old_message
 			response = requests.put(topcat_url + "/topcat/admin/downloadType/" + str(download_type["type"]) + "/status", data={
 				"facilityName": facility_name,
 				"sessionId": session_id,

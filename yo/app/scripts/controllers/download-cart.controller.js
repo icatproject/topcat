@@ -105,7 +105,11 @@
                 // Check the status of the download type
                 promiseChecks.push(download.facility.user().getDownloadTypeStatus(download.transportType.type,timeout).then(function(status){
                 	if(status.disabled){
-                		disabledMessages.push( status.message );
+                		if( status.message ){
+                			disabledMessages.push( status.message );
+                		} else {
+                			disabledMessages.push( "Download type '" + download.transportType.displayName + "' is disabled at present.");
+                		}
                 	}
                 }, function(response){
                 	// getDownloadTypeStatus failed in some way
