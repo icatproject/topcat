@@ -73,7 +73,12 @@ auth = json.dumps({
 	]
 })
 
-session_id = json.loads(requests.post(icat_url + "/icat/session", {"json": auth}, verify=verifySsl).text)["sessionId"]
+try:
+    response = requests.post(icat_url + "/icat/session", {"json": auth}, verify=verifySsl)
+    session_id = json.loads(response.text)["sessionId"]
+except Exception, e:
+    import sys
+    sys.exit("Couldn't determine sessionId: " + str(e) + "; response: " + response.text)
 
 def show_download():
 	download_id = raw_input("Enter download id: ")
