@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.4-SNAPSHOT
+## 2.4.4 (1st Jul 2019)
 
   * Add optional preamble HTML to login page, defined in lang.json (issue #415)
   * Add showAsButton to authenticator configuration (in topcat.json) to give an authenticator its own login button (issue #418)
