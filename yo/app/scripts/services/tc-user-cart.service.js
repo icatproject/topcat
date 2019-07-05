@@ -57,6 +57,10 @@
                         return facility.icat().getSize(cartItem.entityType, cartItem.entityId,options).then(function(size){
                             out += size;
                             defered.notify(out);
+                        }, function(response){
+                        	// error handler - getSize request failed
+                        	console.log('cart item getSize failed: ' + response.code + ", " + response.message);
+                        	defered.reject(response);
                         });
                     }).then(function(){
                         defered.notify(out);

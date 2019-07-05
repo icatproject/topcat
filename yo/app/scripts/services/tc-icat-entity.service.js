@@ -109,7 +109,10 @@
 							that.size = size;
 							that.isGettingSize = false;
 							return size;
-						});
+						}, function(response){
+                        	// error handler - getSize request failed
+                        	console.log(that.entityType + ' entity getSize failed: ' + response.code + ", " + response.message);
+                        });
 					},
 
 					/**
