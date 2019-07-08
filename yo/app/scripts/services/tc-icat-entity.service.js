@@ -109,7 +109,14 @@
 							that.size = size;
 							that.isGettingSize = false;
 							return size;
-						});
+						}, function(response){
+                        	// error handler - getSize request failed; use -1 as "unknown size"
+							var msg = response?' entity getSize failed: ' + response.code + ", " + response.message : ' response is null';
+                        	console.log(that.entityType + msg);
+                        	that.size = -1;
+                        	that.isGettingSize = false;
+                        	return -1;
+                        });
 					},
 
 					/**
