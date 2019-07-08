@@ -70,7 +70,7 @@
 
             if(field === 'size') {
 
-                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span>{{row.entity.size|bytes}}</div>';
+                columnDef.cellTemplate = columnDef.cellTemplate || '<div class="ui-grid-cell-contents"><span ng-if="row.entity.size === undefined && $root.requestCounter != 0" class="loading">&nbsp;</span><span ng-if="row.entity.size == -1">Unknown</span><span ng-if="row.entity.size != -1">{{row.entity.size|bytes}}</span></div>';
             	columnDef.enableSorting = false;
                 columnDef.enableFiltering = false;
             }

@@ -55,11 +55,15 @@
 
                     helpers.throttle(10, 1, options.timeout, this.cartItems, function(cartItem){
                         return facility.icat().getSize(cartItem.entityType, cartItem.entityId,options).then(function(size){
-                            out += size;
+                        	// Don't change total if getSize for some other cartItem has failed
+                            if(out != -1 ) out += size;
                             defered.notify(out);
                         }, function(response){
                         	// error handler - getSize request failed
-                        	console.log('cart item getSize failed: ' + response.code + ", " + response.message);
+                        	var msg = response?' entity getSize failed: ' + response.code + ", " + response.message : ' response is null';
+                        	console.log('cart item getSize failed: ' + msg);
+                        	// use -1 for "size unknown"
+                        	out = -1
                         	defered.reject(response);
                         });
                     }).then(function(){

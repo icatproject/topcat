@@ -30,10 +30,10 @@
                         <div ng-if="download.transportType.description">{{download.transportType.description}}</div>
                     </td>
                     <td>
-                        <span ng-if="download.size === undefined" class="loading collapsed"></span><span>{{download.size | bytes}}</span>
+                        <span ng-if="download.size === undefined" class="loading collapsed"></span><span ng-if="download.size == -1">Unknown</span><span ng-if="download.size != -1">{{download.size | bytes}}</span>
                     </td>
                     <td>
-                        <span ng-if="download.size === undefined" class="loading collapsed"></span><span>{{download.estimatedTime / downloadCartController.connectionSpeed | timeLength}}</span>
+                        <span ng-if="download.size === undefined" class="loading collapsed"></span><span ng-if="download.size == -1">Unknown</span><span ng-if="download.size != -1">{{download.estimatedTime / downloadCartController.connectionSpeed | timeLength}}</span>
                     <td ng-if="downloadCartController.facilityCount > 1">
                         <span>{{download.facilityName}}</span>
                     </td>

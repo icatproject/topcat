@@ -82,6 +82,10 @@
                     cart.getSize(timeout.promise).then(function(size){
                         download.size = size;
                         download.estimatedTime = Math.ceil(size);
+                    }, function(response){
+                    	// getSize failed (will be logged from elsewhere); use -1 for "unknown"
+                    	download.size = -1;
+                    	download.estimatedTime = -1;
                     });
 
                     that.downloads.push(download);

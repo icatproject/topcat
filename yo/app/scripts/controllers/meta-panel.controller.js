@@ -66,7 +66,7 @@
                     }
 
                     if(field == 'size'){   
-                        item.template = '<span><span ng-if="item.entity.isGettingSize && $root.requestCounter != 0" class="loading collapsed">&nbsp;</span>{{item.entity.size|bytes}}<button class="btn btn-default btn-xs" ng-click="meta.getSize(item.entity)" ng-if="!item.entity.isGettingSize && item.entity.size === undefined">Calculate</button></span>';
+                        item.template = '<span><span ng-if="item.entity.isGettingSize && $root.requestCounter != 0" class="loading collapsed">&nbsp;</span><span ng-if="item.entity.size == -1">Unknown</span><span ng-if="item.entity.size != -1">{{item.entity.size|bytes}}</span><button class="btn btn-default btn-xs" ng-click="meta.getSize(item.entity)" ng-if="!item.entity.isGettingSize && item.entity.size === undefined">Calculate</button></span>';
                     }
 
                     if(!item.label && item.label !== ''){
