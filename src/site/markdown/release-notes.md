@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.4.5-SNAPSHOT
+
+  * Improve feedback when getSize requests fail (issue #439)
+  
 ## 2.4.4 (1st Jul 2019)
 
   * Add optional preamble HTML to login page, defined in lang.json (issue #415)
