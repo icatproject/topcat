@@ -430,13 +430,13 @@ An example (partial) configuration:
 }
 ```
   * "disabled" - if true then the Search tab will not be added. Can be omitted, defaulting to false.
-  * "enableTextBox" - specifies whether the main search text box feature should be enabled or not. Can be true or false.
-  * "enableDateRange" - specifies whether the date range feature should be enabled or not. Can be true or false.
-  * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false.
-  * "enableSamples" - specifies whether the sample search feature should be enabled or not. Can be true or false.
-  * "enableInvestigation" - specifies whether investigation search should be enabled or not. Can be true or false.
-  * "enableDataset" - specifies whether dataset search should be enabled or not. Can be true or false.
-  * "enableDatafile" - specifies whether datafile search should be enabled or not. Can be true or false.
+  * "enableTextBox" - specifies whether the main search text box feature should be enabled or not. Can be true or false. Default is true.
+  * "enableDateRange" - specifies whether the date range feature should be enabled or not. Can be true or false. Default is true.
+  * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false. Default is true.
+  * "enableSamples" - specifies whether the sample search feature should be enabled or not. Can be true or false. Default is true.
+  * "enableInvestigation" - specifies whether investigation search should be enabled or not. Can be true or false. Default is true.
+  * "enableDataset" - specifies whether dataset search should be enabled or not. Can be true or false. Default is true.
+  * "enableDatafile" - specifies whether datafile search should be enabled or not. Can be true or false. Default is true.
   * gridOptions
       * investigation - the grid options for the "investigation" Icat entity type. See "gridOptions configuration" for more information.
       * dataset - the grid options for the "dataset" Icat entity type. See "gridOptions configuration" for more information.
@@ -471,6 +471,7 @@ An example (partial) configuration:
 {
   "site": {
     "cart":{
+        "enableLimits": true,
         "maxDatafileCount": 1000000,
         "maxTotalSize": 1000000000000,
         "gridOptions": {...}
@@ -478,6 +479,7 @@ An example (partial) configuration:
   }
 }
 ```
+* enableLimits - if true, apply count/size limits (which must then be defined). Optional, defaults to false.
 * maxDatafileCount - the maximum number of datafiles that can be added to a cart, this includes all files in the hierachy of each entity e.g. if you added a dataset to the cart this includes all the files inside that dataset.
 * maxTotalSize - the total size of the potentual download.
 * "gridOptions" - the grid options for the "cartItem" Topcat entity type. See "gridOptions configuration" for more information.
@@ -752,7 +754,7 @@ An example configuration:
 ```
   * "enableSelection" - whether or not the entity can be added to the cart. This only applies to "investigation", "dataset" or "datafile".
   * "enableUpload" - whether or not a user can upload files at this at this level (i.e. enable an "Upload" button). This only applies to "dataset" or "datafile".
-      * "columnDefs" - the column definitions of the grid.
+  * "columnDefs" - the column definitions of the grid.
           * "field" - The field you want to display in the column.
               * the dot notation e.g. "investigationInstrument.fullName" refers to "[variable name].[field name]" - see the "standard jpql variables" for more info.
               * there are also 3 special field names which get loaded in asynchronously.
@@ -812,7 +814,7 @@ An example configuration:
 ```
 
   * "title" - the title of the tab.
-      * items - the items to be displayed inside the metatab
+  * items - the items to be displayed inside the metatab
           * "field" - the field to be displayed.
           * "label" - a label to describe what the field is. By default this will field name.
           * "template" - a custom (angular) template to display the field.
