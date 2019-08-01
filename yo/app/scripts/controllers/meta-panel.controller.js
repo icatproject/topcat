@@ -86,7 +86,7 @@
             if(entity.type == 'investigation'){
                 queryBuilder.include('user');
                 queryBuilder.include('investigationParameterType');
-                queryBuilder.include('sample');
+                queryBuilder.include('investigationSample');
                 queryBuilder.include('publication');
                 queryBuilder.include('study');
                 queryBuilder.include('investigationUser');
@@ -94,7 +94,7 @@
 
             if(entity.type == 'dataset'){
                 queryBuilder.include('datasetParameterType');
-                queryBuilder.include('sample');
+                queryBuilder.include('datasetSample');
                 queryBuilder.include('datasetType');
             }
 

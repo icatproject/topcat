@@ -3,6 +3,7 @@
 ## 2.4.5-SNAPSHOT
 
   * Improve feedback when getSize requests fail (issue #439)
+  * Fix Sample inclusions in metapanel queries (issue #441)
   
 ## 2.4.4 (1st Jul 2019)
 

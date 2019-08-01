@@ -454,7 +454,8 @@
                             "title": "METATABS.INVESTIGATION_SAMPLES.TABTITLE",
                             "items": [
                                 {
-                                    "field": "name"
+                                    "label": "METATABS.INVESTIGATION_SAMPLES.SAMPLE_NAME",
+                                    "field": "investigationSample.name"
                                 }
                             ]
                         },
