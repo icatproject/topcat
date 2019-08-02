@@ -9,25 +9,23 @@
     	var facilityName = $state.params.facilityName;
     	var entityType = $state.params.entityType;
     	var entityId = $state.params.entityId;
+    	
+    	// anonLogin (boolean) will only be set in some cases
     	var anonLogin = $state.params.anonLogin;
     	
+    	// By default, use an "empty" promise rather than logging in
     	var optionalLoginPromise = $q.when();
     	
-    	// TEST
-    	console.log("doi-redirect starting...");
     	if( ! tc.icat(facilityName).session().sessionId ){
-    		var msg = "doi-redirect: no sessionId for " + facilityName;
-    		console.log(msg);
-			inform.add(msg, {
-				'ttl' : -1,
-				'type' : 'warning'
-			});
+    		console.log("doi-redirect: no sessionId for " + facilityName);
 			if( anonLogin ){
-				console.log("doi-redirect: anonLogin set, so auto-login as Anon (TODO - try simple root for now)");
-				optionalLoginPromise = tc.icat(facilityName).login('simple',{'username':'root','password':'root'});
+				console.log("doi-redirect: anonLogin set, so auto-login");
+				// This should be configurable, or hard-wired to the anon authenticator;
+				// (ICAT for) LILS is not set up for anon, so hard-wire simple auth instead
+				var authName = 'simple';
+				var credentials = {'username':'root','password':'root'};
+				optionalLoginPromise = tc.icat(facilityName).login(authName,credentials);
 			}
-    	} else {
-    		console.log("doi-redirect: have sessionId - but is it any good?");
     	}
     	
     	// We would like the eventual target to replace the original link in the browser history,
