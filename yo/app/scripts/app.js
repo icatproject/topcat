@@ -484,7 +484,18 @@
                 controller: 'DoiRedirectController',
                 resolve: {
                     authenticate : ['Authenticate', function(Authenticate) {
-                        return Authenticate.authenticate();
+                    	return Authenticate.authenticate();
+                    }]
+                }
+            })
+            .state('doi-redirect-anon', {
+                url: '/doi-redirect/:facilityName/:entityType/:entityId/:anonLogin',
+                controller: 'DoiRedirectController',
+                resolve: {
+                    authenticate : ['Authenticate', function(Authenticate) {
+                    	// TEST
+                        // return Authenticate.authenticate();
+                    	return true;
                     }]
                 }
             });
@@ -556,6 +567,14 @@
             	// We set location:'replace' so that this redirection is removed from the browser history;
             	// without this, the Back button cannot be used to get to the previous or earlier pages.
             	// See issue #424 for further details.
+            	console.log("app.js: stateChangeError isAuthenticated false (" + toState.name + "," + fromState.name + ")");
+            	console.log("Params: " + toParams.facilityName + "," + toParams.entityType + "," + toParams.entityId);
+            	if( toState.name === 'doi-redirect' && toParams.anonLogin ){
+            		// At this point we should do an "automatic" login using the Anon authenticator
+            		// instead of going to the login dialog/state.
+            		// ... but I don't know how to do that here!
+            		console.log("Doi-redirect: auto login requested (TODO)");
+            	}
             	$state.go('login',null,{location:'replace'});
             }
         });
