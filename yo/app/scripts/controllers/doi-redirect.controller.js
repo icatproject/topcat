@@ -18,7 +18,7 @@
     	
     	if( ! tc.icat(facilityName).session().sessionId ){
     		console.log("doi-redirect: no sessionId for " + facilityName);
-			if( anonLogin ){
+			if( anonLogin === 'true'){
 				console.log("doi-redirect: anonLogin set, so auto-login");
 				// This should be configurable, or hard-wired to the anon authenticator;
 				// (ICAT for) LILS is not set up for anon, so hard-wire simple auth instead
