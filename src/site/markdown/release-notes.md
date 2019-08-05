@@ -4,6 +4,7 @@
 
   * Improve feedback when getSize requests fail (issue #439)
   * Fix Sample inclusions in metapanel queries (issue #441)
+  * Allow automatic (anonymous) login for DOI redirect requests (issue #443)
   
 ## 2.4.4 (1st Jul 2019)
 

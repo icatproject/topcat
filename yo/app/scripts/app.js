@@ -484,7 +484,18 @@
                 controller: 'DoiRedirectController',
                 resolve: {
                     authenticate : ['Authenticate', function(Authenticate) {
-                        return Authenticate.authenticate();
+                    	return Authenticate.authenticate();
+                    }]
+                }
+            })
+            .state('doi-redirect-anon', {
+            	// doi-redirect variant: if anonLogin is true (and not already logged in), will request (anon) login first
+                url: '/doi-redirect/:facilityName/:entityType/:entityId/:anonLogin',
+                controller: 'DoiRedirectController',
+                resolve: {
+                    authenticate : ['Authenticate', function(Authenticate) {
+                    	// Bypass authentication testing in case anon login is requested
+                    	return true;
                     }]
                 }
             });

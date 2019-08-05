@@ -201,6 +201,14 @@
                         	},
                         	_mandatory: false
                         },
+                        doiAutoLoginAuth: {
+                        	plugin: { _type: 'string' },
+                        	credentials: {
+                        		username: { _type: 'string' },
+                        		password: { _type: 'string' }
+                        	},
+                        	_mandatory: false
+                        },
                         downloadTransportTypes: {
                             _type: 'array',
                             _mandatory: false,
