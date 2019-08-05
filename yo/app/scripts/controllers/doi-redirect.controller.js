@@ -22,9 +22,15 @@
 				console.log("doi-redirect: anonLogin set, so auto-login");
 				// This should be configurable, or hard-wired to the anon authenticator;
 				// (ICAT for) LILS is not set up for anon, so hard-wire simple auth instead
-				var authName = 'simple';
-				var credentials = {'username':'root','password':'root'};
-				optionalLoginPromise = tc.icat(facilityName).login(authName,credentials);
+				var doiAuth = tc.facility(facilityName).config().doiAutoLoginAuth;
+				if( ! doiAuth ){
+					console.log("doi-redirect: no doi authentication configured, so assume anon");
+					doiAuth = {
+						plugin: "anon",
+						credentials: {}
+					}
+				};
+				optionalLoginPromise = tc.icat(facilityName).login(doiAuth.plugin,doiAuth.credentials);
 			}
     	}
     	
