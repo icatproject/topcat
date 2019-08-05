@@ -604,6 +604,31 @@ For example, to add a button to register an account with the ISIS User Office:
 }
 ```
 
+$h3 topcat.json: "facilities" > [facility] > "doiAutoLoginAuth"
+
+Optional. Specifies the authentication method and credentials to be used (if requested) by DOI redirections.
+Defaults to the "anon" authenticator (in which case it must be available and supported by the ICAT instance).
+Note that the configuration can be inspected by users in the browser console, so setting this is NOT RECOMMENDED
+for production systems. (Its main use is for development, where the LILS facility does not support anonymous
+authentication.)
+
+```
+{
+  "facilities": [
+    {
+            "doiAutoLoginAuth": {
+            	"plugin": "simple",
+            	"credentials": {
+            		"username": "root",
+            		"password": "vegetable"
+            	}
+            },
+            ...
+    }
+  ]
+}
+```
+
 $h3 topcat.json: "facilities" > [facility] > "downloadTransportTypes" 
 
 Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
