@@ -42,37 +42,10 @@
 
 		<fileSet>
 			<outputDirectory>topcat</outputDirectory>
-			<directory>${project.basedir}/target</directory>
-			<includes>
-				<include>*.json.example</include>
-				<include>*.css.example</include>
-			</includes>
-			<lineEnding>unix</lineEnding>
-		</fileSet>
-
-		<fileSet>
-			<outputDirectory>topcat</outputDirectory>
 			<directory>${project.basedir}/tools</directory>
 			<includes>
 				<include>topcat_admin</include>
 			</includes>
-		</fileSet>
-
-		<fileSet>
-			<outputDirectory>topcat/content.example</outputDirectory>
-			<directory>${project.basedir}/yo/app</directory>
-			<includes>
-				<include>images/**/*</include>
-			</includes>
-		</fileSet>
-
-		<fileSet>
-			<outputDirectory>topcat/content.example</outputDirectory>
-			<directory>${project.basedir}/yo/app</directory>
-			<includes>
-				<include>pages/*</include>
-			</includes>
-			<lineEnding>unix</lineEnding>
 		</fileSet>
 
 		<fileSet>

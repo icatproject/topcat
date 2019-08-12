@@ -21,8 +21,6 @@ binFiles = ["topcat_admin"]
 
 if arg in ["CONFIGURE", "INSTALL"]: 
     actions.configure(prop_name, prop_list) 
-    for f in ["topcat.json", "lang.json", "topcat.css"]:
-        actions.configureFileForWar(f)
     actions.checkNoErrors()
 
 if arg == "INSTALL":
@@ -44,9 +42,6 @@ if arg == "INSTALL":
             print "Not creating mail resource as following is/are not set:", missing;
  
         files = []
-        files.append(["topcat.json", "config"])
-        files.append(["lang.json", "languages"])
-        files.append(["topcat.css", "styles"])
 
         if os.path.exists("logback.xml"): files.append(["logback.xml", "WEB-INF/classes"])
 

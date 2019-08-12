@@ -7,11 +7,9 @@ def build_install
 		rm -rf ~/topcat_tmp
 		mkdir ~/topcat_tmp
 		cp /vagrant/pom.xml ~/topcat_tmp
-		cp -r /vagrant/yo ~/topcat_tmp
 		cp -r /vagrant/src ~/topcat_tmp
 		cp -r /vagrant/provision ~/topcat_tmp
 		cd ~/topcat_tmp
-		rm -rf ~/topcat_tmp/yo/node_modules
 		mvn clean install
 		cp ~/topcat_tmp/target/topcat-*.zip ~/
 		cd ~/
@@ -19,9 +17,6 @@ def build_install
 		cd topcat
 		cp ~/topcat_tmp/provision/topcat.properties /home/vagrant/topcat/topcat.properties
 		cp ~/topcat_tmp/provision/topcat-setup.properties /home/vagrant/topcat/topcat-setup.properties
-		cp ~/topcat_tmp/yo/app/config/topcat_dev.json /home/vagrant/topcat/topcat.json
-		cp ~/topcat_tmp/yo/app/languages/lang.json /home/vagrant/topcat/lang.json
-		cp ~/topcat_tmp/yo/app/styles/topcat.css /home/vagrant/topcat/topcat.css
 		dos2unix ./setup
 		chmod 0755 ./setup
 		./setup configure

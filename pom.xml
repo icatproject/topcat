@@ -37,58 +37,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>com.github.trecloux</groupId>
-				<artifactId>yeoman-maven-plugin</artifactId>
-				<version>0.5</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>build</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>validate</phase>
-						<configuration>
-							<target>
-								<copy file="${basedir}/yo/app/config/topcat.json.example" tofile="${project.build.directory}/topcat.json.example" />
-								<copy file="${basedir}/yo/app/languages/lang.json.example" tofile="${project.build.directory}/lang.json.example" />
-								<copy file="${basedir}/yo/app/styles/topcat.css" tofile="${project.build.directory}/topcat.css.example" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<webResources>
-						<resource>
-							<directory>yo/dist</directory>
-							<excludes>
-								<exclude>**/config/*.json</exclude>
-								<exclude>**/config/*.example</exclude>
-								<exclude>**/languages/*.json</exclude>
-								<exclude>**/languages/*.example</exclude>
-							</excludes>
-						</resource>
-					</webResources>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
@@ -106,22 +54,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>yo/dist</directory>
-						</fileset>
-						<fileset>
-							<directory>yo/.tmp</directory>
-						</fileset>
-						<!-- <fileset> <directory>yo/node_modules</directory> </fileset> -->
-					</filesets>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -182,18 +114,6 @@
 					<!-- insert other configuration here (optional) -->
 				</configuration>
 			</plugin>
-			<plugin>
-	            <groupId>com.phasebash.jsdoc</groupId>
-	            <artifactId>jsdoc3-maven-plugin</artifactId>
-	            <version>1.2.0</version>
-	            <configuration>
-	                <recursive>true</recursive>
-	                <directoryRoots>
-	                    <directoryRoot>${basedir}/yo/app/scripts</directoryRoot>
-	                </directoryRoots>
-	                <configFile>${basedir}/yo/jsdoc/conf.json</configFile>
-	            </configuration>
-	        </plugin>
 
 	        <plugin>
 			    <groupId>org.apache.cxf</groupId>
