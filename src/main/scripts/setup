@@ -17,7 +17,11 @@ prop_name = "topcat.properties"
 prop_list = []
 
 binDir = actions.getBinDir();
-binFiles = ["topcat_admin"]
+# topcat_admin is not being added to the distro - not sure why not,
+# quickest fix is to remove it from binFiles; it wouldn't work anyway.
+# TODO: replace with topcat_admin_LILS, or fix topcat_admin (and solve distro build)
+# binFiles = ["topcat_admin"]
+binFiles = []
 
 if arg in ["CONFIGURE", "INSTALL"]: 
     actions.configure(prop_name, prop_list) 
