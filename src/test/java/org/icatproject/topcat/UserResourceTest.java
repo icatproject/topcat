@@ -97,36 +97,4 @@ public class UserResourceTest {
 
 	}
 
-    private Map<String, List<Long>> createEmptyEntityTypeEntityIds(){
-    	Map<String, List<Long>> out = new HashMap<String, List<Long>>();
-		out.put("investigation", new ArrayList<Long>());
-		out.put("dataset", new ArrayList<Long>());
-		out.put("datafile", new ArrayList<Long>());
-		return out;
-    }
-
-
-    class IcatClientUserIsAdmin extends IcatClient {
-
-		public IcatClientUserIsAdmin(String url, String sessionId){
-			super(url, sessionId);
-		}
-
-		protected String[] getAdminUserNames() throws Exception {
-			return new String[] {"simple/root"};
-		}
-    }
-
-    class IcatClientUserNotAdmin extends IcatClient {
-
-		public IcatClientUserNotAdmin(String url, String sessionId){
-			super(url, sessionId);
-		}
-
-		protected String[] getAdminUserNames() throws Exception {
-			return new String[] {"db/test"};
-		}
-    }
-
-
 }
