@@ -34,14 +34,19 @@ import java.sql.*;
 @RunWith(Arquillian.class)
 public class UserResourceTest {
 
-	// CURRENT STATUS:
-	// I can only get this to work if I put a cobbled copy of topcat.properties in the root folder.
-	// All attempts to use addAsResource() have failed, and I'm fed up trying to guess (from several million online examples) how it should be used correctly!
+	/*
+	 * CURRENT STATUS:
+	 * I can only get this to work if I put a cobbled copy of topcat.properties in the root folder.
+	 * All attempts to use addAsResource() have failed, and I'm fed up trying to guess (from several million online examples) how it should be used correctly!
+	 *
+	 * Of course, these are not unit tests, but use an embedded container and a local ICAT/IDS which we assume to be populated appropriately.
+	 */
 	
     @Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
-            .addClasses(UserResource.class, CacheRepository.class, Cache.class, DownloadRepository.class, DownloadTypeRepository.class, CartRepository.class)
+            .addClasses(UserResource.class, CacheRepository.class, DownloadRepository.class, DownloadTypeRepository.class, CartRepository.class)
+            .addPackages(true,"org.icatproject.topcat.domain","org.icatproject.topcat.exceptions")
             .addAsResource("META-INF/persistence.xml")
             // .addAsResource("topcat.properties")
             .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -84,17 +89,88 @@ public class UserResourceTest {
 		String entityType = "investigation";
 		Long entityId = (long) 1;
 		IcatClient icatClient = new IcatClient("https://localhost:8181", sessionId);
-		// UserResource userResource = new UserResource();
 
 		List<Long> emptyIds = new ArrayList<Long>();
 		
 		Response response = userResource.getSize(facilityName,sessionId,entityType,entityId);
 
-		// Actual size value discovered by trial and error!
+		// Actual size value for investigation id=1 discovered by trial and error!
 		// assertEquals((long) 155062810, Long.parseLong(response.getEntity().toString()));
 		// Possibly more robust:
 		assertTrue(Long.parseLong(response.getEntity().toString()) > (long) 0);
+	}
+	
+	@Test
+	public void testCart() throws Exception {
+		String facilityName = "LILS";
+		
+		Response response;
+		
+		// ENSURE that the cart is empty initially,
+		// albeit by using an undocumented feature of the API!
+		
+		response = userResource.deleteCartItems(facilityName, sessionId, "*");
+		assertEquals(200, response.getStatus());
 
+		// Now the cart ought to be empty
+		
+		response = userResource.getCart(facilityName, sessionId);
+		assertEquals(200, response.getStatus());
+		assertEquals(0, getCartSize(response));
+		
+		// If the cart wasn't empty initially, we won't reach this point, so won't "pollute" a non-empty cart
+		// We ought to update the Cart DB directly, but let's assume that addCartItems() works correctly...
+		// We assume that there is a dataset with id = 1, and that simple/root can see it.
+		
+		response = userResource.addCartItems(facilityName, sessionId, "dataset 1");
+		assertEquals(200, response.getStatus());
+		
+		response = userResource.getCart(facilityName, sessionId);
+		assertEquals(200, response.getStatus());
+		assertEquals(1, getCartSize(response));
+		
+		// Now we need to remove the cart item again;
+		// Again, this ought to be done directly, rather than using the methods we should be testing independently!
+		
+		response = userResource.deleteCartItems(facilityName, sessionId, "dataset 1");
+		assertEquals(200, response.getStatus());
+		assertEquals(0, getCartSize(response));
+	}
+	
+	private int getCartSize(Response response) throws Exception {
+		// Trying to write these tests has revealed that UserResource.getSize() is inconsistent!
+		// The Response entity returned when the cart is empty cannot be cast to a Cart, but must be parsed as JSON;
+		// but the entity returned for a non-empty cart *cannot* be parsed as JSON, but must be cast instead!
+		// We can't tell whether or not the cart is empty without trying to read it!
+		// Hence this rather ugly and hard-won code...
+		
+		int size;
+		
+		try {
+			// This works for a non-empty cart (but then fails the assertion)
+			Cart cart = (Cart)response.getEntity();
+			size = cart.getCartItems().size();
+			System.out.println("DEBUG: Cast cart worked, size = " + size);
+			
+			// Just for completeness' sake, let's see what JSON parsing does in this case:
+			try {
+				JsonObject json = Utils.parseJsonObject(response.getEntity().toString());
+				size = json.getJsonArray("cartItems").size();
+				System.out.println("DEBUG: json parsing also worked, size = " + size);
+			} catch (Exception e) {
+				System.out.println("DEBUG: json parsing failed, when cast size = " + size);
+			}
+			
+		} catch (Exception e) {
+			
+			// This works for an empty cart (but not for a non-empty one)
+			System.out.println("DEBUG: Cast cart failed, try json parsing instead");
+			JsonObject json = Utils.parseJsonObject(response.getEntity().toString());
+			size = json.getJsonArray("cartItems").size();
+			System.out.println("DEBUG: json parsing worked, size = " + size);
+		}
+		
+		return size;
 	}
 
 }
