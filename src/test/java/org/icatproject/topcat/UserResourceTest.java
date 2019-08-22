@@ -137,6 +137,111 @@ public class UserResourceTest {
 		assertEquals(0, getCartSize(response));
 	}
 	
+	@Test
+	public void testSubmitCart() throws Exception {
+		String facilityName = "LILS";
+		Response response;
+		JsonObject json;
+		List<Download> downloads;
+		
+		// Get the initial state of the downloads - may not be empty
+		// It appears queryOffset cannot be empty!
+		String queryOffset = "1 = 1";
+		response = userResource.getDownloads(facilityName, sessionId, queryOffset);
+		assertEquals(200, response.getStatus());
+		
+		downloads = (List<Download>)response.getEntity();
+		int initialDownloadsSize = downloads.size();
+		
+		// TEST logging
+		System.out.println("DEBUG testSubmitCart: initial downloads size: " + initialDownloadsSize );
+		
+		// Put something into the Cart, so we have something to submit
+		response = userResource.addCartItems(facilityName, sessionId, "dataset 1");
+		assertEquals(200, response.getStatus());
+		
+		// Now submit it
+		String transport = "http";
+		String email = "";
+		String fileName = "dataset-1.zip";
+		String zipType = "ZIP";
+		response = userResource.submitCart(facilityName, sessionId, transport, email, fileName, zipType);
+		assertEquals(200, response.getStatus());
+		json = Utils.parseJsonObject(response.getEntity().toString());
+		
+		// The returned cart should be empty
+		assertEquals(0, json.getJsonArray("cartItems").size());
+		
+		// and the downloadId should be positive
+		Long downloadId = json.getJsonNumber("downloadId").longValue();
+		assertTrue(downloadId > 0);
+		
+		// Now, there should be one download, whose downloadId matches
+		response = userResource.getDownloads(facilityName, sessionId, queryOffset);
+		assertEquals(200, response.getStatus());
+		
+		// Doesn't parse as JSON, try a direct cast
+		
+		downloads = (List<Download>)response.getEntity();
+		
+		// In a clean world, we could do this:
+		//
+		// assertEquals(1, downloads.size());
+		// assertEquals( downloadId, downloads.get(0).getId() );
+		//
+		// but we can't assume there were no other downloads in the list, so instead:
+		
+		assertEquals( initialDownloadsSize + 1, downloads.size() );
+		
+		Download newDownload = findDownload(downloads,downloadId);
+		assertNotNull( newDownload );
+		assertEquals( facilityName, newDownload.getFacilityName() );
+		assertEquals( "simple/root", newDownload.getUserName() );
+		assertEquals( transport, newDownload.getTransport() );
+		// Email is slightly fiddly:
+		if( email.equals("")) {
+			assertEquals( null, newDownload.getEmail() );
+		} else {
+			assertEquals( email, newDownload.getEmail() );
+		}
+		assertEquals( fileName, newDownload.getFileName() );
+		assertFalse( newDownload.getIsDeleted() );
+		
+		// Next, change the download status. Must be different from the current status!
+		String downloadStatus = "EXPIRED";
+		if( newDownload.getStatus().equals(DownloadStatus.valueOf(downloadStatus))) {
+			downloadStatus = "PAUSED";
+		}
+		
+		response = userResource.setDownloadStatus(downloadId, facilityName, sessionId, downloadStatus);
+		assertEquals(200, response.getStatus());
+		
+		// and test that the new status has been set
+		
+		response = userResource.getDownloads(facilityName, sessionId, queryOffset);
+		assertEquals(200, response.getStatus());
+		downloads = (List<Download>)response.getEntity();
+		
+		newDownload = findDownload(downloads,downloadId);
+		
+		// To be thorough, we ought to check that ONLY the status field has changed. Not going to!
+		assertEquals( DownloadStatus.valueOf(downloadStatus), newDownload.getStatus() );
+		
+		// Now flag the download as deleted
+		
+		response = userResource.deleteDownload(downloadId, facilityName, sessionId, true);
+		assertEquals(200, response.getStatus());
+		
+		// and check that it has worked (again, not bothering to check that nothing else has changed)
+		
+		response = userResource.getDownloads(facilityName, sessionId, queryOffset);
+		assertEquals(200, response.getStatus());
+		downloads = (List<Download>)response.getEntity();
+		
+		newDownload = findDownload(downloads,downloadId);
+		assertTrue( newDownload.getIsDeleted() );
+	}
+	
 	private int getCartSize(Response response) throws Exception {
 		// Trying to write these tests has revealed that UserResource.getSize() is inconsistent!
 		// The Response entity returned when the cart is empty cannot be cast to a Cart, but must be parsed as JSON;
@@ -171,6 +276,14 @@ public class UserResourceTest {
 		}
 		
 		return size;
+	}
+	
+	private Download findDownload(List<Download> downloads, Long downloadId) {
+		
+		for ( Download download : downloads ) {
+			if( download.getId() == downloadId ) return download;
+		}
+		return null;		
 	}
 
 }
