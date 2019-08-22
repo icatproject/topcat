@@ -242,6 +242,32 @@ public class UserResourceTest {
 		assertTrue( newDownload.getIsDeleted() );
 	}
 	
+	@Test
+	public void testGetDownloadTypeStatus() throws Exception {
+
+		String facilityName = "LILS";
+		String downloadType = "http";
+		Response response;
+		JsonObject json;
+
+		response = userResource.getDownloadTypeStatus(downloadType, facilityName, sessionId);
+		assertEquals(200, response.getStatus());
+		
+		json = Utils.parseJsonObject(response.getEntity().toString());
+		assertTrue( json.containsKey("disabled"));
+		assertTrue( json.containsKey("message"));
+		
+		// There's not much we can assume about the actual status;
+		// but should test that the fields contain the correct types
+		
+		try {
+			Boolean disabled = json.getBoolean("disabled");
+			String message = json.getString("message");
+		} catch (Exception e) {
+			fail("One or both fields are not of the correct type: " + e.getMessage() );
+		}
+	}
+	
 	private int getCartSize(Response response) throws Exception {
 		// Trying to write these tests has revealed that UserResource.getSize() is inconsistent!
 		// The Response entity returned when the cart is empty cannot be cast to a Cart, but must be parsed as JSON;
