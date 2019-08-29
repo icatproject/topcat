@@ -100,4 +100,11 @@ public class DownloadRepository {
 		return store;
 	}
 
+	public void removeDownload(Long id) {
+	    Download download = em.find(Download.class, id);
+	    if( download != null ){
+	        em.remove(download);
+		em.flush();
+	    }
+	}
 }

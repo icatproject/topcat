@@ -123,6 +123,20 @@ public class AdminResourceTest {
 		JsonObject json;
 		List<Download> downloads;
 		
+		// Create a new download for the test
+		Download testDownload = new Download();
+		testDownload.setFacilityName(facilityName);
+		testDownload.setSessionId(adminSessionId);
+		testDownload.setStatus(DownloadStatus.PREPARING);
+		testDownload.setIsDeleted(false);
+		
+		// Other fields that can't be null, but which we (hopefully) don't really need:
+		testDownload.setUserName("simple/root");
+		testDownload.setFileName("testFile.txt");
+		testDownload.setTransport("http");
+		
+		downloadRepository.save(testDownload);
+		
 		// Get the current downloads - may not be empty
 		// It appears queryOffset cannot be empty!
 		String queryOffset = "1 = 1";
@@ -143,17 +157,13 @@ public class AdminResourceTest {
 			assertNotNull( findDownload(downloads,download.getId()));
 		}
 		
-		// Choose a download to manipulate. (Really, we should create a dummy one!)
-		
-		Download download = downloads.get(0);
-		
 		// Next, change the download status. Must be different from the current status!
 		String downloadStatus = "EXPIRED";
-		if( download.getStatus().equals(DownloadStatus.valueOf(downloadStatus))) {
+		if( testDownload.getStatus().equals(DownloadStatus.valueOf(downloadStatus))) {
 			downloadStatus = "PAUSED";
 		}
 		
-		response = adminResource.setDownloadStatus(download.getId(), facilityName, adminSessionId, downloadStatus);
+		response = adminResource.setDownloadStatus(testDownload.getId(), facilityName, adminSessionId, downloadStatus);
 		assertEquals(200, response.getStatus());
 		
 		// and test that the new status has been set
@@ -162,15 +172,15 @@ public class AdminResourceTest {
 		assertEquals(200, response.getStatus());
 		downloads = (List<Download>)response.getEntity();
 		
-		download = findDownload(downloads,download.getId());
+		testDownload = findDownload(downloads,testDownload.getId());
 		
 		// To be thorough, we ought to check that ONLY the status field has changed. Not going to!
-		assertEquals( DownloadStatus.valueOf(downloadStatus), download.getStatus() );
+		assertEquals( DownloadStatus.valueOf(downloadStatus), testDownload.getStatus() );
 		
 		// Now toggle the deleted status - may have been deleted already!
-		Boolean currentDeleted = download.getIsDeleted();
+		Boolean currentDeleted = testDownload.getIsDeleted();
 		
-		response = adminResource.deleteDownload(download.getId(), facilityName, adminSessionId, ! currentDeleted);
+		response = adminResource.deleteDownload(testDownload.getId(), facilityName, adminSessionId, ! currentDeleted);
 		assertEquals(200, response.getStatus());
 		
 		// and check that it has worked (again, not bothering to check that nothing else has changed)
@@ -179,8 +189,8 @@ public class AdminResourceTest {
 		assertEquals(200, response.getStatus());
 		downloads = (List<Download>)response.getEntity();
 		
-		download = findDownload(downloads,download.getId());
-		assertTrue( download.getIsDeleted() != currentDeleted );
+		testDownload = findDownload(downloads,testDownload.getId());
+		assertTrue( testDownload.getIsDeleted() != currentDeleted );
 		
 		// Test that getDownloadStatus() etc. produce an error response for a non-admin user
 		
@@ -194,7 +204,7 @@ public class AdminResourceTest {
 		}
 
 		try {
-			response = adminResource.setDownloadStatus(download.getId(), facilityName, nonAdminSessionId, downloadStatus);
+			response = adminResource.setDownloadStatus(testDownload.getId(), facilityName, nonAdminSessionId, downloadStatus);
 			// We should not see the following
 			System.out.println("DEBUG: AdminRT.setDownloadStatus response: " + response.getStatus() + ", " + (String)response.getEntity());
 			fail("AdminResource.setDownloadStatus did not raise exception for non-admin user");
@@ -203,13 +213,16 @@ public class AdminResourceTest {
 		}
 
 		try {
-			response = adminResource.deleteDownload(download.getId(), facilityName, nonAdminSessionId, ! currentDeleted);
+			response = adminResource.deleteDownload(testDownload.getId(), facilityName, nonAdminSessionId, ! currentDeleted);
 			// We should not see the following
 			System.out.println("DEBUG: AdminRT.deleteDownload response: " + response.getStatus() + ", " + (String)response.getEntity());
 			fail("AdminResource.deleteDownload did not raise exception for non-admin user");
 		} catch (ForbiddenException fe) {
 			assertTrue(true);
 		}
+		
+		// Remove the test download from the repository
+		downloadRepository.removeDownload(testDownload.getId());
 	}
 	
 	@Test
@@ -263,6 +276,19 @@ public class AdminResourceTest {
 			fail("AdminResource.setDownloadTypeStatus did not raise exception for non-admin user");
 		} catch (ForbiddenException fe) {
 			assertTrue(true);
+		}
+		
+		// Finally, ought to reset the disabled status to the original value!
+		// (Though we could have used a dummy download type for the test...)
+		// However, this won't reset an originally-empty message.
+
+		if( dt != null ) {
+			response = adminResource.setDownloadTypeStatus(downloadType, facilityName, adminSessionId, disabled, message);
+			assertEquals(200, response.getStatus());
+		} else {
+			// There was no entry for this download type previously.  As the status is false by default, make sure that's what we set it to now!
+			response = adminResource.setDownloadTypeStatus(downloadType, facilityName, adminSessionId, false, message);
+			assertEquals(200, response.getStatus());
 		}
 	}
 	
