@@ -22,6 +22,7 @@ import javax.ejb.EJB;
 import org.icatproject.topcat.httpclient.HttpClient;
 import org.icatproject.topcat.domain.*;
 import org.icatproject.topcat.exceptions.BadRequestException;
+import org.icatproject.topcat.exceptions.ForbiddenException;
 
 import java.net.URLEncoder;
 
@@ -84,8 +85,11 @@ public class AdminResourceTest {
 		String response = httpClient.post("session", new HashMap<String, String>(), data).toString();
 		adminSessionId = Utils.parseJsonObject(response).getString("sessionId");
 		
-		// TODO: log in as a non-admin user - would have to add one first!
+		// Also log in as a non-admin user
 
+		data = "json=" + URLEncoder.encode("{\"plugin\":\"simple\", \"credentials\":[{\"username\":\"nonroot\"}, {\"password\":\"nonroot\"}]}", "UTF8");
+		response = httpClient.post("session", new HashMap<String, String>(), data).toString();
+		nonAdminSessionId = Utils.parseJsonObject(response).getString("sessionId");
 	}
 
 	@Test
@@ -99,7 +103,11 @@ public class AdminResourceTest {
 		assertEquals(200, response.getStatus());
 		assertEquals("true", (String)response.getEntity());
 		
-		// TODO Should be false for a non-admin (but valid) user
+		// Should be false for a non-admin (but valid) user
+		
+		response = adminResource.isValidSession(facilityName, nonAdminSessionId);
+		assertEquals(200, response.getStatus());
+		assertEquals("false", (String)response.getEntity());
 		
 		// Request should fail for a nonsense sessionId
 		response = adminResource.isValidSession(facilityName, "nonsense id");
@@ -174,7 +182,34 @@ public class AdminResourceTest {
 		download = findDownload(downloads,download.getId());
 		assertTrue( download.getIsDeleted() != currentDeleted );
 		
-		// TODO: test that getDownloadStatus() produces an error response for a non-admin user
+		// Test that getDownloadStatus() etc. produce an error response for a non-admin user
+		
+		try {
+			response = adminResource.getDownloads(facilityName, nonAdminSessionId, queryOffset);
+			// We should not see the following
+			System.out.println("DEBUG: AdminRT.getDownloads response: " + response.getStatus() + ", " + (String)response.getEntity());
+			fail("AdminResource.getDownloads did not raise exception for non-admin user");
+		} catch (ForbiddenException fe) {
+			assertTrue(true);
+		}
+
+		try {
+			response = adminResource.setDownloadStatus(download.getId(), facilityName, nonAdminSessionId, downloadStatus);
+			// We should not see the following
+			System.out.println("DEBUG: AdminRT.setDownloadStatus response: " + response.getStatus() + ", " + (String)response.getEntity());
+			fail("AdminResource.setDownloadStatus did not raise exception for non-admin user");
+		} catch (ForbiddenException fe) {
+			assertTrue(true);
+		}
+
+		try {
+			response = adminResource.deleteDownload(download.getId(), facilityName, nonAdminSessionId, ! currentDeleted);
+			// We should not see the following
+			System.out.println("DEBUG: AdminRT.deleteDownload response: " + response.getStatus() + ", " + (String)response.getEntity());
+			fail("AdminResource.deleteDownload did not raise exception for non-admin user");
+		} catch (ForbiddenException fe) {
+			assertTrue(true);
+		}
 	}
 	
 	@Test
@@ -219,7 +254,16 @@ public class AdminResourceTest {
 			assertEquals(message, dt.getMessage());
 		}
 		
-		// TODO test that setDownloadTypeStatus produces an error for non-admin users.
+		// Test that setDownloadTypeStatus produces an error for non-admin users.
+		
+		try {
+			response = adminResource.setDownloadTypeStatus(downloadType, facilityName, nonAdminSessionId, ! disabled, message);
+			// We should not see the following
+			System.out.println("DEBUG: AdminRT.setDownloadTypeStatus response: " + response.getStatus() + ", " + (String)response.getEntity());
+			fail("AdminResource.setDownloadTypeStatus did not raise exception for non-admin user");
+		} catch (ForbiddenException fe) {
+			assertTrue(true);
+		}
 	}
 	
 	@Test
@@ -243,7 +287,15 @@ public class AdminResourceTest {
 		// and now it should be gone from the repository
 		assertNull(cacheRepository.get(key));
 		
-		// TODO test behaviour for non-admin user		
+		// Test behaviour for non-admin user		
+		try {
+			response = adminResource.clearCachedSize(entityType, id, facilityName, nonAdminSessionId);
+			// We should not see the following
+			System.out.println("DEBUG: AdminRT.clearCachedSize response: " + response.getStatus() + ", " + (String)response.getEntity());
+			fail("AdminResource.clearCachedSize did not raise exception for non-admin user");
+		} catch (ForbiddenException fe) {
+			assertTrue(true);
+		}
 	}
 	
 	@Test
@@ -264,7 +316,15 @@ public class AdminResourceTest {
 		
 		assertEquals( value, confVarRepository.getConfVar(name).getValue());
 		
-		// TODO test behaviour for non-admin user
+		// Test behaviour for non-admin user		
+		try {
+			response = adminResource.setConfVar(name, facilityName, nonAdminSessionId, value);
+			// We should not see the following
+			System.out.println("DEBUG: AdminRT.setConfVar response: " + response.getStatus() + ", " + (String)response.getEntity());
+			fail("AdminResource.setConfVar did not raise exception for non-admin user");
+		} catch (ForbiddenException fe) {
+			assertTrue(true);
+		}
 	}
 	
 	private Download findDownload(List<Download> downloads, Long downloadId) {
