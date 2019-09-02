@@ -7,6 +7,9 @@ def build_install
 		rm -rf ~/topcat_tmp
 		mkdir ~/topcat_tmp
 		cp /vagrant/pom.xml ~/topcat_tmp
+		cp /vagrant/topcat.properties ~/topcat_tmp
+		mkdir ~/topcat_tmp/tools
+		cp /vagrant/tools/topcat_admin ~/topcat_tmp/tools
 		cp -r /vagrant/yo ~/topcat_tmp
 		cp -r /vagrant/src ~/topcat_tmp
 		cp -r /vagrant/provision ~/topcat_tmp
