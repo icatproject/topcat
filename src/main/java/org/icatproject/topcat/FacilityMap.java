@@ -23,13 +23,20 @@ public class FacilityMap {
 	private Properties properties;
 	private Map<String,String> facilityIcatUrl;
 	private Map<String,String> facilityIdsUrl;
-
+	
 	public FacilityMap() throws InternalException{
+		// The "normal" case: use the Topcat Properties instance (that reads topcat.properties)
+		this(Properties.getInstance());
+	}
+
+	public FacilityMap(Properties injectedProperties) throws InternalException{
+		
+		// This allows us to inject a mock Properties instance for testing
 		
 		facilityIcatUrl = new HashMap<String,String>();
 		facilityIdsUrl = new HashMap<String,String>();
 		
-		properties = Properties.getInstance();
+		properties = injectedProperties;
 		
 		logger.info("FacilityMap: facility.list = '" + properties.getProperty("facility.list","") + "'");
 		
