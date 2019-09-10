@@ -102,12 +102,14 @@ public class StatusCheck {
     try {
       IdsClient idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
       if(!download.getIsEmailSent() && download.getStatus() == DownloadStatus.COMPLETE){
+    	  logger.info("Download COMPLETE for " + download.getFileName() + "; checking whether to send email...");
         download.setIsEmailSent(true);
         em.persist(download);
         em.flush();
         lastChecks.remove(download.getId());
         sendDownloadReadyEmail(download);
       } else if(download.getTransport().matches("https|http") && idsClient.isPrepared(download.getPreparedId())){
+    	  logger.info("Download (http[s]) for " + download.getFileName() + " is Prepared, so setting COMPLETE and checking email...");
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         download.setIsEmailSent(true);
@@ -190,6 +192,7 @@ public class StatusCheck {
 
     try {
       IdsClient idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
+      logger.info("Requesting prepareData for Download " + download.getFileName());
       String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
       download.setPreparedId(preparedId);
 
@@ -202,8 +205,10 @@ public class StatusCheck {
       }
 
       if (download.getIsTwoLevel() || !download.getTransport().matches("https|http")) {
+    	  logger.info("Setting Download status RESTORING for " + download.getFileName());
         download.setStatus(DownloadStatus.RESTORING);
       } else {
+    	  logger.info("Setting Download status COMPLETE for " + download.getFileName());
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
       }
