@@ -90,7 +90,7 @@ public class StatusCheck {
    * @param injectedIdsClient optional (possibly mock) IdsClient
    * @throws Exception
    */
-  private void updateStatuses(int pollDelay, int pollIntervalWait, IdsClient injectedIdsClient) throws Exception {
+  protected void updateStatuses(int pollDelay, int pollIntervalWait, IdsClient injectedIdsClient) throws Exception {
 
 	  TypedQuery<Download> query = em.createQuery("select download from Download download where download.isDeleted != true and download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport in ('https','http')) or (download.email != null and download.isEmailSent = false))", Download.class);
       List<Download> downloads = query.getResultList();
