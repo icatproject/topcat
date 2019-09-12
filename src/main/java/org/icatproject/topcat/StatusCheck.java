@@ -73,7 +73,10 @@ public class StatusCheck {
       int pollIntervalWait = Integer.valueOf(properties.getProperty("poll.interval.wait", "600"));
 
       // For testing, separate out the poll body into its own method
-      updateStatuses(pollDelay, pollIntervalWait, null);
+      // And allow test configurations to disable scheduled status checks
+      if( ! Boolean.valueOf(properties.getProperty("test.disableDownloadStatusChecks","false"))) {
+          updateStatuses(pollDelay, pollIntervalWait, null);   	  
+      }
       
     } catch(Exception e){
       logger.error(e.getMessage());
