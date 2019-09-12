@@ -12,4 +12,19 @@
         <property name="databaseName" value="target/databases/derby"/>
         <property name="createDatabase" value="create"/>
     </jdbc-connection-pool>
+    <mail-resource debug="false"
+                 enabled="true"
+                 from="no-reply@example.com"
+                 host="smtp.example.com"
+                 jndi-name="mail/topcat"
+                 object-type="user"
+                 store-protocol="imap"
+                 store-protocol-class="com.sun.mail.imap.IMAPStore"
+                 transport-protocol="smtp"
+                 transport-protocol-class="com.sun.mail.smtp.SMTPTransport"
+                 user="user@example.com">
+        <description>Dummy mail configuration</description>
+        <property name="mail-smtp-port" value="25"/>
+        <property name="mail.smtp.from" value="no-reply@example.com"/>
+    </mail-resource>
 </resources>

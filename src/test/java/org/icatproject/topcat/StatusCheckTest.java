@@ -94,25 +94,6 @@ public class StatusCheckTest {
 		String dummyUrl = "DummyUrl";
 		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
 		
-		// StatusCheck statusCheck = new StatusCheck();
-		
-		/*
-		   For the record: some failed attempts and dead ends:
-		   - creating a new instance of StatusCheck does not work (NPE when we try to call updateStatuses() - ?)
-		   - introspecting the updateStatuses method does not work (Integer vs int args, NPE etc. etc.)
-		   - using the EJB (injected?) instance - "A system exception occurred during an invocation" (but with no more details)
-		  
-		  Removing the @Schedule in StatusCheck reveals that the real problem is with the mail Session and @Resource(name = "mail/topcat")
-		  which results in javax.naming.NameNotFoundException: mail. It seems that we would have to mock the Session class, and the only
-		  promising approach to this I've found requires adding an interface and local classes to implement it using the real Session
-		  and a mock. At the moment this feels like too great a change to the code "just" for testing, so I am minded to abandon this
-		  attempt.
-		*/
-		
-		// Introspection:
-		// Method updateStatuses = statusCheck.getClass().getDeclaredMethod("updateStatuses", Integer.class, Integer.class, IdsClient.class);
-		// updateStatuses.setAccessible(true);
-		
 		String preparedId = "InitialPreparedId";
 		String transport = "http";
 		
@@ -125,7 +106,6 @@ public class StatusCheckTest {
 		int pollDelay = 600;
 		int pollIntervalWait = 600;
 		
-		// updateStatuses.invoke(statusCheck, pollDelay, pollIntervalWait, mockIdsClient);
 		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
 		
 		// This download should have been ignored - no status change, no email sent.
