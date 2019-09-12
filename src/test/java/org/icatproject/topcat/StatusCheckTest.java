@@ -2,7 +2,6 @@ package org.icatproject.topcat;
 
 import java.util.*;
 import java.io.File;
-import java.lang.reflect.*;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -103,17 +102,78 @@ public class StatusCheckTest {
 		
 		assertEquals(DownloadStatus.COMPLETE, dummyDownload.getStatus());
 
-		int pollDelay = 600;
-		int pollIntervalWait = 600;
+		/*
+		 * If (as I suspect) the scheduled poll() is running, it might add a lastCheck timestamp for our test download,
+		 * which could prevent the test call below from doing any useful work.
+		 * We are not (yet) testing the delay behaviour, so together these imply that we should set very short wait times.
+		 * Of course, even 1 second is too long!
+		 */
+		
+		int pollDelay = 0;
+		int pollIntervalWait = 0;
 		
 		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
 		
 		// This download should have been ignored - no status change, no email sent.
+		// REMEMBER: dummyDownload.email is null, so it should be excluded by the query in updateStatuses()		
 		
 		Download postDownload = getDummyDownload(downloadId);
 		
 		assertEquals(DownloadStatus.COMPLETE, postDownload.getStatus());
 		assertFalse(postDownload.getIsEmailSent());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+	
+	@Test
+	@Transactional
+	public void testTwoTierDownload() throws Exception {
+		
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId2";
+		String transport = "http";
+		
+		// Create a two-tier download; initial status should be PREPARING
+		Download dummyDownload = createDummyDownload(preparedId, transport, true);
+		Long downloadId = dummyDownload.getId();
+		
+		assertEquals(DownloadStatus.PREPARING, dummyDownload.getStatus());
+
+		/*
+		 * If (as I suspect) the scheduled poll() is running, it might add a lastCheck timestamp for our test download,
+		 * which could prevent the test call below from doing any useful work.
+		 * We are not (yet) testing the delay behaviour, so together these imply that we should set very short wait times.
+		 * Of course, even 1 second is too long!
+		 * TODO: consider adding sleeps to test more realistic behaviour.
+		 */
+		
+		int pollDelay = 0;
+		int pollIntervalWait = 0;
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download status should now be RESTORING, no email sent.
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now mock the IDS having prepared the data
+		
+		mockIdsClient.setIsPrepared(true);
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download should now be COMPLETE, and email flagged as sent (though it wasn't!)
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.COMPLETE, postDownload.getStatus());
+		assertTrue(postDownload.getIsEmailSent());
 		
 		// clean up
 		deleteDummyDownload(postDownload);
