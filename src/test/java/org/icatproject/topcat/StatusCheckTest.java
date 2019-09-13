@@ -1,6 +1,7 @@
 package org.icatproject.topcat;
 
 import java.util.*;
+import java.util.Date;
 import java.io.File;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -21,7 +22,7 @@ import javax.persistence.TypedQuery;
 import javax.ejb.EJB;
 
 import org.icatproject.topcat.domain.*;
-
+import org.icatproject.topcat.exceptions.NotFoundException;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.StatusCheck;
 
@@ -174,6 +175,80 @@ public class StatusCheckTest {
 		
 		assertEquals(DownloadStatus.COMPLETE, postDownload.getStatus());
 		assertTrue(postDownload.getIsEmailSent());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+	
+	@Test
+	@Transactional
+	public void testTwoTierNonHttpDownload() throws Exception {
+		
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId2";
+		String transport = "globus";
+		
+		// Create a two-tier download; initial status should be PREPARING
+		Download dummyDownload = createDummyDownload(preparedId, transport, true);
+		Long downloadId = dummyDownload.getId();
+		
+		assertEquals(DownloadStatus.PREPARING, dummyDownload.getStatus());
+
+		/*
+		 * If (as I suspect) the scheduled poll() is running, it might add a lastCheck timestamp for our test download,
+		 * which could prevent the test call below from doing any useful work.
+		 * We are not (yet) testing the delay behaviour, so together these imply that we should set very short wait times.
+		 * Of course, even 1 second is too long!
+		 * TODO: consider adding sleeps to test more realistic behaviour.
+		 */
+		
+		int pollDelay = 0;
+		int pollIntervalWait = 0;
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download status should now be RESTORING, no email sent.
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now mock the IDS having prepared the data
+		
+		mockIdsClient.setIsPrepared(true);
+		
+		// But as it's not an http[s] download, updateStatuses won't test this
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download still be RESTORING, and email still not sent
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Mock pollcat setting the status to COMPLETE
+		// It does this using the PUT <topcat>/admin/download/{id}/status API,
+		// which uses the DownloadRepository
+		
+		postDownload = downloadRepository.getDownload(downloadId);
+		postDownload.setStatus(DownloadStatus.COMPLETE);
+        postDownload.setCompletedAt(new Date());
+
+        downloadRepository.save(postDownload);
+
+        statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download still be RESTORING, but download.email is null, so isEmailSent should still be false
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.COMPLETE, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
 		
 		// clean up
 		deleteDummyDownload(postDownload);
