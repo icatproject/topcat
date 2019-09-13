@@ -57,11 +57,12 @@ public class StatusCheck {
   @Resource(name = "mail/topcat")
   private Session mailSession;
   
-  @EJB
-  private CacheRepository cacheRepository;
-
   @Schedule(hour="*", minute="*", second="*")
   private void poll() {
+	  
+	  // Observation: glassfish may already prevent multiple executions, and may even count the attempt as an error,
+	  // so it is possible that the use of a semaphore here is redundant.
+	  
     if(!busy.compareAndSet(false, true)){
       return;
     }
@@ -71,7 +72,32 @@ public class StatusCheck {
       int pollDelay = Integer.valueOf(properties.getProperty("poll.delay", "600"));
       int pollIntervalWait = Integer.valueOf(properties.getProperty("poll.interval.wait", "600"));
 
-      TypedQuery<Download> query = em.createQuery("select download from Download download where download.isDeleted != true and download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport in ('https','http')) or (download.email != null and download.isEmailSent = false))", Download.class);
+      // For testing, separate out the poll body into its own method
+      // And allow test configurations to disable scheduled status checks
+      if( ! Boolean.valueOf(properties.getProperty("test.disableDownloadStatusChecks","false"))) {
+          updateStatuses(pollDelay, pollIntervalWait, null);   	  
+      }
+      
+    } catch(Exception e){
+      logger.error(e.getMessage());
+    } finally {
+      busy.set(false);
+    }
+  }
+  
+  /**
+   * Update the status of each relevant download.
+   * 
+   * @param pollDelay minimum time to wait before initial preparation/check
+   * @param pollIntervalWait minimum time between checks
+   * @param injectedIdsClient optional (possibly mock) IdsClient
+   * @throws Exception
+   */
+  public void updateStatuses(int pollDelay, int pollIntervalWait, IdsClient injectedIdsClient) throws Exception {
+	  
+	  // This method is intended for testing, but we are forced to make it public rather than protected.
+
+	  TypedQuery<Download> query = em.createQuery("select download from Download download where download.isDeleted != true and download.status != org.icatproject.topcat.domain.DownloadStatus.EXPIRED and (download.status = org.icatproject.topcat.domain.DownloadStatus.PREPARING or (download.status = org.icatproject.topcat.domain.DownloadStatus.RESTORING and download.transport in ('https','http')) or (download.email != null and download.isEmailSent = false))", Download.class);
       List<Download> downloads = query.getResultList();
 
       for(Download download : downloads){
@@ -79,35 +105,35 @@ public class StatusCheck {
         Date now = new Date();
         long createdSecondsAgo = (now.getTime() - download.getCreatedAt().getTime()) / 1000;
         if(download.getStatus() == DownloadStatus.PREPARING){
-          prepareDownload(download);
+          prepareDownload(download, injectedIdsClient);
         } else if(createdSecondsAgo >= pollDelay){
           if(lastCheck == null){
-            performCheck(download);
+            performCheck(download, injectedIdsClient);
           } else {
             long lastCheckSecondsAgo = (now.getTime() - lastCheck.getTime()) / 1000;
             if(lastCheckSecondsAgo >= pollIntervalWait){
-              performCheck(download);
+              performCheck(download, injectedIdsClient);
             }
           }
         }
-      }
-    } catch(Exception e){
-      logger.error(e.getMessage());
-    } finally {
-      busy.set(false);
-    }
+      }	  
   }
 
-  private void performCheck(Download download) {
+  private void performCheck(Download download, IdsClient injectedIdsClient) {
     try {
-      IdsClient idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
+      IdsClient idsClient = injectedIdsClient;
+      if( idsClient == null ) {
+    	  idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
+      }
       if(!download.getIsEmailSent() && download.getStatus() == DownloadStatus.COMPLETE){
+    	  logger.info("Download COMPLETE for " + download.getFileName() + "; checking whether to send email...");
         download.setIsEmailSent(true);
         em.persist(download);
         em.flush();
         lastChecks.remove(download.getId());
         sendDownloadReadyEmail(download);
       } else if(download.getTransport().matches("https|http") && idsClient.isPrepared(download.getPreparedId())){
+    	  logger.info("Download (http[s]) for " + download.getFileName() + " is Prepared, so setting COMPLETE and checking email...");
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
         download.setIsEmailSent(true);
@@ -186,10 +212,14 @@ public class StatusCheck {
     }
   }
 
-  private void prepareDownload(Download download) throws Exception {
+  private void prepareDownload(Download download, IdsClient injectedIdsClient) throws Exception {
 
     try {
-      IdsClient idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
+      IdsClient idsClient = injectedIdsClient;
+      if( idsClient == null ) {
+    	  idsClient = new IdsClient(getDownloadUrl(download.getFacilityName(),download.getTransport()));
+      }
+      logger.info("Requesting prepareData for Download " + download.getFileName());
       String preparedId = idsClient.prepareData(download.getSessionId(), download.getInvestigationIds(), download.getDatasetIds(), download.getDatafileIds());
       download.setPreparedId(preparedId);
 
@@ -202,8 +232,10 @@ public class StatusCheck {
       }
 
       if (download.getIsTwoLevel() || !download.getTransport().matches("https|http")) {
+    	  logger.info("Setting Download status RESTORING for " + download.getFileName());
         download.setStatus(DownloadStatus.RESTORING);
       } else {
+    	  logger.info("Setting Download status COMPLETE for " + download.getFileName());
         download.setStatus(DownloadStatus.COMPLETE);
         download.setCompletedAt(new Date());
       }
