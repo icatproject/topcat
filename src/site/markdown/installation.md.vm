@@ -122,8 +122,11 @@ Note: '#'s are comments.
   mail.property=mail.smtp.port="25":mail.smtp.from="no-reply@example.com"
 ```
 
-The mail.xxx properties can be omitted if email support is not required in Topcat.
+The mail.xxx properties can be omitted if email support is not required in Topcat (but see **IMPORTANT** below).
 In this case, mail.enable in topcat.properties MUST NOT be set to true. This is NOT checked during setup.
+
+**IMPORTANT** The mail.xxx properties must NOT be omitted if Topcat is configured to download from two-tier IDS instances.
+This is true even if mail is not required; in that case, dummy values such as the above can be used.
 
 $h2 topcat.properties
 
