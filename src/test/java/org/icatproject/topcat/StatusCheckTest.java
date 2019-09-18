@@ -23,6 +23,7 @@ import javax.ejb.EJB;
 
 import org.icatproject.topcat.domain.*;
 import org.icatproject.topcat.exceptions.NotFoundException;
+import org.icatproject.topcat.exceptions.TopcatException;
 import org.icatproject.topcat.repository.DownloadRepository;
 import org.icatproject.topcat.StatusCheck;
 
@@ -52,25 +53,36 @@ public class StatusCheckTest {
     	public String preparedId = "DummyPreparedId";
     	
     	private boolean isPreparedValue;
+    	private boolean failMode;
     	
     	public MockIdsClient(String url) {
     		// We are forced to do this as IdsClient has no no-args constructor;
     		// This forces us to have the Properties defined, even though we won't use them.
     		super(url);
     		isPreparedValue = false;
+    		failMode = false;
     	}
     	
     	// Mock overrides
     	
-        public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) {
+        public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+        	if( failMode ) {
+        		throw new TopcatException(500,"Deliberate exception for testing");
+        	}
         	return preparedId;
         }
         
-        public boolean isPrepared(String preparedId) {
+        public boolean isPrepared(String preparedId) throws TopcatException {
+        	if( failMode ) {
+        		throw new TopcatException(500,"Deliberate exception for testing");
+        	}
         	return isPreparedValue;
         }
 
-        public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) {
+        public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+        	if( failMode ) {
+        		throw new TopcatException(500,"Deliberate exception for testing");
+        	}
         	return size;
         }
         
@@ -78,6 +90,10 @@ public class StatusCheckTest {
         
         public void setIsPrepared(Boolean aBool) {
         	isPreparedValue = aBool;
+        }
+        
+        public void setFailMode(Boolean aBool) {
+        	failMode = aBool;
         }
     }
 
@@ -254,6 +270,104 @@ public class StatusCheckTest {
 		deleteDummyDownload(postDownload);
 	}
 	
+	@Test
+	@Transactional
+	public void testPrepareDataFailure() throws Exception {
+		
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId3";
+		String transport = "http";
+		
+		// Create a two-tier download; initial status should be PREPARING
+		Download dummyDownload = createDummyDownload(preparedId, transport, true);
+		Long downloadId = dummyDownload.getId();
+		
+		assertEquals(DownloadStatus.PREPARING, dummyDownload.getStatus());
+
+		/*
+		 * If (as I suspect) the scheduled poll() is running, it might add a lastCheck timestamp for our test download,
+		 * which could prevent the test call below from doing any useful work.
+		 * We are not (yet) testing the delay behaviour, so together these imply that we should set very short wait times.
+		 * Of course, even 1 second is too long!
+		 * TODO: consider adding sleeps to test more realistic behaviour.
+		 */
+		
+		int pollDelay = 0;
+		int pollIntervalWait = 0;
+		
+		// In this test, have the prepareData call fail
+		
+		mockIdsClient.setFailMode(true);
+
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download status should now be EXPIRED, no email sent.
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.EXPIRED, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+
+	@Test
+	@Transactional
+	public void testIsPreparedFailure() throws Exception {
+		
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId3";
+		String transport = "http";
+		
+		// Create a two-tier download; initial status should be PREPARING
+		Download dummyDownload = createDummyDownload(preparedId, transport, true);
+		Long downloadId = dummyDownload.getId();
+		
+		assertEquals(DownloadStatus.PREPARING, dummyDownload.getStatus());
+
+		/*
+		 * If (as I suspect) the scheduled poll() is running, it might add a lastCheck timestamp for our test download,
+		 * which could prevent the test call below from doing any useful work.
+		 * We are not (yet) testing the delay behaviour, so together these imply that we should set very short wait times.
+		 * Of course, even 1 second is too long!
+		 * TODO: consider adding sleeps to test more realistic behaviour.
+		 */
+		
+		int pollDelay = 0;
+		int pollIntervalWait = 0;
+		
+		// In this test, have the prepareData call succeed
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download status should now be RESTORING, no email sent.
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now mock the IDS failing
+		
+		mockIdsClient.setFailMode(true);
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download should now be EXPIRED
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.EXPIRED, postDownload.getStatus());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+
 	private Download createDummyDownload(String preparedId, String transport, Boolean isTwoLevel) {
 		
 		// This mocks what UserResource.submitCart() might do.
