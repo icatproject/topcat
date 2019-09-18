@@ -55,6 +55,7 @@ public class StatusCheckTest {
     	
     	private boolean isPreparedValue;
     	private boolean failMode;
+    	private boolean prepareDataCalledFlag;
     	private boolean isPreparedCalledFlag;
     	
     	public MockIdsClient(String url) {
@@ -63,12 +64,14 @@ public class StatusCheckTest {
     		super(url);
     		isPreparedValue = false;
     		failMode = false;
+    		prepareDataCalledFlag = false;
     		isPreparedCalledFlag = false;
     	}
     	
     	// Mock overrides
     	
         public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
+        	prepareDataCalledFlag = true;
         	if( failMode ) {
         		throw new TopcatException(500,"Deliberate exception for testing");
         	}
@@ -96,6 +99,10 @@ public class StatusCheckTest {
         	isPreparedValue = aBool;
         }
         
+        public void resetPrepareDataCalledFlag() {
+        	prepareDataCalledFlag = false;
+        }
+        
         public void resetIsPreparedCalledFlag() {
         	isPreparedCalledFlag = false;
         }
@@ -104,6 +111,10 @@ public class StatusCheckTest {
         	failMode = aBool;
         }
         
+        public boolean prepareDataWasCalled() {
+        	return prepareDataCalledFlag;
+        }
+
         public boolean isPreparedWasCalled() {
         	return isPreparedCalledFlag;
         }
@@ -470,6 +481,87 @@ public class StatusCheckTest {
 		
 		assertEquals(DownloadStatus.COMPLETE, postDownload.getStatus());
 		assertTrue(postDownload.getIsEmailSent());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+	
+	@Test
+	@Transactional
+	public void testExpiredDownloadsIgnored() throws Exception {
+
+		DownloadStatus status = DownloadStatus.EXPIRED;
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId";
+		String transport = "http";
+		
+		// Create a single-tier download; initial status should be COMPLETE
+		Download dummyDownload = createDummyDownload(preparedId, transport, false);
+		Long downloadId = dummyDownload.getId();
+		
+		// Set the status and persist it
+		
+		dummyDownload.setStatus(status);
+        em.persist(dummyDownload);
+        em.flush();
+        
+        // Not testing delays, so set to zero
+
+		int pollDelay = 0;
+		int pollIntervalWait = 0;
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// This download should have been ignored - no status change, no email sent.
+		
+		assertFalse(mockIdsClient.prepareDataWasCalled());
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(status, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+	
+	@Test
+	@Transactional
+	public void testDeletedDownloadsIgnored() throws Exception {
+
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId";
+		String transport = "http";
+		
+		// Create a single-tier download; initial status should be COMPLETE
+		Download dummyDownload = createDummyDownload(preparedId, transport, false);
+		Long downloadId = dummyDownload.getId();
+		
+		// Set download deleted and persist it
+		
+		dummyDownload.setIsDeleted(true);
+        em.persist(dummyDownload);
+        em.flush();
+        
+        // Not testing delays, so set to zero
+
+		int pollDelay = 0;
+		int pollIntervalWait = 0;
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// This download should have been ignored - still deleted, no email sent.
+		
+		assertFalse(mockIdsClient.prepareDataWasCalled());
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertTrue(postDownload.getIsDeleted());
+		assertFalse(postDownload.getIsEmailSent());
 		
 		// clean up
 		deleteDummyDownload(postDownload);
