@@ -145,17 +145,13 @@ public class StatusCheck {
         lastChecks.put(download.getId(), new Date());
       }
     } catch (IOException e){
-      logger.error("performCheck IOException: " + e.toString());
+    	expireDownload(download,"performCheck IOException: " + e.toString());
     } catch(NotFoundException e){
-      logger.error("performCheck NotFoundException: " + e.getMessage());
+    	expireDownload(download,"performCheck NotFoundException: " + e.getMessage());
     } catch(TopcatException e) {
-      logger.error("performCheck TopcatException: marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
-      download.setStatus(DownloadStatus.EXPIRED);
-      em.persist(download);
-      em.flush();
-      lastChecks.remove(download.getId());
+    	expireDownload(download,"performCheck TopcatException: " + e.toString());
     } catch(Exception e){
-      logger.error("performCheck Exception: " + e.toString());
+    	expireDownload(download,"performCheck Exception: " + e.toString());
     }
   }
 
@@ -242,17 +238,21 @@ public class StatusCheck {
 
       downloadRepository.save(download);
     } catch(NotFoundException e){
-      logger.error("prepareDownload NotFoundException: " + e.getMessage());
+    	expireDownload(download, "prepareDownload NotFoundException: " + e.getMessage());
     } catch(TopcatException e) {
-      logger.error("prepareDownload TopcatException: marking download as expired (preparedId=" + download.getPreparedId() + "): " + e.toString());
+    	expireDownload(download, "prepareDownload TopcatException: " + e.toString());
+    } catch(Exception e){
+    	expireDownload(download, "prepareDownload Exception: " + e.toString());
+    }
+
+  }
+  
+  private void expireDownload( Download download, String reason ) {
+      logger.error("Marking download " + download.getId() + " as expired. Reason: " + reason);
       download.setStatus(DownloadStatus.EXPIRED);
       em.persist(download);
       em.flush();
       lastChecks.remove(download.getId());
-    } catch(Exception e){
-      logger.error("prepareDownload Exception: " + e.toString());
-    }
-
   }
 
   private String getDownloadUrl( String facilityName, String downloadType ) throws InternalException{
