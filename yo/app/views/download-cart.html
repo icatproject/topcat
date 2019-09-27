@@ -27,7 +27,9 @@
                     </td>
                     <td>
                         <select ng-options="item as item.displayName for item in download.transportTypes track by item.type" ng-model="download.transportType" ng-change="download.updateIsTwoLevel()"></select>
-                        <div ng-if="download.transportType.description">{{download.transportType.description}}</div>
+                        <div ng-if="download.transportType.description">
+                        	<ng-bind-html ng-bind-html="download.transportType.description"></ng-bind-html>
+                        </div>
                     </td>
                     <td>
                         <span ng-if="download.size === undefined" class="loading collapsed"></span><span ng-if="download.size == -1">Unknown</span><span ng-if="download.size != -1">{{download.size | bytes}}</span>
