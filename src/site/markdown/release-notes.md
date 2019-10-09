@@ -7,6 +7,7 @@
   * Allow automatic (anonymous) login for DOI redirect requests (issue #443)
   * StatusCheck now logs changes in download statuses
   * StatusCheck now expires downloads on any exception, not just TopcatException (issue #449)
+  * Allow HTML markup in download type descriptions (issue #450)
   
 ## 2.4.4 (1st Jul 2019)
 
