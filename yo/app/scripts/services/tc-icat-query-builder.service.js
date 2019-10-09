@@ -234,8 +234,17 @@
     				out.push(['where', whereQuery]);
     			}
 
-                if(orderByList.length > 0){
-                    out.push(['ORDER BY', orderByList.join(', ')]);
+                // Always order by ID to force an order on rows that are otherwise sort-identical;
+                // This should avoid pagination duplication problems - see issue #453
+                // TODO: should we do this even if no other sorting has been specified?
+                
+    			var idField = entityType + '.id';
+    			if(entityType == 'proposal'){
+    			    idField = 'investigation.id';
+    			}
+
+    			if(orderByList.length > 0){
+                    out.push(['ORDER BY', orderByList.join(', '), ',', idField, 'asc']);
                 }
 
                 if(!functionName && limitCount && !investigationName){

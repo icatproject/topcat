@@ -65,6 +65,10 @@
             sortQuery.push('order by ' + _.map(sortColumns, function(sortColumn){
                 return sortColumn.jpqlSort + ' ' + sortColumn.sort.direction;
             }).join(', '));
+            // Always order by ID to force an order on rows that are otherwise sort-identical;
+            // This should avoid pagination duplication problems - see issue #453
+            // However, BR suspects that the value of sortQuery is never being used! The real work is done by generateQueryBuilder() below.
+            sortQuery.push(', id asc');
         }
 
         var externalGridFilters = tc.ui().externalGridFilters().myData;
