@@ -236,7 +236,7 @@
 
                 // Always order by ID to force an order on rows that are otherwise sort-identical;
                 // This should avoid pagination duplication problems - see issue #453
-                // TODO: should we do this even if no other sorting has been specified?
+                // NOTE: we do this even if no other sorting has been specified.
                 
     			var idField = entityType + '.id';
     			if(entityType == 'proposal'){
@@ -245,6 +245,8 @@
 
     			if(orderByList.length > 0){
                     out.push(['ORDER BY', orderByList.join(', '), ',', idField, 'asc']);
+                } else {
+                	out.push(['ORDER BY', idField, 'asc']);
                 }
 
                 if(!functionName && limitCount && !investigationName){
