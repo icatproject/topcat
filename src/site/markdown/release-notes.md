@@ -8,6 +8,7 @@
   * StatusCheck now logs changes in download statuses
   * StatusCheck now expires downloads on any exception, not just TopcatException (issue #449)
   * Allow HTML markup in download type descriptions (issue #450)
+  * Fix: always order query results by (at least) ID to prevent pagination issues (issue #453)
   
 ## 2.4.4 (1st Jul 2019)
 
