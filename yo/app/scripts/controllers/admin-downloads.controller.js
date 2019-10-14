@@ -96,6 +96,12 @@
                     if(i < sortColumns.length - 1) out.push(',');
                 }
             });
+            // Always order by ID to force an order on rows that are otherwise sort-identical;
+            // This should avoid pagination duplication problems - see issue #453
+            out.push(", download.id asc");
+          } else {
+        	  // Order by ID if no other order is defined - in case pagination errors are possible here too
+        	  out.push('order by download.id asc');
           }
 
           out.push(["limit ?, ?", (page - 1) * pageSize, pageSize])          
