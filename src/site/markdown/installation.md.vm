@@ -3,7 +3,9 @@
 #set($h3 = '###')
 #set($h4 = '####')
 
-$h1 TopCAT Installation Guide
+$h1 TopCAT Server Installation Guide
+
+This document attempts to revise the full Topcat installation guide for a server-side-only installation.
 
 $h2 Compatibility
 
@@ -15,14 +17,16 @@ schema changes then you should install 2.4.3 or later.
 $h2 Prerequisites
 
   - The TopCAT distribution: [topcat-${project.version}-distro.zip](${repoUrl}/org/icatproject/topcat/${project.version}/topcat-${project.version}-distro.zip)
+    **TODO**: server-only distribution details have yet to be determined (probably post-fork)
   - A suitable deployed container (here assumed to be glassfish) to support a web application. Testing has been carried out with Glassfish 4.0. [Glassfish installation instructions](http://icatproject.org/installation/glassfish/) are available.
   -  A database as described in [Database installation instructions](http://icatproject.org/installation/database/) installed on the server.
   - Python (version 2.4 to 2.7) installed on the server.
+  - if the `topcat_admin` script is required, the Python `requests` module must be installed (which may require other packages in turn).
 
 $h2 Summary of Steps
 
   1. Please follow the [generic installation instructions](http://icatproject.org/installation/component/) 
-  1. Check that it works by going to https\://example.com:8181 or whatever is the name of your server.
+  1. Check that it works by trying to connect with the `topcat_admin` script.
 
 $h2 Schema upgrade
 
@@ -68,26 +72,10 @@ For Oracle:
 
 $h2 Configuration Overview
 
-Topcat is configured in two main places:
-
-  * **the backend** - i.e. files which topcat server reads/uses
-  * **the frontend** - i.e. files which the browser reads/uses
-
-$h3 Backend configuration
-
-
-The backend configuration consists of two files:
+The server configuration consists of two files:
 
   * **topcat-setup.properties** - used to configure the application container e.g. database connection and mail server etc...
   * **topcat.properties** - used to configure Topcat (application) specific settings e.g. email messages or IDS polling intervals.
-
-$h3 Frontend configuration
-
-The frontend configuration consists of three files:
-
-  * **topcat.json** - used to configure the structure and behaviour of the frontend e.g. grid columns and ICAT data hierarchy.
-  * **lang.json** - used to changed the words on topcat; either the actual language e.g. from English to French, or to substitute words that make more sense to your facility e.g. "Investigator" to "Scientist"
-  * **topcat.css** - allows you to change Topcat's styling the page colours etc...
 
 $h2 topcat-setup.properties
 
@@ -140,9 +128,6 @@ $h3 New properties in 2.4.2
 New properties have been added to allow finer control over caching of Investigation sizes.
 Investigations can change size over time, so setting a lifetime on cached values may be useful.
 It may be useful not to cache zero-sized Investigations at all.
-Note that size requests are also cached in the browser, so check settings in topcat.json too.
-However, the browser cache is less persistent, and can be cleared by reloading the page, so
-browser cache consistency is less of an issue.
 
 These properties are optional, and the defaults preserve the original behaviour, so they need 
 not be added when upgrading.
@@ -169,8 +154,7 @@ Note: '#'s are comments.
 ```
   # List of Facility names
   # These names will be used by Topcat over the REST API;
-  # each facility name in topcat.json must contain a match in this list,
-  # and each name must be mapped to ICAT / IDS urls.
+  # each name must be mapped to ICAT / IDS urls.
   # Edit these values to match your installation.
 
   facility.list = LILS YFH
@@ -181,12 +165,12 @@ Note: '#'s are comments.
   facility.YFH.idsUrl = https://your.facility.idsUrl.here
 
   # Download transport URLs
-  # topcat.json can specify one or more download transport types for each facility, egs "https", "globus";
+  # One or more download transport types may be defined for each facility, egs "https", "globus";
   # each may have a distinct download URL (prefix). To specify the download URL for a specific facility
   # and transport type, set an appropriate property as below.
-  # Note that the transport type will be set in requests from the Topcat Javascript application,
+  # Note that the transport type will be set in API requests,
   # but the URL to specify here should be the IDS url that will be used in the Java clients;
-  # so it may be that the Javascript transport type https should be mapped here to an
+  # so it may be that the API transport type https should be mapped here to an
   # internal http URL.
   # If the property is not defined, Topcat will use the facility's idsUrl by default.
 
@@ -228,7 +212,7 @@ Note: '#'s are comments.
   # The wait time in seconds between each poll to the IDS.
   poll.interval.wait=600
 
-  # A list of usernames that can use the admin REST API and Topcat admin user interface
+  # A list of usernames that can use the admin REST API and (if present) the Topcat admin user interface
   adminUserNames=simple/root, uows/elz087, asd345, ldap/fgh123
 
   # The maximum number objects that can be cached before pruning will take place
@@ -237,7 +221,6 @@ Note: '#'s are comments.
   # The following properties allow finer control over caching of Investigation sizes.
   # Investigations can change size over time, so setting a lifetime on cached values may be useful.
   # It may be useful not to cache zero-sized Investigations at all.
-  # IMPORTANT: size requests are also cached in the browser, so check settings in topcat.json too.
 
   # Lifetime in seconds for cached Investigation sizes (default is 0, which means "immortal")
   # investigationSizeCacheLifetimeSeconds=600
@@ -252,639 +235,9 @@ Note: '#'s are comments.
   # ids.timeout=3m
 ```
 
-$h2 topcat.json
-
-$h3 High level overview
-
-A high level overview of the topcat.json file is as follows:
-
-```
-  {
-    "site": {...},
-    "facilities": {...}
-  }
-```
-
-from the above example there are two attributes defined: 
-
-  * "site" - configures anything anything global across facilities e.g. the cart, information pages or branding etc.
-  * "facilities" - configures anything specific to a facility e.g. authentication, column headings or download transport (i.e. delivery) methods.
-
-$h3 Medium level overview
-
-If we expand the attributes in high level overview we can get a medium overview as follows:
-
-```
-  {    
-      "site": {
-          "topcatUrl": "https://example.com",
-          "home" : "my-data",
-          "enableEuCookieLaw" : true,
-          "investigationSizeCacheLifetimeSeconds" : 0,
-          "dontCacheZeroSizedInvestigations": false,
-          "paging" : {...},
-          "breadcrumb": {...},
-          "serviceStatus": {...},
-          "maintenanceMode": {...},
-          "search": {...},
-          "browse":{...},
-          "cart":{...},
-          "myDownloads":{...},
-          "pages" : [...]
-      },
-      "facilities": [
-          {
-              "name": "DLS",
-              "title": "Diamond Light Source",
-              "icatUrl": "https://example.com",
-              "idsUrl": "https://example.com",
-              "idsUploadDatafileFormat": "example_datafile_format_name",
-              "idsUploadDatasetType": "example_dataset_type_name",
-              "idsUploadMaxTotalFileSize": 10000000000,
-              "hierarchy": [...],
-              "authenticationTypes": [...],
-              "downloadTransportTypes": [...],
-              "admin":{...},
-              "myData": {...},
-              "browse":{...}
-          }
-      ]
-  }
-```
-
-from the above following attributes defined: 
-
-  * "site"
-      * "topcatUrl" - the path to a valid Topcat REST API (optional).
-      * "home" - the section the user gets redirected to after logging in can be "my-data", "browse" or "search"
-      * "enableEuCookieLaw" - will show a cookie policy banner which the user can dismiss.
-      * "investigationSizeCacheLifetimeSeconds" - NEW in 2.4.2; if present and non-zero, the time after which browser-cached values for investigation sizes will be discarded
-      * "dontCacheZeroSizedInvestigations" - NEW in 2.4.2; if present and true, zero-sized investigations will not be cached in the browser.
-      * "paging" - specifies the paging type configuration i.e. for either paged or infinite scroll
-      * "breadcrumb" - specifies global breadcrumb options
-      * "search" - specifies the structure of the search results and search fields for searching across facilities.
-      * "browse" - specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
-      * "cart" - specifies the structure of the cart.
-      * "myDownloads" - specifies the structure of 'downloads' dialog box.
-      * "pages" - allows you to define information pages e.g. "About Us" or "Contact" etc...
-  * "facilities" - an array of facility configuration objects.
-    * [facility]
-        * "name" - The facility name as it appears on the (Icat) database. Used as a key to reference the facility details.
-        * "title" - A user friendly title that will appear in the tabs etc...
-        * "icatUrl" - A URL to a valid Icat REST API (optional - if not explicity specified it will obtain this url from the IDS server below)
-        * "idsUrl" - A URL to a valid IDS REST API
-        * "idsUploadDatafileFormat" - The name of the Icat DatafileFormat entity that will be associated with the uploaded files.
-        * "idsUploadDatasetType" - The name of the Icat DatasetType entity that will be associated with dataset that gets created when uploading files at the dataset level.
-        * idsUploadMaxTotalFileSize" - The maximum total amount a user can upload in one go in bytes.
-        * "hierarchy" - the entity heierachy of the browse section.
-        * "authenticationTypes" - specifies the authentication plugins to be used e.g. LDAP (optional - if not explicity specified it will obtain them from the icat server)
-        * "downloadTransportTypes" - specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
-        * "admin" - defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
-        * "myData" - specifies the structure of the "My Data" section.
-        * "browse" - specifies the structure of the hierachical browse section.
-
-$h3 topcat.json: "site" > "paging"
-
-Specifies the paging type configuration i.e. for either paged or infinite scroll.
-
-An example configuration for infinite scrolling:
-
-```
-{
-  "site": {
-    "paging" : {
-        "pagingType": "scroll",
-        "scrollPageSize": 50,
-        "scrollRowFromEnd": 10
-    }
-  }
-}
-```
-  * "pagingType" - can be either "page" or "scroll".
-  * "scrollPageSize" - the number rows to return with each request.
-  * "scrollRowFromEnd" - the row from the end which after scrolling past will trigger another page request to load more rows.
-
-An example configuration for standard page based pagination:
-
-```
-{
-  "site": {
-    "paging" : {
-        "pagingType": "page",
-        "paginationNumberOfRows": 10,
-        "paginationPageSizes": [
-            10,
-            25,
-            50,
-            100,
-            1000
-        ]
-    }
-  }
-}
-```
-  * "pagingType" - can be either "page" or "scroll".
-  * "paginationNumberOfRows" - the default number of rows per page
-  * "paginationPageSizes" - the possible page sizes the user can select.
-
-$h3 topcat.json: "site" > "breadcrumb"
-
-Specifies global breadcrumb options.
-
-An example breadcrumb configuration:
-
-```
-{
-  "site": {
-    "breadcrumb": {
-        "maxTitleLength": 30
-    }
-  }
-}
-```
-  * "maxTitleLength" - the maximum length after which it will get truncated with ellipses.
-
-
-$h3 topcat.json: "site" > "search"
-
-Specifies the structure of the search results and search fields for searching across facilities.
-
-An example (partial) configuration:
-
-```
-{
-  "site": {
-    "search": {
-        "disabled": false,
-        "enableTextBox": true,
-        "enableDateRange": true,
-        "enableParameters": true,
-        "enableSamples": true,
-        "enableInvestigation": true,
-        "enableDataset": true,
-        "enableDatafile": true,
-        "gridOptions": {
-            "investigation": {...},
-            "dataset": {...},
-            "datafile": {...}
-        }
-    }
-  }
-}
-```
-  * "disabled" - if true then the Search tab will not be added. Can be omitted, defaulting to false.
-  * "enableTextBox" - specifies whether the main search text box feature should be enabled or not. Can be true or false. Default is true.
-  * "enableDateRange" - specifies whether the date range feature should be enabled or not. Can be true or false. Default is true.
-  * "enableParameters" - specifies whether the parameter search feature should be enabled or not. Can be true or false. Default is true.
-  * "enableSamples" - specifies whether the sample search feature should be enabled or not. Can be true or false. Default is true.
-  * "enableInvestigation" - specifies whether investigation search should be enabled or not. Can be true or false. Default is true.
-  * "enableDataset" - specifies whether dataset search should be enabled or not. Can be true or false. Default is true.
-  * "enableDatafile" - specifies whether datafile search should be enabled or not. Can be true or false. Default is true.
-  * gridOptions
-      * investigation - the grid options for the "investigation" Icat entity type. See "gridOptions configuration" for more information.
-      * dataset - the grid options for the "dataset" Icat entity type. See "gridOptions configuration" for more information.
-      * datafile - the grid options for the "datafile" Icat entity type. See "gridOptions configuration" for more information.
-
-$h3 topcat.json: "site" > "browse"
-
-Specifies the structure of the root of "browse" section of the site. This only applies to a Topcat with multiple facilities.
-
-An example (partial) configuration:
-
-```
-{
-  "site": {
-    "browse":{
-        "gridOptions": {...},
-        "metaTabs": [...]
-    }
-  }
-}
-```
-  * the grid options for the "facility" Icat entity type. See "gridOptions configuration" for more information.
-  * the meta tabs for the "facility" Icat entity type. See "metaTabs configuration" for more information.
-
-$h3 topcat.json "site" >  "cart" 
-
-Specifies the structure of the cart.
-
-An example (partial) configuration:
-
-```
-{
-  "site": {
-    "cart":{
-        "enableLimits": true,
-        "maxDatafileCount": 1000000,
-        "maxTotalSize": 1000000000000,
-        "gridOptions": {...}
-    }
-  }
-}
-```
-* enableLimits - if true, apply count/size limits (which must then be defined). Optional, defaults to false.
-* maxDatafileCount - the maximum number of datafiles that can be added to a cart, this includes all files in the hierachy of each entity e.g. if you added a dataset to the cart this includes all the files inside that dataset.
-* maxTotalSize - the total size of the potentual download.
-* "gridOptions" - the grid options for the "cartItem" Topcat entity type. See "gridOptions configuration" for more information.
-
-$h3 topcat.json: "site" >  "myDownloads" 
-
-Specifies the structure of 'downloads' dialog box.
-
-An example (partial) configuration:
-
-```
-{
-  "site": {
-    "myDownloads":{
-        "gridOptions": {...}
-    }
-  }
-}
-```
-
-* "gridOptions" - the grid options for the "download" Topcat entity type. See "gridOptions configuration" for more information.
-
-$h3 topcat.json: "site" >  "pages" 
-
-Allows you to define information pages e.g. “About Us” or “Contact” etc…
-
-An example configuration:
-
-```
-{
-  "site": {
-    "pages" : [
-      {
-        "name" : "about",
-        "addToNavBar": {
-          "label" : "About",
-          "align" : "left"
-        }
-      }
-    ]
-  }
-}
-```
-
-  * "name" - A unique name for that page this will correspond to a [name].html page (see the "content" directory section). Separate words with hyphens.
-  * "addToNavBar" - Specified whether or not as link should be added to the top bar.
-      * "label" - the label (i.e. text) for the link.
-      * "align" - whether the link should be on the "left" or "right" hand side.
-
-
-$h3 topcat.json: "facilities" > [facility] > "hierachy"
-
-The entity heierachy of the browse section.
-
-An example configuration:
-
-```
-{
-  "facilities": [
-    {
-      "hierarchy": [
-        "facility",
-        "proposal",
-        "investigation",
-        "dataset",
-        "datafile"
-      ]
-    }
-  ]
-}
-```
-
-The above configuration will make the user browse via "facility" > "proposal" > "investigation" > "dataset" > "datafile".
-
-$h3 topcat.json "facilities" > [facility] > "authenticationTypes" 
-
-Specifies the authentication plugins to be used e.g. LDAP
-
-An example configuration:
-
-```
-{
-  "facilities": [
-    {
-      "authenticationTypes": [
-          {
-              "title": "Simple",
-              "plugin": "simple"
-          },
-          {
-              "title": "DB",
-              "plugin": "db"
-          }
-      ]
-    }
-  ]
-}
-```
-
-  * title - the title of the plugin as it appears on the login page authentication types dropdown menu.
-  * plugin - a name that is used to programmatically reference the plugin on the Icat server.
-  * showAsButton - optional boolean: if true, a separate login button is added for this authenticator.
-
-$h3 topcat.json: "facilities" > [facility] > "extraLoginButtons" 
-
-Optional. Specifies extra buttons to be added to the login page, as links to (possibly external) resources.
-For example, to add a button to register an account with the ISIS User Office:
-
-```
-{
-  "facilities": [
-    {
-            "extraLoginButtons": [
-                {
-                    "title": "Register",
-                    "url": "https://users.facilities.rl.ac.uk/auth/CreateAccount.aspx"
-                }
-            ],
-            ...
-    }
-  ]
-}
-```
-
-$h3 topcat.json: "facilities" > [facility] > "doiAutoLoginAuth"
-
-Optional. Specifies the authentication method and credentials to be used (if requested) by DOI redirections.
-Defaults to the "anon" authenticator (in which case it must be available and supported by the ICAT instance).
-Note that the configuration can be inspected by users in the browser console, so setting this is NOT RECOMMENDED
-for production systems. (Its main use is for development, where the LILS facility does not support anonymous
-authentication.)
-
-```
-{
-  "facilities": [
-    {
-            "doiAutoLoginAuth": {
-            	"plugin": "simple",
-            	"credentials": {
-            		"username": "root",
-            		"password": "vegetable"
-            	}
-            },
-            ...
-    }
-  ]
-}
-```
-
-$h3 topcat.json: "facilities" > [facility] > "downloadTransportTypes" 
-
-Specifies the download delivery methods e.g. 'https' (via a browser) or 'globus' (a type of glorified ftp to deal with large files).
-
-An example configuration:
-
-```
-{
-  "facilities": [
-    {
-      "downloadTransportTypes": [
-          {
-              "type" : "https",
-              "idsUrl": "https://fdsgos11.fds.rl.ac.uk"
-          },
-          {
-              "type" : "globus",
-              "idsUrl": "https://fdsgos11.fds.rl.ac.uk",
-              "displayName": "Globus access",
-              "description": "Use Globus to download your data"
-          },
-          {
-              "type" : "scarf",
-              "idsUrl": "https://dls-ids01.scarf.rl.ac.uk",
-              "displayName": "Download to Scarf"
-          }
-      ]
-    ]
-  }
-}
-```
-
-  * type - the download method the will be used to retrieve the download.
-  * idsUrl - a url to a valid IDS API that can handle the particular download transport type.
-  * displayName - optional; used in the choice list dialog. Defaults to the type.
-  * description - optional; when present, appears under the choice list.
-
-
-$h3 topcat.json: "facilities" > [facility] > "admin" 
-
-Defines the structure of admin interface. This interface is only available to admin users (specified in topcat.properties).
-
-An example (partial) configuration:
-
-```
-{
-  "facilities": [
-    {
-      "admin":{
-        "gridOptions": {...}
-      }
-    }
-  ]
-}
-```
-
-* "gridOptions" - the grid options for the "download" Topcat entity type. See "gridOptions configuration" for more information.
-
-$h3 topcat.json: "facilities" > [facility] > "myData" 
-
-Specifies the structure of the “My Data” section.
-
-An example (partial) configuration:
-
-```
-{
-  "facilities": [
-    {
-      "myData": {
-          "entityType" : "investigation",
-          "gridOptions": {...}
-      }
-    }
-  ]
-}
-```
-  * "entityType" - the entity type can be either "investigation", "dataset" or "datafile".
-  * "gridOptions" - the grid options for the Icat entity type (specified). See "gridOptions configuration" for more information.
-
-
-$h3 topcat.json: "facilities" > [facility] > "browse" 
-
-Specifies the structure of the hierachical browse section.
-
-An example (partial) configuration:
-
-```
-{
-  "facilities": [
-    {
-      "browse": {
-        "investigation": {
-            "gridOptions": {...},
-            "metaTabs": [...]
-        },
-        "proposal": {...},
-        "dataset": {...},
-        "datafile": {...}
-      }
-    }
-  ]
-}
-```
-  * "gridOptions" - the grid options for the current Icat entity type. See "gridOptions configuration" for more information.
-  * "metaTabs" - the meta tabs for the current Icat entity type. See “metaTabs configuration” for more information.
-
-$h3 topcat.json: gridOptions configuration
-
-General principles configuring the gridOptions.
-
-An example configuration:
-
-```
-  "gridOptions": {
-    "enableSelection": true,
-    "enableUpload": true,
-    "columnDefs": [
-        {
-            "field": "visitId",
-            "link": true,
-            "breadcrumb": true
-        },
-        {
-            "field": "size"
-        },
-        {
-            "field": "datasetCount"
-        },
-        {
-            "field": "datafileCount"
-        },
-        {
-            "field": "investigationInstrument.fullName"
-        },
-        {
-            "field": "startDate",
-            "excludeFuture": true,
-            "sort": {
-              "direction": "desc",
-              "priority": 1
-            }
-        },
-        {
-            "field": "endDate"
-        }
-    ]
-  }
-```
-  * "enableSelection" - whether or not the entity can be added to the cart. This only applies to "investigation", "dataset" or "datafile".
-  * "enableUpload" - whether or not a user can upload files at this at this level (i.e. enable an "Upload" button). This only applies to "dataset" or "datafile".
-  * "columnDefs" - the column definitions of the grid.
-          * "field" - The field you want to display in the column.
-              * the dot notation e.g. "investigationInstrument.fullName" refers to "[variable name].[field name]" - see the "standard jpql variables" for more info.
-              * there are also 3 special field names which get loaded in asynchronously.
-                  * size - the sum of all the descendant files fileSize (applies to the investigation and dataset entities).
-                  * datasetCount - the total number of descendant datasets (applies to the investigation entity).
-                  * datafileCount - the total number of descendant datafiles (applies to the investigation and dataset entities).
-          * "link" - whether or not to link to the next entity in the hierachy.
-          * "breadcrumb" - whether or not you want to use the field value as title in the breadcrumb. By default this will be 'title' or 'name' if the entity has these fields.
-          * "excludeFuture" - will preload the date 'to' filter with the current time, thus elliminating any rows in the future.
-          * "sort" - allows the sorting of the rows by this particular column.
-              * "direction" - the direction the rows should be sorted by can be "asc" (ascending) or "desc" (descending).
-              * "priority" - if sorting by multiple columns, you can set the order in which rows get sorted by e.g. "title" then "startDate".
-  
-
-
-$h3 topcat.json: metaTabs configuration
-
-General principles configuring the metaTabs.
-
-An example configuration:
-
-```
-"metaTabs": [
-    {
-        "title": "METATABS.DATASET.TABTITLE",
-        "items": [
-            {
-                "field": "name"
-            },
-            {
-                "field": "description"
-            },
-            {
-                "label": "METATABS.DATASET.START_DATE",
-                "field": "startDate",
-                "template": "{{content.value | date:'yyyy-MM-dd'}}"
-            },
-            {
-                "label": "METATABS.DATASET.END_DATE",
-                "field": "endDate",
-                "template": "{{content.value | date:'yyyy-MM-dd'}}"
-            }
-        ]
-    },
-    {
-        "title": "METATABS.DATASET_TYPE.TABTITLE",
-        "items": [
-            {
-                "field": "datasetType.name"
-            },
-            {
-                "field": "datasetType.description"
-            }
-        ]
-    }
-]
-```
-
-  * "title" - the title of the tab.
-  * items - the items to be displayed inside the metatab
-          * "field" - the field to be displayed.
-          * "label" - a label to describe what the field is. By default this will field name.
-          * "template" - a custom (angular) template to display the field.
-
-$h3 topcat.json: standard jpql variables
-
-Topcat defines the following jpql variables - which if used from any icat entity type will automatically work out any joins required to create a jpql statement for fetching the data from icat:
-
-
-  * **datafile** - referencing the relative datafile.
-  * **datafileParameter** - referencing the relative datafile.parameters.
-  * **datafileParameterType** - referencing the relative datafile.parameters.type.
-  * **dataset** - referencing the relative dataset.
-  * **datasetParameter** - referencing the relative dataset.parameters.
-  * **datasetParameterType** - referencing the relative dataset.parameters.type.
-  * **datasetSample** - referencing the relative dataset.samples.
-  * **datasetType** - referencing the relative dataset.type.
-  * **facility** - referencing the relative facility.
-  * **facilityCycle** - referencing the relative facility.facilityCycles.
-  * **instrument** - referencing the relative facility.instruments.
-  * **instrumentScientist** - referencing the relative instrument.instrumentScientists.user.
-  * **instrumentScientistPivot** - referencing the relative instrument.instrumentScientists.
-  * **instrumentShift** - referencing the relative instrument.shifts.
-  * **investigation** - referencing the relative investigation.
-  * **investigationGroup** - referencing the relative investigation.investigationGroups.grouping.
-  * **investigationInstrument** - referencing the relative investigation.investigationInstruments.instrument.
-  * **investigationInstrumentPivot** - referencing the relative investigation.investigationInstruments.
-  * **investigationParameter** - referencing the relative investigation.parameters.
-  * **investigationParameterType** - referencing the relative investigation.parameters.type.
-  * **investigationSample** - referencing the relative investigation.samples.
-  * **investigationUser** - referencing the relative investigation.investigationUsers.user.
-  * **investigationUserPivot** - referencing the relative investigation.investigationUsers.
-  * **publication** - referencing the relative investigation.publications.
-  * **shiftInstrument** - referencing the relative shift.instrument
-  * **study** - referencing the relative investigation.studyInvestigations.study.
-  * **studyInvestigationPivot** - referencing the relative investigation.studyInvestigations.
-
-
-
-To get a better understanding of what these jpql variables refer to please view the [icat schema documentation](https://repo.icatproject.org/site/icat/server/4.9.3/schema.html).
-
 $h2 The "content" directory
+
+**Note:** `content.example` is still included in the distribution, but is probably irrelevant for a server-only installation.
 
 After unzipping a Topcat release you will be presented with a directory called "content.example", which you need to make a copy of called "content" i.e.
 
@@ -908,36 +261,6 @@ the contents of the "content" directory will be injected into the war file just 
 
 You can use this feature to create a "pages" directory, which is where the html content specified within topcat.json's "pages" section is defined, you can also this feature to replace or add any other content e.g. the favicon.
 
-$h2 lang.json
-
-Allows you to replace text/phrases within Topcat's interface with your own prefered alternatives e.g. rather than term "Investigation" you might prefer "Visit".
-
-Within lang.json is a json object that represents a hierarchy of translation strings, with a bit of experimentation you can modify virtually any text in Topcat's front end e.g. if you wanted to change the "My Data" tab text simply edit "MAIN_NAVIGATION" -> "MAIN_TAB" -> "MY_DATA".
-
-$h2 topcat.css
-
-As standard css file adding in custom css rules.
-
-$h2 Browser console monitoring
-
-(Added in 2.4.2)
-
-In the browser console, typing:
-
-```
-  tc.setMonitoring(true)
-```
-
-will start monitoring behaviour of the (browser-side) cache and the low-priority queue. At regular intervals,
-Topcat will report to the console recent and all-time counts of cache hits/misses, the maximum length of the
-low-priority queue (which is used to process getSize requests), and the maximum wait time (in milliseconds) of
-entries in the queue. Here, "recent" means "in the last 10 minutes".
-
-This information may be useful when experimenting with cache control configuration for investigation sizes.
-
-To turn off monitoring again, type `tc.setMonitoring(false)` into the console.
-
-
 $h2 topcat_admin
 
 The topcat_admin script was added to Topcat in October 2017, but was not included in the distribution until version 2.4.4.
@@ -945,5 +268,5 @@ It uses the new REST API for disabling/enabling download types (which cannot be 
 The setup script will copy this script to the user's bin directory if it exists. (It does not insist that it exists, for
 backwards compatibility with installation processes that work with previous versions.)
 
-topcat_admin requires the Python requests module to be installed; setup neither checks nor ensures that this is the case.
+topcat_admin requires the Python `requests` module to be installed; setup neither checks nor ensures that this is the case.
 The script can be run from any suitable system; it need not be run on the Topcat server.
