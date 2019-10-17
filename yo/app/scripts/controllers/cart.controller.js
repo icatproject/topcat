@@ -242,7 +242,6 @@
 
             resetGetTotalsTimeout();
             that.isLoaded = false;
-            console.log('getTotals: setting isValid to false - was ' + that.isValid);
             that.isValid = false;
             that.totalSize = 0;
             that.datafileCount = 0;
@@ -255,16 +254,13 @@
                         that.isLoaded = true;
 
                         if(totalSize <= that.maxTotalSize){
-                        	console.log('getTotals: setting isValid to true');
                             that.isValid = true;
                         } else {
-                        	console.log('getTotals: reject - too big');
                             return $q.reject("Total size too big");
                         }
                     });
                 } else {
                     that.isLoaded = true;
-                    console.log('getTotals: reject - too many');
                     return $q.reject("Too many files");
                 }
             });
