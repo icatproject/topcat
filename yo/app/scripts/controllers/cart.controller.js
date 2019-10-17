@@ -57,7 +57,7 @@
                     that.download();
                 },
                 disabled: function(){
-                    return this.enableLimits && !that.isValid;
+                    return that.enableLimits && !that.isValid;
                 },
                 class: "btn btn-primary",
                 translate: "CART.DOWNLOAD_CART_BUTTON.TEXT",
@@ -248,12 +248,12 @@
 
             return getDatafileCount().then(function(datafileCount){
                 that.datafileCount = datafileCount;
-                if(datafileCount < that.maxDatafileCount){
+                if(datafileCount <= that.maxDatafileCount){
                     return getTotalSize().then(function(totalSize){
                         that.totalSize = totalSize;
                         that.isLoaded = true;
 
-                        if(totalSize < that.maxTotalSize){
+                        if(totalSize <= that.maxTotalSize){
                             that.isValid = true;
                         } else {
                             return $q.reject("Total size too big");

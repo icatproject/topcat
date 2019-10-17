@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.4.6-SNAPSHOT
+
+  * Ensure download cart button is disabled when limits are exceeded (issue #459)
+
 ## 2.4.5 (15th Oct 2019)
 
   * Improve feedback when getSize requests fail (issue #439)
