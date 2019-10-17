@@ -57,7 +57,7 @@
                     that.download();
                 },
                 disabled: function(){
-                    return this.enableLimits && !that.isValid;
+                    return that.enableLimits && !that.isValid;
                 },
                 class: "btn btn-primary",
                 translate: "CART.DOWNLOAD_CART_BUTTON.TEXT",
@@ -242,25 +242,29 @@
 
             resetGetTotalsTimeout();
             that.isLoaded = false;
+            console.log('getTotals: setting isValid to false - was ' + that.isValid);
             that.isValid = false;
             that.totalSize = 0;
             that.datafileCount = 0;
 
             return getDatafileCount().then(function(datafileCount){
                 that.datafileCount = datafileCount;
-                if(datafileCount < that.maxDatafileCount){
+                if(datafileCount <= that.maxDatafileCount){
                     return getTotalSize().then(function(totalSize){
                         that.totalSize = totalSize;
                         that.isLoaded = true;
 
-                        if(totalSize < that.maxTotalSize){
+                        if(totalSize <= that.maxTotalSize){
+                        	console.log('getTotals: setting isValid to true');
                             that.isValid = true;
                         } else {
+                        	console.log('getTotals: reject - too big');
                             return $q.reject("Total size too big");
                         }
                     });
                 } else {
                     that.isLoaded = true;
+                    console.log('getTotals: reject - too many');
                     return $q.reject("Too many files");
                 }
             });
