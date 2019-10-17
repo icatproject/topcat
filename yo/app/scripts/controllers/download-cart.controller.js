@@ -134,10 +134,13 @@
             	}
 
 	            that.isSubmitting = true;
+	            
+	            var someDownloadWasCreated = false;
 	
 	            var promises = [];
 	            _.each(that.downloads, function(download){
 	                promises.push(download.facility.user().submitCart(download.fileName, download.transportType.type, that.email, timeout.promise).then(function(response){
+	                	someDownloadWasCreated = true;
 	                    return download.facility.user().downloads(["where download.id = ?",response.downloadId]).then(function(downloads){
 	                        var download = downloads[0];
 	                        if(download.transport.match(/https|http/) && download.status == 'COMPLETE'){
@@ -160,11 +163,20 @@
 	                    });
 	                }, function(response){
 	                    console.log('submitCart failed for file',download.fileName,'from facility',download.facility.config().name);
+	                    // Using 'throw' to inform the user is probably a bit extreme,
+	                    // but I can't remember / think of a better way to do it!
+	                    throw 'Download of ' + download.fileName + ' failed. The cart has not been emptied.';
 	                }));
 	            });
 	            $q.all(promises).then(function(){
 	                $uibModalStack.dismissAll();
-	                $rootScope.$broadcast('cart:submit');
+	                if( someDownloadWasCreated ){
+	                	// Do not claim a new download was created when none were!
+	                	$rootScope.$broadcast('cart:submit');
+	                }
+	            },function(){
+	            	// If something goes wrong, dismiss the download dialog (but not the cart)
+	            	that.cancel();
 	            });
             }, function(response){
             	// $q.all failed in some way
