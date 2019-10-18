@@ -3,6 +3,7 @@
 ## 2.4.6-SNAPSHOT
 
   * Ensure download cart button is disabled when limits are exceeded (issue #459)
+  * Inform user when cart submission for download fails (issue #458)
 
 ## 2.4.5 (15th Oct 2019)
 
