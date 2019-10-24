@@ -76,7 +76,7 @@ public class UserResource {
 	 *            <code>0d9a3706-80d4-4d29-9ff3-4d65d4308a24</code>
 	 *
 	 * @param queryOffset
-	 *            any JPQL expression that can be appended to
+	 *            any JPQL expression (*) that can be appended to
 	 *            "SELECT download from Download download", e.g.
 	 *            "where download.isDeleted = false". Note that like ICAT the
 	 *            syntax has been extended allowing (sql like) limit clauses in
@@ -86,6 +86,7 @@ public class UserResource {
 	 *            possible states: 'ONLINE', 'ARCHIVE' or 'RESTORING'. So an
 	 *            example query involving the status attribute could be
 	 *            "where download.status = org.icatproject.topcat.domain.Status.ARCHIVE limit 0, 10"
+	 *            (*) Note: the expression must not contain closing brackets (")").
 	 *
 	 * @return returns an array of downloads in the form
 	 *         [{"completedAt":"2016-03-18T16:02:36","createdAt":
@@ -119,6 +120,7 @@ public class UserResource {
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		Map<String, Object> params = new HashMap<String, Object>();
+		// Note: we believe that userName can never be null/empty
 		params.put("userName", icatClient.getUserName());
 		params.put("queryOffset", queryOffset);
 
