@@ -21,6 +21,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.icatproject.topcat.domain.Download;
+import org.icatproject.topcat.exceptions.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class DownloadRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(DownloadRepository.class);
 
-	public List<Download> getDownloads(Map<String, Object> params) throws ParseException {
+	public List<Download> getDownloads(Map<String, Object> params) throws ParseException, BadRequestException {
 		List<Download> downloads = new ArrayList<Download>();
 
 		String queryOffset = (String) params.get("queryOffset");
@@ -56,10 +57,17 @@ public class DownloadRepository {
 			sb.append("SELECT download FROM Download download ");
 
 			if (userName != null && queryOffset != null) {
-				sb.append("WHERE download.userName = :userName AND " + queryOffset + " ");
+				// For GET /user/downloads, userName cannot be null.
+				// Do not allow queryOffset to contain closing brackets in this case - could be an exploit attempt
+				if( queryOffset.indexOf(')') > -1 ) {
+					throw new BadRequestException("downloads queryOffset contains illegal characters");
+				}
+				sb.append("WHERE download.userName = :userName AND (" + queryOffset + ") ");
 			} else if (userName != null) {
 				sb.append("WHERE download.userName = :userName ");
 			} else if (queryOffset != null) {
+				// Note: we believe that this case is only reachable through the GET /admin/downloads/ endpoint;
+				// and assume that there is no need to be wary of SQL injection.
 				sb.append("WHERE " + queryOffset + " ");
 			}
 
