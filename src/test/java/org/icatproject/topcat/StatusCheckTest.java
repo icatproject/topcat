@@ -596,6 +596,130 @@ public class StatusCheckTest {
 		deleteDummyDownload(postDownload);
 	}
 	
+	@Test
+	@Transactional
+	public void testExceptionDelays() throws Exception {
+		
+		// Similar to testDelays, but set MockIdsClient to throw an (IO)Exception when used by performCheck
+		
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId4";
+		String transport = "http";
+		
+		// Create a two-tier download; initial status should be PREPARING
+		Download dummyDownload = createDummyDownload(preparedId, transport, true);
+		Long downloadId = dummyDownload.getId();
+		
+		assertEquals(DownloadStatus.PREPARING, dummyDownload.getStatus());
+
+		/*
+		 * We assume that the scheduled poll() is not doing any work!
+		 */
+		
+		int pollDelay = 1;
+		int pollIntervalWait = 3;
+		
+		// FIRST mock-scheduled call - expect prepareData to be called, status set to RESTORING
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download status should now be RESTORING, no email sent.
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now set mockIdsClient to throw an (IO)Exception when isPrepared is called
+		
+		mockIdsClient.setFailMode(FailMode.EXCEPTION);
+		
+		// SECOND mock-scheduled call - too early: expect isPrepared NOT to be called, and nothing changed
+
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertFalse(mockIdsClient.isPreparedWasCalled());
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now sleep for at least pollDelay seconds, and try again
+		
+		TimeUnit.SECONDS.sleep(pollDelay+1);
+
+		// THIRD mock-scheduled call, after pollDelay seconds - expect isPrepared called, but no changes
+
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertTrue(mockIdsClient.isPreparedWasCalled());
+		mockIdsClient.resetIsPreparedCalledFlag();
+		
+		// But the status should not have changed, as isPrepared will have thrown an exception
+
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// FOURTH  mock-scheduled call, before pollIntervalWait seconds have passed: isPrepared should NOT be called
+		// (the exception handling should have set the timestamp)
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+
+		assertFalse(mockIdsClient.isPreparedWasCalled());
+
+		// Now mock the IDS having prepared the data - but will still throw an exception
+		
+		mockIdsClient.setIsPrepared(true);
+		
+		// Now wait for at least pollIntervalWaitSeconds, and try again
+		
+		TimeUnit.SECONDS.sleep(pollIntervalWait+1);
+		
+		// FIFTH mock-scheduled call. Nothing should have changed, because an IOException was thrown
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertTrue(mockIdsClient.isPreparedWasCalled());
+		mockIdsClient.resetIsPreparedCalledFlag();
+		
+		// But the status should not have changed, as isPrepared will have thrown an exception
+
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now tell the client to stop throwing exceptions
+		
+		mockIdsClient.setFailMode(FailMode.OK);
+		
+		// Now wait for at least pollIntervalWaitSeconds, and try again
+		
+		TimeUnit.SECONDS.sleep(pollIntervalWait+1);
+		
+		// SIXTH  mock-scheduled call - expect isPrepared called, status changed to COMPLETE etc.
+
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertTrue(mockIdsClient.isPreparedWasCalled());
+		mockIdsClient.resetIsPreparedCalledFlag();
+		
+		// Download should now be COMPLETE, and email flagged as sent (though it wasn't!)
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.COMPLETE, postDownload.getStatus());
+		assertTrue(postDownload.getIsEmailSent());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+	
 	private Download createDummyDownload(String preparedId, String transport, Boolean isTwoLevel) {
 		
 		// This mocks what UserResource.submitCart() might do.
